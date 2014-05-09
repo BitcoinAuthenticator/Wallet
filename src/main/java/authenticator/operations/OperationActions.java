@@ -1,4 +1,4 @@
-package authenticator.operation;
+package authenticator.operations;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

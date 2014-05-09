@@ -7,7 +7,7 @@ import java.net.SocketTimeoutException;
 
 import org.xml.sax.SAXException;
 
-import authenticator.operation.ATOperation;
+import authenticator.operations.ATOperation;
 
 public class TCPListener extends BASE{
 	public static Socket socket;

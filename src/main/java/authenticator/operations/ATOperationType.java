@@ -1,4 +1,4 @@
-package authenticator.operation;
+package authenticator.operations;
 
 
 public enum ATOperationType {

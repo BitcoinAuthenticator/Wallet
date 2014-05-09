@@ -2,7 +2,7 @@ package authenticator;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import authenticator.operation.ATOperation;
+import authenticator.operations.ATOperation;
 
 public class Authenticator extends BASE{
 	private static TCPListener mTCPListener;
