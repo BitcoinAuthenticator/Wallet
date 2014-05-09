@@ -3,7 +3,7 @@ package authenticator;
 public class Authenticator extends BASE{
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
-	private 
+	//private static Class ConcurrentLinkedQueue
 
 	public Authenticator(OnAuthenticatoGUIUpdateListener listener) {
 		super(Authenticator.class);

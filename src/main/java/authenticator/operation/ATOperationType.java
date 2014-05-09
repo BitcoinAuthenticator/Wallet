@@ -1,4 +1,5 @@
-package authenticator;
+package authenticator.operation;
+
 
 public enum ATOperationType {
 	Pairing(1 << 0), // 1
