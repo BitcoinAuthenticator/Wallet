@@ -1,5 +1,8 @@
 package wallettemplate;
 
+import authenticator.Authenticator;
+import authenticator.OnAuthenticatoGUIUpdateListener;
+
 import com.aquafx_project.AquaFx;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
@@ -9,6 +12,7 @@ import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
 import com.google.bitcoin.utils.Threading;
 import com.google.common.base.Throwables;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -53,7 +57,7 @@ public class Main extends Application {
         }
     }
 
-    private void init(Stage mainWindow) throws IOException {
+    private void init(Stage mainWindow) throws Exception {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             AquaFx.style();
         }
@@ -101,6 +105,20 @@ public class Main extends Application {
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         System.out.println(bitcoin.wallet());
+        
+        /**
+         * Authenticator Operation Setup
+         */
+        Authenticator auth = new Authenticator(new OnAuthenticatoGUIUpdateListener(){
+
+			@Override
+			public void simpleTextMessage(String msg) {
+				
+			}
+        	
+        });
+        auth.start();
+        
         controller.onBitcoinSetup();
         mainWindow.show();
     }
