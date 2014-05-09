@@ -7,16 +7,24 @@ import java.net.SocketTimeoutException;
 
 import org.xml.sax.SAXException;
 
+import authenticator.operation.ATOperation;
+
 public class TCPListener extends BASE{
 	public static Socket socket;
 	private static Thread listenerThread;
 	private static UpNp plugnplay;
 	private static OnAuthenticatoGUIUpdateListener mListener;
+	
+	/**
+	 * Flags
+	 */
 	private boolean shouldStopListener;
+	private boolean isRunning;
 	
 	public TCPListener(OnAuthenticatoGUIUpdateListener listener){
 		super(TCPListener.class);
 		mListener = listener;
+		isRunning = false;
 	}
 	
 	public void run(String[] args) throws Exception
@@ -54,6 +62,7 @@ public class TCPListener extends BASE{
 				if(canStartLoop)
 					try{
 						boolean isConnected;
+						isRunning = true;
 						while(true)
 			    	    {
 							isConnected = false;
@@ -67,20 +76,34 @@ public class TCPListener extends BASE{
 								notifyUiAndLog("Connected");
 								notifyUiAndLog("Processing Incoming Operation ...");
 							}
+							else{
+								notifyUiAndLog("Timed-out, Not Connections");
+							}
 							
-							//TODO - check outbound operations
-							notifyUiAndLog("No Outbound Operations Found ... ");
+							notifyUiAndLog("Checking For outbound operations...");
+							if(Authenticator.operationsQueue.size() > 0)
+							{
+								while (Authenticator.operationsQueue.size() > 0){
+									ATOperation op = Authenticator.operationsQueue.poll();
+									notifyUiAndLog("Executing Operation: " + op.getDescription());
+									op.run(null, null);
+								}
+							}
+							else
+								notifyUiAndLog("No Outbound Operations Found.");
 							
 							if(shouldStopListener)
 								break;
 			    	    }
 					}
 					catch (Exception e1) {
+						
 						//TODO - notify gui
 						LOG.error(e1.toString());
 					}
 					finally
 					{
+						isRunning = false;
 						try { ss.close(); plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
 						notifyUiAndLog("Listener Stopped");
 						synchronized(this) {notify();}
@@ -99,6 +122,11 @@ public class TCPListener extends BASE{
 			this.listenerThread.wait();
 		}
 		
+	}
+	
+	public boolean isRuning()
+	{
+		return isRunning ;
 	}
 	
 	public void notifyUiAndLog(String str)
