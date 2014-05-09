@@ -23,6 +23,7 @@ public class UpNp {
 	static GatewayDevice activeGW;
 
 	public static void run(String[] args) throws Exception{
+		SAMPLE_PORT = Integer.parseInt(args[0]);
 		addLogLine("Starting weupnp");
 		GatewayDiscover gatewayDiscover = new GatewayDiscover();
 		addLogLine("Looking for Gateway Devices...");

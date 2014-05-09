@@ -36,6 +36,8 @@ public class Main extends Application {
     public static NetworkParameters params = MainNetParams.get();
     public static WalletAppKit bitcoin;
     public static Main instance;
+    
+    public static Authenticator auth;
 
     private StackPane uiStack;
     private Pane mainUI;
@@ -106,10 +108,13 @@ public class Main extends Application {
         bitcoin.peerGroup().setMaxConnections(11);
         System.out.println(bitcoin.wallet());
         
+        controller.onBitcoinSetup();
+        mainWindow.show();
+        
         /**
          * Authenticator Operation Setup
          */
-        Authenticator auth = new Authenticator(new OnAuthenticatoGUIUpdateListener(){
+        auth = new Authenticator(new OnAuthenticatoGUIUpdateListener(){
 
 			@Override
 			public void simpleTextMessage(String msg) {
@@ -119,8 +124,6 @@ public class Main extends Application {
         });
         auth.start();
         
-        controller.onBitcoinSetup();
-        mainWindow.show();
     }
 
     public class OverlayUI<T> {
@@ -185,6 +188,10 @@ public class Main extends Application {
     public void stop() throws Exception {
         bitcoin.stopAsync();
         bitcoin.awaitTerminated();
+        
+        // Waits until all threads are stopped
+        auth.stop();
+        
         // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
         Runtime.getRuntime().exit(0);
     }

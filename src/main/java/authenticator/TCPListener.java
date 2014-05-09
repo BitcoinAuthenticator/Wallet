@@ -1,7 +1,11 @@
 package authenticator;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+
+import org.xml.sax.SAXException;
 
 public class TCPListener extends BASE{
 	public static Socket socket;
@@ -29,40 +33,72 @@ public class TCPListener extends BASE{
 	    		
 	    		plugnplay = new UpNp();
 	    		int port = Integer.parseInt(args[0]);
+	    		ServerSocket ss = null;
+	    		boolean canStartLoop = true;
 	    		try {
-					plugnplay.run(null);
-					ServerSocket ss;
-					ss = new ServerSocket (port);
-					ss.setSoTimeout(5000);
-					while(true)
-		    	    {
-						notifyUiAndLog("Listening on port "+port+"...");
-						socket = ss.accept();
-						if(ss.isBound()){
-							notifyUiAndLog("Connected");
-							notifyUiAndLog("Processing Incoming Operation ...");
-						}
-						
-						if(shouldStopListener)
-							break;
-		    	    }
-					ss.close();
-					plugnplay.removeMapping();
-					notifyUiAndLog("Listener Stopped");
-				} catch (Exception e1) {
-					//TODO - notify gui
-					LOG.error(e1.toString());
+					plugnplay.run(new String[]{args[0]});
+				} catch (Exception e) {
+					canStartLoop = false;
 				}
+	    		if(canStartLoop)
+	    		{
+	    			try {
+						ss = new ServerSocket (port);
+						ss.setSoTimeout(5000);
+					} catch (IOException e) {
+						try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
+						canStartLoop = false;
+					}
+					
+	    		}
+				if(canStartLoop)
+					try{
+						boolean isConnected;
+						while(true)
+			    	    {
+							isConnected = false;
+							notifyUiAndLog("Listening on port "+port+"...");
+							try{
+								socket = ss.accept();
+								isConnected = true;
+							}
+							catch (SocketTimeoutException e){ isConnected = false; }
+							if(isConnected){
+								notifyUiAndLog("Connected");
+								notifyUiAndLog("Processing Incoming Operation ...");
+							}
+							
+							//TODO - check outbound operations
+							notifyUiAndLog("No Outbound Operations Found ... ");
+							
+							if(shouldStopListener)
+								break;
+			    	    }
+					}
+					catch (Exception e1) {
+						//TODO - notify gui
+						LOG.error(e1.toString());
+					}
+					finally
+					{
+						try { ss.close(); plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
+						notifyUiAndLog("Listener Stopped");
+						synchronized(this) {notify();}
+					}
 	    	    //TODO - return to main
 	    	    //Main.inputCommand();
 	    	}
 	    };
-	    this.listenerThread.run();
+	    this.listenerThread.start();
 	}
 	
-	public void stop(){
+	public void stop() throws InterruptedException{
 		shouldStopListener = true;
-		notifyUiAndLog("Stopping Listener ... ");
+		synchronized(this.listenerThread){
+			notifyUiAndLog("Stopping Listener ... ");
+			this.listenerThread.wait();
+		}
+		
 	}
 	
 	public void notifyUiAndLog(String str)

@@ -1,11 +1,13 @@
 package authenticator;
 
 public class Authenticator extends BASE{
-	static public TCPListener mTCPListener;
+	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
+	private 
 
 	public Authenticator(OnAuthenticatoGUIUpdateListener listener) {
 		super(Authenticator.class);
+		mListener = listener;
 		mTCPListener = new TCPListener(mListener);
 	}
 
@@ -13,4 +15,9 @@ public class Authenticator extends BASE{
 		mTCPListener.run(new String[]{"1234"});
 	}
 	
+	public void stop() throws InterruptedException
+	{
+		//Wait until stops
+		mTCPListener.stop();
+	}
 }
