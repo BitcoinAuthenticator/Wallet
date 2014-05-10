@@ -2,6 +2,9 @@ package authenticator.operations;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.ServerSocket;
+
+import authenticator.operations.OperationsUtils.PairingProtocol;
 
 public class OperationsFactory {
 	
@@ -11,20 +14,19 @@ public class OperationsFactory {
 					.SetOperationAction(new OperationActions(){
 
 						@Override
-						public void PreExecution(String[] args) {
+						public void PreExecution(String[] args)  throws Exception {
 							// TODO Auto-generated method stub
 							
 						}
 
 						@Override
-						public void Execute(DataInputStream inputStream,
-								DataOutputStream outPutStream, String[] args) {
-							// TODO Auto-generated method stub
-							
+						public void Execute(ServerSocket ss, String[] args) throws Exception {
+							 PairingProtocol pair = new PairingProtocol();
+							 pair.run(ss, args[0]); //TODO
 						}
 
 						@Override
-						public void PostExecution(String[] args) {
+						public void PostExecution(String[] args)  throws Exception {
 							// TODO Auto-generated method stub
 							
 						}
@@ -44,8 +46,7 @@ public class OperationsFactory {
 					}
 
 					@Override
-					public void Execute(DataInputStream inputStream,
-							DataOutputStream outPutStream, String[] args) {
+					public void Execute(ServerSocket ss, String[] args) {
 						// TODO Auto-generated method stub
 						
 					}
@@ -54,8 +55,6 @@ public class OperationsFactory {
 					public void PostExecution(String[] args) {
 						// TODO Auto-generated method stub
 						
-					}
-					
-				});
+					}});
 	}
 }

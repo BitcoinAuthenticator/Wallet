@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import authenticator.operations.ATOperation;
 
 public class Authenticator extends BASE{
+	final int LISTENER_PORT = 1234;
+	
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
@@ -26,7 +28,7 @@ public class Authenticator extends BASE{
 	//#####################################
 
 	public void start() throws Exception{
-		mTCPListener.run(new String[]{"1234"});
+		mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	
 	public void stop() throws InterruptedException

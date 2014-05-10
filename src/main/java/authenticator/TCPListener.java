@@ -27,7 +27,7 @@ public class TCPListener extends BASE{
 		isRunning = false;
 	}
 	
-	public void run(String[] args) throws Exception
+	public void run(final String[] args) throws Exception
 	{
 		shouldStopListener = false;   
 	    this.listenerThread = new Thread(){
@@ -86,7 +86,14 @@ public class TCPListener extends BASE{
 								while (Authenticator.operationsQueue.size() > 0){
 									ATOperation op = Authenticator.operationsQueue.poll();
 									notifyUiAndLog("Executing Operation: " + op.getDescription());
-									op.run(null, null);
+									try{
+										op.run(ss);
+									}
+									catch (Exception e)
+									{
+										notifyUiAndLog("Error Occured while executing operation");
+									}
+									
 								}
 							}
 							else

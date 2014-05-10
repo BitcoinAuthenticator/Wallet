@@ -2,6 +2,7 @@ package authenticator.operations;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.ServerSocket;
 
 public class ATOperation {
 	private OperationActions mOperationActions;
@@ -20,10 +21,10 @@ public class ATOperation {
 		args = ar;
 	}
 	
-	public void run(DataInputStream inputStream, DataOutputStream outPutStream)
+	public void run(ServerSocket ss)  throws Exception 
 	{
 		mOperationActions.PreExecution(args);
-		mOperationActions.Execute(inputStream, outPutStream, args);
+		mOperationActions.Execute( ss, args);
 		mOperationActions.PostExecution(args);
 	}
 	

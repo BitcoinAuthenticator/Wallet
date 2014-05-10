@@ -96,7 +96,7 @@ public class UpNp {
 	}
 	
 	/**This method removes the mapping*/
-	void removeMapping() throws IOException, SAXException{
+	public void removeMapping() throws IOException, SAXException{
 		if (activeGW.deletePortMapping(SAMPLE_PORT,"TCP")) {
 			addLogLine("Port mapping removed, test SUCCESSFUL");
         } else {
@@ -105,10 +105,10 @@ public class UpNp {
 	}
 	
 	/**These two methods return the external and local IP address*/
-	String getExternalIP(){
+	public String getExternalIP(){
 		return externalIPAddress;
 	}
-	String getLocalIP(){
+	public String getLocalIP(){
 		return localIPAddress;
 	}
 
