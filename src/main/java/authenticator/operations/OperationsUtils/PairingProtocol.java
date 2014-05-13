@@ -27,7 +27,8 @@ public class PairingProtocol {
 	public static byte[] pairingID;
 	public static SecretKey sharedsecret;
 	
-  public static void run (ServerSocket ss, String walletType) throws Exception {
+  @SuppressWarnings("static-access")
+public static void run (ServerSocket ss, String walletType) throws Exception {
 
 	  final int port = 1234;
 
@@ -47,12 +48,14 @@ public class PairingProtocol {
       String key = bytesToHex(raw);
 	  
 	  //Display a QR code for the user to scan
+	  @SuppressWarnings("unused")
 	  QRCode PairingQR = new QRCode(ip, localip, walletType, key);
 	  DisplayQR QR = new DisplayQR();
 	  QR.main(null);    
 	  
 	  Socket socket = ss.accept();
 	  QR.CloseWindow();
+	  QR.dispose();
 	  System.out.println("Connected to Alice");
     
 	  // Receive Master Public Key and Chaincode
@@ -91,8 +94,11 @@ public class PairingProtocol {
 	  //dispose
 	  in.close();
 	  out.close();
-	  plugnplay.removeMapping();
-	  ss.close();
+	  chaincode = null;
+	  mPubKey = null;
+	  gcmRegId = null;
+	  pairingID = null;
+	  sharedsecret = null;
   }
   
   final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();

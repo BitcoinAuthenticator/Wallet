@@ -15,9 +15,12 @@ import com.google.common.base.Throwables;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -37,11 +40,9 @@ public class Main extends Application {
     public static WalletAppKit bitcoin;
     public static Main instance;
     
-    public static Authenticator auth;
-
     private StackPane uiStack;
     private Pane mainUI;
-
+    
     @Override
     public void start(Stage mainWindow) throws Exception {
         instance = this;
@@ -67,6 +68,7 @@ public class Main extends Application {
         URL location = getClass().getResource("main.fxml");
         FXMLLoader loader = new FXMLLoader(location);
         mainUI = loader.load();
+        
         Controller controller = loader.getController();
         // Configure the window with a StackPane so we can overlay things on top of the main UI.
         uiStack = new StackPane(mainUI);
@@ -74,7 +76,7 @@ public class Main extends Application {
         final Scene scene = new Scene(uiStack);
         TextFieldValidator.configureScene(scene);   // Add CSS that we need.
         mainWindow.setScene(scene);
-
+        
         // Make log output concise.
         BriefLogFormatter.init();
         // Tell bitcoinj to run event handlers on the JavaFX UI thread. This keeps things simple and means
@@ -114,18 +116,17 @@ public class Main extends Application {
         /**
          * Authenticator Operation Setup
          */
-        auth = new Authenticator(new OnAuthenticatoGUIUpdateListener(){
+        new Authenticator(new OnAuthenticatoGUIUpdateListener(){
 
 			@Override
 			public void simpleTextMessage(String msg) {
 				
 			}
         	
-        });
-        auth.start();
+        }).start();
         
     }
-
+    
     public class OverlayUI<T> {
         public Node ui;
         public T controller;
@@ -190,7 +191,7 @@ public class Main extends Application {
         bitcoin.awaitTerminated();
         
         // Waits until all threads are stopped
-        auth.stop();
+        Authenticator.stop();
         
         // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
         Runtime.getRuntime().exit(0);

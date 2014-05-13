@@ -19,7 +19,7 @@ public class DisplayQR extends JFrame {
 
 	/**Launches the Jframe*/
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		/*EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 				frame.setVisible(true);
@@ -27,7 +27,12 @@ public class DisplayQR extends JFrame {
 					e.printStackTrace();
 				}
 			}
-		});
+		});*/
+		frame.setVisible(true);
+	}
+	
+	public void dispose(){
+		contentPane = null;
 	}
 
 	/**Loads the QR code image from file and creates the frame.*/
@@ -41,7 +46,6 @@ public class DisplayQR extends JFrame {
 		try {
 			path = new java.io.File( "." ).getCanonicalPath() + "/PairingQRCode.png";
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally

@@ -31,7 +31,7 @@ public class Authenticator extends BASE{
 		mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	
-	public void stop() throws InterruptedException
+	static public void stop() throws InterruptedException
 	{
 		//Wait until stops
 		mTCPListener.stop();

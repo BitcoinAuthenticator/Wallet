@@ -1,12 +1,18 @@
 package wallettemplate;
 
+import authenticator.Authenticator;
+import authenticator.operations.ATOperation;
+import authenticator.operations.OperationsFactory;
+
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -96,5 +102,12 @@ public class Controller {
     public void refreshBalanceLabel() {
         final BigInteger amount = bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         balance.setText(Utils.bitcoinValueToFriendlyString(amount));
+    }
+    
+    @FXML
+    private void handlePairDeviceAction(ActionEvent event) { 
+    	System.out.println("Showing|Clicked");
+    	ATOperation op = OperationsFactory.PAIRING_OPERATION();
+    	Authenticator.operationsQueue.add(op);
     }
 }

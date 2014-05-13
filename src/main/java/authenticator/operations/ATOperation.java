@@ -28,6 +28,10 @@ public class ATOperation {
 		mOperationActions.PostExecution(args);
 	}
 	
+	public void OnExecutionError(Exception e){
+		mOperationActions.OnExecutionError(e);
+	}
+	
 	//#####################################
 	//
 	// 		Getter and Setters

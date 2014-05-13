@@ -66,7 +66,7 @@ public class TCPListener extends BASE{
 						while(true)
 			    	    {
 							isConnected = false;
-							notifyUiAndLog("Listening on port "+port+"...");
+							//notifyUiAndLog("Listening on port "+port+"...");
 							try{
 								socket = ss.accept();
 								isConnected = true;
@@ -77,7 +77,7 @@ public class TCPListener extends BASE{
 								notifyUiAndLog("Processing Incoming Operation ...");
 							}
 							else{
-								notifyUiAndLog("Timed-out, Not Connections");
+								//notifyUiAndLog("Timed-out, Not Connections");
 							}
 							
 							notifyUiAndLog("Checking For outbound operations...");
@@ -85,15 +85,18 @@ public class TCPListener extends BASE{
 							{
 								while (Authenticator.operationsQueue.size() > 0){
 									ATOperation op = Authenticator.operationsQueue.poll();
+									if (op == null)
+										break;
 									notifyUiAndLog("Executing Operation: " + op.getDescription());
 									try{
 										op.run(ss);
 									}
 									catch (Exception e)
 									{
-										notifyUiAndLog("Error Occured while executing operation");
+										notifyUiAndLog("Error Occured while executing operation:\n"
+												+ e.toString());
+										op.OnExecutionError(e);
 									}
-									
 								}
 							}
 							else
@@ -106,7 +109,7 @@ public class TCPListener extends BASE{
 					catch (Exception e1) {
 						
 						//TODO - notify gui
-						LOG.error(e1.toString());
+						notifyUiAndLog("Fatal Error, Authenticator Operation ShutDown Because Of: \n" + e1.toString());
 					}
 					finally
 					{

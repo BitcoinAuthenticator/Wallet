@@ -3,19 +3,18 @@
 <?scenebuilder-classpath-element ../../../../target/classes?>
 <?scenebuilder-classpath-element ../../../../../core/target/bitcoinj-0.12-SNAPSHOT.jar?>
 <?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
-<?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
-<?import wallettemplate.controls.*?>
-<?import wallettemplate.controls.ClickableBitcoinAddress ?>
 
-<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="300.0" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.Controller">
+<!-- <?import wallettemplate.controls.ClickableBitcoinAddress ?> -->
+ <?import wallettemplate.controls.ClickableBitcoinAddress ?>
+
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="300.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.Controller">
   <children>
     <Label layoutX="14.0" layoutY="14.0" text="Balance">
       <font>
@@ -70,5 +69,14 @@
       </children>
     </StackPane>
     <Button id="sendMoneyOut" fx:id="sendMoneyOutBtn" alignment="CENTER" mnemonicParsing="false" onAction="#sendMoneyOut" text="Send money out" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="17.0" />
+    <MenuBar>
+	  <menus>
+	    <Menu mnemonicParsing="false" text="Options">
+	      <items>
+	        <MenuItem mnemonicParsing="false" text="Pair Device" onAction="#handlePairDeviceAction"/>
+	      </items>
+	    </Menu>
+	  </menus>
+	</MenuBar>
   </children>
 </AnchorPane>
