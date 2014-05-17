@@ -106,6 +106,6 @@ public class PairWallet extends BaseUI{
     
     @FXML
     public void done(ActionEvent event) {
-    	
+    	overlayUi.done();
     }
 }

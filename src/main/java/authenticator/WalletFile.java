@@ -276,7 +276,7 @@ public class WalletFile {
 		}*/
 	}
 	
-	private ArrayList<PairingObject> getPairingObjectsArray()
+	public ArrayList<PairingObject> getPairingObjectsArray()
 	{
 		ArrayList<PairingObject> ret = new ArrayList<PairingObject>();
 		JSONParser parser = new JSONParser();
