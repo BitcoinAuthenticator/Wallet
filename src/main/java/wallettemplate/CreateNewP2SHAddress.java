@@ -10,12 +10,16 @@ import java.util.ResourceBundle;
 
 import org.json.JSONException;
 
+import com.google.bitcoin.core.AddressFormatException;
+
 import authenticator.WalletFile;
 import authenticator.WalletOperation;
 import authenticator.db.KeyObject;
 import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.PopUpNotification;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -62,7 +66,14 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
     	WalletOperation op = new WalletOperation();
     	if(pairNameToId.containsKey((String)cmbPairings.getValue()))
     	{
-    		op.genAddress(pairNameToId.get((String)cmbPairings.getValue()));
+    		try {
+				op.genAddress(pairNameToId.get((String)cmbPairings.getValue()));
+			} catch (AddressFormatException e) {
+				op.LOG.info(e.toString());
+				PopUpNotification p = new PopUpNotification("Something Went Wrong ...");
+				p.showPopup();
+				e.printStackTrace();
+			}
     		populateUI();
     	}
     	else

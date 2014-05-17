@@ -61,7 +61,7 @@ import dispacher.MessageType;*/
 /**
  * This class is a collection of methods for creating and sending a transaction over to the Authenticator
  */
-public class WalletOperation {
+public class WalletOperation extends BASE{
 	
 	static String unsignedTx;
 	static Transaction spendtx;
@@ -71,6 +71,7 @@ public class WalletOperation {
 	static Map<String,Boolean> mpTestnet;
 	
 	public WalletOperation() throws IOException{
+		super(WalletOperation.class);
 		if(mpNumInputs == null)
 			mpNumInputs = new HashMap<String,Integer>();
 		if(mpPublickeys == null)
@@ -91,7 +92,7 @@ public class WalletOperation {
 	
 	/**Pushes the raw transaction the the Eligius mining pool*/
 	void pushTx(String tx) throws IOException{
-		System.out.println("Broadcasting to network...");
+		this.LOG.info("Broadcasting to network...");
 		String urlParameters = "transaction="+ tx + "&send=Push";
 		String request = "http://eligius.st/~wizkid057/newstats/pushtxn.php";
 		URL url = new URL(request); 
@@ -109,7 +110,7 @@ public class WalletOperation {
 		wr.flush();
 		wr.close();
 		int responseCode = connection.getResponseCode();
-		System.out.println("\nSending 'POST' request to URL : " + url);
+		this.LOG.info("\nSending 'POST' request to URL : " + url);
 		//Get reponse 
 		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String inputLine;
@@ -120,15 +121,16 @@ public class WalletOperation {
 		in.close();
 		connection.disconnect();
 		//Print txid
-		System.out.println("Success!");
-		System.out.println("txid: " + response.substring(response.indexOf("string(64) ")+12, response.indexOf("string(64) ")+76));
+		this.LOG.info("Success!");
+		this.LOG.info("txid: " + response.substring(response.indexOf("string(64) ")+12, response.indexOf("string(64) ")+76));
 	}
 	
 	/**
 	 * Derives a child public key from the master public key. Generates a new local key pair.
 	 * Uses the two public keys to create a 2of2 multisig address. Saves key and address to json file.
+	 * @throws AddressFormatException 
 	 */
-	public String genAddress(String pairingID) throws NoSuchAlgorithmException, JSONException{
+	public String genAddress(String pairingID) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		//Derive the child public key from the master public key.
 		WalletFile file = new WalletFile();
 		ArrayList<String> keyandchain = file.getPubAndChain(pairingID);
@@ -159,7 +161,9 @@ public class WalletOperation {
 		Address multisigaddr = Address.fromP2SHScript(params, script);
 		//Save keys to file
 		file.writeToFile(pairingID,bytesToHex(privkey),multisigaddr.toString());
-		return multisigaddr.toString();
+		String ret = multisigaddr.toString();
+		Authenticator.mWalletWrapper.addP2ShAddressToWathc(ret);
+		return ret;
 	}
 	
 	/**
@@ -233,7 +237,7 @@ public class WalletOperation {
 				}
 			}
 		}
-		if (inAmount < outAmount + 10000) System.out.println("Insufficient funds");
+		if (inAmount < outAmount + 10000) this.LOG.info("Insufficient funds");
 		System.out.println(mpNumInputs.get(pairingID));
 		System.out.println(inAmount);
 		return outList;
@@ -290,10 +294,10 @@ public class WalletOperation {
 		    for (byte b : bytes) {
 		        formatter.format("%02x", b);  
 		    }
-		    System.out.println("Raw Unsigned Transaction: " + sb.toString());
+		    this.LOG.info("Raw Unsigned Transaction: " + sb.toString());
 		    unsignedTx = sb.toString();
 		}catch (IOException e) {
-			System.out.println("Couldn't serialize to hex string.");
+			this.LOG.info("Couldn't serialize to hex string.");
 		} finally {
 		    formatter.close();
 		}

@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 /**
  * Class using Universal Plug and Play to create a port mapping on a gateway device. 
  */
-public class UpNp {
+public class UpNp extends BASE{
 
 	private static int SAMPLE_PORT = 1234;
 	private static boolean LIST_ALL_MAPPINGS = false;
@@ -22,6 +22,7 @@ public class UpNp {
 	static String localIPAddress;
 	static GatewayDevice activeGW;
 
+	public UpNp() { super(UpNp.class); }
 	public static void run(String[] args) throws Exception{
 		SAMPLE_PORT = Integer.parseInt(args[0]);
 		addLogLine("Starting weupnp");

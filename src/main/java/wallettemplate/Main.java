@@ -123,7 +123,9 @@ public class Main extends Application {
 				
 			}
         	
-        }).start();
+        })
+        .setWallet(bitcoin.wallet())
+        .start();
         
     }
     

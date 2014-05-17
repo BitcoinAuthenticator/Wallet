@@ -38,12 +38,13 @@ import authenticator.db.PairingObject;
  * 
  * 	}
  */
-public class WalletFile {
+public class WalletFile extends BASE{
 	
 	String filePath = null;
 
 	/**Contructor defines the loclation of the .json file*/
 	public WalletFile(){
+		super(WalletFile.class);
 		try {
 			filePath = BAUtils.getAbsolutePathForFile("wallet.json");//new java.io.File( "." ).getCanonicalPath() + "/wallet.json";
 		} catch (IOException e) {
