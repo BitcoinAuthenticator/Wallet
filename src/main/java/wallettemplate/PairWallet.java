@@ -16,6 +16,7 @@ public class PairWallet extends BaseUI{
 	
 	public Button cancelBtn;
 	public Button doneBtn;
+	public Button runBtn;
 	public TextArea textarea;
 	public TextField textfield;
     public Main.OverlayUI overlayUi;
@@ -23,7 +24,11 @@ public class PairWallet extends BaseUI{
     
     public void initialize() {
         super.init();
-        ATOperation op = OperationsFactory.PAIRING_OPERATION().SetOperationUIUpdate(new OnOperationUIUpdate(){
+        doneBtn.setDisable(true);
+    }
+    private void runPairing(String pairName)
+    {
+    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName).SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 			@Override
 			public void onBegin(String str) {
@@ -53,8 +58,12 @@ public class PairWallet extends BaseUI{
 			        public void run() {
 			        	textarea.appendText("=============================\n" +
 			        						str);
+			        	
+			        	cancelBtn.setDisable(true);
+						doneBtn.setDisable(false);
 			        }
 				});
+				
 			}
 
 			@Override
@@ -71,6 +80,22 @@ public class PairWallet extends BaseUI{
         	
         });
     	Authenticator.operationsQueue.add(op);
+    }
+    
+    @FXML
+    public void run(ActionEvent event) {
+    	if(textfield.getText().length() > 0)
+    	{
+    		// in case any messages are on 
+    		textarea.clear();
+    		this.runPairing(textfield.getText());
+    	}
+    	else
+    	{
+    		textarea.appendText("===========================================\n"+
+    							"   Please Enter a Pairing Name In The Box\n" + 
+    							"===========================================\n");
+    	}
     }
 
     @FXML

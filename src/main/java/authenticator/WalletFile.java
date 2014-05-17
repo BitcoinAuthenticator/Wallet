@@ -204,7 +204,7 @@ public class WalletFile {
 	
 	/**This method is used during pairing. It saves the data from the Autheticator to file*/
 	@SuppressWarnings("unchecked")
-	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID){
+	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName){
 		// Create new pairing item
 		PairingObject newPair = new PairingObject()
 				.setAES(key)
@@ -212,6 +212,7 @@ public class WalletFile {
 				.setChainCode(chaincode)
 				.setGCM(GCM)
 				.setPairingID(pairingID)
+				.setPairingName(pairName)
 				.setTestNetMode(false)
 				.setKeysArray(new KeysArray());
 		

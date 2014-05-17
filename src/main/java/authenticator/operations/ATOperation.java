@@ -2,6 +2,12 @@ package authenticator.operations;
 
 import java.net.ServerSocket;
 
+/**
+ * Describes a complete operation for the authenticator.
+ * 
+ * @author alon
+ *
+ */
 public class ATOperation {
 	private OperationActions mOperationActions;
 	private OnOperationUIUpdate listener;

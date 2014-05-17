@@ -23,6 +23,7 @@ public class PairingObject extends JSONObject{
 	public boolean testnet; 
 	public int keys_n;
 	public KeysArray keys;
+	public String pairingName = "";
 	
 	public PairingObject() {}
 	@SuppressWarnings("unchecked")
@@ -36,6 +37,7 @@ public class PairingObject extends JSONObject{
 		testnet = (boolean) obj.get("testnet");
 		keys_n = ((Long) obj.get("keys_n")).intValue();
 		keys = new KeysArray((JSONArray) obj.get("keys")) ;
+		pairingName = (String) obj.get("pairingName");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -49,6 +51,7 @@ public class PairingObject extends JSONObject{
 		this.put("testnet", testnet);
 		this.put("keys_n", keys_n);
 		this.put("keys", keys.getJSONObject());
+		this.put("pairingName", pairingName);
 		return this;
 	}
 	
@@ -80,6 +83,10 @@ public class PairingObject extends JSONObject{
 	public PairingObject setKeysArray(KeysArray input){
 		keys_n = input.size();
 		keys = input;
+		return this;
+	}
+	public PairingObject setPairingName(String input){
+		pairingName = input;
 		return this;
 	}
 	@SuppressWarnings("unchecked")

@@ -9,12 +9,12 @@ import authenticator.operations.OperationsUtils.PairingProtocol;
 
 public class OperationsFactory {
 	
-	static public ATOperation PAIRING_OPERATION(){
+	static public ATOperation PAIRING_OPERATION(String pairingName){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{"blockchain"})
+					.SetArguments(new String[]{pairingName, "blockchain"})
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;
@@ -31,7 +31,7 @@ public class OperationsFactory {
 							 ss.setSoTimeout(0);
 							 socket = ss;
 							 PairingProtocol pair = new PairingProtocol();
-							 pair.run(ss,args[0],listener); 
+							 pair.run(ss,args,listener); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(timeout);
 						}

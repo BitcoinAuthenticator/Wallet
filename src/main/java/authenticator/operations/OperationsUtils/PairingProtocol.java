@@ -28,9 +28,22 @@ public class PairingProtocol {
 	public static byte[] pairingID;
 	public static SecretKey sharedsecret;
 	
-  public static void run (ServerSocket ss,String args, OnOperationUIUpdate listener) throws Exception {
+  /**
+   * Run a complete process of pairing with an authenticator device
+   * args[] - 
+   * 	0 - Pairing name
+   * 	1 - Pair type, by default "blockchain"
+   * 
+   * 
+   * @param {@link java.net.ServerSocket} ss
+   * @param args
+   * @param {@link authenticator.operations.OnOperationUIUpdate} listener
+   * @throws Exception
+   */
+  public static void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
 
-	  String walletType = args;
+	  assert(args != null);
+	  String walletType = args[1];
 	  final int port = 1234;
 
 	  // Open a port and wait for a connection
@@ -89,7 +102,7 @@ public class PairingProtocol {
 		  			 "pairing ID: " + new String(pairingID));
 		  //Save mPubKey and the Chaincode to file
 		  WalletFile file = new WalletFile();
-		  file.writePairingData(bytesToHex(mPubKey), bytesToHex(chaincode), key, new String(gcmRegId),new String(pairingID));
+		  file.writePairingData(bytesToHex(mPubKey), bytesToHex(chaincode), key, new String(gcmRegId),new String(pairingID),args[0]);
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");
