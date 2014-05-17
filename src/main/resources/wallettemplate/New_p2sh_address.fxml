@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.CreateNewP2SHAddress">
+	<children><VBox prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: white;">
+<children><VBox prefHeight="355.0" prefWidth="600.0" style="-fx-background-color: white;" /><VBox layoutY="297.0" prefHeight="28.0" prefWidth="600.0">
+<children>
+				<Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancel" text="Cancel">
+					<VBox.margin>
+						<Insets left="100.0" />
+					</VBox.margin></Button>
+</children></VBox>
+</children></VBox>
+	</children>
+</AnchorPane>

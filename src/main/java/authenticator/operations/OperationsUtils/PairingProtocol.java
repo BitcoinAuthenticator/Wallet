@@ -13,6 +13,7 @@ import org.json.simple.JSONValue;
 
 import authenticator.UpNp;
 import authenticator.WalletFile;
+import authenticator.operations.OnOperationUIUpdate;
 
 /**
  * This is the wallet side of the Pairing Protocol. It uses UpNp to map a port on the router if there is one,
@@ -27,14 +28,15 @@ public class PairingProtocol {
 	public static byte[] pairingID;
 	public static SecretKey sharedsecret;
 	
-  @SuppressWarnings("static-access")
-public static void run (ServerSocket ss, String walletType) throws Exception {
+  public static void run (ServerSocket ss,String args, OnOperationUIUpdate listener) throws Exception {
 
+	  String walletType = args;
 	  final int port = 1234;
 
 	  // Open a port and wait for a connection
 	  UpNp plugnplay = new UpNp();
-	  System.out.println("Listening for Alice ...");
+	  System.out.println("Listening for Alice on port "+port+"...");
+	  postUIStatusUpdate(listener, "Listening for Alice on port "+port+"...");
 	  String ip = plugnplay.getExternalIP();
 	  String localip = plugnplay.getLocalIP().substring(1);
 	  
@@ -48,15 +50,13 @@ public static void run (ServerSocket ss, String walletType) throws Exception {
       String key = bytesToHex(raw);
 	  
 	  //Display a QR code for the user to scan
-	  @SuppressWarnings("unused")
 	  QRCode PairingQR = new QRCode(ip, localip, walletType, key);
 	  DisplayQR QR = new DisplayQR();
 	  QR.main(null);    
-	  
 	  Socket socket = ss.accept();
 	  QR.CloseWindow();
-	  QR.dispose();
 	  System.out.println("Connected to Alice");
+	  postUIStatusUpdate(listener,"Connected to Alice");
     
 	  // Receive Master Public Key and Chaincode
 	  in = new DataInputStream(socket.getInputStream());
@@ -77,28 +77,38 @@ public static void run (ServerSocket ss, String walletType) throws Exception {
 	  if (Arrays.equals(macbytes, hash)){
 		  mPubKey = hexStringToByteArray(payload.substring(0,66));
 		  chaincode = hexStringToByteArray(payload.substring(66,130));
-		  pairingID = hexStringToByteArray(payload.substring(130,138));
-		  gcmRegId = hexStringToByteArray(payload.substring(138,payload.length()-64));
+		  pairingID = hexStringToByteArray(payload.substring(130,210));
+		  gcmRegId = hexStringToByteArray(payload.substring(210,payload.length()-64));
 		  System.out.println("Received Master Public Key: " + bytesToHex(mPubKey) + "\n" +
 				  			 "chaincode: " +  bytesToHex(chaincode) + "\n" +
 				  			 "gcmRegId: " +  new String(gcmRegId) + "\n" + 
 				  			 "pairing ID: " + new String(pairingID));
+		  postUIStatusUpdate(listener,"Received Master Public Key: " + bytesToHex(mPubKey) + "\n" +
+		  			 "chaincode: " +  bytesToHex(chaincode) + "\n" +
+		  			 "gcmRegId: " +  new String(gcmRegId) + "\n" + 
+		  			 "pairing ID: " + new String(pairingID));
 		  //Save mPubKey and the Chaincode to file
 		  WalletFile file = new WalletFile();
 		  file.writePairingData(bytesToHex(mPubKey), bytesToHex(chaincode), key, new String(gcmRegId),new String(pairingID));
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");
+		  postUIStatusUpdate(listener,"Message authentication code is invalid");
 	  }
 	  
 	  //dispose
-	  in.close();
-	  out.close();
-	  chaincode = null;
-	  mPubKey = null;
-	  gcmRegId = null;
-	  pairingID = null;
-	  sharedsecret = null;
+	  //in.close();
+	  //out.close();
+	  //plugnplay.removeMapping();
+	  //ss.close();
+	  // Return to main
+
+  }
+  
+  public static void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
+  {
+	  if(listener != null)
+		  listener.statusReport(str);
   }
   
   final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();

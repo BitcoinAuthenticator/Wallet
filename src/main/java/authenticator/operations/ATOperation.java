@@ -1,16 +1,20 @@
 package authenticator.operations;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.net.ServerSocket;
 
 public class ATOperation {
 	private OperationActions mOperationActions;
+	private OnOperationUIUpdate listener;
 	private String operationDescription;
 	private ATOperationType mOperationType;
 	private String[] args = null;
 	
-	public ATOperation(ATOperationType type){mOperationType = type;}
+	
+	public ATOperation(ATOperationType type)
+	{
+		mOperationType = type;
+	}
+	
 	public ATOperation (ATOperationType type, 
 			OperationActions action, 
 			String desc,
@@ -23,13 +27,19 @@ public class ATOperation {
 	
 	public void run(ServerSocket ss)  throws Exception 
 	{
+		if(this.listener != null)
+			this.listener.onBegin(beginMsg);
 		mOperationActions.PreExecution(args);
-		mOperationActions.Execute( ss, args);
+		mOperationActions.Execute( ss, args, this.listener);
 		mOperationActions.PostExecution(args);
+		if(this.listener != null)
+			this.listener.onFinished(finishedMsg);
 	}
 	
 	public void OnExecutionError(Exception e){
 		mOperationActions.OnExecutionError(e);
+		if(this.listener != null)
+			this.listener.onError(e);
 	}
 	
 	//#####################################
@@ -51,9 +61,29 @@ public class ATOperation {
 		return this;
 	}
 	
+	public ATOperation SetOperationUIUpdate(OnOperationUIUpdate listener)
+	{
+		this.listener = listener;
+		return this;
+	}
+	
 	public ATOperation SetArguments(String[] ar)
 	{
 		this.args = ar;
+		return this;
+	}
+	
+	private String beginMsg;
+	public ATOperation SetBeginMsg(String msg)
+	{
+		this.beginMsg = msg;
+		return this;
+	}
+	
+	private String finishedMsg;
+	public ATOperation SetFinishedMsg(String msg)
+	{
+		this.finishedMsg = msg;
 		return this;
 	}
 }

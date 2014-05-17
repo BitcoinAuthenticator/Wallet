@@ -12,7 +12,7 @@
 <?import javafx.scene.text.*?>
 
 <!-- <?import wallettemplate.controls.ClickableBitcoinAddress ?> -->
- <?import wallettemplate.controls.ClickableBitcoinAddress ?>
+<?import wallettemplate.controls.ClickableBitcoinAddress ?>
 
 <AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="300.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.Controller">
   <children>
@@ -73,7 +73,8 @@
 	  <menus>
 	    <Menu mnemonicParsing="false" text="Options">
 	      <items>
-	        <MenuItem mnemonicParsing="false" text="Pair Device" onAction="#handlePairDeviceAction"/>
+	        <MenuItem mnemonicParsing="false" onAction="#handlePairDeviceAction" text="Pair Device" />
+	        <MenuItem mnemonicParsing="false" onAction="#handleCreateP2ShAddress" text="Create P2Sh Address" />
 	      </items>
 	    </Menu>
 	  </menus>

@@ -24,7 +24,8 @@
         <TextField fx:id="amount" prefHeight="26.0" prefWidth="278.0" promptText="Amount (Ex. 0.001)">
 <VBox.margin>
 <Insets left="40.0" right="300.0" />
-</VBox.margin></TextField>
+</VBox.margin>
+</TextField>
         <HBox alignment="CENTER" fillHeight="true" prefHeight="30.0" prefWidth="600.0" spacing="50.0" VBox.vgrow="NEVER">
           <children>
             <Button fx:id="cancelBtn" cancelButton="true" mnemonicParsing="false" onAction="#cancel" prefWidth="79.0" text="Cancel" />

@@ -13,14 +13,19 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ClickableBitcoinAddress;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -106,8 +111,16 @@ public class Controller {
     
     @FXML
     private void handlePairDeviceAction(ActionEvent event) { 
-    	System.out.println("Showing|Clicked");
-    	ATOperation op = OperationsFactory.PAIRING_OPERATION();
-    	Authenticator.operationsQueue.add(op);
+    	Main.instance.overlayUI("Pair_wallet.fxml");
+    }
+    
+    @FXML
+    private void handleCreateP2ShAddress(ActionEvent event) throws IOException { 
+    	/*Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("New_p2sh_address.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("Create New P2SH Address");
+        stage.setScene(new Scene(root, 450, 450));
+        stage.show();*/
+    	Main.instance.overlayUI("New_p2sh_address.fxml");
     }
 }

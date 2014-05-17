@@ -12,6 +12,8 @@ public class OperationsFactory {
 	static public ATOperation PAIRING_OPERATION(){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
+					.SetBeginMsg("Pairing Started ...")
+					.SetFinishedMsg("Finished pairing")
 					.SetArguments(new String[]{"blockchain"})
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
@@ -24,12 +26,12 @@ public class OperationsFactory {
 
 						@SuppressWarnings("static-access")
 						@Override
-						public void Execute(ServerSocket ss, String[] args) throws Exception {
+						public void Execute(ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
 							 timeout = ss.getSoTimeout();
 							 ss.setSoTimeout(0);
 							 socket = ss;
 							 PairingProtocol pair = new PairingProtocol();
-							 pair.run(ss,args[0]); 
+							 pair.run(ss,args[0],listener); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(timeout);
 						}
@@ -58,19 +60,20 @@ public class OperationsFactory {
 				.SetOperationAction(new OperationActions(){
 
 					@Override
-					public void PreExecution(String[] args) {
+					public void PreExecution(String[] args) throws Exception {
 						// TODO Auto-generated method stub
 						
 					}
 
 					@Override
-					public void Execute(ServerSocket ss, String[] args) {
+					public void Execute(ServerSocket ss, String[] args,
+							OnOperationUIUpdate listener) throws Exception {
 						// TODO Auto-generated method stub
 						
 					}
 
 					@Override
-					public void PostExecution(String[] args) {
+					public void PostExecution(String[] args) throws Exception {
 						// TODO Auto-generated method stub
 						
 					}
@@ -79,6 +82,8 @@ public class OperationsFactory {
 					public void OnExecutionError(Exception e) {
 						// TODO Auto-generated method stub
 						
-					}});
+					}
+					
+				});
 	}
 }
