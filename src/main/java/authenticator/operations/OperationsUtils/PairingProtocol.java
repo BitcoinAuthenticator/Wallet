@@ -85,7 +85,7 @@ public static void run (ServerSocket ss, String walletType) throws Exception {
 				  			 "pairing ID: " + new String(pairingID));
 		  //Save mPubKey and the Chaincode to file
 		  WalletFile file = new WalletFile();
-		  file.writePairingData(bytesToHex(mPubKey), bytesToHex(chaincode), key);
+		  file.writePairingData(bytesToHex(mPubKey), bytesToHex(chaincode), key, new String(gcmRegId),new String(pairingID));
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");
