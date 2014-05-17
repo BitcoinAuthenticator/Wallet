@@ -1,15 +1,17 @@
 package wallettemplate;
 
+import java.math.BigInteger;
+
 import com.google.bitcoin.core.*;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import wallettemplate.controls.BitcoinAddressValidator;
-
 import static wallettemplate.utils.GuiUtils.crashAlert;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
@@ -17,6 +19,7 @@ public class SendMoneyController {
     public Button sendBtn;
     public Button cancelBtn;
     public TextField address;
+    public TextField amount;
     public Label titleLabel;
 
     public Main.OverlayUI overlayUi;
@@ -35,7 +38,8 @@ public class SendMoneyController {
     public void send(ActionEvent event) {
         try {
             Address destination = new Address(Main.params, address.getText());
-            Wallet.SendRequest req = Wallet.SendRequest.emptyWallet(destination);
+           // Wallet.SendRequest req = Wallet.SendRequest.emptyWallet(destination);
+            Wallet.SendRequest req = Wallet.SendRequest.to(destination, Utils.toNanoCoins(amount.getText()));
             sendResult = Main.bitcoin.wallet().sendCoins(req);
             Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
                 @Override
