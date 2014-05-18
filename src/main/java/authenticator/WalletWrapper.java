@@ -37,17 +37,15 @@ public class WalletWrapper extends BASE{
 		this.trackedWallet = wallet;
 	}
 	
-	
-	public static void addP2ShAddressToWathc(String address) throws AddressFormatException
-	{
-		addP2ShAddressToWathc(new Address(trackedWallet.getNetworkParameters(),address));
-	}
-	
 	/**
 	 * Add A new P2Sh authenticator address to watch list 
 	 * @param add
 	 */
-	public static void addP2ShAddressToWathc(final Address address)
+	public static void addP2ShAddressToWatch(String address) throws AddressFormatException
+	{
+		addP2ShAddressToWatch(new Address(trackedWallet.getNetworkParameters(),address));
+	}
+	public static void addP2ShAddressToWatch(final Address address)
 	{
 		if(trackedWallet != null)
 		{
@@ -56,6 +54,15 @@ public class WalletWrapper extends BASE{
 		}
 	}
 	
+	/**
+	 * Will Check with wallet's watched addresses for a total balance. A use case will be to pass all the addresses of a single 
+	 * authenticator pairing to get the total unspent balance.
+	 * 
+	 * @param addressArr
+	 * @return balance of specific addresses as a BigInteger{@link java.math.BigInteger}
+	 * @throws ScriptException
+	 * @throws UnsupportedEncodingException
+	 */
 	public BigInteger getBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
 	{
 

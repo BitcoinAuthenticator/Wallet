@@ -178,7 +178,7 @@ public class WalletOperation extends BASE{
 		//Save keys to file
 		file.writeToFile(pairingID,bytesToHex(privkey),multisigaddr.toString());
 		String ret = multisigaddr.toString();
-		mWalletWrapper.addP2ShAddressToWathc(ret);
+		mWalletWrapper.addP2ShAddressToWatch(ret);
 		return ret;
 	}
 	
@@ -319,61 +319,26 @@ public class WalletOperation extends BASE{
 		}
 	}
 	
-	/**Returns the balance of the addresses in the wallet using blockr api
-	 * @throws UnsupportedEncodingException 
-	 * @throws ScriptException */
+	/**
+	 * Get unspent balance of a single pairing between the wallet and an authenticator by pair ID.
+	 * 
+	 * @param pairID
+	 * @return the balance as a BigInteger {@link java.math.BigInteger}
+	 * @throws ScriptException
+	 * @throws UnsupportedEncodingException
+	 */
 	public BigInteger getBalance(String pairID) throws ScriptException, UnsupportedEncodingException
 	{
 		return getBalance(getAddressesArray(pairID));
 	}
+	/**
+	 * Returns the balance of the addresses using bitcoinj's wallet and its watched addresses.
+	 * 
+	 * @return the balance as a BigInteger {@link java.math.BigInteger}
+	 * @throws UnsupportedEncodingException 
+	 * @throws ScriptException */
 	public BigInteger getBalance(ArrayList<String> addresses) throws ScriptException, UnsupportedEncodingException {
 		return mWalletWrapper.getBalanceOfWatchedAddresses(addresses);
-		/*WalletFile file = new WalletFile();
-		JSONObject json;
-		JSONArray data;
-		double addrbalance;
-		long unconfirmedbalance = 0;
-		String addr = "";
-		if (file.getKeyNum(pairingID)!=0){
-			//Get confirmed Balance
-			long balance = 0;
-			int num = 0;
-			int count = addresses.size();
-			for (int a=0; a<(addresses.size()/19)+1; a++){	
-				addr = "";
-				if (((count/19)+1)>1){
-					for (int i=num; i<num+19; i++){
-						addr = addr + addresses.get(i) + ",";
-					}
-				num=num+19;
-				count=count-19;
-				}
-				else {
-					for (int i=num; i<num+count; i++){
-						addr = addr + addresses.get(i) + ",";
-					}
-				}
-				if (mpTestnet.get(pairingID))
-				{
-					json = readJsonFromUrl("http://tbtc.blockr.io/api/v1/address/balance/" + addr);
-				}
-				else 
-				{
-					json = readJsonFromUrl("http://btc.blockr.io/api/v1/address/balance/" + addr);
-				}
-				data = json.getJSONArray("data");
-				addrbalance=0;
-				for (int i=0; i<data.length(); i++){
-					JSONObject info = data.getJSONObject(i);
-					addrbalance = (double) info.getDouble("balance");
-					balance = (long) (balance + (addrbalance)*100000000);
-				}
-			}
-			return balance;
-			}
-		else {
-			return 0;
-		}*/
 	}
     
 	
