@@ -1,4 +1,4 @@
-package ui_helpers;
+package authenticator.ui_helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;

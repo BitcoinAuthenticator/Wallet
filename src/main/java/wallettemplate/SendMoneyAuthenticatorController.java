@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import ui_helpers.ComboBoxHelper;
+import authenticator.ui_helpers.ComboBoxHelper;
 import wallettemplate.controls.BitcoinAddressValidator;
 import wallettemplate.controls.ScrollPaneContentManager;
 import static wallettemplate.utils.GuiUtils.crashAlert;

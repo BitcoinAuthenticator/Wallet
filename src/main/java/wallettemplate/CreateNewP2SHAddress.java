@@ -18,7 +18,7 @@ import authenticator.WalletFile;
 import authenticator.WalletOperation;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
-import ui_helpers.ComboBoxHelper;
+import authenticator.ui_helpers.ComboBoxHelper;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.PopUpNotification;
 import javafx.collections.FXCollections;
