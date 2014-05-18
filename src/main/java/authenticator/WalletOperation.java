@@ -35,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import authenticator.db.PairingObject;
+
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.ECKey;
@@ -163,7 +165,7 @@ public class WalletOperation extends BASE{
 		//Save keys to file
 		file.writeToFile(pairingID,bytesToHex(privkey),multisigaddr.toString());
 		String ret = multisigaddr.toString();
-		Authenticator.mWalletWrapper.addP2ShAddressToWathc(ret);
+		Authenticator.getWallet().addP2ShAddressToWathc(ret);
 		return ret;
 	}
 	
@@ -354,6 +356,24 @@ public class WalletOperation extends BASE{
 		}
 	}
     
+	//#####################################
+	//
+	//		Simple db DAL
+	//
+	//#####################################
+	
+	public ArrayList<PairingObject> getAllPairingObjectArray()
+	{
+		WalletFile f = new WalletFile();
+		return f.getPairingObjectsArray();
+	}
+	
+	//#####################################
+	//
+	//		Helper functions
+	//
+	//#####################################
+	
 	/**For reading the JSON*/
 	private static String readAll(Reader rd) throws IOException {
 	    StringBuilder sb = new StringBuilder();

@@ -1,5 +1,6 @@
 package authenticator;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.google.bitcoin.core.Wallet;
@@ -12,9 +13,15 @@ public class Authenticator extends BASE{
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
-	public static WalletWrapper mWalletWrapper;
+	private static WalletWrapper mWalletWrapper;
+	private static WalletOperation mWalletOperation;
 
-	public Authenticator(OnAuthenticatoGUIUpdateListener listener) {
+	public Authenticator(OnAuthenticatoGUIUpdateListener listener, Wallet wallet) throws IOException
+	{
+		this(listener);
+		this.setWallet(wallet);
+	}
+	public Authenticator(OnAuthenticatoGUIUpdateListener listener) throws IOException {
 		super(Authenticator.class);
 		if(mListener == null)
 			mListener = listener;
@@ -22,6 +29,8 @@ public class Authenticator extends BASE{
 			mTCPListener = new TCPListener(mListener);
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
+		if(mWalletOperation == null)
+			mWalletOperation = new WalletOperation();
 	}
 	
 	public Authenticator setWallet(Wallet wallet)
@@ -37,6 +46,10 @@ public class Authenticator extends BASE{
 	//#####################################
 
 	public void start() throws Exception{
+		assert(this.getWallet() != null);
+		assert(this.getWalletOperation() != null);
+		assert(mListener != null);
+		assert(mTCPListener != null);
 		mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	
@@ -67,5 +80,20 @@ public class Authenticator extends BASE{
 			mListener.simpleTextMessage("Queue is not running, Cannot add operation");
 			LOG.error("Queue is not running, Cannot add operation");
 		}
+	}
+	
+	//#####################################
+	//
+	//		Getters & Setter
+	//
+	//#####################################
+	public static WalletWrapper getWallet()
+	{
+		return mWalletWrapper;
+	}
+	
+	public static WalletOperation getWalletOperation()
+	{
+		return mWalletOperation;
 	}
 }

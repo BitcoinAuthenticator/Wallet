@@ -13,6 +13,7 @@ import org.json.JSONException;
 
 import com.google.bitcoin.core.AddressFormatException;
 
+import authenticator.Authenticator;
 import authenticator.WalletFile;
 import authenticator.WalletOperation;
 import authenticator.db.KeyObject;
@@ -63,13 +64,12 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
     
     @FXML
     public void addKey(ActionEvent event) throws IOException, NoSuchAlgorithmException, JSONException {
-    	WalletOperation op = new WalletOperation();
     	if(pairNameToId.containsKey((String)cmbPairings.getValue()))
     	{
     		try {
-				op.genAddress(pairNameToId.get((String)cmbPairings.getValue()));
+				Authenticator.getWalletOperation().genAddress(pairNameToId.get((String)cmbPairings.getValue()));
 			} catch (AddressFormatException e) {
-				op.LOG.info(e.toString());
+				Authenticator.getWalletOperation().LOG.info(e.toString());
 				PopUpNotification p = new PopUpNotification("Something Went Wrong ...");
 				p.showPopup();
 				e.printStackTrace();
@@ -97,8 +97,7 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
 	
 	// Population funcitons
 	private ArrayList<PairingObject> getUpdatedPairingObjectArray(){
-		WalletFile f = new WalletFile();
-		return f.getPairingObjectsArray();
+		return Authenticator.getWalletOperation().getAllPairingObjectArray();
 	}
 	
 	private void populateUI()

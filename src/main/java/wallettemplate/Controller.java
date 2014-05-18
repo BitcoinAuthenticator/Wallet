@@ -123,7 +123,7 @@ public class Controller {
     }
 
     public void refreshBalanceLabel() {
-        final BigInteger amount = Authenticator.mWalletWrapper.getEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        final BigInteger amount = Authenticator.getWallet().getEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         balance.setText(Utils.bitcoinValueToFriendlyString(amount));
     }
     
@@ -149,8 +149,7 @@ public class Controller {
     	addressArr.add(normalAddressControl);
     	
     	//Load P2SH addresses
-    	WalletFile f = new WalletFile();
-    	ArrayList<PairingObject> arr = f.getPairingObjectsArray();
+    	ArrayList<PairingObject> arr = Authenticator.getWalletOperation().getAllPairingObjectArray();
     	for(PairingObject po:arr)
     	{
     		// get address or generate it
@@ -179,13 +178,10 @@ public class Controller {
     
     public String addAddress(String pairID) {
     	String ret = null;
-    	WalletOperation op = null;
 		try {
-			op = new WalletOperation();
-			ret = op.genAddress(pairID);
-		} catch (AddressFormatException | NoSuchAlgorithmException | JSONException | IOException e) {
-			if(op != null)
-				op.LOG.info(e.toString());
+			ret = Authenticator.getWalletOperation().genAddress(pairID);
+		} catch (AddressFormatException | NoSuchAlgorithmException | JSONException e) {
+			Authenticator.getWalletOperation().LOG.info(e.toString());
 			PopUpNotification p = new PopUpNotification("Something Went Wrong ...");
 			p.showPopup();
 			e.printStackTrace();
