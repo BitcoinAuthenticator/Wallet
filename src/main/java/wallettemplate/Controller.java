@@ -116,11 +116,6 @@ public class Controller {
     
     @FXML
     private void handleCreateP2ShAddress(ActionEvent event) throws IOException { 
-    	/*Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("New_p2sh_address.fxml"));
-        Stage stage = new Stage();
-        stage.setTitle("Create New P2SH Address");
-        stage.setScene(new Scene(root, 450, 450));
-        stage.show();*/
     	Main.instance.overlayUI("New_p2sh_address.fxml");
     }
 }

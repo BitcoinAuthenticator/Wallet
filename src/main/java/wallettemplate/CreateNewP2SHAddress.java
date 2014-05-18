@@ -1,5 +1,6 @@
 package wallettemplate;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
@@ -15,22 +16,23 @@ import com.google.bitcoin.core.AddressFormatException;
 import authenticator.WalletFile;
 import authenticator.WalletOperation;
 import authenticator.db.KeyObject;
-import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.PopUpNotification;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 public class CreateNewP2SHAddress extends BaseUI implements Initializable{
 	// Table View
@@ -39,11 +41,9 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
     @FXML private TableColumn<Pair, String> clmName;
     @FXML private TableColumn<Pair, String> clmPairID;
     @FXML private TableColumn<Pair, String> clmAddress;
-    @FXML private TableColumn<Pair, String> clmAmount;
     @FXML private Label nameLabel;
     @FXML private Label pairIDLabel;
     @FXML private Label addressLabel;
-    @FXML private Label amountLabel;
 	
     //ComboBox
     @FXML private ComboBox cmbPairings;
@@ -88,10 +88,11 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
 		clmName.setCellValueFactory(new PropertyValueFactory<Pair, String>("pairingName"));
         clmPairID.setCellValueFactory(new PropertyValueFactory<Pair, String>("pairingID"));
         clmAddress.setCellValueFactory(new PropertyValueFactory<Pair, String>("address"));
-        clmAmount.setCellValueFactory(new PropertyValueFactory<Pair, String>("amount"));
         
         this.populateUI();
         tblView.setItems(personData);
+        tblView.setEditable(false);
+        
 	}
 	
 	// Population funcitons

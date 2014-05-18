@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
 
-<fx:root type="javafx.scene.layout.AnchorPane" prefWidth="441.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-  <children>
+<fx:root prefHeight="47.0" prefWidth="441.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <children><VBox prefHeight="58.0" prefWidth="441.0">
+<children><HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="441.0">
+<padding>
+<Insets left="10.0" />
+</padding>
+<children><Label fx:id="pairNameLabel" text="Name" />
+</children></HBox>
     <HBox id="addressLabelBox" fx:id="box" alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="21.0" prefWidth="391.0" spacing="10.0">
       <children>
         <Label fx:id="addressLabel" onMouseClicked="#requestMoney" style="-fx-cursor: hand" text="&lt;address goes here&gt;" textFill="BLUE" underline="true">
@@ -29,6 +32,13 @@
         <Label fx:id="copyWidget" onMouseClicked="#copyWidgetClicked" text="&lt;COPY&gt;" />
         <Label fx:id="qrCode" onMouseClicked="#showQRCode" text="&lt;QR&gt;" />
       </children>
+<VBox.margin>
+<Insets top="5.0" />
+</VBox.margin>
+<padding>
+<Insets left="5.0" />
+</padding>
     </HBox>
+</children></VBox>
   </children>
 </fx:root>
