@@ -9,3 +9,4 @@ target
 *.spvchain
 *.wallet
 *.json
+PairingQRCode.png
