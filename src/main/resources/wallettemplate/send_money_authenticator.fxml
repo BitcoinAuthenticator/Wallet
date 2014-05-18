@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.SendMoneyAuthenticatorController">
+  <children>
+    <VBox alignment="CENTER" layoutY="-5.0" prefHeight="412.0" prefWidth="600.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <children>
+        <Label fx:id="titleLabel" layoutX="191.0" layoutY="20.0" prefHeight="37.0" prefWidth="212.0" text="Send money to ...">
+          <font>
+            <Font size="25.0" />
+          </font>
+<VBox.margin>
+<Insets top="20.0" />
+</VBox.margin>
+        </Label><VBox prefHeight="39.0" prefWidth="600.0" /><VBox prefHeight="25.0" prefWidth="580.0">
+<children><Button fx:id="btnAdd" mnemonicParsing="false" onAction="#addOutput" text="+" />
+</children>
+<VBox.margin>
+<Insets left="20.0" />
+</VBox.margin></VBox><ScrollPane fx:id="scrl" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgb(218,221,236)">
+<VBox.margin>
+<Insets left="20.0" right="20.0" />
+</VBox.margin>
+<padding>
+<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+</padding>
+</ScrollPane>
+        <TextField fx:id="amount" prefHeight="26.0" prefWidth="278.0" promptText="Amount (Ex. 0.001)">
+<VBox.margin>
+<Insets left="40.0" right="300.0" top="10.0" />
+</VBox.margin>
+</TextField><VBox prefHeight="27.0" prefWidth="600.0">
+<children><ComboBox fx:id="cmb" prefWidth="150.0">
+<VBox.margin>
+<Insets right="200.0" />
+</VBox.margin></ComboBox>
+</children>
+<VBox.margin>
+<Insets bottom="20.0" left="40.0" top="5.0" />
+</VBox.margin></VBox>
+        <HBox alignment="CENTER" fillHeight="true" prefHeight="30.0" prefWidth="600.0" spacing="50.0" VBox.vgrow="NEVER">
+          <children>
+            <Button fx:id="cancelBtn" cancelButton="true" mnemonicParsing="false" onAction="#cancel" prefWidth="79.0" text="Cancel" />
+            <Button fx:id="sendBtn" defaultButton="true" mnemonicParsing="false" onAction="#send" prefWidth="79.0" text="Send" />
+          </children>
+<VBox.margin>
+<Insets bottom="20.0" top="10.0" />
+</VBox.margin>
+        </HBox>
+      </children>
+      <effect>
+        <DropShadow />
+      </effect>
+    </VBox>
+  </children>
+</AnchorPane>

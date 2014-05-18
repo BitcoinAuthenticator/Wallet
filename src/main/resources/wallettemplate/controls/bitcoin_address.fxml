@@ -6,12 +6,12 @@
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root prefHeight="66.0" prefWidth="441.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-  <children><VBox prefHeight="62.0" prefWidth="441.0" spacing="5.0">
-<children><Label fx:id="pairNameLabel" text="Name" /><HBox prefHeight="30.0" prefWidth="441.0" spacing="10.0">
+<fx:root prefHeight="66.0" prefWidth="370.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <children><VBox prefHeight="62.0" prefWidth="370.0" spacing="5.0" style="-fx-background-color: rgb(218,221,236)">
+<children><Label fx:id="pairNameLabel" text="Name" /><HBox prefHeight="30.0" prefWidth="370.0" spacing="10.0">
 <children><Label text="Balance:" /><Label fx:id="balanceLabel" text="0.00" />
 </children></HBox>
-    <HBox id="addressLabelBox" fx:id="box" alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="38.0" prefWidth="441.0" spacing="10.0">
+    <HBox id="addressLabelBox" fx:id="box" alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="38.0" prefWidth="370.0" spacing="10.0">
       <children>
         <Label fx:id="addressLabel" onMouseClicked="#requestMoney" style="-fx-cursor: hand" text="&lt;address goes here&gt;" textFill="BLUE" underline="true">
           <contextMenu>
@@ -27,7 +27,7 @@
           </contextMenu>
         </Label>
         <Label fx:id="copyWidget" onMouseClicked="#copyWidgetClicked" text="&lt;COPY&gt;" />
-        <Label fx:id="qrCode" onMouseClicked="#showQRCode" text="&lt;QR&gt;" />
+        <Label fx:id="qrCode" onMouseClicked="#showQRCode" text="&lt;QR&gt;" /><Label fx:id="spendWidget" onMouseClicked="#spendWidgetClicked" text="&lt;Spend&gt;" />
       </children>
 <VBox.margin>
 <Insets top="5.0" />
@@ -36,6 +36,9 @@
 <Insets left="5.0" />
 </padding>
     </HBox>
-</children></VBox>
+</children>
+<padding>
+<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+</padding></VBox>
   </children>
 </fx:root>

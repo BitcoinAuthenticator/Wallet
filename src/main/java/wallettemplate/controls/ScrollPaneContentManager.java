@@ -7,8 +7,14 @@ import javafx.scene.layout.VBox;
 public class ScrollPaneContentManager extends VBox{
 	public ScrollPaneContentManager(){
 		super();
-		this.setSpacing(10);
+		
 		}
+	
+	public ScrollPaneContentManager setSpacingBetweenItems(double spacing)
+	{
+		this.setSpacing(10);
+		return this;
+	}
 	
 	public ScrollPaneContentManager addItem(Node e)
 	{

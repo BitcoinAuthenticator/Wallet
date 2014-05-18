@@ -18,6 +18,7 @@ import authenticator.WalletFile;
 import authenticator.WalletOperation;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
+import ui_helpers.ComboBoxHelper;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.PopUpNotification;
 import javafx.collections.FXCollections;
@@ -104,21 +105,9 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
 	{
 		ArrayList<PairingObject> arr = this.getUpdatedPairingObjectArray();
 		populateObservableList(arr);
-		populateCombo(arr);
+		pairNameToId = ComboBoxHelper.populateComboWithPairingNames(cmbPairings);
 	}
-	
-	private void populateCombo(ArrayList<PairingObject> arr)
-	{
-		pairNameToId = new HashMap<String,String>();
-		cmbPairings.getItems().clear();
-		for(PairingObject po:arr)
-		{
-			if(!pairNameToId.containsKey(po.pairingName))
-				pairNameToId.put(po.pairingName, po.pairingID);
-		}
-		cmbPairings.getItems().addAll(pairNameToId.keySet());
-	}
-	
+		
 	private void populateObservableList(ArrayList<PairingObject> arr)
 	{
 		personData.clear();

@@ -51,6 +51,7 @@ public class ClickableBitcoinAddress extends AnchorPane {
     @FXML protected ContextMenu addressMenu;
     @FXML protected Label copyWidget;
     @FXML protected Label qrCode;
+    @FXML protected Label spendWidget;
 
     public ClickableBitcoinAddress() {
         try {
@@ -66,6 +67,9 @@ public class ClickableBitcoinAddress extends AnchorPane {
 
             AwesomeDude.setIcon(qrCode, AwesomeIcon.QRCODE);
             Tooltip.install(qrCode, new Tooltip("Show a barcode scannable with a mobile phone for this address"));
+            
+            AwesomeDude.setIcon(spendWidget, AwesomeIcon.BITCOIN);
+            Tooltip.install(spendWidget, new Tooltip("Create a Tx Using this Paired Wallet"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -158,5 +162,10 @@ public class ClickableBitcoinAddress extends AnchorPane {
                 overlay.done();
             }
         });
+    }
+    
+    @FXML
+    protected void spendWidgetClicked(MouseEvent event) {
+    	Main.instance.overlayUI("send_money_authenticator.fxml");
     }
 }

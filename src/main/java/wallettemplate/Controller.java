@@ -65,8 +65,8 @@ public class Controller {
     // Called by FXMLLoader.
     public void initialize() {
         syncProgress.setProgress(-1);
-        scrlContent = new ScrollPaneContentManager();
-        scrlContent.setOpacity(0.0);
+        scrlContent = new ScrollPaneContentManager().setSpacingBetweenItems(10);
+        //scrlContent.setOpacity(0.0);
     }
 
     public void onBitcoinSetup() {
