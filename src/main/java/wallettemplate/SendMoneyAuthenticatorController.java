@@ -7,15 +7,22 @@ import com.google.bitcoin.core.*;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 
+import de.jensd.fx.fontawesome.AwesomeDude;
+import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import authenticator.ui_helpers.ComboBoxHelper;
 import wallettemplate.controls.BitcoinAddressValidator;
@@ -45,7 +52,14 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
 
     private void addOutput()
     {
-    	newAddress na = new newAddress();
+    	final int index = scrlContent.getCount();
+    	newAddress na = new newAddress().setCancelOnMouseClick(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				scrlContent.removeNodeAtIndex(index);
+				scrl.setContent(scrlContent);
+			}
+        });
     	scrlContent.addItem(na);
     }
     
@@ -58,14 +72,51 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
     }
     
     
-    public class newAddress extends VBox
+    public class newAddress extends HBox
     {
+    	TextField txfAddress;
+    	TextField txfAmount;
+    	Label cancelLabel;
+    	public newAddress setCancelOnMouseClick(EventHandler<? super MouseEvent> listener){
+    		/*cancelLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					// TODO Auto-generated method stub
+					
+				}
+            });;*/
+    		cancelLabel.setOnMouseClicked(listener);
+    		return this;
+    	}
     	public newAddress()
     	{
-    		TextField txf = new TextField();
-    		txf.setPromptText("Recipient Address ... ");
-    		txf.setPrefWidth(500);
-    		this.getChildren().add(txf);
+    		VBox main = new VBox();
+    		VBox cancel = new VBox();
+    		//Cancel
+    		cancelLabel = new Label();
+    		cancelLabel.setText("<X>");
+    		cancelLabel.setPadding(new Insets(0,5,0,0));
+    		
+    		AwesomeDude.setIcon(cancelLabel, AwesomeIcon.REMOVE);
+            Tooltip.install(cancelLabel, new Tooltip("Delete Output"));
+            cancel.setAlignment(Pos.TOP_LEFT);
+            cancel.getChildren().add(cancelLabel);
+            this.getChildren().add(cancel);
+    		
+    		//Text Fields
+    		txfAddress = new TextField();
+    		txfAddress.setPromptText("Recipient Address");
+    		txfAddress.setPrefWidth(500);
+    		main.getChildren().add(txfAddress);
+    		
+    		HBox b = new HBox();
+    		txfAmount = new TextField();
+    		txfAmount.setPromptText("Amount");
+    		txfAmount.setPrefWidth(300);
+    		b.setMargin(txfAmount, new Insets(0,200,0,0));
+    		b.getChildren().add(txfAmount);
+    		main.getChildren().add(b);
+    		this.getChildren().add(main);
     	}
     }
 }

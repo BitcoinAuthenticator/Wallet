@@ -66,7 +66,7 @@ public class Controller {
     public void initialize() {
         syncProgress.setProgress(-1);
         scrlContent = new ScrollPaneContentManager().setSpacingBetweenItems(10);
-        scrlContent.setOpacity(0.0);
+        //scrlContent.setOpacity(0.0);
     }
 
     public void onBitcoinSetup() {
@@ -74,11 +74,6 @@ public class Controller {
         loadAddresses();
         scrl.setContent(scrlContent);
         refreshBalanceLabel();
-    }
-
-    public void sendMoneyOut(ActionEvent event) {
-        // Hide this UI and show the send money UI. This UI won't be clickable until the user dismisses send_money.
-        Main.instance.overlayUI("send_money.fxml");
     }
 
     public class ProgressBarUpdater extends DownloadListener {
@@ -144,7 +139,7 @@ public class Controller {
     	scrlContent.clearAll();
     	addressArr = new ArrayList<ClickableBitcoinAddress>();
     	//Normal P2PSH from wallet
-    	ClickableBitcoinAddress normalAddressControl = new ClickableBitcoinAddress();
+    	ClickableBitcoinAddress normalAddressControl = new ClickableBitcoinAddress(false);
     	normalAddressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
     	normalAddressControl.setPairName("Pay-To-Pub-Hash");
     	normalAddressControl.setBalance(Utils.bitcoinValueToFriendlyString(Authenticator.getWalletOperation().getGeneralWalletEstimatedBalance()));
@@ -167,7 +162,7 @@ public class Controller {
     		//add to scroll content
     		if(add != null)
     		{
-    			ClickableBitcoinAddress addressControl = new ClickableBitcoinAddress();
+    			ClickableBitcoinAddress addressControl = new ClickableBitcoinAddress(true);
         		//addressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
         		addressControl.setAddress(add);
         		addressControl.setPairName(po.pairingName);

@@ -22,18 +22,19 @@ public class ScrollPaneContentManager extends VBox{
 		return this;
 	}
 	
-	public ScrollPaneContentManager removeNodeAtIndex(int index)
+	public void removeNodeAtIndex(int index)
 	{
-		ObservableList<Node> lst = this.getChildren();
-		lst.remove(index);
-		this.getChildren().clear();
-		this.getChildren().setAll(lst);
-		return this;
+		this.getChildren().remove(index);
 	}
 	
 	public ScrollPaneContentManager clearAll()
 	{
 		this.getChildren().clear();
 		return this;
+	}
+	
+	public int getCount()
+	{
+		return this.getChildren().size();
 	}
 }

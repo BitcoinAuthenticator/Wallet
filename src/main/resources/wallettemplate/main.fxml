@@ -65,7 +65,6 @@
 <children><ScrollPane fx:id="scrl" prefHeight="200.0" prefWidth="200.0" />
 </children>
     </StackPane>
-    <Button id="sendMoneyOut" fx:id="sendMoneyOutBtn" alignment="CENTER" mnemonicParsing="false" onAction="#sendMoneyOut" text="Send money out" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="17.0" />
     <MenuBar>
 	  <menus>
 	    <Menu mnemonicParsing="false" text="Options">

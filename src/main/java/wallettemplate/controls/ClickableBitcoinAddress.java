@@ -52,9 +52,12 @@ public class ClickableBitcoinAddress extends AnchorPane {
     @FXML protected Label copyWidget;
     @FXML protected Label qrCode;
     @FXML protected Label spendWidget;
+    
+    private boolean isAuthPairing;
 
-    public ClickableBitcoinAddress() {
+    public ClickableBitcoinAddress(boolean isAuthPairing) {
         try {
+        	this.isAuthPairing = isAuthPairing;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("bitcoin_address.fxml"));
             loader.setRoot(this);
             loader.setController(this);
@@ -70,6 +73,7 @@ public class ClickableBitcoinAddress extends AnchorPane {
             
             AwesomeDude.setIcon(spendWidget, AwesomeIcon.BITCOIN);
             Tooltip.install(spendWidget, new Tooltip("Create a Tx Using this Paired Wallet"));
+            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -166,6 +170,9 @@ public class ClickableBitcoinAddress extends AnchorPane {
     
     @FXML
     protected void spendWidgetClicked(MouseEvent event) {
-    	Main.instance.overlayUI("send_money_authenticator.fxml");
+    	if(this.isAuthPairing)
+    		Main.instance.overlayUI("send_money_authenticator.fxml");
+    	else
+    		Main.instance.overlayUI("send_money.fxml");
     }
 }
