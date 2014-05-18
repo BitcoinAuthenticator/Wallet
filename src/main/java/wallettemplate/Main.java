@@ -109,10 +109,7 @@ public class Main extends Application {
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         System.out.println(bitcoin.wallet());
-        
-        controller.onBitcoinSetup();
-        mainWindow.show();
-        
+                
         /**
          * Authenticator Operation Setup
          */
@@ -127,6 +124,8 @@ public class Main extends Application {
         .setWallet(bitcoin.wallet())
         .start();
         
+        controller.onBitcoinSetup();
+        mainWindow.show();
     }
     
     public class OverlayUI<T> {

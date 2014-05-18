@@ -130,6 +130,7 @@ public class WalletOperation extends BASE{
 	 * Uses the two public keys to create a 2of2 multisig address. Saves key and address to json file.
 	 * @throws AddressFormatException 
 	 */
+	@SuppressWarnings("static-access")
 	public String genAddress(String pairingID) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		//Derive the child public key from the master public key.
 		WalletFile file = new WalletFile();

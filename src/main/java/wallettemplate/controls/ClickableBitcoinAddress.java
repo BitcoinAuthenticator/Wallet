@@ -85,6 +85,14 @@ public class ClickableBitcoinAddress extends AnchorPane {
     public StringProperty addressProperty() {
         return addressLabel.textProperty();
     }
+    
+    public void setPairName(String name) {
+    	pairNameLabel.setText(name);
+    }
+
+    public StringProperty pairNameProperty() {
+        return pairNameLabel.textProperty();
+    }
 
     @FXML
     protected void copyAddress(ActionEvent event) {

@@ -1,10 +1,15 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
+import authenticator.WalletFile;
+import authenticator.WalletOperation;
+import authenticator.db.KeyObject;
+import authenticator.db.PairingObject;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
@@ -19,15 +24,22 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ClickableBitcoinAddress;
+import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.utils.PopUpNotification;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
+
+import org.json.JSONException;
 
 import static wallettemplate.Main.bitcoin;
 import static wallettemplate.utils.GuiUtils.checkGuiThread;
@@ -42,17 +54,23 @@ public class Controller {
     public HBox controlsBox;
     public Label balance;
     public Button sendMoneyOutBtn;
-    public ClickableBitcoinAddress addressControl;
+    public ArrayList<ClickableBitcoinAddress> addressArr;
+    //scroll pane
+    public ScrollPane scrl;
+    private ScrollPaneContentManager scrlContent;
 
     // Called by FXMLLoader.
     public void initialize() {
         syncProgress.setProgress(-1);
-        addressControl.setOpacity(0.0);
+        scrlContent = new ScrollPaneContentManager();
+        scrlContent.setOpacity(0.0);
     }
 
     public void onBitcoinSetup() {
         bitcoin.wallet().addEventListener(new BalanceUpdater());
-        addressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
+        loadAddresses();
+        scrl.setContent(scrlContent);
+
         refreshBalanceLabel();
     }
 
@@ -82,7 +100,7 @@ public class Controller {
         // Buttons slide in and clickable address appears simultaneously.
         TranslateTransition arrive = new TranslateTransition(Duration.millis(600), controlsBox);
         arrive.setToY(0.0);
-        FadeTransition reveal = new FadeTransition(Duration.millis(500), addressControl);
+        FadeTransition reveal = new FadeTransition(Duration.millis(500), scrlContent);
         reveal.setToValue(1.0);
         ParallelTransition group = new ParallelTransition(arrive, reveal);
         // Slide out happens then slide in/fade happens.
@@ -117,5 +135,61 @@ public class Controller {
     @FXML
     private void handleCreateP2ShAddress(ActionEvent event) throws IOException { 
     	Main.instance.overlayUI("New_p2sh_address.fxml");
+    }
+    
+    private void loadAddresses()
+    {
+    	scrlContent.clearAll();
+    	addressArr = new ArrayList<ClickableBitcoinAddress>();
+    	//Normal P2PSH from wallet
+    	ClickableBitcoinAddress normalAddressControl = new ClickableBitcoinAddress();
+    	normalAddressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
+    	normalAddressControl.setPairName("Pay-To-Pub-Hash");
+    	scrlContent.addItem(normalAddressControl);
+    	addressArr.add(normalAddressControl);
+    	
+    	//Load P2SH addresses
+    	WalletFile f = new WalletFile();
+    	ArrayList<PairingObject> arr = f.getPairingObjectsArray();
+    	for(PairingObject po:arr)
+    	{
+    		// get address or generate it
+    		String add = null;
+    		if(po.keys_n > 0){
+    			KeyObject ko = po.keys.keys.get(po.keys_n-1);
+    			add = ko.address;
+    		}
+    		else
+    			add = addAddress(po.pairingID);
+    		
+    		//add to scroll content
+    		if(add != null)
+    		{
+    			ClickableBitcoinAddress addressControl = new ClickableBitcoinAddress();
+        		//addressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
+        		addressControl.setAddress(add);
+        		addressControl.setPairName(po.pairingName);
+        		//add to content
+        		scrlContent.addItem(addressControl);
+        		// add to addresses array
+        		addressArr.add(addressControl);
+    		}
+    	}
+    }
+    
+    public String addAddress(String pairID) {
+    	String ret = null;
+    	WalletOperation op = null;
+		try {
+			op = new WalletOperation();
+			ret = op.genAddress(pairID);
+		} catch (AddressFormatException | NoSuchAlgorithmException | JSONException | IOException e) {
+			if(op != null)
+				op.LOG.info(e.toString());
+			PopUpNotification p = new PopUpNotification("Something Went Wrong ...");
+			p.showPopup();
+			e.printStackTrace();
+		} 
+		return ret;
     }
 }
