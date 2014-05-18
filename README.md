@@ -8,7 +8,7 @@ A GUI bitcoin wallet based on bitcoinj template wallet for the [BitcoinAuthentic
 
 #### Requirements
 1. Install Java 8
-2. [Eclipse Kepler (4.3.2) SR2 with Java™ 8 Patches](http://www.eclipse.org/downloads/index-java8.php) (Obviously if you work with java)
+2. [Eclipse Kepler (4.3.2) SR2 with Java™ 8 Patches](http://www.eclipse.org/downloads/index-java8.php) (Obviously, only if you work with eclipse)
 
 
 
