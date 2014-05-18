@@ -12,6 +12,7 @@ import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DownloadListener;
+import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 
@@ -35,6 +36,7 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.PopUpNotification;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -123,7 +125,7 @@ public class Controller {
     }
 
     public void refreshBalanceLabel() {
-        final BigInteger amount = Authenticator.getWallet().getEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        final BigInteger amount = Authenticator.getWalletOperation().getGeneralWalletEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         balance.setText(Utils.bitcoinValueToFriendlyString(amount));
     }
     
@@ -145,6 +147,7 @@ public class Controller {
     	ClickableBitcoinAddress normalAddressControl = new ClickableBitcoinAddress();
     	normalAddressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
     	normalAddressControl.setPairName("Pay-To-Pub-Hash");
+    	normalAddressControl.setBalance(Utils.bitcoinValueToFriendlyString(Authenticator.getWalletOperation().getGeneralWalletEstimatedBalance()));
     	scrlContent.addItem(normalAddressControl);
     	addressArr.add(normalAddressControl);
     	
@@ -159,7 +162,7 @@ public class Controller {
     			add = ko.address;
     		}
     		else
-    			add = addAddress(po.pairingID);
+    			add = generateFreshAuthenticatorP2SHAddress(po.pairingID);
     		
     		//add to scroll content
     		if(add != null)
@@ -168,6 +171,13 @@ public class Controller {
         		//addressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
         		addressControl.setAddress(add);
         		addressControl.setPairName(po.pairingName);
+        		BigInteger balance = null;
+        		try {
+					balance = Authenticator.getWalletOperation().getBalance(po.pairingID);
+				} catch (ScriptException | UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} 
+        		addressControl.setBalance(Utils.bitcoinValueToFriendlyString(balance==null? BigInteger.ZERO:balance));
         		//add to content
         		scrlContent.addItem(addressControl);
         		// add to addresses array
@@ -176,7 +186,7 @@ public class Controller {
     	}
     }
     
-    public String addAddress(String pairID) {
+    public String generateFreshAuthenticatorP2SHAddress(String pairID) {
     	String ret = null;
 		try {
 			ret = Authenticator.getWalletOperation().genAddress(pairID);

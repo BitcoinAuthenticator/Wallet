@@ -47,6 +47,7 @@ import java.net.URI;
 public class ClickableBitcoinAddress extends AnchorPane {
     @FXML protected Label addressLabel;
     @FXML protected Label pairNameLabel;
+    @FXML protected Label balanceLabel;
     @FXML protected ContextMenu addressMenu;
     @FXML protected Label copyWidget;
     @FXML protected Label qrCode;
@@ -92,6 +93,14 @@ public class ClickableBitcoinAddress extends AnchorPane {
 
     public StringProperty pairNameProperty() {
         return pairNameLabel.textProperty();
+    }
+    
+    public void setBalance(String value) {
+    	balanceLabel.setText(value);
+    }
+
+    public StringProperty balanceProperty() {
+        return balanceLabel.textProperty();
     }
 
     @FXML

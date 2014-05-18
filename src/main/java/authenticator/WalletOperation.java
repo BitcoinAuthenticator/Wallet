@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,12 +36,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import authenticator.db.KeyObject;
+import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
@@ -65,6 +69,8 @@ import dispacher.MessageType;*/
  */
 public class WalletOperation extends BASE{
 	
+	private static WalletWrapper mWalletWrapper;
+	
 	static String unsignedTx;
 	static Transaction spendtx;
 	static Map<String,Integer>  mpNumInputs;
@@ -72,8 +78,10 @@ public class WalletOperation extends BASE{
 	static Map<String,ArrayList<Integer>> mpChildkeyindex;
 	static Map<String,Boolean> mpTestnet;
 	
-	public WalletOperation() throws IOException{
+	public WalletOperation(WalletWrapper walletWrapper) throws IOException{
 		super(WalletOperation.class);
+		if(mWalletWrapper == null)
+			mWalletWrapper = walletWrapper;
 		if(mpNumInputs == null)
 			mpNumInputs = new HashMap<String,Integer>();
 		if(mpPublickeys == null)
@@ -91,6 +99,11 @@ public class WalletOperation extends BASE{
 		}
 	}
 	
+	//#####################################
+	//
+	//	Authenticator Wallet Operations
+	//
+	//#####################################
 	
 	/**Pushes the raw transaction the the Eligius mining pool*/
 	void pushTx(String tx) throws IOException{
@@ -165,7 +178,7 @@ public class WalletOperation extends BASE{
 		//Save keys to file
 		file.writeToFile(pairingID,bytesToHex(privkey),multisigaddr.toString());
 		String ret = multisigaddr.toString();
-		Authenticator.getWallet().addP2ShAddressToWathc(ret);
+		mWalletWrapper.addP2ShAddressToWathc(ret);
 		return ret;
 	}
 	
@@ -306,9 +319,16 @@ public class WalletOperation extends BASE{
 		}
 	}
 	
-	/**Returns the balance of the addresses in the wallet using blockr api*/
-	public long getBalance(String pairingID, ArrayList<String> addresses) throws JSONException, IOException{
-		WalletFile file = new WalletFile();
+	/**Returns the balance of the addresses in the wallet using blockr api
+	 * @throws UnsupportedEncodingException 
+	 * @throws ScriptException */
+	public BigInteger getBalance(String pairID) throws ScriptException, UnsupportedEncodingException
+	{
+		return getBalance(getAddressesArray(pairID));
+	}
+	public BigInteger getBalance(ArrayList<String> addresses) throws ScriptException, UnsupportedEncodingException {
+		return mWalletWrapper.getBalanceOfWatchedAddresses(addresses);
+		/*WalletFile file = new WalletFile();
 		JSONObject json;
 		JSONArray data;
 		double addrbalance;
@@ -353,12 +373,13 @@ public class WalletOperation extends BASE{
 			}
 		else {
 			return 0;
-		}
+		}*/
 	}
     
+	
 	//#####################################
 	//
-	//		Simple db DAL
+	//		Simple DAL
 	//
 	//#####################################
 	
@@ -366,6 +387,32 @@ public class WalletOperation extends BASE{
 	{
 		WalletFile f = new WalletFile();
 		return f.getPairingObjectsArray();
+	}
+	
+	/**
+	 * Various address retrievers 
+	 * @param PairID
+	 * @return
+	 */
+	public KeysArray getKeysArray(String PairID){
+		ArrayList<PairingObject> all = getAllPairingObjectArray();
+		for(PairingObject po: all)
+		{
+			if(po.pairingID.equals(PairID))
+			{
+				return po.keys;
+			}
+		}
+		return null;
+	}
+	public ArrayList<String> getAddressesArray(String PairID){
+		KeysArray keys = getKeysArray(PairID);
+		ArrayList<String> ret = new ArrayList<String>();
+		for(KeyObject ko: keys.keys)
+		{
+			ret.add(ko.address);
+		}
+		return ret;
 	}
 	
 	//#####################################
@@ -456,6 +503,19 @@ public class WalletOperation extends BASE{
     	}
     }
     
+    //#####################################
+  	//
+  	//	Regular Bitocoin Wallet Operations
+  	//
+  	//#####################################
+    /**
+     * Returns the regular (Not Paired authenticator wallet) balance
+     * @return
+     */
+    public static BigInteger getGeneralWalletEstimatedBalance()
+    {
+    	return mWalletWrapper.getEstimatedBalance();
+    }
 }
 
 

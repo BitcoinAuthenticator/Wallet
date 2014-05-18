@@ -13,7 +13,7 @@ public class Authenticator extends BASE{
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
-	private static WalletWrapper mWalletWrapper;
+	
 	private static WalletOperation mWalletOperation;
 
 	public Authenticator(OnAuthenticatoGUIUpdateListener listener, Wallet wallet) throws IOException
@@ -29,13 +29,15 @@ public class Authenticator extends BASE{
 			mTCPListener = new TCPListener(mListener);
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
-		if(mWalletOperation == null)
-			mWalletOperation = new WalletOperation();
+		
 	}
 	
 	public Authenticator setWallet(Wallet wallet)
 	{
-		mWalletWrapper = new WalletWrapper(wallet);
+		if(mWalletOperation == null)
+			try {
+				mWalletOperation = new WalletOperation(new WalletWrapper(wallet));
+			} catch (IOException e) { e.printStackTrace(); }
 		return this;
 	}
 	
@@ -46,7 +48,6 @@ public class Authenticator extends BASE{
 	//#####################################
 
 	public void start() throws Exception{
-		assert(this.getWallet() != null);
 		assert(this.getWalletOperation() != null);
 		assert(mListener != null);
 		assert(mTCPListener != null);
@@ -87,11 +88,6 @@ public class Authenticator extends BASE{
 	//		Getters & Setter
 	//
 	//#####################################
-	public static WalletWrapper getWallet()
-	{
-		return mWalletWrapper;
-	}
-	
 	public static WalletOperation getWalletOperation()
 	{
 		return mWalletOperation;

@@ -5,7 +5,10 @@ import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
 public class ScrollPaneContentManager extends VBox{
-	public ScrollPaneContentManager(){super();}
+	public ScrollPaneContentManager(){
+		super();
+		this.setSpacing(10);
+		}
 	
 	public ScrollPaneContentManager addItem(Node e)
 	{

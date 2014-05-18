@@ -1,13 +1,24 @@
 package authenticator;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Base58;
+import com.google.bitcoin.core.ScriptException;
+import com.google.bitcoin.core.TransactionOutput;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.Wallet.SendRequest;
 import com.google.bitcoin.utils.Threading;
 
 /**
@@ -45,10 +56,49 @@ public class WalletWrapper extends BASE{
 		}
 	}
 	
+	public BigInteger getBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
+	{
+
+		BigInteger retBalance = null;
+		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
+		for(TransactionOutput Txout: allWatchedAddresses)
+			for(String lookedAddr: addressArr){
+				String TxOutAddress = Txout.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
+				if(TxOutAddress.equals(lookedAddr)){
+					if(retBalance == null)
+						retBalance = Txout.getValue();
+					else
+						retBalance.add(Txout.getValue());
+					break;
+				}
+			}		
+		return retBalance;
+	}
+	
 	public static BigInteger getEstimatedBalance()
 	{
 		BigInteger walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
-		BigInteger p2shBalance = trackedWallet.getWatchedBalance();
-		return walletBalance.add(p2shBalance);
+		return walletBalance;
 	}
+	
+	/**
+	 * 
+	 * @param addresses
+	 * @return
+	 */
+	public static Wallet.SendRequest createSendRequest(Map<Address,BigInteger> addresses){
+		Wallet.SendRequest ret = null;
+		// Construct partial send request
+		for(Address address : addresses.keySet())
+		{
+			BigInteger outAmount = addresses.get(address);
+			if(ret == null)
+				ret = Wallet.SendRequest.to(address, outAmount);
+			else
+				ret.tx.addOutput(outAmount, address);
+		}
+				
+		return ret;
+	}
+
 }
