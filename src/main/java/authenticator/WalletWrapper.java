@@ -1,12 +1,14 @@
 package authenticator;
 
 import java.math.BigInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.utils.Threading;
 
 /**
  * A wrapper class to handle all operations regarding the bitcoinj wallet. All operations requiring wallet functions done by the authenticator 
@@ -41,5 +43,12 @@ public class WalletWrapper extends BASE{
 			trackedWallet.addWatchedAddress(address);
 			staticLogger.info("Added New Address To Wallet Watch: " + address.toString());
 		}
+	}
+	
+	public static BigInteger getEstimatedBalance()
+	{
+		BigInteger walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
+		BigInteger p2shBalance = trackedWallet.getWatchedBalance();
+		return walletBalance.add(p2shBalance);
 	}
 }

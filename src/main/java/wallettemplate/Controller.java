@@ -9,6 +9,7 @@ import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.Utils;
@@ -70,7 +71,6 @@ public class Controller {
         bitcoin.wallet().addEventListener(new BalanceUpdater());
         loadAddresses();
         scrl.setContent(scrlContent);
-
         refreshBalanceLabel();
     }
 
@@ -123,7 +123,7 @@ public class Controller {
     }
 
     public void refreshBalanceLabel() {
-        final BigInteger amount = bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        final BigInteger amount = Authenticator.mWalletWrapper.getEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         balance.setText(Utils.bitcoinValueToFriendlyString(amount));
     }
     
