@@ -49,7 +49,9 @@ import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutPoint;
+import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
+import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
@@ -57,6 +59,8 @@ import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
+import com.google.bitcoin.wallet.CoinSelection;
+import com.google.bitcoin.wallet.DefaultCoinSelector;
 import com.google.common.collect.ImmutableList;
 
 /*import dispacher.Device;
@@ -78,10 +82,10 @@ public class WalletOperation extends BASE{
 	static Map<String,ArrayList<Integer>> mpChildkeyindex;
 	static Map<String,Boolean> mpTestnet;
 	
-	public WalletOperation(WalletWrapper walletWrapper) throws IOException{
+	public WalletOperation(Wallet wallet) throws IOException{
 		super(WalletOperation.class);
 		if(mWalletWrapper == null)
-			mWalletWrapper = walletWrapper;
+			mWalletWrapper = new WalletWrapper(wallet);
 		if(mpNumInputs == null)
 			mpNumInputs = new HashMap<String,Integer>();
 		if(mpPublickeys == null)
@@ -150,8 +154,8 @@ public class WalletOperation extends BASE{
 		//Derive the child public key from the master public key.
 		WalletFile file = new WalletFile();
 		ArrayList<String> keyandchain = file.getPubAndChain(pairingID);
-		byte[] key = hexStringToByteArray(keyandchain.get(0));
-		byte[] chain = hexStringToByteArray(keyandchain.get(1));
+		byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
+		byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
 		int index = (int) file.getKeyNum(pairingID)+1;
 		HDKeyDerivation HDKey = null;
   		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
@@ -176,93 +180,48 @@ public class WalletOperation extends BASE{
 		//Create the address
 		Address multisigaddr = Address.fromP2SHScript(params, script);
 		//Save keys to file
-		file.writeToFile(pairingID,bytesToHex(privkey),multisigaddr.toString());
+		file.writeToFile(pairingID,BAUtils.bytesToHex(privkey),multisigaddr.toString());
 		String ret = multisigaddr.toString();
 		mWalletWrapper.addP2ShAddressToWatch(ret);
 		return ret;
 	}
 	
-	/**
-	 * Gets the unspent outputs JSON for the wallet from blockr.io. Returns enough unspent outputs to 
-	 * cover the total transaction output. There is a problem here with the way blockr handles unspent outputs. 
-	 * It only shows unspent outputs for confirmed txs. For unconfirmed you can only get all transactions. 
-	 * So if all unconfirmed outputs are unspent, it will work correctly, but if you spent an unconfirmed output, 
-	 * and try to make another transaction before it confirms, you could get an error. 
-	 */
-	ArrayList<UnspentOutput> getUnspentOutputs(String pairingID, long outAmount) throws JSONException, IOException{
-		mpNumInputs.put(pairingID, 0);
-		mpChildkeyindex.put(pairingID, new ArrayList<Integer>());
-		ArrayList<UnspentOutput> outList = new ArrayList<UnspentOutput>();
-		mpPublickeys.put(pairingID, new ArrayList<byte[]>());
-		WalletFile file = new WalletFile();
-		ArrayList<String> addrs = file.getAddresses(pairingID);
-		long inAmount = 0;
-		//First add the confirmed unspent outputs
-		for (int i=0; i<addrs.size(); i++){
-			if (inAmount < (outAmount + 10000)){
-				JSONObject json;
-				UnspentOutput out = null;
-				if (mpTestnet.get(pairingID)){json = readJsonFromUrl("http://tbtc.blockr.io/api/v1/address/unspent/" + addrs.get(i));}
-				else {json = readJsonFromUrl("http://btc.blockr.io/api/v1/address/unspent/" + addrs.get(i));}
-				JSONObject data = json.getJSONObject("data");
-				JSONArray unspent = data.getJSONArray("unspent");
-				if (unspent.length()!=0){
-					for (int x=0; x<unspent.length(); x++){
-						if (inAmount < outAmount + 10000){
-							JSONObject txinfo = unspent.getJSONObject(x);
-							double amount = Double.parseDouble((String) txinfo.get("amount"));
-							out = new UnspentOutput(txinfo.get("tx").toString(), txinfo.get("n").toString(), (long)(amount*100000000));
-							outList.add(out);
-							inAmount = (long) (inAmount + (amount*100000000));
-							//Add the public key and index for this address to the respective ArrayLists
-							BigInteger privatekey = new BigInteger(1, hexStringToByteArray(file.getPrivKey(pairingID,addrs.get(i))));
-							byte[] publickey = ECKey.publicKeyFromPrivate(privatekey, true);
-							mpPublickeys.get(pairingID).add(publickey);
-							mpChildkeyindex.get(pairingID).add((int) file.getAddrIndex(pairingID,addrs.get(i)));
-							mpNumInputs.put(pairingID, mpNumInputs.get(pairingID) + 1);
-						}
-					}
-				}
-			}
-		}		
-		//If we still don't have enough outputs move on to adding the unconfirmed
-		for (int j=0; j<addrs.size(); j++){
-			if (inAmount < (outAmount + 10000)){
-				JSONObject json;
-				UnspentOutput out = null;
-				if (mpTestnet.get(pairingID)){json = readJsonFromUrl("http://tbtc.blockr.io/api/v1/address/unconfirmed/" + addrs.get(j));}
-				else {json = readJsonFromUrl("http://btc.blockr.io/api/v1/address/unconfirmed/" + addrs.get(j));}
-				JSONObject data1 = json.getJSONObject("data");
-				JSONArray unconfirmed = data1.getJSONArray("unconfirmed");
-				if (unconfirmed.length()!=0){
-					for (int x=0; x<unconfirmed.length(); x++){
-						if (inAmount < outAmount + 10000){
-							JSONObject tx = unconfirmed.getJSONObject(x);
-							double amount = (double) tx.get("amount");
-							out = new UnspentOutput(tx.get("tx").toString(), tx.get("n").toString(), (long)(amount*100000000));
-							outList.add(out);
-							inAmount = (long) (inAmount + amount*100000000);
-							//Add the public key and index for this address to the respective ArrayLists
-							BigInteger privatekey = new BigInteger(1, hexStringToByteArray(file.getPrivKey(pairingID,addrs.get(j))));
-							byte[] publickey = ECKey.publicKeyFromPrivate(privatekey, true);
-							mpPublickeys.get(pairingID).add(publickey);
-							mpNumInputs.put(pairingID, mpNumInputs.get(pairingID) + 1);
-							mpChildkeyindex.get(pairingID).add((int) file.getAddrIndex(pairingID,addrs.get(j)));
-						}
-					}
-				}
-			}
-		}
-		if (inAmount < outAmount + 10000) this.LOG.info("Insufficient funds");
-		System.out.println(mpNumInputs.get(pairingID));
-		System.out.println(inAmount);
-		return outList;
-	}
-	
 	/**Builds a raw unsigned transaction*/
-	void mktx(String pairingID, ArrayList<String> MILLI, ArrayList<String> to) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
-		//Gather the data needed to construct the inputs and outputs
-		long totalouts=0; 
+	@SuppressWarnings("static-access")
+	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
+		//Get total output
+		BigInteger totalOut = null;
+		for (TransactionOutput out:to){
+			if(totalOut == null)
+				totalOut = out.getValue();
+			else
+				totalOut.add(out.getValue());
+		}
+		//Get unspent watched addresses of this pairing ID
+		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
+		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
+		// Coin selection
+		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut,candidates);
+		// add inputs
+		BigInteger inAmount = null;
+		for (TransactionOutput input : outSelected){
+            tx.addInput(input);
+            if(inAmount == null)
+            	inAmount = input.getValue();
+            else
+            	inAmount.add(input.getValue());
+		}
+		//Add the outputs
+		for (TransactionOutput output : to)
+            tx.addOutput(output);
+		//Add the change
+		String changeaddr = genAddress(pairingID);
+		Address change = new Address(this.mWalletWrapper.getNetworkParameters(), changeaddr);
+		TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), null, inAmount.subtract(totalOut), change);
+		tx.addOutput(changeOut);		
+		return tx;
+		
+		/*long totalouts=0; 
 		for (int i=0; i<MILLI.size(); i++){
 			totalouts = totalouts + Long.parseLong(MILLI.get(i));
 		}
@@ -316,7 +275,8 @@ public class WalletOperation extends BASE{
 			this.LOG.info("Couldn't serialize to hex string.");
 		} finally {
 		    formatter.close();
-		}
+		}*/
+		
 	}
 	
 	/**
@@ -354,6 +314,24 @@ public class WalletOperation extends BASE{
 		return f.getPairingObjectsArray();
 	}
 	
+	public PairingObject getPairingObject(String pairID)
+	{
+		ArrayList<PairingObject> all = getAllPairingObjectArray();
+		for(PairingObject po: all)
+			if(po.pairingID.equals(pairID))
+				return po;
+		return null;
+	}
+	
+	public String getAESKey(String pairID)
+	{
+		ArrayList<PairingObject> all = getAllPairingObjectArray();
+		for(PairingObject po: all)
+			if(po.pairingID.equals(pairID))
+				return po.aes_key;
+		return null;
+	}
+	
 	/**
 	 * Various address retrievers 
 	 * @param PairID
@@ -384,65 +362,7 @@ public class WalletOperation extends BASE{
 	//
 	//		Helper functions
 	//
-	//#####################################
-	
-	/**For reading the JSON*/
-	private static String readAll(Reader rd) throws IOException {
-	    StringBuilder sb = new StringBuilder();
-	    int cp;
-	    while ((cp = rd.read()) != -1) {
-	      sb.append((char) cp);
-	    }
-	    return sb.toString();
-	  }
-
-	/**Reads JSON object from a URL*/
-	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException { 
-	    URL urladdr = new URL(url);
-        URLConnection conn = urladdr.openConnection();
-        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-        BufferedReader rd = null;
-	    try {
-	      rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	      String jsonText = readAll(rd);
-	      JSONObject json = new JSONObject(jsonText);
-	      return json;
-	    } finally {
-	      rd.close();
-	    }
-	  }
-
-	/**Hex encodes a DeterministicKey object*/
-	private static String hexEncodePub(DeterministicKey pubKey) {
-        return hexEncode(pubKey.getPubKey());
-    }
-    private static String hexEncode(byte[] bytes) {
-        return new String(Hex.encode(bytes));
-    }
-    
-    /**Converts a byte array to a hex string*/
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for ( int j = 0; j < bytes.length; j++ ) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = hexArray[v >>> 4];
-	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
-	
-	/**Converts a hex string to a byte array*/
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
-    
+	//#####################################    
 	/**Defines and object of data that makes up an unspent output*/
     class UnspentOutput {
     	String txid;
@@ -481,6 +401,11 @@ public class WalletOperation extends BASE{
     {
     	return mWalletWrapper.getEstimatedBalance();
     }
+    
+    public NetworkParameters getNetworkParams()
+	{
+		return mWalletWrapper.getNetworkParams();
+	}
 }
 
 

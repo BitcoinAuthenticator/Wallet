@@ -36,7 +36,7 @@ public class Authenticator extends BASE{
 	{
 		if(mWalletOperation == null)
 			try {
-				mWalletOperation = new WalletOperation(new WalletWrapper(wallet));
+				mWalletOperation = new WalletOperation(wallet);
 			} catch (IOException e) { e.printStackTrace(); }
 		return this;
 	}

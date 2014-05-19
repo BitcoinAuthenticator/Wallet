@@ -1,9 +1,14 @@
 package wallettemplate;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Map;
+
+import org.json.JSONException;
 
 import com.google.bitcoin.core.*;
 import com.google.common.util.concurrent.FutureCallback;
@@ -30,6 +35,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import authenticator.Authenticator;
+import authenticator.operations.ATOperation;
+import authenticator.operations.OperationsFactory;
 import authenticator.ui_helpers.ComboBoxHelper;
 import wallettemplate.controls.BitcoinAddressValidator;
 import wallettemplate.controls.ScrollPaneContentManager;
@@ -63,6 +71,7 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
         //
         scrl.setFitToHeight(true);
         scrl.setFitToWidth(true);
+        addOutput();
         scrl.setContent(scrlContent);
     }
     
@@ -78,7 +87,11 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
         balanceLabl.setText(Utils.bitcoinValueToFriendlyString(this.balance));
 	}
     
-    private boolean checkTxIntegrity()
+    /**
+     * Has a very simple job of validating what the user entered as his transaction, but in a very preliminary way.
+     * @return
+     */
+    private boolean ValidateTx()
     {
     	//Check Outputs
     	if(scrlContent.getCount() == 0)
@@ -102,8 +115,37 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
     	return true;
     }
     public void send(ActionEvent event) {
-        if(checkTxIntegrity()){
-        	
+    	Transaction tx;
+        if(ValidateTx()){
+        	ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
+        	for(Node n:scrlContent.getChildren())
+        	{
+        		NewAddress na = (NewAddress)n;
+        		Address add;
+				try {
+					add = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText());
+					TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
+	        				null, 
+	        				Utils.toNanoCoins(na.txfAmount.getText()), 
+	        				add);
+					to.add(out);
+				} catch (AddressFormatException e) { e.printStackTrace(); }
+        		
+        	}
+        	try {
+				tx = Authenticator.getWalletOperation().mktx(pairID, to);
+				ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx, pairID);
+				Authenticator.operationsQueue.add(op);
+				
+			} catch (NoSuchAlgorithmException | AddressFormatException
+					| JSONException | IOException e) {
+				PopUpNotification p = new PopUpNotification("Something Is not Right ...","Make Sure:\n" +
+						"  1) You entered correct values in all fields\n"+
+						"  2) You have sufficient funds to cover your outputs\n"+
+						"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")");
+				p.showPopup();
+				e.printStackTrace();
+			}
         }
         else
         {

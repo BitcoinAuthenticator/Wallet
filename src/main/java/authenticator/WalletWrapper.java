@@ -11,15 +11,19 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 
+import authenticator.WalletOperation.UnspentOutput;
+
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
+import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.SendRequest;
 import com.google.bitcoin.utils.Threading;
+import com.google.bitcoin.wallet.CoinSelection;
 
 /**
  * A wrapper class to handle all operations regarding the bitcoinj wallet. All operations requiring wallet functions done by the authenticator 
@@ -27,31 +31,26 @@ import com.google.bitcoin.utils.Threading;
  * @author alon
  *
  */
-public class WalletWrapper extends BASE{
+public class WalletWrapper extends Wallet{
 
-	private static Logger staticLogger;
-	private static Wallet trackedWallet;
+	private Wallet trackedWallet;
 	public WalletWrapper(Wallet wallet){
-		super(WalletWrapper.class);
-		staticLogger = this.LOG;
+		super(wallet.getNetworkParameters());
 		this.trackedWallet = wallet;
 	}
+	public  Wallet getTrackedWallet(){ return trackedWallet; }
 	
 	/**
 	 * Add A new P2Sh authenticator address to watch list 
 	 * @param add
 	 */
-	public static void addP2ShAddressToWatch(String address) throws AddressFormatException
+	public void addP2ShAddressToWatch(String address) throws AddressFormatException
 	{
 		addP2ShAddressToWatch(new Address(trackedWallet.getNetworkParameters(),address));
 	}
-	public static void addP2ShAddressToWatch(final Address address)
+	public void addP2ShAddressToWatch(final Address address)
 	{
-		if(trackedWallet != null)
-		{
-			trackedWallet.addWatchedAddress(address);
-			staticLogger.info("Added New Address To Wallet Watch: " + address.toString());
-		}
+		trackedWallet.addWatchedAddress(address);
 	}
 	
 	/**
@@ -82,30 +81,47 @@ public class WalletWrapper extends BASE{
 		return retBalance;
 	}
 	
-	public static BigInteger getEstimatedBalance()
+	public BigInteger getEstimatedBalance()
 	{
 		BigInteger walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
 		return walletBalance;
 	}
 	
-	/**
-	 * 
-	 * @param addresses
-	 * @return
-	 */
-	public static Wallet.SendRequest createSendRequest(Map<Address,BigInteger> addresses){
-		Wallet.SendRequest ret = null;
-		// Construct partial send request
-		for(Address address : addresses.keySet())
-		{
-			BigInteger outAmount = addresses.get(address);
-			if(ret == null)
-				ret = Wallet.SendRequest.to(address, outAmount);
-			else
-				ret.tx.addOutput(outAmount, address);
-		}
-				
+	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
+	{
+		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
+		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
+		for(TransactionOutput Txout: allWatchedAddresses)
+			for(String lookedAddr: addressArr){
+				String TxOutAddress = Txout.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
+				if(TxOutAddress.equals(lookedAddr)){
+					ret.add(Txout);
+				}
+			}
 		return ret;
 	}
 
+	public ArrayList<TransactionOutput> selectOutputs(BigInteger value, ArrayList<TransactionOutput> candidates)
+	{
+		//TODO some kind of coin selection
+		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
+		BigInteger amount = null;
+		for(TransactionOutput out: candidates)
+		{
+			if(amount == null){
+				amount = out.getValue();
+			}
+			else if(amount.compareTo(value) < 0){
+				amount.add(out.getValue());
+			}
+			else break;
+			ret.add(out);
+		}
+		return ret;
+	}
+	
+	public NetworkParameters getNetworkParams()
+	{
+		return trackedWallet.getNetworkParameters();
+	}
 }
