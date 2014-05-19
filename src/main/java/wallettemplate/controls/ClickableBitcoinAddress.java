@@ -110,6 +110,10 @@ public class ClickableBitcoinAddress extends AnchorPane {
     	pairID = id;
     }
     
+    public String getPairID() {
+    	return pairID;
+    }
+    
     public void setBalance(String value) {
     	balanceLabel.setText(value);
     }

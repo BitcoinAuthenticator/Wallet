@@ -43,6 +43,7 @@ import authenticator.db.PairingObject;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Sha256Hash;
@@ -109,10 +110,12 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
-	/**Pushes the raw transaction the the Eligius mining pool*/
-	void pushTx(String tx) throws IOException{
+	/**Pushes the raw transaction the the Eligius mining pool
+	 * @throws InsufficientMoneyException */
+	public void pushTxWithWallet(Transaction tx) throws IOException, InsufficientMoneyException{
 		this.LOG.info("Broadcasting to network...");
-		String urlParameters = "transaction="+ tx + "&send=Push";
+		this.mWalletWrapper.broadcastTrabsactionFromWallet(tx);
+		/*String urlParameters = "transaction="+ tx + "&send=Push";
 		String request = "http://eligius.st/~wizkid057/newstats/pushtxn.php";
 		URL url = new URL(request); 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();           
@@ -141,7 +144,7 @@ public class WalletOperation extends BASE{
 		connection.disconnect();
 		//Print txid
 		this.LOG.info("Success!");
-		this.LOG.info("txid: " + response.substring(response.indexOf("string(64) ")+12, response.indexOf("string(64) ")+76));
+		this.LOG.info("txid: " + response.substring(response.indexOf("string(64) ")+12, response.indexOf("string(64) ")+76));*/
 	}
 	
 	/**
@@ -200,8 +203,10 @@ public class WalletOperation extends BASE{
 		//Get unspent watched addresses of this pairing ID
 		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
 		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
+		// Calculate fee
+		BigInteger fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
 		// Coin selection
-		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut,candidates);
+		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee),candidates);
 		// add inputs
 		BigInteger inAmount = null;
 		for (TransactionOutput input : outSelected){
@@ -217,8 +222,11 @@ public class WalletOperation extends BASE{
 		//Add the change
 		String changeaddr = genAddress(pairingID);
 		Address change = new Address(this.mWalletWrapper.getNetworkParameters(), changeaddr);
-		TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), null, inAmount.subtract(totalOut), change);
-		tx.addOutput(changeOut);		
+		BigInteger rest = inAmount.subtract(totalOut.add(fee));
+		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), null, inAmount.subtract(totalOut.add(fee)), change);
+			tx.addOutput(changeOut);	
+		}	
 		return tx;
 		
 		/*long totalouts=0; 

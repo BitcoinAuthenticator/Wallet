@@ -6,9 +6,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import com.google.bitcoin.core.Wallet;
 
 import authenticator.operations.ATOperation;
+import authenticator.operations.OperationsFactory;
 
 public class Authenticator extends BASE{
-	final int LISTENER_PORT = 1234;
+	final static public int LISTENER_PORT = 1234;
 	
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
@@ -29,7 +30,7 @@ public class Authenticator extends BASE{
 			mTCPListener = new TCPListener(mListener);
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
-		
+		new OperationsFactory(); // to instantiate various things
 	}
 	
 	public Authenticator setWallet(Wallet wallet)

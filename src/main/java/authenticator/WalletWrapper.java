@@ -16,12 +16,15 @@ import authenticator.WalletOperation.UnspentOutput;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
+import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
+import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.SendRequest;
+import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.utils.Threading;
 import com.google.bitcoin.wallet.CoinSelection;
 
@@ -123,5 +126,10 @@ public class WalletWrapper extends Wallet{
 	public NetworkParameters getNetworkParams()
 	{
 		return trackedWallet.getNetworkParameters();
+	}
+	
+	public void broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
+	{
+		trackedWallet.commitTx(tx);
 	}
 }

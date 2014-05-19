@@ -21,6 +21,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -117,6 +118,7 @@ public class Controller extends BaseUI{
         public void onWalletChanged(Wallet wallet) {
             checkGuiThread();
             refreshBalanceLabel();
+            refreshPairedWalletsBalance();
         }
     }
 
@@ -149,6 +151,7 @@ public class Controller extends BaseUI{
     	
     	//Load P2SH addresses
     	ArrayList<PairingObject> arr = Authenticator.getWalletOperation().getAllPairingObjectArray();
+    	if(arr != null)
     	for(PairingObject po:arr)
     	{
     		// get address or generate it
@@ -181,6 +184,21 @@ public class Controller extends BaseUI{
         		addressArr.add(addressControl);
     		}
     	}
+    }
+    
+    private void refreshPairedWalletsBalance()
+    {
+    	//TODO - crashed and doesn't work
+    	/*for(Node n:scrlContent.getChildren()){
+    		ClickableBitcoinAddress addressControl = (ClickableBitcoinAddress)n;
+    		BigInteger balance = null;
+    		try {
+				balance = Authenticator.getWalletOperation().getBalance(addressControl.getPairID());
+				addressControl.setBalance(Utils.bitcoinValueToFriendlyString(balance==null? BigInteger.ZERO:balance));
+			} catch (ScriptException | UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+    	}*/
     }
     
     public String generateFreshAuthenticatorP2SHAddress(String pairID) {

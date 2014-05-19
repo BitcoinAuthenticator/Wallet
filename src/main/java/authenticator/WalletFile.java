@@ -170,6 +170,7 @@ public class WalletFile extends BASE{
 			jsonArr = (JSONArray)obj;
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
+			return null;
 		}
 		finally{ lock.unlock(); }
 		if(jsonArr.size() > 0)
