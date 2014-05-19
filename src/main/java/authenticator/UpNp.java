@@ -96,6 +96,16 @@ public class UpNp extends BASE{
 		addLogLine("Stopping weupnp");
 	}
 	
+	public boolean isPortMapped(int port) throws IOException, SAXException
+	{
+		if (activeGW != null)
+		{
+			PortMappingEntry portMapping = new PortMappingEntry();
+			return activeGW.getSpecificPortMappingEntry(port,"TCP",portMapping);
+		}
+		return false;
+	}
+	
 	/**This method removes the mapping*/
 	public void removeMapping() throws IOException, SAXException{
 		if (activeGW.deletePortMapping(SAMPLE_PORT,"TCP")) {

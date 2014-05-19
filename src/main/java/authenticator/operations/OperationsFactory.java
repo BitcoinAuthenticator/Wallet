@@ -85,12 +85,13 @@ public class OperationsFactory {
 					
 					@Override
 					public void PreExecution(String[] args) throws Exception {
-						cypherBytes = sendTX(pairingID,tx);
+						cypherBytes = prepareTX(pairingID,tx);
 					}
 
 					@Override
 					public void Execute(ServerSocket ss, String[] args,
 							OnOperationUIUpdate listener) throws Exception {
+						
 					}
 
 					@Override
@@ -108,7 +109,7 @@ public class OperationsFactory {
 					//###########
 					// Helpers
 					//###########
-					 byte[] sendTX(String pairingID, Transaction tx) throws Exception {
+					 byte[] prepareTX(String pairingID, Transaction tx) throws Exception {
 						//Create the payload
 						PairingObject pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
 						ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
