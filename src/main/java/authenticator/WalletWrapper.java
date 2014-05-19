@@ -18,8 +18,10 @@ import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionBroadcaster;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
@@ -37,9 +39,11 @@ import com.google.bitcoin.wallet.CoinSelection;
 public class WalletWrapper extends Wallet{
 
 	private Wallet trackedWallet;
-	public WalletWrapper(Wallet wallet){
+	private PeerGroup mPeerGroup;
+	public WalletWrapper(Wallet wallet, PeerGroup peerGroup){
 		super(wallet.getNetworkParameters());
 		this.trackedWallet = wallet;
+		this.mPeerGroup = peerGroup;
 	}
 	public  Wallet getTrackedWallet(){ return trackedWallet; }
 	
@@ -128,8 +132,13 @@ public class WalletWrapper extends Wallet{
 		return trackedWallet.getNetworkParameters();
 	}
 	
-	public void broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
+	public SendResult broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
 	{
 		trackedWallet.commitTx(tx);
+		TransactionBroadcaster tb;
+		SendResult result = new SendResult();
+        result.tx = tx;
+        result.broadcastComplete =  mPeerGroup.broadcastTransaction(tx);
+        return result;
 	}
 }

@@ -3,6 +3,7 @@ package authenticator;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Wallet;
 
 import authenticator.operations.ATOperation;
@@ -17,10 +18,10 @@ public class Authenticator extends BASE{
 	
 	private static WalletOperation mWalletOperation;
 
-	public Authenticator(OnAuthenticatoGUIUpdateListener listener, Wallet wallet) throws IOException
+	public Authenticator(OnAuthenticatoGUIUpdateListener listener, Wallet wallet, PeerGroup peerGroup) throws IOException
 	{
 		this(listener);
-		this.setWallet(wallet);
+		this.setWallet(wallet,peerGroup);
 	}
 	public Authenticator(OnAuthenticatoGUIUpdateListener listener) throws IOException {
 		super(Authenticator.class);
@@ -33,11 +34,11 @@ public class Authenticator extends BASE{
 		new OperationsFactory(); // to instantiate various things
 	}
 	
-	public Authenticator setWallet(Wallet wallet)
+	public Authenticator setWallet(Wallet wallet, PeerGroup peerGroup)
 	{
 		if(mWalletOperation == null)
 			try {
-				mWalletOperation = new WalletOperation(wallet);
+				mWalletOperation = new WalletOperation(wallet,peerGroup);
 			} catch (IOException e) { e.printStackTrace(); }
 		return this;
 	}

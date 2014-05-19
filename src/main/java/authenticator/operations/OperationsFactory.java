@@ -1,5 +1,7 @@
 package authenticator.operations;
 
+import static wallettemplate.utils.GuiUtils.crashAlert;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,6 +18,8 @@ import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
 
+import javafx.application.Platform;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -29,13 +33,17 @@ import org.slf4j.Logger;
 
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 
 import authenticator.Authenticator;
 import authenticator.BASE;
@@ -65,14 +73,14 @@ public class OperationsFactory extends BASE{
 						int timeout = 5;
 						ServerSocket socket = null;
 						@Override
-						public void PreExecution(String[] args)  throws Exception {
+						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception {
 							// TODO Auto-generated method stub
 							
 						}
 
 						@SuppressWarnings("static-access")
 						@Override
-						public void Execute(ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
+						public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
 							 timeout = ss.getSoTimeout();
 							 ss.setSoTimeout(0);
 							 socket = ss;
@@ -83,13 +91,13 @@ public class OperationsFactory extends BASE{
 						}
 
 						@Override
-						public void PostExecution(String[] args)  throws Exception {
+						public void PostExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception {
 							// TODO Auto-generated method stub
 							
 						}
 
 						@Override
-						public void OnExecutionError(Exception e) {
+						public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
 							try {
 								socket.setSoTimeout(timeout);
 							} catch (SocketException e1) {
@@ -109,30 +117,41 @@ public class OperationsFactory extends BASE{
 					ServerSocket socket = null;
 					
 					@Override
-					public void PreExecution(String[] args) throws Exception {
+					public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
 						cypherBytes = prepareTX(pairingID);
 					}
 
 					@Override
-					public void Execute(ServerSocket ss, String[] args,
+					public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args,
 							OnOperationUIUpdate listener) throws Exception {
 						//
 						timeout = ss.getSoTimeout();
 						ss.setSoTimeout(0);
 						socket = ss;
 						complete(ss);
-						Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
+			                @Override
+			                public void onSuccess(Transaction result) {
+			                    
+			                }
+
+			                @Override
+			                public void onFailure(Throwable t) {
+			                	listenerUI.onError(null,t);
+			                }
+			            });
 						ss.setSoTimeout(timeout);
 					}
 
 					@Override
-					public void PostExecution(String[] args) throws Exception {
+					public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
 						// TODO Auto-generated method stub
 						
 					}
 
 					@Override
-					public void OnExecutionError(Exception e) {
+					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
 						// TODO Auto-generated method stub
 						
 					}

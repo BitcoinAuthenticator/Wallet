@@ -35,17 +35,17 @@ public class ATOperation {
 	{
 		if(this.listener != null)
 			this.listener.onBegin(beginMsg);
-		mOperationActions.PreExecution(args);
-		mOperationActions.Execute( ss, args, this.listener);
-		mOperationActions.PostExecution(args);
+		mOperationActions.PreExecution(listener,args);
+		mOperationActions.Execute( listener, ss, args, this.listener);
+		mOperationActions.PostExecution(listener, args);
 		if(this.listener != null)
 			this.listener.onFinished(finishedMsg);
 	}
 	
 	public void OnExecutionError(Exception e){
-		mOperationActions.OnExecutionError(e);
+		mOperationActions.OnExecutionError(listener ,e);
 		if(this.listener != null)
-			this.listener.onError(e);
+			this.listener.onError(e,null);
 	}
 	
 	//#####################################

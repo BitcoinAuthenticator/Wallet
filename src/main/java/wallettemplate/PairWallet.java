@@ -1,5 +1,7 @@
 package wallettemplate;
 
+import javax.annotation.Nullable;
+
 import authenticator.Authenticator;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
@@ -67,7 +69,7 @@ public class PairWallet extends BaseUI{
 			}
 
 			@Override
-			public void onError(Exception e) {
+			public void onError(@Nullable Exception e, @Nullable Throwable t) {
 				Platform.runLater(new Runnable() {
 			        @Override
 			        public void run() {

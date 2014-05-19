@@ -70,7 +70,7 @@ public class Main extends Application {
         URL location = getClass().getResource("main.fxml");
         FXMLLoader loader = new FXMLLoader(location);
         mainUI = loader.load();
-        
+
         Controller controller = loader.getController();
         // Configure the window with a StackPane so we can overlay things on top of the main UI.
         uiStack = new StackPane(mainUI);
@@ -123,7 +123,7 @@ public class Main extends Application {
 			}
         	
         })
-        .setWallet(bitcoin.wallet())
+        .setWallet(bitcoin.wallet(), bitcoin.peerGroup())
         .start();
         
         controller.onBitcoinSetup();

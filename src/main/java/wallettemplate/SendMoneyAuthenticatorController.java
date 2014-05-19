@@ -37,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import authenticator.Authenticator;
 import authenticator.operations.ATOperation;
+import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.ui_helpers.ComboBoxHelper;
 import wallettemplate.controls.BitcoinAddressValidator;
@@ -135,6 +136,26 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
         	try {
 				tx = Authenticator.getWalletOperation().mktx(pairID, to);
 				ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx, pairID);
+				op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+					@Override
+					public void onBegin(String str) { }
+
+					@Override
+					public void statusReport(String report) {
+						
+					}
+
+					@Override
+					public void onFinished(String str) {
+						
+					}
+
+					@Override
+					public void onError(Exception e, Throwable t) {
+						crashAlert(t);
+					}
+					
+				});
 				Authenticator.operationsQueue.add(op);
 				
 			} catch (NoSuchAlgorithmException | AddressFormatException

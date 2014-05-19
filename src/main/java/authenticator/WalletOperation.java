@@ -45,6 +45,7 @@ import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
@@ -53,6 +54,7 @@ import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
@@ -83,10 +85,10 @@ public class WalletOperation extends BASE{
 	static Map<String,ArrayList<Integer>> mpChildkeyindex;
 	static Map<String,Boolean> mpTestnet;
 	
-	public WalletOperation(Wallet wallet) throws IOException{
+	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
 		super(WalletOperation.class);
 		if(mWalletWrapper == null)
-			mWalletWrapper = new WalletWrapper(wallet);
+			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
 		if(mpNumInputs == null)
 			mpNumInputs = new HashMap<String,Integer>();
 		if(mpPublickeys == null)
@@ -112,39 +114,9 @@ public class WalletOperation extends BASE{
 	
 	/**Pushes the raw transaction the the Eligius mining pool
 	 * @throws InsufficientMoneyException */
-	public void pushTxWithWallet(Transaction tx) throws IOException, InsufficientMoneyException{
+	public SendResult pushTxWithWallet(Transaction tx) throws IOException, InsufficientMoneyException{
 		this.LOG.info("Broadcasting to network...");
-		this.mWalletWrapper.broadcastTrabsactionFromWallet(tx);
-		/*String urlParameters = "transaction="+ tx + "&send=Push";
-		String request = "http://eligius.st/~wizkid057/newstats/pushtxn.php";
-		URL url = new URL(request); 
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();           
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setInstanceFollowRedirects(false); 
-		connection.setRequestMethod("POST"); 
-		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
-		connection.setRequestProperty("charset", "utf-8");
-		connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
-		connection.setUseCaches (false);
-		DataOutputStream wr = new DataOutputStream(connection.getOutputStream ());
-		wr.writeBytes(urlParameters);
-		wr.flush();
-		wr.close();
-		int responseCode = connection.getResponseCode();
-		this.LOG.info("\nSending 'POST' request to URL : " + url);
-		//Get reponse 
-		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-		connection.disconnect();
-		//Print txid
-		this.LOG.info("Success!");
-		this.LOG.info("txid: " + response.substring(response.indexOf("string(64) ")+12, response.indexOf("string(64) ")+76));*/
+		return this.mWalletWrapper.broadcastTrabsactionFromWallet(tx);
 	}
 	
 	/**
@@ -228,63 +200,6 @@ public class WalletOperation extends BASE{
 			tx.addOutput(changeOut);	
 		}	
 		return tx;
-		
-		/*long totalouts=0; 
-		for (int i=0; i<MILLI.size(); i++){
-			totalouts = totalouts + Long.parseLong(MILLI.get(i));
-		}
-		ArrayList<UnspentOutput> out = getUnspentOutputs(pairingID,totalouts); 
-		//Set the network parameters
-		NetworkParameters params = null;
-        if (mpTestnet.get(pairingID)==false){
-        	params = MainNetParams.get();
-        } 
-        else {
-        	params = TestNet3Params.get();
-        }
-  		spendtx = new Transaction(params);
-  		byte[] script = hexStringToByteArray("");
-  		//Creates the inputs which reference a previous unspent output
-  		long totalins = 0;
-  		for (int x=0; x<out.size(); x++){
-  			totalins = totalins + out.get(x).getAmount();
-  			int index = Integer.parseInt(out.get(x).getIndex());
-  	  		Sha256Hash txhash = new Sha256Hash(out.get(x).getTxid());
-  			TransactionOutPoint outpoint = new TransactionOutPoint(params, index, txhash);
-  			TransactionInput input = new TransactionInput(params, null, script, outpoint);
-  			//Add the inputs
-  			spendtx.addInput(input);
-		}
-		//Add the outputs
-		for (int i=0; i<MILLI.size(); i++){
-			Address outaddr = new Address(params, to.get(i));
-			spendtx.addOutput(BigInteger.valueOf(Long.parseLong(MILLI.get(i))), outaddr);
-		}
-		//Add the change
-		if (totalins > (totalouts + 10000)){
-			Long changetotal = (totalins - (totalouts+10000));
-			String changeaddr = genAddress(pairingID);
-			Address change = new Address(params, changeaddr);
-			spendtx.addOutput(BigInteger.valueOf(changetotal), change);
-		}
-		//Convert tx to byte array for sending.
-		final StringBuilder sb = new StringBuilder();
-		Formatter formatter = new Formatter(sb);
-		try {
-		    ByteArrayOutputStream os = new ByteArrayOutputStream();
-		    spendtx.bitcoinSerialize(os);
-		    byte[] bytes = os.toByteArray();
-		    for (byte b : bytes) {
-		        formatter.format("%02x", b);  
-		    }
-		    this.LOG.info("Raw Unsigned Transaction: " + sb.toString());
-		    unsignedTx = sb.toString();
-		}catch (IOException e) {
-			this.LOG.info("Couldn't serialize to hex string.");
-		} finally {
-		    formatter.close();
-		}*/
-		
 	}
 	
 	/**
