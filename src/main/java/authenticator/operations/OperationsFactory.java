@@ -133,13 +133,17 @@ public class OperationsFactory extends BASE{
 						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
 			                public void onSuccess(Transaction result) {
-			                    
+			                	listenerUI.onFinished("Finished With Success");
 			                }
 
 			                @Override
 			                public void onFailure(Throwable t) {
 			                	listenerUI.onError(null,t);
 			                }
+			            });
+						result.tx.getConfidence().addEventListener((transaction, reason) -> {
+			                if (reason == TransactionConfidence.Listener.ChangeReason.SEEN_PEERS)
+			                	listenerUI.statusReport("Seen by peers ...");
 			            });
 						ss.setSoTimeout(timeout);
 					}

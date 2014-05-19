@@ -60,6 +60,14 @@ public class WalletWrapper extends Wallet{
 		trackedWallet.addWatchedAddress(address);
 	}
 	
+	public boolean isAuthenticatorAddressWatched(String address) throws AddressFormatException{
+		return isAuthenticatorAddressWatched(new Address(trackedWallet.getNetworkParameters(),address));
+	}
+	public boolean isAuthenticatorAddressWatched(Address address)
+	{
+		return trackedWallet.isAddressWatched(address);
+	}
+	
 	/**
 	 * Will Check with wallet's watched addresses for a total balance. A use case will be to pass all the addresses of a single 
 	 * authenticator pairing to get the total unspent balance.
@@ -71,7 +79,6 @@ public class WalletWrapper extends Wallet{
 	 */
 	public BigInteger getBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
 	{
-
 		BigInteger retBalance = null;
 		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
 		for(TransactionOutput Txout: allWatchedAddresses)

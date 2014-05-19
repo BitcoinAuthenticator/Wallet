@@ -115,16 +115,14 @@ public class Main extends Application {
         /**
          * Authenticator Operation Setup
          */
-        new Authenticator(new OnAuthenticatoGUIUpdateListener(){
+        new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), new OnAuthenticatoGUIUpdateListener(){
 
 			@Override
 			public void simpleTextMessage(String msg) {
 				
 			}
         	
-        })
-        .setWallet(bitcoin.wallet(), bitcoin.peerGroup())
-        .start();
+        }).start();
         
         controller.onBitcoinSetup();
         mainWindow.show();

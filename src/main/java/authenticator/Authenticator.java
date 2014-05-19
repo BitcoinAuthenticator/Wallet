@@ -1,11 +1,15 @@
 package authenticator;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Wallet;
 
+import authenticator.db.KeyObject;
+import authenticator.db.PairingObject;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 
@@ -18,12 +22,8 @@ public class Authenticator extends BASE{
 	
 	private static WalletOperation mWalletOperation;
 
-	public Authenticator(OnAuthenticatoGUIUpdateListener listener, Wallet wallet, PeerGroup peerGroup) throws IOException
+	public Authenticator(Wallet wallet, PeerGroup peerGroup, OnAuthenticatoGUIUpdateListener listener) throws IOException
 	{
-		this(listener);
-		this.setWallet(wallet,peerGroup);
-	}
-	public Authenticator(OnAuthenticatoGUIUpdateListener listener) throws IOException {
 		super(Authenticator.class);
 		if(mListener == null)
 			mListener = listener;
@@ -31,16 +31,13 @@ public class Authenticator extends BASE{
 			mTCPListener = new TCPListener(mListener);
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
-		new OperationsFactory(); // to instantiate various things
-	}
-	
-	public Authenticator setWallet(Wallet wallet, PeerGroup peerGroup)
-	{
 		if(mWalletOperation == null)
 			try {
 				mWalletOperation = new WalletOperation(wallet,peerGroup);
 			} catch (IOException e) { e.printStackTrace(); }
-		return this;
+		
+		new OperationsFactory(); // to instantiate various things
+		verifyWalletIsWatchingAuthenticatorAddresses();
 	}
 	
 	//#####################################
@@ -93,5 +90,28 @@ public class Authenticator extends BASE{
 	public static WalletOperation getWalletOperation()
 	{
 		return mWalletOperation;
+	}
+	
+	//#####################################
+	//
+	//			General
+	//
+	//#####################################
+	private void verifyWalletIsWatchingAuthenticatorAddresses()
+	{
+		@SuppressWarnings("static-access")
+		ArrayList<PairingObject> all = this.getWalletOperation().getAllPairingObjectArray();
+		for(PairingObject po: all)
+		for(KeyObject ko: po.keys.keys)
+		{
+			try {
+				@SuppressWarnings("static-access")
+				boolean isWatched = this.getWalletOperation().isWatchingAddress(ko.address);
+				if(!isWatched)
+					this.getWalletOperation().addP2ShAddressToWatch(ko.address);
+			} catch (AddressFormatException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

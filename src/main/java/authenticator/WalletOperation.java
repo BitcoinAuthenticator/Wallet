@@ -329,6 +329,22 @@ public class WalletOperation extends BASE{
 	{
 		return mWalletWrapper.getNetworkParams();
 	}
+    
+    public boolean isWatchingAddress(String address) throws AddressFormatException
+	{
+		return mWalletWrapper.isAuthenticatorAddressWatched(address);
+	}
+    
+    public void addP2ShAddressToWatch(String address) throws AddressFormatException
+	{
+    	mWalletWrapper.addP2ShAddressToWatch(address);
+    	this.LOG.info("Added address to watch: " + address);
+	}
+	public void addP2ShAddressToWatch(final Address address)
+	{
+		mWalletWrapper.addWatchedAddress(address);
+		this.LOG.info("Added address to watch: " + address.toString());
+	}
 }
 
 
