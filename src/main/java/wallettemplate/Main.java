@@ -24,12 +24,14 @@ import javafx.scene.control.Menu;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import static wallettemplate.utils.GuiUtils.*;
 
@@ -165,7 +167,7 @@ public class Main extends Application {
     }
 
     /** Loads the FXML file with the given name, blurs out the main UI and puts this one on top. */
-    public <T> OverlayUI<T> overlayUI(String name) {
+    public <T extends BaseUI> OverlayUI<T> overlayUI(String name, ArrayList<Object> params) {
         try {
             checkGuiThread();
             // Load the UI from disk.
@@ -173,6 +175,10 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(location);
             Pane ui = loader.load();
             T controller = loader.getController();
+            if(params != null && params.size() >0){
+            	controller.setParams(params);
+            	controller.loadParams();
+            }
             OverlayUI<T> pair = new OverlayUI<T>(ui, controller);
             // Auto-magically set the overlayUi member, if it's there.
             try {

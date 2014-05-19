@@ -12,10 +12,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import wallettemplate.controls.BitcoinAddressValidator;
+import wallettemplate.utils.BaseUI;
 import static wallettemplate.utils.GuiUtils.crashAlert;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
-public class SendMoneyController {
+public class SendMoneyController extends BaseUI{
     public Button sendBtn;
     public Button cancelBtn;
     public TextField address;

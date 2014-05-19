@@ -2,12 +2,12 @@ package wallettemplate.controls;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class ScrollPaneContentManager extends VBox{
 	public ScrollPaneContentManager(){
 		super();
-		
 		}
 	
 	public ScrollPaneContentManager setSpacingBetweenItems(double spacing)

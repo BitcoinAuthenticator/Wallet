@@ -34,6 +34,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class CreateNewP2SHAddress extends BaseUI implements Initializable{
@@ -71,7 +72,7 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
 				Authenticator.getWalletOperation().genAddress(pairNameToId.get((String)cmbPairings.getValue()));
 			} catch (AddressFormatException e) {
 				Authenticator.getWalletOperation().LOG.info(e.toString());
-				PopUpNotification p = new PopUpNotification("Something Went Wrong ...");
+				PopUpNotification p = new PopUpNotification("Something Went Wrong ...","");
 				p.showPopup();
 				e.printStackTrace();
 			}

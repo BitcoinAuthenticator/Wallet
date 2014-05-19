@@ -1,6 +1,8 @@
 package wallettemplate.controls;
 
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.uri.BitcoinURI;
+
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.beans.property.StringProperty;
@@ -29,6 +31,7 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 
 // This control can be used with Scene Builder as long as we don't use any Java 8 features yet. Once Oracle release
 // a new Scene Builder compiled against Java 8, we'll be able to use lambdas and so on here. Until that day comes,
@@ -46,7 +49,7 @@ import java.net.URI;
  */
 public class ClickableBitcoinAddress extends AnchorPane {
     @FXML protected Label addressLabel;
-    @FXML protected Label pairNameLabel;
+    @FXML protected Label pairNameLabel; private String pairID;
     @FXML protected Label balanceLabel;
     @FXML protected ContextMenu addressMenu;
     @FXML protected Label copyWidget;
@@ -101,6 +104,10 @@ public class ClickableBitcoinAddress extends AnchorPane {
 
     public StringProperty pairNameProperty() {
         return pairNameLabel.textProperty();
+    }
+    
+    public void setPairID(String id) {
+    	pairID = id;
     }
     
     public void setBalance(String value) {
@@ -170,9 +177,15 @@ public class ClickableBitcoinAddress extends AnchorPane {
     
     @FXML
     protected void spendWidgetClicked(MouseEvent event) {
-    	if(this.isAuthPairing)
-    		Main.instance.overlayUI("send_money_authenticator.fxml");
+    	if(this.isAuthPairing){
+    		assert (pairID != null);
+    		ArrayList<Object> param = new ArrayList<Object>();
+    		param.add(pairID);
+    		param.add(pairNameLabel.getText());
+    		param.add(Utils.toNanoCoins(balanceLabel.getText()));
+    		Main.instance.overlayUI("send_money_authenticator.fxml",param);
+    	}
     	else
-    		Main.instance.overlayUI("send_money.fxml");
+    		Main.instance.overlayUI("send_money.fxml",null);
     }
 }

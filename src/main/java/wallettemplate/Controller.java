@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ClickableBitcoinAddress;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.PopUpNotification;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ import static wallettemplate.utils.GuiUtils.checkGuiThread;
  * Gets created auto-magically by FXMLLoader via reflection. The widget fields are set to the GUI controls they're named
  * after. This class handles all the updates and event handling for the main UI.
  */
-public class Controller {
+public class Controller extends BaseUI{
     public ProgressBar syncProgress;
     public VBox syncBox;
     public HBox controlsBox;
@@ -126,12 +127,12 @@ public class Controller {
     
     @FXML
     private void handlePairDeviceAction(ActionEvent event) { 
-    	Main.instance.overlayUI("Pair_wallet.fxml");
+    	Main.instance.overlayUI("Pair_wallet.fxml",null);
     }
     
     @FXML
     private void handleCreateP2ShAddress(ActionEvent event) throws IOException { 
-    	Main.instance.overlayUI("New_p2sh_address.fxml");
+    	Main.instance.overlayUI("New_p2sh_address.fxml",null);
     }
     
     private void loadAddresses()
@@ -166,6 +167,7 @@ public class Controller {
         		//addressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
         		addressControl.setAddress(add);
         		addressControl.setPairName(po.pairingName);
+        		addressControl.setPairID(po.pairingID);
         		BigInteger balance = null;
         		try {
 					balance = Authenticator.getWalletOperation().getBalance(po.pairingID);
@@ -187,7 +189,7 @@ public class Controller {
 			ret = Authenticator.getWalletOperation().genAddress(pairID);
 		} catch (AddressFormatException | NoSuchAlgorithmException | JSONException e) {
 			Authenticator.getWalletOperation().LOG.info(e.toString());
-			PopUpNotification p = new PopUpNotification("Something Went Wrong ...");
+			PopUpNotification p = new PopUpNotification("Something Went Wrong ...","");
 			p.showPopup();
 			e.printStackTrace();
 		} 
