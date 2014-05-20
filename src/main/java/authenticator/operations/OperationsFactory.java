@@ -41,6 +41,7 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
+import com.google.bitcoin.script.ScriptChunk;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -114,7 +115,6 @@ public class OperationsFactory extends BASE{
 				.SetOperationAction(new OperationActions(){
 					byte[] cypherBytes;
 					int timeout = 5;
-					ServerSocket socket = null;
 					
 					@Override
 					public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
@@ -127,12 +127,11 @@ public class OperationsFactory extends BASE{
 						//
 						timeout = ss.getSoTimeout();
 						ss.setSoTimeout(0);
-						socket = ss;
 						complete(ss);
 						
 						System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
 						
-						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						/*SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
 						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
 			                public void onSuccess(Transaction result) {
@@ -147,7 +146,7 @@ public class OperationsFactory extends BASE{
 						result.tx.getConfidence().addEventListener((transaction, reason) -> {
 			                if (reason == TransactionConfidence.Listener.ChangeReason.SEEN_PEERS)
 			                	listenerUI.statusReport("Seen by peers ...");
-			            });
+			            });*/
 						ss.setSoTimeout(timeout);
 					}
 
@@ -181,6 +180,10 @@ public class OperationsFactory extends BASE{
 						for (KeyObject ko: pairingObj.keys.keys){
 							String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 							if(inAddress.equals(ko.address)){
+								/**
+								 * Important, appending ko.index because we save to file as keys_n + 1
+								 * See WalletOperation#genAddress
+								 */
 								byte[] index = ByteBuffer.allocate(4).putInt(ko.index).array();
 								outputStream.write(index);
 								BigInteger priv_key = new BigInteger(ko.priv_key.getBytes());
@@ -237,7 +240,8 @@ public class OperationsFactory extends BASE{
 							disp = new Dispacher(null,null);
 							
 							//Send the encrypted payload over to the Authenticator and wait for the response.
-							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");						PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");						
+							PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
 							byte[] gcmID = po.GCM.getBytes();
 							assert(gcmID != null);
 							Device d = new Device(po.chain_code.getBytes(),
@@ -303,26 +307,30 @@ public class OperationsFactory extends BASE{
 									String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 									if(inAddress.equals(ko.address))
 									{
+										//Authenticator Key
 										HDKeyDerivation HDKey = null;
 										DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
 										DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, ko.index);
 										byte[] childpublickey = childKey.getPubKey();
 										ECKey authKey = new ECKey(null, childpublickey);
-										//Create second signature and build the final transaction
+										
+										//Wallet key
 										BigInteger privatekey = new BigInteger(1, BAUtils.hexStringToByteArray(ko.priv_key));
-										byte[] addressPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
-										ECKey walletKey = new ECKey(privatekey, addressPublicKey, true);
+										byte[] walletPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
+										ECKey walletKey = new ECKey(privatekey, walletPublicKey, true);
+										
+										// Create Programm for the script
 										List<ECKey> keys = ImmutableList.of(authKey, walletKey);
 										Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
 										byte[] program = scriptpubkey.getProgram();
+										
+										//Create P2SH
 										// IMPORTANT - AuthSigs and the signiture we create here should refer to the same input !!
 										TransactionSignature sig1 = TransactionSignature.decodeFromBitcoin(AuthSigs.get(i), true);
 										TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
-																							
 										List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
 										Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
 										TransactionInput input = inputs.get(i);
-										String s = inputScript.toString();
 										input.setScriptSig(inputScript);
 										break;
 									}

@@ -131,19 +131,16 @@ public class WalletOperation extends BASE{
 		ArrayList<String> keyandchain = file.getPubAndChain(pairingID);
 		byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
 		byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
+		/**
+		 * Important, generatring from key number + 1
+		 */
 		int index = (int) file.getKeyNum(pairingID)+1;
 		HDKeyDerivation HDKey = null;
   		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
   		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, index);
   		byte[] childpublickey = childKey.getPubKey();
   		//Select network parameters
-  		NetworkParameters params = null;
-        if (mpTestnet.get(pairingID)==false){
-        	params = MainNetParams.get();
-        } 
-        else {
-        	params = TestNet3Params.get();
-        }
+  		NetworkParameters params = Authenticator.getWalletOperation().getNetworkParams();
 		ECKey childPubKey = new ECKey(null, childpublickey);
 		//Create a new key pair which will kept in the wallet.
 		ECKey walletKey = new ECKey();
@@ -155,7 +152,7 @@ public class WalletOperation extends BASE{
 		//Create the address
 		Address multisigaddr = Address.fromP2SHScript(params, script);
 		//Save keys to file
-		file.writeToFile(pairingID,BAUtils.bytesToHex(privkey),multisigaddr.toString());
+		file.writeToFile(pairingID,BAUtils.bytesToHex(privkey),multisigaddr.toString(),index);
 		String ret = multisigaddr.toString();
 		mWalletWrapper.addP2ShAddressToWatch(ret);
 		return ret;

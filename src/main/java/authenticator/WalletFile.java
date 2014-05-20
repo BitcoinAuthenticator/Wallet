@@ -88,7 +88,7 @@ public class WalletFile extends BASE{
 	 * adds a new wallet object to it, then saves it back to file.  
 	 */
 	@SuppressWarnings("unchecked")
-	void writeToFile(String pairID, String privkey, String addr){
+	void writeToFile(String pairID, String privkey, String addr, int index){
 		ArrayList<PairingObject> oPairing = getPairingObjectsArray();
 		PairingObject obj = null;
 		for(PairingObject o:oPairing)
@@ -103,7 +103,7 @@ public class WalletFile extends BASE{
 			KeyObject newKey = new KeyObject()
 								.setAddress(addr)
 								.setPrivateKey(privkey)
-								.setIndex(obj.keys_n); // keys_n is incremented only after adding the key
+								.setIndex(index);
 			obj.addKey(newKey);
 		}
 		JSONArray jsonArr = new JSONArray();

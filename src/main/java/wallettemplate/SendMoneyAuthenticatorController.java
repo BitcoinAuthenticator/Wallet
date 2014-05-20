@@ -148,15 +148,26 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
 
 					@Override
 					public void onFinished(String str) {
-						PopUpNotification p = new PopUpNotification("Transaction Has Been Sent !","");
-						p.showPopup();
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	PopUpNotification p = new PopUpNotification("Transaction Has Been Sent !","");
+								p.showPopup();   
+								prepareForExit();
+						      }
+						    });
+						
 					}
 
 					@Override
 					public void onError(Exception e, Throwable t) {
-						Throwable rootCause = Throwables.getRootCause(t);
-						PopUpNotification p = new PopUpNotification("Something Is not Right ...",rootCause.toString());
-						p.showPopup();
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  Throwable rootCause = Throwables.getRootCause(t);
+									PopUpNotification p = new PopUpNotification("Something Is not Right ...",rootCause.toString());
+									p.showPopup();     
+						      }
+						    });
+						
 					}
 					
 				});
@@ -164,24 +175,41 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
 				
 			} catch (NoSuchAlgorithmException | AddressFormatException
 					| JSONException | IOException e) {
-				PopUpNotification p = new PopUpNotification("Something Is not Right ...","Make Sure:\n" +
-						"  1) You entered correct values in all fields\n"+
-						"  2) You have sufficient funds to cover your outputs\n"+
-						"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")");
-				p.showPopup();
+				Platform.runLater(new Runnable() {
+				      @Override public void run() {
+				    	  PopUpNotification p = new PopUpNotification("Something Is not Right ...","Make Sure:\n" +
+									"  1) You entered correct values in all fields\n"+
+									"  2) You have sufficient funds to cover your outputs\n"+
+									"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")");
+							p.showPopup();    
+				      }
+				    });
+				
 				e.printStackTrace();
 			}
         }
         else
         {
-        	PopUpNotification p = new PopUpNotification("Something Is not Right ...","Make Sure:\n" +
-        																				"  1) You entered correct values in all fields\n"+
-        																				"  2) You have sufficient funds to cover your outputs\n"+
-        																				"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")");
-        	p.showPopup();
+        	Platform.runLater(new Runnable() {
+        	      @Override public void run() {
+        	    	  PopUpNotification p = new PopUpNotification("Something Is not Right ...","Make Sure:\n" +
+								"  1) You entered correct values in all fields\n"+
+								"  2) You have sufficient funds to cover your outputs\n"+
+								"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")");
+        	    	  p.showPopup();     
+        	      }
+        	    });
+        	
         }
     }
 
+    public void prepareForExit()
+    {
+    	btnSend.setDisable(true);
+    	cancelBtn.setText("Done");
+    	cancelBtn.setStyle("-fx-background-color: green;");
+    }
+    
     private void addOutput()
     {
     	Class[] parameterTypes = new Class[1];

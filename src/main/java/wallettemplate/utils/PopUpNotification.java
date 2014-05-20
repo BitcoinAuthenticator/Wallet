@@ -2,6 +2,7 @@ package wallettemplate.utils;
 
 import com.sun.prism.paint.Color;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,9 +26,9 @@ public class PopUpNotification extends Stage {
 	@SuppressWarnings("deprecation")
 	public PopUpNotification(String head,String message)
 	{
-		this.initModality(Modality.WINDOW_MODAL);
-		this.setHeight(300);
-		this.setWidth(600);
+    	initModality(Modality.WINDOW_MODAL);
+		setHeight(300);
+		setWidth(600);
 		VBox mainV = new VBox();
 		mainV.setSpacing(10);
 		mainV.setAlignment(Pos.CENTER);
@@ -50,14 +51,16 @@ public class PopUpNotification extends Stage {
 		});
 		mainV.getChildren().add(btnOK);
 		
-		this.setScene(new Scene(VBoxBuilder.create().
+		setScene(new Scene(VBoxBuilder.create().
 		    children(mainV).
 		    alignment(Pos.CENTER).padding(new Insets(5)).build()));
+		
 	}
 	
-	public void showPopup() {
-	    this.show();
+	public void showPopup(){
+		this.show();
 	}
+	
 	public void hidePopup()
 	{
 		this.hide();
