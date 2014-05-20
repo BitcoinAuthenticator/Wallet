@@ -1,5 +1,6 @@
 package authenticator;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -60,8 +61,11 @@ public class WalletFile extends BASE{
 		}
 	}
 	
-	/** Saves the network paraments to the JSON file */
-	void writeNetworkParams(Boolean testnet){
+	/** Saves the network paraments to the JSON file 
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	void writeNetworkParams(Boolean testnet) throws FileNotFoundException, IOException, ParseException{
 		//Load the existing json file
 		ArrayList<PairingObject> oPairing = getPairingObjectsArray();
 		for(PairingObject o:oPairing)
@@ -86,9 +90,12 @@ public class WalletFile extends BASE{
 	/**
 	 * This method is used to save a new address and private key to file. It loads the existing .json file,
 	 * adds a new wallet object to it, then saves it back to file.  
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
 	@SuppressWarnings("unchecked")
-	void writeToFile(String pairID, String privkey, String addr, int index){
+	void writeToFile(String pairID, String privkey, String addr, int index) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> oPairing = getPairingObjectsArray();
 		PairingObject obj = null;
 		for(PairingObject o:oPairing)
@@ -158,21 +165,16 @@ public class WalletFile extends BASE{
 		finally{ lock.unlock(); }
 	}
 	
-	public ArrayList<PairingObject> getPairingObjectsArray()
+	public ArrayList<PairingObject> getPairingObjectsArray() throws FileNotFoundException, IOException, ParseException
 	{
 		ArrayList<PairingObject> ret = new ArrayList<PairingObject>();
 		JSONParser parser = new JSONParser();
 		Object obj = null;
 		JSONArray jsonArr = null;
 		lock.lock();
-		try {
-			obj = parser.parse(new FileReader(filePath));
-			jsonArr = (JSONArray)obj;
-		} catch (IOException | ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
-		finally{ lock.unlock(); }
+		obj = parser.parse(new FileReader(filePath));
+		jsonArr = (JSONArray)obj;
+		lock.unlock();
 		if(jsonArr.size() > 0)
 		{
 			for(Object o:jsonArr)
@@ -185,7 +187,7 @@ public class WalletFile extends BASE{
 		return ret;
 	}
 	
-	public ArrayList<String> getPairingIDs()
+	public ArrayList<String> getPairingIDs() throws FileNotFoundException, IOException, ParseException
 	{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		ArrayList<String> ret = new ArrayList<String>();
@@ -194,8 +196,11 @@ public class WalletFile extends BASE{
 		return ret;
 	}
 	
-	/**Pulls the AES key from file and returns it*/
-	public String getAESKey(String pairID){
+	/**Pulls the AES key from file and returns it
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public String getAESKey(String pairID) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		for(PairingObject o:pObjects)
 		{
@@ -205,8 +210,11 @@ public class WalletFile extends BASE{
 		return "";
 	}
 	
-	/**Returns the number of key pairs in the wallet*/
-	public long getKeyNum(String pairID){
+	/**Returns the number of key pairs in the wallet
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public long getKeyNum(String pairID) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		for(PairingObject o:pObjects)
 		{
@@ -216,8 +224,11 @@ public class WalletFile extends BASE{
 		return 0;
 	}
 	
-	/**Returns the Master Public Key and Chaincode as an ArrayList object*/
-	public ArrayList<String> getPubAndChain(String pairID){
+	/**Returns the Master Public Key and Chaincode as an ArrayList object
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public ArrayList<String> getPubAndChain(String pairID) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		ArrayList<String> ret = new ArrayList<String>();
 		for(PairingObject o:pObjects)
@@ -231,8 +242,11 @@ public class WalletFile extends BASE{
 		return ret;
 	}
 	
-	/** Returns a list of all addresses in the wallet*/
-	public ArrayList<String> getAddresses(String pairID){
+	/** Returns a list of all addresses in the wallet
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public ArrayList<String> getAddresses(String pairID) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<String> arr = new ArrayList<String>();
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		for(PairingObject o:pObjects)
@@ -247,8 +261,11 @@ public class WalletFile extends BASE{
 		return arr;
 	}
 	
-	/**Returns the Child Key Index for a given address in the wallet*/
-	public long getAddrIndex(String pairID, String Address){
+	/**Returns the Child Key Index for a given address in the wallet
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public long getAddrIndex(String pairID, String Address) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		for(PairingObject o:pObjects)
 		{
@@ -263,8 +280,11 @@ public class WalletFile extends BASE{
 		return 0;
 	}
 	
-	/**Returns the private key for a given address*/
-	public String getPrivKey(String pairID,String Address){
+	/**Returns the private key for a given address
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public String getPrivKey(String pairID,String Address) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		for(PairingObject o:pObjects)
 		{
@@ -280,8 +300,11 @@ public class WalletFile extends BASE{
 		
 	}
 	
-	/**Returns the private key using an index as the input*/
-	public String getPrivKeyFromIndex(String pairID, int index){
+	/**Returns the private key using an index as the input
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException */
+	public String getPrivKeyFromIndex(String pairID, int index) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		for(PairingObject o:pObjects)
 		{
@@ -296,7 +319,7 @@ public class WalletFile extends BASE{
 		return null;
 	}
 	
-	public Map<String,Boolean> getTestnets(){
+	public Map<String,Boolean> getTestnets() throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		Map<String,Boolean> ret = new HashMap<String,Boolean>();
 		for(PairingObject o:pObjects)
@@ -304,7 +327,7 @@ public class WalletFile extends BASE{
 		return ret;
 	}
 	
-	public String getGCMRegID(String pairID){
+	public String getGCMRegID(String pairID) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> pObjects = this.getPairingObjectsArray();
 		for(PairingObject o:pObjects)
 			if(o.pairingID.equals(pairID))

@@ -34,6 +34,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import authenticator.db.KeyObject;
@@ -102,7 +103,11 @@ public class WalletOperation extends BASE{
 		File f = new File(filePath);
 		if(f.exists() && !f.isDirectory()) {
 			WalletFile file = new WalletFile();
-			mpTestnet = file.getTestnets();
+			try {
+				mpTestnet = file.getTestnets();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -126,36 +131,42 @@ public class WalletOperation extends BASE{
 	 */
 	@SuppressWarnings("static-access")
 	public String genAddress(String pairingID) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
-		//Derive the child public key from the master public key.
-		WalletFile file = new WalletFile();
-		ArrayList<String> keyandchain = file.getPubAndChain(pairingID);
-		byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
-		byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
-		/**
-		 * Important, generatring from key number + 1
-		 */
-		int index = (int) file.getKeyNum(pairingID)+1;
-		HDKeyDerivation HDKey = null;
-  		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
-  		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, index);
-  		byte[] childpublickey = childKey.getPubKey();
-  		//Select network parameters
-  		NetworkParameters params = Authenticator.getWalletOperation().getNetworkParams();
-		ECKey childPubKey = new ECKey(null, childpublickey);
-		//Create a new key pair which will kept in the wallet.
-		ECKey walletKey = new ECKey();
-		byte[] privkey = walletKey.getPrivKeyBytes();
-		List<ECKey> keys = ImmutableList.of(childPubKey, walletKey);
-		//Create a 2-of-2 multisig output script.
-		byte[] scriptpubkey = Script.createMultiSigOutputScript(2,keys);
-		Script script = ScriptBuilder.createP2SHOutputScript(Utils.sha256hash160(scriptpubkey));
-		//Create the address
-		Address multisigaddr = Address.fromP2SHScript(params, script);
-		//Save keys to file
-		file.writeToFile(pairingID,BAUtils.bytesToHex(privkey),multisigaddr.toString(),index);
-		String ret = multisigaddr.toString();
-		mWalletWrapper.addP2ShAddressToWatch(ret);
-		return ret;
+		try {
+			//Derive the child public key from the master public key.
+			WalletFile file = new WalletFile();
+			ArrayList<String> keyandchain = file.getPubAndChain(pairingID);
+			byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
+			byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
+			/**
+			 * Important, generatring from key number + 1
+			 */
+			int index = (int) file.getKeyNum(pairingID)+1;
+			HDKeyDerivation HDKey = null;
+	  		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
+	  		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, index);
+	  		byte[] childpublickey = childKey.getPubKey();
+	  		//Select network parameters
+	  		NetworkParameters params = Authenticator.getWalletOperation().getNetworkParams();
+			ECKey childPubKey = new ECKey(null, childpublickey);
+			//Create a new key pair which will kept in the wallet.
+			ECKey walletKey = new ECKey();
+			byte[] privkey = walletKey.getPrivKeyBytes();
+			List<ECKey> keys = ImmutableList.of(childPubKey, walletKey);
+			//Create a 2-of-2 multisig output script.
+			byte[] scriptpubkey = Script.createMultiSigOutputScript(2,keys);
+			Script script = ScriptBuilder.createP2SHOutputScript(Utils.sha256hash160(scriptpubkey));
+			//Create the address
+			Address multisigaddr = Address.fromP2SHScript(params, script);
+			//Save keys to file
+			file.writeToFile(pairingID,BAUtils.bytesToHex(privkey),multisigaddr.toString(),index);
+			String ret = multisigaddr.toString();
+			mWalletWrapper.addP2ShAddressToWatch(ret);
+			return ret;
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 	
 	/**Builds a raw unsigned transaction*/
@@ -252,7 +263,12 @@ public class WalletOperation extends BASE{
 	public ArrayList<PairingObject> getAllPairingObjectArray()
 	{
 		WalletFile f = new WalletFile();
-		return f.getPairingObjectsArray();
+		try {
+			return f.getPairingObjectsArray();
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public PairingObject getPairingObject(String pairID)

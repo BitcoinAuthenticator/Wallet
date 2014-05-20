@@ -101,6 +101,7 @@ public class Authenticator extends BASE{
 	{
 		@SuppressWarnings("static-access")
 		ArrayList<PairingObject> all = this.getWalletOperation().getAllPairingObjectArray();
+		if(all != null)
 		for(PairingObject po: all)
 		for(KeyObject ko: po.keys.keys)
 		{
