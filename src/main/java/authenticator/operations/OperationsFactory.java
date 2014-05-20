@@ -35,6 +35,9 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionInput.ConnectMode;
+import com.google.bitcoin.core.TransactionInput.ConnectionResult;
+import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -130,6 +133,25 @@ public class OperationsFactory extends BASE{
 						complete(ss);
 						
 						System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
+						///
+						///
+						List<TransactionInput> i = tx.getInputs();
+						List<TransactionOutput> o = Authenticator.getWalletOperation().getUnspentOutputsForAddresses(Authenticator.getWalletOperation().getAddressesArray(pairingID));
+						i.get(0).connect(o.get(0));
+						try{
+							i.get(0).verify();
+						}
+						catch(Exception e)
+						{
+							
+						}
+						finally{
+							i.get(0).disconnect();
+						}
+						
+						
+						///
+						///
 						
 						/*SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
 						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
@@ -186,8 +208,10 @@ public class OperationsFactory extends BASE{
 								 */
 								byte[] index = ByteBuffer.allocate(4).putInt(ko.index).array();
 								outputStream.write(index);
-								BigInteger priv_key = new BigInteger(ko.priv_key.getBytes());
+								//BigInteger priv_key = new BigInteger(ko.priv_key.getBytes());
+								BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.priv_key));
 								byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
+								ECKey e = new ECKey(null,pubkey);
 								outputStream.write(pubkey);
 								break;
 							}
@@ -319,7 +343,7 @@ public class OperationsFactory extends BASE{
 										byte[] walletPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
 										ECKey walletKey = new ECKey(privatekey, walletPublicKey, true);
 										
-										// Create Programm for the script
+										// Create Program for the script
 										List<ECKey> keys = ImmutableList.of(authKey, walletKey);
 										Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
 										byte[] program = scriptpubkey.getProgram();

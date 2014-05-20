@@ -140,7 +140,7 @@ public class WalletOperation extends BASE{
 			/**
 			 * Important, generatring from key number + 1
 			 */
-			int index = (int) file.getKeyNum(pairingID)+1;
+			int index = (int) file.getKeyNum(pairingID);
 			HDKeyDerivation HDKey = null;
 	  		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
 	  		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, index);
@@ -378,6 +378,11 @@ public class WalletOperation extends BASE{
 	{
 		mWalletWrapper.addWatchedAddress(address);
 		this.LOG.info("Added address to watch: " + address.toString());
+	}
+	
+	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
+	{
+		return mWalletWrapper.getUnspentOutputsForAddresses(addressArr);
 	}
 }
 
