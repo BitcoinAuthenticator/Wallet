@@ -131,29 +131,8 @@ public class OperationsFactory extends BASE{
 						timeout = ss.getSoTimeout();
 						ss.setSoTimeout(0);
 						complete(ss);
-						
 						System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
-						///
-						///
-						List<TransactionInput> i = tx.getInputs();
-						List<TransactionOutput> o = Authenticator.getWalletOperation().getUnspentOutputsForAddresses(Authenticator.getWalletOperation().getAddressesArray(pairingID));
-						i.get(0).connect(o.get(0));
-						try{
-							i.get(0).verify();
-						}
-						catch(Exception e)
-						{
-							
-						}
-						finally{
-							i.get(0).disconnect();
-						}
-						
-						
-						///
-						///
-						
-						/*SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
 						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
 			                public void onSuccess(Transaction result) {
@@ -168,7 +147,7 @@ public class OperationsFactory extends BASE{
 						result.tx.getConfidence().addEventListener((transaction, reason) -> {
 			                if (reason == TransactionConfidence.Listener.ChangeReason.SEEN_PEERS)
 			                	listenerUI.statusReport("Seen by peers ...");
-			            });*/
+			            });
 						ss.setSoTimeout(timeout);
 					}
 
