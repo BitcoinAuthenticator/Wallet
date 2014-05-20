@@ -194,23 +194,32 @@ public class WalletOperation extends BASE{
 		//Add the change
 		String changeaddr = genAddress(pairingID);
 		Address change = new Address(this.mWalletWrapper.getNetworkParameters(), changeaddr);
-		BigInteger rest = inAmount; rest.subtract(totalOut); rest.subtract(fee);
+		BigInteger rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), null, rest, change);
 			tx.addOutput(changeOut);
 			this.LOG.info("New Out Tx Sends " + Utils.bitcoinValueToFriendlyString(totalOut) + 
 							", Fees " + Utils.bitcoinValueToFriendlyString(fee) + 
 							", Rest " + Utils.bitcoinValueToFriendlyString(rest) + 
-							". From " + Integer.toString(tx.getInputs().size()) + "Inputs" +
-							", To " + Integer.toString(tx.getOutputs().size()) + "Outputs.");
+							". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
+							", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}	
 		else{
-			fee.add(rest);
+			fee=fee.add(rest);
 			this.LOG.info("New Out Tx Sends " + Utils.bitcoinValueToFriendlyString(totalOut) + 
 					", Fees " + Utils.bitcoinValueToFriendlyString(fee) + 
-					". From " + Integer.toString(tx.getInputs().size()) + "Inputs" +
-					", To " + Integer.toString(tx.getOutputs().size()) + "Outputs.");
+					". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
+					", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}
+		
+		// Check size.
+        int size = tx.bitcoinSerialize().length;
+        if (size > Transaction.MAX_STANDARD_TX_SIZE) {
+            throw new IllegalArgumentException(
+                    String.format("Transaction could not be created without exceeding max size: %d vs %d", size,
+                        Transaction.MAX_STANDARD_TX_SIZE));
+        }
+		
 		return tx;
 	}
 	

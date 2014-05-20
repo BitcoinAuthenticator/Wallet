@@ -141,7 +141,7 @@ public class WalletWrapper extends Wallet{
 	
 	public SendResult broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
 	{
-		trackedWallet.commitTx(tx);
+		//trackedWallet.commitTx(tx);
 		TransactionBroadcaster tb;
 		SendResult result = new SendResult();
         result.tx = tx;

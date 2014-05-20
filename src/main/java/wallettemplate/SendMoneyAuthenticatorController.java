@@ -11,6 +11,7 @@ import java.util.Map;
 import org.json.JSONException;
 
 import com.google.bitcoin.core.*;
+import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 
@@ -147,12 +148,15 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
 
 					@Override
 					public void onFinished(String str) {
-						
+						PopUpNotification p = new PopUpNotification("Transaction Has Been Sent !","");
+						p.showPopup();
 					}
 
 					@Override
 					public void onError(Exception e, Throwable t) {
-						crashAlert(t);
+						Throwable rootCause = Throwables.getRootCause(t);
+						PopUpNotification p = new PopUpNotification("Something Is not Right ...",rootCause.toString());
+						p.showPopup();
 					}
 					
 				});

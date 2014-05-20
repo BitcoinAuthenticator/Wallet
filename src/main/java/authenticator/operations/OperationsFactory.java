@@ -129,6 +129,9 @@ public class OperationsFactory extends BASE{
 						ss.setSoTimeout(0);
 						socket = ss;
 						complete(ss);
+						
+						System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
+						
 						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
 						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
@@ -188,23 +191,8 @@ public class OperationsFactory extends BASE{
 						}
 						
 						//Convert tx to byte array for sending.
-						String formatedTx = null;
-						final StringBuilder sb = new StringBuilder();
-						Formatter formatter = new Formatter(sb);
-						try {
-						    ByteArrayOutputStream os = new ByteArrayOutputStream();
-						    tx.bitcoinSerialize(os);
-						    byte[] bytes = os.toByteArray();
-						    for (byte b : bytes) {
-						        formatter.format("%02x", b);  
-						    }
-						    System.out.println("Raw Unsigned Transaction: " + sb.toString());
-						    formatedTx = sb.toString();
-						}catch (IOException e) {
-							System.out.println("Couldn't serialize to hex string.");
-						} finally {
-						    formatter.close();
-						}
+						String formatedTx = BAUtils.getStringTransaction(tx);
+						System.out.println("Raw unSigned Tx - " + formatedTx);
 						byte[] transaction = BAUtils.hexStringToByteArray(formatedTx);
 						outputStream.write(transaction);
 						byte payload[] = outputStream.toByteArray( );
@@ -330,9 +318,11 @@ public class OperationsFactory extends BASE{
 										// IMPORTANT - AuthSigs and the signiture we create here should refer to the same input !!
 										TransactionSignature sig1 = TransactionSignature.decodeFromBitcoin(AuthSigs.get(i), true);
 										TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
+																							
 										List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
 										Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
 										TransactionInput input = inputs.get(i);
+										String s = inputScript.toString();
 										input.setScriptSig(inputScript);
 										break;
 									}
