@@ -230,6 +230,7 @@ public class OperationsFactory extends BASE{
 						byte[] macbytes = mac.doFinal(jsonBytes);
 						ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 						outputStream.write(jsonBytes);
+						outputStream.write(macbytes);
 						byte payload[] = outputStream.toByteArray( );
 						
 						//outputStream.write(macbytes);

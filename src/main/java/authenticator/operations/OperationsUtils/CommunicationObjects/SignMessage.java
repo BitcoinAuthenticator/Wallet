@@ -28,8 +28,8 @@ public class SignMessage  extends JSONObject{
 	@SuppressWarnings("unchecked")
 	public byte[] serializeToBytes(){
 		this.put("version", version);
-		this.put("numInputs", numInputs);
-		this.put("transaction", transaction);
+		this.put("ins_n", numInputs);
+		this.put("tx", transaction);
 		JSONArray keylist = new JSONArray();
 		for (int a=0; a<numInputs; a++)
 			keylist.add(keyIndexArr.get(a).getJsonObject());
@@ -51,7 +51,7 @@ public class SignMessage  extends JSONObject{
 			 Object obj = parser.parse(strJson);
 			 JSONObject jsonObject = (JSONObject) obj;
 			 int version = ((Long) jsonObject.get("version")).intValue();
-			 int numSigs = ((Long) jsonObject.get("sig_n")).intValue();
+			 int numSigs = ((Long) jsonObject.get("sigs_n")).intValue();
 			 JSONArray msg = (JSONArray) jsonObject.get("siglist");
 			 Iterator<JSONObject> iterator = msg.iterator();
 			 JSONArray jsonlist = new JSONArray();
