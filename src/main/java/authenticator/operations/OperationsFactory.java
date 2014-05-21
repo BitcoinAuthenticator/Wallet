@@ -29,6 +29,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 
 import com.google.bitcoin.core.ECKey;
@@ -58,6 +59,7 @@ import authenticator.GCM.dispacher.MessageType;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
 import authenticator.operations.OperationsUtils.PairingProtocol;
+import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 
 public class OperationsFactory extends BASE{
 	
@@ -170,7 +172,32 @@ public class OperationsFactory extends BASE{
 					byte[] prepareTX(String pairingID) throws Exception {
 						//Create the payload
 						PairingObject pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
-						ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+						String formatedTx = BAUtils.getStringTransaction(tx);
+						System.out.println("Raw unSigned Tx - " + formatedTx);
+						//Get pub keys and indexes
+						ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>();
+						ArrayList<Integer> indexArr = new ArrayList<Integer>();
+						for(TransactionInput in:tx.getInputs())
+							for (KeyObject ko: pairingObj.keys.keys){
+								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+								if(inAddress.equals(ko.address)){
+									indexArr.add(ko.index);
+									BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.priv_key));
+									byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
+									pubKeysArr.add(pubkey);
+									break;
+								}
+							}
+						
+						SignMessage signMsgPayload = new SignMessage()
+										.setInputNumber(tx.getInputs().size())
+										.setTxString(formatedTx)
+										.setKeyIndexArray(pubKeysArr, indexArr)
+										.setVersion(1)
+										;
+						byte[] jsonBytes = signMsgPayload.serializeToBytes();
+						
+						/*ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 						byte[] version = BAUtils.hexStringToByteArray("01");
 						outputStream.write(version);
 						byte[] tempArr = ByteBuffer.allocate(4).putInt(tx.getInputs().size()).array();
@@ -181,10 +208,6 @@ public class OperationsFactory extends BASE{
 						for (KeyObject ko: pairingObj.keys.keys){
 							String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 							if(inAddress.equals(ko.address)){
-								/**
-								 * Important, appending ko.index because we save to file as keys_n + 1
-								 * See WalletOperation#genAddress
-								 */
 								byte[] index = ByteBuffer.allocate(4).putInt(ko.index).array();
 								outputStream.write(index);
 								//BigInteger priv_key = new BigInteger(ko.priv_key.getBytes());
@@ -194,23 +217,37 @@ public class OperationsFactory extends BASE{
 								outputStream.write(pubkey);
 								break;
 							}
-						}
+						}*/
 						
 						//Convert tx to byte array for sending.
-						String formatedTx = BAUtils.getStringTransaction(tx);
-						System.out.println("Raw unSigned Tx - " + formatedTx);
 						byte[] transaction = BAUtils.hexStringToByteArray(formatedTx);
-						outputStream.write(transaction);
-						byte payload[] = outputStream.toByteArray( );
+						//outputStream.write(transaction);
+						//byte payload[] = outputStream.toByteArray( );
 						//Calculate the HMAC and concatenate it to the payload
 						Mac mac = Mac.getInstance("HmacSHA256");
 						SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
 						mac.init(secretkey);
-						byte[] macbytes = mac.doFinal(payload);
-						outputStream.write(macbytes);
-						payload = outputStream.toByteArray( );
+						byte[] macbytes = mac.doFinal(jsonBytes);
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+						outputStream.write(jsonBytes);
+						byte payload[] = outputStream.toByteArray( );
+						
+						//outputStream.write(macbytes);
+						//payload = outputStream.toByteArray( );
+						
 						//Encrypt the payload
 						Cipher cipher = null;
+						try {cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");} 
+						 catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
+						 catch (NoSuchPaddingException e) {e.printStackTrace();}
+						 try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
+						 catch (InvalidKeyException e) {e.printStackTrace();}
+						 byte[] cipherBytes = null;
+						 try {cipherBytes = cipher.doFinal(payload);} 
+						 catch (IllegalBlockSizeException e) {e.printStackTrace();} 
+						 catch (BadPaddingException e) {e.printStackTrace();}
+						 return cipherBytes;
+						/*Cipher cipher = null;
 						try {
 							cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 						} catch (NoSuchAlgorithmException e) {
@@ -230,12 +267,10 @@ public class OperationsFactory extends BASE{
 							e.printStackTrace();
 						} catch (BadPaddingException e) {
 							e.printStackTrace();
-						}
-						
-						return cipherBytes;
+						}*/
 					}
 					
-					 void complete(ServerSocket ss) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException
+					 void complete(ServerSocket ss) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
 					 {
 						// Init dispacher
 							byte[] cipherKeyBytes;
@@ -294,15 +329,15 @@ public class OperationsFactory extends BASE{
 							List<TransactionInput> inputs = tx.getInputs();
 							//Break apart the signature array sent over from the authenticator
 							String sigstr = BAUtils.bytesToHex(testsig);
-							ArrayList<byte[]> AuthSigs =  new ArrayList<byte[]>();
-							int pos = 4;
+							ArrayList<byte[]> AuthSigs = SignMessage.deserializeToBytes(testsig);//=  new ArrayList<byte[]>();
+							/*int pos = 4;
 							for (int b=0; b<tx.getInputs().size(); b++){
 								String strlen = sigstr.substring(pos, pos+2);
 								int intlen = Integer.parseInt(strlen, 16)*2;
 								pos = pos + 2;
 								AuthSigs.add(BAUtils.hexStringToByteArray(sigstr.substring(pos, pos+intlen)));
 								pos = pos + intlen;
-							}
+							}*/
 							//Loop to create a signature for each input
 							int i =0;
 							for(TransactionInput in: tx.getInputs()){

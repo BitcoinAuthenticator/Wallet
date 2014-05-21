@@ -10,7 +10,9 @@ import javax.crypto.*;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
+import authenticator.BAUtils;
 import authenticator.UpNp;
 import authenticator.WalletFile;
 import authenticator.operations.OnOperationUIUpdate;
@@ -20,13 +22,14 @@ import authenticator.operations.OnOperationUIUpdate;
  * opens a port for Alice, displays a QR code for the user to scan, and receives the master public key and chaincode.
  */
 public class PairingProtocol {
-	public static DataInputStream in;
-	public static DataOutputStream out;
-	public static byte[] chaincode;
+	public  DataInputStream in;
+	public  DataOutputStream out;
+	/*public static byte[] chaincode;
 	public static byte[] mPubKey;
 	public static byte[] gcmRegId;
 	public static byte[] pairingID;
-	public static SecretKey sharedsecret;
+	public static SecretKey sharedsecret;*/
+	public  SecretKey sharedsecret;
 	
   /**
    * Run a complete process of pairing with an authenticator device
@@ -40,7 +43,7 @@ public class PairingProtocol {
    * @param {@link authenticator.operations.OnOperationUIUpdate} listener
    * @throws Exception
    */
-  public static void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
+  public void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[1];
@@ -58,9 +61,10 @@ public class PairingProtocol {
       kgen.init(256);
 
       // Generate the secret key specs.
-      sharedsecret = kgen.generateKey();
+      //sharedsecret = kgen.generateKey();
+      SecretKey sharedsecret = kgen.generateKey();
       byte[] raw = sharedsecret.getEncoded();
-      String key = bytesToHex(raw);
+      String key = BAUtils.bytesToHex(raw);
 	  
 	  //Display a QR code for the user to scan
 	  QRCode PairingQR = new QRCode(ip, localip, walletType, key);
@@ -71,7 +75,7 @@ public class PairingProtocol {
 	  System.out.println("Connected to Alice");
 	  postUIStatusUpdate(listener,"Connected to Alice");
     
-	  // Receive Master Public Key and Chaincode
+	  // Receive payload
 	  in = new DataInputStream(socket.getInputStream());
 	  out = new DataOutputStream(socket.getOutputStream());
 	  int keysize = in.readInt();
@@ -79,30 +83,39 @@ public class PairingProtocol {
 	  in.read(cipherKeyBytes);
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
-	  String payload = bytesToHex(cipher.doFinal(cipherKeyBytes));
+	  String payload = BAUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
     
 	  // Verify HMAC
-	  byte[] testpayload = hexStringToByteArray(payload.substring(0,payload.length()-64));
-	  byte[] hash = hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
+	  byte[] testpayload = BAUtils.hexStringToByteArray(payload.substring(0,payload.length()-64));
+	  byte[] hash = BAUtils.hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
 	  Mac mac = Mac.getInstance("HmacSHA256");
 	  mac.init(sharedsecret);
 	  byte[] macbytes = mac.doFinal(testpayload);
 	  if (Arrays.equals(macbytes, hash)){
-		  mPubKey = hexStringToByteArray(payload.substring(0,66));
+		  /*mPubKey = hexStringToByteArray(payload.substring(0,66));
 		  chaincode = hexStringToByteArray(payload.substring(66,130));
 		  pairingID = hexStringToByteArray(payload.substring(130,210));
-		  gcmRegId = hexStringToByteArray(payload.substring(210,payload.length()-64));
-		  System.out.println("Received Master Public Key: " + bytesToHex(mPubKey) + "\n" +
-				  			 "chaincode: " +  bytesToHex(chaincode) + "\n" +
-				  			 "gcmRegId: " +  new String(gcmRegId) + "\n" + 
-				  			 "pairing ID: " + new String(pairingID));
-		  postUIStatusUpdate(listener,"Received Master Public Key: " + bytesToHex(mPubKey) + "\n" +
-		  			 "chaincode: " +  bytesToHex(chaincode) + "\n" +
-		  			 "gcmRegId: " +  new String(gcmRegId) + "\n" + 
-		  			 "pairing ID: " + new String(pairingID));
-		  //Save mPubKey and the Chaincode to file
+		  gcmRegId = hexStringToByteArray(payload.substring(210,payload.length()-64));*/
+		//Parse the received json object
+		  String strJson = new String(testpayload);
+		  JSONParser parser=new JSONParser();
+		  Object obj = parser.parse(strJson);
+		  JSONObject jsonObject = (JSONObject) obj;
+		  String mPubKey = (String) jsonObject.get("mpubkey");
+		  String chaincode = (String) jsonObject.get("chaincode");
+		  String pairingID = (String) jsonObject.get("pairID");
+		  String GCM = (String) jsonObject.get("gcmID");
+		  System.out.println("Received Master Public Key: " + mPubKey + "\n" +
+		  				  			 "chaincode: " +  chaincode + "\n" +
+		  				  			 "gcmRegId: " +  GCM + "\n" + 
+		  				  			 "pairing ID: " + pairingID);
+		  postUIStatusUpdate(listener,"Received Master Public Key: " + mPubKey + "\n" +
+		  			 "chaincode: " +  chaincode + "\n" +
+		  			 "gcmRegId: " +  GCM + "\n" + 
+		  			 "pairing ID: " + pairingID);
+		  //Save to file
 		  WalletFile file = new WalletFile();
-		  file.writePairingData(bytesToHex(mPubKey), bytesToHex(chaincode), key, new String(gcmRegId),new String(pairingID),args[0]);
+		  file.writePairingData(mPubKey, chaincode, key, GCM, pairingID, args[0]);
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");
@@ -118,13 +131,13 @@ public class PairingProtocol {
 
   }
   
-  public static void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
+  public  void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
   {
 	  if(listener != null)
 		  listener.statusReport(str);
   }
   
-  final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+  /*final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 	public static String bytesToHex(byte[] bytes) {
 	    char[] hexChars = new char[bytes.length * 2];
 	    for ( int j = 0; j < bytes.length; j++ ) {
@@ -143,5 +156,5 @@ public class PairingProtocol {
 	                             + Character.digit(s.charAt(i+1), 16));
 	    }
 	    return data;
-	}
+	}*/
 }
