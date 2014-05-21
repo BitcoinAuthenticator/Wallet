@@ -105,15 +105,18 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
     			return false;
     	}
     	//check sufficient funds
-    	BigInteger amount = null;
+    	BigInteger amount = BigInteger.ZERO;
     	for(Node n:scrlContent.getChildren())
     	{
     		NewAddress na = (NewAddress)n;
-    		if(amount == null)
-    			amount = Utils.toNanoCoins(na.txfAmount.getText());
-    		amount.add(Utils.toNanoCoins(na.txfAmount.getText()));
+    		amount = amount.add(Utils.toNanoCoins(na.txfAmount.getText()));
     	}
+    	amount = amount.add(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE);
     	if(amount.compareTo(this.balance) > 0) return false;
+    	
+    	//Check min dust amount 
+    	if(amount.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) return false;
+    	
     	return true;
     }
     public void send(ActionEvent event) {
@@ -324,7 +327,7 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
         		return false;
         	// check dust amount 
         	BigInteger bi = Utils.toNanoCoins(txfAmount.getText());
-        	if(bi.compareTo(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) < 0)
+        	if(bi.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
         		return false;
         	
         	return true;

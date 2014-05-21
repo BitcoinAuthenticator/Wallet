@@ -42,7 +42,7 @@ public class WalletFile extends BASE{
 		try {
 			filePath = BAUtils.getAbsolutePathForFile("wallet.json");//new java.io.File( "." ).getCanonicalPath() + "/wallet.json";
 		} catch (IOException e) {
-			e.printStackTrace();
+			// it just means we don't have the file !
 		}
 		finally{
 			lock.unlock();

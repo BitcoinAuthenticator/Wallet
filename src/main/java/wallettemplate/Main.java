@@ -10,6 +10,7 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
+import com.google.bitcoin.params.TestNet2Params;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
@@ -106,6 +107,8 @@ public class Main extends BAApplication {
         }
         else if(this.ApplicationParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
+        	bitcoin = new WalletAppKit(np, new File("."), APP_NAME+"_testnet");
+        	bitcoin.useTor();
         }        
 
         // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen

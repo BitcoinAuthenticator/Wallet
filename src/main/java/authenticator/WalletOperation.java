@@ -129,6 +129,10 @@ public class WalletOperation extends BASE{
 		for (TransactionOutput out:to){
 			totalOut = totalOut.add(out.getValue());
 		}
+		//Check minimum output
+		if(totalOut.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
+			throw new IllegalArgumentException("Tried to send dust with ensureMinRequiredFee set - no way to complete this");
+		
 		//Get unspent watched addresses of this pairing ID
 		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
 		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
@@ -142,6 +146,11 @@ public class WalletOperation extends BASE{
             tx.addInput(input);
             inAmount = inAmount.add(input.getValue());
 		}
+		
+		//Check in covers the out
+		if(inAmount.compareTo(totalOut.add(fee)) < 0)
+			throw new IllegalArgumentException("Insufficient funds! You cheap bastard !");
+		
 		//Add the outputs
 		for (TransactionOutput output : to)
             tx.addOutput(output);

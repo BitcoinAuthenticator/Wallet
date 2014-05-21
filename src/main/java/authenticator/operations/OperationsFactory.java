@@ -146,10 +146,6 @@ public class OperationsFactory extends BASE{
 			                	listenerUI.onError(null,t);
 			                }
 			            });
-						result.tx.getConfidence().addEventListener((transaction, reason) -> {
-			                if (reason == TransactionConfidence.Listener.ChangeReason.SEEN_PEERS)
-			                	listenerUI.statusReport("Seen by peers ...");
-			            });
 						ss.setSoTimeout(timeout);
 					}
 
