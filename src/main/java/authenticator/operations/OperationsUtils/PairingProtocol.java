@@ -76,6 +76,7 @@ public class PairingProtocol {
 	  postUIStatusUpdate(listener,"Connected to Alice");
     
 	  // Receive payload
+	  postUIStatusUpdate(listener,"Decrypting message ...");
 	  in = new DataInputStream(socket.getInputStream());
 	  out = new DataOutputStream(socket.getOutputStream());
 	  int keysize = in.readInt();
@@ -91,11 +92,8 @@ public class PairingProtocol {
 	  Mac mac = Mac.getInstance("HmacSHA256");
 	  mac.init(sharedsecret);
 	  byte[] macbytes = mac.doFinal(testpayload);
+	  postUIStatusUpdate(listener,"Parsing message ...");
 	  if (Arrays.equals(macbytes, hash)){
-		  /*mPubKey = hexStringToByteArray(payload.substring(0,66));
-		  chaincode = hexStringToByteArray(payload.substring(66,130));
-		  pairingID = hexStringToByteArray(payload.substring(130,210));
-		  gcmRegId = hexStringToByteArray(payload.substring(210,payload.length()-64));*/
 		//Parse the received json object
 		  String strJson = new String(testpayload);
 		  JSONParser parser=new JSONParser();
@@ -121,13 +119,6 @@ public class PairingProtocol {
 		  System.out.println("Message authentication code is invalid");
 		  postUIStatusUpdate(listener,"Message authentication code is invalid");
 	  }
-	  
-	  //dispose
-	  //in.close();
-	  //out.close();
-	  //plugnplay.removeMapping();
-	  //ss.close();
-	  // Return to main
 
   }
   
@@ -136,25 +127,5 @@ public class PairingProtocol {
 	  if(listener != null)
 		  listener.statusReport(str);
   }
-  
-  /*final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for ( int j = 0; j < bytes.length; j++ ) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = hexArray[v >>> 4];
-	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
-	
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}*/
+
 }
