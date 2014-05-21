@@ -42,6 +42,8 @@ public class Main extends Application {
     public static WalletAppKit bitcoin;
     public static Main instance;
     
+    public Controller mainController;
+    
     private StackPane uiStack;
     private Pane mainUI;
     
@@ -71,7 +73,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(location);
         mainUI = loader.load();
 
-        Controller controller = loader.getController();
+        mainController = loader.getController();
         // Configure the window with a StackPane so we can overlay things on top of the main UI.
         uiStack = new StackPane(mainUI);
         mainWindow.setTitle(APP_NAME);
@@ -102,7 +104,7 @@ public class Main extends Application {
 
         // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen
         // or progress widget to keep the user engaged whilst we initialise, but we don't.
-        bitcoin.setDownloadListener(controller.progressBarUpdater())
+        bitcoin.setDownloadListener(mainController.progressBarUpdater())
                .setBlockingStartup(false)
                .setUserAgent(APP_NAME, "1.0");
         bitcoin.startAsync();
@@ -124,7 +126,7 @@ public class Main extends Application {
         	
         }).start();
         
-        controller.onBitcoinSetup();
+        mainController.onBitcoinSetup();
         mainWindow.show();
     }
     
@@ -149,6 +151,7 @@ public class Main extends Application {
             blurIn(mainUI);
             this.ui = null;
             this.controller = null;
+            mainController.refreshUI();
         }
     }
 

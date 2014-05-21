@@ -77,6 +77,11 @@ public class Controller extends BaseUI{
         scrl.setContent(scrlContent);
         refreshBalanceLabel();
     }
+    
+    public void refreshUI(){
+    	refreshBalanceLabel();
+    	loadAddresses();
+    }
 
     public class ProgressBarUpdater extends DownloadListener {
         @Override
@@ -137,6 +142,8 @@ public class Controller extends BaseUI{
     	Main.instance.overlayUI("New_p2sh_address.fxml",null);
     }
     
+    
+    
     private void loadAddresses()
     {
     	scrlContent.clearAll();
@@ -188,17 +195,7 @@ public class Controller extends BaseUI{
     
     private void refreshPairedWalletsBalance()
     {
-    	//TODO - crashed and doesn't work
-    	/*for(Node n:scrlContent.getChildren()){
-    		ClickableBitcoinAddress addressControl = (ClickableBitcoinAddress)n;
-    		BigInteger balance = null;
-    		try {
-				balance = Authenticator.getWalletOperation().getBalance(addressControl.getPairID());
-				addressControl.setBalance(Utils.bitcoinValueToFriendlyString(balance==null? BigInteger.ZERO:balance));
-			} catch (ScriptException | UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-    	}*/
+    	loadAddresses();
     }
     
     public String generateFreshAuthenticatorP2SHAddress(String pairID) {
