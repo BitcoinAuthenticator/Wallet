@@ -134,12 +134,9 @@ public class WalletOperation extends BASE{
 	@SuppressWarnings("static-access")
 	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
 		//Get total output
-		BigInteger totalOut = null;
+		BigInteger totalOut = BigInteger.ZERO;
 		for (TransactionOutput out:to){
-			if(totalOut == null)
-				totalOut = out.getValue();
-			else
-				totalOut.add(out.getValue());
+			totalOut = totalOut.add(out.getValue());
 		}
 		//Get unspent watched addresses of this pairing ID
 		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
@@ -149,13 +146,10 @@ public class WalletOperation extends BASE{
 		// Coin selection
 		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee),candidates);
 		// add inputs
-		BigInteger inAmount = null;
+		BigInteger inAmount = BigInteger.ZERO;
 		for (TransactionOutput input : outSelected){
             tx.addInput(input);
-            if(inAmount == null)
-            	inAmount = input.getValue();
-            else
-            	inAmount.add(input.getValue());
+            inAmount = inAmount.add(input.getValue());
 		}
 		//Add the outputs
 		for (TransactionOutput output : to)

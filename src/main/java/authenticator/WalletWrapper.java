@@ -1,21 +1,11 @@
 package authenticator;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.slf4j.Logger;
-
-import authenticator.WalletOperation.UnspentOutput;
-
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.PeerGroup;
@@ -23,12 +13,7 @@ import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionBroadcaster;
 import com.google.bitcoin.core.TransactionOutput;
-import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.SendRequest;
-import com.google.bitcoin.core.Wallet.SendResult;
-import com.google.bitcoin.utils.Threading;
-import com.google.bitcoin.wallet.CoinSelection;
 
 /**
  * A wrapper class to handle all operations regarding the bitcoinj wallet. All operations requiring wallet functions done by the authenticator 
@@ -79,16 +64,13 @@ public class WalletWrapper extends Wallet{
 	 */
 	public BigInteger getBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
 	{
-		BigInteger retBalance = null;
+		BigInteger retBalance = BigInteger.ZERO;
 		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
 		for(TransactionOutput Txout: allWatchedAddresses)
 			for(String lookedAddr: addressArr){
 				String TxOutAddress = Txout.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
 				if(TxOutAddress.equals(lookedAddr)){
-					if(retBalance == null)
-						retBalance = Txout.getValue();
-					else
-						retBalance.add(Txout.getValue());
+					retBalance = retBalance.add(Txout.getValue());
 					break;
 				}
 			}		
@@ -119,14 +101,11 @@ public class WalletWrapper extends Wallet{
 	{
 		//TODO some kind of coin selection
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
-		BigInteger amount = null;
+		BigInteger amount = BigInteger.ZERO;
 		for(TransactionOutput out: candidates)
 		{
-			if(amount == null){
-				amount = out.getValue();
-			}
-			else if(amount.compareTo(value) < 0){
-				amount.add(out.getValue());
+			if(amount.compareTo(value) < 0){
+				amount = amount.add(out.getValue());
 			}
 			else break;
 			ret.add(out);
