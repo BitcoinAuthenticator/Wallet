@@ -2,12 +2,14 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.OnAuthenticatoGUIUpdateListener;
+import authenticator.ui_helpers.BAApplication;
 
 import com.aquafx_project.AquaFx;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
+import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
 import com.google.bitcoin.utils.Threading;
@@ -35,33 +37,33 @@ import java.util.ArrayList;
 
 import static wallettemplate.utils.GuiUtils.*;
 
-public class Main extends Application {
-    public static String APP_NAME = "WalletTemplate";
+public class Main extends BAApplication {
 
-    public static NetworkParameters params = MainNetParams.get();
-    public static WalletAppKit bitcoin;
+	public static String APP_NAME = "WalletTemplate";
     public static Main instance;
-    
     public Controller mainController;
-    
     private StackPane uiStack;
     private Pane mainUI;
-    
+
     @Override
     public void start(Stage mainWindow) throws Exception {
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
-        try {
-            init(mainWindow);
-        } catch (Throwable t) {
-            // Nicer message for the case where the block store file is locked.
-            if (Throwables.getRootCause(t) instanceof BlockStoreException) {
-                GuiUtils.informationalAlert("Already running", "This application is already running and cannot be started twice.");
-            } else {
-                throw t;
-            }
-        }
+     
+        if(super.BAInit(APP_NAME))
+	        try {
+	            init(mainWindow);
+	        } catch (Throwable t) {
+	            // Nicer message for the case where the block store file is locked.
+	            if (Throwables.getRootCause(t) instanceof BlockStoreException) {
+	                GuiUtils.informationalAlert("Already running", "This application is already running and cannot be started twice.");
+	            } else {
+	                throw t;
+	            }
+	        }
+        else
+        	Runtime.getRuntime().exit(0);
     }
 
     private void init(Stage mainWindow) throws Exception {
@@ -89,10 +91,10 @@ public class Main extends Application {
         // a future version.
         Threading.USER_THREAD = Platform::runLater;
         // Create the app kit. It won't do any heavyweight initialization until after we start it.
-        bitcoin = new WalletAppKit(params, new File("."), APP_NAME);
-        if (params == RegTestParams.get()) {
-            bitcoin.connectToLocalHost();   // You should run a regtest mode bitcoind locally.
-        } else if (params == MainNetParams.get()) {
+        NetworkParameters np = null;
+        if(this.ApplicationParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
+        	np = MainNetParams.get();
+        	bitcoin = new WalletAppKit(np, new File("."), APP_NAME);
             // Checkpoints are block headers that ship inside our app: for a new user, we pick the last header
             // in the checkpoints file and then download the rest from the network. It makes things much faster.
             // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
@@ -101,6 +103,9 @@ public class Main extends Application {
             // As an example!
             bitcoin.useTor();
         }
+        else if(this.ApplicationParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
+        	np = TestNet3Params.get();
+        }        
 
         // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen
         // or progress widget to keep the user engaged whilst we initialise, but we don't.

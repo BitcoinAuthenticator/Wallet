@@ -9,11 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
+
 import authenticator.db.KeyObject;
 import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;
+
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.ECKey;
@@ -25,6 +28,7 @@ import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -343,6 +347,19 @@ public class WalletOperation extends BASE{
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
 		return mWalletWrapper.getUnspentOutputsForAddresses(addressArr);
+	}
+	
+	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException
+	{
+		return mWalletWrapper.sendCoins(req);
+	}
+	
+	public void addEventListener(WalletEventListener listener)
+	{
+		mWalletWrapper.addEventListener(listener);
+	}
+	public DeterministicKey currentReceiveKey(){
+		return mWalletWrapper.currentReceiveKey();
 	}
 }
 

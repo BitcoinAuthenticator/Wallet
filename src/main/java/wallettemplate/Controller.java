@@ -46,7 +46,6 @@ import java.util.Date;
 
 import org.json.JSONException;
 
-import static wallettemplate.Main.bitcoin;
 import static wallettemplate.utils.GuiUtils.checkGuiThread;
 
 /**
@@ -72,7 +71,7 @@ public class Controller extends BaseUI{
     }
 
     public void onBitcoinSetup() {
-        bitcoin.wallet().addEventListener(new BalanceUpdater());
+        Authenticator.getWalletOperation().addEventListener(new BalanceUpdater());
         loadAddresses();
         scrl.setContent(scrlContent);
         refreshBalanceLabel();
@@ -145,13 +144,14 @@ public class Controller extends BaseUI{
     
     
     
-    private void loadAddresses()
+    @SuppressWarnings("static-access")
+	private void loadAddresses()
     {
     	scrlContent.clearAll();
     	addressArr = new ArrayList<ClickableBitcoinAddress>();
     	//Normal P2PSH from wallet
     	ClickableBitcoinAddress normalAddressControl = new ClickableBitcoinAddress(false);
-    	normalAddressControl.setAddress(bitcoin.wallet().currentReceiveKey().toAddress(Main.params).toString());
+    	normalAddressControl.setAddress(Authenticator.getWalletOperation().currentReceiveKey().toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
     	normalAddressControl.setPairName("Pay-To-Pub-Hash");
     	normalAddressControl.setBalance(Utils.bitcoinValueToFriendlyString(Authenticator.getWalletOperation().getGeneralWalletEstimatedBalance()));
     	scrlContent.addItem(normalAddressControl);
