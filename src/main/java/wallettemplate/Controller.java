@@ -128,7 +128,8 @@ public class Controller extends BaseUI{
     }
 
     public void refreshBalanceLabel() {
-        final BigInteger amount = Authenticator.getWalletOperation().getGeneralWalletEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        @SuppressWarnings("static-access")
+		final BigInteger amount = Authenticator.getWalletOperation().getGeneralAllWalletsCombinedEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         balance.setText(Utils.bitcoinValueToFriendlyString(amount));
     }
     

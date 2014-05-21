@@ -314,6 +314,11 @@ public class WalletOperation extends BASE{
     	return mWalletWrapper.getEstimatedBalance();
     }
     
+    public static BigInteger getGeneralAllWalletsCombinedEstimatedBalance()
+    {
+    	return mWalletWrapper.getCombinedEstimatedBalance();
+    }
+    
     public NetworkParameters getNetworkParams()
 	{
 		return mWalletWrapper.getNetworkParams();

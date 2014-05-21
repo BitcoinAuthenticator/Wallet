@@ -83,6 +83,13 @@ public class WalletWrapper extends Wallet{
 		return walletBalance;
 	}
 	
+	public BigInteger getCombinedEstimatedBalance()
+	{
+		BigInteger walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
+		BigInteger authenticatorBalance = trackedWallet.getWatchedBalance();
+		return walletBalance.add(authenticatorBalance);
+	}
+	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
 		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
