@@ -5,6 +5,7 @@ import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.ui_helpers.BAApplication;
 
 import com.aquafx_project.AquaFx;
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
@@ -130,6 +131,8 @@ public class Main extends BAApplication {
 			}
         	
         }).start();
+        
+        ECKey k = Authenticator.getWalletOperation().findKeyFromPubHash("d8f1db5e6feb9b663b2b04b7a51ac83f95142387".getBytes());
         
         mainController.onBitcoinSetup();
         mainWindow.show();

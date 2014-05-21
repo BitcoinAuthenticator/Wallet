@@ -361,6 +361,10 @@ public class WalletOperation extends BASE{
 	public DeterministicKey currentReceiveKey(){
 		return mWalletWrapper.currentReceiveKey();
 	}
+	
+	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
+		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
+	}
 }
 
 

@@ -22,3 +22,14 @@ A GUI bitcoin wallet based on bitcoinj template wallet for the [BitcoinAuthentic
   File -> Import -> existing maven project
    ``` 
 3. Import pom.xml
+
+#### TODO
+1. Testing Testing Testing !
+2. Improve UI and make it smoother .. string validation where needed .. you know the drill
+3. Transaction list Pane
+4. Wallet backup
+5. Currency conversions from bitcoin
+6. Smart input selection
+7. Smart fee calculation
+8. Improve command line parameters for various functionalities
+9. Basic RPC

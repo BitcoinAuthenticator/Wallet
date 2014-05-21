@@ -4,8 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedList;
+
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.PeerGroup;
@@ -133,5 +135,9 @@ public class WalletWrapper extends Wallet{
         result.tx = tx;
         result.broadcastComplete =  mPeerGroup.broadcastTransaction(tx);
         return result;
+	}
+	
+	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
+		return trackedWallet.findKeyFromPubHash(pubkeyHash);
 	}
 }
