@@ -11,6 +11,11 @@ import com.google.bitcoin.params.MainNetParams;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+/**
+ * The basic BitcoinAuthenticator Javafx application. Covers functionalities like comnad line params and general app instantiations
+ * @author alon
+ *
+ */
 public class BAApplication extends Application{
 	public  String APP_NAME = "WalletTemplate";
 

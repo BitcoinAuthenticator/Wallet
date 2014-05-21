@@ -13,13 +13,26 @@ import authenticator.db.PairingObject;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 
+/**
+ * <p>The main building block of the BitocinAuthenticator wallet.<br>
+ * Covers every aspect of the operations and the only object that should be accessed from the UI.<br></p>
+ * <b>Main components are:</b> 
+ * <ol><li>TCPListener - basically a thread that polls operations that require communication with the Authenticator app.</li>
+ * <li>OnAuthenticatoGUIUpdateListener - a general pupose UI listener.</li>
+ * <li>operationsQueue - all operations regarding communication with the Authenticators are added to this queue and executed by the
+ * 	  TCPListener.</li>
+ * <li>{@link authenticator.WalletOperation}</li>
+ * </ol>
+ * <br>
+ * @author alon
+ *
+ */
 public class Authenticator extends BASE{
 	final static public int LISTENER_PORT = 1234;
 	
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
-	
 	private static WalletOperation mWalletOperation;
 
 	public Authenticator(Wallet wallet, PeerGroup peerGroup, OnAuthenticatoGUIUpdateListener listener) throws IOException

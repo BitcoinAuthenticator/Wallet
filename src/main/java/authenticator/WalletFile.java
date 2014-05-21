@@ -25,22 +25,10 @@ import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;
 
 /**
- * This class manages the saving a loading of keys to and from a .json file.
+ * <p>This class is the authenticators DB.</p>
  * 
- * WalletFile structure
- * 	{ // Main body
- * 
- * 		{ // Pairing Data array
- * 			
- * 			{ 
- * 				
- * 				{@link wallet.db.PairingObject}	
- * 
- * 			}
- * 
- * 		}
- * 
- * 	}
+ * <br>
+ * @author Alon
  */
 public class WalletFile extends BASE{
 	

@@ -38,42 +38,29 @@ import com.google.common.collect.ImmutableList;
 
 
 /**
- * This class is a collection of methods for creating and sending a transaction over to the Authenticator
+ *<p>A super class for handling all wallet operations<br>
+ * This class covers DB data retrieving, bitcoinj wallet operations<br></p>
+ * 
+ * <b>Main components are:</b>
+ * <ol><li>{@link authenticator.WalletWrapper}</li></ol>
+ * 
+ * <b>Main sections are:</b>
+ * <ol><li>Authenticator Wallet Operations - all authenticator related operations</li>
+ * <li> DAL - Data Access Layer, uses {@link authenticator.WalletFile}</li>
+ * <li>Regular Bitocoin Wallet Operations - all operations regarding the regular bitcoinj wallet.<br>
+ * This template wallet is first and foremost a working bitcoinj wallet.</li>
+ * <li>Helper functions</li>
+ * </ol>
+ * @author Alon
  */
 public class WalletOperation extends BASE{
 	
 	private static WalletWrapper mWalletWrapper;
 	
-	static String unsignedTx;
-	static Transaction spendtx;
-	static Map<String,Integer>  mpNumInputs;
-	static Map<String,ArrayList<byte[]>> mpPublickeys;
-	static Map<String,ArrayList<Integer>> mpChildkeyindex;
-	static Map<String,Boolean> mpTestnet;
-	
 	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
 		super(WalletOperation.class);
 		if(mWalletWrapper == null)
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
-		if(mpNumInputs == null)
-			mpNumInputs = new HashMap<String,Integer>();
-		if(mpPublickeys == null)
-			mpPublickeys = new HashMap<String,ArrayList<byte[]>>();
-		if(mpChildkeyindex == null)
-			mpChildkeyindex = new HashMap<String,ArrayList<Integer>>();
-		if(mpChildkeyindex == null)
-			mpTestnet = new HashMap<String,Boolean>();
-		
-		String filePath = BAUtils.getAbsolutePathForFile("wallet.json");//new java.io.File( "." ).getCanonicalPath() + "/wallet.json";
-		File f = new File(filePath);
-		if(f.exists() && !f.isDirectory()) {
-			WalletFile file = new WalletFile();
-			try {
-				mpTestnet = file.getTestnets();
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	//#####################################
@@ -215,7 +202,7 @@ public class WalletOperation extends BASE{
 	
 	//#####################################
 	//
-	//		Simple DAL
+	//		 DAL
 	//
 	//#####################################
 	
@@ -275,36 +262,6 @@ public class WalletOperation extends BASE{
 	}
 	
 	//#####################################
-	//
-	//		Helper functions
-	//
-	//#####################################    
-	/**Defines and object of data that makes up an unspent output*/
-    class UnspentOutput {
-    	String txid;
-    	String index;
-    	long amount;
-    	
-    	public UnspentOutput(String id, String in, long amt){
-    		this.txid = id;
-    		this.index = in;
-    		this.amount = amt;
-    	}
-    	
-    	public String getTxid(){
-    		return txid;
-    	}
-    	
-    	public String getIndex(){
-    		return index;
-    	}
-    	
-    	public long getAmount(){
-    		return amount;
-    	}
-    }
-    
-    //#####################################
   	//
   	//	Regular Bitocoin Wallet Operations
   	//
@@ -340,7 +297,7 @@ public class WalletOperation extends BASE{
 	}
 	public void addP2ShAddressToWatch(final Address address)
 	{
-		mWalletWrapper.addWatchedAddress(address);
+		mWalletWrapper.addP2ShAddressToWatch(address);
 		this.LOG.info("Added address to watch: " + address.toString());
 	}
 	
@@ -365,6 +322,14 @@ public class WalletOperation extends BASE{
 	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
 		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
 	}
+	
+	//#####################################
+	//
+	//		Helper functions
+	//
+	//#####################################    
+  
+    
 }
 
 

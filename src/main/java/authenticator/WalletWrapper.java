@@ -16,23 +16,40 @@ import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionBroadcaster;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.WalletEventListener;
+import com.google.bitcoin.core.Wallet.SendResult;
+import com.google.bitcoin.crypto.DeterministicKey;
 
 /**
- * A wrapper class to handle all operations regarding the bitcoinj wallet. All operations requiring wallet functions done by the authenticator 
- * Should pass here in order to integrate the regular wallet operations with the authenticator added functionality.
+ * <p>A wrapper class to handle all operations regarding the bitcoinj wallet.</p>
+ * 
+ * <p><b>A normal bitcoinj wallet</b><br>
+ * This template wallet operates as a normal bitcoinj wallet, 
+ * thats why we created this wrapper so we could access all info and data that a normal bitcoinj wallet has.</p>
+ * 
+ * <p><b>Integration with the Authenticator app</b><br>
+ * Alot of out Authenticator operations depend on an underlying wallet operation, for that, we use this class
+ * as an intermediary layer between the {@link authenticator.WalletOperation} class and bitcoinj's {@link com.google.bitcoin.core.Wallet} class
+ * </p>
+ * 
+ * <br>
  * @author alon
  *
  */
-public class WalletWrapper extends Wallet{
+public class WalletWrapper extends BASE{
 
 	private Wallet trackedWallet;
 	private PeerGroup mPeerGroup;
 	public WalletWrapper(Wallet wallet, PeerGroup peerGroup){
-		super(wallet.getNetworkParameters());
+		super(WalletWrapper.class);
 		this.trackedWallet = wallet;
 		this.mPeerGroup = peerGroup;
 	}
 	public  Wallet getTrackedWallet(){ return trackedWallet; }
+	
+	public NetworkParameters getNetworkParameters(){
+		return trackedWallet.getNetworkParameters();
+	}
 	
 	/**
 	 * Add A new P2Sh authenticator address to watch list 
@@ -127,11 +144,11 @@ public class WalletWrapper extends Wallet{
 		return trackedWallet.getNetworkParameters();
 	}
 	
-	public SendResult broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
+	public Wallet.SendResult broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
 	{
 		trackedWallet.commitTx(tx);
 		TransactionBroadcaster tb;
-		SendResult result = new SendResult();
+		Wallet.SendResult result = new Wallet.SendResult();
         result.tx = tx;
         result.broadcastComplete =  mPeerGroup.broadcastTransaction(tx);
         return result;
@@ -139,5 +156,18 @@ public class WalletWrapper extends Wallet{
 	
 	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
 		return trackedWallet.findKeyFromPubHash(pubkeyHash);
+	}
+	
+	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException{
+		return trackedWallet.sendCoins(req);
+	}
+	
+	public void addEventListener(WalletEventListener listener)
+	{
+		trackedWallet.addEventListener(listener);
+	}
+	
+	public DeterministicKey currentReceiveKey(){
+		return trackedWallet.currentReceiveKey();
 	}
 }
