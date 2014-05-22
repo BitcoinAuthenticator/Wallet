@@ -12,6 +12,7 @@ import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
+import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
 
 /**
  * <p>The main building block of the BitocinAuthenticator wallet.<br>
@@ -34,6 +35,7 @@ public class Authenticator extends BASE{
 	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
 	private static WalletOperation mWalletOperation;
+	private static BAApplicationParameters mApplicationParams;
 
 	public Authenticator(Wallet wallet, PeerGroup peerGroup, OnAuthenticatoGUIUpdateListener listener) throws IOException
 	{
@@ -63,6 +65,7 @@ public class Authenticator extends BASE{
 		assert(this.getWalletOperation() != null);
 		assert(mListener != null);
 		assert(mTCPListener != null);
+		assert(mApplicationParams != null);
 		mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	
@@ -122,10 +125,24 @@ public class Authenticator extends BASE{
 				@SuppressWarnings("static-access")
 				boolean isWatched = this.getWalletOperation().isWatchingAddress(ko.address);
 				if(!isWatched)
-					this.getWalletOperation().addP2ShAddressToWatch(ko.address);
+					getWalletOperation().addP2ShAddressToWatch(ko.address);
 			} catch (AddressFormatException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	//#####################################
+	//
+	//		Getters and Setters
+	//
+	//#####################################
+	
+	public static BAApplicationParameters getApplicationParams(){
+		return mApplicationParams;
+	}
+	public Authenticator setApplicationParams(BAApplicationParameters params){
+		mApplicationParams = params;
+		return this;
 	}
 }

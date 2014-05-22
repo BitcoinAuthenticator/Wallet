@@ -133,7 +133,9 @@ public class Main extends BAApplication {
 				
 			}
         	
-        }).start();
+        })
+        .setApplicationParams(ApplicationParams)
+        .start();
 
         mainController.onBitcoinSetup();
         mainWindow.show();

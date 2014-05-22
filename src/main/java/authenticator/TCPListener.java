@@ -73,34 +73,34 @@ public class TCPListener extends BASE{
 							}
 							catch (SocketTimeoutException e){ isConnected = false; }
 							if(isConnected){
-								notifyUiAndLog("Connected");
-								notifyUiAndLog("Processing Incoming Operation ...");
+								logAsInfo("Connected");
+								logAsInfo("Processing Incoming Operation ...");
 							}
 							else{
 								//notifyUiAndLog("Timed-out, Not Connections");
 							}
 							
-							notifyUiAndLog("Checking For outbound operations...");
+							logAsInfo("Checking For outbound operations...");
 							if(Authenticator.operationsQueue.size() > 0)
 							{
 								while (Authenticator.operationsQueue.size() > 0){
 									ATOperation op = Authenticator.operationsQueue.poll();
 									if (op == null)
 										break;
-									notifyUiAndLog("Executing Operation: " + op.getDescription());
+									logAsInfo("Executing Operation: " + op.getDescription());
 									try{
 										op.run(ss);
 									}
 									catch (Exception e)
 									{
-										notifyUiAndLog("Error Occured while executing operation:\n"
+										logAsInfo("Error Occured while executing operation:\n"
 												+ e.toString());
 										op.OnExecutionError(e);
 									}
 								}
 							}
 							else
-								notifyUiAndLog("No Outbound Operations Found.");
+								logAsInfo("No Outbound Operations Found.");
 							
 							if(shouldStopListener)
 								break;
@@ -109,13 +109,13 @@ public class TCPListener extends BASE{
 					catch (Exception e1) {
 						
 						//TODO - notify gui
-						notifyUiAndLog("Fatal Error, Authenticator Operation ShutDown Because Of: \n" + e1.toString());
+						logAsInfo("Fatal Error, Authenticator Operation ShutDown Because Of: \n" + e1.toString());
 					}
 					finally
 					{
 						isRunning = false;
 						try { ss.close(); plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
-						notifyUiAndLog("Listener Stopped");
+						logAsInfo("Listener Stopped");
 						synchronized(this) {notify();}
 					}
 	    	    //TODO - return to main
@@ -128,7 +128,7 @@ public class TCPListener extends BASE{
 	public void stop() throws InterruptedException{
 		shouldStopListener = true;
 		synchronized(this.listenerThread){
-			notifyUiAndLog("Stopping Listener ... ");
+			logAsInfo("Stopping Listener ... ");
 			this.listenerThread.wait();
 		}
 		
@@ -139,9 +139,9 @@ public class TCPListener extends BASE{
 		return isRunning ;
 	}
 	
-	public void notifyUiAndLog(String str)
+	public void logAsInfo(String str)
     {
-		mListener.simpleTextMessage(str);
-		this.LOG.info(str);
+		if(Authenticator.getApplicationParams().getShouldPrintTCPListenerInfoToConsole())
+			this.LOG.info(str);
     }
 }
