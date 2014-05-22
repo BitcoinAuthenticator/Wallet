@@ -82,7 +82,7 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException 
 	 */
 	@SuppressWarnings("static-access")
-	public String genAddress(String pairingID) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+	public String genP2SHAddress(String pairingID) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		try {
 			//Derive the child public key from the master public key.
 			WalletFile file = new WalletFile();
@@ -113,6 +113,7 @@ public class WalletOperation extends BASE{
 			file.writeToFile(pairingID,BAUtils.bytesToHex(privkey),multisigaddr.toString(),index);
 			String ret = multisigaddr.toString();
 			mWalletWrapper.addP2ShAddressToWatch(ret);
+			this.LOG.info("Generated a new address: " + ret);
 			return ret;
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
@@ -155,7 +156,7 @@ public class WalletOperation extends BASE{
 		for (TransactionOutput output : to)
             tx.addOutput(output);
 		//Add the change
-		String changeaddr = genAddress(pairingID);
+		String changeaddr = genP2SHAddress(pairingID);
 		Address change = new Address(this.mWalletWrapper.getNetworkParameters(), changeaddr);
 		BigInteger rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
@@ -317,6 +318,7 @@ public class WalletOperation extends BASE{
 	
 	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException
 	{
+		this.LOG.info("Sent Tx: " + req.tx.getHashAsString());
 		return mWalletWrapper.sendCoins(req);
 	}
 	

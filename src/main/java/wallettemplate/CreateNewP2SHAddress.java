@@ -69,7 +69,7 @@ public class CreateNewP2SHAddress extends BaseUI implements Initializable{
     	if(pairNameToId.containsKey((String)cmbPairings.getValue()))
     	{
     		try {
-				Authenticator.getWalletOperation().genAddress(pairNameToId.get((String)cmbPairings.getValue()));
+				Authenticator.getWalletOperation().genP2SHAddress(pairNameToId.get((String)cmbPairings.getValue()));
 			} catch (AddressFormatException e) {
 				Authenticator.getWalletOperation().LOG.info(e.toString());
 				PopUpNotification p = new PopUpNotification("Something Went Wrong ...","");

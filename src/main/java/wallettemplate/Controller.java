@@ -202,7 +202,7 @@ public class Controller extends BaseUI{
     public String generateFreshAuthenticatorP2SHAddress(String pairID) {
     	String ret = null;
 		try {
-			ret = Authenticator.getWalletOperation().genAddress(pairID);
+			ret = Authenticator.getWalletOperation().genP2SHAddress(pairID);
 		} catch (AddressFormatException | NoSuchAlgorithmException | JSONException e) {
 			Authenticator.getWalletOperation().LOG.info(e.toString());
 			PopUpNotification p = new PopUpNotification("Something Went Wrong ...","");
