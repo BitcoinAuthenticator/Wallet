@@ -41,7 +41,7 @@ import static wallettemplate.utils.GuiUtils.*;
 
 public class Main extends BAApplication {
 
-	public static String APP_NAME = "WalletTemplate";
+	public static String APP_NAME = "BitcoinAuthenticator";
     public static Main instance;
     public Controller mainController;
     private StackPane uiStack;
