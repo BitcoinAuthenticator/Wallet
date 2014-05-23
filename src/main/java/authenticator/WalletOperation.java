@@ -219,12 +219,7 @@ public class WalletOperation extends BASE{
 	public ArrayList<PairingObject> getAllPairingObjectArray()
 	{
 		WalletFile f = new WalletFile();
-		try {
-			return f.getPairingObjectsArray();
-		} catch (IOException | ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return f.getPairingObjectsArray();
 	}
 	
 	public PairingObject getPairingObject(String pairID)

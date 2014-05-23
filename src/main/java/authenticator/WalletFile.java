@@ -153,25 +153,33 @@ public class WalletFile extends BASE{
 		finally{ lock.unlock(); }
 	}
 	
-	public ArrayList<PairingObject> getPairingObjectsArray() throws FileNotFoundException, IOException, ParseException
+	public ArrayList<PairingObject> getPairingObjectsArray()
 	{
 		ArrayList<PairingObject> ret = new ArrayList<PairingObject>();
 		JSONParser parser = new JSONParser();
 		Object obj = null;
 		JSONArray jsonArr = null;
 		lock.lock();
-		obj = parser.parse(new FileReader(filePath));
-		jsonArr = (JSONArray)obj;
-		lock.unlock();
-		if(jsonArr.size() > 0)
-		{
-			for(Object o:jsonArr)
+		try {
+			obj = parser.parse(new FileReader(filePath));
+			jsonArr = (JSONArray)obj;
+			if(jsonArr.size() > 0)
 			{
-				PairingObject po = new PairingObject((JSONObject)o);
-				ret.add(po);
+				for(Object o:jsonArr)
+				{
+					PairingObject po = new PairingObject((JSONObject)o);
+					ret.add(po);
+				}
+				
 			}
-			
+		} catch (IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		finally{
+			lock.unlock();
+		}
+		
 		return ret;
 	}
 	
