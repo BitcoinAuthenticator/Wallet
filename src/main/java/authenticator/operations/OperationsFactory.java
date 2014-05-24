@@ -74,7 +74,7 @@ public class OperationsFactory extends BASE{
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, "blockchain"})
+					.SetArguments(new String[]{pairingName, "blockchain", pairingName})
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;
@@ -114,7 +114,7 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation SIGN_AND_BROADCAST_TX_OPERATION(Transaction tx, String pairingID){
+	static public ATOperation SIGN_AND_BROADCAST_TX_OPERATION(Transaction tx, String pairingID, String txMessage){
 		return new ATOperation(ATOperationType.SignTx)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
@@ -134,8 +134,8 @@ public class OperationsFactory extends BASE{
 						ss.setSoTimeout(0);
 						complete(ss);
 						System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
-						/*SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
-						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
+						//SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						/*Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
 			                public void onSuccess(Transaction result) {
 			                	listenerUI.onFinished("Finished With Success");
@@ -284,7 +284,7 @@ public class OperationsFactory extends BASE{
 									gcmID,
 									pairingID.getBytes(),
 									secretkey);
-							disp.dispachMessage(MessageType.signTx, d);
+							disp.dispachMessage(MessageType.signTx, d, new String[]{ txMessage });
 							//wait for user response
 							staticLooger.info("Listening for Authenticator on port "+ Authenticator.LISTENER_PORT +"...");
 							Socket socket = ss.accept();

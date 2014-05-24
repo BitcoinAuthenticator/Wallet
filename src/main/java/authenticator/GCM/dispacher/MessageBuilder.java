@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 
 public class MessageBuilder extends JSONObject{
-	public MessageBuilder(MessageType type,String[] ... arg) throws JSONException
+	public MessageBuilder(MessageType type,String ... arg) throws JSONException
 	{
 		switch (type){
 			case test:
@@ -18,13 +18,13 @@ public class MessageBuilder extends JSONObject{
 				break;
 			case signTx:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
-				this.put("PairingID", arg[0][0]); 
+				this.put("PairingID", arg[0]); 
 				this.put("RequestType", type.getValue()); 
 				JSONObject reqPayload = new JSONObject();
-				reqPayload.put("ExternalIP", arg[0][1]);
-				reqPayload.put("LocalIP", arg[0][2]);
+				reqPayload.put("ExternalIP", arg[1]);
+				reqPayload.put("LocalIP", arg[2]);
 				this.put("ReqPayload", reqPayload);
-				this.put("CustomMsg", "New Tx For Signing"); // TODO localize
+				this.put("CustomMsg", arg[3]); // TODO localize
 				this.put("RequestID", getRequestIDDigest(this));
 				break;
 		}

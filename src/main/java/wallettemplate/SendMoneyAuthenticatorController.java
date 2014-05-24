@@ -64,6 +64,7 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
     //
     @FXML Label walletNameLabl;
     @FXML Label balanceLabl;
+    @FXML TextField txMsgLabel;
     
 	// Called by FXMLLoader
     public void initialize() {
@@ -95,6 +96,9 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
      */
     private boolean ValidateTx()
     {
+    	//Check tx message
+    	if(txMsgLabel.getText().length() < 3)
+    		return false;
     	//Check Outputs
     	if(scrlContent.getCount() == 0)
     		return false;
@@ -139,7 +143,7 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
         	}
         	try {
 				tx = Authenticator.getWalletOperation().mktx(pairID, to);
-				ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx, pairID);
+				ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx, pairID, txMsgLabel.getText());
 				op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 					@Override
 					public void onBegin(String str) { }
@@ -183,7 +187,8 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
 				    	  PopUpNotification p = new PopUpNotification("Something Is not Right ...","Make Sure:\n" +
 									"  1) You entered correct values in all fields\n"+
 									"  2) You have sufficient funds to cover your outputs\n"+
-									"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")");
+									"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")\n" +
+									"  4) A Tx message, at least 3 characters long\n");
 							p.showPopup();    
 				      }
 				    });
@@ -198,7 +203,8 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
         	    	  PopUpNotification p = new PopUpNotification("Something Is not Right ...","Make Sure:\n" +
 								"  1) You entered correct values in all fields\n"+
 								"  2) You have sufficient funds to cover your outputs\n"+
-								"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")");
+								"  3) Outputs amount to at least the dust value(" + Utils.bitcoinValueToFriendlyString(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) + ")\n" +
+								"  4) A Tx message, at least 3 characters long\n");
         	    	  p.showPopup();     
         	      }
         	    });
