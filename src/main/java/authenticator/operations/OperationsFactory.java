@@ -134,7 +134,7 @@ public class OperationsFactory extends BASE{
 						ss.setSoTimeout(0);
 						complete(ss);
 						System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
-						//SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
 						/*Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
 			                public void onSuccess(Transaction result) {
