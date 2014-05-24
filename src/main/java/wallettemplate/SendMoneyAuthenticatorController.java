@@ -308,7 +308,7 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
     		txfAmount.textProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed( ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					if(txfAmount.getText().length() > 0 && !txfAmount.getText().matches("[a-zA-Z]+"))
+					if(txfAmount.getText().length() > 0 && txfAmount.getText().matches("^([+-]?\\d*\\.?\\d*)$") && !txfAmount.getText().matches("^\\."))
 						amountInSatoshi.setText(Utils.toNanoCoins(txfAmount.getText()).toString() + " Satoshies");
 					else
 						amountInSatoshi.setText("Error");
