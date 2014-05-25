@@ -190,6 +190,7 @@ public class OperationsFactory extends BASE{
 										.setTxString(formatedTx)
 										.setKeyIndexArray(pubKeysArr, indexArr)
 										.setVersion(1)
+										.setTestnet(false);
 										;
 						byte[] jsonBytes = signMsgPayload.serializeToBytes();
 						

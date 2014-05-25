@@ -18,6 +18,7 @@ public class SignMessage  extends JSONObject{
 	//Vars
 	public int version;
 	public int numInputs;
+	public boolean testnet;
 	public String transaction;
 	public ArrayList<KeyIndex> keyIndexArr;
 	
@@ -28,6 +29,7 @@ public class SignMessage  extends JSONObject{
 	@SuppressWarnings("unchecked")
 	public byte[] serializeToBytes(){
 		this.put("version", version);
+		this.put("testnet", testnet);
 		this.put("ins_n", numInputs);
 		this.put("tx", transaction);
 		JSONArray keylist = new JSONArray();
@@ -70,6 +72,10 @@ public class SignMessage  extends JSONObject{
 	//Setters
 	public SignMessage setVersion(int value){
 		this.version = value;
+		return this;
+	}
+	public SignMessage setTestnet(boolean value){
+		this.testnet = value;
 		return this;
 	}
 	public SignMessage setInputNumber(int value){
