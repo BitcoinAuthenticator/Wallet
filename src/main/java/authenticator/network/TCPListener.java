@@ -99,7 +99,7 @@ public class TCPListener extends BASE{
 									requestID = jo.getString("requestID");
 									//
 									PendingRequest pendingReq = null;
-									for(Object o:Authenticator.pendingRequests.getAll()){
+									for(Object o:Authenticator.getPendingRequests()){
 										PendingRequest po = (PendingRequest)o;
 										if(po.requestID.equals(requestID))
 										{
@@ -135,6 +135,9 @@ public class TCPListener extends BASE{
 											Authenticator.operationsQueue.add(op);
 											break;
 										}
+										
+										//
+										Authenticator.removePendingRequest(pendingReq);
 									}
 									else{ // pending request not found
 										logAsInfo("No Pending Request Found");

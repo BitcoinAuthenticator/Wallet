@@ -33,12 +33,14 @@ import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionInput.ConnectMode;
 import com.google.bitcoin.core.TransactionInput.ConnectionResult;
+import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -147,11 +149,7 @@ public class OperationsFactory extends BASE{
 					public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args,
 							OnOperationUIUpdate listener) throws Exception {
 						//
-						//byte[] cipherKeyBytes = null;
-						//PairingObject po = null;
 						if (!onlyComplete){
-							//timeout = ss.getSoTimeout();
-							//ss.setSoTimeout(0);
 							byte[] cypherBytes = prepareTX(pairingID);
 							String reqID = sendGCM();
 							// prepare a pending request object
@@ -163,10 +161,7 @@ public class OperationsFactory extends BASE{
 							pr.rawTx = tx;
 							pr.contract.SHOULD_RECEIVE_PAYLOAD_AFTER_SENDING_PAYLOAD_ON_CONNECTION = true;
 							pr.contract.SHOULD_SEND_PAYLOAD_ON_CONNECTION = true;
-							Authenticator.pendingRequests.add(pr);
-							
-							//cipherKeyBytes = getResponse(ss);
-							//ss.setSoTimeout(timeout);
+							Authenticator.addPendingRequest(pr,true);
 						}
 						else{
 							PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
@@ -226,11 +221,6 @@ public class OperationsFactory extends BASE{
 										;
 						byte[] jsonBytes = signMsgPayload.serializeToBytes();
 						
-						//Convert tx to byte array for sending.
-						byte[] transaction = BAUtils.hexStringToByteArray(formatedTx);
-						//outputStream.write(transaction);
-						//byte payload[] = outputStream.toByteArray( );
-						//Calculate the HMAC and concatenate it to the payload
 						Mac mac = Mac.getInstance("HmacSHA256");
 						SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
 						mac.init(secretkey);
@@ -239,9 +229,6 @@ public class OperationsFactory extends BASE{
 						outputStream.write(jsonBytes);
 						outputStream.write(macbytes);
 						byte payload[] = outputStream.toByteArray( );
-						
-						//outputStream.write(macbytes);
-						//payload = outputStream.toByteArray( );
 						
 						//Encrypt the payload
 						Cipher cipher = null;
@@ -274,29 +261,8 @@ public class OperationsFactory extends BASE{
 						// returns the request ID
 						return disp.dispachMessage(MessageType.signTx, d, new String[]{ txMessage });
 					 }
-					 /*
-					 byte[] getResponse(ServerSocket ss) throws IOException{
-						 byte[] cipherKeyBytes;
-							
-						//wait for user response
-						staticLooger.info("Listening for Authenticator on port "+ Authenticator.LISTENER_PORT +"...");
-						Socket socket = ss.accept();
-						staticLooger.info("Connected to Authenticator");
-						//send tx for signing 
-						DataInputStream inStream = new DataInputStream(socket.getInputStream());
-						DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
-						outStream.writeInt(cypherBytes.length);
-						outStream.write(cypherBytes);
-						staticLooger.info("Sent transaction");
-						int keysize = inStream.readInt();
-						cipherKeyBytes = new byte[keysize];
-						inStream.read(cipherKeyBytes);
-						inStream.close();
-						outStream.close();
-						return cipherKeyBytes;
-					 }*/
 					 
-					 @SuppressWarnings({ "static-access", "deprecation" })
+					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
 					void complete(byte[] cipherKeyBytes, PairingObject po) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
 					 {
 							//Decrypt the response
@@ -326,9 +292,10 @@ public class OperationsFactory extends BASE{
 							//Break apart the signature array sent over from the authenticator
 							String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = SignMessage.deserializeToBytes(testsig);//=  new ArrayList<byte[]>();
-
+							
 							//Loop to create a signature for each input
 							int i =0;
+							Authenticator.getWalletOperation().connectInputs(tx.getInputs());
 							for(TransactionInput in: tx.getInputs()){
 								for (KeyObject ko:po.keys.keys){
 									String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();

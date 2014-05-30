@@ -4,16 +4,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.PeerGroup;
+import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 
 import authenticator.Utils.SafeList;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
+import authenticator.db.PendingRequestsFile;
+import authenticator.network.PendingRequest;
 import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
+import authenticator.ui_helpers.PopUpNotification;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
 
 /**
@@ -36,7 +51,7 @@ public class Authenticator extends BASE{
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
-	public static SafeList pendingRequests;
+	private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
 
@@ -49,13 +64,14 @@ public class Authenticator extends BASE{
 			mTCPListener = new TCPListener(mListener);
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
-		if(pendingRequests == null)
-			pendingRequests = new SafeList();
 		if(mWalletOperation == null)
 			try {
 				mWalletOperation = new WalletOperation(wallet,peerGroup);
 			} catch (IOException e) { e.printStackTrace(); }
-		
+		if(pendingRequests == null){
+			pendingRequests = new SafeList();
+			initPendingRequests();
+		}
 		new OperationsFactory(); // to instantiate various things
 		verifyWalletIsWatchingAuthenticatorAddresses();
 	}
@@ -76,9 +92,16 @@ public class Authenticator extends BASE{
 		mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	
-	static public void stop() throws InterruptedException
+	/**
+	 * Stop Authenticator operations<br>
+	 * <b>Stage Is used in case there are pending requests/ operations, in that case, the user will be asked if he<br>
+	 * 	wants to continue or wait for the operations to finish</b>
+	 * 
+	 * @param stage
+	 * @throws InterruptedException
+	 */
+	static public void stop(Stage stage) throws InterruptedException
 	{
-		//Wait until stops
 		mTCPListener.stop();
 	}
 	
@@ -103,6 +126,41 @@ public class Authenticator extends BASE{
 			mListener.simpleTextMessage("Queue is not running, Cannot add operation");
 			LOG.error("Queue is not running, Cannot add operation");
 		}
+	}
+	
+	//#####################################
+	//
+	//		Pending Requests Control
+	//
+	//#####################################
+	
+	public static void addPendingRequest(PendingRequest req, boolean writeToFile){
+		if(writeToFile){
+			PendingRequestsFile file = new PendingRequestsFile();
+			file.writeNewPendingRequest(req);
+		}
+		pendingRequests.add(req);
+	}
+	
+	public static void removePendingRequest(PendingRequest req){
+		PendingRequestsFile file = new PendingRequestsFile();
+		file.removePendingRequest(req);
+		pendingRequests.remove(req);
+	}
+	
+	public static int getPendingRequestSize(){
+		return pendingRequests.size();
+	}
+	
+	public static ArrayList<Object> getPendingRequests(){
+		return pendingRequests.getAll();
+	}
+	
+	public static void initPendingRequests(){
+		PendingRequestsFile file = new PendingRequestsFile();
+		ArrayList<PendingRequest> pending = file.getPendingRequests();
+		for(PendingRequest pr:pending)
+			addPendingRequest(pr,false);
 	}
 	
 	//#####################################

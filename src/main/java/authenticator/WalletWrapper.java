@@ -109,9 +109,13 @@ public class WalletWrapper extends BASE{
 		return walletBalance.add(authenticatorBalance);
 	}
 	
+	public LinkedList<TransactionOutput> getWatchedOutputs(){
+		return trackedWallet.getWatchedOutputs(false);
+	}
+	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
-		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
+		LinkedList<TransactionOutput> allWatchedAddresses = getWatchedOutputs();
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
 		for(TransactionOutput Txout: allWatchedAddresses)
 			for(String lookedAddr: addressArr){

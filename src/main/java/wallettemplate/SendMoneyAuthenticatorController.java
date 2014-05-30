@@ -41,9 +41,9 @@ import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.ui_helpers.ComboBoxHelper;
+import authenticator.ui_helpers.PopUpNotification;
 import wallettemplate.controls.BitcoinAddressValidator;
 import wallettemplate.controls.ScrollPaneContentManager;
-import wallettemplate.utils.PopUpNotification;
 import static wallettemplate.utils.GuiUtils.crashAlert;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 

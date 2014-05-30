@@ -8,12 +8,20 @@ public class SafeList{
 		data = new ArrayList<Object>();
 	}
 	
+	public SafeList(ArrayList<Object> arr){
+		data = arr;
+	}
+	
 	public synchronized void add(Object object) {
        	data.add(object);
     }
 	
 	public synchronized void removeAtIndex(int index) {
        	data.remove(index);
+    }
+	
+	public synchronized void remove(Object obj) {
+       	data.remove(obj);
     }
 	
 	public synchronized Object getObjectAtIndex(int index) {
@@ -28,4 +36,7 @@ public class SafeList{
        	data.clear();
     }
 
+	public synchronized int size() {
+		return data.size();
+	}
 }

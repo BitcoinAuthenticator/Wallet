@@ -1,12 +1,13 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
-import authenticator.WalletFile;
 import authenticator.WalletOperation;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
+import authenticator.db.WalletFile;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
+import authenticator.ui_helpers.PopUpNotification;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
@@ -35,7 +36,6 @@ import javafx.util.Duration;
 import wallettemplate.controls.ClickableBitcoinAddress;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
-import wallettemplate.utils.PopUpNotification;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

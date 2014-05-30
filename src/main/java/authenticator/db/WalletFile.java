@@ -1,4 +1,4 @@
-package authenticator;
+package authenticator.db;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -20,10 +20,8 @@ import org.json.simple.parser.ParseException;
 
 import com.google.bitcoin.utils.Threading;
 
+import authenticator.BASE;
 import authenticator.Utils.BAUtils;
-import authenticator.db.KeyObject;
-import authenticator.db.KeysArray;
-import authenticator.db.PairingObject;
 
 /**
  * <p>This class is the authenticators DB.</p>
@@ -84,6 +82,7 @@ public class WalletFile extends BASE{
 	 * @throws FileNotFoundException 
 	 */
 	@SuppressWarnings("unchecked")
+	public
 	void writeToFile(String pairID, String privkey, String addr, int index) throws FileNotFoundException, IOException, ParseException{
 		ArrayList<PairingObject> oPairing = getPairingObjectsArray();
 		PairingObject obj = null;

@@ -1,4 +1,4 @@
-package wallettemplate.utils;
+package authenticator.ui_helpers;
 
 import com.sun.prism.paint.Color;
 

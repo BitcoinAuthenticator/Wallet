@@ -12,8 +12,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
-import authenticator.WalletFile;
 import authenticator.Utils.BAUtils;
+import authenticator.db.WalletFile;
 import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;
 

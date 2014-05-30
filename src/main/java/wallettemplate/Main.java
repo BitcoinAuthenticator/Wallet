@@ -5,29 +5,24 @@ import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.ui_helpers.BAApplication;
 
 import com.aquafx_project.AquaFx;
-import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
-import com.google.bitcoin.params.RegTestParams;
-import com.google.bitcoin.params.TestNet2Params;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
 import com.google.bitcoin.utils.Threading;
 import com.google.common.base.Throwables;
 
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
@@ -36,6 +31,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 import static wallettemplate.utils.GuiUtils.*;
 
@@ -46,13 +45,14 @@ public class Main extends BAApplication {
     public Controller mainController;
     private StackPane uiStack;
     private Pane mainUI;
-
+    private static Stage stage;
+    
     @Override
     public void start(Stage mainWindow) throws Exception {
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
-     
+        
         if(super.BAInit(APP_NAME))
 	        try {
 	            init(mainWindow);
@@ -132,12 +132,50 @@ public class Main extends BAApplication {
 			public void simpleTextMessage(String msg) {
 				
 			}
+
+			@Override
+			public void riseAlertToUser(String msg, String title) {
+				
+			}
         	
         })
         .setApplicationParams(ApplicationParams)
         .start();
 
         mainController.onBitcoinSetup();
+        stage = mainWindow;
+        mainWindow.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+            	Action response = null;
+            	if(Authenticator.getPendingRequestSize() > 0 || Authenticator.operationsQueue.size() > 0){
+            		response = Dialogs.create()
+                	        .owner(stage)
+                	        .title("Warning !")
+                	        .masthead("Pending Requests/ Operations")
+                	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
+                	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+                	        .showConfirm();
+                	
+            	}
+            	
+            	// Or no conditioning needed or user pressed Ok
+            	if (response == null ||
+            			(response != null && response == Dialog.Actions.YES)) {
+            		bitcoin.stopAsync();
+                    bitcoin.awaitTerminated();
+                    
+                    // Waits until all threads are stopped
+                    try { Authenticator.stop(stage); } catch (InterruptedException e1) { e1.printStackTrace(); }
+                    
+                    // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
+                    Runtime.getRuntime().exit(0);
+            	}
+            	else if(response != null && response == Dialog.Actions.NO)
+            		e.consume();
+            	
+            }
+        });
         mainWindow.show();
     }
     
@@ -205,16 +243,8 @@ public class Main extends BAApplication {
     }
 
     @Override
-    public void stop() throws Exception {
-        bitcoin.stopAsync();
-        bitcoin.awaitTerminated();
-        
-        // Waits until all threads are stopped
-        Authenticator.stop();
-        
-        // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
-        Runtime.getRuntime().exit(0);
-    }
+    public void stop() throws Exception { }
+
 
     public static void main(String[] args) {
         launch(args);

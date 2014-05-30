@@ -14,13 +14,13 @@ import org.json.JSONException;
 import com.google.bitcoin.core.AddressFormatException;
 
 import authenticator.Authenticator;
-import authenticator.WalletFile;
 import authenticator.WalletOperation;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
+import authenticator.db.WalletFile;
 import authenticator.ui_helpers.ComboBoxHelper;
+import authenticator.ui_helpers.PopUpNotification;
 import wallettemplate.utils.BaseUI;
-import wallettemplate.utils.PopUpNotification;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

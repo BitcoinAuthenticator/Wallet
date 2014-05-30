@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import authenticator.Utils.BAUtils;
 import authenticator.db.KeyObject;
 import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;
+import authenticator.db.WalletFile;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -26,6 +28,8 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
@@ -47,7 +51,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * <b>Main sections are:</b>
  * <ol><li>Authenticator Wallet Operations - all authenticator related operations</li>
- * <li> DAL - Data Access Layer, uses {@link authenticator.WalletFile}</li>
+ * <li> DAL - Data Access Layer, uses {@link authenticator.db.WalletFile}</li>
  * <li>Regular Bitocoin Wallet Operations - all operations regarding the regular bitcoinj wallet.<br>
  * This template wallet is first and foremost a working bitcoinj wallet.</li>
  * <li>Helper functions</li>
@@ -310,6 +314,20 @@ public class WalletOperation extends BASE{
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
 		return mWalletWrapper.getUnspentOutputsForAddresses(addressArr);
+	}
+	
+	public void connectInputs(List<TransactionInput> inputs)
+	{
+		LinkedList<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
+		for(TransactionOutput out:unspentOutputs)
+			for(TransactionInput in:inputs){
+				String hashIn = in.getOutpoint().getHash().toString();
+				String hashOut = out.getParentTransaction().getHash().toString();
+				if(hashIn.equals(hashOut)){
+					in.connect(out);
+					break;
+				}
+			}
 	}
 	
 	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException

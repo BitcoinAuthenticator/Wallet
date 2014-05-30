@@ -1,3 +1,4 @@
+
 package authenticator.ui_helpers;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
