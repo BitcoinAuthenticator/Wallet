@@ -416,16 +416,16 @@ public class BipSSS {
          * @param b
          * @return
          */
-        private String encodeWithChecksum(byte[] b){
-        	String strBase58Encoded = Base58.encode(b);
-        	byte[] base58Bytes = strBase58Encoded.getBytes();
+        private String encodeWithChecksum(byte[] base58Bytes){
+        	//String strBase58Encoded = Base58.encode(b);
+        	//byte[] base58Bytes = strBase58Encoded.getBytes();
         	byte[] checksum = copyOfRange(Utils.doubleDigest(base58Bytes), 0, 4);
         	// append
         	byte[] base58Checksum =  new byte[base58Bytes.length + checksum.length];
         	System.arraycopy(base58Bytes, 0, base58Checksum, 0, base58Bytes.length);
         	System.arraycopy(checksum, 0, base58Checksum, base58Bytes.length, checksum.length);
         	//
-        	return new String(base58Checksum);
+        	return Base58.encode(base58Checksum);//new String(base58Checksum);
         }
         
         private static byte[] copyOfRange(byte[] source, int from, int to) {
@@ -510,7 +510,7 @@ public class BipSSS {
             if (threshold != share.threshold) {
                 return false;
             }
-            if (Arrays.equals(contentHash, share.contentHash)){//!BitUtils.areEqual(contentHash, share.contentHash)) {
+            if (!Arrays.equals(contentHash, share.contentHash)){//!BitUtils.areEqual(contentHash, share.contentHash)) {
                 return false;
             }
             if (!network.equals(share.network)) {

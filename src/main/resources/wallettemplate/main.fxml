@@ -70,7 +70,7 @@
 	    <Menu mnemonicParsing="false" text="Options">
 	      <items>
 	        <MenuItem mnemonicParsing="false" onAction="#handlePairDeviceAction" text="Pair Device" />
-	        <MenuItem mnemonicParsing="false" onAction="#handleCreateP2ShAddress" text="Create P2Sh Address" />
+	        <MenuItem mnemonicParsing="false" onAction="#handleCreateP2ShAddress" text="Create P2Sh Address" /><MenuItem mnemonicParsing="false" onAction="#handleBackupAddress" text="Backup" />
 	      </items>
 	    </Menu>
 	  </menus>

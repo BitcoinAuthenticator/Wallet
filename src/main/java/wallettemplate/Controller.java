@@ -142,6 +142,10 @@ public class Controller extends BaseUI{
     	Main.instance.overlayUI("New_p2sh_address.fxml",null);
     }
     
+    @FXML
+    private void handleBackupAddress(ActionEvent event) throws IOException { 
+    	Main.instance.overlayUI("Backup_SSS.fxml",null);
+    }
     
     
     @SuppressWarnings("static-access")
