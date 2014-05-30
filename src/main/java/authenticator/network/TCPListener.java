@@ -1,13 +1,20 @@
-package authenticator;
+package authenticator.network;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import authenticator.Authenticator;
+import authenticator.BASE;
+import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.operations.ATOperation;
+import authenticator.operations.OperationsFactory;
 
 public class TCPListener extends BASE{
 	public static Socket socket;
@@ -72,13 +79,81 @@ public class TCPListener extends BASE{
 								isConnected = true;
 							}
 							catch (SocketTimeoutException e){ isConnected = false; }
-							if(isConnected){
-								logAsInfo("Connected");
-								logAsInfo("Processing Incoming Operation ...");
+							
+							//#################################
+							//
+							//		Inbound
+							//
+							//#################################
+							try{
+								if(isConnected){
+									logAsInfo("Processing Pending Operation ...");
+									DataInputStream inStream = new DataInputStream(socket.getInputStream());
+									DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+									//get request ID
+									String requestID = "";
+									int keysize = inStream.readInt();
+									byte[] reqIdPayload = new byte[keysize];
+									inStream.read(reqIdPayload);
+									JSONObject jo = new JSONObject(new String(reqIdPayload));
+									requestID = jo.getString("requestID");
+									//
+									PendingRequest pendingReq = null;
+									for(Object o:Authenticator.pendingRequests.getAll()){
+										PendingRequest po = (PendingRequest)o;
+										if(po.requestID.equals(requestID))
+										{
+											pendingReq = po;
+											break;
+										}
+									}
+									//
+									if(pendingReq != null){ // find pending request
+										// Should we send something on connection ? 
+										if(pendingReq.contract.SHOULD_SEND_PAYLOAD_ON_CONNECTION){
+											outStream.writeInt(pendingReq.payloadToSendInCaseOfConnection.length);
+											outStream.write(pendingReq.payloadToSendInCaseOfConnection);
+											logAsInfo("Sent transaction");
+										}
+										// Should we receive something ?
+										if(pendingReq.contract.SHOULD_RECEIVE_PAYLOAD_AFTER_SENDING_PAYLOAD_ON_CONNECTION){
+											keysize = inStream.readInt();
+											pendingReq.payloadIncoming = new byte[keysize];
+											inStream.read(pendingReq.payloadIncoming);
+										}
+										//cleanup
+										inStream.close();
+										outStream.close();
+										// Complete Operation ?
+										switch(pendingReq.operationType){
+										case SignTx:
+											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(pendingReq.rawTx,
+													pendingReq.pairingID, 
+													null,
+													true,
+													pendingReq.payloadIncoming);
+											Authenticator.operationsQueue.add(op);
+											break;
+										}
+									}
+									else{ // pending request not found
+										logAsInfo("No Pending Request Found");
+									}
+								}
+								else{
+									//notifyUiAndLog("Timed-out, Not Connections");
+								}
 							}
-							else{
-								//notifyUiAndLog("Timed-out, Not Connections");
+							catch(Exception e){
+								logAsInfo("Error Occured while executing Inbound operation:\n"
+										+ e.toString());
 							}
+							
+							//#################################
+							//
+							//		Outbound
+							//
+							//#################################
 							
 							logAsInfo("Checking For outbound operations...");
 							if(Authenticator.operationsQueue.size() > 0)
@@ -93,7 +168,7 @@ public class TCPListener extends BASE{
 									}
 									catch (Exception e)
 									{
-										logAsInfo("Error Occured while executing operation:\n"
+										logAsInfo("Error Occured while executing Outbound operation:\n"
 												+ e.toString());
 										op.OnExecutionError(e);
 									}

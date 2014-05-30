@@ -11,7 +11,7 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import authenticator.BAUtils;
+import authenticator.Utils.BAUtils;
 
 public class SignMessage  extends JSONObject{
 	private static final long serialVersionUID = 1L;

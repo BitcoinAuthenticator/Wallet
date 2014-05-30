@@ -8,8 +8,10 @@ import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Wallet;
 
+import authenticator.Utils.SafeList;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
+import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
@@ -34,6 +36,7 @@ public class Authenticator extends BASE{
 	private static TCPListener mTCPListener;
 	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
+	public static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
 
@@ -46,6 +49,8 @@ public class Authenticator extends BASE{
 			mTCPListener = new TCPListener(mListener);
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
+		if(pendingRequests == null)
+			pendingRequests = new SafeList();
 		if(mWalletOperation == null)
 			try {
 				mWalletOperation = new WalletOperation(wallet,peerGroup);
@@ -66,6 +71,8 @@ public class Authenticator extends BASE{
 		assert(mListener != null);
 		assert(mTCPListener != null);
 		assert(mApplicationParams != null);
+		assert(operationsQueue != null);
+		assert(pendingRequests != null);
 		mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	

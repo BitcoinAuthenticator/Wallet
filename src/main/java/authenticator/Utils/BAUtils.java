@@ -1,4 +1,4 @@
-package authenticator;
+package authenticator.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

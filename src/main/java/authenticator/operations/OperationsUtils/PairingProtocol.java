@@ -12,9 +12,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
-import authenticator.BAUtils;
-import authenticator.UpNp;
 import authenticator.WalletFile;
+import authenticator.Utils.BAUtils;
+import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;
 
 /**

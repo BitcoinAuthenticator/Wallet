@@ -20,6 +20,7 @@ import org.json.simple.parser.ParseException;
 
 import com.google.bitcoin.utils.Threading;
 
+import authenticator.Utils.BAUtils;
 import authenticator.db.KeyObject;
 import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;

@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import org.json.JSONException;
 import org.xml.sax.SAXException;
 
-import authenticator.UpNp;
 import authenticator.GCM.GCMSender;
+import authenticator.network.UpNp;
 
 public class Dispacher {
 	DataOutputStream outStream;
@@ -25,7 +25,7 @@ public class Dispacher {
 		inStream = in;
 	}
 	
-	public void dispachMessage(MessageType msgType, Device device, String ... args) throws JSONException, IOException
+	public String dispachMessage(MessageType msgType, Device device, String ... args) throws JSONException, IOException
 	{
 		switch (msgType){
 		case signTx:
@@ -34,12 +34,12 @@ public class Dispacher {
 				final int port = 1234;
 				
 				plugnplay = new UpNp();
-				
+				MessageBuilder msgGCM = null;
 				try {
 					if (!plugnplay.isPortMapped(port)) // TODO - move port to singelton
 						plugnplay.run(null);
 					//assert(plugnplay.isPortMapped(port));
-					MessageBuilder msgGCM = new MessageBuilder(MessageType.signTx,
+					msgGCM = new MessageBuilder(MessageType.signTx,
 							new String[]{new String(device.pairingID),plugnplay.getExternalIP(),
 							   plugnplay.getLocalIP().substring(1), args[0]});
 					ArrayList<String> devicesList = new ArrayList<String>();
@@ -51,11 +51,15 @@ public class Dispacher {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				if(msgGCM != null)
+					return msgGCM.getString("RequestID");
+				return null;
 			}
 			else
 				;//TODO
 			break;
 		}
+		return null;
 	}
 
 }

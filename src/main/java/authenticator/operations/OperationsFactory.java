@@ -20,6 +20,7 @@ import java.util.List;
 
 import javafx.application.Platform;
 
+import javax.annotation.Nullable;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -52,12 +53,13 @@ import com.google.common.util.concurrent.Futures;
 
 import authenticator.Authenticator;
 import authenticator.BASE;
-import authenticator.BAUtils;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.GCM.dispacher.MessageType;
+import authenticator.Utils.BAUtils;
 import authenticator.db.KeyObject;
 import authenticator.db.PairingObject;
+import authenticator.network.PendingRequest;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 
@@ -114,27 +116,65 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation SIGN_AND_BROADCAST_TX_OPERATION(Transaction tx, String pairingID, String txMessage){
+	/**
+	 * Responsable for the complete process of taking a raw transaction, singing it, maeke the authenticator sign it and then broadcast
+	 * <br>
+	 * <b>onlyComplete is True if should only complete the the deciphering of a received Authenticator signiture <b>
+	 * 
+	 * @param tx
+	 * @param pairingID
+	 * @param txMessage
+	 * @param onlyComplete
+	 * @return
+	 */
+	static public ATOperation SIGN_AND_BROADCAST_TX_OPERATION(Transaction tx, 
+																String pairingID, 
+																@Nullable String txMessage,
+																boolean onlyComplete, 
+																@Nullable byte[] authenticatorByteResponse){
 		return new ATOperation(ATOperationType.SignTx)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
-					byte[] cypherBytes;
-					int timeout = 5;
+					//int timeout = 5;
+					//
 					
 					@Override
 					public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
-						cypherBytes = prepareTX(pairingID);
+					
 					}
 
 					@Override
 					public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args,
 							OnOperationUIUpdate listener) throws Exception {
 						//
-						timeout = ss.getSoTimeout();
-						ss.setSoTimeout(0);
-						complete(ss);
-						System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
-						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						//byte[] cipherKeyBytes = null;
+						//PairingObject po = null;
+						if (!onlyComplete){
+							//timeout = ss.getSoTimeout();
+							//ss.setSoTimeout(0);
+							byte[] cypherBytes = prepareTX(pairingID);
+							String reqID = sendGCM();
+							// prepare a pending request object
+							PendingRequest pr = new PendingRequest();
+							pr.pairingID = pairingID;
+							pr.requestID = reqID;
+							pr.operationType = ATOperationType.SignTx;
+							pr.payloadToSendInCaseOfConnection = cypherBytes;
+							pr.rawTx = tx;
+							pr.contract.SHOULD_RECEIVE_PAYLOAD_AFTER_SENDING_PAYLOAD_ON_CONNECTION = true;
+							pr.contract.SHOULD_SEND_PAYLOAD_ON_CONNECTION = true;
+							Authenticator.pendingRequests.add(pr);
+							
+							//cipherKeyBytes = getResponse(ss);
+							//ss.setSoTimeout(timeout);
+						}
+						else{
+							PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+							complete(authenticatorByteResponse,po);
+							System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
+							SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+						}
+						
 						/*Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
 			                public void onSuccess(Transaction result) {
@@ -146,25 +186,17 @@ public class OperationsFactory extends BASE{
 			                	listenerUI.onError(null,t);
 			                }
 			            });*/
-						ss.setSoTimeout(timeout);
 					}
 
 					@Override
-					public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
-						// TODO Auto-generated method stub
-						
-					}
+					public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
 
 					@Override
-					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
-						// TODO Auto-generated method stub
-						
-					}
+					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
 					
 					//###########
 					// Helpers
 					//###########
-					 @SuppressWarnings("deprecation")
 					byte[] prepareTX(String pairingID) throws Exception {
 						//Create the payload
 						PairingObject pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
@@ -193,28 +225,6 @@ public class OperationsFactory extends BASE{
 										.setTestnet(false);
 										;
 						byte[] jsonBytes = signMsgPayload.serializeToBytes();
-						
-						/*ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-						byte[] version = BAUtils.hexStringToByteArray("01");
-						outputStream.write(version);
-						byte[] tempArr = ByteBuffer.allocate(4).putInt(tx.getInputs().size()).array();
-						byte[] numIns = Arrays.copyOfRange(tempArr, 2, 4);
-						outputStream.write(numIns);
-						// Iterate all inputs and pend their public key + index
-						for(TransactionInput in:tx.getInputs())
-						for (KeyObject ko: pairingObj.keys.keys){
-							String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-							if(inAddress.equals(ko.address)){
-								byte[] index = ByteBuffer.allocate(4).putInt(ko.index).array();
-								outputStream.write(index);
-								//BigInteger priv_key = new BigInteger(ko.priv_key.getBytes());
-								BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.priv_key));
-								byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
-								ECKey e = new ECKey(null,pubkey);
-								outputStream.write(pubkey);
-								break;
-							}
-						}*/
 						
 						//Convert tx to byte array for sending.
 						byte[] transaction = BAUtils.hexStringToByteArray(formatedTx);
@@ -245,64 +255,52 @@ public class OperationsFactory extends BASE{
 						 catch (IllegalBlockSizeException e) {e.printStackTrace();} 
 						 catch (BadPaddingException e) {e.printStackTrace();}
 						 return cipherBytes;
-						/*Cipher cipher = null;
-						try {
-							cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-						} catch (NoSuchAlgorithmException e) {
-							e.printStackTrace();
-						} catch (NoSuchPaddingException e) {
-							e.printStackTrace();
-						}
-				      try {
-							cipher.init(Cipher.ENCRYPT_MODE, secretkey);
-						} catch (InvalidKeyException e) {
-							e.printStackTrace();
-						}
-				      byte[] cipherBytes = null;
-						try {
-							cipherBytes = cipher.doFinal(payload);
-						} catch (IllegalBlockSizeException e) {
-							e.printStackTrace();
-						} catch (BadPaddingException e) {
-							e.printStackTrace();
-						}*/
 					}
 					
-					 void complete(ServerSocket ss) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
+					 String sendGCM() throws JSONException, IOException{
+						Dispacher disp;
+						disp = new Dispacher(null,null);
+						//Send the encrypted payload over to the Authenticator and wait for the response.
+						SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");						
+						PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+						byte[] gcmID = po.GCM.getBytes();
+						assert(gcmID != null);
+						Device d = new Device(po.chain_code.getBytes(),
+								po.master_public_key.getBytes(),
+								gcmID,
+								pairingID.getBytes(),
+								secretkey);
+						
+						// returns the request ID
+						return disp.dispachMessage(MessageType.signTx, d, new String[]{ txMessage });
+					 }
+					 /*
+					 byte[] getResponse(ServerSocket ss) throws IOException{
+						 byte[] cipherKeyBytes;
+							
+						//wait for user response
+						staticLooger.info("Listening for Authenticator on port "+ Authenticator.LISTENER_PORT +"...");
+						Socket socket = ss.accept();
+						staticLooger.info("Connected to Authenticator");
+						//send tx for signing 
+						DataInputStream inStream = new DataInputStream(socket.getInputStream());
+						DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+						outStream.writeInt(cypherBytes.length);
+						outStream.write(cypherBytes);
+						staticLooger.info("Sent transaction");
+						int keysize = inStream.readInt();
+						cipherKeyBytes = new byte[keysize];
+						inStream.read(cipherKeyBytes);
+						inStream.close();
+						outStream.close();
+						return cipherKeyBytes;
+					 }*/
+					 
+					 @SuppressWarnings({ "static-access", "deprecation" })
+					void complete(byte[] cipherKeyBytes, PairingObject po) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
 					 {
-						// Init dispacher
-							byte[] cipherKeyBytes;
-							Dispacher disp;
-							disp = new Dispacher(null,null);
-							
-							//Send the encrypted payload over to the Authenticator and wait for the response.
-							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");						
-							PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
-							byte[] gcmID = po.GCM.getBytes();
-							assert(gcmID != null);
-							Device d = new Device(po.chain_code.getBytes(),
-									po.master_public_key.getBytes(),
-									gcmID,
-									pairingID.getBytes(),
-									secretkey);
-							disp.dispachMessage(MessageType.signTx, d, new String[]{ txMessage });
-							//wait for user response
-							staticLooger.info("Listening for Authenticator on port "+ Authenticator.LISTENER_PORT +"...");
-							Socket socket = ss.accept();
-							staticLooger.info("Connected to Authenticator");
-							//send tx for signing 
-							DataInputStream inStream = new DataInputStream(socket.getInputStream());
-							DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
-							outStream.writeInt(cypherBytes.length);
-							outStream.write(cypherBytes);
-							staticLooger.info("Sent transaction");
-							int keysize = inStream.readInt();
-							cipherKeyBytes = new byte[keysize];
-							inStream.read(cipherKeyBytes);
-							inStream.close();
-							outStream.close();
-							
 							//Decrypt the response
+							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
 						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
 						    String message = BAUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
@@ -328,14 +326,7 @@ public class OperationsFactory extends BASE{
 							//Break apart the signature array sent over from the authenticator
 							String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = SignMessage.deserializeToBytes(testsig);//=  new ArrayList<byte[]>();
-							/*int pos = 4;
-							for (int b=0; b<tx.getInputs().size(); b++){
-								String strlen = sigstr.substring(pos, pos+2);
-								int intlen = Integer.parseInt(strlen, 16)*2;
-								pos = pos + 2;
-								AuthSigs.add(BAUtils.hexStringToByteArray(sigstr.substring(pos, pos+intlen)));
-								pos = pos + intlen;
-							}*/
+
 							//Loop to create a signature for each input
 							int i =0;
 							for(TransactionInput in: tx.getInputs()){

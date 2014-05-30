@@ -143,7 +143,7 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
         	}
         	try {
 				tx = Authenticator.getWalletOperation().mktx(pairID, to);
-				ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx, pairID, txMsgLabel.getText());
+				ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx, pairID, txMsgLabel.getText(),false,null);
 				op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 					@Override
 					public void onBegin(String str) { }

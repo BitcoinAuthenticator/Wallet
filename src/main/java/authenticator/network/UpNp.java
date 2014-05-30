@@ -1,4 +1,4 @@
-package authenticator;
+package authenticator.network;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -10,6 +10,8 @@ import org.bitlet.weupnp.GatewayDevice;
 import org.bitlet.weupnp.GatewayDiscover;
 import org.bitlet.weupnp.PortMappingEntry;
 import org.xml.sax.SAXException;
+
+import authenticator.BASE;
 
 /**
  * Class using Universal Plug and Play to create a port mapping on a gateway device. 
