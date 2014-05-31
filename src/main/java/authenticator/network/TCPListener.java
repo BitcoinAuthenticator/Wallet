@@ -70,6 +70,7 @@ public class TCPListener extends BASE{
 					try{
 						boolean isConnected;
 						isRunning = true;
+						sendUpdatesToPendingRequests();
 						while(true)
 			    	    {
 							isConnected = false;
@@ -222,4 +223,13 @@ public class TCPListener extends BASE{
 		if(Authenticator.getApplicationParams().getShouldPrintTCPListenerInfoToConsole())
 			this.LOG.info(str);
     }
+	
+	//##
+	public void sendUpdatesToPendingRequests(){
+		for(Object o:Authenticator.getPendingRequests()){
+			PendingRequest pending = (PendingRequest)o;
+			ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(pending.requestID, pending.pairingID);
+			Authenticator.operationsQueue.add(op);
+		}
+	}
 }

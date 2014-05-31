@@ -334,4 +334,40 @@ public class OperationsFactory extends BASE{
 					 }
 				});
 	}
+	
+	static public ATOperation UPDATE_PENDING_REQUEST_IPS(String requestID, String pairingID){
+		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
+					.SetDescription("Update pending requests to Authenticator")
+					.SetBeginMsg("Updating Pending Requests ...")
+					.SetFinishedMsg("Finished Pending Requests")
+					.SetArguments(new String[]{requestID})
+					.SetOperationAction(new OperationActions(){
+						@Override
+						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
+
+						@Override
+						public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
+							PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+							Dispacher disp;
+							disp = new Dispacher(null,null);
+							byte[] gcmID = po.GCM.getBytes();
+							assert(gcmID != null);
+							Device d = new Device(po.chain_code.getBytes(),
+									po.master_public_key.getBytes(),
+									gcmID,
+									pairingID.getBytes(),
+									null);
+							
+							// returns the request ID
+							disp.dispachMessage(MessageType.updateIpAddressesForPreviousMessage, d, new String[]{ requestID });
+						}
+
+						@Override
+						public void PostExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
+
+						@Override
+						public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
+						
+					});
+	}
 }

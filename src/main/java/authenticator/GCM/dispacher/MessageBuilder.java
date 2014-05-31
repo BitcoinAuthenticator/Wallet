@@ -12,20 +12,47 @@ import org.json.JSONObject;
 public class MessageBuilder extends JSONObject{
 	public MessageBuilder(MessageType type,String ... arg) throws JSONException
 	{
+		JSONObject reqPayload;
 		switch (type){
 			case test:
 				this.append("data","Hello World");
 				break;
+			/**
+			 * arg - <br>
+			 * 0 - PairingID<br>
+			 * 1 - ExternalIP <br>
+			 * 2 - LocalIP <br>
+			 * 3 - CustomMsg <br>
+			 */
 			case signTx:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
 				this.put("PairingID", arg[0]); 
 				this.put("RequestType", type.getValue()); 
-				JSONObject reqPayload = new JSONObject();
+				reqPayload = new JSONObject();
 				reqPayload.put("ExternalIP", arg[1]);
 				reqPayload.put("LocalIP", arg[2]);
 				this.put("ReqPayload", reqPayload);
 				this.put("CustomMsg", arg[3]); // TODO localize
 				this.put("RequestID", getRequestIDDigest(this));
+				break;
+			/**
+			 * arg - <br>
+			 * 0 - PairingID<br>
+			 * 1 - ExternalIP <br>
+			 * 2 - LocalIP <br>
+			 * 3 - CustomMsg <br>
+			 * 4 - RequestID
+			 */
+			case updateIpAddressesForPreviousMessage:
+				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
+				this.put("PairingID", arg[0]); 
+				this.put("RequestType", type.getValue()); 
+				reqPayload = new JSONObject();
+				reqPayload.put("ExternalIP", arg[1]);
+				reqPayload.put("LocalIP", arg[2]);
+				this.put("ReqPayload", reqPayload);
+				this.put("CustomMsg", arg[3]); // TODO localize
+				this.put("RequestID", arg[4]);
 				break;
 		}
 	}

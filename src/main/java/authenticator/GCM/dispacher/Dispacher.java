@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import org.json.JSONException;
 import org.xml.sax.SAXException;
 
+import authenticator.Authenticator;
 import authenticator.GCM.GCMSender;
 import authenticator.network.UpNp;
 
@@ -53,6 +54,32 @@ public class Dispacher {
 				}
 				if(msgGCM != null)
 					return msgGCM.getString("RequestID");
+				return null;
+			}
+			else
+				;//TODO
+			break;
+		case updateIpAddressesForPreviousMessage:
+			if(device.gcmRegId != null)
+			{
+				plugnplay = new UpNp();
+				MessageBuilder msgGCM = null;
+				try {
+					if (!plugnplay.isPortMapped(Authenticator.LISTENER_PORT))
+						plugnplay.run(null);
+					//assert(plugnplay.isPortMapped(port));
+					msgGCM = new MessageBuilder(MessageType.updateIpAddressesForPreviousMessage,
+							new String[]{new String(device.pairingID),
+											plugnplay.getExternalIP(),
+										    plugnplay.getLocalIP().substring(1), 
+										    "",
+										    args[0]});
+					ArrayList<String> devicesList = new ArrayList<String>();
+					devicesList.add(new String(device.gcmRegId));
+					GCMSender sender = new GCMSender();
+					sender.sender(devicesList,msgGCM);
+					
+				} catch (Exception e) { e.printStackTrace(); }
 				return null;
 			}
 			else
