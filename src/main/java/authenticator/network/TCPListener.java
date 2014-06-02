@@ -7,13 +7,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import javafx.application.Platform;
+
+import org.controlsfx.dialog.Dialogs;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;
 import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.operations.ATOperation;
+import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 
 public class TCPListener extends BASE{
@@ -133,6 +138,38 @@ public class TCPListener extends BASE{
 													null,
 													true,
 													pendingReq.payloadIncoming);
+											op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+
+												@Override
+												public void onBegin(String str) { }
+
+												@Override
+												public void statusReport( String report) { }
+
+												@Override
+												public void onFinished( String str) { }
+
+												@Override
+												public void onUserCancel(String reason) {
+													Platform.runLater(new Runnable() {
+													      @Override public void run() {
+													    	  Dialogs.create()
+														        .owner(Main.stage)
+														        .title("Error")
+														        .masthead("Authenticator Refused The Transaction")
+														        .message(reason)
+														        .showError();   
+													      }
+													    });
+												}
+
+												@Override
+												public void onUserOk(String msg) { }
+
+												@Override
+												public void onError( Exception e, Throwable t) { }
+												
+											});
 											Authenticator.operationsQueue.add(op);
 											break;
 										}

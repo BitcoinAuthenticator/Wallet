@@ -45,7 +45,7 @@ public class Main extends BAApplication {
     public Controller mainController;
     private StackPane uiStack;
     private Pane mainUI;
-    private static Stage stage;
+    public static Stage stage;
     
     @Override
     public void start(Stage mainWindow) throws Exception {

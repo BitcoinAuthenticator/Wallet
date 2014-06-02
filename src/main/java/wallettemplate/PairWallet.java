@@ -79,6 +79,12 @@ public class PairWallet extends BaseUI{
 			        }
 				});
 			}
+
+			@Override
+			public void onUserCancel(String reason) { }
+
+			@Override
+			public void onUserOk(String msg) { }
         	
         });
     	Authenticator.operationsQueue.add(op);

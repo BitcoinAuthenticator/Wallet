@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
 import com.google.bitcoin.core.*;
@@ -176,6 +177,23 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
 						    });
 						
 					}
+
+					@Override
+					public void onUserCancel(String reason) {
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Error")
+							        .masthead("Authenticator Refused The Transaction")
+							        .message(reason)
+							        .showError();   
+						      }
+						    });
+					}
+
+					@Override
+					public void onUserOk(String msg) { }
 					
 				});
 				Authenticator.operationsQueue.add(op);

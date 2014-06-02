@@ -69,6 +69,14 @@ public class SignMessage  extends JSONObject{
 			 return sigs;
 		 }
 	
+	public static JSONObject deserializeRefuseMessageToBoolean(byte[] payload) throws ParseException{
+		 String strJson = new String(payload);
+		 JSONParser parser=new JSONParser();	  
+		 Object obj = parser.parse(strJson);
+		 JSONObject jsonObject = (JSONObject) obj;
+		 return jsonObject;
+	 }
+	
 	//Setters
 	public SignMessage setVersion(int value){
 		this.version = value;

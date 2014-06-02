@@ -30,6 +30,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 
@@ -164,10 +165,48 @@ public class OperationsFactory extends BASE{
 							Authenticator.addPendingRequest(pr,true);
 						}
 						else{
-							PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
-							complete(authenticatorByteResponse,po);
-							System.out.println("Signed Tx - " + BAUtils.getStringTransaction(tx));
-							SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+							//Decrypt the response
+							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
+						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
+						    String message = BAUtils.bytesToHex(cipher.doFinal(authenticatorByteResponse));
+						    String sig = message.substring(0,message.length()-64);
+						    String HMAC = message.substring(message.length()-64,message.length());
+						    byte[] testsig = BAUtils.hexStringToByteArray(sig);
+						    byte[] hash = BAUtils.hexStringToByteArray(HMAC);
+						    //Calculate the HMAC of the message and verify it is valid
+						    Mac mac = Mac.getInstance("HmacSHA256");
+							mac.init(secretkey);
+							byte[] macbytes = mac.doFinal(testsig);
+							if (Arrays.equals(macbytes, hash)){
+								staticLooger.info("Received Response: " + BAUtils.bytesToHex(testsig));
+							}
+							else {
+								staticLooger.info("Message authentication code is invalid");
+							}
+							//Break apart the signature array sent over from the authenticator
+							//String sigstr = BAUtils.bytesToHex(testsig);
+							ArrayList<byte[]> AuthSigs = null;
+							boolean isRefused = false;
+							try{
+								AuthSigs = SignMessage.deserializeToBytes(testsig);
+							}
+							catch (Exception e){
+								JSONObject obj = SignMessage.deserializeRefuseMessageToBoolean(testsig);
+								int result = Integer.parseInt(obj.get("result").toString());
+								if(result == 0){
+									isRefused = true;
+									listener.onUserCancel(obj.get("reason").toString());
+								}
+							}
+							if(!isRefused){
+								// Complete Signing and broadcast
+								PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+								complete(AuthSigs,po);
+								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
+								//SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+							}
+
 						}
 						
 						/*Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
@@ -263,35 +302,12 @@ public class OperationsFactory extends BASE{
 					 }
 					 
 					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
-					void complete(byte[] cipherKeyBytes, PairingObject po) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
+					void complete(ArrayList<byte[]> AuthSigs, PairingObject po) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
 					 {
-							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
-						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
-						    String message = BAUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
-						    String sig = message.substring(0,message.length()-64);
-						    String HMAC = message.substring(message.length()-64,message.length());
-						    byte[] testsig = BAUtils.hexStringToByteArray(sig);
-						    byte[] hash = BAUtils.hexStringToByteArray(HMAC);
-						    //Calculate the HMAC of the message and verify it is valid
-						    Mac mac = Mac.getInstance("HmacSHA256");
-							mac.init(secretkey);
-							byte[] macbytes = mac.doFinal(testsig);
-							if (Arrays.equals(macbytes, hash)){
-								staticLooger.info("Received Signature: " + BAUtils.bytesToHex(testsig));
-								staticLooger.info("Building Transaction...");
-							}
-							else {
-								staticLooger.info("Message authentication code is invalid");
-							}
 							//Prep the keys needed for signing
 							byte[] key = BAUtils.hexStringToByteArray(po.master_public_key);
 							byte[] chain = BAUtils.hexStringToByteArray(po.chain_code);
 							List<TransactionInput> inputs = tx.getInputs();
-							//Break apart the signature array sent over from the authenticator
-							String sigstr = BAUtils.bytesToHex(testsig);
-							ArrayList<byte[]> AuthSigs = SignMessage.deserializeToBytes(testsig);//=  new ArrayList<byte[]>();
 							
 							//Loop to create a signature for each input
 							int i =0;
