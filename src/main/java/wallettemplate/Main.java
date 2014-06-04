@@ -19,9 +19,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
@@ -42,13 +44,15 @@ public class Main extends BAApplication {
 
 	public static String APP_NAME = "BitcoinAuthenticator";
     public static Main instance;
-    public Controller mainController;
+    public static Controller mainController;
     private StackPane uiStack;
-    private Pane mainUI;
+    public AnchorPane root;
     public static Stage stage;
+    static Stage stg;
     
     @Override
     public void start(Stage mainWindow) throws Exception {
+    	stg = mainWindow;
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
@@ -73,17 +77,20 @@ public class Main extends BAApplication {
             AquaFx.style();
         }
         // Load the GUI. The Controller class will be automagically created and wired up.
-        URL location = getClass().getResource("main.fxml");
+       
+        mainWindow.initStyle(StageStyle.UNDECORATED);
+        URL location = getClass().getResource("GUI.fxml");
         FXMLLoader loader = new FXMLLoader(location);
-        mainUI = loader.load();
-
+		root = (AnchorPane) loader.load();
+		//uiStack = new StackPane(root);
+        Scene scene = new Scene(root, 850, 483);
+        final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+        scene.getStylesheets().add(file);
+        mainWindow.setScene(scene);
+        mainWindow.show();
         mainController = loader.getController();
         // Configure the window with a StackPane so we can overlay things on top of the main UI.
-        uiStack = new StackPane(mainUI);
-        mainWindow.setTitle(APP_NAME);
-        final Scene scene = new Scene(uiStack);
-        TextFieldValidator.configureScene(scene);   // Add CSS that we need.
-        mainWindow.setScene(scene);
+        //TextFieldValidator.configureScene(scene);   // Add CSS that we need.
         
         // Make log output concise.
         BriefLogFormatter.init();
@@ -176,7 +183,6 @@ public class Main extends BAApplication {
             	
             }
         });
-        mainWindow.show();
     }
     
     public class OverlayUI<T> {
@@ -189,7 +195,7 @@ public class Main extends BAApplication {
         }
 
         public void show() {
-            blurOut(mainUI);
+            blurOut(root);
             uiStack.getChildren().add(ui);
             fadeIn(ui);
         }
@@ -197,7 +203,7 @@ public class Main extends BAApplication {
         public void done() {
             checkGuiThread();
             fadeOutAndRemove(ui, uiStack);
-            blurIn(mainUI);
+            blurIn(root);
             this.ui = null;
             this.controller = null;
             mainController.refreshUI();
