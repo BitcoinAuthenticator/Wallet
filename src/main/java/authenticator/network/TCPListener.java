@@ -20,6 +20,7 @@ import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
+import authenticator.ui_helpers.PopUpNotification;
 
 public class TCPListener extends BASE{
 	public static Socket socket;
@@ -147,7 +148,14 @@ public class TCPListener extends BASE{
 												public void statusReport( String report) { }
 
 												@Override
-												public void onFinished( String str) { }
+												public void onFinished( String str) { 
+													Dialogs.create()
+												        .owner(Main.stage)
+												        .title("New Info.")
+												        .masthead(null)
+												        .message(str)
+												        .showInformation();
+												}
 
 												@Override
 												public void onUserCancel(String reason) {

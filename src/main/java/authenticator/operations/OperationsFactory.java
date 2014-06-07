@@ -204,22 +204,23 @@ public class OperationsFactory extends BASE{
 								PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
 								complete(AuthSigs,po);
 								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
-								//SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+								SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+								Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
+					                @Override
+					                public void onSuccess(Transaction result) {
+					                	listenerUI.onFinished("Transaction Sent With Success");
+					                }
+
+					                @Override
+					                public void onFailure(Throwable t) {
+					                	listenerUI.onError(null,t);
+					                }
+					            });
 							}
 
 						}
 						
-						/*Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
-			                @Override
-			                public void onSuccess(Transaction result) {
-			                	listenerUI.onFinished("Finished With Success");
-			                }
-
-			                @Override
-			                public void onFailure(Throwable t) {
-			                	listenerUI.onError(null,t);
-			                }
-			            });*/
+						
 					}
 
 					@Override
