@@ -1,0 +1,104 @@
+
+.scroll-pane:focused {
+	-fx-background-color:transparent;
+}
+
+.scroll-pane {
+	-fx-border-radius: 0.2em;
+	-fx-background-radius:0.2em;
+	-fx-background-color:transparent;
+}
+
+/* The main scrollbar **track** CSS class  */
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: #d9e2e9;
+    -fx-border-color:transparent;
+    -fx-background-radius: 2em;
+    -fx-border-radius:2em;
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color:white;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 0 6 0;
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+
+.scroll-bar:vertical .increment-button ,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color:white;
+    -fx-border-color:transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 6 0 0;
+    }
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding:0;
+    -fx-background-color:white;
+}
+
+.scroll-bar {
+	-fx-background-color: white;
+	-fx-padding: 0 5 0 0;
+}
+
+/* The main scrollbar **thumb** CSS class which we drag every time (movable) */
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #a1b6cb;
+	-fx-background-insets: 0, 0, 0;
+	-fx-background-radius: 2em;
+}
+
+.progress-bar .track {
+	-fx-background-color: #d9dee1;
+	-fx-background-radius: .3em;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #95d946;
+    -fx-background-insets: 0;
+    -fx-background-radius: .3em;
+  }
+    
+.custom-button {
+	-fx-background-color: #199bd6;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+}
+
+.choice-box {
+    -fx-background-color: #ecf0f1;  
+    -fx-font-size: 16px;
+}
+
+.choice-box .label {
+	-fx-text-fill: #767676;
+}
+
+.choice-box .context-menu .label {
+  -fx-font-size: 16px;
+  -fx-text-fill: #767676;
+}
+
+.root {
+-icons-color: rgb(202,202,203);
+}
+
+#ReceivePane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#AppsPane .button {
+	-fx-text-fill: #4b698f;
+	-fx-cursor: hand;
+}

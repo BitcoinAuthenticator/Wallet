@@ -308,7 +308,7 @@ public class SendMoneyAuthenticatorController extends SendMoneyController{
     		cancelLabel.setText("<X>");
     		cancelLabel.setPadding(new Insets(0,5,0,0));
     		
-    		AwesomeDude.setIcon(cancelLabel, AwesomeIcon.REMOVE);
+    		//AwesomeDude.setIcon(cancelLabel, AwesomeIcon.REMOVE);
             Tooltip.install(cancelLabel, new Tooltip("Delete Output"));
             cancel.setAlignment(Pos.TOP_LEFT);
             cancel.getChildren().add(cancelLabel);
