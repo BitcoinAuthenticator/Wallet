@@ -179,7 +179,7 @@ public class ClickableBitcoinAddress extends AnchorPane {
         });
     }
     
-    @FXML
+    /*@FXML
     protected void spendWidgetClicked(MouseEvent event) {
     	if(this.isAuthPairing){
     		assert (pairID != null);
@@ -191,5 +191,5 @@ public class ClickableBitcoinAddress extends AnchorPane {
     	}
     	else
     		Main.instance.overlayUI("send_money.fxml",null);
-    }
+    }*/
 }

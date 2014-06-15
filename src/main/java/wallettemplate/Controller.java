@@ -12,6 +12,7 @@ import authenticator.ui_helpers.PopUpNotification;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Utils;
@@ -91,6 +92,7 @@ public class Controller extends BaseUI{
 	 @FXML private Button btnSend;
 	 @FXML private HBox ReceiveHBox;
 	 @FXML private Label lblConfirmedBalance;
+	 @FXML private Label lblUnconfirmedBalance;
 	 @FXML private ChoiceBox AddressBox;
 	 @FXML ImageView ivAvatar;
 	 @FXML Label lblName;
@@ -362,9 +364,9 @@ public class Controller extends BaseUI{
     @FXML protected void openOneNameDialog(ActionEvent event){
     	Parent root;
         try {
-            root = FXMLLoader.load(Main.class.getResource("OneName.fxml"));
+            root = FXMLLoader.load(getClass().getResource("OneName.fxml"));
             stage = new Stage();
-            stage.setTitle("My New Stage Title");
+            stage.setTitle("OneName");
             stage.setScene(new Scene(root, 255, 110));
             stage.show();
         } catch (IOException e) {e.printStackTrace();}
@@ -490,8 +492,10 @@ public class Controller extends BaseUI{
 
     public void refreshBalanceLabel() {
         @SuppressWarnings("static-access")
-		final BigInteger amount = Authenticator.getWalletOperation().getGeneralAllWalletsCombinedEstimatedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
-        lblConfirmedBalance.setText(Utils.bitcoinValueToFriendlyString(amount) + " BTC");
+		final Coin confirmedAmount = Authenticator.getWalletOperation().getAccountConfirmedBalance();//bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        lblConfirmedBalance.setText(confirmedAmount.toFriendlyString() + " BTC");
+        final Coin unconfirmedAmount = Authenticator.getWalletOperation().getAccountUnconfirmedBalance();
+        lblUnconfirmedBalance.setText(unconfirmedAmount.toFriendlyString() + " BTC");
     }
     
     @FXML
@@ -513,10 +517,11 @@ public class Controller extends BaseUI{
     @SuppressWarnings("static-access")
 	private void loadAddresses()
     {
-    	for (int i=0; i<10; i++){
-    		AddressBox.getItems().addAll(Authenticator.getWalletOperation().currentReceiveKey().toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
-    	}
+    	AddressBox.getItems().addAll(Authenticator.getWalletOperation().freshReceiveKey().toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
     	AddressBox.setValue(Authenticator.getWalletOperation().currentReceiveKey().toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
+    	for (int i=0; i<9; i++){
+    		AddressBox.getItems().addAll(Authenticator.getWalletOperation().freshReceiveKey().toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
+    	}
     	//scrlContent.clearAll();
     	addressArr = new ArrayList<ClickableBitcoinAddress>();
     	//Normal P2PSH from wallet
@@ -549,13 +554,14 @@ public class Controller extends BaseUI{
         		addressControl.setAddress(add);
         		addressControl.setPairName(po.pairingName);
         		addressControl.setPairID(po.pairingID);
-        		BigInteger balance = null;
+        		Coin balance = null;
         		try {
 					balance = Authenticator.getWalletOperation().getBalance(po.pairingID);
 				} catch (ScriptException | UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} 
-        		addressControl.setBalance(Utils.bitcoinValueToFriendlyString(balance==null? BigInteger.ZERO:balance));
+        		if (balance==null){addressControl.setBalance("0");}
+        		else {addressControl.setBalance(balance.toFriendlyString());}
         		//add to content
         		//scrlContent.addItem(addressControl);
         		// add to addresses array

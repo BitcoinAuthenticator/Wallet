@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -81,9 +82,9 @@ public class WalletWrapper extends BASE{
 	 * @throws ScriptException
 	 * @throws UnsupportedEncodingException
 	 */
-	public BigInteger getBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
+	public Coin getBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
 	{
-		BigInteger retBalance = BigInteger.ZERO;
+		Coin retBalance = null;
 		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
 		for(TransactionOutput Txout: allWatchedAddresses)
 			for(String lookedAddr: addressArr){
@@ -96,16 +97,21 @@ public class WalletWrapper extends BASE{
 		return retBalance;
 	}
 	
-	public BigInteger getEstimatedBalance()
+	public Coin getConfirmedBalance()
 	{
-		BigInteger walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
+		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE);
 		return walletBalance;
 	}
 	
-	public BigInteger getCombinedEstimatedBalance()
+	public Coin getUnconfirmedBalance(){
+		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED).subtract(trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE));
+		return walletBalance;
+	}
+	
+	public Coin getCombinedEstimatedBalance()
 	{
-		BigInteger walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
-		BigInteger authenticatorBalance = trackedWallet.getWatchedBalance();
+		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
+		Coin authenticatorBalance = trackedWallet.getWatchedBalance();
 		return walletBalance.add(authenticatorBalance);
 	}
 	
@@ -127,14 +133,14 @@ public class WalletWrapper extends BASE{
 		return ret;
 	}
 
-	public ArrayList<TransactionOutput> selectOutputs(BigInteger value, ArrayList<TransactionOutput> candidates)
+	public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
 	{
 		//TODO some kind of coin selection
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
-		BigInteger amount = BigInteger.ZERO;
+		Coin amount = null;
 		for(TransactionOutput out: candidates)
 		{
-			if(amount.compareTo(value) < 0){
+			if(amount.compareTo(value) < 0 ){
 				amount = amount.add(out.getValue());
 			}
 			else break;
@@ -173,5 +179,9 @@ public class WalletWrapper extends BASE{
 	
 	public DeterministicKey currentReceiveKey(){
 		return trackedWallet.currentReceiveKey();
+	}
+	
+	public DeterministicKey freshReceiveKey(){
+		return trackedWallet.freshReceiveKey();
 	}
 }

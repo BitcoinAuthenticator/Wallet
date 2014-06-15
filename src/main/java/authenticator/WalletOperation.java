@@ -22,6 +22,7 @@ import authenticator.db.WalletFile;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -131,7 +132,7 @@ public class WalletOperation extends BASE{
 	@SuppressWarnings("static-access")
 	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
 		//Get total output
-		BigInteger totalOut = BigInteger.ZERO;
+		Coin totalOut = null;
 		for (TransactionOutput out:to){
 			totalOut = totalOut.add(out.getValue());
 		}
@@ -143,11 +144,11 @@ public class WalletOperation extends BASE{
 		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
 		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
 		// Calculate fee
-		BigInteger fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
+		Coin fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
 		// Coin selection
-		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee),candidates);
+		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee), candidates);
 		// add inputs
-		BigInteger inAmount = BigInteger.ZERO;
+		Coin inAmount = null;
 		for (TransactionOutput input : outSelected){
             tx.addInput(input);
             inAmount = inAmount.add(input.getValue());
@@ -163,20 +164,20 @@ public class WalletOperation extends BASE{
 		//Add the change
 		String changeaddr = genP2SHAddress(pairingID);
 		Address change = new Address(this.mWalletWrapper.getNetworkParameters(), changeaddr);
-		BigInteger rest = inAmount.subtract(totalOut.add(fee));
+		Coin rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), null, rest, change);
 			tx.addOutput(changeOut);
-			this.LOG.info("New Out Tx Sends " + Utils.bitcoinValueToFriendlyString(totalOut) + 
-							", Fees " + Utils.bitcoinValueToFriendlyString(fee) + 
-							", Rest " + Utils.bitcoinValueToFriendlyString(rest) + 
+			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
+							", Fees " + fee.toFriendlyString() + 
+							", Rest " + rest.toFriendlyString() + 
 							". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
 							", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}	
 		else{
-			fee=fee.add(rest);
-			this.LOG.info("New Out Tx Sends " + Utils.bitcoinValueToFriendlyString(totalOut) + 
-					", Fees " + Utils.bitcoinValueToFriendlyString(fee) + 
+			fee = fee.add(rest);
+			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
+					", Fees " + fee.toFriendlyString() + 
 					". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
 					", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}
@@ -200,17 +201,15 @@ public class WalletOperation extends BASE{
 	 * @throws ScriptException
 	 * @throws UnsupportedEncodingException
 	 */
-	public BigInteger getBalance(String pairID) throws ScriptException, UnsupportedEncodingException
+	public Coin getBalance(String pairID) throws ScriptException, UnsupportedEncodingException
 	{
 		return getBalance(getAddressesArray(pairID));
 	}
 	/**
 	 * Returns the balance of the addresses using bitcoinj's wallet and its watched addresses.
-	 * 
-	 * @return the balance as a BigInteger {@link java.math.BigInteger}
 	 * @throws UnsupportedEncodingException 
 	 * @throws ScriptException */
-	public BigInteger getBalance(ArrayList<String> addresses) throws ScriptException, UnsupportedEncodingException {
+	public Coin getBalance(ArrayList<String> addresses) throws ScriptException, UnsupportedEncodingException {
 		return mWalletWrapper.getBalanceOfWatchedAddresses(addresses);
 	}
     
@@ -280,12 +279,16 @@ public class WalletOperation extends BASE{
      * Returns the regular (Not Paired authenticator wallet) balance
      * @return
      */
-    public static BigInteger getGeneralWalletEstimatedBalance()
+    public static Coin getAccountConfirmedBalance()
     {
-    	return mWalletWrapper.getEstimatedBalance();
+    	return mWalletWrapper.getConfirmedBalance();
     }
     
-    public static BigInteger getGeneralAllWalletsCombinedEstimatedBalance()
+    public static Coin getAccountUnconfirmedBalance(){
+    	return mWalletWrapper.getUnconfirmedBalance();
+    }
+    
+    public static Coin getGeneralAllWalletsCombinedEstimatedBalance()
     {
     	return mWalletWrapper.getCombinedEstimatedBalance();
     }
@@ -342,6 +345,10 @@ public class WalletOperation extends BASE{
 	}
 	public DeterministicKey currentReceiveKey(){
 		return mWalletWrapper.currentReceiveKey();
+	}
+	
+	public DeterministicKey freshReceiveKey(){
+		return mWalletWrapper.freshReceiveKey();
 	}
 	
 	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
