@@ -1,0 +1,14 @@
+wallettemplate/SendMoneyController.class
+wallettemplate/utils/GuiUtils.class
+wallettemplate/Controller.class
+wallettemplate/Main.class
+wallettemplate/utils/ThrottledRunLater.class
+wallettemplate/utils/AlertWindowController.class
+wallettemplate/Main$OverlayUI.class
+wallettemplate/Controller$ProgressBarUpdater.class
+wallettemplate/controls/ClickableBitcoinAddress.class
+wallettemplate/SendMoneyController$1.class
+wallettemplate/Controller$BalanceUpdater.class
+wallettemplate/utils/TextFieldValidator.class
+wallettemplate/controls/ClickableBitcoinAddress$1.class
+wallettemplate/controls/BitcoinAddressValidator.class

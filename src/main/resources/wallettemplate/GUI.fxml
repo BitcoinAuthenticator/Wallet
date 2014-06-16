@@ -150,7 +150,7 @@
             </ScrollPane>
             <HBox alignment="CENTER" fillHeight="true" prefHeight="50.0" prefWidth="600.0" spacing="50.0" VBox.vgrow="NEVER">
               <children>
-                <Button fx:id="btnSend" defaultButton="true" mnemonicParsing="false" onMousePressed="#btnSendPressed" onMouseReleased="#btnSendReleased" prefHeight="36.0" prefWidth="118.0" styleClass="custom-button" text="Send" textFill="WHITE" />
+                <Button fx:id="btnSend" defaultButton="true" mnemonicParsing="false" onMousePressed="#btnSendPressed" onMouseReleased="#btnSendReleased" onAction="#SendTx" prefHeight="36.0" prefWidth="118.0" styleClass="custom-button" text="Send" textFill="WHITE" />
               </children>
               <VBox.margin>
                 <Insets top="10.0" />

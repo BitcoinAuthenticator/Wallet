@@ -1,8 +1,6 @@
 package wallettemplate.controls;
 
-import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.uri.BitcoinURI;
-
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.beans.property.StringProperty;
@@ -31,7 +29,6 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 
 // This control can be used with Scene Builder as long as we don't use any Java 8 features yet. Once Oracle release
 // a new Scene Builder compiled against Java 8, we'll be able to use lambdas and so on here. Until that day comes,
@@ -49,18 +46,12 @@ import java.util.ArrayList;
  */
 public class ClickableBitcoinAddress extends AnchorPane {
     @FXML protected Label addressLabel;
-    @FXML protected Label pairNameLabel; private String pairID;
-    @FXML protected Label balanceLabel;
     @FXML protected ContextMenu addressMenu;
     @FXML protected Label copyWidget;
     @FXML protected Label qrCode;
-    @FXML protected Label spendWidget;
-    
-    private boolean isAuthPairing;
 
-    public ClickableBitcoinAddress(boolean isAuthPairing) {
+    public ClickableBitcoinAddress() {
         try {
-        	this.isAuthPairing = isAuthPairing;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("bitcoin_address.fxml"));
             loader.setRoot(this);
             loader.setController(this);
@@ -73,10 +64,6 @@ public class ClickableBitcoinAddress extends AnchorPane {
 
             AwesomeDude.setIcon(qrCode, AwesomeIcon.QRCODE);
             Tooltip.install(qrCode, new Tooltip("Show a barcode scannable with a mobile phone for this address"));
-            
-            AwesomeDude.setIcon(spendWidget, AwesomeIcon.BITCOIN);
-            Tooltip.install(spendWidget, new Tooltip("Create a Tx Using this Paired Wallet"));
-            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,30 +83,6 @@ public class ClickableBitcoinAddress extends AnchorPane {
 
     public StringProperty addressProperty() {
         return addressLabel.textProperty();
-    }
-    
-    public void setPairName(String name) {
-    	pairNameLabel.setText(name);
-    }
-
-    public StringProperty pairNameProperty() {
-        return pairNameLabel.textProperty();
-    }
-    
-    public void setPairID(String id) {
-    	pairID = id;
-    }
-    
-    public String getPairID() {
-    	return pairID;
-    }
-    
-    public void setBalance(String value) {
-    	balanceLabel.setText(value);
-    }
-
-    public StringProperty balanceProperty() {
-        return balanceLabel.textProperty();
     }
 
     @FXML
@@ -178,18 +141,4 @@ public class ClickableBitcoinAddress extends AnchorPane {
             }
         });
     }
-    
-    /*@FXML
-    protected void spendWidgetClicked(MouseEvent event) {
-    	if(this.isAuthPairing){
-    		assert (pairID != null);
-    		ArrayList<Object> param = new ArrayList<Object>();
-    		param.add(pairID);
-    		param.add(pairNameLabel.getText());
-    		param.add(Utils.toNanoCoins(balanceLabel.getText()));
-    		Main.instance.overlayUI("send_money_authenticator.fxml",param);
-    	}
-    	else
-    		Main.instance.overlayUI("send_money.fxml",null);
-    }*/
 }
