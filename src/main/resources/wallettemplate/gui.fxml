@@ -230,7 +230,7 @@
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" prefWidth="113.0" style="-fx-background-color:transparent;" text="Bitcoin Authenticator" onAction="#handlePairDeviceAction" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" prefWidth="113.0" style="-fx-background-color:transparent;" text="Bitcoin Authenticator" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>

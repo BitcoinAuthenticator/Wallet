@@ -40,6 +40,11 @@
             <version>16.0.1</version>
         </dependency>
         <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20080701</version>
+        </dependency>
+        <dependency>
             <groupId>com.aquafx-project</groupId>
             <artifactId>aquafx</artifactId>
             <version>0.1</version>
@@ -47,7 +52,7 @@
         <dependency>
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx</artifactId>
-            <version>8.0.0</version>
+            <version>8.0.8</version>
         </dependency>
         <dependency>
             <groupId>net.glxn</groupId>

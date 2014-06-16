@@ -5,18 +5,23 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
+import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
 import com.google.bitcoin.utils.Threading;
 import com.google.common.base.Throwables;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 
@@ -32,12 +37,14 @@ public class Main extends Application {
     public static NetworkParameters params = MainNetParams.get();
     public static WalletAppKit bitcoin;
     public static Main instance;
-
+    static Stage stg;
     private StackPane uiStack;
-    private Pane mainUI;
+    private AnchorPane mainUI;
+    public static Controller controller;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
+    	stg = mainWindow;
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
@@ -58,15 +65,17 @@ public class Main extends Application {
             AquaFx.style();
         }
         // Load the GUI. The Controller class will be automagically created and wired up.
-        URL location = getClass().getResource("main.fxml");
+        mainWindow.initStyle(StageStyle.UNDECORATED);
+        URL location = getClass().getResource("gui.fxml");
         FXMLLoader loader = new FXMLLoader(location);
-        mainUI = loader.load();
-        Controller controller = loader.getController();
+		mainUI = (AnchorPane) loader.load();
+        controller = loader.getController();
         // Configure the window with a StackPane so we can overlay things on top of the main UI.
         uiStack = new StackPane(mainUI);
         mainWindow.setTitle(APP_NAME);
-        final Scene scene = new Scene(uiStack);
-        TextFieldValidator.configureScene(scene);   // Add CSS that we need.
+        final Scene scene = new Scene(uiStack, 850, 483);
+        final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+        scene.getStylesheets().add(file);  // Add CSS that we need.
         mainWindow.setScene(scene);
 
         // Make log output concise.
@@ -87,7 +96,7 @@ public class Main extends Application {
             // last months worth or more (takes a few seconds).
             bitcoin.setCheckpoints(getClass().getResourceAsStream("checkpoints"));
             // As an example!
-            bitcoin.useTor();
+            //bitcoin.useTor();
         }
 
         // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen

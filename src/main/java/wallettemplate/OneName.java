@@ -72,8 +72,8 @@ public class OneName {
 	        BufferedImage croppedImage = scaledImage.getSubimage(x, y, 73, 73);
 	        //Set image on GUI
 	        Image img = createImage(croppedImage);
-	        Main.mainController.setAvatar(img);
-	        Main.mainController.setName(formattedname);
+	        Main.controller.setAvatar(img);
+	        Main.controller.setName(formattedname);
 	    }
 
 	    /**For reading the JSON*/
@@ -101,7 +101,7 @@ public class OneName {
 		      rd.close();
 		    }
 		  }
-		
+
 		 public static javafx.scene.image.Image createImage(BufferedImage image) throws IOException {
 			    ByteArrayOutputStream out = new ByteArrayOutputStream();
 			    ImageIO.write((RenderedImage) image, "png", out);
@@ -109,5 +109,5 @@ public class OneName {
 			    ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
 			    return new javafx.scene.image.Image(in);
 			  }
-		 
+
 }

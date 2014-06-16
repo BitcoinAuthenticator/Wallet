@@ -27,6 +27,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/chris/workspace/bitcoinj/wallettemplate/target/wallettemplate-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/chris/workspace/BitcoinAuthWallet/target/wallettemplate-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
