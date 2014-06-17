@@ -1,38 +1,46 @@
 package wallettemplate;
 
+import authenticator.PairedKey;
+
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
-import com.google.bitcoin.core.ScriptException;
+import com.google.bitcoin.core.InsufficientMoneyException;
+import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.crypto.ChildNumber;
+import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.uri.BitcoinURI;
+import com.google.bitcoin.wallet.KeyChain;
+import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -40,23 +48,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import wallettemplate.Controller.BalanceUpdater;
-import wallettemplate.controls.ClickableBitcoinAddress;
 import wallettemplate.controls.ScrollPaneContentManager;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Date;
 
-import org.json.JSONException;
-
+import net.glxn.qrgen.QRCode;
+import net.glxn.qrgen.image.ImageType;
 import static wallettemplate.Main.bitcoin;
 import static wallettemplate.utils.GuiUtils.checkGuiThread;
+import static wallettemplate.utils.GuiUtils.crashAlert;
+import static wallettemplate.utils.GuiUtils.informationalAlert;
 
 /**
  * Gets created auto-magically by FXMLLoader via reflection. The widget fields are set to the GUI controls they're named
@@ -89,14 +93,23 @@ public class Controller {
 	 @FXML ImageView ivAvatar;
 	 @FXML Label lblName;
 	 @FXML private ChoiceBox AddressBox;
+	 @FXML private TextField txMsgLabel;
+	 @FXML private TextField txFee;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
 	 private ScrollPaneContentManager scrlContent;
 	 public static Stage stage;
+	 public Main.OverlayUI overlayUi;
+	 private Wallet.SendResult sendResult;
 	 
 
-    // Called by FXMLLoader.
+	//#####################################
+	//
+	//	Initialization Methods
+	//
+	//#####################################
+	 
     public void initialize() {
         syncProgress.setProgress(-1);
         scrlContent = new ScrollPaneContentManager().setSpacingBetweenItems(15);
@@ -111,6 +124,156 @@ public class Controller {
         createReceivePaneButtons();
     }
     
+    public void onBitcoinSetup() {
+    	bitcoin.wallet().addEventListener(new BalanceUpdater());
+    	bitcoin.wallet().freshReceiveAddress();
+        refreshBalanceLabel();
+        setAddresses();
+    }
+    
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                                 + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
+    
+    public class ProgressBarUpdater extends DownloadListener {
+        @Override
+        protected void progress(double pct, int blocksSoFar, Date date) {
+            super.progress(pct, blocksSoFar, date);
+            Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
+        }
+
+        @Override
+        protected void doneDownload() {
+            super.doneDownload();
+            Platform.runLater(Controller.this::readyToGoAnimation);
+        }
+    }
+
+    public void readyToGoAnimation() {
+        // Sync progress bar slides out ...
+        TranslateTransition leave = new TranslateTransition(Duration.millis(600), SyncPane);
+        leave.setByY(80.0);
+        leave.setCycleCount(1);
+        leave.setInterpolator(Interpolator.EASE_OUT);
+        leave.play();
+    }
+
+    public ProgressBarUpdater progressBarUpdater() {
+        return new ProgressBarUpdater();
+    }
+
+    public class BalanceUpdater extends AbstractWalletEventListener {
+        @Override
+        public void onWalletChanged(Wallet wallet) {
+            checkGuiThread();
+            refreshBalanceLabel();
+            setAddresses();
+        }
+    }
+    
+    //#####################################
+  	//
+  	//	Tab Buttons
+  	//
+  	//#####################################
+    
+    @FXML protected void actionOverview(ActionEvent event) {
+   	     btnOverview_white.setVisible(true);
+  	 	 btnOverview_grey.setVisible(false);
+  	 	 btnSend_white.setVisible(false);
+  	 	 btnSend_grey.setVisible(true);
+  	 	 btnReceive_white.setVisible(false);
+  	 	 btnReceive_grey.setVisible(true);
+	 	 btnTransactions_white.setVisible(false);
+	 	 btnTransactions_grey.setVisible(true);
+  	 	 btnApps_white.setVisible(false);
+  	 	 btnApps_grey.setVisible(true);
+	 	 OverviewPane.setVisible(true);
+	 	 SendPane.setVisible(false);
+	 	 ReceivePane.setVisible(false);
+	 	 AppsPane.setVisible(false);
+   }
+   
+   @FXML protected void actionSend(ActionEvent event) {
+     	 btnSend_white.setVisible(true);
+     	 btnSend_grey.setVisible(false);
+     	 btnOverview_white.setVisible(false);
+     	 btnOverview_grey.setVisible(true);
+      	 btnReceive_white.setVisible(false);
+   	     btnReceive_grey.setVisible(true);
+   	     btnTransactions_white.setVisible(false);
+      	 btnTransactions_grey.setVisible(true);
+      	 btnApps_white.setVisible(false);
+      	 btnApps_grey.setVisible(true);
+      	 OverviewPane.setVisible(false);
+      	 SendPane.setVisible(true);
+      	 ReceivePane.setVisible(false);
+      	 AppsPane.setVisible(false);
+      }
+   
+   @FXML protected void actionReceive(ActionEvent event) {
+   	 	 btnReceive_white.setVisible(true);
+    	 btnReceive_grey.setVisible(false);
+    	 btnSend_white.setVisible(false);
+    	 btnSend_grey.setVisible(true);
+    	 btnOverview_white.setVisible(false);
+    	 btnOverview_grey.setVisible(true);
+    	 btnTransactions_white.setVisible(false);
+     	 btnTransactions_grey.setVisible(true);
+     	 btnApps_white.setVisible(false);
+  	     btnApps_grey.setVisible(true);
+  	     OverviewPane.setVisible(false);
+  	     SendPane.setVisible(false);
+  	     ReceivePane.setVisible(true);
+  	     AppsPane.setVisible(false);
+     }
+   
+   @FXML protected void actionTransactions(ActionEvent event) {
+  	 	 btnTransactions_white.setVisible(true);
+  	 	 btnTransactions_grey.setVisible(false);
+  	 	 btnSend_white.setVisible(false);
+  	 	 btnSend_grey.setVisible(true);
+  	 	 btnOverview_white.setVisible(false);
+  	 	 btnOverview_grey.setVisible(true);
+  	 	 btnReceive_white.setVisible(false);
+    	 btnReceive_grey.setVisible(true);
+    	 btnApps_white.setVisible(false);
+ 	     btnApps_grey.setVisible(true);
+ 	     OverviewPane.setVisible(false);
+ 	     SendPane.setVisible(false);
+ 	     ReceivePane.setVisible(false);
+ 	     AppsPane.setVisible(false);
+    }
+   
+   @FXML protected void actionApps(ActionEvent event) {
+	   	 btnApps_white.setVisible(true);
+	   	 btnApps_grey.setVisible(false);
+	   	 btnSend_white.setVisible(false);
+	   	 btnSend_grey.setVisible(true);
+	   	 btnOverview_white.setVisible(false);
+	     btnOverview_grey.setVisible(true);
+	   	 btnTransactions_white.setVisible(false);
+    	 btnTransactions_grey.setVisible(true);
+    	 btnReceive_white.setVisible(false);
+ 	     btnReceive_grey.setVisible(true);
+ 	     OverviewPane.setVisible(false);
+ 	     SendPane.setVisible(false);
+ 	     ReceivePane.setVisible(false);
+ 	     AppsPane.setVisible(true);
+    }
+   
+   	//#####################################
+ 	//
+ 	//	Overview Pane
+ 	//
+ 	//#####################################
+    
     void setAvatar(Image img) {
         ivAvatar.setImage(img);
       }
@@ -120,6 +283,41 @@ public class Controller {
     	lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
                 lblName.getText(), 0.0D));
     }
+    
+    @FXML protected void drag1(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML protected void drag2(MouseEvent event) {
+    	Main.stg.setX(event.getScreenX() - xOffset);
+    	Main.stg.setY(event.getScreenY() - yOffset);
+    }
+    
+    @FXML protected void openOneNameDialog(ActionEvent event){
+    	Main.instance.overlayUI("OneName.fxml");
+    	/*Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource("OneName.fxml"));
+            stage = new Stage();
+            stage.setTitle("OneName");
+            stage.setScene(new Scene(root, 255, 110));
+            stage.show();
+        } catch (IOException e) {e.printStackTrace();}*/
+    }
+    
+    public void refreshBalanceLabel() {
+        final Coin confirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.AVAILABLE);
+        lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
+        final Coin unconfirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
+    }
+    
+    //#####################################
+   	//
+   	//	Send Pane
+   	//
+   	//#####################################
     
     @FXML protected void btnAddPressed(MouseEvent event) {
     	btnAdd.setStyle("-fx-background-color: #a1d2e7;");
@@ -135,113 +333,53 @@ public class Controller {
     
     @FXML protected void btnSendReleased(MouseEvent event) {
     	btnSend.setStyle("-fx-background-color: #199bd6;");
-    }
-    
-    @FXML protected void drag1(MouseEvent event) {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        }
-    
-    @FXML protected void drag2(MouseEvent event) {
-        Main.stg.setX(event.getScreenX() - xOffset);
-        Main.stg.setY(event.getScreenY() - yOffset);
-    }
+    } 
     
     @FXML protected void SendTx(ActionEvent event){
-    	
+    	try {
+    		Transaction tx = new Transaction(Main.params);
+    		Address destination = null;
+    		for(Node n:scrlContent.getChildren()) {
+    			NewAddress na = (NewAddress)n;
+    			destination = new Address(Main.params, na.txfAddress.getText());
+    			double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+    			long satoshis = (long) amount;
+    			if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) {
+    				//Do something here
+    			}
+    			tx.addOutput(Coin.valueOf(satoshis), destination);
+    		}
+            Wallet.SendRequest req = Wallet.SendRequest.forTx(tx);
+            if (txFee.getText().equals("")){req.feePerKb = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+            else {req.feePerKb = Coin.valueOf((Long.valueOf(txFee.getText()).longValue())*100000000);}
+            req.changeAddress = bitcoin.wallet().getChangeAddress();
+            sendResult = Main.bitcoin.wallet().sendCoins(req);
+            Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
+                @Override
+                public void onSuccess(Transaction result) {
+                    //put something here
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    // We died trying to empty the wallet.
+                    crashAlert(t);
+                }
+            });
+        } catch (AddressFormatException e) {
+            // Cannot happen because we already validated it when the text field changed.
+            throw new RuntimeException(e);
+        } catch (InsufficientMoneyException e) {
+            informationalAlert("Could not empty the wallet",
+                    "You may have too little money left in the wallet to make a transaction.");
+        }
     }
     
-    @FXML protected void actionOverview(ActionEvent event) {
-    	 btnOverview_white.setVisible(true);
-   	 	 btnOverview_grey.setVisible(false);
-   	 	 btnSend_white.setVisible(false);
-   	 	 btnSend_grey.setVisible(true);
-   	 	 btnReceive_white.setVisible(false);
-   	 	 btnReceive_grey.setVisible(true);
-	 	 btnTransactions_white.setVisible(false);
-	 	 btnTransactions_grey.setVisible(true);
-   	 	 btnApps_white.setVisible(false);
-   	 	 btnApps_grey.setVisible(true);
-	 	 OverviewPane.setVisible(true);
-	 	 SendPane.setVisible(false);
-	 	 ReceivePane.setVisible(false);
-	 	 AppsPane.setVisible(false);
-    }
-    
-    @FXML protected void actionSend(ActionEvent event) {
-      	 btnSend_white.setVisible(true);
-      	 btnSend_grey.setVisible(false);
-      	 btnOverview_white.setVisible(false);
-      	 btnOverview_grey.setVisible(true);
-       	 btnReceive_white.setVisible(false);
-    	 btnReceive_grey.setVisible(true);
-    	 btnTransactions_white.setVisible(false);
-       	 btnTransactions_grey.setVisible(true);
-       	 btnApps_white.setVisible(false);
-    	 btnApps_grey.setVisible(true);
-    	 OverviewPane.setVisible(false);
-    	 SendPane.setVisible(true);
-    	 ReceivePane.setVisible(false);
-    	 AppsPane.setVisible(false);
-       }
-    
-    @FXML protected void actionReceive(ActionEvent event) {
-    	 btnReceive_white.setVisible(true);
-     	 btnReceive_grey.setVisible(false);
-     	 btnSend_white.setVisible(false);
-     	 btnSend_grey.setVisible(true);
-     	 btnOverview_white.setVisible(false);
-     	 btnOverview_grey.setVisible(true);
-     	 btnTransactions_white.setVisible(false);
-      	 btnTransactions_grey.setVisible(true);
-      	 btnApps_white.setVisible(false);
-   	     btnApps_grey.setVisible(true);
-   	     OverviewPane.setVisible(false);
-   	     SendPane.setVisible(false);
-   	     ReceivePane.setVisible(true);
-   	     AppsPane.setVisible(false);
-      }
-    
-    @FXML protected void actionTransactions(ActionEvent event) {
-   	 	 btnTransactions_white.setVisible(true);
-    	 btnTransactions_grey.setVisible(false);
-    	 btnSend_white.setVisible(false);
-    	 btnSend_grey.setVisible(true);
-    	 btnOverview_white.setVisible(false);
-    	 btnOverview_grey.setVisible(true);
-    	 btnReceive_white.setVisible(false);
-     	 btnReceive_grey.setVisible(true);
-     	 btnApps_white.setVisible(false);
-  	     btnApps_grey.setVisible(true);
-  	     OverviewPane.setVisible(false);
-  	     SendPane.setVisible(false);
-  	     ReceivePane.setVisible(false);
-  	     AppsPane.setVisible(false);
-     }
-    
-    @FXML protected void actionApps(ActionEvent event) {
-   	 	 btnApps_white.setVisible(true);
-    	 btnApps_grey.setVisible(false);
-    	 btnSend_white.setVisible(false);
-    	 btnSend_grey.setVisible(true);
-    	 btnOverview_white.setVisible(false);
-    	 btnOverview_grey.setVisible(true);
-    	 btnTransactions_white.setVisible(false);
-     	 btnTransactions_grey.setVisible(true);
-     	 btnReceive_white.setVisible(false);
-  	     btnReceive_grey.setVisible(true);
-  	     OverviewPane.setVisible(false);
-  	     SendPane.setVisible(false);
-  	     ReceivePane.setVisible(false);
-  	     AppsPane.setVisible(true);
-     }
-    
-    @FXML protected void add(){
+    @FXML protected void add() {
     	addOutput();
     }
     
-    private void addOutput()
-    {
+    private void addOutput() {
     	Class[] parameterTypes = new Class[1];
         parameterTypes[0] = int.class;
         Method removeOutput;
@@ -253,11 +391,9 @@ public class Controller {
 		} catch (NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
-    	
-    	
     }
-    public void removeOutput(int index)
-    {
+    
+    public void removeOutput(int index) {
     	scrlContent.removeNodeAtIndex(index);
     	// TODO - make it better !
     	for(Node n:scrlContent.getChildren()){
@@ -269,8 +405,7 @@ public class Controller {
     	scrlpane.setContent(scrlContent);
     }
     
-    public class NewAddress extends HBox
-    {
+    public class NewAddress extends HBox {
     	TextField txfAddress;
     	TextField txfAmount;
     	Label lblScanQR;
@@ -295,6 +430,7 @@ public class Controller {
             });
     		return this;
     	}
+    	
     	public NewAddress(int index)
     	{
     		this.index = index;
@@ -333,11 +469,8 @@ public class Controller {
     		a.setMargin(lblContacts, new Insets(1,0,0,0));
     		AwesomeDude.setIcon(lblContacts, AwesomeIcon.USERS);
     		a.getChildren().add(lblContacts);
-    		
     		main.getChildren().add(a);
-    		
-    		
-    		
+
     		HBox b = new HBox();
     		txfAmount = new TextField();
     		txfAmount.setPromptText("Amount (bits)");
@@ -352,17 +485,11 @@ public class Controller {
     	}
     }
     
-    @FXML protected void openOneNameDialog(ActionEvent event){
-    	Main.instance.overlayUI("OneName.fxml");
-    	/*Parent root;
-        try {
-            root = FXMLLoader.load(getClass().getResource("OneName.fxml"));
-            stage = new Stage();
-            stage.setTitle("OneName");
-            stage.setScene(new Scene(root, 255, 110));
-            stage.show();
-        } catch (IOException e) {e.printStackTrace();}*/
-    }
+    //#####################################
+   	//
+   	//	Receive Pane
+   	//
+   	//#####################################
     
     void createReceivePaneButtons(){
     	Button btnCopy = new Button();
@@ -384,6 +511,14 @@ public class Controller {
             	btnCopy.setStyle("-fx-background-color: #199bd6;");
             }
         });
+        btnCopy.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+            	final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                content.putString(AddressBox.getValue().toString());
+                clipboard.setContent(content);
+            }
+        });
         Button btnQR = new Button();
         ReceiveHBox.setMargin(btnQR, new Insets(14,0,0,3));
         btnQR.setFont(new Font("Arial", 18));
@@ -401,6 +536,36 @@ public class Controller {
             @Override
             public void handle(MouseEvent t) {
             	btnQR.setStyle("-fx-background-color: #199bd6;");
+            }
+        });
+        btnQR.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+            	 // Serialize to PNG and back into an image. Pretty lame but it's the shortest code to write and I'm feeling
+                // lazy tonight.
+                byte[] imageBytes = null;
+				try {
+					imageBytes = QRCode
+					        .from(uri())
+					        .withSize(360, 360)
+					        .to(ImageType.PNG)
+					        .stream()
+					        .toByteArray();
+				} catch (AddressFormatException e1) {e1.printStackTrace();}
+                Image qrImage = new Image(new ByteArrayInputStream(imageBytes));
+                ImageView view = new ImageView(qrImage);
+                view.setEffect(new DropShadow());
+                // Embed the image in a pane to ensure the drop-shadow interacts with the fade nicely, otherwise it looks weird.
+                // Then fix the width/height to stop it expanding to fill the parent, which would result in the image being
+                // non-centered on the screen. Finally fade/blur it in.
+                Pane pane = new Pane(view);
+                pane.setMaxSize(qrImage.getWidth(), qrImage.getHeight());
+                final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+                view.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        overlay.done();
+                    }
+                });
             }
         });
         Button btnKey = new Button();
@@ -426,64 +591,23 @@ public class Controller {
         ReceiveHBox.getChildren().add(btnQR);
         ReceiveHBox.getChildren().add(btnKey);
     }
-
-    public void onBitcoinSetup() {
-    	bitcoin.wallet().addEventListener(new BalanceUpdater());
-        refreshBalanceLabel();
-        setAddresses();
+    
+    public String uri() throws AddressFormatException {
+		Address addr = new Address(Main.params, AddressBox.getValue().toString());
+        return BitcoinURI.convertToBitcoinURI(addr, null, Main.APP_NAME, null);
     }
     
-
-    public class ProgressBarUpdater extends DownloadListener {
-        @Override
-        protected void progress(double pct, int blocksSoFar, Date date) {
-            super.progress(pct, blocksSoFar, date);
-            Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
-        }
-
-        @Override
-        protected void doneDownload() {
-            super.doneDownload();
-            Platform.runLater(Controller.this::readyToGoAnimation);
-        }
-    }
-
-    public void readyToGoAnimation() {
-        // Sync progress bar slides out ...
-        TranslateTransition leave = new TranslateTransition(Duration.millis(600), SyncPane);
-        leave.setByY(80.0);
-        leave.setCycleCount(1);
-        leave.setInterpolator(Interpolator.EASE_OUT);
-        leave.play();
-    }
-
-    public ProgressBarUpdater progressBarUpdater() {
-        return new ProgressBarUpdater();
-    }
-
-    public class BalanceUpdater extends AbstractWalletEventListener {
-        @Override
-        public void onWalletChanged(Wallet wallet) {
-            checkGuiThread();
-            refreshBalanceLabel();
-            setAddresses();
-        }
-    }
-
-    public void refreshBalanceLabel() {
-        final Coin confirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.AVAILABLE);
-        lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
-        final Coin unconfirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED).subtract(confirmed);
-        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
-    }
-    
-    
-	private void setAddresses(){
-		AddressBox.getItems().addAll(bitcoin.wallet().freshReceiveAddress().toString());
+    private void setAddresses(){
+		AddressBox.getItems().clear();
 		AddressBox.setValue(bitcoin.wallet().currentReceiveAddress().toString());
     	for (int i=0; i<9; i++){
-    		AddressBox.getItems().addAll(bitcoin.wallet().freshReceiveAddress().toString());
+    		AddressBox.getItems().addAll(bitcoin.wallet().currentReceiveAddress().toString());
     	}
-    }
+    }    
     
+    //#####################################
+   	//
+   	//	Transactions Pane
+   	//
+   	//#####################################
 }

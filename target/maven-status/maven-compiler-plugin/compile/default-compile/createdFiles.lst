@@ -1,8 +1,11 @@
+authenticator/PairedKey.class
 wallettemplate/utils/TextUtils.class
 wallettemplate/OneNameController.class
 wallettemplate/Controller$3.class
 wallettemplate/Controller$NewAddress.class
+wallettemplate/Controller$9.class
 wallettemplate/Controller$6.class
+wallettemplate/Controller$7$1.class
 wallettemplate/Controller$2.class
 wallettemplate/controls/ClickableBitcoinAddress.class
 wallettemplate/SendMoneyController$1.class
@@ -14,11 +17,13 @@ wallettemplate/Controller$5.class
 wallettemplate/Main.class
 wallettemplate/Main$OverlayUI.class
 wallettemplate/Controller$NewAddress$1.class
+wallettemplate/Controller$8.class
 wallettemplate/controls/ClickableBitcoinAddress$1.class
 wallettemplate/Controller$4.class
 wallettemplate/Controller.class
 wallettemplate/utils/ThrottledRunLater.class
 wallettemplate/utils/AlertWindowController.class
+wallettemplate/Controller$7.class
 wallettemplate/Controller$1.class
 wallettemplate/Controller$ProgressBarUpdater.class
 wallettemplate/Controller$BalanceUpdater.class

@@ -1,5 +1,6 @@
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/controls/ClickableBitcoinAddress.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/Main.java
+/home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/PairedKey.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/OneNameController.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/TextUtils.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/controls/BitcoinAddressValidator.java
