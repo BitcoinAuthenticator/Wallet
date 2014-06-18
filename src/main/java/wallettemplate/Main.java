@@ -41,6 +41,7 @@ public class Main extends Application {
     private StackPane uiStack;
     private AnchorPane mainUI;
     public static Controller controller;
+    public static Stage stage;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
@@ -112,6 +113,8 @@ public class Main extends Application {
         System.out.println(bitcoin.wallet());
         controller.onBitcoinSetup();
         mainWindow.show();
+        
+        stage = mainWindow;
     }
 
     public class OverlayUI<T> {
