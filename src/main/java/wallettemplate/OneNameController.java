@@ -15,7 +15,7 @@ public class OneNameController {
 	
 	@FXML protected void onename (ActionEvent event) throws IOException, JSONException{
 		OneName on = new OneName();
-		on.getOneName(txtOneName.getText());
+		on.getAvatar(txtOneName.getText());
 		overlayUi.done();
 	}
 	

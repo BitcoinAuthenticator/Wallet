@@ -32,10 +32,9 @@ public class PairedKey {
 		DeterministicKey walletIndex = Main.bitcoin.wallet().currentReceiveKey();
 		ChildNumber index = walletIndex.getChildNumber();
 		HDKeyDerivation HDKey = null;
-		DeterministicKey account = HDKey.deriveChildKey(mPubKey, 0);
 		DeterministicKey type = null;
-		if (purpose == KeyChain.KeyPurpose.RECEIVE_FUNDS){type = HDKey.deriveChildKey(account, 0);}
-		if (purpose == KeyChain.KeyPurpose.CHANGE){type = HDKey.deriveChildKey(account, 1);}
+		if (purpose == KeyChain.KeyPurpose.RECEIVE_FUNDS){type = HDKey.deriveChildKey(mPubKey, 0);}
+		if (purpose == KeyChain.KeyPurpose.CHANGE){type = HDKey.deriveChildKey(mPubKey, 1);}
 		DeterministicKey authIndex = HDKey.deriveChildKey(type, index);
 		byte[] walletPubKey = walletIndex.getPubKey();
 		byte[] authPubKey = authIndex.getPubKey();
@@ -55,10 +54,9 @@ public class PairedKey {
 		DeterministicKey walletIndex = Main.bitcoin.wallet().freshReceiveKey();
 		ChildNumber index = walletIndex.getChildNumber();
 		HDKeyDerivation HDKey = null;
-		DeterministicKey account = HDKey.deriveChildKey(mPubKey, 0);
 		DeterministicKey type = null;
-		if (purpose == KeyChain.KeyPurpose.RECEIVE_FUNDS){type = HDKey.deriveChildKey(account, 0);}
-		if (purpose == KeyChain.KeyPurpose.CHANGE){type = HDKey.deriveChildKey(account, 1);}
+		if (purpose == KeyChain.KeyPurpose.RECEIVE_FUNDS){type = HDKey.deriveChildKey(mPubKey, 0);}
+		if (purpose == KeyChain.KeyPurpose.CHANGE){type = HDKey.deriveChildKey(mPubKey, 1);}
 		DeterministicKey authIndex = HDKey.deriveChildKey(type, index);
 		byte[] walletPubKey = walletIndex.getPubKey();
 		byte[] authPubKey = authIndex.getPubKey();

@@ -2,6 +2,7 @@ package wallettemplate;
 
 import authenticator.PairedKey;
 
+import com.github.sarxos.webcam.Webcam;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -18,6 +19,13 @@ import com.google.bitcoin.wallet.KeyChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -30,6 +38,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -50,10 +59,14 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
+
+import org.json.JSONException;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
@@ -308,7 +321,9 @@ public class Controller {
     
     public void refreshBalanceLabel() {
         final Coin confirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.AVAILABLE);
-        lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
+        final Coin watched = bitcoin.wallet().getWatchedBalance();
+        final Coin total = confirmed.add(watched);
+        lblConfirmedBalance.setText(total.toFriendlyString() + " BTC");
         final Coin unconfirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
     }
@@ -335,13 +350,20 @@ public class Controller {
     	btnSend.setStyle("-fx-background-color: #199bd6;");
     } 
     
-    @FXML protected void SendTx(ActionEvent event){
+    @FXML protected void SendTx(ActionEvent event) throws IOException, JSONException{
     	try {
     		Transaction tx = new Transaction(Main.params);
     		Address destination = null;
     		for(Node n:scrlContent.getChildren()) {
     			NewAddress na = (NewAddress)n;
-    			destination = new Address(Main.params, na.txfAddress.getText());
+    			if (na.txfAddress.getText().substring(0,1).equals("+")){
+    				System.out.println("1");
+    				destination = new Address(Main.params, OneName.getAddress(na.txfAddress.getText().substring(1)));
+    			}
+    			else {
+    				System.out.println("2");
+    				destination = new Address(Main.params, na.txfAddress.getText());
+    			}
     			double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
     			long satoshis = (long) amount;
     			if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) {
@@ -462,6 +484,12 @@ public class Controller {
     		a.setMargin(lblScanQR, new Insets(1,0,0,8));
     		AwesomeDude.setIcon(lblScanQR, AwesomeIcon.QRCODE);
     		a.getChildren().add(lblScanQR);
+    		lblScanQR.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    		    @Override
+    		    public void handle(MouseEvent mouseEvent) {
+                   
+    		    }
+    		});
     		lblContacts = new Label();
     		lblContacts.setFont(new Font("Arial", 18));
     		lblContacts.setPrefSize(25, 25);
@@ -585,6 +613,12 @@ public class Controller {
             @Override
             public void handle(MouseEvent t) {
             	btnKey.setStyle("-fx-background-color: #199bd6;");
+            }
+        });
+        btnKey.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+            	//copy public key here
             }
         });
         ReceiveHBox.getChildren().add(btnCopy);
