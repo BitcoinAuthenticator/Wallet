@@ -28,6 +28,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/chris/workspace/BitcoinAuthWallet/target/wallettemplate-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/chris/workspace/bitcoinj/orchid/target/orchid-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/home/chris/workspace/bitcoinj/core/target/bitcoinj-0.12-SNAPSHOT-bundled.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -61,10 +61,18 @@ import wallettemplate.controls.ScrollPaneContentManager;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Date;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 
 import org.json.JSONException;
 
@@ -138,20 +146,10 @@ public class Controller {
     }
     
     public void onBitcoinSetup() {
-    	bitcoin.wallet().addEventListener(new BalanceUpdater());
+    	bitcoin.wallet().addEventListener(new WalletListener());
     	bitcoin.wallet().freshReceiveAddress();
         refreshBalanceLabel();
         setAddresses();
-    }
-    
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                                 + Character.digit(s.charAt(i+1), 16));
-        }
-        return data;
     }
     
     public class ProgressBarUpdater extends DownloadListener {
@@ -181,13 +179,38 @@ public class Controller {
         return new ProgressBarUpdater();
     }
 
-    public class BalanceUpdater extends AbstractWalletEventListener {
+    public class WalletListener extends AbstractWalletEventListener {
         @Override
         public void onWalletChanged(Wallet wallet) {
             checkGuiThread();
             refreshBalanceLabel();
             setAddresses();
         }
+        
+        public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+        	refreshBalanceLabel();
+        	/*try {
+        	    File yourFile = new File("coins.wav");
+        	    AudioInputStream stream;
+        	    AudioFormat format;
+        	    DataLine.Info info;
+        	    Clip clip;
+
+        	    stream = AudioSystem.getAudioInputStream(yourFile);
+        	    format = stream.getFormat();
+        	    info = new DataLine.Info(Clip.class, format);
+        	    clip = (Clip) AudioSystem.getLine(info);
+        	    clip.open(stream);
+        	    clip.start();
+        	}
+        	catch (Exception e) {}*/
+        }
+        
+        public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
+        	refreshBalanceLabel();
+        }
+        
+       
     }
     
     //#####################################
@@ -286,6 +309,14 @@ public class Controller {
  	//	Overview Pane
  	//
  	//#####################################
+   
+   @FXML protected void lockWallet(ActionEvent event){
+	   
+   }
+   
+   @FXML protected void unlockWallet(ActionEvent event){
+	   
+   }
     
     void setAvatar(Image img) {
         ivAvatar.setImage(img);
@@ -320,11 +351,15 @@ public class Controller {
     }
     
     public void refreshBalanceLabel() {
-        final Coin confirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.AVAILABLE);
+    	Collection<Transaction> pendingtxs= bitcoin.wallet().getPendingTransactions();
+    	Coin unconfirmed = Coin.valueOf(0);
+    	for (Transaction tx : pendingtxs){
+    		unconfirmed = unconfirmed.add(tx.getValueSentToMe(bitcoin.wallet()));
+    	}
+        final Coin confirmed = (bitcoin.wallet().getBalance(Wallet.BalanceType.AVAILABLE)).subtract(unconfirmed);
         final Coin watched = bitcoin.wallet().getWatchedBalance();
         final Coin total = confirmed.add(watched);
         lblConfirmedBalance.setText(total.toFriendlyString() + " BTC");
-        final Coin unconfirmed = bitcoin.wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
     }
     
@@ -357,11 +392,9 @@ public class Controller {
     		for(Node n:scrlContent.getChildren()) {
     			NewAddress na = (NewAddress)n;
     			if (na.txfAddress.getText().substring(0,1).equals("+")){
-    				System.out.println("1");
     				destination = new Address(Main.params, OneName.getAddress(na.txfAddress.getText().substring(1)));
     			}
     			else {
-    				System.out.println("2");
     				destination = new Address(Main.params, na.txfAddress.getText());
     			}
     			double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;

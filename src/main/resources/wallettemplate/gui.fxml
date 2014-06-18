@@ -188,6 +188,8 @@
                 <Font size="15.0" />
               </font>
             </Label>
+        <Button fx:id="btnLocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+ 		  <graphic>
             <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
               <image>
                 <Image url="@btnLocked.png" />
@@ -196,6 +198,8 @@
                 <Insets left="5.0" top="-2.0" />
               </HBox.margin>
             </ImageView>
+          </graphic>
+        </Button>
           </children>
         </HBox>
         <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="105.0" style="-fx-font-weight: SEMI_BOLD; -fx-text-fill: #97d848;" text="0.000000 BTC">

@@ -25,6 +25,11 @@
 
     <dependencies>
         <dependency>
+    		<groupId>org.codehaus.izpack</groupId>
+  		 	<artifactId>izpack-standalone-compiler</artifactId>
+  		 	<version>4.3.5</version>
+		</dependency>
+        <dependency>
    			<groupId>com.github.sarxos</groupId>
    			<artifactId>webcam-capture</artifactId>
    			<version>0.3.9</version>

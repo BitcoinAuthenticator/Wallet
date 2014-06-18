@@ -1,3 +1,4 @@
+wallettemplate/Controller$WalletListener.class
 authenticator/PairedKey.class
 wallettemplate/utils/TextUtils.class
 wallettemplate/OneNameController.class
@@ -28,6 +29,5 @@ wallettemplate/Controller$10.class
 wallettemplate/Controller$7.class
 wallettemplate/Controller$1.class
 wallettemplate/Controller$ProgressBarUpdater.class
-wallettemplate/Controller$BalanceUpdater.class
 wallettemplate/utils/TextFieldValidator.class
 wallettemplate/controls/BitcoinAddressValidator.class

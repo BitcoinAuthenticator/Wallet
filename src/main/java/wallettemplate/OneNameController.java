@@ -18,5 +18,4 @@ public class OneNameController {
 		on.getAvatar(txtOneName.getText());
 		overlayUi.done();
 	}
-	
 }
