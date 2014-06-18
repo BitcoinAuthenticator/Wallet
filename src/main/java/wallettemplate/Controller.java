@@ -67,15 +67,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
 
-import java.awt.image.BufferedImage;
+import java.awt.EventQueue;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -113,6 +111,7 @@ public class Controller {
 	 @FXML private Pane ReceivePane;
 	 @FXML private Pane AppsPane;
 	 @FXML private Pane SyncPane;
+	 @FXML private ImageView ivSync;
 	 @FXML private ProgressBar syncProgress;
 	 @FXML private Button btnAvatar;
 	 @FXML private Button btnAdd;
@@ -129,8 +128,8 @@ public class Controller {
 	 @FXML private Button btnConnection1;
 	 @FXML private Button btnConnection2;
 	 @FXML private Button btnConnection3;
-	 public Button btnTor_grey;
-	 public Button btnTor_color;
+	 @FXML private Button btnTor_grey;
+	 @FXML private Button btnTor_color;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -149,6 +148,11 @@ public class Controller {
 	 
     public void initialize() {
         syncProgress.setProgress(-1);
+        RotateTransition rt = new RotateTransition(Duration.millis(3000),ivSync);
+        rt.setByAngle(360);
+        rt.setCycleCount(10000); // to infinite ?
+        rt.play();
+        
         scrlContent = new ScrollPaneContentManager().setSpacingBetweenItems(15);
         scrlpane.setFitToHeight(true);
         scrlpane.setFitToWidth(true);
@@ -206,9 +210,13 @@ public class Controller {
 
 		@Override
 		public void initializationCompleted() {
-			//There's a problem here. This method is called when Tor finishes initializing, but it doesn't
-			//allow actions on the javafx thread. 
-			//We need some way to set btnTor_grey.setVisible(false); btnTor_color.setVisible(true);
+			EventQueue.invokeLater(new Runnable() { 
+				  @Override
+				  public void run() {
+				     btnTor_grey.setVisible(false);
+				     btnTor_color.setVisible(true);
+				  }
+				});
 		}
     	
     }
