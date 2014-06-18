@@ -3,15 +3,21 @@ package wallettemplate;
 import authenticator.PairedKey;
 
 import com.github.sarxos.webcam.Webcam;
+import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
+import com.google.bitcoin.core.GetDataMessage;
 import com.google.bitcoin.core.InsufficientMoneyException;
+import com.google.bitcoin.core.Message;
+import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.PeerEventListener;
 import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.uri.BitcoinURI;
@@ -26,6 +32,8 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import com.subgraph.orchid.TorClient;
+import com.subgraph.orchid.TorInitializationListener;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -67,6 +75,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -116,6 +125,12 @@ public class Controller {
 	 @FXML private ChoiceBox AddressBox;
 	 @FXML private TextField txMsgLabel;
 	 @FXML private TextField txFee;
+	 @FXML private Button btnConnection0;
+	 @FXML private Button btnConnection1;
+	 @FXML private Button btnConnection2;
+	 @FXML private Button btnConnection3;
+	 public Button btnTor_grey;
+	 public Button btnTor_color;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -123,6 +138,7 @@ public class Controller {
 	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
 	 private Wallet.SendResult sendResult;
+	 TorListener listener = new TorListener();
 	 
 
 	//#####################################
@@ -148,6 +164,9 @@ public class Controller {
     public void onBitcoinSetup() {
     	bitcoin.wallet().addEventListener(new WalletListener());
     	bitcoin.wallet().freshReceiveAddress();
+    	bitcoin.peerGroup().addEventListener(new PeerListener());
+    	TorClient tor = bitcoin.peerGroup().getTorClient();
+    	tor.addInitializationListener(listener);
         refreshBalanceLabel();
         setAddresses();
     }
@@ -178,7 +197,91 @@ public class Controller {
     public ProgressBarUpdater progressBarUpdater() {
         return new ProgressBarUpdater();
     }
+    
+    public class TorListener implements TorInitializationListener {
 
+		@Override
+		public void initializationProgress(String message, int percent) {
+		}
+
+		@Override
+		public void initializationCompleted() {
+			//There's a problem here. This method is called when Tor finishes initializing, but it doesn't
+			//allow actions on the javafx thread. 
+			//We need some was to set btnTor_grey.setVisible(false); btnTor_color.setVisible(true);
+		}
+    	
+    }
+    
+    public class PeerListener extends AbstractPeerEventListener {
+    	
+    	@Override
+        public void onPeerConnected(Peer peer, int peerCount) {
+    		if (peerCount>0 & peerCount<6){
+    			btnConnection1.setVisible(true);
+    			if (peerCount==1) {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peer"));}
+    			else {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peers"));}
+    			btnConnection2.setVisible(false);
+    			btnConnection3.setVisible(false);
+    			btnConnection0.setVisible(false);
+    		}
+    		if (peerCount>6 & peerCount<10){
+    			btnConnection1.setVisible(false);
+    			btnConnection2.setVisible(true);
+    			Tooltip.install(btnConnection2, new Tooltip("Connected to " + peerCount + " peers"));
+    			btnConnection3.setVisible(false);
+    			btnConnection0.setVisible(false);
+    		}
+    		if (peerCount>9){
+    			btnConnection1.setVisible(false);
+    			btnConnection2.setVisible(false);
+    			btnConnection3.setVisible(true);
+    			Tooltip.install(btnConnection3, new Tooltip("Connected to " + peerCount + " peers"));
+    			btnConnection0.setVisible(false);
+    		}
+    		if (peerCount==0){
+    			btnConnection1.setVisible(false);
+    			btnConnection2.setVisible(false);
+    			btnConnection3.setVisible(false);
+    			btnConnection0.setVisible(true);
+    			Tooltip.install(btnConnection0, new Tooltip("Not connected"));
+    		}
+        }
+
+        @Override
+        public void onPeerDisconnected(Peer peer, int peerCount) {
+        	if (peerCount>0 & peerCount<6){
+    			btnConnection1.setVisible(true);
+    			if (peerCount==1) {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peer"));}
+    			else {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peers"));}
+    			btnConnection2.setVisible(false);
+    			btnConnection3.setVisible(false);
+    			btnConnection0.setVisible(false);
+    		}
+    		if (peerCount>6 & peerCount<10){
+    			btnConnection1.setVisible(false);
+    			btnConnection2.setVisible(true);
+    			Tooltip.install(btnConnection2, new Tooltip("Connected to " + peerCount + " peers"));
+    			btnConnection3.setVisible(false);
+    			btnConnection0.setVisible(false);
+    		}
+    		if (peerCount>9){
+    			btnConnection1.setVisible(false);
+    			btnConnection2.setVisible(false);
+    			btnConnection3.setVisible(true);
+    			Tooltip.install(btnConnection3, new Tooltip("Connected to " + peerCount + " peers"));
+    			btnConnection0.setVisible(false);
+    		}
+    		if (peerCount==0){
+    			btnConnection1.setVisible(false);
+    			btnConnection2.setVisible(false);
+    			btnConnection3.setVisible(false);
+    			btnConnection0.setVisible(true);
+    			Tooltip.install(btnConnection0, new Tooltip("Not connected"));
+    		}
+        }
+    }
+    
     public class WalletListener extends AbstractWalletEventListener {
         @Override
         public void onWalletChanged(Wallet wallet) {

@@ -103,8 +103,7 @@
             </ImageView>
             <ChoiceBox fx:id="AddressBox" prefHeight="15.0" prefWidth="450.0">
               <items>
-                <FXCollections fx:factory="observableArrayList">
-                </FXCollections>
+                <FXCollections fx:factory="observableArrayList" />
               </items>
               <HBox.margin>
                 <Insets left="3.0" top="14.0" />
@@ -150,7 +149,7 @@
             </ScrollPane>
             <HBox alignment="CENTER" fillHeight="true" prefHeight="50.0" prefWidth="600.0" spacing="50.0" VBox.vgrow="NEVER">
               <children>
-                <Button fx:id="btnSend" defaultButton="true" mnemonicParsing="false" onMousePressed="#btnSendPressed" onMouseReleased="#btnSendReleased" onAction="#SendTx" prefHeight="36.0" prefWidth="118.0" styleClass="custom-button" text="Send" textFill="WHITE" />
+                <Button fx:id="btnSend" defaultButton="true" mnemonicParsing="false" onAction="#SendTx" onMousePressed="#btnSendPressed" onMouseReleased="#btnSendReleased" prefHeight="36.0" prefWidth="118.0" styleClass="custom-button" text="Send" textFill="WHITE" />
               </children>
               <VBox.margin>
                 <Insets top="10.0" />
@@ -188,18 +187,15 @@
                 <Font size="15.0" />
               </font>
             </Label>
-        <Button fx:id="btnLocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
- 		  <graphic>
-            <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
-              <image>
-                <Image url="@btnLocked.png" />
-              </image>
-              <HBox.margin>
-                <Insets left="5.0" top="-2.0" />
-              </HBox.margin>
-            </ImageView>
-          </graphic>
-        </Button>
+            <Button fx:id="btnLocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+              <graphic>
+                <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
+                  <image>
+                    <Image url="@btnLocked.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
           </children>
         </HBox>
         <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="105.0" style="-fx-font-weight: SEMI_BOLD; -fx-text-fill: #97d848;" text="0.000000 BTC">
@@ -337,5 +333,59 @@
       </children>
     </Pane>
     <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0" />
+    <Button fx:id="btnConnection0" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection0.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnConnection1" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent; -fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection1.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnConnection2" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent; -fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection2.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnConnection3" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent; -fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection3.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnTor_grey" layoutX="765.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@Tor_grey.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnTor_color" layoutX="765.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@Tor_color.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
   </children>
 </AnchorPane>

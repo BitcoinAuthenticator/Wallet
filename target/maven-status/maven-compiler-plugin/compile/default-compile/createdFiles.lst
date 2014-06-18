@@ -1,6 +1,8 @@
 wallettemplate/Controller$WalletListener.class
+wallettemplate/Controller$PeerListener.class
 authenticator/PairedKey.class
 wallettemplate/utils/TextUtils.class
+wallettemplate/Controller$TorListener.class
 wallettemplate/OneNameController.class
 wallettemplate/Controller$3.class
 wallettemplate/Controller$NewAddress.class
