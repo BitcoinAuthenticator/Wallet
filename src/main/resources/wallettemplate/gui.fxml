@@ -324,7 +324,12 @@
     </Pane>
     <Pane fx:id="SyncPane" layoutX="18.0" layoutY="431.0" prefHeight="38.0" prefWidth="564.0" visible="true">
       <children>
-        <ImageView fx:id="ivSync" fitHeight="24.0" fitWidth="564.0" layoutX="0.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+      	<ImageView fx:id="ivSyncText" fitHeight="24.0" fitWidth="300.0" layoutX="0.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@ivSyncText.png" />
+          </image>
+        </ImageView>
+        <ImageView fx:id="ivSync" fitHeight="24.0" fitWidth="24.0" layoutX="540.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
           <image>
             <Image url="@ivSync.png" />
           </image>

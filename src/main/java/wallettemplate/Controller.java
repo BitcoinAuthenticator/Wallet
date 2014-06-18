@@ -113,6 +113,7 @@ public class Controller {
 	 @FXML private Pane ReceivePane;
 	 @FXML private Pane AppsPane;
 	 @FXML private Pane SyncPane;
+	 @FXML private ImageView ivSync;
 	 @FXML private ProgressBar syncProgress;
 	 @FXML private Button btnAvatar;
 	 @FXML private Button btnAdd;
@@ -149,6 +150,11 @@ public class Controller {
 	 
     public void initialize() {
         syncProgress.setProgress(-1);
+        RotateTransition rt = new RotateTransition(Duration.millis(3000),ivSync);
+        rt.setByAngle(360);
+        rt.setCycleCount(10000); // to infinite ?
+        rt.play();
+        
         scrlContent = new ScrollPaneContentManager().setSpacingBetweenItems(15);
         scrlpane.setFitToHeight(true);
         scrlpane.setFitToWidth(true);
