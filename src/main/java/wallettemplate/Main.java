@@ -1,5 +1,9 @@
 package wallettemplate;
 
+import authenticator.Authenticator;
+import authenticator.OnAuthenticatoGUIUpdateListener;
+import authenticator.ui_helpers.BAApplication;
+
 import com.aquafx_project.AquaFx;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
@@ -10,9 +14,13 @@ import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
 import com.google.bitcoin.utils.Threading;
 import com.google.common.base.Throwables;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.Service.State;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -22,6 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 
@@ -29,9 +38,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+
+import static com.google.common.util.concurrent.Service.State.NEW;
+import static com.google.common.util.concurrent.Service.State.TERMINATED;
 import static wallettemplate.utils.GuiUtils.*;
 
-public class Main extends Application {
+public class Main extends BAApplication {
     public static String APP_NAME = "WalletTemplate";
 
     public static NetworkParameters params = MainNetParams.get();
@@ -42,6 +57,8 @@ public class Main extends Application {
     private AnchorPane mainUI;
     public static Controller controller;
     public static Stage stage;
+    
+    public static Authenticator auth;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
@@ -49,19 +66,23 @@ public class Main extends Application {
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
-        try {
-            init(mainWindow);
-        } catch (Throwable t) {
-            // Nicer message for the case where the block store file is locked.
-            if (Throwables.getRootCause(t) instanceof BlockStoreException) {
-                GuiUtils.informationalAlert("Already running", "This application is already running and cannot be started twice.");
-            } else {
-                throw t;
-            }
-        }
+        
+        if(super.BAInit(APP_NAME))
+	        try {
+	            init(mainWindow);
+	        } catch (Throwable t) {
+	            // Nicer message for the case where the block store file is locked.
+	            if (Throwables.getRootCause(t) instanceof BlockStoreException) {
+	                GuiUtils.informationalAlert("Already running", "This application is already running and cannot be started twice.");
+	            } else {
+	                throw t;
+	            }
+	        }
+        else
+        	Runtime.getRuntime().exit(0);
     }
 
-    private void init(Stage mainWindow) throws IOException {
+    private void init(Stage mainWindow) throws Exception {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             AquaFx.style();
         }
@@ -87,7 +108,7 @@ public class Main extends Application {
         // a future version.
         Threading.USER_THREAD = Platform::runLater;
         // Create the app kit. It won't do any heavyweight initialization until after we start it.
-        bitcoin = new WalletAppKit(params, new File("."), APP_NAME);
+        /*bitcoin = new WalletAppKit(params, new File("."), APP_NAME);
         if (params == RegTestParams.get()) {
             bitcoin.connectToLocalHost();   // You should run a regtest mode bitcoind locally.
         } else if (params == MainNetParams.get()) {
@@ -98,6 +119,23 @@ public class Main extends Application {
             bitcoin.setCheckpoints(getClass().getResourceAsStream("checkpoints"));
             // As an example!
             bitcoin.useTor();
+        }*/
+        NetworkParameters np = null;
+        if(this.ApplicationParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
+        	np = MainNetParams.get();
+        	bitcoin = new WalletAppKit(np, new File("."), APP_NAME);
+            // Checkpoints are block headers that ship inside our app: for a new user, we pick the last header
+            // in the checkpoints file and then download the rest from the network. It makes things much faster.
+            // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
+            // last months worth or more (takes a few seconds).
+            bitcoin.setCheckpoints(getClass().getResourceAsStream("checkpoints"));
+            // As an example!
+            bitcoin.useTor();
+        }
+        else if(this.ApplicationParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
+        	np = TestNet3Params.get();
+        	bitcoin = new WalletAppKit(np, new File("."), APP_NAME+"_testnet");
+        	bitcoin.useTor();
         }
 
         // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen
@@ -115,6 +153,71 @@ public class Main extends Application {
         mainWindow.show();
         
         stage = mainWindow;
+        
+        /**
+         * Authenticator Operation Setup
+         */
+        auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), new OnAuthenticatoGUIUpdateListener(){
+
+			@Override
+			public void simpleTextMessage(String msg) {
+
+			}
+
+			@Override
+			public void riseAlertToUser(String msg, String title) {
+
+			}
+        	
+        })
+        .setApplicationParams(ApplicationParams);
+        auth.startAsync();
+        auth.awaitRunning();
+        
+        mainWindow.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+            	Action response = null;
+            	if(Authenticator.getPendingRequestSize() > 0 || Authenticator.operationsQueue.size() > 0){
+            		response = Dialogs.create()
+                	        .owner(stage)
+                	        .title("Warning !")
+                	        .masthead("Pending Requests/ Operations")
+                	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
+                	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+                	        .showConfirm();
+                	
+            	}
+            	
+            	// Or no conditioning needed or user pressed Ok
+            	if (response == null ||
+            			(response != null && response == Dialog.Actions.YES)) {
+            		
+					bitcoin.addListener(new Service.Listener() {
+						@Override public void terminated(State from) {
+							if(!auth.isRunning())
+								Runtime.getRuntime().exit(0);
+				         }
+					}, MoreExecutors.sameThreadExecutor());
+					bitcoin.stopAsync();
+                   
+                    auth.addListener(new Service.Listener() {
+						@Override public void terminated(State from) {
+							if(!bitcoin.isRunning())
+								Runtime.getRuntime().exit(0);
+				         }
+					}, MoreExecutors.sameThreadExecutor());
+                    auth.stopAsync();
+                    
+                    // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
+                    //Runtime.getRuntime().exit(0);
+            	}
+            	else if(response != null && response == Dialog.Actions.NO)
+            		e.consume();
+            	
+            }
+        });
+        
     }
 
     public class OverlayUI<T> {

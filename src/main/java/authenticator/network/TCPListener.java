@@ -27,6 +27,7 @@ public class TCPListener extends BASE{
 	private static Thread listenerThread;
 	private static UpNp plugnplay;
 	private static OnAuthenticatoGUIUpdateListener mListener;
+	private ServerSocket ss = null;
 	
 	/**
 	 * Flags
@@ -54,7 +55,6 @@ public class TCPListener extends BASE{
 	    		
 	    		plugnplay = new UpNp();
 	    		int port = Integer.parseInt(args[0]);
-	    		ServerSocket ss = null;
 	    		boolean canStartLoop = true;
 	    		try {
 					plugnplay.run(new String[]{args[0]});
@@ -238,7 +238,8 @@ public class TCPListener extends BASE{
 					finally
 					{
 						isRunning = false;
-						try { ss.close(); plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
+						try { ss.close(); }  catch (IOException e) { }
+						try { plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
 						logAsInfo("Listener Stopped");
 						synchronized(this) {notify();}
 					}
@@ -249,13 +250,14 @@ public class TCPListener extends BASE{
 	    this.listenerThread.start();
 	}
 	
+	@SuppressWarnings("static-access")
 	public void stop() throws InterruptedException{
 		shouldStopListener = true;
+		logAsInfo("Stopping Listener ... ");
 		synchronized(this.listenerThread){
-			logAsInfo("Stopping Listener ... ");
 			this.listenerThread.wait();
+			return;
 		}
-		
 	}
 	
 	public boolean isRuning()

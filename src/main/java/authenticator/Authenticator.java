@@ -3,6 +3,9 @@ package authenticator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -19,6 +22,9 @@ import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+import com.google.common.util.concurrent.AbstractService;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.Service;
 
 import authenticator.Utils.SafeList;
 import authenticator.db.KeyObject;
@@ -45,7 +51,7 @@ import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
  * @author alon
  *
  */
-public class Authenticator extends BASE{
+public class Authenticator extends AbstractService{
 	final static public int LISTENER_PORT = 1234;
 	
 	private static TCPListener mTCPListener;
@@ -55,9 +61,10 @@ public class Authenticator extends BASE{
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
 
+	public Authenticator(){}
 	public Authenticator(Wallet wallet, PeerGroup peerGroup, OnAuthenticatoGUIUpdateListener listener) throws IOException
 	{
-		super(Authenticator.class);
+		//super(Authenticator.class);
 		if(mListener == null)
 			mListener = listener;
 		if(mTCPListener == null)
@@ -82,35 +89,6 @@ public class Authenticator extends BASE{
 	//
 	//#####################################
 
-	public void start() throws Exception{
-		assert(this.getWalletOperation() != null);
-		assert(mListener != null);
-		assert(mTCPListener != null);
-		assert(mApplicationParams != null);
-		assert(operationsQueue != null);
-		assert(pendingRequests != null);
-		mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)});
-	}
-	
-	/**
-	 * Stop Authenticator operations<br>
-	 * <b>Stage Is used in case there are pending requests/ operations, in that case, the user will be asked if he<br>
-	 * 	wants to continue or wait for the operations to finish</b>
-	 * 
-	 * @param stage
-	 * @throws InterruptedException
-	 */
-	static public void stop(Stage stage) throws InterruptedException
-	{
-		mTCPListener.stop();
-	}
-	
-	public boolean isRunning()
-	{
-		if(!mTCPListener.isRuning())
-			return false;
-		return true;
-	}
 	
 	//#####################################
 	//
@@ -124,7 +102,7 @@ public class Authenticator extends BASE{
 			operationsQueue.add(operation);
 		else{
 			mListener.simpleTextMessage("Queue is not running, Cannot add operation");
-			LOG.error("Queue is not running, Cannot add operation");
+			//LOG.error("Queue is not running, Cannot add operation");
 		}
 	}
 	
@@ -210,4 +188,129 @@ public class Authenticator extends BASE{
 		mApplicationParams = params;
 		return this;
 	}
+	
+	//#####################################
+	//
+	//		Service Functions
+	//
+	//#####################################
+	
+	@SuppressWarnings("static-access")
+	@Override
+	protected void doStart() {
+		assert(this.getWalletOperation() != null);
+		assert(mListener != null);
+		assert(mTCPListener != null);
+		assert(mApplicationParams != null);
+		assert(operationsQueue != null);
+		assert(pendingRequests != null);
+		try { 
+			mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)}); 
+			notifyStarted();
+		} 
+		catch (Exception e) { e.printStackTrace(); }
+	}
+
+	@Override
+	protected void doStop() {
+		try 
+		{
+			mTCPListener.stop(); 
+			notifyStopped();
+		} catch (InterruptedException e) { e.printStackTrace(); }
+	}
+	
+	
+	
+	
+	
+
+	/*@Override
+	public ListenableFuture<State> start() {
+		
+		return null;
+	}
+
+	@Override
+	public State startAndWait() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Service startAsync() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public State state() {
+		if(!mTCPListener.isRuning())
+			return State.TERMINATED;
+		return State.RUNNING;
+	}
+
+	@Override
+	public ListenableFuture<State> stop() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public State stopAndWait() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	@Override
+	public Service stopAsync() {
+		try { mTCPListener.stop(); } catch (InterruptedException e) { e.printStackTrace(); }
+		return null;
+	}
+
+	@Override
+	public void awaitRunning() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void awaitRunning(long timeout, TimeUnit unit)
+			throws TimeoutException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void awaitTerminated() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void awaitTerminated(long timeout, TimeUnit unit)
+			throws TimeoutException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Throwable failureCause() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addListener(Listener listener, Executor executor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isRunning() {
+		if(!mTCPListener.isRuning())
+			return false;
+		return false;
+	}*/
 }

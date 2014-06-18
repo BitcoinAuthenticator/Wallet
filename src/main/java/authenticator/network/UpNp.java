@@ -110,11 +110,12 @@ public class UpNp extends BASE{
 	
 	/**This method removes the mapping*/
 	public void removeMapping() throws IOException, SAXException{
-		if (activeGW.deletePortMapping(SAMPLE_PORT,"TCP")) {
-			addLogLine("Port mapping removed, test SUCCESSFUL");
-        } else {
-			addLogLine("Port mapping removal FAILED");
-        }
+		if(activeGW != null)
+			if (activeGW.deletePortMapping(SAMPLE_PORT,"TCP")) {
+				addLogLine("Port mapping removed, test SUCCESSFUL");
+	        } else {
+				addLogLine("Port mapping removal FAILED");
+	        }
 	}
 	
 	/**These two methods return the external and local IP address*/
