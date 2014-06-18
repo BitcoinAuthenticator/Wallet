@@ -208,7 +208,7 @@ public class Controller {
 		public void initializationCompleted() {
 			//There's a problem here. This method is called when Tor finishes initializing, but it doesn't
 			//allow actions on the javafx thread. 
-			//We need some was to set btnTor_grey.setVisible(false); btnTor_color.setVisible(true);
+			//We need some way to set btnTor_grey.setVisible(false); btnTor_color.setVisible(true);
 		}
     	
     }
