@@ -10,6 +10,7 @@ import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.GetDataMessage;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.Message;
@@ -72,6 +73,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -130,6 +132,7 @@ public class Controller {
 	 @FXML private Button btnConnection3;
 	 @FXML private Button btnTor_grey;
 	 @FXML private Button btnTor_color;
+	 @FXML private Label lblStatus;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -178,6 +181,12 @@ public class Controller {
     public class ProgressBarUpdater extends DownloadListener {
         @Override
         protected void progress(double pct, int blocksSoFar, Date date) {
+        	Platform.runLater(new Runnable() { 
+				  @Override
+				  public void run() {
+				     lblStatus.setText("Synchronizing Blockchain");
+				  }
+				});
             super.progress(pct, blocksSoFar, date);
             Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
         }
@@ -210,15 +219,16 @@ public class Controller {
 
 		@Override
 		public void initializationCompleted() {
-			EventQueue.invokeLater(new Runnable() { 
+			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
+					 lblStatus.setText("Connecting To Network");
 				     btnTor_grey.setVisible(false);
 				     btnTor_color.setVisible(true);
+				     Tooltip.install(btnTor_color, new Tooltip("Connected to Tor\n   [What is this?]"));
 				  }
 				});
 		}
-    	
     }
     
     public class PeerListener extends AbstractPeerEventListener {
@@ -762,7 +772,9 @@ public class Controller {
         btnKey.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
-            	//copy public key here
+            	//copy public key here        
+            	try {Main.config.fillKeyPool();} 
+            	catch (IOException e1) {e1.printStackTrace();}
             }
         });
         ReceiveHBox.getChildren().add(btnCopy);
@@ -776,10 +788,19 @@ public class Controller {
     }
     
     private void setAddresses(){
+    	
+    	try {Main.config.fillKeyPool();} 
+    	catch (IOException e) {e.printStackTrace();}
+    	ArrayList<ECKey> keypool = null;
+    	try {keypool = Main.config.getKeyPool();} 
+    	catch (IOException e) {e.printStackTrace();}
+    	
 		AddressBox.getItems().clear();
+		AddressBox.getItems().addAll(bitcoin.wallet().currentReceiveAddress().toString());
 		AddressBox.setValue(bitcoin.wallet().currentReceiveAddress().toString());
-    	for (int i=0; i<9; i++){
-    		AddressBox.getItems().addAll(bitcoin.wallet().currentReceiveAddress().toString());
+    	for (ECKey key : keypool){
+    		String addr = key.toAddress(Main.params).toString();
+    		AddressBox.getItems().addAll(addr);
     	}
     }    
     

@@ -8,7 +8,6 @@ import com.aquafx_project.AquaFx;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
-import com.google.bitcoin.params.RegTestParams;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
@@ -18,12 +17,10 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -59,6 +56,7 @@ public class Main extends BAApplication {
     public static Stage stage;
     public static Authenticator auth;
     public static boolean paired = false;
+    public static ConfigFile config;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
@@ -86,6 +84,18 @@ public class Main extends BAApplication {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             AquaFx.style();
         }
+        
+        //Load the config file
+        String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + Main.APP_NAME + ".config";
+        File f = new File(filePath);
+        config = new ConfigFile();
+        if(f.exists() && !f.isDirectory()) { 
+        	paired = config.getPaired();
+        }
+        else {
+        	config.setPaired(false);
+        }
+        
         // Load the GUI. The Controller class will be automagically created and wired up.
         mainWindow.initStyle(StageStyle.UNDECORATED);
         URL location = getClass().getResource("gui.fxml");

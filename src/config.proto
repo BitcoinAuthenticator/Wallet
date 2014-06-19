@@ -1,0 +1,26 @@
+option java_outer_classname="ProtoConfig";
+
+message Authenticator {
+
+   optional bool paired = 1;  // Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+
+}
+
+message ReceiveAddresses {
+
+	repeated string pubkey = 1; // An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+
+}
+
+message AddressBook {
+
+	optional string address = 1; // This is a placeholder for the address book.
+
+}
+
+message Settings {
+
+	optional string setting = 1; // This is a placeholder for the settings menu.
+
+}
+
