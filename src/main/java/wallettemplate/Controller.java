@@ -1,38 +1,19 @@
 package wallettemplate;
 
-import authenticator.PairedKey;
-
-import com.github.sarxos.webcam.Webcam;
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.GetDataMessage;
 import com.google.bitcoin.core.InsufficientMoneyException;
-import com.google.bitcoin.core.Message;
 import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.PeerEventListener;
-import com.google.bitcoin.crypto.ChildNumber;
-import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.uri.BitcoinURI;
-import com.google.bitcoin.wallet.KeyChain;
-import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
 
@@ -47,7 +28,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -68,7 +48,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
 
-import java.awt.EventQueue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -76,13 +55,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-
 import org.json.JSONException;
 
 import net.glxn.qrgen.QRCode;
@@ -97,6 +69,8 @@ import static wallettemplate.utils.GuiUtils.informationalAlert;
  * after. This class handles all the updates and event handling for the main UI.
  */
 public class Controller {
+	 @FXML private Label lblMinimize;
+	 @FXML private Label lblClose;
 	 @FXML private Button btnOverview_white;
 	 @FXML private Button btnOverview_grey;
 	 @FXML private Button btnSend_white;
@@ -166,6 +140,23 @@ public class Controller {
         scrlpane.setFocusTraversable(false);
         syncProgress.setProgress(-1);
         createReceivePaneButtons();
+        
+        // Pane Control
+        Tooltip.install(lblMinimize, new Tooltip("Minimize Window"));
+        lblMinimize.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	Main.stage.setIconified(true);
+            }
+        });
+        //
+        Tooltip.install(lblClose, new Tooltip("Close Window"));
+        lblClose.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	Main.stage.getOnCloseRequest().handle(null);
+            }
+        });
     }
     
     public void onBitcoinSetup() {

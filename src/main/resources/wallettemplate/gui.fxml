@@ -19,6 +19,31 @@
         <Image url="@background.png" />
       </image>
     </ImageView>
+    <HBox fx:id="PaneControlHBox" layoutX="780.0" layoutY="15.0" prefHeight="30.0" prefWidth="50.0">
+	    <children>
+	    	<Label fx:id="lblMinimize" prefHeight="10.0" prefWidth="10">
+		    	<HBox.margin>
+	              <Insets right="20.0" />
+	            </HBox.margin>
+	            <graphic>
+			        <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+			          <image>
+			            <Image url="@minimize.png" />
+			          </image>
+			        </ImageView>
+     			 </graphic>
+			</Label>
+	        <Label fx:id="lblClose" prefHeight="10.0" prefWidth="10">
+	        <graphic>
+			    <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+	          		<image>
+	            		<Image url="@close.png" />
+	          		</image>
+	        	</ImageView>
+   			 </graphic>
+	        </Label>
+	    </children>
+    </HBox>
     <Button fx:id="btnOverview_grey" layoutX="17.0" layoutY="70.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionOverview" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
