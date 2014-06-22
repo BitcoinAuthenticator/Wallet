@@ -198,7 +198,7 @@ public class Main extends BAApplication {
         			
             	// Or no conditioning needed or user pressed Ok
             	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-            			bitcoin.addListener(new Service.Listener() {
+            		bitcoin.addListener(new Service.Listener() {
 						@Override public void terminated(State from) {
 							if(!auth.isRunning())
 								Runtime.getRuntime().exit(0);

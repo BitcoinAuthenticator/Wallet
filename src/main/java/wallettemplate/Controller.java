@@ -305,7 +305,7 @@ public class Controller {
         public void onWalletChanged(Wallet wallet) {
             checkGuiThread();
             refreshBalanceLabel();
-            setAddresses();
+            //setAddresses();
         }
         
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
@@ -787,7 +787,8 @@ public class Controller {
         return BitcoinURI.convertToBitcoinURI(addr, null, Main.APP_NAME, null);
     }
     
-    private void setAddresses(){
+    @SuppressWarnings("unchecked")
+	private void setAddresses(){
     	
     	try {Main.config.fillKeyPool();} 
     	catch (IOException e) {e.printStackTrace();}

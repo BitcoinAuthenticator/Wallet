@@ -337,7 +337,7 @@
         <ProgressBar fx:id="syncProgress" layoutX="231.0" layoutY="6.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
       </children>
     </Pane>
-    <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0" />
+    <!--  <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0" /> -->
     <Button fx:id="btnConnection0" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
       <graphic>
         <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -374,7 +374,7 @@
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnTor_grey" layoutX="765.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
+    <Button fx:id="btnTor_grey" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
       <graphic>
         <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
           <image>
@@ -383,7 +383,7 @@
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnTor_color" layoutX="765.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="false">
+    <Button fx:id="btnTor_color" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="false">
       <graphic>
         <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
           <image>
