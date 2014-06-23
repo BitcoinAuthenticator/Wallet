@@ -1,19 +1,13 @@
 package wallettemplate;
 
-import authenticator.PairedKey;
-
-import com.github.sarxos.webcam.Webcam;
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.GetDataMessage;
 import com.google.bitcoin.core.InsufficientMoneyException;
-import com.google.bitcoin.core.Message;
 import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionOutput;
@@ -23,18 +17,10 @@ import com.google.bitcoin.core.PeerEventListener;
 import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.script.Script;
+import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.uri.BitcoinURI;
-import com.google.bitcoin.wallet.KeyChain;
-import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
 import com.sun.javafx.tk.Toolkit.Task;
@@ -52,7 +38,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -74,7 +59,6 @@ import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.KeyUtils;
 
-import java.awt.EventQueue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -106,6 +90,8 @@ import static wallettemplate.utils.GuiUtils.informationalAlert;
  * after. This class handles all the updates and event handling for the main UI.
  */
 public class Controller {
+	 @FXML private Label lblMinimize;
+	 @FXML private Label lblClose;
 	 @FXML private Button btnOverview_white;
 	 @FXML private Button btnOverview_grey;
 	 @FXML private Button btnSend_white;
@@ -142,7 +128,6 @@ public class Controller {
 	 @FXML private Button btnTor_grey;
 	 @FXML private Button btnTor_color;
 	 @FXML private Label lblStatus;
-	 ArrayList<ECKey> keypool;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -176,6 +161,24 @@ public class Controller {
         scrlpane.setFocusTraversable(false);
         syncProgress.setProgress(-1);
         createReceivePaneButtons();
+        
+        // Pane Control
+        Tooltip.install(lblMinimize, new Tooltip("Minimize Window"));
+        lblMinimize.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	Main.stage.setIconified(true);
+            }
+        });
+        //
+        Tooltip.install(lblClose, new Tooltip("Close Window"));
+        lblClose.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	Main.stage.getOnCloseRequest().handle(null);
+            }
+        });
+        
     }
     
     public void onBitcoinSetup() {
@@ -315,7 +318,7 @@ public class Controller {
         public void onWalletChanged(Wallet wallet) {
             checkGuiThread();
             refreshBalanceLabel();
-            setAddresses();
+            //setAddresses();
         }
         
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
@@ -363,14 +366,19 @@ public class Controller {
     @FXML protected void actionOverview(ActionEvent event) {
    	     btnOverview_white.setVisible(true);
   	 	 btnOverview_grey.setVisible(false);
+  	 	 
   	 	 btnSend_white.setVisible(false);
   	 	 btnSend_grey.setVisible(true);
+  	 	 
   	 	 btnReceive_white.setVisible(false);
   	 	 btnReceive_grey.setVisible(true);
+  	 	 
 	 	 btnTransactions_white.setVisible(false);
 	 	 btnTransactions_grey.setVisible(true);
+	 	 
   	 	 btnApps_white.setVisible(false);
   	 	 btnApps_grey.setVisible(true);
+  	 	 
 	 	 OverviewPane.setVisible(true);
 	 	 SendPane.setVisible(false);
 	 	 ReceivePane.setVisible(false);
@@ -378,16 +386,21 @@ public class Controller {
    }
    
    @FXML protected void actionSend(ActionEvent event) {
-     	 btnSend_white.setVisible(true);
-     	 btnSend_grey.setVisible(false);
+	     btnSend_white.setVisible(true);
+	     btnSend_grey.setVisible(false);
+     	 
      	 btnOverview_white.setVisible(false);
      	 btnOverview_grey.setVisible(true);
+     	 
       	 btnReceive_white.setVisible(false);
    	     btnReceive_grey.setVisible(true);
+   	     
    	     btnTransactions_white.setVisible(false);
       	 btnTransactions_grey.setVisible(true);
+      	 
       	 btnApps_white.setVisible(false);
       	 btnApps_grey.setVisible(true);
+      	 
       	 OverviewPane.setVisible(false);
       	 SendPane.setVisible(true);
       	 ReceivePane.setVisible(false);
@@ -397,14 +410,19 @@ public class Controller {
    @FXML protected void actionReceive(ActionEvent event) {
    	 	 btnReceive_white.setVisible(true);
     	 btnReceive_grey.setVisible(false);
+    	 
     	 btnSend_white.setVisible(false);
     	 btnSend_grey.setVisible(true);
+    	 
     	 btnOverview_white.setVisible(false);
     	 btnOverview_grey.setVisible(true);
+    	 
     	 btnTransactions_white.setVisible(false);
      	 btnTransactions_grey.setVisible(true);
+     	 
      	 btnApps_white.setVisible(false);
   	     btnApps_grey.setVisible(true);
+  	     
   	     OverviewPane.setVisible(false);
   	     SendPane.setVisible(false);
   	     ReceivePane.setVisible(true);
@@ -414,14 +432,19 @@ public class Controller {
    @FXML protected void actionTransactions(ActionEvent event) {
   	 	 btnTransactions_white.setVisible(true);
   	 	 btnTransactions_grey.setVisible(false);
+  	 	 
   	 	 btnSend_white.setVisible(false);
   	 	 btnSend_grey.setVisible(true);
+  	 	 
   	 	 btnOverview_white.setVisible(false);
   	 	 btnOverview_grey.setVisible(true);
+  	 	 
   	 	 btnReceive_white.setVisible(false);
     	 btnReceive_grey.setVisible(true);
+    	 
     	 btnApps_white.setVisible(false);
  	     btnApps_grey.setVisible(true);
+ 	     
  	     OverviewPane.setVisible(false);
  	     SendPane.setVisible(false);
  	     ReceivePane.setVisible(false);
@@ -431,14 +454,19 @@ public class Controller {
    @FXML protected void actionApps(ActionEvent event) {
 	   	 btnApps_white.setVisible(true);
 	   	 btnApps_grey.setVisible(false);
+	   	 
 	   	 btnSend_white.setVisible(false);
 	   	 btnSend_grey.setVisible(true);
+	   	 
 	   	 btnOverview_white.setVisible(false);
 	     btnOverview_grey.setVisible(true);
+	     
 	   	 btnTransactions_white.setVisible(false);
     	 btnTransactions_grey.setVisible(true);
+    	 
     	 btnReceive_white.setVisible(false);
  	     btnReceive_grey.setVisible(true);
+ 	     
  	     OverviewPane.setVisible(false);
  	     SendPane.setVisible(false);
  	     ReceivePane.setVisible(false);
@@ -814,13 +842,13 @@ public class Controller {
         return BitcoinURI.convertToBitcoinURI(addr, null, Main.APP_NAME, null);
     }
     
-    
     private void setAddresses(){
-    	keypool = null;
+   	 	ArrayList<ECKey> keypool = null;
 		try {Main.config.fillKeyPool();} 
 		catch (IOException e) {e.printStackTrace();}
 		try {keypool = Main.config.getKeyPool();} 
 		catch (IOException e) {e.printStackTrace();}
+
 		AddressBox.getItems().clear();
 		AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
     	for (ECKey key : keypool){

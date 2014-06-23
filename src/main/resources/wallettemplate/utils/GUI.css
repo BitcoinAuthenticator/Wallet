@@ -75,6 +75,19 @@
 	-icons-color: white;
 }
 
+.main-menu-button {
+	-fx-background-insets: 10, 0, 1, 2;
+	-fx-focus-color: red;
+	-fx-background-color:red;
+}
+
+.main-menu-button:focused {
+	-fx-background-insets: 10, 0, 1, 2;
+	-fx-focus-color: blue;
+	-fx-background-color:black;
+}
+
+
 .choice-box {
     -fx-background-color: #ecf0f1;  
     -fx-font-size: 16px;

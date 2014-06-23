@@ -19,76 +19,122 @@
         <Image url="@background.png" />
       </image>
     </ImageView>
-    <Button fx:id="btnOverview_grey" layoutX="17.0" layoutY="70.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionOverview" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+    <!-- 
+    
+    
+    	Control panel for : minimize, close 
+    	
+    	
+    -->
+    <HBox fx:id="PaneControlHBox" layoutX="780.0" layoutY="15.0" prefHeight="30.0" prefWidth="50.0" >
+	    <children>
+	    	<Label fx:id="lblMinimize" prefHeight="10.0" prefWidth="10">
+		    	<HBox.margin>
+	              <Insets right="20.0" />
+	            </HBox.margin>
+	            <graphic>
+			        <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+			          <image>
+			            <Image url="@minimize.png" />
+			          </image>
+			        </ImageView>
+     			 </graphic>
+			</Label>
+	        <Label fx:id="lblClose" prefHeight="10.0" prefWidth="10">
+	        <graphic>
+			    <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+	          		<image>
+	            		<Image url="@close.png" />
+	          		</image>
+	        	</ImageView>
+   			 </graphic>
+	        </Label>
+	    </children>
+    </HBox>
+    <!-- 
+    
+    
+    	Menu Buttons 
+    	
+    	
+    -->
+    <Button fx:id="btnOverview_grey" layoutX="17.0" layoutY="70.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionOverview" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnOverview_grey.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnOverview_white" layoutX="17.0" layoutY="70.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="">
+    <Button fx:id="btnOverview_white" layoutX="17.0" layoutY="70.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnOverview_white.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnSend_white" layoutX="17.0" layoutY="140.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+    <Button fx:id="btnSend_white" layoutX="17.0" layoutY="140.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnSend_white.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnSend_grey" layoutX="17.0" layoutY="140.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionSend" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="">
+    <Button fx:id="btnSend_grey" layoutX="17.0" layoutY="140.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionSend" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnSend_grey.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnReceive_white" layoutX="17.0" layoutY="210.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+    <Button fx:id="btnReceive_white" layoutX="17.0" layoutY="210.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnReceive_white.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnReceive_grey" layoutX="17.0" layoutY="210.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionReceive" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="">
+    <Button fx:id="btnReceive_grey" layoutX="17.0" layoutY="210.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionReceive" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnReceive_grey.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnTransactions_white" layoutX="17.0" layoutY="280.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+    <Button fx:id="btnTransactions_white" layoutX="17.0" layoutY="280.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnTransactions_white.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnTransactions_grey" layoutX="17.0" layoutY="280.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionTransactions" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="">
+    <Button fx:id="btnTransactions_grey" layoutX="17.0" layoutY="280.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionTransactions" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnTransactions_grey.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnApps_white" layoutX="17.0" layoutY="350.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+    <Button fx:id="btnApps_white" layoutX="17.0" layoutY="350.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnApps_white.png" />
         </ImageView>
       </graphic>
     </Button>
-    <Button fx:id="btnApps_grey" layoutX="17.0" layoutY="350.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionApps" prefHeight="71.0" prefWidth="175.0" style="-fx-background-insets: 0, 0, 1, 2;" text="">
+    <Button fx:id="btnApps_grey" layoutX="17.0" layoutY="350.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionApps" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
       <graphic>
         <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
           <Image url="@btnApps_grey.png" />
         </ImageView>
       </graphic>
     </Button>
+    <!-- 
+    
+    
+    	ReceivePane 
+    	
+    	
+    -->
     <Pane fx:id="ReceivePane" layoutX="196.0" layoutY="74.0" prefHeight="338.0" prefWidth="629.0" visible="false">
       <children>
         <HBox fx:id="ReceiveHBox" layoutX="0.0" layoutY="14.0" prefHeight="64.0" prefWidth="629.0">
@@ -113,6 +159,13 @@
         </HBox>
       </children>
     </Pane>
+    <!-- 
+    
+    
+    	SendPane 
+    	
+    	
+    -->
     <Pane fx:id="SendPane" layoutX="196.0" layoutY="75.0" prefHeight="337.0000999999975" prefWidth="619.0" visible="false">
       <children>
         <VBox alignment="CENTER" layoutX="15.0" layoutY="6.0" prefHeight="327.0" prefWidth="600.0" style="-fx-background-color: white;">
@@ -159,6 +212,13 @@
         </VBox>
       </children>
     </Pane>
+    <!-- 
+    
+    
+    	OverviewPane 
+    	
+    	
+    -->
     <Pane fx:id="OverviewPane" layoutX="196.0" layoutY="74.0" prefHeight="337.0000999999975" prefWidth="629.0" visible="true">
       <children>
         <ImageView fitHeight="327.0" fitWidth="585.0" layoutX="30.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" visible="true">
@@ -206,6 +266,13 @@
         <Label fx:id="lblUnconfirmedBalance" font="$x2" layoutX="68.0" layoutY="227.0" style="-fx-font-weight: SEMI_BOLD; -fx-text-fill: #f4aeb0;" text="0.000000 BTC" />
       </children>
     </Pane>
+    <!-- 
+    
+    
+    	AppsPane 
+    	
+    	
+    -->
     <Pane fx:id="AppsPane" layoutX="196.0" layoutY="74.0" prefHeight="337.0000999999975" prefWidth="629.0" visible="false">
       <children>
         <ScrollPane layoutX="14.0" layoutY="8.0" prefHeight="330.00006948241935" prefWidth="608.0" style="-fx-background:white;">
@@ -322,6 +389,13 @@
         </ScrollPane>
       </children>
     </Pane>
+    <!-- 
+    
+    
+    	SyncPane 
+    	
+    	
+    -->
     <Pane fx:id="SyncPane" layoutX="18.0" layoutY="431.0" prefHeight="38.0" prefWidth="564.0" visible="true">
       <children>
         <Label fx:id="lblStatus" prefHeight="25.0" prefWidth="250" layoutX="20" layoutY="6.0" style="-fx-font-weight: SEMI_BOLD;" text="        Initializing Tor" textFill="#6e86a0">
@@ -337,7 +411,14 @@
         <ProgressBar fx:id="syncProgress" layoutX="231.0" layoutY="6.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
       </children>
     </Pane>
-    <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0" />
+    <!--  <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0" /> -->
+    <!-- 
+    
+    
+    	Indicators for: tor, connection 
+    	
+    	
+    -->
     <Button fx:id="btnConnection0" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
       <graphic>
         <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">

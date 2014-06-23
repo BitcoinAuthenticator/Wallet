@@ -86,7 +86,7 @@ public class Main extends BAApplication {
 
     private void init(Stage mainWindow) throws Exception {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            AquaFx.style();
+            //AquaFx.style();
         }
         
       //Load the config file
@@ -171,7 +171,7 @@ public class Main extends BAApplication {
         /**
          * Authenticator Operation Setup
          */
-        if (paired){
+        //if (paired){
         	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), new OnAuthenticatoGUIUpdateListener(){
         		@Override
         		public void simpleTextMessage(String msg) {
@@ -187,7 +187,7 @@ public class Main extends BAApplication {
         	auth.startAsync();
         	auth.awaitRunning();
         
-        	mainWindow.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
         		@Override
         		public void handle(WindowEvent e) {
         			Action response = null;
@@ -203,7 +203,7 @@ public class Main extends BAApplication {
         			
             	// Or no conditioning needed or user pressed Ok
             	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-            			bitcoin.addListener(new Service.Listener() {
+            		bitcoin.addListener(new Service.Listener() {
 						@Override public void terminated(State from) {
 							if(!auth.isRunning())
 								Runtime.getRuntime().exit(0);
@@ -226,7 +226,7 @@ public class Main extends BAApplication {
             		e.consume();
         		}
         	});
-        }
+        //}
     }
 
     public class OverlayUI<T> {
@@ -289,10 +289,10 @@ public class Main extends BAApplication {
 
     @Override
     public void stop() throws Exception {
-        bitcoin.stopAsync();
+        /*bitcoin.stopAsync();
         bitcoin.awaitTerminated();
         // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
-        Runtime.getRuntime().exit(0);
+        Runtime.getRuntime().exit(0);*/
     }
 
     public static void main(String[] args) {
