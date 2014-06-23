@@ -82,7 +82,7 @@ public class Main extends BAApplication {
 
     private void init(Stage mainWindow) throws Exception {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            AquaFx.style();
+            //AquaFx.style();
         }
         
         //Load the config file

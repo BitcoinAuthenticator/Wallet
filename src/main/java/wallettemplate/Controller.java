@@ -157,6 +157,7 @@ public class Controller {
             	Main.stage.getOnCloseRequest().handle(null);
             }
         });
+        
     }
     
     public void onBitcoinSetup() {
@@ -334,14 +335,19 @@ public class Controller {
     @FXML protected void actionOverview(ActionEvent event) {
    	     btnOverview_white.setVisible(true);
   	 	 btnOverview_grey.setVisible(false);
+  	 	 
   	 	 btnSend_white.setVisible(false);
   	 	 btnSend_grey.setVisible(true);
+  	 	 
   	 	 btnReceive_white.setVisible(false);
   	 	 btnReceive_grey.setVisible(true);
+  	 	 
 	 	 btnTransactions_white.setVisible(false);
 	 	 btnTransactions_grey.setVisible(true);
+	 	 
   	 	 btnApps_white.setVisible(false);
   	 	 btnApps_grey.setVisible(true);
+  	 	 
 	 	 OverviewPane.setVisible(true);
 	 	 SendPane.setVisible(false);
 	 	 ReceivePane.setVisible(false);
@@ -349,16 +355,21 @@ public class Controller {
    }
    
    @FXML protected void actionSend(ActionEvent event) {
-     	 btnSend_white.setVisible(true);
-     	 btnSend_grey.setVisible(false);
+	     btnSend_white.setVisible(true);
+	     btnSend_grey.setVisible(false);
+     	 
      	 btnOverview_white.setVisible(false);
      	 btnOverview_grey.setVisible(true);
+     	 
       	 btnReceive_white.setVisible(false);
    	     btnReceive_grey.setVisible(true);
+   	     
    	     btnTransactions_white.setVisible(false);
       	 btnTransactions_grey.setVisible(true);
+      	 
       	 btnApps_white.setVisible(false);
       	 btnApps_grey.setVisible(true);
+      	 
       	 OverviewPane.setVisible(false);
       	 SendPane.setVisible(true);
       	 ReceivePane.setVisible(false);
@@ -368,14 +379,19 @@ public class Controller {
    @FXML protected void actionReceive(ActionEvent event) {
    	 	 btnReceive_white.setVisible(true);
     	 btnReceive_grey.setVisible(false);
+    	 
     	 btnSend_white.setVisible(false);
     	 btnSend_grey.setVisible(true);
+    	 
     	 btnOverview_white.setVisible(false);
     	 btnOverview_grey.setVisible(true);
+    	 
     	 btnTransactions_white.setVisible(false);
      	 btnTransactions_grey.setVisible(true);
+     	 
      	 btnApps_white.setVisible(false);
   	     btnApps_grey.setVisible(true);
+  	     
   	     OverviewPane.setVisible(false);
   	     SendPane.setVisible(false);
   	     ReceivePane.setVisible(true);
@@ -385,14 +401,19 @@ public class Controller {
    @FXML protected void actionTransactions(ActionEvent event) {
   	 	 btnTransactions_white.setVisible(true);
   	 	 btnTransactions_grey.setVisible(false);
+  	 	 
   	 	 btnSend_white.setVisible(false);
   	 	 btnSend_grey.setVisible(true);
+  	 	 
   	 	 btnOverview_white.setVisible(false);
   	 	 btnOverview_grey.setVisible(true);
+  	 	 
   	 	 btnReceive_white.setVisible(false);
     	 btnReceive_grey.setVisible(true);
+    	 
     	 btnApps_white.setVisible(false);
  	     btnApps_grey.setVisible(true);
+ 	     
  	     OverviewPane.setVisible(false);
  	     SendPane.setVisible(false);
  	     ReceivePane.setVisible(false);
@@ -402,14 +423,19 @@ public class Controller {
    @FXML protected void actionApps(ActionEvent event) {
 	   	 btnApps_white.setVisible(true);
 	   	 btnApps_grey.setVisible(false);
+	   	 
 	   	 btnSend_white.setVisible(false);
 	   	 btnSend_grey.setVisible(true);
+	   	 
 	   	 btnOverview_white.setVisible(false);
 	     btnOverview_grey.setVisible(true);
+	     
 	   	 btnTransactions_white.setVisible(false);
     	 btnTransactions_grey.setVisible(true);
+    	 
     	 btnReceive_white.setVisible(false);
  	     btnReceive_grey.setVisible(true);
+ 	     
  	     OverviewPane.setVisible(false);
  	     SendPane.setVisible(false);
  	     ReceivePane.setVisible(false);
