@@ -16,11 +16,13 @@ import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.Message;
 import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.PeerEventListener;
 import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.script.Script;
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.bitcoin.wallet.KeyChain;
 import com.google.common.collect.ImmutableList;
@@ -35,11 +37,14 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
+import com.sun.javafx.tk.Toolkit.Task;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -67,6 +72,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.utils.KeyUtils;
 
 import java.awt.EventQueue;
 import java.io.ByteArrayInputStream;
@@ -76,7 +82,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import javax.crypto.SecretKey;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -84,6 +92,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
@@ -133,6 +142,7 @@ public class Controller {
 	 @FXML private Button btnTor_grey;
 	 @FXML private Button btnTor_color;
 	 @FXML private Label lblStatus;
+	 ArrayList<ECKey> keypool;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -225,7 +235,7 @@ public class Controller {
 					 lblStatus.setText("Connecting To Network");
 				     btnTor_grey.setVisible(false);
 				     btnTor_color.setVisible(true);
-				     Tooltip.install(btnTor_color, new Tooltip("Connected to Tor\n   [What is this?]"));
+				     Tooltip.install(btnTor_color, new Tooltip("Connected to Tor"));
 				  }
 				});
 		}
@@ -309,6 +319,16 @@ public class Controller {
         }
         
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+        	List<TransactionOutput> outs = tx.getOutputs();
+        	for (TransactionOutput out : outs){
+        		if (out.isMine(Main.bitcoin.wallet())){
+        			Script scr = out.getScriptPubKey();
+        			String addr = scr.getToAddress(Main.params).toString();
+        			try {Main.config.removeAddress(addr);} 
+        			catch (IOException e) {e.printStackTrace();}
+        		}
+        	}
+        	setAddresses();
         	refreshBalanceLabel();
         	/*try {
         	    File yourFile = new File("coins.wav");
@@ -772,9 +792,16 @@ public class Controller {
         btnKey.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
-            	//copy public key here        
-            	try {Main.config.fillKeyPool();} 
+            	//copy public key here     
+            	ArrayList<ECKey> keypool = null;
+            	try {keypool = Main.config.getKeyPool();} 
             	catch (IOException e1) {e1.printStackTrace();}
+            	int pos = AddressBox.getItems().indexOf(AddressBox.getValue());
+            	String pubkey = KeyUtils.bytesToHex(keypool.get(pos).getPubKey());
+            	final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                content.putString(pubkey);
+                clipboard.setContent(content);
             }
         });
         ReceiveHBox.getChildren().add(btnCopy);
@@ -787,21 +814,19 @@ public class Controller {
         return BitcoinURI.convertToBitcoinURI(addr, null, Main.APP_NAME, null);
     }
     
+    
     private void setAddresses(){
-    	
-    	try {Main.config.fillKeyPool();} 
-    	catch (IOException e) {e.printStackTrace();}
-    	ArrayList<ECKey> keypool = null;
-    	try {keypool = Main.config.getKeyPool();} 
-    	catch (IOException e) {e.printStackTrace();}
-    	
+    	keypool = null;
+		try {Main.config.fillKeyPool();} 
+		catch (IOException e) {e.printStackTrace();}
+		try {keypool = Main.config.getKeyPool();} 
+		catch (IOException e) {e.printStackTrace();}
 		AddressBox.getItems().clear();
-		AddressBox.getItems().addAll(bitcoin.wallet().currentReceiveAddress().toString());
-		AddressBox.setValue(bitcoin.wallet().currentReceiveAddress().toString());
+		AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
     	for (ECKey key : keypool){
     		String addr = key.toAddress(Main.params).toString();
     		AddressBox.getItems().addAll(addr);
-    	}
+    	}                              
     }    
     
     //#####################################

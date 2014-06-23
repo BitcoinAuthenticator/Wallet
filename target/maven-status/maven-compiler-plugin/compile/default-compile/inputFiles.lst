@@ -46,5 +46,6 @@
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/SendMoneyController.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/ThrottledRunLater.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/db/KeysArray.java
+/home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/KeyUtils.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/TextFieldValidator.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/ATOperationType.java

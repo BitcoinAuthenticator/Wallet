@@ -324,8 +324,8 @@
     </Pane>
     <Pane fx:id="SyncPane" layoutX="18.0" layoutY="431.0" prefHeight="38.0" prefWidth="564.0" visible="true">
       <children>
-        <Label fx:id="lblStatus" prefHeight="25.0" prefWidth="250" layoutX="20" layoutY="6.0" style="-fx-font-weight: SEMI_BOLD;" text="Initializing Tor" textFill="#6e86a0">
-          <font>
+        <Label fx:id="lblStatus" prefHeight="25.0" prefWidth="250" layoutX="20" layoutY="6.0" style="-fx-font-weight: SEMI_BOLD;" text="        Initializing Tor" textFill="#6e86a0">
+          <font> 
             <Font size="14.0" />
           </font>
         </Label>

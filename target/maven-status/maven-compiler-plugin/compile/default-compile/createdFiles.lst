@@ -96,6 +96,7 @@ wallettemplate/utils/ProtoConfig.class
 wallettemplate/controls/ScrollPaneContentManager.class
 wallettemplate/Controller$5.class
 authenticator/BipSSS/Gf256.class
+wallettemplate/utils/KeyUtils.class
 authenticator/WalletOperation.class
 wallettemplate/utils/ProtoConfig$AddressBook$1.class
 wallettemplate/Controller$NewAddress$1.class

@@ -29,9 +29,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.ProtoConfig;
 import wallettemplate.utils.TextFieldValidator;
+import wallettemplate.utils.ProtoConfig.ReceiveAddresses;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -85,7 +89,7 @@ public class Main extends BAApplication {
             AquaFx.style();
         }
         
-        //Load the config file
+      //Load the config file
         String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + Main.APP_NAME + ".config";
         File f = new File(filePath);
         config = new ConfigFile();
@@ -162,6 +166,7 @@ public class Main extends BAApplication {
         controller.onBitcoinSetup();
         mainWindow.show();
         stage = mainWindow;
+       
         
         /**
          * Authenticator Operation Setup

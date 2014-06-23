@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.wallet.KeyChain;
 
+import wallettemplate.utils.KeyUtils;
 import wallettemplate.utils.ProtoConfig;
 import wallettemplate.utils.ProtoConfig.Authenticator;
 import wallettemplate.utils.ProtoConfig.ReceiveAddresses;
@@ -39,12 +41,12 @@ public class ConfigFile {
 	public void fillKeyPool() throws FileNotFoundException, IOException{
 		ReceiveAddresses keys = ReceiveAddresses.parseFrom(new FileInputStream(filePath));
 		ReceiveAddresses.Builder ra = ReceiveAddresses.newBuilder();
-		if (keys.getPubkeyCount()<9){
-			int num = (9 - keys.getPubkeyCount());
+		if (keys.getWalletKeyCount()<10){
+			int num = (10 - keys.getWalletKeyCount());
 			for (int i=0; i<num; i++){
 				DeterministicKey newkey = Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
-				String pubkey =  bytesToHex(newkey.getPubKey());
-				ra.addPubkey(pubkey);
+				String pubkey =  KeyUtils.bytesToHex(newkey.getPubKey());
+				ra.addWalletKey(pubkey);
 			}
 			FileOutputStream output = new FileOutputStream(filePath);  
 			ra.build().writeTo(output);          
@@ -55,18 +57,18 @@ public class ConfigFile {
 	public void removeAddress(String address) throws FileNotFoundException, IOException {
 		ReceiveAddresses keys = ReceiveAddresses.parseFrom(new FileInputStream(filePath));
 		ArrayList<ECKey> keypool = new ArrayList<ECKey>();
-		for (String hexkey : keys.getPubkeyList()){
-			ECKey key = ECKey.fromPublicOnly(hexStringToByteArray(hexkey));
+		for (String hexkey : keys.getWalletKeyList()){
+			ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(hexkey));
 			String addr = key.toAddress(Main.params).toString();
 			if (!addr.equals(address)){
 				keypool.add(key);
 			}
 		}
-		keys.newBuilder().clear();
 		ReceiveAddresses.Builder ra = ReceiveAddresses.newBuilder();
+		ra.clear().build();
 		for (ECKey pkeys : keypool){
-			String pubkey =  bytesToHex(pkeys.getPubKey());
-			ra.addPubkey(pubkey);
+			String pubkey =  KeyUtils.bytesToHex(pkeys.getPubKey());
+			ra.addWalletKey(pubkey);
 		}
 		FileOutputStream output = new FileOutputStream(filePath);  
 		ra.build().writeTo(output);          
@@ -76,30 +78,11 @@ public class ConfigFile {
 	public ArrayList<ECKey> getKeyPool() throws FileNotFoundException, IOException{
 		ArrayList<ECKey> keypool = new ArrayList<ECKey>();
 		ReceiveAddresses keys = ReceiveAddresses.parseFrom(new FileInputStream(filePath));
-		for (String pubkey : keys.getPubkeyList()){
-			ECKey key = ECKey.fromPublicOnly(hexStringToByteArray(pubkey));
+		for (String pubkey : keys.getWalletKeyList()){
+			ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(pubkey));
 			keypool.add(key);
 		}
 		return keypool;
 	}
 
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
-	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for ( int j = 0; j < bytes.length; j++ ) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = hexArray[v >>> 4];
-	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
 }

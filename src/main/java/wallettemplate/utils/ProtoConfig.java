@@ -28,6 +28,87 @@ public final class ProtoConfig {
      * </pre>
      */
     boolean getPaired();
+
+    // optional string mpubkey = 2;
+    /**
+     * <code>optional string mpubkey = 2;</code>
+     *
+     * <pre>
+     *Master public key from Authenticator.
+     * </pre>
+     */
+    boolean hasMpubkey();
+    /**
+     * <code>optional string mpubkey = 2;</code>
+     *
+     * <pre>
+     *Master public key from Authenticator.
+     * </pre>
+     */
+    java.lang.String getMpubkey();
+    /**
+     * <code>optional string mpubkey = 2;</code>
+     *
+     * <pre>
+     *Master public key from Authenticator.
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getMpubkeyBytes();
+
+    // optional string chaincode = 3;
+    /**
+     * <code>optional string chaincode = 3;</code>
+     *
+     * <pre>
+     *Chaincode from Authenticator.
+     * </pre>
+     */
+    boolean hasChaincode();
+    /**
+     * <code>optional string chaincode = 3;</code>
+     *
+     * <pre>
+     *Chaincode from Authenticator.
+     * </pre>
+     */
+    java.lang.String getChaincode();
+    /**
+     * <code>optional string chaincode = 3;</code>
+     *
+     * <pre>
+     *Chaincode from Authenticator.
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getChaincodeBytes();
+
+    // optional string GMCregID = 4;
+    /**
+     * <code>optional string GMCregID = 4;</code>
+     *
+     * <pre>
+     *GCM ID from Authenticator.
+     * </pre>
+     */
+    boolean hasGMCregID();
+    /**
+     * <code>optional string GMCregID = 4;</code>
+     *
+     * <pre>
+     *GCM ID from Authenticator.
+     * </pre>
+     */
+    java.lang.String getGMCregID();
+    /**
+     * <code>optional string GMCregID = 4;</code>
+     *
+     * <pre>
+     *GCM ID from Authenticator.
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getGMCregIDBytes();
   }
   /**
    * Protobuf type {@code Authenticator}
@@ -83,6 +164,21 @@ public final class ProtoConfig {
             case 8: {
               bitField0_ |= 0x00000001;
               paired_ = input.readBool();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              mpubkey_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              chaincode_ = input.readBytes();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              gMCregID_ = input.readBytes();
               break;
             }
           }
@@ -149,8 +245,176 @@ public final class ProtoConfig {
       return paired_;
     }
 
+    // optional string mpubkey = 2;
+    public static final int MPUBKEY_FIELD_NUMBER = 2;
+    private java.lang.Object mpubkey_;
+    /**
+     * <code>optional string mpubkey = 2;</code>
+     *
+     * <pre>
+     *Master public key from Authenticator.
+     * </pre>
+     */
+    public boolean hasMpubkey() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string mpubkey = 2;</code>
+     *
+     * <pre>
+     *Master public key from Authenticator.
+     * </pre>
+     */
+    public java.lang.String getMpubkey() {
+      java.lang.Object ref = mpubkey_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          mpubkey_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string mpubkey = 2;</code>
+     *
+     * <pre>
+     *Master public key from Authenticator.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getMpubkeyBytes() {
+      java.lang.Object ref = mpubkey_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        mpubkey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional string chaincode = 3;
+    public static final int CHAINCODE_FIELD_NUMBER = 3;
+    private java.lang.Object chaincode_;
+    /**
+     * <code>optional string chaincode = 3;</code>
+     *
+     * <pre>
+     *Chaincode from Authenticator.
+     * </pre>
+     */
+    public boolean hasChaincode() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string chaincode = 3;</code>
+     *
+     * <pre>
+     *Chaincode from Authenticator.
+     * </pre>
+     */
+    public java.lang.String getChaincode() {
+      java.lang.Object ref = chaincode_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          chaincode_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string chaincode = 3;</code>
+     *
+     * <pre>
+     *Chaincode from Authenticator.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getChaincodeBytes() {
+      java.lang.Object ref = chaincode_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chaincode_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional string GMCregID = 4;
+    public static final int GMCREGID_FIELD_NUMBER = 4;
+    private java.lang.Object gMCregID_;
+    /**
+     * <code>optional string GMCregID = 4;</code>
+     *
+     * <pre>
+     *GCM ID from Authenticator.
+     * </pre>
+     */
+    public boolean hasGMCregID() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional string GMCregID = 4;</code>
+     *
+     * <pre>
+     *GCM ID from Authenticator.
+     * </pre>
+     */
+    public java.lang.String getGMCregID() {
+      java.lang.Object ref = gMCregID_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          gMCregID_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string GMCregID = 4;</code>
+     *
+     * <pre>
+     *GCM ID from Authenticator.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getGMCregIDBytes() {
+      java.lang.Object ref = gMCregID_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        gMCregID_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       paired_ = false;
+      mpubkey_ = "";
+      chaincode_ = "";
+      gMCregID_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -167,6 +431,15 @@ public final class ProtoConfig {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBool(1, paired_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getMpubkeyBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getChaincodeBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getGMCregIDBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -179,6 +452,18 @@ public final class ProtoConfig {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(1, paired_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getMpubkeyBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getChaincodeBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getGMCregIDBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -298,6 +583,12 @@ public final class ProtoConfig {
         super.clear();
         paired_ = false;
         bitField0_ = (bitField0_ & ~0x00000001);
+        mpubkey_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        chaincode_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        gMCregID_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -330,6 +621,18 @@ public final class ProtoConfig {
           to_bitField0_ |= 0x00000001;
         }
         result.paired_ = paired_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.mpubkey_ = mpubkey_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.chaincode_ = chaincode_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.gMCregID_ = gMCregID_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -348,6 +651,21 @@ public final class ProtoConfig {
         if (other == ProtoConfig.Authenticator.getDefaultInstance()) return this;
         if (other.hasPaired()) {
           setPaired(other.getPaired());
+        }
+        if (other.hasMpubkey()) {
+          bitField0_ |= 0x00000002;
+          mpubkey_ = other.mpubkey_;
+          onChanged();
+        }
+        if (other.hasChaincode()) {
+          bitField0_ |= 0x00000004;
+          chaincode_ = other.chaincode_;
+          onChanged();
+        }
+        if (other.hasGMCregID()) {
+          bitField0_ |= 0x00000008;
+          gMCregID_ = other.gMCregID_;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -425,6 +743,300 @@ public final class ProtoConfig {
         return this;
       }
 
+      // optional string mpubkey = 2;
+      private java.lang.Object mpubkey_ = "";
+      /**
+       * <code>optional string mpubkey = 2;</code>
+       *
+       * <pre>
+       *Master public key from Authenticator.
+       * </pre>
+       */
+      public boolean hasMpubkey() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string mpubkey = 2;</code>
+       *
+       * <pre>
+       *Master public key from Authenticator.
+       * </pre>
+       */
+      public java.lang.String getMpubkey() {
+        java.lang.Object ref = mpubkey_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          mpubkey_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string mpubkey = 2;</code>
+       *
+       * <pre>
+       *Master public key from Authenticator.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getMpubkeyBytes() {
+        java.lang.Object ref = mpubkey_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          mpubkey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string mpubkey = 2;</code>
+       *
+       * <pre>
+       *Master public key from Authenticator.
+       * </pre>
+       */
+      public Builder setMpubkey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        mpubkey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string mpubkey = 2;</code>
+       *
+       * <pre>
+       *Master public key from Authenticator.
+       * </pre>
+       */
+      public Builder clearMpubkey() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        mpubkey_ = getDefaultInstance().getMpubkey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string mpubkey = 2;</code>
+       *
+       * <pre>
+       *Master public key from Authenticator.
+       * </pre>
+       */
+      public Builder setMpubkeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        mpubkey_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional string chaincode = 3;
+      private java.lang.Object chaincode_ = "";
+      /**
+       * <code>optional string chaincode = 3;</code>
+       *
+       * <pre>
+       *Chaincode from Authenticator.
+       * </pre>
+       */
+      public boolean hasChaincode() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string chaincode = 3;</code>
+       *
+       * <pre>
+       *Chaincode from Authenticator.
+       * </pre>
+       */
+      public java.lang.String getChaincode() {
+        java.lang.Object ref = chaincode_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          chaincode_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string chaincode = 3;</code>
+       *
+       * <pre>
+       *Chaincode from Authenticator.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getChaincodeBytes() {
+        java.lang.Object ref = chaincode_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chaincode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string chaincode = 3;</code>
+       *
+       * <pre>
+       *Chaincode from Authenticator.
+       * </pre>
+       */
+      public Builder setChaincode(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        chaincode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string chaincode = 3;</code>
+       *
+       * <pre>
+       *Chaincode from Authenticator.
+       * </pre>
+       */
+      public Builder clearChaincode() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        chaincode_ = getDefaultInstance().getChaincode();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string chaincode = 3;</code>
+       *
+       * <pre>
+       *Chaincode from Authenticator.
+       * </pre>
+       */
+      public Builder setChaincodeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        chaincode_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional string GMCregID = 4;
+      private java.lang.Object gMCregID_ = "";
+      /**
+       * <code>optional string GMCregID = 4;</code>
+       *
+       * <pre>
+       *GCM ID from Authenticator.
+       * </pre>
+       */
+      public boolean hasGMCregID() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string GMCregID = 4;</code>
+       *
+       * <pre>
+       *GCM ID from Authenticator.
+       * </pre>
+       */
+      public java.lang.String getGMCregID() {
+        java.lang.Object ref = gMCregID_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          gMCregID_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string GMCregID = 4;</code>
+       *
+       * <pre>
+       *GCM ID from Authenticator.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getGMCregIDBytes() {
+        java.lang.Object ref = gMCregID_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          gMCregID_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string GMCregID = 4;</code>
+       *
+       * <pre>
+       *GCM ID from Authenticator.
+       * </pre>
+       */
+      public Builder setGMCregID(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        gMCregID_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string GMCregID = 4;</code>
+       *
+       * <pre>
+       *GCM ID from Authenticator.
+       * </pre>
+       */
+      public Builder clearGMCregID() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        gMCregID_ = getDefaultInstance().getGMCregID();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string GMCregID = 4;</code>
+       *
+       * <pre>
+       *GCM ID from Authenticator.
+       * </pre>
+       */
+      public Builder setGMCregIDBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        gMCregID_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Authenticator)
     }
 
@@ -439,41 +1051,77 @@ public final class ProtoConfig {
   public interface ReceiveAddressesOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // repeated string pubkey = 1;
+    // repeated string walletKey = 1;
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
     java.util.List<java.lang.String>
-    getPubkeyList();
+    getWalletKeyList();
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
-    int getPubkeyCount();
+    int getWalletKeyCount();
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
-    java.lang.String getPubkey(int index);
+    java.lang.String getWalletKey(int index);
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
     com.google.protobuf.ByteString
-        getPubkeyBytes(int index);
+        getWalletKeyBytes(int index);
+
+    // repeated string authKey = 2;
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    java.util.List<java.lang.String>
+    getAuthKeyList();
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    int getAuthKeyCount();
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    java.lang.String getAuthKey(int index);
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getAuthKeyBytes(int index);
   }
   /**
    * Protobuf type {@code ReceiveAddresses}
@@ -528,10 +1176,18 @@ public final class ProtoConfig {
             }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                pubkey_ = new com.google.protobuf.LazyStringArrayList();
+                walletKey_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              pubkey_.add(input.readBytes());
+              walletKey_.add(input.readBytes());
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                authKey_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              authKey_.add(input.readBytes());
               break;
             }
           }
@@ -543,7 +1199,10 @@ public final class ProtoConfig {
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-          pubkey_ = new com.google.protobuf.UnmodifiableLazyStringList(pubkey_);
+          walletKey_ = new com.google.protobuf.UnmodifiableLazyStringList(walletKey_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          authKey_ = new com.google.protobuf.UnmodifiableLazyStringList(authKey_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -576,54 +1235,101 @@ public final class ProtoConfig {
       return PARSER;
     }
 
-    // repeated string pubkey = 1;
-    public static final int PUBKEY_FIELD_NUMBER = 1;
-    private com.google.protobuf.LazyStringList pubkey_;
+    // repeated string walletKey = 1;
+    public static final int WALLETKEY_FIELD_NUMBER = 1;
+    private com.google.protobuf.LazyStringList walletKey_;
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
     public java.util.List<java.lang.String>
-        getPubkeyList() {
-      return pubkey_;
+        getWalletKeyList() {
+      return walletKey_;
     }
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
-    public int getPubkeyCount() {
-      return pubkey_.size();
+    public int getWalletKeyCount() {
+      return walletKey_.size();
     }
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
-    public java.lang.String getPubkey(int index) {
-      return pubkey_.get(index);
+    public java.lang.String getWalletKey(int index) {
+      return walletKey_.get(index);
     }
     /**
-     * <code>repeated string pubkey = 1;</code>
+     * <code>repeated string walletKey = 1;</code>
      *
      * <pre>
-     * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
      * </pre>
      */
     public com.google.protobuf.ByteString
-        getPubkeyBytes(int index) {
-      return pubkey_.getByteString(index);
+        getWalletKeyBytes(int index) {
+      return walletKey_.getByteString(index);
+    }
+
+    // repeated string authKey = 2;
+    public static final int AUTHKEY_FIELD_NUMBER = 2;
+    private com.google.protobuf.LazyStringList authKey_;
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    public java.util.List<java.lang.String>
+        getAuthKeyList() {
+      return authKey_;
+    }
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    public int getAuthKeyCount() {
+      return authKey_.size();
+    }
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    public java.lang.String getAuthKey(int index) {
+      return authKey_.get(index);
+    }
+    /**
+     * <code>repeated string authKey = 2;</code>
+     *
+     * <pre>
+     * Same thing but generated from the Authenticator mpubkey. Used when paired.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getAuthKeyBytes(int index) {
+      return authKey_.getByteString(index);
     }
 
     private void initFields() {
-      pubkey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -637,8 +1343,11 @@ public final class ProtoConfig {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (int i = 0; i < pubkey_.size(); i++) {
-        output.writeBytes(1, pubkey_.getByteString(i));
+      for (int i = 0; i < walletKey_.size(); i++) {
+        output.writeBytes(1, walletKey_.getByteString(i));
+      }
+      for (int i = 0; i < authKey_.size(); i++) {
+        output.writeBytes(2, authKey_.getByteString(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -651,12 +1360,21 @@ public final class ProtoConfig {
       size = 0;
       {
         int dataSize = 0;
-        for (int i = 0; i < pubkey_.size(); i++) {
+        for (int i = 0; i < walletKey_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(pubkey_.getByteString(i));
+            .computeBytesSizeNoTag(walletKey_.getByteString(i));
         }
         size += dataSize;
-        size += 1 * getPubkeyList().size();
+        size += 1 * getWalletKeyList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < authKey_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(authKey_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getAuthKeyList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -774,8 +1492,10 @@ public final class ProtoConfig {
 
       public Builder clear() {
         super.clear();
-        pubkey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
+        authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -804,11 +1524,17 @@ public final class ProtoConfig {
         ProtoConfig.ReceiveAddresses result = new ProtoConfig.ReceiveAddresses(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          pubkey_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              pubkey_);
+          walletKey_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              walletKey_);
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.pubkey_ = pubkey_;
+        result.walletKey_ = walletKey_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          authKey_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              authKey_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.authKey_ = authKey_;
         onBuilt();
         return result;
       }
@@ -824,13 +1550,23 @@ public final class ProtoConfig {
 
       public Builder mergeFrom(ProtoConfig.ReceiveAddresses other) {
         if (other == ProtoConfig.ReceiveAddresses.getDefaultInstance()) return this;
-        if (!other.pubkey_.isEmpty()) {
-          if (pubkey_.isEmpty()) {
-            pubkey_ = other.pubkey_;
+        if (!other.walletKey_.isEmpty()) {
+          if (walletKey_.isEmpty()) {
+            walletKey_ = other.walletKey_;
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensurePubkeyIsMutable();
-            pubkey_.addAll(other.pubkey_);
+            ensureWalletKeyIsMutable();
+            walletKey_.addAll(other.walletKey_);
+          }
+          onChanged();
+        }
+        if (!other.authKey_.isEmpty()) {
+          if (authKey_.isEmpty()) {
+            authKey_ = other.authKey_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureAuthKeyIsMutable();
+            authKey_.addAll(other.authKey_);
           }
           onChanged();
         }
@@ -861,131 +1597,260 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      // repeated string pubkey = 1;
-      private com.google.protobuf.LazyStringList pubkey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensurePubkeyIsMutable() {
+      // repeated string walletKey = 1;
+      private com.google.protobuf.LazyStringList walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureWalletKeyIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          pubkey_ = new com.google.protobuf.LazyStringArrayList(pubkey_);
+          walletKey_ = new com.google.protobuf.LazyStringArrayList(walletKey_);
           bitField0_ |= 0x00000001;
          }
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
       public java.util.List<java.lang.String>
-          getPubkeyList() {
-        return java.util.Collections.unmodifiableList(pubkey_);
+          getWalletKeyList() {
+        return java.util.Collections.unmodifiableList(walletKey_);
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
-      public int getPubkeyCount() {
-        return pubkey_.size();
+      public int getWalletKeyCount() {
+        return walletKey_.size();
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
-      public java.lang.String getPubkey(int index) {
-        return pubkey_.get(index);
+      public java.lang.String getWalletKey(int index) {
+        return walletKey_.get(index);
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
       public com.google.protobuf.ByteString
-          getPubkeyBytes(int index) {
-        return pubkey_.getByteString(index);
+          getWalletKeyBytes(int index) {
+        return walletKey_.getByteString(index);
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
-      public Builder setPubkey(
+      public Builder setWalletKey(
           int index, java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensurePubkeyIsMutable();
-        pubkey_.set(index, value);
+  ensureWalletKeyIsMutable();
+        walletKey_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
-      public Builder addPubkey(
+      public Builder addWalletKey(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensurePubkeyIsMutable();
-        pubkey_.add(value);
+  ensureWalletKeyIsMutable();
+        walletKey_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
-      public Builder addAllPubkey(
+      public Builder addAllWalletKey(
           java.lang.Iterable<java.lang.String> values) {
-        ensurePubkeyIsMutable();
-        super.addAll(values, pubkey_);
+        ensureWalletKeyIsMutable();
+        super.addAll(values, walletKey_);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
-      public Builder clearPubkey() {
-        pubkey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      public Builder clearWalletKey() {
+        walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string pubkey = 1;</code>
+       * <code>repeated string walletKey = 1;</code>
        *
        * <pre>
-       * An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
        * </pre>
        */
-      public Builder addPubkeyBytes(
+      public Builder addWalletKeyBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensurePubkeyIsMutable();
-        pubkey_.add(value);
+  ensureWalletKeyIsMutable();
+        walletKey_.add(value);
+        onChanged();
+        return this;
+      }
+
+      // repeated string authKey = 2;
+      private com.google.protobuf.LazyStringList authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureAuthKeyIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          authKey_ = new com.google.protobuf.LazyStringArrayList(authKey_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public java.util.List<java.lang.String>
+          getAuthKeyList() {
+        return java.util.Collections.unmodifiableList(authKey_);
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public int getAuthKeyCount() {
+        return authKey_.size();
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public java.lang.String getAuthKey(int index) {
+        return authKey_.get(index);
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getAuthKeyBytes(int index) {
+        return authKey_.getByteString(index);
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public Builder setAuthKey(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureAuthKeyIsMutable();
+        authKey_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public Builder addAuthKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureAuthKeyIsMutable();
+        authKey_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public Builder addAllAuthKey(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureAuthKeyIsMutable();
+        super.addAll(values, authKey_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public Builder clearAuthKey() {
+        authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      public Builder addAuthKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureAuthKeyIsMutable();
+        authKey_.add(value);
         onChanged();
         return this;
       }
@@ -1523,32 +2388,32 @@ public final class ProtoConfig {
   public interface SettingsOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // optional string setting = 1;
+    // optional string onename = 1;
     /**
-     * <code>optional string setting = 1;</code>
+     * <code>optional string onename = 1;</code>
      *
      * <pre>
-     * This is a placeholder for the settings menu.
+     * The user's OneName ID. Used for getting the avatar on start up.
      * </pre>
      */
-    boolean hasSetting();
+    boolean hasOnename();
     /**
-     * <code>optional string setting = 1;</code>
+     * <code>optional string onename = 1;</code>
      *
      * <pre>
-     * This is a placeholder for the settings menu.
+     * The user's OneName ID. Used for getting the avatar on start up.
      * </pre>
      */
-    java.lang.String getSetting();
+    java.lang.String getOnename();
     /**
-     * <code>optional string setting = 1;</code>
+     * <code>optional string onename = 1;</code>
      *
      * <pre>
-     * This is a placeholder for the settings menu.
+     * The user's OneName ID. Used for getting the avatar on start up.
      * </pre>
      */
     com.google.protobuf.ByteString
-        getSettingBytes();
+        getOnenameBytes();
   }
   /**
    * Protobuf type {@code Settings}
@@ -1603,7 +2468,7 @@ public final class ProtoConfig {
             }
             case 10: {
               bitField0_ |= 0x00000001;
-              setting_ = input.readBytes();
+              onename_ = input.readBytes();
               break;
             }
           }
@@ -1646,28 +2511,28 @@ public final class ProtoConfig {
     }
 
     private int bitField0_;
-    // optional string setting = 1;
-    public static final int SETTING_FIELD_NUMBER = 1;
-    private java.lang.Object setting_;
+    // optional string onename = 1;
+    public static final int ONENAME_FIELD_NUMBER = 1;
+    private java.lang.Object onename_;
     /**
-     * <code>optional string setting = 1;</code>
+     * <code>optional string onename = 1;</code>
      *
      * <pre>
-     * This is a placeholder for the settings menu.
+     * The user's OneName ID. Used for getting the avatar on start up.
      * </pre>
      */
-    public boolean hasSetting() {
+    public boolean hasOnename() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string setting = 1;</code>
+     * <code>optional string onename = 1;</code>
      *
      * <pre>
-     * This is a placeholder for the settings menu.
+     * The user's OneName ID. Used for getting the avatar on start up.
      * </pre>
      */
-    public java.lang.String getSetting() {
-      java.lang.Object ref = setting_;
+    public java.lang.String getOnename() {
+      java.lang.Object ref = onename_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -1675,26 +2540,26 @@ public final class ProtoConfig {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          setting_ = s;
+          onename_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>optional string setting = 1;</code>
+     * <code>optional string onename = 1;</code>
      *
      * <pre>
-     * This is a placeholder for the settings menu.
+     * The user's OneName ID. Used for getting the avatar on start up.
      * </pre>
      */
     public com.google.protobuf.ByteString
-        getSettingBytes() {
-      java.lang.Object ref = setting_;
+        getOnenameBytes() {
+      java.lang.Object ref = onename_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        setting_ = b;
+        onename_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -1702,7 +2567,7 @@ public final class ProtoConfig {
     }
 
     private void initFields() {
-      setting_ = "";
+      onename_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1717,7 +2582,7 @@ public final class ProtoConfig {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getSettingBytes());
+        output.writeBytes(1, getOnenameBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -1730,7 +2595,7 @@ public final class ProtoConfig {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getSettingBytes());
+          .computeBytesSize(1, getOnenameBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1848,7 +2713,7 @@ public final class ProtoConfig {
 
       public Builder clear() {
         super.clear();
-        setting_ = "";
+        onename_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -1881,7 +2746,7 @@ public final class ProtoConfig {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.setting_ = setting_;
+        result.onename_ = onename_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1898,9 +2763,9 @@ public final class ProtoConfig {
 
       public Builder mergeFrom(ProtoConfig.Settings other) {
         if (other == ProtoConfig.Settings.getDefaultInstance()) return this;
-        if (other.hasSetting()) {
+        if (other.hasOnename()) {
           bitField0_ |= 0x00000001;
-          setting_ = other.setting_;
+          onename_ = other.onename_;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -1930,100 +2795,100 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      // optional string setting = 1;
-      private java.lang.Object setting_ = "";
+      // optional string onename = 1;
+      private java.lang.Object onename_ = "";
       /**
-       * <code>optional string setting = 1;</code>
+       * <code>optional string onename = 1;</code>
        *
        * <pre>
-       * This is a placeholder for the settings menu.
+       * The user's OneName ID. Used for getting the avatar on start up.
        * </pre>
        */
-      public boolean hasSetting() {
+      public boolean hasOnename() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string setting = 1;</code>
+       * <code>optional string onename = 1;</code>
        *
        * <pre>
-       * This is a placeholder for the settings menu.
+       * The user's OneName ID. Used for getting the avatar on start up.
        * </pre>
        */
-      public java.lang.String getSetting() {
-        java.lang.Object ref = setting_;
+      public java.lang.String getOnename() {
+        java.lang.Object ref = onename_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
-          setting_ = s;
+          onename_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string setting = 1;</code>
+       * <code>optional string onename = 1;</code>
        *
        * <pre>
-       * This is a placeholder for the settings menu.
+       * The user's OneName ID. Used for getting the avatar on start up.
        * </pre>
        */
       public com.google.protobuf.ByteString
-          getSettingBytes() {
-        java.lang.Object ref = setting_;
+          getOnenameBytes() {
+        java.lang.Object ref = onename_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          setting_ = b;
+          onename_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>optional string setting = 1;</code>
+       * <code>optional string onename = 1;</code>
        *
        * <pre>
-       * This is a placeholder for the settings menu.
+       * The user's OneName ID. Used for getting the avatar on start up.
        * </pre>
        */
-      public Builder setSetting(
+      public Builder setOnename(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000001;
-        setting_ = value;
+        onename_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string setting = 1;</code>
+       * <code>optional string onename = 1;</code>
        *
        * <pre>
-       * This is a placeholder for the settings menu.
+       * The user's OneName ID. Used for getting the avatar on start up.
        * </pre>
        */
-      public Builder clearSetting() {
+      public Builder clearOnename() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        setting_ = getDefaultInstance().getSetting();
+        onename_ = getDefaultInstance().getOnename();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string setting = 1;</code>
+       * <code>optional string onename = 1;</code>
        *
        * <pre>
-       * This is a placeholder for the settings menu.
+       * The user's OneName ID. Used for getting the avatar on start up.
        * </pre>
        */
-      public Builder setSettingBytes(
+      public Builder setOnenameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000001;
-        setting_ = value;
+        onename_ = value;
         onChanged();
         return this;
       }
@@ -2068,10 +2933,12 @@ public final class ProtoConfig {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014config.proto\"\037\n\rAuthenticator\022\016\n\006paire" +
-      "d\030\001 \001(\010\"\"\n\020ReceiveAddresses\022\016\n\006pubkey\030\001 " +
-      "\003(\t\"\036\n\013AddressBook\022\017\n\007address\030\001 \001(\t\"\033\n\010S" +
-      "ettings\022\017\n\007setting\030\001 \001(\tB\rB\013ProtoConfig"
+      "\n\014config.proto\"U\n\rAuthenticator\022\016\n\006paire" +
+      "d\030\001 \001(\010\022\017\n\007mpubkey\030\002 \001(\t\022\021\n\tchaincode\030\003 " +
+      "\001(\t\022\020\n\010GMCregID\030\004 \001(\t\"6\n\020ReceiveAddresse" +
+      "s\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030\002 \003(\t\"\036\n" +
+      "\013AddressBook\022\017\n\007address\030\001 \001(\t\"\033\n\010Setting" +
+      "s\022\017\n\007onename\030\001 \001(\tB\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2083,13 +2950,13 @@ public final class ProtoConfig {
           internal_static_Authenticator_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Authenticator_descriptor,
-              new java.lang.String[] { "Paired", });
+              new java.lang.String[] { "Paired", "Mpubkey", "Chaincode", "GMCregID", });
           internal_static_ReceiveAddresses_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_ReceiveAddresses_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ReceiveAddresses_descriptor,
-              new java.lang.String[] { "Pubkey", });
+              new java.lang.String[] { "WalletKey", "AuthKey", });
           internal_static_AddressBook_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_AddressBook_fieldAccessorTable = new
@@ -2101,7 +2968,7 @@ public final class ProtoConfig {
           internal_static_Settings_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Settings_descriptor,
-              new java.lang.String[] { "Setting", });
+              new java.lang.String[] { "Onename", });
           return null;
         }
       };
