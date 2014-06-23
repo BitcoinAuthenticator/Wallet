@@ -1,5 +1,7 @@
 package wallettemplate;
 
+import authenticator.Authenticator;
+
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
@@ -11,26 +13,18 @@ import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionOutput;
-import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.PeerEventListener;
-import com.google.bitcoin.crypto.ChildNumber;
-import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.script.Script;
-import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
-import com.sun.javafx.tk.Toolkit.Task;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -67,13 +61,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import javax.crypto.SecretKey;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -327,7 +314,7 @@ public class Controller {
         		if (out.isMine(Main.bitcoin.wallet())){
         			Script scr = out.getScriptPubKey();
         			String addr = scr.getToAddress(Main.params).toString();
-        			try {Main.config.removeAddress(addr);} 
+        			try {Authenticator.getWalletOperation().removeAddressFromPool(addr);} //Main.config.removeAddress(addr);} 
         			catch (IOException e) {e.printStackTrace();}
         		}
         	}
@@ -822,7 +809,7 @@ public class Controller {
             public void handle(ActionEvent e) {
             	//copy public key here     
             	ArrayList<ECKey> keypool = null;
-            	try {keypool = Main.config.getKeyPool();} 
+            	try {keypool = Authenticator.getWalletOperation().getKeyPool(); } //Main.config.getKeyPool();} 
             	catch (IOException e1) {e1.printStackTrace();}
             	int pos = AddressBox.getItems().indexOf(AddressBox.getValue());
             	String pubkey = KeyUtils.bytesToHex(keypool.get(pos).getPubKey());
@@ -844,9 +831,9 @@ public class Controller {
     
     private void setAddresses(){
    	 	ArrayList<ECKey> keypool = null;
-		try {Main.config.fillKeyPool();} 
+		try { Authenticator.getWalletOperation().fillKeyPool(); } //Main.config.fillKeyPool();} 
 		catch (IOException e) {e.printStackTrace();}
-		try {keypool = Main.config.getKeyPool();} 
+		try {keypool = Authenticator.getWalletOperation().getKeyPool(); } //Main.config.getKeyPool();} 
 		catch (IOException e) {e.printStackTrace();}
 
 		AddressBox.getItems().clear();

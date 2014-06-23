@@ -2,9 +2,8 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.OnAuthenticatoGUIUpdateListener;
+import authenticator.db.ConfigFile;
 import authenticator.ui_helpers.BAApplication;
-
-import com.aquafx_project.AquaFx;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
@@ -29,22 +28,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import wallettemplate.utils.GuiUtils;
-import wallettemplate.utils.ProtoConfig;
 import wallettemplate.utils.TextFieldValidator;
-import wallettemplate.utils.ProtoConfig.ReceiveAddresses;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
-
-import static com.google.common.util.concurrent.Service.State.NEW;
-import static com.google.common.util.concurrent.Service.State.TERMINATED;
 import static wallettemplate.utils.GuiUtils.*;
 
 public class Main extends BAApplication {
@@ -60,7 +51,7 @@ public class Main extends BAApplication {
     public static Stage stage;
     public static Authenticator auth;
     public static boolean paired = false;
-    public static ConfigFile config;
+    //public static ConfigFile config;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
@@ -91,14 +82,14 @@ public class Main extends BAApplication {
         
       //Load the config file
         String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + Main.APP_NAME + ".config";
-        File f = new File(filePath);
+        /*File f = new File(filePath);
         config = new ConfigFile();
         if(f.exists() && !f.isDirectory()) { 
         	paired = config.getPaired();
         }
         else {
         	config.setPaired(false);
-        }
+        }*/
         
         // Load the GUI. The Controller class will be automagically created and wired up.
         mainWindow.initStyle(StageStyle.UNDECORATED);
@@ -163,70 +154,70 @@ public class Main extends BAApplication {
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         System.out.println(bitcoin.wallet());
-        controller.onBitcoinSetup();
-        mainWindow.show();
         stage = mainWindow;
        
         
         /**
          * Authenticator Operation Setup
          */
-        //if (paired){
-        	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), new OnAuthenticatoGUIUpdateListener(){
-        		@Override
-        		public void simpleTextMessage(String msg) {
-        			
-        		}
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), new OnAuthenticatoGUIUpdateListener(){
+    		@Override
+    		public void simpleTextMessage(String msg) {
+    			
+    		}
 
-        		@Override
-        		public void riseAlertToUser(String msg, String title) {
+    		@Override
+    		public void riseAlertToUser(String msg, String title) {
 
-        		}
-        	})
-        	.setApplicationParams(ApplicationParams);
-        	auth.startAsync();
-        	auth.awaitRunning();
-        
-        	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-        		@Override
-        		public void handle(WindowEvent e) {
-        			Action response = null;
-        			if(Authenticator.getPendingRequestSize() > 0 || Authenticator.operationsQueue.size() > 0){
-        				response = Dialogs.create()
-                	        .owner(stage)
-                	        .title("Warning !")
-                	        .masthead("Pending Requests/ Operations")
-                	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
-                	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-                	        .showConfirm();
-        			}
-        			
-            	// Or no conditioning needed or user pressed Ok
-            	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-            		bitcoin.addListener(new Service.Listener() {
-						@Override public void terminated(State from) {
-							if(!auth.isRunning())
-								Runtime.getRuntime().exit(0);
-				         }
-					}, MoreExecutors.sameThreadExecutor());
-					bitcoin.stopAsync();
+    		}
+    	})
+    	.setApplicationParams(ApplicationParams);
+    	auth.startAsync();
+    	auth.awaitRunning();
+    
+    	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+    		@Override
+    		public void handle(WindowEvent e) {
+    			Action response = null;
+    			if(Authenticator.getPendingRequestSize() > 0 || Authenticator.operationsQueue.size() > 0){
+    				response = Dialogs.create()
+            	        .owner(stage)
+            	        .title("Warning !")
+            	        .masthead("Pending Requests/ Operations")
+            	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
+            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+            	        .showConfirm();
+    			}
+    			
+        	// Or no conditioning needed or user pressed Ok
+        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
+        		bitcoin.addListener(new Service.Listener() {
+					@Override public void terminated(State from) {
+						if(!auth.isRunning())
+							Runtime.getRuntime().exit(0);
+			         }
+				}, MoreExecutors.sameThreadExecutor());
+				bitcoin.stopAsync();
+            
+                auth.addListener(new Service.Listener() {
+					@Override public void terminated(State from) {
+						if(!bitcoin.isRunning())
+							Runtime.getRuntime().exit(0);
+			         }
+				}, MoreExecutors.sameThreadExecutor());
+                auth.stopAsync();
                 
-                    auth.addListener(new Service.Listener() {
-						@Override public void terminated(State from) {
-							if(!bitcoin.isRunning())
-								Runtime.getRuntime().exit(0);
-				         }
-					}, MoreExecutors.sameThreadExecutor());
-                    auth.stopAsync();
-                    
-                    // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
-                    //Runtime.getRuntime().exit(0);
-            	}
-            	else if(response != null && response == Dialog.Actions.NO)
-            		e.consume();
-        		}
-        	});
-        //}
+                // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
+                //Runtime.getRuntime().exit(0);
+        	}
+        	else if(response != null && response == Dialog.Actions.NO)
+        		e.consume();
+    		}
+    	});
+        	
+        // start UI
+    	controller.onBitcoinSetup();
+        mainWindow.show();
     }
 
     public class OverlayUI<T> {

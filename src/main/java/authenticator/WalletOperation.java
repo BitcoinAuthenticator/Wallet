@@ -1,6 +1,7 @@
 package authenticator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -15,6 +16,7 @@ import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
 import authenticator.Utils.BAUtils;
+import authenticator.db.ConfigFile;
 import authenticator.db.KeyObject;
 import authenticator.db.KeysArray;
 import authenticator.db.PairingObject;
@@ -62,11 +64,22 @@ import com.google.common.collect.ImmutableList;
 public class WalletOperation extends BASE{
 	
 	private static WalletWrapper mWalletWrapper;
+	public static ConfigFile configFile;
 	
 	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
 		super(WalletOperation.class);
 		if(mWalletWrapper == null)
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
+		
+		if(configFile == null){
+			configFile = new ConfigFile();
+			/**
+			 * Check to see if a config file exists, if not, 
+			 * set the paired parameter to false, creating the file.
+			 */
+			if(!configFile.checkConfigFile())
+		        configFile.setPaired(false);
+		}
 	}
 	
 	//#####################################
@@ -213,6 +226,23 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.getBalanceOfWatchedAddresses(addresses);
 	}
     
+	//#####################################
+	//
+	//		 DAL - Protocol buffers
+	//
+	//#####################################
+	public void removeAddressFromPool(String address) throws FileNotFoundException, IOException
+	{
+		configFile.removeAddressFromPool(address);
+	}
+	
+	public void fillKeyPool() throws FileNotFoundException, IOException{
+		configFile.fillKeyPool();
+	}
+	
+	public ArrayList<ECKey> getKeyPool() throws FileNotFoundException, IOException{
+		return configFile.getKeyPool();
+	}
 	
 	//#####################################
 	//

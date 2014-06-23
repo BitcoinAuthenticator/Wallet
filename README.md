@@ -24,6 +24,13 @@ A GUI bitcoin wallet based on bitcoinj template wallet for the [BitcoinAuthentic
 3. Import pom.xml
 
 #### Building
+
+##### Protobuf class
+From the Protobuf folder(/src/main/java/authenticator/protobuf):
+ ```
+$ protoc <Proto File>.proto --java_out=../../
+ ```
+
 ##### Executable Jar
  ```
 $ mvn clean compile assembly:single
