@@ -65,6 +65,9 @@ public class ConfigFile {
 	public void fillKeyPool() throws FileNotFoundException, IOException{
 		ConfigReceiveAddresses keys = ConfigReceiveAddresses.parseFrom(new FileInputStream(filePath));
 		ConfigReceiveAddresses.Builder ra = ConfigReceiveAddresses.newBuilder();
+		for (String pkey : keys.getWalletKeyList()){
+			ra.addWalletKey(pkey);
+		}
 		if (keys.getWalletKeyCount()<10){
 			int num = (10 - keys.getWalletKeyCount());
 			for (int i=0; i<num; i++){
@@ -76,26 +79,29 @@ public class ConfigFile {
 			ra.build().writeTo(output);          
 			output.close();
 		}
-	}
+	}	
 	
-	public void removeAddressFromPool(String address) throws FileNotFoundException, IOException {
+	public void removeAddress(String address) throws FileNotFoundException, IOException {
+		System.out.println("rec addr: " + address);
 		ConfigReceiveAddresses keys = ConfigReceiveAddresses.parseFrom(new FileInputStream(filePath));
 		ArrayList<ECKey> keypool = new ArrayList<ECKey>();
 		for (String hexkey : keys.getWalletKeyList()){
+			System.out.println("keypool key: " + hexkey);
 			ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(hexkey));
 			String addr = key.toAddress(Main.params).toString();
 			if (!addr.equals(address)){
+				System.out.println("added: " + addr);
 				keypool.add(key);
 			}
 		}
 		ConfigReceiveAddresses.Builder ra = ConfigReceiveAddresses.newBuilder();
-		ra.clear().build();
 		for (ECKey pkeys : keypool){
 			String pubkey =  KeyUtils.bytesToHex(pkeys.getPubKey());
 			ra.addWalletKey(pubkey);
 		}
 		FileOutputStream output = new FileOutputStream(filePath);  
-		ra.build().writeTo(output);          
+		ra.build().writeTo(output);         
+		System.out.println("count" + ra.getWalletKeyCount());
 		output.close();
 	}
 	
@@ -105,6 +111,7 @@ public class ConfigFile {
 		for (String pubkey : keys.getWalletKeyList()){
 			ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(pubkey));
 			keypool.add(key);
+			System.out.println(key.toAddress(Main.params));
 		}
 		return keypool;
 	}

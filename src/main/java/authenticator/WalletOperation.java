@@ -236,7 +236,7 @@ public class WalletOperation extends BASE{
 	//#####################################
 	public void removeAddressFromPool(String address) throws FileNotFoundException, IOException
 	{
-		configFile.removeAddressFromPool(address);
+		configFile.removeAddress(address);
 	}
 	
 	public void fillKeyPool() throws FileNotFoundException, IOException{

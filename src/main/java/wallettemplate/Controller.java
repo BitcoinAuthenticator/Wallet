@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -312,15 +313,42 @@ public class Controller {
         
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	List<TransactionOutput> outs = tx.getOutputs();
-        	for (TransactionOutput out : outs){
-        		if (out.isMine(Main.bitcoin.wallet())){
-        			Script scr = out.getScriptPubKey();
-        			String addr = scr.getToAddress(Main.params).toString();
-        			try {Authenticator.getWalletOperation().removeAddressFromPool(addr);} //Main.config.removeAddress(addr);} 
-        			catch (IOException e) {e.printStackTrace();}
-        		}
-        	}
-        	setAddresses();
+        	final CountDownLatch latch = new CountDownLatch(1);
+            // asynchronous thread doing the process
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("Doing some process");
+                    for (TransactionOutput out : outs){
+                		if (out.isMine(Main.bitcoin.wallet())){
+                			Script scr = out.getScriptPubKey();
+                			String addr = scr.getToAddress(Main.params).toString();
+                			try {Authenticator.getWalletOperation().removeAddressFromPool(addr);} //Main.config.removeAddress(addr);} 
+                			catch (IOException e) {e.printStackTrace();}
+                		}
+                	}
+                    latch.countDown();
+                }
+            }).start();
+            // asynchronous thread waiting for the process to finish
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("Await");
+                    try {latch.await();} 
+                    catch (InterruptedException ex) {}
+                    // queuing the done notification into the javafx thread
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                        	setAddresses();
+                            System.out.println("Done");
+                        }
+                    });
+                }
+            }).start();
+        	
+        	
         	refreshBalanceLabel();
         	/*try {
         	    File yourFile = new File("coins.wav");
