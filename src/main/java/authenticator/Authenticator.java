@@ -1,40 +1,22 @@
 package authenticator;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBoxBuilder;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.PeerGroup;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.common.util.concurrent.AbstractService;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.Service;
 
 import authenticator.Utils.SafeList;
-import authenticator.db.PendingRequestsFile;
-import authenticator.network.PendingRequest;
 import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
-import authenticator.ui_helpers.PopUpNotification;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
 
 /**
@@ -112,33 +94,29 @@ public class Authenticator extends AbstractService{
 	//
 	//#####################################
 	
-	public static void addPendingRequest(PendingRequest req, boolean writeToFile){
-		if(writeToFile){
-			PendingRequestsFile file = new PendingRequestsFile();
-			file.writeNewPendingRequest(req);
-		}
-		pendingRequests.add(req);
-	}
-	
-	public static void removePendingRequest(PendingRequest req){
-		PendingRequestsFile file = new PendingRequestsFile();
-		file.removePendingRequest(req);
-		pendingRequests.remove(req);
-	}
-	
-	public static int getPendingRequestSize(){
-		return pendingRequests.size();
-	}
-	
-	public static ArrayList<Object> getPendingRequests(){
-		return pendingRequests.getAll();
-	}
-	
+	@SuppressWarnings("static-access")
 	public static void initPendingRequests(){
-		PendingRequestsFile file = new PendingRequestsFile();
-		ArrayList<PendingRequest> pending = file.getPendingRequests();
+		List<PendingRequest> pending = new ArrayList<PendingRequest>();
+		try {
+			pending = getWalletOperation().getPendingRequests();
+		} catch (IOException e) { e.printStackTrace(); }
 		for(PendingRequest pr:pending)
-			addPendingRequest(pr,false);
+			addPendingRequestToList(pr);
+	}
+	
+	@SuppressWarnings("static-access")
+	public static void addPendingRequestToFile(PendingRequest pr) throws FileNotFoundException, IOException {
+		getWalletOperation().addPendingRequest(pr);
+		pendingRequests.add(pr);
+	}
+	
+	public static void addPendingRequestToList(PendingRequest pr) {
+		pendingRequests.add(pr);
+	}
+	
+	public static void removePendingRequest(PendingRequest pr) throws FileNotFoundException, IOException {
+		pendingRequests.remove(pr);
+		getWalletOperation().removePendingRequest(pr);
 	}
 	
 	//#####################################

@@ -1,6 +1,7 @@
 package authenticator.operations;
 
 import java.net.ServerSocket;
+import authenticator.protobuf.ProtoConfig.ATOperationType;
 
 /**
  * Describes a complete operation for the authenticator.

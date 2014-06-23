@@ -4,17 +4,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
 import authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses;
 
 import com.google.bitcoin.core.ECKey;
@@ -123,13 +127,17 @@ public class ConfigFile {
 									newPair.setPairingID(pairingID);
 									newPair.setPairingName(pairName);
 									newPair.setTestnet(false);
-		
+
+		ConfigAuthenticatorWallet all = ConfigAuthenticatorWallet.parseFrom(new FileInputStream(filePath));
+		ConfigAuthenticatorWallet.Builder b = ConfigAuthenticatorWallet.newBuilder(all);
+		b.addPairedWallets(newPair.build());
+									
 		FileOutputStream output = new FileOutputStream(filePath);  
-		newPair.build().writeTo(output);          
+		b.build().writeTo(output);          
 		output.close();
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "static-access" })
 	public void addAddressAndPrivateKeyToPairing(String pairID, String privkey, String addr, int index) throws FileNotFoundException, IOException, ParseException{
 		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
@@ -146,14 +154,45 @@ public class ConfigFile {
 				
 				PairedAuthenticator.Builder pairingBuilder = PairedAuthenticator.newBuilder(o);
 				pairingBuilder.addGeneratedKeys(newKeyObj.build());
+				PairedAuthenticator pair = pairingBuilder.build();
+				
+				
+				ConfigAuthenticatorWallet b = ConfigAuthenticatorWallet.parseFrom(new FileInputStream(filePath));
+				ConfigAuthenticatorWallet.Builder b1 = ConfigAuthenticatorWallet.newBuilder(b);
+				b1.setPairedWallets(pair.getDescriptor().getIndex(), pair);
 				
 				FileOutputStream output = new FileOutputStream(filePath);  
-				pairingBuilder.build().writeTo(output);          
+				b1.build().writeTo(output);          
 				output.close();
 				
 				break;
 			}
 		}
 		
+	}
+	
+	public List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
+		ConfigAuthenticatorWallet all = ConfigAuthenticatorWallet.parseFrom(new FileInputStream(filePath));
+		return all.getPendingRequestsList();
+	}
+	
+	public void writeNewPendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+		ConfigAuthenticatorWallet b = ConfigAuthenticatorWallet.parseFrom(new FileInputStream(filePath));
+		ConfigAuthenticatorWallet.Builder b1 = ConfigAuthenticatorWallet.newBuilder(b);
+		b1.addPendingRequests(req);
+		
+		FileOutputStream output = new FileOutputStream(filePath);  
+		b1.build().writeTo(output);          
+		output.close();
+	}
+	
+	public void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+		ConfigAuthenticatorWallet b = ConfigAuthenticatorWallet.parseFrom(new FileInputStream(filePath));
+		ConfigAuthenticatorWallet.Builder b1 = ConfigAuthenticatorWallet.newBuilder(b);
+		b1.removePendingRequests(req.getDescriptor().getIndex());
+		
+		FileOutputStream output = new FileOutputStream(filePath);  
+		b1.build().writeTo(output);          
+		output.close();
 	}
 }

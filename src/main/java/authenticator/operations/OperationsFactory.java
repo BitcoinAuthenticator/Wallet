@@ -60,10 +60,11 @@ import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.GCM.dispacher.MessageType;
 import authenticator.Utils.BAUtils;
-import authenticator.network.PendingRequest;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.ATOperationType;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
 
 public class OperationsFactory extends BASE{
 	
@@ -153,15 +154,17 @@ public class OperationsFactory extends BASE{
 							byte[] cypherBytes = prepareTX(pairingID);
 							String reqID = sendGCM();
 							// prepare a pending request object
-							PendingRequest pr = new PendingRequest();
-							pr.pairingID = pairingID;
-							pr.requestID = reqID;
-							pr.operationType = ATOperationType.SignTx;
-							pr.payloadToSendInCaseOfConnection = cypherBytes;
-							pr.rawTx = tx;
-							pr.contract.SHOULD_RECEIVE_PAYLOAD_AFTER_SENDING_PAYLOAD_ON_CONNECTION = true;
-							pr.contract.SHOULD_SEND_PAYLOAD_ON_CONNECTION = true;
-							Authenticator.addPendingRequest(pr,true);
+							PendingRequest.Builder pr = PendingRequest.newBuilder();
+							pr.setPairingID(pairingID);
+							pr.setRequestID(reqID);
+							pr.setOperationType(ATOperationType.SignTx);
+							pr.setPayloadToSendInCaseOfConnection(cypherBytes.toString());
+							pr.setRawTx(BAUtils.getStringTransaction(tx));
+							PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
+							cb.setShouldSendPayloadOnConnection(true);
+							cb.setShouldReceivePayloadAfterSendingPayloadOnConnection(true);
+							pr.setContract(cb.build());
+							Authenticator.addPendingRequestToFile(pr.build());
 						}
 						else{
 							//Decrypt the response

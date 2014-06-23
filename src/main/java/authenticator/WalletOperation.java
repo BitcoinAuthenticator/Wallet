@@ -21,6 +21,7 @@ import org.json.simple.parser.ParseException;
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -359,6 +360,31 @@ public class WalletOperation extends BASE{
 		configFile.addAddressAndPrivateKeyToPairing(pairID, privkey, addr, index);
 	}
 	
+	//#####################################
+	//
+	//		Pending Requests Control
+	//
+	//#####################################
+		
+		public static void addPendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+			configFile.writeNewPendingRequest(req);
+		}
+		
+		public static void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+			configFile.removePendingRequest(req);
+		}
+		
+		public static int getPendingRequestSize(){
+			try {
+				return getPendingRequests().size();
+			} catch (FileNotFoundException e) { } catch (IOException e) { }
+			return 0;
+		}
+		
+		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
+			return configFile.getPendingRequests();
+		}
+			
 	//#####################################
   	//
   	//	Regular Bitocoin Wallet Operations

@@ -13,14 +13,18 @@ import org.controlsfx.dialog.Dialogs;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import com.google.bitcoin.core.Transaction;
+
 import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;
 import authenticator.OnAuthenticatoGUIUpdateListener;
+import authenticator.Utils.BAUtils;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.ui_helpers.PopUpNotification;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
 
 public class TCPListener extends BASE{
 	public static Socket socket;
@@ -106,9 +110,9 @@ public class TCPListener extends BASE{
 									requestID = jo.getString("requestID");
 									//
 									PendingRequest pendingReq = null;
-									for(Object o:Authenticator.getPendingRequests()){
+									for(Object o:Authenticator.getWalletOperation().getPendingRequests()){
 										PendingRequest po = (PendingRequest)o;
-										if(po.requestID.equals(requestID))
+										if(po.getRequestID().equals(requestID))
 										{
 											pendingReq = po;
 											break;
@@ -117,28 +121,35 @@ public class TCPListener extends BASE{
 									//
 									if(pendingReq != null){ // find pending request
 										// Should we send something on connection ? 
-										if(pendingReq.contract.SHOULD_SEND_PAYLOAD_ON_CONNECTION){
-											outStream.writeInt(pendingReq.payloadToSendInCaseOfConnection.length);
-											outStream.write(pendingReq.payloadToSendInCaseOfConnection);
+										if(pendingReq.getContract().getShouldSendPayloadOnConnection()){
+											byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().getBytes();
+											outStream.writeInt(p.length);
+											outStream.write(p);
 											logAsInfo("Sent transaction");
 										}
 										// Should we receive something ?
-										if(pendingReq.contract.SHOULD_RECEIVE_PAYLOAD_AFTER_SENDING_PAYLOAD_ON_CONNECTION){
+										if(pendingReq.getContract().getShouldReceivePayloadAfterSendingPayloadOnConnection()){
 											keysize = inStream.readInt();
-											pendingReq.payloadIncoming = new byte[keysize];
-											inStream.read(pendingReq.payloadIncoming);
+											byte[] in = new byte[keysize];
+											inStream.read(in);
+											PendingRequest.Builder b = PendingRequest.newBuilder(pendingReq);
+											b.setPayloadIncoming(in.toString());
+											pendingReq = b.build();
 										}
 										//cleanup
 										inStream.close();
 										outStream.close();
 										// Complete Operation ?
-										switch(pendingReq.operationType){
+										switch(pendingReq.getOperationType()){
 										case SignTx:
-											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(pendingReq.rawTx,
-													pendingReq.pairingID, 
+											byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
+											Transaction tx = new Transaction(Authenticator.getWalletOperation().getNetworkParams(),txBytes);
+											 
+											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx,
+													pendingReq.getPairingID(), 
 													null,
 													true,
-													pendingReq.payloadIncoming);
+													pendingReq.getPayloadIncoming().getBytes());
 											op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 												@Override
@@ -273,10 +284,11 @@ public class TCPListener extends BASE{
 	
 	//##
 	public void sendUpdatesToPendingRequests(){
-		for(Object o:Authenticator.getPendingRequests()){
-			PendingRequest pending = (PendingRequest)o;
-			ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(pending.requestID, pending.pairingID);
-			Authenticator.operationsQueue.add(op);
-		}
+		/*try {
+			for(PendingRequest o:Authenticator.getWalletOperation().getPendingRequests()){
+				ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(o.getRequestID(), o.getPairingID());
+				Authenticator.operationsQueue.add(op);
+			}
+		} catch (IOException e) { e.printStackTrace(); }*/
 	}
 }

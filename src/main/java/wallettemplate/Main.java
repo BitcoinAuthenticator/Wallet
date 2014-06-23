@@ -4,6 +4,7 @@ import authenticator.Authenticator;
 import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.db.ConfigFile;
 import authenticator.ui_helpers.BAApplication;
+
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
@@ -29,6 +30,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +38,7 @@ import java.net.URL;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
+
 import static wallettemplate.utils.GuiUtils.*;
 
 public class Main extends BAApplication {
@@ -176,10 +179,11 @@ public class Main extends BAApplication {
     	auth.awaitRunning();
     
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-    		@Override
+    		@SuppressWarnings("static-access")
+			@Override
     		public void handle(WindowEvent e) {
     			Action response = null;
-    			if(Authenticator.getPendingRequestSize() > 0 || Authenticator.operationsQueue.size() > 0){
+    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.operationsQueue.size() > 0){
     				response = Dialogs.create()
             	        .owner(stage)
             	        .title("Warning !")

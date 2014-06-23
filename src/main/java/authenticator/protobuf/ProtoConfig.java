@@ -8,6 +8,106 @@ public final class ProtoConfig {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  /**
+   * Protobuf enum {@code authenticator.protobuf.ATOperationType}
+   */
+  public enum ATOperationType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>Pairing = 0;</code>
+     */
+    Pairing(0, 0),
+    /**
+     * <code>Unpair = 1;</code>
+     */
+    Unpair(1, 1),
+    /**
+     * <code>SignTx = 2;</code>
+     */
+    SignTx(2, 2),
+    /**
+     * <code>updateIpAddressesForPreviousMessage = 3;</code>
+     */
+    updateIpAddressesForPreviousMessage(3, 3),
+    ;
+
+    /**
+     * <code>Pairing = 0;</code>
+     */
+    public static final int Pairing_VALUE = 0;
+    /**
+     * <code>Unpair = 1;</code>
+     */
+    public static final int Unpair_VALUE = 1;
+    /**
+     * <code>SignTx = 2;</code>
+     */
+    public static final int SignTx_VALUE = 2;
+    /**
+     * <code>updateIpAddressesForPreviousMessage = 3;</code>
+     */
+    public static final int updateIpAddressesForPreviousMessage_VALUE = 3;
+
+
+    public final int getNumber() { return value; }
+
+    public static ATOperationType valueOf(int value) {
+      switch (value) {
+        case 0: return Pairing;
+        case 1: return Unpair;
+        case 2: return SignTx;
+        case 3: return updateIpAddressesForPreviousMessage;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ATOperationType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<ATOperationType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ATOperationType>() {
+            public ATOperationType findValueByNumber(int number) {
+              return ATOperationType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final ATOperationType[] VALUES = values();
+
+    public static ATOperationType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private ATOperationType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:authenticator.protobuf.ATOperationType)
+  }
+
   public interface ConfigAuthenticatorWalletOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
@@ -52,6 +152,31 @@ public final class ProtoConfig {
      * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
     authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
+        int index);
+
+    // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest> 
+        getPendingRequestsList();
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest getPendingRequests(int index);
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    int getPendingRequestsCount();
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder> 
+        getPendingRequestsOrBuilderList();
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder getPendingRequestsOrBuilder(
         int index);
   }
   /**
@@ -118,6 +243,14 @@ public final class ProtoConfig {
               pairedWallets_.add(input.readMessage(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.PARSER, extensionRegistry));
               break;
             }
+            case 82: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                pendingRequests_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              pendingRequests_.add(input.readMessage(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.PARSER, extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -128,6 +261,9 @@ public final class ProtoConfig {
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           pairedWallets_ = java.util.Collections.unmodifiableList(pairedWallets_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          pendingRequests_ = java.util.Collections.unmodifiableList(pendingRequests_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -300,6 +436,11 @@ public final class ProtoConfig {
     }
     /**
      * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator}
+     *
+     * <pre>
+     *
+     *	Pairing Data
+     * </pre>
      */
     public static final class PairedAuthenticator extends
         com.google.protobuf.GeneratedMessage
@@ -1711,6 +1852,11 @@ public final class ProtoConfig {
       }
       /**
        * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator}
+       *
+       * <pre>
+       *
+       *	Pairing Data
+       * </pre>
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
@@ -2743,6 +2889,1892 @@ public final class ProtoConfig {
       // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator)
     }
 
+    public interface PendingRequestOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // required string pairingID = 1;
+      /**
+       * <code>required string pairingID = 1;</code>
+       */
+      boolean hasPairingID();
+      /**
+       * <code>required string pairingID = 1;</code>
+       */
+      java.lang.String getPairingID();
+      /**
+       * <code>required string pairingID = 1;</code>
+       */
+      com.google.protobuf.ByteString
+          getPairingIDBytes();
+
+      // required string requestID = 2;
+      /**
+       * <code>required string requestID = 2;</code>
+       */
+      boolean hasRequestID();
+      /**
+       * <code>required string requestID = 2;</code>
+       */
+      java.lang.String getRequestID();
+      /**
+       * <code>required string requestID = 2;</code>
+       */
+      com.google.protobuf.ByteString
+          getRequestIDBytes();
+
+      // required .authenticator.protobuf.ATOperationType operationType = 3;
+      /**
+       * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+       */
+      boolean hasOperationType();
+      /**
+       * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+       */
+      authenticator.protobuf.ProtoConfig.ATOperationType getOperationType();
+
+      // optional string rawTx = 4;
+      /**
+       * <code>optional string rawTx = 4;</code>
+       */
+      boolean hasRawTx();
+      /**
+       * <code>optional string rawTx = 4;</code>
+       */
+      java.lang.String getRawTx();
+      /**
+       * <code>optional string rawTx = 4;</code>
+       */
+      com.google.protobuf.ByteString
+          getRawTxBytes();
+
+      // optional string payloadIncoming = 5;
+      /**
+       * <code>optional string payloadIncoming = 5;</code>
+       */
+      boolean hasPayloadIncoming();
+      /**
+       * <code>optional string payloadIncoming = 5;</code>
+       */
+      java.lang.String getPayloadIncoming();
+      /**
+       * <code>optional string payloadIncoming = 5;</code>
+       */
+      com.google.protobuf.ByteString
+          getPayloadIncomingBytes();
+
+      // optional string payloadToSendInCaseOfConnection = 6;
+      /**
+       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       */
+      boolean hasPayloadToSendInCaseOfConnection();
+      /**
+       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       */
+      java.lang.String getPayloadToSendInCaseOfConnection();
+      /**
+       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       */
+      com.google.protobuf.ByteString
+          getPayloadToSendInCaseOfConnectionBytes();
+
+      // required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;
+      /**
+       * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+       */
+      boolean hasContract();
+      /**
+       * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+       */
+      authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract getContract();
+      /**
+       * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+       */
+      authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.ContractOrBuilder getContractOrBuilder();
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest}
+     */
+    public static final class PendingRequest extends
+        com.google.protobuf.GeneratedMessage
+        implements PendingRequestOrBuilder {
+      // Use PendingRequest.newBuilder() to construct.
+      private PendingRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private PendingRequest(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final PendingRequest defaultInstance;
+      public static PendingRequest getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public PendingRequest getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private PendingRequest(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                pairingID_ = input.readBytes();
+                break;
+              }
+              case 18: {
+                bitField0_ |= 0x00000002;
+                requestID_ = input.readBytes();
+                break;
+              }
+              case 24: {
+                int rawValue = input.readEnum();
+                authenticator.protobuf.ProtoConfig.ATOperationType value = authenticator.protobuf.ProtoConfig.ATOperationType.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(3, rawValue);
+                } else {
+                  bitField0_ |= 0x00000004;
+                  operationType_ = value;
+                }
+                break;
+              }
+              case 34: {
+                bitField0_ |= 0x00000008;
+                rawTx_ = input.readBytes();
+                break;
+              }
+              case 42: {
+                bitField0_ |= 0x00000010;
+                payloadIncoming_ = input.readBytes();
+                break;
+              }
+              case 50: {
+                bitField0_ |= 0x00000020;
+                payloadToSendInCaseOfConnection_ = input.readBytes();
+                break;
+              }
+              case 58: {
+                authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000040) == 0x00000040)) {
+                  subBuilder = contract_.toBuilder();
+                }
+                contract_ = input.readMessage(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(contract_);
+                  contract_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000040;
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<PendingRequest> PARSER =
+          new com.google.protobuf.AbstractParser<PendingRequest>() {
+        public PendingRequest parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new PendingRequest(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<PendingRequest> getParserForType() {
+        return PARSER;
+      }
+
+      public interface ContractOrBuilder
+          extends com.google.protobuf.MessageOrBuilder {
+
+        // optional bool ShouldSendPayloadOnConnection = 1;
+        /**
+         * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+         */
+        boolean hasShouldSendPayloadOnConnection();
+        /**
+         * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+         */
+        boolean getShouldSendPayloadOnConnection();
+
+        // optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;
+        /**
+         * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+         */
+        boolean hasShouldReceivePayloadAfterSendingPayloadOnConnection();
+        /**
+         * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+         */
+        boolean getShouldReceivePayloadAfterSendingPayloadOnConnection();
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract}
+       */
+      public static final class Contract extends
+          com.google.protobuf.GeneratedMessage
+          implements ContractOrBuilder {
+        // Use Contract.newBuilder() to construct.
+        private Contract(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+          super(builder);
+          this.unknownFields = builder.getUnknownFields();
+        }
+        private Contract(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+        private static final Contract defaultInstance;
+        public static Contract getDefaultInstance() {
+          return defaultInstance;
+        }
+
+        public Contract getDefaultInstanceForType() {
+          return defaultInstance;
+        }
+
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet
+            getUnknownFields() {
+          return this.unknownFields;
+        }
+        private Contract(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          initFields();
+          int mutable_bitField0_ = 0;
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+              com.google.protobuf.UnknownFieldSet.newBuilder();
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!parseUnknownField(input, unknownFields,
+                                         extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+                case 8: {
+                  bitField0_ |= 0x00000001;
+                  shouldSendPayloadOnConnection_ = input.readBool();
+                  break;
+                }
+                case 16: {
+                  bitField0_ |= 0x00000002;
+                  shouldReceivePayloadAfterSendingPayloadOnConnection_ = input.readBool();
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(this);
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this);
+          } finally {
+            this.unknownFields = unknownFields.build();
+            makeExtensionsImmutable();
+          }
+        }
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder.class);
+        }
+
+        public static com.google.protobuf.Parser<Contract> PARSER =
+            new com.google.protobuf.AbstractParser<Contract>() {
+          public Contract parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new Contract(input, extensionRegistry);
+          }
+        };
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<Contract> getParserForType() {
+          return PARSER;
+        }
+
+        private int bitField0_;
+        // optional bool ShouldSendPayloadOnConnection = 1;
+        public static final int SHOULDSENDPAYLOADONCONNECTION_FIELD_NUMBER = 1;
+        private boolean shouldSendPayloadOnConnection_;
+        /**
+         * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+         */
+        public boolean hasShouldSendPayloadOnConnection() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+         */
+        public boolean getShouldSendPayloadOnConnection() {
+          return shouldSendPayloadOnConnection_;
+        }
+
+        // optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;
+        public static final int SHOULDRECEIVEPAYLOADAFTERSENDINGPAYLOADONCONNECTION_FIELD_NUMBER = 2;
+        private boolean shouldReceivePayloadAfterSendingPayloadOnConnection_;
+        /**
+         * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+         */
+        public boolean hasShouldReceivePayloadAfterSendingPayloadOnConnection() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+         */
+        public boolean getShouldReceivePayloadAfterSendingPayloadOnConnection() {
+          return shouldReceivePayloadAfterSendingPayloadOnConnection_;
+        }
+
+        private void initFields() {
+          shouldSendPayloadOnConnection_ = false;
+          shouldReceivePayloadAfterSendingPayloadOnConnection_ = false;
+        }
+        private byte memoizedIsInitialized = -1;
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized != -1) return isInitialized == 1;
+
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          getSerializedSize();
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            output.writeBool(1, shouldSendPayloadOnConnection_);
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            output.writeBool(2, shouldReceivePayloadAfterSendingPayloadOnConnection_);
+          }
+          getUnknownFields().writeTo(output);
+        }
+
+        private int memoizedSerializedSize = -1;
+        public int getSerializedSize() {
+          int size = memoizedSerializedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBoolSize(1, shouldSendPayloadOnConnection_);
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBoolSize(2, shouldReceivePayloadAfterSendingPayloadOnConnection_);
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSerializedSize = size;
+          return size;
+        }
+
+        private static final long serialVersionUID = 0L;
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
+          return super.writeReplace();
+        }
+
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+
+        public static Builder newBuilder() { return Builder.create(); }
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract prototype) {
+          return newBuilder().mergeFrom(prototype);
+        }
+        public Builder toBuilder() { return newBuilder(this); }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessage.Builder<Builder>
+           implements authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.ContractOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_descriptor;
+          }
+
+          protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder.class);
+          }
+
+          // Construct using authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.newBuilder()
+          private Builder() {
+            maybeForceBuilderInitialization();
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            super(parent);
+            maybeForceBuilderInitialization();
+          }
+          private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            }
+          }
+          private static Builder create() {
+            return new Builder();
+          }
+
+          public Builder clear() {
+            super.clear();
+            shouldSendPayloadOnConnection_ = false;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            shouldReceivePayloadAfterSendingPayloadOnConnection_ = false;
+            bitField0_ = (bitField0_ & ~0x00000002);
+            return this;
+          }
+
+          public Builder clone() {
+            return create().mergeFrom(buildPartial());
+          }
+
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_descriptor;
+          }
+
+          public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract getDefaultInstanceForType() {
+            return authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.getDefaultInstance();
+          }
+
+          public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract build() {
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract buildPartial() {
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract result = new authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract(this);
+            int from_bitField0_ = bitField0_;
+            int to_bitField0_ = 0;
+            if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+              to_bitField0_ |= 0x00000001;
+            }
+            result.shouldSendPayloadOnConnection_ = shouldSendPayloadOnConnection_;
+            if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+              to_bitField0_ |= 0x00000002;
+            }
+            result.shouldReceivePayloadAfterSendingPayloadOnConnection_ = shouldReceivePayloadAfterSendingPayloadOnConnection_;
+            result.bitField0_ = to_bitField0_;
+            onBuilt();
+            return result;
+          }
+
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract) {
+              return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract other) {
+            if (other == authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.getDefaultInstance()) return this;
+            if (other.hasShouldSendPayloadOnConnection()) {
+              setShouldSendPayloadOnConnection(other.getShouldSendPayloadOnConnection());
+            }
+            if (other.hasShouldReceivePayloadAfterSendingPayloadOnConnection()) {
+              setShouldReceivePayloadAfterSendingPayloadOnConnection(other.getShouldReceivePayloadAfterSendingPayloadOnConnection());
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            return this;
+          }
+
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract parsedMessage = null;
+            try {
+              parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract) e.getUnfinishedMessage();
+              throw e;
+            } finally {
+              if (parsedMessage != null) {
+                mergeFrom(parsedMessage);
+              }
+            }
+            return this;
+          }
+          private int bitField0_;
+
+          // optional bool ShouldSendPayloadOnConnection = 1;
+          private boolean shouldSendPayloadOnConnection_ ;
+          /**
+           * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+           */
+          public boolean hasShouldSendPayloadOnConnection() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+          /**
+           * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+           */
+          public boolean getShouldSendPayloadOnConnection() {
+            return shouldSendPayloadOnConnection_;
+          }
+          /**
+           * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+           */
+          public Builder setShouldSendPayloadOnConnection(boolean value) {
+            bitField0_ |= 0x00000001;
+            shouldSendPayloadOnConnection_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
+           */
+          public Builder clearShouldSendPayloadOnConnection() {
+            bitField0_ = (bitField0_ & ~0x00000001);
+            shouldSendPayloadOnConnection_ = false;
+            onChanged();
+            return this;
+          }
+
+          // optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;
+          private boolean shouldReceivePayloadAfterSendingPayloadOnConnection_ ;
+          /**
+           * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+           */
+          public boolean hasShouldReceivePayloadAfterSendingPayloadOnConnection() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+          }
+          /**
+           * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+           */
+          public boolean getShouldReceivePayloadAfterSendingPayloadOnConnection() {
+            return shouldReceivePayloadAfterSendingPayloadOnConnection_;
+          }
+          /**
+           * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+           */
+          public Builder setShouldReceivePayloadAfterSendingPayloadOnConnection(boolean value) {
+            bitField0_ |= 0x00000002;
+            shouldReceivePayloadAfterSendingPayloadOnConnection_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
+           */
+          public Builder clearShouldReceivePayloadAfterSendingPayloadOnConnection() {
+            bitField0_ = (bitField0_ & ~0x00000002);
+            shouldReceivePayloadAfterSendingPayloadOnConnection_ = false;
+            onChanged();
+            return this;
+          }
+
+          // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract)
+        }
+
+        static {
+          defaultInstance = new Contract(true);
+          defaultInstance.initFields();
+        }
+
+        // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract)
+      }
+
+      private int bitField0_;
+      // required string pairingID = 1;
+      public static final int PAIRINGID_FIELD_NUMBER = 1;
+      private java.lang.Object pairingID_;
+      /**
+       * <code>required string pairingID = 1;</code>
+       */
+      public boolean hasPairingID() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string pairingID = 1;</code>
+       */
+      public java.lang.String getPairingID() {
+        java.lang.Object ref = pairingID_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            pairingID_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string pairingID = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPairingIDBytes() {
+        java.lang.Object ref = pairingID_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          pairingID_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required string requestID = 2;
+      public static final int REQUESTID_FIELD_NUMBER = 2;
+      private java.lang.Object requestID_;
+      /**
+       * <code>required string requestID = 2;</code>
+       */
+      public boolean hasRequestID() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string requestID = 2;</code>
+       */
+      public java.lang.String getRequestID() {
+        java.lang.Object ref = requestID_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            requestID_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string requestID = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getRequestIDBytes() {
+        java.lang.Object ref = requestID_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          requestID_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required .authenticator.protobuf.ATOperationType operationType = 3;
+      public static final int OPERATIONTYPE_FIELD_NUMBER = 3;
+      private authenticator.protobuf.ProtoConfig.ATOperationType operationType_;
+      /**
+       * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+       */
+      public boolean hasOperationType() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ATOperationType getOperationType() {
+        return operationType_;
+      }
+
+      // optional string rawTx = 4;
+      public static final int RAWTX_FIELD_NUMBER = 4;
+      private java.lang.Object rawTx_;
+      /**
+       * <code>optional string rawTx = 4;</code>
+       */
+      public boolean hasRawTx() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string rawTx = 4;</code>
+       */
+      public java.lang.String getRawTx() {
+        java.lang.Object ref = rawTx_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            rawTx_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string rawTx = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getRawTxBytes() {
+        java.lang.Object ref = rawTx_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rawTx_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // optional string payloadIncoming = 5;
+      public static final int PAYLOADINCOMING_FIELD_NUMBER = 5;
+      private java.lang.Object payloadIncoming_;
+      /**
+       * <code>optional string payloadIncoming = 5;</code>
+       */
+      public boolean hasPayloadIncoming() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional string payloadIncoming = 5;</code>
+       */
+      public java.lang.String getPayloadIncoming() {
+        java.lang.Object ref = payloadIncoming_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            payloadIncoming_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string payloadIncoming = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPayloadIncomingBytes() {
+        java.lang.Object ref = payloadIncoming_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          payloadIncoming_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // optional string payloadToSendInCaseOfConnection = 6;
+      public static final int PAYLOADTOSENDINCASEOFCONNECTION_FIELD_NUMBER = 6;
+      private java.lang.Object payloadToSendInCaseOfConnection_;
+      /**
+       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       */
+      public boolean hasPayloadToSendInCaseOfConnection() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       */
+      public java.lang.String getPayloadToSendInCaseOfConnection() {
+        java.lang.Object ref = payloadToSendInCaseOfConnection_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            payloadToSendInCaseOfConnection_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPayloadToSendInCaseOfConnectionBytes() {
+        java.lang.Object ref = payloadToSendInCaseOfConnection_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          payloadToSendInCaseOfConnection_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;
+      public static final int CONTRACT_FIELD_NUMBER = 7;
+      private authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract contract_;
+      /**
+       * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+       */
+      public boolean hasContract() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract getContract() {
+        return contract_;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.ContractOrBuilder getContractOrBuilder() {
+        return contract_;
+      }
+
+      private void initFields() {
+        pairingID_ = "";
+        requestID_ = "";
+        operationType_ = authenticator.protobuf.ProtoConfig.ATOperationType.Pairing;
+        rawTx_ = "";
+        payloadIncoming_ = "";
+        payloadToSendInCaseOfConnection_ = "";
+        contract_ = authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.getDefaultInstance();
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        if (!hasPairingID()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasRequestID()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasOperationType()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasContract()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getPairingIDBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, getRequestIDBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeEnum(3, operationType_.getNumber());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeBytes(4, getRawTxBytes());
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeBytes(5, getPayloadIncomingBytes());
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          output.writeBytes(6, getPayloadToSendInCaseOfConnectionBytes());
+        }
+        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          output.writeMessage(7, contract_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getPairingIDBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, getRequestIDBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(3, operationType_.getNumber());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(4, getRawTxBytes());
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(5, getPayloadIncomingBytes());
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(6, getPayloadToSendInCaseOfConnectionBytes());
+        }
+        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(7, contract_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getContractFieldBuilder();
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          pairingID_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          requestID_ = "";
+          bitField0_ = (bitField0_ & ~0x00000002);
+          operationType_ = authenticator.protobuf.ProtoConfig.ATOperationType.Pairing;
+          bitField0_ = (bitField0_ & ~0x00000004);
+          rawTx_ = "";
+          bitField0_ = (bitField0_ & ~0x00000008);
+          payloadIncoming_ = "";
+          bitField0_ = (bitField0_ & ~0x00000010);
+          payloadToSendInCaseOfConnection_ = "";
+          bitField0_ = (bitField0_ & ~0x00000020);
+          if (contractBuilder_ == null) {
+            contract_ = authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.getDefaultInstance();
+          } else {
+            contractBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000040);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest build() {
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest buildPartial() {
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest result = new authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.pairingID_ = pairingID_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.requestID_ = requestID_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.operationType_ = operationType_;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.rawTx_ = rawTx_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.payloadIncoming_ = payloadIncoming_;
+          if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+            to_bitField0_ |= 0x00000020;
+          }
+          result.payloadToSendInCaseOfConnection_ = payloadToSendInCaseOfConnection_;
+          if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+            to_bitField0_ |= 0x00000040;
+          }
+          if (contractBuilder_ == null) {
+            result.contract_ = contract_;
+          } else {
+            result.contract_ = contractBuilder_.build();
+          }
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest other) {
+          if (other == authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.getDefaultInstance()) return this;
+          if (other.hasPairingID()) {
+            bitField0_ |= 0x00000001;
+            pairingID_ = other.pairingID_;
+            onChanged();
+          }
+          if (other.hasRequestID()) {
+            bitField0_ |= 0x00000002;
+            requestID_ = other.requestID_;
+            onChanged();
+          }
+          if (other.hasOperationType()) {
+            setOperationType(other.getOperationType());
+          }
+          if (other.hasRawTx()) {
+            bitField0_ |= 0x00000008;
+            rawTx_ = other.rawTx_;
+            onChanged();
+          }
+          if (other.hasPayloadIncoming()) {
+            bitField0_ |= 0x00000010;
+            payloadIncoming_ = other.payloadIncoming_;
+            onChanged();
+          }
+          if (other.hasPayloadToSendInCaseOfConnection()) {
+            bitField0_ |= 0x00000020;
+            payloadToSendInCaseOfConnection_ = other.payloadToSendInCaseOfConnection_;
+            onChanged();
+          }
+          if (other.hasContract()) {
+            mergeContract(other.getContract());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasPairingID()) {
+            
+            return false;
+          }
+          if (!hasRequestID()) {
+            
+            return false;
+          }
+          if (!hasOperationType()) {
+            
+            return false;
+          }
+          if (!hasContract()) {
+            
+            return false;
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // required string pairingID = 1;
+        private java.lang.Object pairingID_ = "";
+        /**
+         * <code>required string pairingID = 1;</code>
+         */
+        public boolean hasPairingID() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>required string pairingID = 1;</code>
+         */
+        public java.lang.String getPairingID() {
+          java.lang.Object ref = pairingID_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            pairingID_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string pairingID = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPairingIDBytes() {
+          java.lang.Object ref = pairingID_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            pairingID_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string pairingID = 1;</code>
+         */
+        public Builder setPairingID(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          pairingID_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string pairingID = 1;</code>
+         */
+        public Builder clearPairingID() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          pairingID_ = getDefaultInstance().getPairingID();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string pairingID = 1;</code>
+         */
+        public Builder setPairingIDBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          pairingID_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required string requestID = 2;
+        private java.lang.Object requestID_ = "";
+        /**
+         * <code>required string requestID = 2;</code>
+         */
+        public boolean hasRequestID() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>required string requestID = 2;</code>
+         */
+        public java.lang.String getRequestID() {
+          java.lang.Object ref = requestID_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            requestID_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string requestID = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getRequestIDBytes() {
+          java.lang.Object ref = requestID_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            requestID_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string requestID = 2;</code>
+         */
+        public Builder setRequestID(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          requestID_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string requestID = 2;</code>
+         */
+        public Builder clearRequestID() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          requestID_ = getDefaultInstance().getRequestID();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string requestID = 2;</code>
+         */
+        public Builder setRequestIDBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          requestID_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required .authenticator.protobuf.ATOperationType operationType = 3;
+        private authenticator.protobuf.ProtoConfig.ATOperationType operationType_ = authenticator.protobuf.ProtoConfig.ATOperationType.Pairing;
+        /**
+         * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+         */
+        public boolean hasOperationType() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ATOperationType getOperationType() {
+          return operationType_;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+         */
+        public Builder setOperationType(authenticator.protobuf.ProtoConfig.ATOperationType value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000004;
+          operationType_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
+         */
+        public Builder clearOperationType() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          operationType_ = authenticator.protobuf.ProtoConfig.ATOperationType.Pairing;
+          onChanged();
+          return this;
+        }
+
+        // optional string rawTx = 4;
+        private java.lang.Object rawTx_ = "";
+        /**
+         * <code>optional string rawTx = 4;</code>
+         */
+        public boolean hasRawTx() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        /**
+         * <code>optional string rawTx = 4;</code>
+         */
+        public java.lang.String getRawTx() {
+          java.lang.Object ref = rawTx_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            rawTx_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string rawTx = 4;</code>
+         */
+        public com.google.protobuf.ByteString
+            getRawTxBytes() {
+          java.lang.Object ref = rawTx_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            rawTx_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string rawTx = 4;</code>
+         */
+        public Builder setRawTx(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+          rawTx_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string rawTx = 4;</code>
+         */
+        public Builder clearRawTx() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          rawTx_ = getDefaultInstance().getRawTx();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string rawTx = 4;</code>
+         */
+        public Builder setRawTxBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+          rawTx_ = value;
+          onChanged();
+          return this;
+        }
+
+        // optional string payloadIncoming = 5;
+        private java.lang.Object payloadIncoming_ = "";
+        /**
+         * <code>optional string payloadIncoming = 5;</code>
+         */
+        public boolean hasPayloadIncoming() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        /**
+         * <code>optional string payloadIncoming = 5;</code>
+         */
+        public java.lang.String getPayloadIncoming() {
+          java.lang.Object ref = payloadIncoming_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            payloadIncoming_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string payloadIncoming = 5;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPayloadIncomingBytes() {
+          java.lang.Object ref = payloadIncoming_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            payloadIncoming_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string payloadIncoming = 5;</code>
+         */
+        public Builder setPayloadIncoming(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          payloadIncoming_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string payloadIncoming = 5;</code>
+         */
+        public Builder clearPayloadIncoming() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          payloadIncoming_ = getDefaultInstance().getPayloadIncoming();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string payloadIncoming = 5;</code>
+         */
+        public Builder setPayloadIncomingBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          payloadIncoming_ = value;
+          onChanged();
+          return this;
+        }
+
+        // optional string payloadToSendInCaseOfConnection = 6;
+        private java.lang.Object payloadToSendInCaseOfConnection_ = "";
+        /**
+         * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+         */
+        public boolean hasPayloadToSendInCaseOfConnection() {
+          return ((bitField0_ & 0x00000020) == 0x00000020);
+        }
+        /**
+         * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+         */
+        public java.lang.String getPayloadToSendInCaseOfConnection() {
+          java.lang.Object ref = payloadToSendInCaseOfConnection_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            payloadToSendInCaseOfConnection_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPayloadToSendInCaseOfConnectionBytes() {
+          java.lang.Object ref = payloadToSendInCaseOfConnection_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            payloadToSendInCaseOfConnection_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+         */
+        public Builder setPayloadToSendInCaseOfConnection(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+          payloadToSendInCaseOfConnection_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+         */
+        public Builder clearPayloadToSendInCaseOfConnection() {
+          bitField0_ = (bitField0_ & ~0x00000020);
+          payloadToSendInCaseOfConnection_ = getDefaultInstance().getPayloadToSendInCaseOfConnection();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+         */
+        public Builder setPayloadToSendInCaseOfConnectionBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+          payloadToSendInCaseOfConnection_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;
+        private authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract contract_ = authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.ContractOrBuilder> contractBuilder_;
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public boolean hasContract() {
+          return ((bitField0_ & 0x00000040) == 0x00000040);
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract getContract() {
+          if (contractBuilder_ == null) {
+            return contract_;
+          } else {
+            return contractBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public Builder setContract(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract value) {
+          if (contractBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            contract_ = value;
+            onChanged();
+          } else {
+            contractBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000040;
+          return this;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public Builder setContract(
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder builderForValue) {
+          if (contractBuilder_ == null) {
+            contract_ = builderForValue.build();
+            onChanged();
+          } else {
+            contractBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000040;
+          return this;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public Builder mergeContract(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract value) {
+          if (contractBuilder_ == null) {
+            if (((bitField0_ & 0x00000040) == 0x00000040) &&
+                contract_ != authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.getDefaultInstance()) {
+              contract_ =
+                authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.newBuilder(contract_).mergeFrom(value).buildPartial();
+            } else {
+              contract_ = value;
+            }
+            onChanged();
+          } else {
+            contractBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000040;
+          return this;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public Builder clearContract() {
+          if (contractBuilder_ == null) {
+            contract_ = authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.getDefaultInstance();
+            onChanged();
+          } else {
+            contractBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000040);
+          return this;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder getContractBuilder() {
+          bitField0_ |= 0x00000040;
+          onChanged();
+          return getContractFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.ContractOrBuilder getContractOrBuilder() {
+          if (contractBuilder_ != null) {
+            return contractBuilder_.getMessageOrBuilder();
+          } else {
+            return contract_;
+          }
+        }
+        /**
+         * <code>required .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest.Contract contract = 7;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.ContractOrBuilder> 
+            getContractFieldBuilder() {
+          if (contractBuilder_ == null) {
+            contractBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Contract.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.ContractOrBuilder>(
+                    contract_,
+                    getParentForChildren(),
+                    isClean());
+            contract_ = null;
+          }
+          return contractBuilder_;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest)
+      }
+
+      static {
+        defaultInstance = new PendingRequest(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest)
+    }
+
     private int bitField0_;
     // optional bool paired = 1;
     public static final int PAIRED_FIELD_NUMBER = 1;
@@ -2804,9 +4836,46 @@ public final class ProtoConfig {
       return pairedWallets_.get(index);
     }
 
+    // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;
+    public static final int PENDINGREQUESTS_FIELD_NUMBER = 10;
+    private java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest> pendingRequests_;
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest> getPendingRequestsList() {
+      return pendingRequests_;
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    public java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder> 
+        getPendingRequestsOrBuilderList() {
+      return pendingRequests_;
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    public int getPendingRequestsCount() {
+      return pendingRequests_.size();
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest getPendingRequests(int index) {
+      return pendingRequests_.get(index);
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder getPendingRequestsOrBuilder(
+        int index) {
+      return pendingRequests_.get(index);
+    }
+
     private void initFields() {
       paired_ = false;
       pairedWallets_ = java.util.Collections.emptyList();
+      pendingRequests_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2815,6 +4884,12 @@ public final class ProtoConfig {
 
       for (int i = 0; i < getPairedWalletsCount(); i++) {
         if (!getPairedWallets(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      for (int i = 0; i < getPendingRequestsCount(); i++) {
+        if (!getPendingRequests(i).isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -2832,6 +4907,9 @@ public final class ProtoConfig {
       for (int i = 0; i < pairedWallets_.size(); i++) {
         output.writeMessage(2, pairedWallets_.get(i));
       }
+      for (int i = 0; i < pendingRequests_.size(); i++) {
+        output.writeMessage(10, pendingRequests_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2848,6 +4926,10 @@ public final class ProtoConfig {
       for (int i = 0; i < pairedWallets_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, pairedWallets_.get(i));
+      }
+      for (int i = 0; i < pendingRequests_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, pendingRequests_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2958,6 +5040,7 @@ public final class ProtoConfig {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getPairedWalletsFieldBuilder();
+          getPendingRequestsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2973,6 +5056,12 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           pairedWalletsBuilder_.clear();
+        }
+        if (pendingRequestsBuilder_ == null) {
+          pendingRequests_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          pendingRequestsBuilder_.clear();
         }
         return this;
       }
@@ -3014,6 +5103,15 @@ public final class ProtoConfig {
           result.pairedWallets_ = pairedWallets_;
         } else {
           result.pairedWallets_ = pairedWalletsBuilder_.build();
+        }
+        if (pendingRequestsBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            pendingRequests_ = java.util.Collections.unmodifiableList(pendingRequests_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.pendingRequests_ = pendingRequests_;
+        } else {
+          result.pendingRequests_ = pendingRequestsBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -3060,6 +5158,32 @@ public final class ProtoConfig {
             }
           }
         }
+        if (pendingRequestsBuilder_ == null) {
+          if (!other.pendingRequests_.isEmpty()) {
+            if (pendingRequests_.isEmpty()) {
+              pendingRequests_ = other.pendingRequests_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensurePendingRequestsIsMutable();
+              pendingRequests_.addAll(other.pendingRequests_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.pendingRequests_.isEmpty()) {
+            if (pendingRequestsBuilder_.isEmpty()) {
+              pendingRequestsBuilder_.dispose();
+              pendingRequestsBuilder_ = null;
+              pendingRequests_ = other.pendingRequests_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              pendingRequestsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getPendingRequestsFieldBuilder() : null;
+            } else {
+              pendingRequestsBuilder_.addAllMessages(other.pendingRequests_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -3067,6 +5191,12 @@ public final class ProtoConfig {
       public final boolean isInitialized() {
         for (int i = 0; i < getPairedWalletsCount(); i++) {
           if (!getPairedWallets(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getPendingRequestsCount(); i++) {
+          if (!getPendingRequests(i).isInitialized()) {
             
             return false;
           }
@@ -3380,6 +5510,246 @@ public final class ProtoConfig {
           pairedWallets_ = null;
         }
         return pairedWalletsBuilder_;
+      }
+
+      // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;
+      private java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest> pendingRequests_ =
+        java.util.Collections.emptyList();
+      private void ensurePendingRequestsIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          pendingRequests_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest>(pendingRequests_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder> pendingRequestsBuilder_;
+
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest> getPendingRequestsList() {
+        if (pendingRequestsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(pendingRequests_);
+        } else {
+          return pendingRequestsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public int getPendingRequestsCount() {
+        if (pendingRequestsBuilder_ == null) {
+          return pendingRequests_.size();
+        } else {
+          return pendingRequestsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest getPendingRequests(int index) {
+        if (pendingRequestsBuilder_ == null) {
+          return pendingRequests_.get(index);
+        } else {
+          return pendingRequestsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder setPendingRequests(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest value) {
+        if (pendingRequestsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePendingRequestsIsMutable();
+          pendingRequests_.set(index, value);
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder setPendingRequests(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder builderForValue) {
+        if (pendingRequestsBuilder_ == null) {
+          ensurePendingRequestsIsMutable();
+          pendingRequests_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder addPendingRequests(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest value) {
+        if (pendingRequestsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePendingRequestsIsMutable();
+          pendingRequests_.add(value);
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder addPendingRequests(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest value) {
+        if (pendingRequestsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePendingRequestsIsMutable();
+          pendingRequests_.add(index, value);
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder addPendingRequests(
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder builderForValue) {
+        if (pendingRequestsBuilder_ == null) {
+          ensurePendingRequestsIsMutable();
+          pendingRequests_.add(builderForValue.build());
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder addPendingRequests(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder builderForValue) {
+        if (pendingRequestsBuilder_ == null) {
+          ensurePendingRequestsIsMutable();
+          pendingRequests_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder addAllPendingRequests(
+          java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest> values) {
+        if (pendingRequestsBuilder_ == null) {
+          ensurePendingRequestsIsMutable();
+          super.addAll(values, pendingRequests_);
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder clearPendingRequests() {
+        if (pendingRequestsBuilder_ == null) {
+          pendingRequests_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public Builder removePendingRequests(int index) {
+        if (pendingRequestsBuilder_ == null) {
+          ensurePendingRequestsIsMutable();
+          pendingRequests_.remove(index);
+          onChanged();
+        } else {
+          pendingRequestsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder getPendingRequestsBuilder(
+          int index) {
+        return getPendingRequestsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder getPendingRequestsOrBuilder(
+          int index) {
+        if (pendingRequestsBuilder_ == null) {
+          return pendingRequests_.get(index);  } else {
+          return pendingRequestsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder> 
+           getPendingRequestsOrBuilderList() {
+        if (pendingRequestsBuilder_ != null) {
+          return pendingRequestsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(pendingRequests_);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder addPendingRequestsBuilder() {
+        return getPendingRequestsFieldBuilder().addBuilder(
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder addPendingRequestsBuilder(
+          int index) {
+        return getPendingRequestsFieldBuilder().addBuilder(
+            index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PendingRequest pendingRequests = 10;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder> 
+           getPendingRequestsBuilderList() {
+        return getPendingRequestsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder> 
+          getPendingRequestsFieldBuilder() {
+        if (pendingRequestsBuilder_ == null) {
+          pendingRequestsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequestOrBuilder>(
+                  pendingRequests_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          pendingRequests_ = null;
+        }
+        return pendingRequestsBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAuthenticatorWallet)
@@ -5265,6 +7635,16 @@ public final class ProtoConfig {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -5288,23 +7668,38 @@ public final class ProtoConfig {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014config.proto\022\026authenticator.protobuf\"\340" +
-      "\003\n\031ConfigAuthenticatorWallet\022\016\n\006paired\030\001" +
+      "\n\014config.proto\022\026authenticator.protobuf\"\322" +
+      "\007\n\031ConfigAuthenticatorWallet\022\016\n\006paired\030\001" +
       " \001(\010\022\\\n\rpairedWallets\030\002 \003(\0132E.authentica" +
       "tor.protobuf.ConfigAuthenticatorWallet.P" +
-      "airedAuthenticator\032\324\002\n\023PairedAuthenticat" +
-      "or\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_public_key" +
-      "\030\002 \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022" +
-      "\021\n\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 \002(\010\022\016\n\006k" +
-      "eys_n\030\007 \002(\005\022g\n\rgeneratedKeys\030\010 \003(\0132P.aut" +
-      "henticator.protobuf.ConfigAuthenticatorW",
-      "allet.PairedAuthenticator.KeysObject\022\023\n\013" +
-      "pairingName\030\t \002(\t\032>\n\nKeysObject\022\020\n\010priv_" +
-      "key\030\001 \002(\t\022\017\n\007address\030\002 \002(\t\022\r\n\005index\030\003 \002(" +
-      "\005\"<\n\026ConfigReceiveAddresses\022\021\n\twalletKey" +
-      "\030\001 \003(\t\022\017\n\007authKey\030\002 \003(\t\"$\n\021ConfigAddress" +
-      "Book\022\017\n\007address\030\001 \001(\t\"!\n\016ConfigSettings\022" +
-      "\017\n\007onename\030\001 \001(\tB\rB\013ProtoConfig"
+      "airedAuthenticator\022Y\n\017pendingRequests\030\n " +
+      "\003(\0132@.authenticator.protobuf.ConfigAuthe" +
+      "nticatorWallet.PendingRequest\032\324\002\n\023Paired" +
+      "Authenticator\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master" +
+      "_public_key\030\002 \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n" +
+      "\003GCM\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t\022\017\n\007testnet",
+      "\030\006 \002(\010\022\016\n\006keys_n\030\007 \002(\005\022g\n\rgeneratedKeys\030" +
+      "\010 \003(\0132P.authenticator.protobuf.ConfigAut" +
+      "henticatorWallet.PairedAuthenticator.Key" +
+      "sObject\022\023\n\013pairingName\030\t \002(\t\032>\n\nKeysObje" +
+      "ct\022\020\n\010priv_key\030\001 \002(\t\022\017\n\007address\030\002 \002(\t\022\r\n" +
+      "\005index\030\003 \002(\005\032\224\003\n\016PendingRequest\022\021\n\tpairi" +
+      "ngID\030\001 \002(\t\022\021\n\trequestID\030\002 \002(\t\022>\n\roperati" +
+      "onType\030\003 \002(\0162\'.authenticator.protobuf.AT" +
+      "OperationType\022\r\n\005rawTx\030\004 \001(\t\022\027\n\017payloadI" +
+      "ncoming\030\005 \001(\t\022\'\n\037payloadToSendInCaseOfCo",
+      "nnection\030\006 \001(\t\022[\n\010contract\030\007 \002(\0132I.authe" +
+      "nticator.protobuf.ConfigAuthenticatorWal" +
+      "let.PendingRequest.Contract\032n\n\010Contract\022" +
+      "%\n\035ShouldSendPayloadOnConnection\030\001 \001(\010\022;" +
+      "\n3ShouldReceivePayloadAfterSendingPayloa" +
+      "dOnConnection\030\002 \001(\010\"<\n\026ConfigReceiveAddr" +
+      "esses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030\002 \003(" +
+      "\t\"$\n\021ConfigAddressBook\022\017\n\007address\030\001 \001(\t\"" +
+      "!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*_\n\017AT" +
+      "OperationType\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022\n",
+      "\n\006SignTx\020\002\022\'\n#updateIpAddressesForPrevio" +
+      "usMessage\020\003B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -5316,7 +7711,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor,
-              new java.lang.String[] { "Paired", "PairedWallets", });
+              new java.lang.String[] { "Paired", "PairedWallets", "PendingRequests", });
           internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor =
             internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor.getNestedTypes().get(0);
           internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_fieldAccessorTable = new
@@ -5329,6 +7724,18 @@ public final class ProtoConfig {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_descriptor,
               new java.lang.String[] { "PrivKey", "Address", "Index", });
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_descriptor =
+            internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor.getNestedTypes().get(1);
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_descriptor,
+              new java.lang.String[] { "PairingID", "RequestID", "OperationType", "RawTx", "PayloadIncoming", "PayloadToSendInCaseOfConnection", "Contract", });
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_descriptor =
+            internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_descriptor.getNestedTypes().get(0);
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PendingRequest_Contract_descriptor,
+              new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", });
           internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_authenticator_protobuf_ConfigReceiveAddresses_fieldAccessorTable = new
