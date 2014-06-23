@@ -86,11 +86,9 @@ public class ConfigFile {
 		ConfigReceiveAddresses keys = ConfigReceiveAddresses.parseFrom(new FileInputStream(filePath));
 		ArrayList<ECKey> keypool = new ArrayList<ECKey>();
 		for (String hexkey : keys.getWalletKeyList()){
-			System.out.println("keypool key: " + hexkey);
 			ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(hexkey));
 			String addr = key.toAddress(Main.params).toString();
 			if (!addr.equals(address)){
-				System.out.println("added: " + addr);
 				keypool.add(key);
 			}
 		}
@@ -101,7 +99,6 @@ public class ConfigFile {
 		}
 		FileOutputStream output = new FileOutputStream(filePath);  
 		ra.build().writeTo(output);         
-		System.out.println("count" + ra.getWalletKeyCount());
 		output.close();
 	}
 	
@@ -111,7 +108,6 @@ public class ConfigFile {
 		for (String pubkey : keys.getWalletKeyList()){
 			ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(pubkey));
 			keypool.add(key);
-			System.out.println(key.toAddress(Main.params));
 		}
 		return keypool;
 	}
