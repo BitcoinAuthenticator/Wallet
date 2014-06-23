@@ -166,6 +166,8 @@ public class Controller {
             }
         });
         
+        // Peer icon
+        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));
     }
     
     public void onBitcoinSetup() {
@@ -235,14 +237,6 @@ public class Controller {
     	
     	@Override
         public void onPeerConnected(Peer peer, int peerCount) {
-    		if(peerCount == 0)
-    		{
-    			btnConnection0.setVisible(true);
-    			Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));
-    			btnConnection2.setVisible(false);
-    			btnConnection3.setVisible(false);
-    			btnConnection1.setVisible(false);
-    		}
     		if (peerCount>0 & peerCount<6){
     			btnConnection1.setVisible(true);
     			if (peerCount==1) {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peer"));}
