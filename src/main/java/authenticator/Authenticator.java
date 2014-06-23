@@ -2,6 +2,7 @@ package authenticator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -27,13 +28,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.Service;
 
 import authenticator.Utils.SafeList;
-import authenticator.db.KeyObject;
-import authenticator.db.PairingObject;
 import authenticator.db.PendingRequestsFile;
 import authenticator.network.PendingRequest;
 import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
 import authenticator.ui_helpers.PopUpNotification;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
 
@@ -159,16 +159,19 @@ public class Authenticator extends AbstractService{
 	private void verifyWalletIsWatchingAuthenticatorAddresses()
 	{
 		@SuppressWarnings("static-access")
-		ArrayList<PairingObject> all = this.getWalletOperation().getAllPairingObjectArray();
+		List<PairedAuthenticator> all = null;
+		try {
+			all = this.getWalletOperation().getAllPairingObjectArray();
+		} catch (IOException e1) { e1.printStackTrace(); }
 		if(all != null)
-		for(PairingObject po: all)
-		for(KeyObject ko: po.keys.keys)
+		for(PairedAuthenticator po: all)
+		for(PairedAuthenticator.KeysObject ko: po.getGeneratedKeysList())
 		{
 			try {
 				@SuppressWarnings("static-access")
-				boolean isWatched = this.getWalletOperation().isWatchingAddress(ko.address);
+				boolean isWatched = this.getWalletOperation().isWatchingAddress(ko.getAddress());
 				if(!isWatched)
-					getWalletOperation().addP2ShAddressToWatch(ko.address);
+					getWalletOperation().addP2ShAddressToWatch(ko.getAddress());
 			} catch (AddressFormatException e) {
 				e.printStackTrace();
 			}

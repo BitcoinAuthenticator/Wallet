@@ -13,7 +13,7 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
 import authenticator.Utils.BAUtils;
-import authenticator.db.WalletFile;
+import authenticator.db.ConfigFile;
 import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;
 
@@ -112,8 +112,8 @@ public class PairingProtocol {
 		  			 "gcmRegId: " +  GCM + "\n" + 
 		  			 "pairing ID: " + pairingID);
 		  //Save to file
-		  WalletFile file = new WalletFile();
-		  file.writePairingData(mPubKey, chaincode, key, GCM, pairingID, args[0]);
+		  ConfigFile configFile = new ConfigFile();
+		  configFile.writePairingData(mPubKey, chaincode, key, GCM, pairingID, args[0]);
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");

@@ -1,28 +1,31 @@
 package authenticator.ui_helpers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.scene.control.ComboBox;
 import authenticator.Authenticator;
-import authenticator.db.PairingObject;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
 
 public class ComboBoxHelper {
 
-	public static ArrayList<PairingObject> getUpdatedPairingObjectArray(){
-		return Authenticator.getWalletOperation().getAllPairingObjectArray();
-	}
 	
+	@SuppressWarnings("unchecked")
 	public static Map<String,String> populateComboWithPairingNames(ComboBox cmb)
 	{
-		ArrayList<PairingObject> arr = getUpdatedPairingObjectArray();
+		List<PairedAuthenticator> arr = new ArrayList<PairedAuthenticator>();
+		try {
+			arr = Authenticator.getWalletOperation().getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
 		Map<String,String> pairNameToId = new HashMap<String,String>();
 		cmb.getItems().clear();
-		for(PairingObject po:arr)
+		for(PairedAuthenticator po:arr)
 		{
-			if(!pairNameToId.containsKey(po.pairingName))
-				pairNameToId.put(po.pairingName, po.pairingID);
+			if(!pairNameToId.containsKey(po.getPairingName()))
+				pairNameToId.put(po.getPairingName(), po.getPairingID());
 		}
 		cmb.getItems().addAll(pairNameToId.keySet());
 		return pairNameToId;

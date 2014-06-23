@@ -60,11 +60,10 @@ import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.GCM.dispacher.MessageType;
 import authenticator.Utils.BAUtils;
-import authenticator.db.KeyObject;
-import authenticator.db.PairingObject;
 import authenticator.network.PendingRequest;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
 
 public class OperationsFactory extends BASE{
 	
@@ -201,7 +200,7 @@ public class OperationsFactory extends BASE{
 							}
 							if(!isRefused){
 								// Complete Signing and broadcast
-								PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+								PairedAuthenticator po = Authenticator.getWalletOperation().getPairingObject(pairingID);
 								complete(AuthSigs,po);
 								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
 								SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
@@ -234,18 +233,18 @@ public class OperationsFactory extends BASE{
 					//###########
 					byte[] prepareTX(String pairingID) throws Exception {
 						//Create the payload
-						PairingObject pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
+						PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
 						String formatedTx = BAUtils.getStringTransaction(tx);
 						System.out.println("Raw unSigned Tx - " + formatedTx);
 						//Get pub keys and indexes
 						ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>();
 						ArrayList<Integer> indexArr = new ArrayList<Integer>();
 						for(TransactionInput in:tx.getInputs())
-							for (KeyObject ko: pairingObj.keys.keys){
+							for (PairedAuthenticator .KeysObject ko: pairingObj.getGeneratedKeysList()){
 								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-								if(inAddress.equals(ko.address)){
-									indexArr.add(ko.index);
-									BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.priv_key));
+								if(inAddress.equals(ko.getAddress())){
+									indexArr.add(ko.getIndex());
+									BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
 									byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
 									pubKeysArr.add(pubkey);
 									break;
@@ -289,11 +288,11 @@ public class OperationsFactory extends BASE{
 						disp = new Dispacher(null,null);
 						//Send the encrypted payload over to the Authenticator and wait for the response.
 						SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");						
-						PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
-						byte[] gcmID = po.GCM.getBytes();
+						PairedAuthenticator  po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+						byte[] gcmID = po.getGCM().getBytes();
 						assert(gcmID != null);
-						Device d = new Device(po.chain_code.getBytes(),
-								po.master_public_key.getBytes(),
+						Device d = new Device(po.getChainCode().getBytes(),
+								po.getMasterPublicKey().getBytes(),
 								gcmID,
 								pairingID.getBytes(),
 								secretkey);
@@ -303,30 +302,30 @@ public class OperationsFactory extends BASE{
 					 }
 					 
 					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
-					void complete(ArrayList<byte[]> AuthSigs, PairingObject po) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
+					void complete(ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
 					 {
 							//Prep the keys needed for signing
-							byte[] key = BAUtils.hexStringToByteArray(po.master_public_key);
-							byte[] chain = BAUtils.hexStringToByteArray(po.chain_code);
+							byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
+							byte[] chain = BAUtils.hexStringToByteArray(po.getChainCode());
 							List<TransactionInput> inputs = tx.getInputs();
 							
 							//Loop to create a signature for each input
 							int i =0;
 							Authenticator.getWalletOperation().connectInputs(tx.getInputs());
 							for(TransactionInput in: tx.getInputs()){
-								for (KeyObject ko:po.keys.keys){
+								for (PairedAuthenticator.KeysObject ko:po.getGeneratedKeysList()){
 									String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-									if(inAddress.equals(ko.address))
+									if(inAddress.equals(ko.getAddress()))
 									{
 										//Authenticator Key
 										HDKeyDerivation HDKey = null;
 										DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
-										DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, ko.index);
+										DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, ko.getIndex());
 										byte[] childpublickey = childKey.getPubKey();
 										ECKey authKey = new ECKey(null, childpublickey);
 										
 										//Wallet key
-										BigInteger privatekey = new BigInteger(1, BAUtils.hexStringToByteArray(ko.priv_key));
+										BigInteger privatekey = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
 										byte[] walletPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
 										ECKey walletKey = new ECKey(privatekey, walletPublicKey, true);
 										
@@ -364,13 +363,13 @@ public class OperationsFactory extends BASE{
 
 						@Override
 						public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
-							PairingObject po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+							PairedAuthenticator po = Authenticator.getWalletOperation().getPairingObject(pairingID);
 							Dispacher disp;
 							disp = new Dispacher(null,null);
-							byte[] gcmID = po.GCM.getBytes();
+							byte[] gcmID = po.getGCM().getBytes();
 							assert(gcmID != null);
-							Device d = new Device(po.chain_code.getBytes(),
-									po.master_public_key.getBytes(),
+							Device d = new Device(po.getChainCode().getBytes(),
+									po.getMasterPublicKey().getBytes(),
 									gcmID,
 									pairingID.getBytes(),
 									null);

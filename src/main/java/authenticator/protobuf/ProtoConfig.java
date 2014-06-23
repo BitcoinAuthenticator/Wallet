@@ -29,86 +29,30 @@ public final class ProtoConfig {
      */
     boolean getPaired();
 
-    // optional string mpubkey = 2;
+    // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;
     /**
-     * <code>optional string mpubkey = 2;</code>
-     *
-     * <pre>
-     *Master public key from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    boolean hasMpubkey();
+    java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator> 
+        getPairedWalletsList();
     /**
-     * <code>optional string mpubkey = 2;</code>
-     *
-     * <pre>
-     *Master public key from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    java.lang.String getMpubkey();
+    authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator getPairedWallets(int index);
     /**
-     * <code>optional string mpubkey = 2;</code>
-     *
-     * <pre>
-     *Master public key from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    com.google.protobuf.ByteString
-        getMpubkeyBytes();
-
-    // optional string chaincode = 3;
+    int getPairedWalletsCount();
     /**
-     * <code>optional string chaincode = 3;</code>
-     *
-     * <pre>
-     *Chaincode from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    boolean hasChaincode();
+    java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder> 
+        getPairedWalletsOrBuilderList();
     /**
-     * <code>optional string chaincode = 3;</code>
-     *
-     * <pre>
-     *Chaincode from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    java.lang.String getChaincode();
-    /**
-     * <code>optional string chaincode = 3;</code>
-     *
-     * <pre>
-     *Chaincode from Authenticator.
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getChaincodeBytes();
-
-    // optional string GMCregID = 4;
-    /**
-     * <code>optional string GMCregID = 4;</code>
-     *
-     * <pre>
-     *GCM ID from Authenticator.
-     * </pre>
-     */
-    boolean hasGMCregID();
-    /**
-     * <code>optional string GMCregID = 4;</code>
-     *
-     * <pre>
-     *GCM ID from Authenticator.
-     * </pre>
-     */
-    java.lang.String getGMCregID();
-    /**
-     * <code>optional string GMCregID = 4;</code>
-     *
-     * <pre>
-     *GCM ID from Authenticator.
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getGMCregIDBytes();
+    authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet}
@@ -167,18 +111,11 @@ public final class ProtoConfig {
               break;
             }
             case 18: {
-              bitField0_ |= 0x00000002;
-              mpubkey_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              chaincode_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              gMCregID_ = input.readBytes();
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                pairedWallets_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              pairedWallets_.add(input.readMessage(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.PARSER, extensionRegistry));
               break;
             }
           }
@@ -189,6 +126,9 @@ public final class ProtoConfig {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          pairedWallets_ = java.util.Collections.unmodifiableList(pairedWallets_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -220,6 +160,2589 @@ public final class ProtoConfig {
       return PARSER;
     }
 
+    public interface PairedAuthenticatorOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // required string aes_key = 1;
+      /**
+       * <code>required string aes_key = 1;</code>
+       */
+      boolean hasAesKey();
+      /**
+       * <code>required string aes_key = 1;</code>
+       */
+      java.lang.String getAesKey();
+      /**
+       * <code>required string aes_key = 1;</code>
+       */
+      com.google.protobuf.ByteString
+          getAesKeyBytes();
+
+      // required string master_public_key = 2;
+      /**
+       * <code>required string master_public_key = 2;</code>
+       */
+      boolean hasMasterPublicKey();
+      /**
+       * <code>required string master_public_key = 2;</code>
+       */
+      java.lang.String getMasterPublicKey();
+      /**
+       * <code>required string master_public_key = 2;</code>
+       */
+      com.google.protobuf.ByteString
+          getMasterPublicKeyBytes();
+
+      // required string chain_code = 3;
+      /**
+       * <code>required string chain_code = 3;</code>
+       */
+      boolean hasChainCode();
+      /**
+       * <code>required string chain_code = 3;</code>
+       */
+      java.lang.String getChainCode();
+      /**
+       * <code>required string chain_code = 3;</code>
+       */
+      com.google.protobuf.ByteString
+          getChainCodeBytes();
+
+      // required string GCM = 4;
+      /**
+       * <code>required string GCM = 4;</code>
+       */
+      boolean hasGCM();
+      /**
+       * <code>required string GCM = 4;</code>
+       */
+      java.lang.String getGCM();
+      /**
+       * <code>required string GCM = 4;</code>
+       */
+      com.google.protobuf.ByteString
+          getGCMBytes();
+
+      // required string pairingID = 5;
+      /**
+       * <code>required string pairingID = 5;</code>
+       */
+      boolean hasPairingID();
+      /**
+       * <code>required string pairingID = 5;</code>
+       */
+      java.lang.String getPairingID();
+      /**
+       * <code>required string pairingID = 5;</code>
+       */
+      com.google.protobuf.ByteString
+          getPairingIDBytes();
+
+      // required bool testnet = 6;
+      /**
+       * <code>required bool testnet = 6;</code>
+       */
+      boolean hasTestnet();
+      /**
+       * <code>required bool testnet = 6;</code>
+       */
+      boolean getTestnet();
+
+      // required int32 keys_n = 7;
+      /**
+       * <code>required int32 keys_n = 7;</code>
+       */
+      boolean hasKeysN();
+      /**
+       * <code>required int32 keys_n = 7;</code>
+       */
+      int getKeysN();
+
+      // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject> 
+          getGeneratedKeysList();
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject getGeneratedKeys(int index);
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      int getGeneratedKeysCount();
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder> 
+          getGeneratedKeysOrBuilderList();
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder getGeneratedKeysOrBuilder(
+          int index);
+
+      // required string pairingName = 9;
+      /**
+       * <code>required string pairingName = 9;</code>
+       */
+      boolean hasPairingName();
+      /**
+       * <code>required string pairingName = 9;</code>
+       */
+      java.lang.String getPairingName();
+      /**
+       * <code>required string pairingName = 9;</code>
+       */
+      com.google.protobuf.ByteString
+          getPairingNameBytes();
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator}
+     */
+    public static final class PairedAuthenticator extends
+        com.google.protobuf.GeneratedMessage
+        implements PairedAuthenticatorOrBuilder {
+      // Use PairedAuthenticator.newBuilder() to construct.
+      private PairedAuthenticator(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private PairedAuthenticator(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final PairedAuthenticator defaultInstance;
+      public static PairedAuthenticator getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public PairedAuthenticator getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private PairedAuthenticator(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                aesKey_ = input.readBytes();
+                break;
+              }
+              case 18: {
+                bitField0_ |= 0x00000002;
+                masterPublicKey_ = input.readBytes();
+                break;
+              }
+              case 26: {
+                bitField0_ |= 0x00000004;
+                chainCode_ = input.readBytes();
+                break;
+              }
+              case 34: {
+                bitField0_ |= 0x00000008;
+                gCM_ = input.readBytes();
+                break;
+              }
+              case 42: {
+                bitField0_ |= 0x00000010;
+                pairingID_ = input.readBytes();
+                break;
+              }
+              case 48: {
+                bitField0_ |= 0x00000020;
+                testnet_ = input.readBool();
+                break;
+              }
+              case 56: {
+                bitField0_ |= 0x00000040;
+                keysN_ = input.readInt32();
+                break;
+              }
+              case 66: {
+                if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+                  generatedKeys_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject>();
+                  mutable_bitField0_ |= 0x00000080;
+                }
+                generatedKeys_.add(input.readMessage(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.PARSER, extensionRegistry));
+                break;
+              }
+              case 74: {
+                bitField0_ |= 0x00000080;
+                pairingName_ = input.readBytes();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+            generatedKeys_ = java.util.Collections.unmodifiableList(generatedKeys_);
+          }
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<PairedAuthenticator> PARSER =
+          new com.google.protobuf.AbstractParser<PairedAuthenticator>() {
+        public PairedAuthenticator parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new PairedAuthenticator(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<PairedAuthenticator> getParserForType() {
+        return PARSER;
+      }
+
+      public interface KeysObjectOrBuilder
+          extends com.google.protobuf.MessageOrBuilder {
+
+        // required string priv_key = 1;
+        /**
+         * <code>required string priv_key = 1;</code>
+         */
+        boolean hasPrivKey();
+        /**
+         * <code>required string priv_key = 1;</code>
+         */
+        java.lang.String getPrivKey();
+        /**
+         * <code>required string priv_key = 1;</code>
+         */
+        com.google.protobuf.ByteString
+            getPrivKeyBytes();
+
+        // required string address = 2;
+        /**
+         * <code>required string address = 2;</code>
+         */
+        boolean hasAddress();
+        /**
+         * <code>required string address = 2;</code>
+         */
+        java.lang.String getAddress();
+        /**
+         * <code>required string address = 2;</code>
+         */
+        com.google.protobuf.ByteString
+            getAddressBytes();
+
+        // required int32 index = 3;
+        /**
+         * <code>required int32 index = 3;</code>
+         */
+        boolean hasIndex();
+        /**
+         * <code>required int32 index = 3;</code>
+         */
+        int getIndex();
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject}
+       */
+      public static final class KeysObject extends
+          com.google.protobuf.GeneratedMessage
+          implements KeysObjectOrBuilder {
+        // Use KeysObject.newBuilder() to construct.
+        private KeysObject(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+          super(builder);
+          this.unknownFields = builder.getUnknownFields();
+        }
+        private KeysObject(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+        private static final KeysObject defaultInstance;
+        public static KeysObject getDefaultInstance() {
+          return defaultInstance;
+        }
+
+        public KeysObject getDefaultInstanceForType() {
+          return defaultInstance;
+        }
+
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet
+            getUnknownFields() {
+          return this.unknownFields;
+        }
+        private KeysObject(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          initFields();
+          int mutable_bitField0_ = 0;
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+              com.google.protobuf.UnknownFieldSet.newBuilder();
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!parseUnknownField(input, unknownFields,
+                                         extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+                case 10: {
+                  bitField0_ |= 0x00000001;
+                  privKey_ = input.readBytes();
+                  break;
+                }
+                case 18: {
+                  bitField0_ |= 0x00000002;
+                  address_ = input.readBytes();
+                  break;
+                }
+                case 24: {
+                  bitField0_ |= 0x00000004;
+                  index_ = input.readInt32();
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(this);
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this);
+          } finally {
+            this.unknownFields = unknownFields.build();
+            makeExtensionsImmutable();
+          }
+        }
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder.class);
+        }
+
+        public static com.google.protobuf.Parser<KeysObject> PARSER =
+            new com.google.protobuf.AbstractParser<KeysObject>() {
+          public KeysObject parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new KeysObject(input, extensionRegistry);
+          }
+        };
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<KeysObject> getParserForType() {
+          return PARSER;
+        }
+
+        private int bitField0_;
+        // required string priv_key = 1;
+        public static final int PRIV_KEY_FIELD_NUMBER = 1;
+        private java.lang.Object privKey_;
+        /**
+         * <code>required string priv_key = 1;</code>
+         */
+        public boolean hasPrivKey() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>required string priv_key = 1;</code>
+         */
+        public java.lang.String getPrivKey() {
+          java.lang.Object ref = privKey_;
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              privKey_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>required string priv_key = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPrivKeyBytes() {
+          java.lang.Object ref = privKey_;
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            privKey_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        // required string address = 2;
+        public static final int ADDRESS_FIELD_NUMBER = 2;
+        private java.lang.Object address_;
+        /**
+         * <code>required string address = 2;</code>
+         */
+        public boolean hasAddress() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>required string address = 2;</code>
+         */
+        public java.lang.String getAddress() {
+          java.lang.Object ref = address_;
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              address_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>required string address = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getAddressBytes() {
+          java.lang.Object ref = address_;
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            address_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        // required int32 index = 3;
+        public static final int INDEX_FIELD_NUMBER = 3;
+        private int index_;
+        /**
+         * <code>required int32 index = 3;</code>
+         */
+        public boolean hasIndex() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>required int32 index = 3;</code>
+         */
+        public int getIndex() {
+          return index_;
+        }
+
+        private void initFields() {
+          privKey_ = "";
+          address_ = "";
+          index_ = 0;
+        }
+        private byte memoizedIsInitialized = -1;
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized != -1) return isInitialized == 1;
+
+          if (!hasPrivKey()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+          if (!hasAddress()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+          if (!hasIndex()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          getSerializedSize();
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            output.writeBytes(1, getPrivKeyBytes());
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            output.writeBytes(2, getAddressBytes());
+          }
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            output.writeInt32(3, index_);
+          }
+          getUnknownFields().writeTo(output);
+        }
+
+        private int memoizedSerializedSize = -1;
+        public int getSerializedSize() {
+          int size = memoizedSerializedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(1, getPrivKeyBytes());
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(2, getAddressBytes());
+          }
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeInt32Size(3, index_);
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSerializedSize = size;
+          return size;
+        }
+
+        private static final long serialVersionUID = 0L;
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
+          return super.writeReplace();
+        }
+
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+
+        public static Builder newBuilder() { return Builder.create(); }
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject prototype) {
+          return newBuilder().mergeFrom(prototype);
+        }
+        public Builder toBuilder() { return newBuilder(this); }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessage.Builder<Builder>
+           implements authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_descriptor;
+          }
+
+          protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder.class);
+          }
+
+          // Construct using authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.newBuilder()
+          private Builder() {
+            maybeForceBuilderInitialization();
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            super(parent);
+            maybeForceBuilderInitialization();
+          }
+          private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            }
+          }
+          private static Builder create() {
+            return new Builder();
+          }
+
+          public Builder clear() {
+            super.clear();
+            privKey_ = "";
+            bitField0_ = (bitField0_ & ~0x00000001);
+            address_ = "";
+            bitField0_ = (bitField0_ & ~0x00000002);
+            index_ = 0;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            return this;
+          }
+
+          public Builder clone() {
+            return create().mergeFrom(buildPartial());
+          }
+
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_descriptor;
+          }
+
+          public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject getDefaultInstanceForType() {
+            return authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.getDefaultInstance();
+          }
+
+          public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject build() {
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject buildPartial() {
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject result = new authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject(this);
+            int from_bitField0_ = bitField0_;
+            int to_bitField0_ = 0;
+            if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+              to_bitField0_ |= 0x00000001;
+            }
+            result.privKey_ = privKey_;
+            if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+              to_bitField0_ |= 0x00000002;
+            }
+            result.address_ = address_;
+            if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+              to_bitField0_ |= 0x00000004;
+            }
+            result.index_ = index_;
+            result.bitField0_ = to_bitField0_;
+            onBuilt();
+            return result;
+          }
+
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject) {
+              return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject other) {
+            if (other == authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.getDefaultInstance()) return this;
+            if (other.hasPrivKey()) {
+              bitField0_ |= 0x00000001;
+              privKey_ = other.privKey_;
+              onChanged();
+            }
+            if (other.hasAddress()) {
+              bitField0_ |= 0x00000002;
+              address_ = other.address_;
+              onChanged();
+            }
+            if (other.hasIndex()) {
+              setIndex(other.getIndex());
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            return this;
+          }
+
+          public final boolean isInitialized() {
+            if (!hasPrivKey()) {
+              
+              return false;
+            }
+            if (!hasAddress()) {
+              
+              return false;
+            }
+            if (!hasIndex()) {
+              
+              return false;
+            }
+            return true;
+          }
+
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject parsedMessage = null;
+            try {
+              parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject) e.getUnfinishedMessage();
+              throw e;
+            } finally {
+              if (parsedMessage != null) {
+                mergeFrom(parsedMessage);
+              }
+            }
+            return this;
+          }
+          private int bitField0_;
+
+          // required string priv_key = 1;
+          private java.lang.Object privKey_ = "";
+          /**
+           * <code>required string priv_key = 1;</code>
+           */
+          public boolean hasPrivKey() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+          /**
+           * <code>required string priv_key = 1;</code>
+           */
+          public java.lang.String getPrivKey() {
+            java.lang.Object ref = privKey_;
+            if (!(ref instanceof java.lang.String)) {
+              java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                  .toStringUtf8();
+              privKey_ = s;
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>required string priv_key = 1;</code>
+           */
+          public com.google.protobuf.ByteString
+              getPrivKeyBytes() {
+            java.lang.Object ref = privKey_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              privKey_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>required string priv_key = 1;</code>
+           */
+          public Builder setPrivKey(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+            privKey_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>required string priv_key = 1;</code>
+           */
+          public Builder clearPrivKey() {
+            bitField0_ = (bitField0_ & ~0x00000001);
+            privKey_ = getDefaultInstance().getPrivKey();
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>required string priv_key = 1;</code>
+           */
+          public Builder setPrivKeyBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+            privKey_ = value;
+            onChanged();
+            return this;
+          }
+
+          // required string address = 2;
+          private java.lang.Object address_ = "";
+          /**
+           * <code>required string address = 2;</code>
+           */
+          public boolean hasAddress() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+          }
+          /**
+           * <code>required string address = 2;</code>
+           */
+          public java.lang.String getAddress() {
+            java.lang.Object ref = address_;
+            if (!(ref instanceof java.lang.String)) {
+              java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                  .toStringUtf8();
+              address_ = s;
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>required string address = 2;</code>
+           */
+          public com.google.protobuf.ByteString
+              getAddressBytes() {
+            java.lang.Object ref = address_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              address_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>required string address = 2;</code>
+           */
+          public Builder setAddress(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+            address_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>required string address = 2;</code>
+           */
+          public Builder clearAddress() {
+            bitField0_ = (bitField0_ & ~0x00000002);
+            address_ = getDefaultInstance().getAddress();
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>required string address = 2;</code>
+           */
+          public Builder setAddressBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+            address_ = value;
+            onChanged();
+            return this;
+          }
+
+          // required int32 index = 3;
+          private int index_ ;
+          /**
+           * <code>required int32 index = 3;</code>
+           */
+          public boolean hasIndex() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
+          }
+          /**
+           * <code>required int32 index = 3;</code>
+           */
+          public int getIndex() {
+            return index_;
+          }
+          /**
+           * <code>required int32 index = 3;</code>
+           */
+          public Builder setIndex(int value) {
+            bitField0_ |= 0x00000004;
+            index_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>required int32 index = 3;</code>
+           */
+          public Builder clearIndex() {
+            bitField0_ = (bitField0_ & ~0x00000004);
+            index_ = 0;
+            onChanged();
+            return this;
+          }
+
+          // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject)
+        }
+
+        static {
+          defaultInstance = new KeysObject(true);
+          defaultInstance.initFields();
+        }
+
+        // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject)
+      }
+
+      private int bitField0_;
+      // required string aes_key = 1;
+      public static final int AES_KEY_FIELD_NUMBER = 1;
+      private java.lang.Object aesKey_;
+      /**
+       * <code>required string aes_key = 1;</code>
+       */
+      public boolean hasAesKey() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string aes_key = 1;</code>
+       */
+      public java.lang.String getAesKey() {
+        java.lang.Object ref = aesKey_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            aesKey_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string aes_key = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getAesKeyBytes() {
+        java.lang.Object ref = aesKey_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          aesKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required string master_public_key = 2;
+      public static final int MASTER_PUBLIC_KEY_FIELD_NUMBER = 2;
+      private java.lang.Object masterPublicKey_;
+      /**
+       * <code>required string master_public_key = 2;</code>
+       */
+      public boolean hasMasterPublicKey() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string master_public_key = 2;</code>
+       */
+      public java.lang.String getMasterPublicKey() {
+        java.lang.Object ref = masterPublicKey_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            masterPublicKey_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string master_public_key = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMasterPublicKeyBytes() {
+        java.lang.Object ref = masterPublicKey_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          masterPublicKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required string chain_code = 3;
+      public static final int CHAIN_CODE_FIELD_NUMBER = 3;
+      private java.lang.Object chainCode_;
+      /**
+       * <code>required string chain_code = 3;</code>
+       */
+      public boolean hasChainCode() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string chain_code = 3;</code>
+       */
+      public java.lang.String getChainCode() {
+        java.lang.Object ref = chainCode_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            chainCode_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string chain_code = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getChainCodeBytes() {
+        java.lang.Object ref = chainCode_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chainCode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required string GCM = 4;
+      public static final int GCM_FIELD_NUMBER = 4;
+      private java.lang.Object gCM_;
+      /**
+       * <code>required string GCM = 4;</code>
+       */
+      public boolean hasGCM() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required string GCM = 4;</code>
+       */
+      public java.lang.String getGCM() {
+        java.lang.Object ref = gCM_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            gCM_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string GCM = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getGCMBytes() {
+        java.lang.Object ref = gCM_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          gCM_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required string pairingID = 5;
+      public static final int PAIRINGID_FIELD_NUMBER = 5;
+      private java.lang.Object pairingID_;
+      /**
+       * <code>required string pairingID = 5;</code>
+       */
+      public boolean hasPairingID() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required string pairingID = 5;</code>
+       */
+      public java.lang.String getPairingID() {
+        java.lang.Object ref = pairingID_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            pairingID_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string pairingID = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPairingIDBytes() {
+        java.lang.Object ref = pairingID_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          pairingID_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // required bool testnet = 6;
+      public static final int TESTNET_FIELD_NUMBER = 6;
+      private boolean testnet_;
+      /**
+       * <code>required bool testnet = 6;</code>
+       */
+      public boolean hasTestnet() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required bool testnet = 6;</code>
+       */
+      public boolean getTestnet() {
+        return testnet_;
+      }
+
+      // required int32 keys_n = 7;
+      public static final int KEYS_N_FIELD_NUMBER = 7;
+      private int keysN_;
+      /**
+       * <code>required int32 keys_n = 7;</code>
+       */
+      public boolean hasKeysN() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>required int32 keys_n = 7;</code>
+       */
+      public int getKeysN() {
+        return keysN_;
+      }
+
+      // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;
+      public static final int GENERATEDKEYS_FIELD_NUMBER = 8;
+      private java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject> generatedKeys_;
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject> getGeneratedKeysList() {
+        return generatedKeys_;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      public java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder> 
+          getGeneratedKeysOrBuilderList() {
+        return generatedKeys_;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      public int getGeneratedKeysCount() {
+        return generatedKeys_.size();
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject getGeneratedKeys(int index) {
+        return generatedKeys_.get(index);
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder getGeneratedKeysOrBuilder(
+          int index) {
+        return generatedKeys_.get(index);
+      }
+
+      // required string pairingName = 9;
+      public static final int PAIRINGNAME_FIELD_NUMBER = 9;
+      private java.lang.Object pairingName_;
+      /**
+       * <code>required string pairingName = 9;</code>
+       */
+      public boolean hasPairingName() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>required string pairingName = 9;</code>
+       */
+      public java.lang.String getPairingName() {
+        java.lang.Object ref = pairingName_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            pairingName_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string pairingName = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPairingNameBytes() {
+        java.lang.Object ref = pairingName_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          pairingName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      private void initFields() {
+        aesKey_ = "";
+        masterPublicKey_ = "";
+        chainCode_ = "";
+        gCM_ = "";
+        pairingID_ = "";
+        testnet_ = false;
+        keysN_ = 0;
+        generatedKeys_ = java.util.Collections.emptyList();
+        pairingName_ = "";
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        if (!hasAesKey()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasMasterPublicKey()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasChainCode()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasGCM()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasPairingID()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasTestnet()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasKeysN()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasPairingName()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        for (int i = 0; i < getGeneratedKeysCount(); i++) {
+          if (!getGeneratedKeys(i).isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getAesKeyBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, getMasterPublicKeyBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBytes(3, getChainCodeBytes());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeBytes(4, getGCMBytes());
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeBytes(5, getPairingIDBytes());
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          output.writeBool(6, testnet_);
+        }
+        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          output.writeInt32(7, keysN_);
+        }
+        for (int i = 0; i < generatedKeys_.size(); i++) {
+          output.writeMessage(8, generatedKeys_.get(i));
+        }
+        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          output.writeBytes(9, getPairingNameBytes());
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getAesKeyBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, getMasterPublicKeyBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(3, getChainCodeBytes());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(4, getGCMBytes());
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(5, getPairingIDBytes());
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(6, testnet_);
+        }
+        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(7, keysN_);
+        }
+        for (int i = 0; i < generatedKeys_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(8, generatedKeys_.get(i));
+        }
+        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(9, getPairingNameBytes());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getGeneratedKeysFieldBuilder();
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          aesKey_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          masterPublicKey_ = "";
+          bitField0_ = (bitField0_ & ~0x00000002);
+          chainCode_ = "";
+          bitField0_ = (bitField0_ & ~0x00000004);
+          gCM_ = "";
+          bitField0_ = (bitField0_ & ~0x00000008);
+          pairingID_ = "";
+          bitField0_ = (bitField0_ & ~0x00000010);
+          testnet_ = false;
+          bitField0_ = (bitField0_ & ~0x00000020);
+          keysN_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000040);
+          if (generatedKeysBuilder_ == null) {
+            generatedKeys_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000080);
+          } else {
+            generatedKeysBuilder_.clear();
+          }
+          pairingName_ = "";
+          bitField0_ = (bitField0_ & ~0x00000100);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator build() {
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator buildPartial() {
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator result = new authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.aesKey_ = aesKey_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.masterPublicKey_ = masterPublicKey_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.chainCode_ = chainCode_;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.gCM_ = gCM_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.pairingID_ = pairingID_;
+          if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+            to_bitField0_ |= 0x00000020;
+          }
+          result.testnet_ = testnet_;
+          if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+            to_bitField0_ |= 0x00000040;
+          }
+          result.keysN_ = keysN_;
+          if (generatedKeysBuilder_ == null) {
+            if (((bitField0_ & 0x00000080) == 0x00000080)) {
+              generatedKeys_ = java.util.Collections.unmodifiableList(generatedKeys_);
+              bitField0_ = (bitField0_ & ~0x00000080);
+            }
+            result.generatedKeys_ = generatedKeys_;
+          } else {
+            result.generatedKeys_ = generatedKeysBuilder_.build();
+          }
+          if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+            to_bitField0_ |= 0x00000080;
+          }
+          result.pairingName_ = pairingName_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator other) {
+          if (other == authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.getDefaultInstance()) return this;
+          if (other.hasAesKey()) {
+            bitField0_ |= 0x00000001;
+            aesKey_ = other.aesKey_;
+            onChanged();
+          }
+          if (other.hasMasterPublicKey()) {
+            bitField0_ |= 0x00000002;
+            masterPublicKey_ = other.masterPublicKey_;
+            onChanged();
+          }
+          if (other.hasChainCode()) {
+            bitField0_ |= 0x00000004;
+            chainCode_ = other.chainCode_;
+            onChanged();
+          }
+          if (other.hasGCM()) {
+            bitField0_ |= 0x00000008;
+            gCM_ = other.gCM_;
+            onChanged();
+          }
+          if (other.hasPairingID()) {
+            bitField0_ |= 0x00000010;
+            pairingID_ = other.pairingID_;
+            onChanged();
+          }
+          if (other.hasTestnet()) {
+            setTestnet(other.getTestnet());
+          }
+          if (other.hasKeysN()) {
+            setKeysN(other.getKeysN());
+          }
+          if (generatedKeysBuilder_ == null) {
+            if (!other.generatedKeys_.isEmpty()) {
+              if (generatedKeys_.isEmpty()) {
+                generatedKeys_ = other.generatedKeys_;
+                bitField0_ = (bitField0_ & ~0x00000080);
+              } else {
+                ensureGeneratedKeysIsMutable();
+                generatedKeys_.addAll(other.generatedKeys_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.generatedKeys_.isEmpty()) {
+              if (generatedKeysBuilder_.isEmpty()) {
+                generatedKeysBuilder_.dispose();
+                generatedKeysBuilder_ = null;
+                generatedKeys_ = other.generatedKeys_;
+                bitField0_ = (bitField0_ & ~0x00000080);
+                generatedKeysBuilder_ = 
+                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                     getGeneratedKeysFieldBuilder() : null;
+              } else {
+                generatedKeysBuilder_.addAllMessages(other.generatedKeys_);
+              }
+            }
+          }
+          if (other.hasPairingName()) {
+            bitField0_ |= 0x00000100;
+            pairingName_ = other.pairingName_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasAesKey()) {
+            
+            return false;
+          }
+          if (!hasMasterPublicKey()) {
+            
+            return false;
+          }
+          if (!hasChainCode()) {
+            
+            return false;
+          }
+          if (!hasGCM()) {
+            
+            return false;
+          }
+          if (!hasPairingID()) {
+            
+            return false;
+          }
+          if (!hasTestnet()) {
+            
+            return false;
+          }
+          if (!hasKeysN()) {
+            
+            return false;
+          }
+          if (!hasPairingName()) {
+            
+            return false;
+          }
+          for (int i = 0; i < getGeneratedKeysCount(); i++) {
+            if (!getGeneratedKeys(i).isInitialized()) {
+              
+              return false;
+            }
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // required string aes_key = 1;
+        private java.lang.Object aesKey_ = "";
+        /**
+         * <code>required string aes_key = 1;</code>
+         */
+        public boolean hasAesKey() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>required string aes_key = 1;</code>
+         */
+        public java.lang.String getAesKey() {
+          java.lang.Object ref = aesKey_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            aesKey_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string aes_key = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getAesKeyBytes() {
+          java.lang.Object ref = aesKey_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            aesKey_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string aes_key = 1;</code>
+         */
+        public Builder setAesKey(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          aesKey_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string aes_key = 1;</code>
+         */
+        public Builder clearAesKey() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          aesKey_ = getDefaultInstance().getAesKey();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string aes_key = 1;</code>
+         */
+        public Builder setAesKeyBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          aesKey_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required string master_public_key = 2;
+        private java.lang.Object masterPublicKey_ = "";
+        /**
+         * <code>required string master_public_key = 2;</code>
+         */
+        public boolean hasMasterPublicKey() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>required string master_public_key = 2;</code>
+         */
+        public java.lang.String getMasterPublicKey() {
+          java.lang.Object ref = masterPublicKey_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            masterPublicKey_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string master_public_key = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getMasterPublicKeyBytes() {
+          java.lang.Object ref = masterPublicKey_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            masterPublicKey_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string master_public_key = 2;</code>
+         */
+        public Builder setMasterPublicKey(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          masterPublicKey_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string master_public_key = 2;</code>
+         */
+        public Builder clearMasterPublicKey() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          masterPublicKey_ = getDefaultInstance().getMasterPublicKey();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string master_public_key = 2;</code>
+         */
+        public Builder setMasterPublicKeyBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          masterPublicKey_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required string chain_code = 3;
+        private java.lang.Object chainCode_ = "";
+        /**
+         * <code>required string chain_code = 3;</code>
+         */
+        public boolean hasChainCode() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>required string chain_code = 3;</code>
+         */
+        public java.lang.String getChainCode() {
+          java.lang.Object ref = chainCode_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            chainCode_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string chain_code = 3;</code>
+         */
+        public com.google.protobuf.ByteString
+            getChainCodeBytes() {
+          java.lang.Object ref = chainCode_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            chainCode_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string chain_code = 3;</code>
+         */
+        public Builder setChainCode(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          chainCode_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string chain_code = 3;</code>
+         */
+        public Builder clearChainCode() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          chainCode_ = getDefaultInstance().getChainCode();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string chain_code = 3;</code>
+         */
+        public Builder setChainCodeBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          chainCode_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required string GCM = 4;
+        private java.lang.Object gCM_ = "";
+        /**
+         * <code>required string GCM = 4;</code>
+         */
+        public boolean hasGCM() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        /**
+         * <code>required string GCM = 4;</code>
+         */
+        public java.lang.String getGCM() {
+          java.lang.Object ref = gCM_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            gCM_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string GCM = 4;</code>
+         */
+        public com.google.protobuf.ByteString
+            getGCMBytes() {
+          java.lang.Object ref = gCM_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            gCM_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string GCM = 4;</code>
+         */
+        public Builder setGCM(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+          gCM_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string GCM = 4;</code>
+         */
+        public Builder clearGCM() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          gCM_ = getDefaultInstance().getGCM();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string GCM = 4;</code>
+         */
+        public Builder setGCMBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+          gCM_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required string pairingID = 5;
+        private java.lang.Object pairingID_ = "";
+        /**
+         * <code>required string pairingID = 5;</code>
+         */
+        public boolean hasPairingID() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        /**
+         * <code>required string pairingID = 5;</code>
+         */
+        public java.lang.String getPairingID() {
+          java.lang.Object ref = pairingID_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            pairingID_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string pairingID = 5;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPairingIDBytes() {
+          java.lang.Object ref = pairingID_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            pairingID_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string pairingID = 5;</code>
+         */
+        public Builder setPairingID(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          pairingID_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string pairingID = 5;</code>
+         */
+        public Builder clearPairingID() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          pairingID_ = getDefaultInstance().getPairingID();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string pairingID = 5;</code>
+         */
+        public Builder setPairingIDBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          pairingID_ = value;
+          onChanged();
+          return this;
+        }
+
+        // required bool testnet = 6;
+        private boolean testnet_ ;
+        /**
+         * <code>required bool testnet = 6;</code>
+         */
+        public boolean hasTestnet() {
+          return ((bitField0_ & 0x00000020) == 0x00000020);
+        }
+        /**
+         * <code>required bool testnet = 6;</code>
+         */
+        public boolean getTestnet() {
+          return testnet_;
+        }
+        /**
+         * <code>required bool testnet = 6;</code>
+         */
+        public Builder setTestnet(boolean value) {
+          bitField0_ |= 0x00000020;
+          testnet_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required bool testnet = 6;</code>
+         */
+        public Builder clearTestnet() {
+          bitField0_ = (bitField0_ & ~0x00000020);
+          testnet_ = false;
+          onChanged();
+          return this;
+        }
+
+        // required int32 keys_n = 7;
+        private int keysN_ ;
+        /**
+         * <code>required int32 keys_n = 7;</code>
+         */
+        public boolean hasKeysN() {
+          return ((bitField0_ & 0x00000040) == 0x00000040);
+        }
+        /**
+         * <code>required int32 keys_n = 7;</code>
+         */
+        public int getKeysN() {
+          return keysN_;
+        }
+        /**
+         * <code>required int32 keys_n = 7;</code>
+         */
+        public Builder setKeysN(int value) {
+          bitField0_ |= 0x00000040;
+          keysN_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required int32 keys_n = 7;</code>
+         */
+        public Builder clearKeysN() {
+          bitField0_ = (bitField0_ & ~0x00000040);
+          keysN_ = 0;
+          onChanged();
+          return this;
+        }
+
+        // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;
+        private java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject> generatedKeys_ =
+          java.util.Collections.emptyList();
+        private void ensureGeneratedKeysIsMutable() {
+          if (!((bitField0_ & 0x00000080) == 0x00000080)) {
+            generatedKeys_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject>(generatedKeys_);
+            bitField0_ |= 0x00000080;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilder<
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder> generatedKeysBuilder_;
+
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject> getGeneratedKeysList() {
+          if (generatedKeysBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(generatedKeys_);
+          } else {
+            return generatedKeysBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public int getGeneratedKeysCount() {
+          if (generatedKeysBuilder_ == null) {
+            return generatedKeys_.size();
+          } else {
+            return generatedKeysBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject getGeneratedKeys(int index) {
+          if (generatedKeysBuilder_ == null) {
+            return generatedKeys_.get(index);
+          } else {
+            return generatedKeysBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder setGeneratedKeys(
+            int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject value) {
+          if (generatedKeysBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureGeneratedKeysIsMutable();
+            generatedKeys_.set(index, value);
+            onChanged();
+          } else {
+            generatedKeysBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder setGeneratedKeys(
+            int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder builderForValue) {
+          if (generatedKeysBuilder_ == null) {
+            ensureGeneratedKeysIsMutable();
+            generatedKeys_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            generatedKeysBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder addGeneratedKeys(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject value) {
+          if (generatedKeysBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureGeneratedKeysIsMutable();
+            generatedKeys_.add(value);
+            onChanged();
+          } else {
+            generatedKeysBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder addGeneratedKeys(
+            int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject value) {
+          if (generatedKeysBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureGeneratedKeysIsMutable();
+            generatedKeys_.add(index, value);
+            onChanged();
+          } else {
+            generatedKeysBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder addGeneratedKeys(
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder builderForValue) {
+          if (generatedKeysBuilder_ == null) {
+            ensureGeneratedKeysIsMutable();
+            generatedKeys_.add(builderForValue.build());
+            onChanged();
+          } else {
+            generatedKeysBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder addGeneratedKeys(
+            int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder builderForValue) {
+          if (generatedKeysBuilder_ == null) {
+            ensureGeneratedKeysIsMutable();
+            generatedKeys_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            generatedKeysBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder addAllGeneratedKeys(
+            java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject> values) {
+          if (generatedKeysBuilder_ == null) {
+            ensureGeneratedKeysIsMutable();
+            super.addAll(values, generatedKeys_);
+            onChanged();
+          } else {
+            generatedKeysBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder clearGeneratedKeys() {
+          if (generatedKeysBuilder_ == null) {
+            generatedKeys_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000080);
+            onChanged();
+          } else {
+            generatedKeysBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public Builder removeGeneratedKeys(int index) {
+          if (generatedKeysBuilder_ == null) {
+            ensureGeneratedKeysIsMutable();
+            generatedKeys_.remove(index);
+            onChanged();
+          } else {
+            generatedKeysBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder getGeneratedKeysBuilder(
+            int index) {
+          return getGeneratedKeysFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder getGeneratedKeysOrBuilder(
+            int index) {
+          if (generatedKeysBuilder_ == null) {
+            return generatedKeys_.get(index);  } else {
+            return generatedKeysBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder> 
+             getGeneratedKeysOrBuilderList() {
+          if (generatedKeysBuilder_ != null) {
+            return generatedKeysBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(generatedKeys_);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder addGeneratedKeysBuilder() {
+          return getGeneratedKeysFieldBuilder().addBuilder(
+              authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder addGeneratedKeysBuilder(
+            int index) {
+          return getGeneratedKeysFieldBuilder().addBuilder(
+              index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject generatedKeys = 8;</code>
+         */
+        public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder> 
+             getGeneratedKeysBuilderList() {
+          return getGeneratedKeysFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilder<
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder> 
+            getGeneratedKeysFieldBuilder() {
+          if (generatedKeysBuilder_ == null) {
+            generatedKeysBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObject.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.KeysObjectOrBuilder>(
+                    generatedKeys_,
+                    ((bitField0_ & 0x00000080) == 0x00000080),
+                    getParentForChildren(),
+                    isClean());
+            generatedKeys_ = null;
+          }
+          return generatedKeysBuilder_;
+        }
+
+        // required string pairingName = 9;
+        private java.lang.Object pairingName_ = "";
+        /**
+         * <code>required string pairingName = 9;</code>
+         */
+        public boolean hasPairingName() {
+          return ((bitField0_ & 0x00000100) == 0x00000100);
+        }
+        /**
+         * <code>required string pairingName = 9;</code>
+         */
+        public java.lang.String getPairingName() {
+          java.lang.Object ref = pairingName_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            pairingName_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string pairingName = 9;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPairingNameBytes() {
+          java.lang.Object ref = pairingName_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            pairingName_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string pairingName = 9;</code>
+         */
+        public Builder setPairingName(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+          pairingName_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string pairingName = 9;</code>
+         */
+        public Builder clearPairingName() {
+          bitField0_ = (bitField0_ & ~0x00000100);
+          pairingName_ = getDefaultInstance().getPairingName();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string pairingName = 9;</code>
+         */
+        public Builder setPairingNameBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+          pairingName_ = value;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator)
+      }
+
+      static {
+        defaultInstance = new PairedAuthenticator(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator)
+    }
+
     private int bitField0_;
     // optional bool paired = 1;
     public static final int PAIRED_FIELD_NUMBER = 1;
@@ -245,182 +2768,57 @@ public final class ProtoConfig {
       return paired_;
     }
 
-    // optional string mpubkey = 2;
-    public static final int MPUBKEY_FIELD_NUMBER = 2;
-    private java.lang.Object mpubkey_;
+    // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;
+    public static final int PAIREDWALLETS_FIELD_NUMBER = 2;
+    private java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator> pairedWallets_;
     /**
-     * <code>optional string mpubkey = 2;</code>
-     *
-     * <pre>
-     *Master public key from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    public boolean hasMpubkey() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+    public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator> getPairedWalletsList() {
+      return pairedWallets_;
     }
     /**
-     * <code>optional string mpubkey = 2;</code>
-     *
-     * <pre>
-     *Master public key from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    public java.lang.String getMpubkey() {
-      java.lang.Object ref = mpubkey_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          mpubkey_ = s;
-        }
-        return s;
-      }
+    public java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder> 
+        getPairedWalletsOrBuilderList() {
+      return pairedWallets_;
     }
     /**
-     * <code>optional string mpubkey = 2;</code>
-     *
-     * <pre>
-     *Master public key from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    public com.google.protobuf.ByteString
-        getMpubkeyBytes() {
-      java.lang.Object ref = mpubkey_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        mpubkey_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string chaincode = 3;
-    public static final int CHAINCODE_FIELD_NUMBER = 3;
-    private java.lang.Object chaincode_;
-    /**
-     * <code>optional string chaincode = 3;</code>
-     *
-     * <pre>
-     *Chaincode from Authenticator.
-     * </pre>
-     */
-    public boolean hasChaincode() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+    public int getPairedWalletsCount() {
+      return pairedWallets_.size();
     }
     /**
-     * <code>optional string chaincode = 3;</code>
-     *
-     * <pre>
-     *Chaincode from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    public java.lang.String getChaincode() {
-      java.lang.Object ref = chaincode_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          chaincode_ = s;
-        }
-        return s;
-      }
+    public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator getPairedWallets(int index) {
+      return pairedWallets_.get(index);
     }
     /**
-     * <code>optional string chaincode = 3;</code>
-     *
-     * <pre>
-     *Chaincode from Authenticator.
-     * </pre>
+     * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
      */
-    public com.google.protobuf.ByteString
-        getChaincodeBytes() {
-      java.lang.Object ref = chaincode_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        chaincode_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // optional string GMCregID = 4;
-    public static final int GMCREGID_FIELD_NUMBER = 4;
-    private java.lang.Object gMCregID_;
-    /**
-     * <code>optional string GMCregID = 4;</code>
-     *
-     * <pre>
-     *GCM ID from Authenticator.
-     * </pre>
-     */
-    public boolean hasGMCregID() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string GMCregID = 4;</code>
-     *
-     * <pre>
-     *GCM ID from Authenticator.
-     * </pre>
-     */
-    public java.lang.String getGMCregID() {
-      java.lang.Object ref = gMCregID_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          gMCregID_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string GMCregID = 4;</code>
-     *
-     * <pre>
-     *GCM ID from Authenticator.
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getGMCregIDBytes() {
-      java.lang.Object ref = gMCregID_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        gMCregID_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
+        int index) {
+      return pairedWallets_.get(index);
     }
 
     private void initFields() {
       paired_ = false;
-      mpubkey_ = "";
-      chaincode_ = "";
-      gMCregID_ = "";
+      pairedWallets_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      for (int i = 0; i < getPairedWalletsCount(); i++) {
+        if (!getPairedWallets(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -431,14 +2829,8 @@ public final class ProtoConfig {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBool(1, paired_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getMpubkeyBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getChaincodeBytes());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getGMCregIDBytes());
+      for (int i = 0; i < pairedWallets_.size(); i++) {
+        output.writeMessage(2, pairedWallets_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -453,17 +2845,9 @@ public final class ProtoConfig {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(1, paired_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      for (int i = 0; i < pairedWallets_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getMpubkeyBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getChaincodeBytes());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getGMCregIDBytes());
+          .computeMessageSize(2, pairedWallets_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -573,6 +2957,7 @@ public final class ProtoConfig {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getPairedWalletsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -583,12 +2968,12 @@ public final class ProtoConfig {
         super.clear();
         paired_ = false;
         bitField0_ = (bitField0_ & ~0x00000001);
-        mpubkey_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        chaincode_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        gMCregID_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
+        if (pairedWalletsBuilder_ == null) {
+          pairedWallets_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          pairedWalletsBuilder_.clear();
+        }
         return this;
       }
 
@@ -621,18 +3006,15 @@ public final class ProtoConfig {
           to_bitField0_ |= 0x00000001;
         }
         result.paired_ = paired_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
+        if (pairedWalletsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            pairedWallets_ = java.util.Collections.unmodifiableList(pairedWallets_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.pairedWallets_ = pairedWallets_;
+        } else {
+          result.pairedWallets_ = pairedWalletsBuilder_.build();
         }
-        result.mpubkey_ = mpubkey_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.chaincode_ = chaincode_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.gMCregID_ = gMCregID_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -652,26 +3034,43 @@ public final class ProtoConfig {
         if (other.hasPaired()) {
           setPaired(other.getPaired());
         }
-        if (other.hasMpubkey()) {
-          bitField0_ |= 0x00000002;
-          mpubkey_ = other.mpubkey_;
-          onChanged();
-        }
-        if (other.hasChaincode()) {
-          bitField0_ |= 0x00000004;
-          chaincode_ = other.chaincode_;
-          onChanged();
-        }
-        if (other.hasGMCregID()) {
-          bitField0_ |= 0x00000008;
-          gMCregID_ = other.gMCregID_;
-          onChanged();
+        if (pairedWalletsBuilder_ == null) {
+          if (!other.pairedWallets_.isEmpty()) {
+            if (pairedWallets_.isEmpty()) {
+              pairedWallets_ = other.pairedWallets_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensurePairedWalletsIsMutable();
+              pairedWallets_.addAll(other.pairedWallets_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.pairedWallets_.isEmpty()) {
+            if (pairedWalletsBuilder_.isEmpty()) {
+              pairedWalletsBuilder_.dispose();
+              pairedWalletsBuilder_ = null;
+              pairedWallets_ = other.pairedWallets_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              pairedWalletsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getPairedWalletsFieldBuilder() : null;
+            } else {
+              pairedWalletsBuilder_.addAllMessages(other.pairedWallets_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
+        for (int i = 0; i < getPairedWalletsCount(); i++) {
+          if (!getPairedWallets(i).isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
 
@@ -743,298 +3142,244 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional string mpubkey = 2;
-      private java.lang.Object mpubkey_ = "";
-      /**
-       * <code>optional string mpubkey = 2;</code>
-       *
-       * <pre>
-       *Master public key from Authenticator.
-       * </pre>
-       */
-      public boolean hasMpubkey() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional string mpubkey = 2;</code>
-       *
-       * <pre>
-       *Master public key from Authenticator.
-       * </pre>
-       */
-      public java.lang.String getMpubkey() {
-        java.lang.Object ref = mpubkey_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          mpubkey_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string mpubkey = 2;</code>
-       *
-       * <pre>
-       *Master public key from Authenticator.
-       * </pre>
-       */
-      public com.google.protobuf.ByteString
-          getMpubkeyBytes() {
-        java.lang.Object ref = mpubkey_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          mpubkey_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string mpubkey = 2;</code>
-       *
-       * <pre>
-       *Master public key from Authenticator.
-       * </pre>
-       */
-      public Builder setMpubkey(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        mpubkey_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string mpubkey = 2;</code>
-       *
-       * <pre>
-       *Master public key from Authenticator.
-       * </pre>
-       */
-      public Builder clearMpubkey() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        mpubkey_ = getDefaultInstance().getMpubkey();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string mpubkey = 2;</code>
-       *
-       * <pre>
-       *Master public key from Authenticator.
-       * </pre>
-       */
-      public Builder setMpubkeyBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        mpubkey_ = value;
-        onChanged();
-        return this;
+      // repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;
+      private java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator> pairedWallets_ =
+        java.util.Collections.emptyList();
+      private void ensurePairedWalletsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          pairedWallets_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator>(pairedWallets_);
+          bitField0_ |= 0x00000002;
+         }
       }
 
-      // optional string chaincode = 3;
-      private java.lang.Object chaincode_ = "";
-      /**
-       * <code>optional string chaincode = 3;</code>
-       *
-       * <pre>
-       *Chaincode from Authenticator.
-       * </pre>
-       */
-      public boolean hasChaincode() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string chaincode = 3;</code>
-       *
-       * <pre>
-       *Chaincode from Authenticator.
-       * </pre>
-       */
-      public java.lang.String getChaincode() {
-        java.lang.Object ref = chaincode_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          chaincode_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string chaincode = 3;</code>
-       *
-       * <pre>
-       *Chaincode from Authenticator.
-       * </pre>
-       */
-      public com.google.protobuf.ByteString
-          getChaincodeBytes() {
-        java.lang.Object ref = chaincode_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          chaincode_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string chaincode = 3;</code>
-       *
-       * <pre>
-       *Chaincode from Authenticator.
-       * </pre>
-       */
-      public Builder setChaincode(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        chaincode_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string chaincode = 3;</code>
-       *
-       * <pre>
-       *Chaincode from Authenticator.
-       * </pre>
-       */
-      public Builder clearChaincode() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        chaincode_ = getDefaultInstance().getChaincode();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string chaincode = 3;</code>
-       *
-       * <pre>
-       *Chaincode from Authenticator.
-       * </pre>
-       */
-      public Builder setChaincodeBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        chaincode_ = value;
-        onChanged();
-        return this;
-      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder> pairedWalletsBuilder_;
 
-      // optional string GMCregID = 4;
-      private java.lang.Object gMCregID_ = "";
       /**
-       * <code>optional string GMCregID = 4;</code>
-       *
-       * <pre>
-       *GCM ID from Authenticator.
-       * </pre>
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
        */
-      public boolean hasGMCregID() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string GMCregID = 4;</code>
-       *
-       * <pre>
-       *GCM ID from Authenticator.
-       * </pre>
-       */
-      public java.lang.String getGMCregID() {
-        java.lang.Object ref = gMCregID_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          gMCregID_ = s;
-          return s;
+      public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator> getPairedWalletsList() {
+        if (pairedWalletsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(pairedWallets_);
         } else {
-          return (java.lang.String) ref;
+          return pairedWalletsBuilder_.getMessageList();
         }
       }
       /**
-       * <code>optional string GMCregID = 4;</code>
-       *
-       * <pre>
-       *GCM ID from Authenticator.
-       * </pre>
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getGMCregIDBytes() {
-        java.lang.Object ref = gMCregID_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          gMCregID_ = b;
-          return b;
+      public int getPairedWalletsCount() {
+        if (pairedWalletsBuilder_ == null) {
+          return pairedWallets_.size();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          return pairedWalletsBuilder_.getCount();
         }
       }
       /**
-       * <code>optional string GMCregID = 4;</code>
-       *
-       * <pre>
-       *GCM ID from Authenticator.
-       * </pre>
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
        */
-      public Builder setGMCregID(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        gMCregID_ = value;
-        onChanged();
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator getPairedWallets(int index) {
+        if (pairedWalletsBuilder_ == null) {
+          return pairedWallets_.get(index);
+        } else {
+          return pairedWalletsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public Builder setPairedWallets(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator value) {
+        if (pairedWalletsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePairedWalletsIsMutable();
+          pairedWallets_.set(index, value);
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.setMessage(index, value);
+        }
         return this;
       }
       /**
-       * <code>optional string GMCregID = 4;</code>
-       *
-       * <pre>
-       *GCM ID from Authenticator.
-       * </pre>
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
        */
-      public Builder clearGMCregID() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        gMCregID_ = getDefaultInstance().getGMCregID();
-        onChanged();
+      public Builder setPairedWallets(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder builderForValue) {
+        if (pairedWalletsBuilder_ == null) {
+          ensurePairedWalletsIsMutable();
+          pairedWallets_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       /**
-       * <code>optional string GMCregID = 4;</code>
-       *
-       * <pre>
-       *GCM ID from Authenticator.
-       * </pre>
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
        */
-      public Builder setGMCregIDBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        gMCregID_ = value;
-        onChanged();
+      public Builder addPairedWallets(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator value) {
+        if (pairedWalletsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePairedWalletsIsMutable();
+          pairedWallets_.add(value);
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.addMessage(value);
+        }
         return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public Builder addPairedWallets(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator value) {
+        if (pairedWalletsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePairedWalletsIsMutable();
+          pairedWallets_.add(index, value);
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public Builder addPairedWallets(
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder builderForValue) {
+        if (pairedWalletsBuilder_ == null) {
+          ensurePairedWalletsIsMutable();
+          pairedWallets_.add(builderForValue.build());
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public Builder addPairedWallets(
+          int index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder builderForValue) {
+        if (pairedWalletsBuilder_ == null) {
+          ensurePairedWalletsIsMutable();
+          pairedWallets_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public Builder addAllPairedWallets(
+          java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator> values) {
+        if (pairedWalletsBuilder_ == null) {
+          ensurePairedWalletsIsMutable();
+          super.addAll(values, pairedWallets_);
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public Builder clearPairedWallets() {
+        if (pairedWalletsBuilder_ == null) {
+          pairedWallets_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public Builder removePairedWallets(int index) {
+        if (pairedWalletsBuilder_ == null) {
+          ensurePairedWalletsIsMutable();
+          pairedWallets_.remove(index);
+          onChanged();
+        } else {
+          pairedWalletsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder getPairedWalletsBuilder(
+          int index) {
+        return getPairedWalletsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
+          int index) {
+        if (pairedWalletsBuilder_ == null) {
+          return pairedWallets_.get(index);  } else {
+          return pairedWalletsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public java.util.List<? extends authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder> 
+           getPairedWalletsOrBuilderList() {
+        if (pairedWalletsBuilder_ != null) {
+          return pairedWalletsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(pairedWallets_);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder addPairedWalletsBuilder() {
+        return getPairedWalletsFieldBuilder().addBuilder(
+            authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder addPairedWalletsBuilder(
+          int index) {
+        return getPairedWalletsFieldBuilder().addBuilder(
+            index, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.ConfigAuthenticatorWallet.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder> 
+           getPairedWalletsBuilderList() {
+        return getPairedWalletsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder> 
+          getPairedWalletsFieldBuilder() {
+        if (pairedWalletsBuilder_ == null) {
+          pairedWalletsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticatorOrBuilder>(
+                  pairedWallets_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          pairedWallets_ = null;
+        }
+        return pairedWalletsBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAuthenticatorWallet)
@@ -2910,6 +5255,16 @@ public final class ProtoConfig {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -2933,14 +5288,23 @@ public final class ProtoConfig {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014config.proto\022\026authenticator.protobuf\"a" +
-      "\n\031ConfigAuthenticatorWallet\022\016\n\006paired\030\001 " +
-      "\001(\010\022\017\n\007mpubkey\030\002 \001(\t\022\021\n\tchaincode\030\003 \001(\t\022" +
-      "\020\n\010GMCregID\030\004 \001(\t\"<\n\026ConfigReceiveAddres" +
-      "ses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030\002 \003(\t\"" +
-      "$\n\021ConfigAddressBook\022\017\n\007address\030\001 \001(\t\"!\n" +
-      "\016ConfigSettings\022\017\n\007onename\030\001 \001(\tB\rB\013Prot" +
-      "oConfig"
+      "\n\014config.proto\022\026authenticator.protobuf\"\340" +
+      "\003\n\031ConfigAuthenticatorWallet\022\016\n\006paired\030\001" +
+      " \001(\010\022\\\n\rpairedWallets\030\002 \003(\0132E.authentica" +
+      "tor.protobuf.ConfigAuthenticatorWallet.P" +
+      "airedAuthenticator\032\324\002\n\023PairedAuthenticat" +
+      "or\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_public_key" +
+      "\030\002 \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022" +
+      "\021\n\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 \002(\010\022\016\n\006k" +
+      "eys_n\030\007 \002(\005\022g\n\rgeneratedKeys\030\010 \003(\0132P.aut" +
+      "henticator.protobuf.ConfigAuthenticatorW",
+      "allet.PairedAuthenticator.KeysObject\022\023\n\013" +
+      "pairingName\030\t \002(\t\032>\n\nKeysObject\022\020\n\010priv_" +
+      "key\030\001 \002(\t\022\017\n\007address\030\002 \002(\t\022\r\n\005index\030\003 \002(" +
+      "\005\"<\n\026ConfigReceiveAddresses\022\021\n\twalletKey" +
+      "\030\001 \003(\t\022\017\n\007authKey\030\002 \003(\t\"$\n\021ConfigAddress" +
+      "Book\022\017\n\007address\030\001 \001(\t\"!\n\016ConfigSettings\022" +
+      "\017\n\007onename\030\001 \001(\tB\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2952,7 +5316,19 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor,
-              new java.lang.String[] { "Paired", "Mpubkey", "Chaincode", "GMCregID", });
+              new java.lang.String[] { "Paired", "PairedWallets", });
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor =
+            internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor.getNestedTypes().get(0);
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor,
+              new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "GeneratedKeys", "PairingName", });
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_descriptor =
+            internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_descriptor.getNestedTypes().get(0);
+          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_PairedAuthenticator_KeysObject_descriptor,
+              new java.lang.String[] { "PrivKey", "Address", "Index", });
           internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_authenticator_protobuf_ConfigReceiveAddresses_fieldAccessorTable = new

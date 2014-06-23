@@ -6,16 +6,31 @@ option java_outer_classname="ProtoConfig";
 message ConfigAuthenticatorWallet {
 
   	optional bool paired = 1;  // Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-	optional string mpubkey = 2; //Master public key from Authenticator.
-	optional string chaincode = 3; //Chaincode from Authenticator.
-	optional string GMCregID = 4; //GCM ID from Authenticator.
-
+	message PairedAuthenticator{
+		message KeysObject{
+			required string priv_key 	= 1;
+			required string address 	= 2;
+			required int32 	index 		= 3;
+		}
+		
+		required string 	aes_key 			= 1;
+		required string 	master_public_key 	= 2;
+		required string 	chain_code 			= 3;
+		required string 	GCM 				= 4;
+		required string 	pairingID 			= 5;
+		required bool 		testnet 			= 6;
+		required int32 		keys_n 				= 7;
+		repeated KeysObject generatedKeys 		= 8;
+		required string 	pairingName 		= 9;
+	}
+	
+	repeated PairedAuthenticator pairedWallets = 2; 
 }
 
 message ConfigReceiveAddresses {
 
 	repeated string walletKey = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-	repeated string authKey =2; // Same thing but generated from the Authenticator mpubkey. Used when paired.
+	repeated string authKey = 2; // Same thing but generated from the Authenticator mpubkey. Used when paired.
 
 }
 

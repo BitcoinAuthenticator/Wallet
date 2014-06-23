@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+
 import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses;
 
 import com.google.bitcoin.core.ECKey;
@@ -100,5 +104,56 @@ public class ConfigFile {
 		}
 		return keypool;
 	}
-
+	
+	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException{
+		ConfigAuthenticatorWallet all = ConfigAuthenticatorWallet.parseFrom(new FileInputStream(filePath));
+		return all.getPairedWalletsList();
+	}
+	
+	/**This method is used during pairing. It saves the data from the Autheticator to file
+	 * @throws IOException */
+	@SuppressWarnings("unchecked")
+	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName) throws IOException{
+		// Create new pairing item
+		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
+									newPair.setAesKey(key);
+									newPair.setMasterPublicKey(mpubkey);
+									newPair.setChainCode(chaincode);
+									newPair.setGCM(GCM);
+									newPair.setPairingID(pairingID);
+									newPair.setPairingName(pairName);
+									newPair.setTestnet(false);
+		
+		FileOutputStream output = new FileOutputStream(filePath);  
+		newPair.build().writeTo(output);          
+		output.close();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addAddressAndPrivateKeyToPairing(String pairID, String privkey, String addr, int index) throws FileNotFoundException, IOException, ParseException{
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = this.getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		
+		for(PairedAuthenticator o:all)
+		{
+			if(o.getPairingID().equals(pairID)){
+				PairedAuthenticator.KeysObject.Builder newKeyObj = PairedAuthenticator.KeysObject.newBuilder();
+				newKeyObj.setPrivKey(privkey);
+				newKeyObj.setAddress(addr);
+				newKeyObj.setIndex(index);
+				
+				PairedAuthenticator.Builder pairingBuilder = PairedAuthenticator.newBuilder(o);
+				pairingBuilder.addGeneratedKeys(newKeyObj.build());
+				
+				FileOutputStream output = new FileOutputStream(filePath);  
+				pairingBuilder.build().writeTo(output);          
+				output.close();
+				
+				break;
+			}
+		}
+		
+	}
 }

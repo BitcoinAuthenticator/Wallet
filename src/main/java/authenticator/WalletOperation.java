@@ -2,9 +2,10 @@ package authenticator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,14 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
-import authenticator.db.KeyObject;
-import authenticator.db.KeysArray;
-import authenticator.db.PairingObject;
-import authenticator.db.WalletFile;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -104,14 +104,13 @@ public class WalletOperation extends BASE{
 	public String genP2SHAddress(String pairingID) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		try {
 			//Derive the child public key from the master public key.
-			WalletFile file = new WalletFile();
-			ArrayList<String> keyandchain = file.getPubAndChain(pairingID);
+			ArrayList<String> keyandchain = this.getPublicKeyAndChain(pairingID);
 			byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
 			byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
 			/**
 			 * Important, generatring from key number + 1
 			 */
-			int index = (int) file.getKeyNum(pairingID);
+			int index = (int) this.getKeyNum(pairingID);
 			HDKeyDerivation HDKey = null;
 	  		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
 	  		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, index);
@@ -129,7 +128,10 @@ public class WalletOperation extends BASE{
 			//Create the address
 			Address multisigaddr = Address.fromP2SHScript(params, script);
 			//Save keys to file
-			file.writeToFile(pairingID,BAUtils.bytesToHex(privkey),multisigaddr.toString(),index);
+			this.addAddressAndPrivateKeyToPairing(pairingID, 
+					BAUtils.bytesToHex(privkey), 
+					multisigaddr.toString(), 
+					index);
 			String ret = multisigaddr.toString();
 			mWalletWrapper.addP2ShAddressToWatch(ret);
 			this.LOG.info("Generated a new address: " + ret);
@@ -228,7 +230,7 @@ public class WalletOperation extends BASE{
     
 	//#####################################
 	//
-	//		 DAL - Protocol buffers
+	//		 BL - Protocol buffers
 	//
 	//#####################################
 	public void removeAddressFromPool(String address) throws FileNotFoundException, IOException
@@ -244,33 +246,20 @@ public class WalletOperation extends BASE{
 		return configFile.getKeyPool();
 	}
 	
-	//#####################################
-	//
-	//		 DAL
-	//
-	//#####################################
-	
-	public ArrayList<PairingObject> getAllPairingObjectArray()
+	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
 	{
-		WalletFile f = new WalletFile();
-		return f.getPairingObjectsArray();
+		return configFile.getAllPairingObjectArray();
 	}
 	
-	public PairingObject getPairingObject(String pairID)
+	public PairedAuthenticator getPairingObject(String pairID)
 	{
-		ArrayList<PairingObject> all = getAllPairingObjectArray();
-		for(PairingObject po: all)
-			if(po.pairingID.equals(pairID))
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		for(PairedAuthenticator po: all)
+			if(po.getPairingID().equals(pairID))
 				return po;
-		return null;
-	}
-	
-	public String getAESKey(String pairID)
-	{
-		ArrayList<PairingObject> all = getAllPairingObjectArray();
-		for(PairingObject po: all)
-			if(po.pairingID.equals(pairID))
-				return po.aes_key;
 		return null;
 	}
 	
@@ -279,25 +268,95 @@ public class WalletOperation extends BASE{
 	 * @param PairID
 	 * @return
 	 */
-	public KeysArray getKeysArray(String PairID){
-		ArrayList<PairingObject> all = getAllPairingObjectArray();
-		for(PairingObject po: all)
+	public List<PairedAuthenticator.KeysObject> getKeysArray(String PairID){
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		for(PairedAuthenticator po: all)
 		{
-			if(po.pairingID.equals(PairID))
+			if(po.getPairingID().equals(PairID))
 			{
-				return po.keys;
+				return po.getGeneratedKeysList();
 			}
 		}
 		return null;
 	}
 	public ArrayList<String> getAddressesArray(String PairID){
-		KeysArray keys = getKeysArray(PairID);
+		List<PairedAuthenticator.KeysObject> keys = getKeysArray(PairID);
 		ArrayList<String> ret = new ArrayList<String>();
-		for(KeyObject ko: keys.keys)
+		for(PairedAuthenticator.KeysObject ko: keys)
 		{
-			ret.add(ko.address);
+			ret.add(ko.getAddress());
 		}
 		return ret;
+	}
+	
+	/**Returns the Master Public Key and Chaincode as an ArrayList object */
+	public ArrayList<String> getPublicKeyAndChain(String pairingID){
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		for(PairedAuthenticator o:all)
+		{
+			if(o.getPairingID().equals(pairingID))
+			{
+				ret.add(o.getMasterPublicKey());
+				ret.add(o.getChainCode());
+			}
+		}
+		return ret;
+	}
+	
+	/**Returns the number of key pairs in the wallet */
+	public long getKeyNum(String pairID){
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		for(PairedAuthenticator o:all)
+		{
+			if(o.getPairingID().equals(pairID))
+				return o.getKeysN();
+		}
+		return 0;
+	}
+	
+	/**Pulls the AES key from file and returns it  */
+	public String getAESKey(String pairID) {
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		for(PairedAuthenticator o:all)
+		{
+			if(o.getPairingID().equals(pairID))
+				return o.getAesKey();
+		}
+		return "";
+	}
+	
+	public ArrayList<String> getPairingIDs()
+	{
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		ArrayList<String> ret = new ArrayList<String>();
+		for(PairedAuthenticator o:all)
+			ret.add(o.getPairingID());
+		return ret;
+	}
+	
+	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName) throws IOException{
+		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, pairName);
+	}
+	
+	public void addAddressAndPrivateKeyToPairing(String pairID, String privkey, String addr, int index) throws FileNotFoundException, IOException, ParseException{
+		configFile.addAddressAndPrivateKeyToPairing(pairID, privkey, addr, index);
 	}
 	
 	//#####################################
@@ -384,6 +443,7 @@ public class WalletOperation extends BASE{
 	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
 		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
 	}
+
 	
 	//#####################################
 	//
