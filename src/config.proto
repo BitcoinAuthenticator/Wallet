@@ -2,13 +2,17 @@ option java_outer_classname="ProtoConfig";
 
 message Authenticator {
 
-   optional bool paired = 1;  // Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+  	optional bool paired = 1;  // Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+	optional string mpubkey = 2; //Master public key from Authenticator.
+	optional string chaincode = 3; //Chaincode from Authenticator.
+	optional string GMCregID = 4; //GCM ID from Authenticator.
 
 }
 
 message ReceiveAddresses {
 
-	repeated string pubkey = 1; // An array of (min 10) hex encoded public keys that will be loaded in the receive pane.
+	repeated string walletKey = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+	repeated string authKey =2; // Same thing but generated from the Authenticator mpubkey. Used when paired.
 
 }
 
@@ -20,7 +24,7 @@ message AddressBook {
 
 message Settings {
 
-	optional string setting = 1; // This is a placeholder for the settings menu.
+	optional string onename = 1; // The user's OneName ID. Used for getting the avatar on start up.
 
 }
 
