@@ -1,5 +1,6 @@
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/WalletOperation.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/Main.java
+/home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/BaseUI.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/OperationsUtils/DisplayQR.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/GCM/dispacher/MessageType.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/OneName.java
@@ -28,6 +29,7 @@
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/TextUtils.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/controls/BitcoinAddressValidator.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/OperationsUtils/PairingProtocol.java
+/home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/AuthenticatorGeneralEventsListener.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/AlertWindowController.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/db/ConfigFile.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/network/TCPListener.java
@@ -40,4 +42,5 @@
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/OperationsUtils/QRCode.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/GCM/dispacher/Device.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/BipSSS/Gf256.java
+/home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/PairWallet.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/Utils/SafeList.java
