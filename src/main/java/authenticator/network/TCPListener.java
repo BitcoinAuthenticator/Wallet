@@ -24,7 +24,7 @@ import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.ui_helpers.PopUpNotification;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
+import authenticator.protobuf.ProtoConfig.PendingRequest;
 
 public class TCPListener extends BASE{
 	public static Socket socket;
