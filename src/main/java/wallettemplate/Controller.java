@@ -25,6 +25,8 @@ import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -106,7 +108,8 @@ public class Controller {
 	 @FXML private Label lblUnconfirmedBalance;
 	 @FXML ImageView ivAvatar;
 	 @FXML Label lblName;
-	 @FXML private ChoiceBox AddressBox;
+	 @FXML
+	 public ChoiceBox AddressBox;
 	 @FXML private TextField txMsgLabel;
 	 @FXML private TextField txFee;
 	 @FXML private Button btnConnection0;
@@ -116,6 +119,8 @@ public class Controller {
 	 @FXML private Button btnTor_grey;
 	 @FXML private Button btnTor_color;
 	 @FXML private Label lblStatus;
+	 @FXML private Button btnRequest;
+	 @FXML private Button btnClear;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -738,6 +743,22 @@ public class Controller {
    	//
    	//#####################################
     
+    @FXML protected void btnRequestPressed(MouseEvent event) {
+    	btnAdd.setStyle("-fx-background-color: #a1d2e7;");
+    }
+    
+    @FXML protected void btnRequestReleased(MouseEvent event) {
+    	btnAdd.setStyle("-fx-background-color: #199bd6;");
+    }
+    
+    @FXML protected void btnClearPressed(MouseEvent event) {
+    	btnSend.setStyle("-fx-background-color: #a1d2e7;");
+    }
+    
+    @FXML protected void btnClearReleased(MouseEvent event) {
+    	btnSend.setStyle("-fx-background-color: #199bd6;");
+    } 
+    
     void createReceivePaneButtons(){
     	Button btnCopy = new Button();
         ReceiveHBox.setMargin(btnCopy, new Insets(14,0,0,4));
@@ -860,18 +881,26 @@ public class Controller {
     }
     
     private void setAddresses(){
-   	 	ArrayList<ECKey> keypool = null;
-		try { Authenticator.getWalletOperation().fillKeyPool(); } //Main.config.fillKeyPool();} 
-		catch (IOException e) {e.printStackTrace();}
-		try {keypool = Authenticator.getWalletOperation().getKeyPool(); } //Main.config.getKeyPool();} 
-		catch (IOException e) {e.printStackTrace();}
-
-		AddressBox.getItems().clear();
-		AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
+    	ArrayList<ECKey> keypool = null;
+    	try { Authenticator.getWalletOperation().fillKeyPool(); } //Main.config.fillKeyPool();} 
+    	catch (IOException e) {e.printStackTrace();}
+    	try {keypool = Authenticator.getWalletOperation().getKeyPool(); } //Main.config.getKeyPool();} 
+    	catch (IOException e) {e.printStackTrace();}
+    	AddressBox.getItems().clear();
+    	AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
     	for (ECKey key : keypool){
     		String addr = key.toAddress(Main.params).toString();
     		AddressBox.getItems().addAll(addr);
     	}                              
+    	AddressBox.getItems().addAll("                                More");
+    	AddressBox.valueProperty().addListener(new ChangeListener<String>() {
+    		@Override public void changed(ObservableValue ov, String t, String t1) {
+    			if (t1.substring(0,1).equals(" ")){
+    				try {Authenticator.getWalletOperation().addMoreAddresses();} 
+    				catch (IOException e) {e.printStackTrace();}
+    			}
+    		}    
+    	});
     }    
     
     //#####################################

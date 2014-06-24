@@ -62,6 +62,7 @@ authenticator/GCM/dispacher/Dispacher$1.class
 wallettemplate/Controller$7.class
 wallettemplate/Controller$1.class
 authenticator/protobuf/ProtoConfig$ConfigAuthenticatorWallet$PendingRequestOrBuilder.class
+wallettemplate/Controller$13.class
 wallettemplate/Controller$ProgressBarUpdater.class
 authenticator/protobuf/ProtoConfig$ConfigAuthenticatorWallet$PairedAuthenticator$1.class
 authenticator/BASE.class

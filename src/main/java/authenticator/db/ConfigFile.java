@@ -81,6 +81,27 @@ public class ConfigFile {
 		}
 	}	
 	
+	public void addMoreAddresses() throws FileNotFoundException, IOException{
+		ConfigReceiveAddresses keys = ConfigReceiveAddresses.parseFrom(new FileInputStream(filePath));
+		ConfigReceiveAddresses.Builder ra = ConfigReceiveAddresses.newBuilder();
+		for (String pkey : keys.getWalletKeyList()){
+			ra.addWalletKey(pkey);
+		}
+		Main.controller.AddressBox.getItems().remove(Main.controller.AddressBox.getItems().indexOf("                                More"));		
+		for (int i=0; i<10; i++){
+			DeterministicKey newkey = Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
+			String pubkey =  KeyUtils.bytesToHex(newkey.getPubKey());
+			ra.addWalletKey(pubkey);
+			String addr = newkey.toAddress(Main.params).toString();
+    		Main.controller.AddressBox.getItems().addAll(addr);
+		}
+		Main.controller.AddressBox.getItems().addAll("                                More");
+		Main.controller.AddressBox.setValue(Main.controller.AddressBox.getItems().get(0));
+		FileOutputStream output = new FileOutputStream(filePath);  
+		ra.build().writeTo(output);          
+		output.close();   
+	}	
+	
 	public void removeAddress(String address) throws FileNotFoundException, IOException {
 		System.out.println("rec addr: " + address);
 		ConfigReceiveAddresses keys = ConfigReceiveAddresses.parseFrom(new FileInputStream(filePath));

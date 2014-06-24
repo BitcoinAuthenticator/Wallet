@@ -247,6 +247,10 @@ public class WalletOperation extends BASE{
 		return configFile.getKeyPool();
 	}
 	
+	public void addMoreAddresses() throws FileNotFoundException, IOException{
+		configFile.addMoreAddresses();
+	}
+	
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
 	{
 		return configFile.getAllPairingObjectArray();
