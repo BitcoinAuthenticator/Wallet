@@ -37,11 +37,13 @@ public class Authenticator extends AbstractService{
 	final static public int LISTENER_PORT = 1234;
 	
 	private static TCPListener mTCPListener;
-	private static OnAuthenticatoGUIUpdateListener mListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
 	private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
+	// Listeners
+	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
+	private static OnAuthenticatoGUIUpdateListener mListener;
 
 	public Authenticator(){}
 	public Authenticator(Wallet wallet, PeerGroup peerGroup, OnAuthenticatoGUIUpdateListener listener) throws IOException
@@ -49,6 +51,8 @@ public class Authenticator extends AbstractService{
 		//super(Authenticator.class);
 		if(mListener == null)
 			mListener = listener;
+		if(generalEventsListeners == null)
+			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
 		if(mTCPListener == null)
 			mTCPListener = new TCPListener(mListener);
 		if(operationsQueue == null)
@@ -202,96 +206,18 @@ public class Authenticator extends AbstractService{
 	}
 	
 	
+	//#####################################
+	//
+	//		General Events Listener
+	//
+	//#####################################
 	
+	public static void addGeneralEventsListener(AuthenticatorGeneralEventsListener listener){
+		generalEventsListeners.add(listener);
+	}
 	
-	
-
-	/*@Override
-	public ListenableFuture<State> start() {
-		
-		return null;
+	public static void fireOnNewPairedAuthenticator(){
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onNewPairedAuthenticator();
 	}
-
-	@Override
-	public State startAndWait() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Service startAsync() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public State state() {
-		if(!mTCPListener.isRuning())
-			return State.TERMINATED;
-		return State.RUNNING;
-	}
-
-	@Override
-	public ListenableFuture<State> stop() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public State stopAndWait() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	@Override
-	public Service stopAsync() {
-		try { mTCPListener.stop(); } catch (InterruptedException e) { e.printStackTrace(); }
-		return null;
-	}
-
-	@Override
-	public void awaitRunning() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void awaitRunning(long timeout, TimeUnit unit)
-			throws TimeoutException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void awaitTerminated() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void awaitTerminated(long timeout, TimeUnit unit)
-			throws TimeoutException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Throwable failureCause() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addListener(Listener listener, Executor executor) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isRunning() {
-		if(!mTCPListener.isRuning())
-			return false;
-		return false;
-	}*/
 }

@@ -102,6 +102,20 @@
   -fx-text-fill: #767676;
 }
 
+.choice-box-account {
+    -fx-background-color: #e5e7e7;  
+    -fx-font-size: 10px;
+}
+
+.choice-box-account .label {
+	-fx-text-fill: #767676;
+}
+
+.choice-box-account .context-menu .label {
+  -fx-font-size: 12px;
+  -fx-text-fill: #767676;
+}
+
 .root {
 -icons-color: rgb(202,202,203);
 }

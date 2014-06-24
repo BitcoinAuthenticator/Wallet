@@ -151,6 +151,7 @@ public class ConfigFile {
 									newPair.setPairingID(pairingID);
 									newPair.setPairingName(pairName);
 									newPair.setTestnet(false);
+									newPair.setKeysN(0);
 
 		ConfigAuthenticatorWallet all = ConfigAuthenticatorWallet.parseFrom(new FileInputStream(filePath));
 		ConfigAuthenticatorWallet.Builder b = ConfigAuthenticatorWallet.newBuilder(all);

@@ -1,6 +1,8 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
+import authenticator.AuthenticatorGeneralEventsListener;
+import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
@@ -62,7 +64,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import org.json.JSONException;
@@ -121,6 +125,8 @@ public class Controller {
 	 @FXML private Label lblStatus;
 	 @FXML private Button btnRequest;
 	 @FXML private Button btnClear;
+	 @FXML public ChoiceBox AccountBox;
+	 
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -173,7 +179,7 @@ public class Controller {
         });
         
         // Peer icon
-        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));
+        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));        
     }
     
     public void onBitcoinSetup() {
@@ -184,6 +190,19 @@ public class Controller {
     	tor.addInitializationListener(listener);
         refreshBalanceLabel();
         setAddresses();
+        
+        Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
+        
+        // Account choicebox
+        setAccountChoiceBox();
+    }
+    
+    public class AuthenticatorGeneralEvents implements AuthenticatorGeneralEventsListener{
+
+		@Override
+		public void onNewPairedAuthenticator() {
+			setAccountChoiceBox();
+		}
     }
     
     public class ProgressBarUpdater extends DownloadListener {
@@ -494,6 +513,21 @@ public class Controller {
  	     ReceivePane.setVisible(false);
  	     AppsPane.setVisible(true);
     }
+   
+   public void setAccountChoiceBox(){
+	   List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+	   try {
+		all = Authenticator.getWalletOperation().getAllPairingObjectArray();
+	   } catch (IOException e) { }
+	   
+	   AccountBox.getItems().clear();
+	   AccountBox.getItems().add("Main Wallet");
+	   for(PairedAuthenticator po:all){
+		   AccountBox.getItems().add(po.getPairingName());
+	   }
+	   AccountBox.setValue("Main Wallet");
+	   AccountBox.setTooltip(new Tooltip("Select active account"));
+   }
    
    	//#####################################
  	//
@@ -882,9 +916,9 @@ public class Controller {
     
     private void setAddresses(){
     	ArrayList<ECKey> keypool = null;
-    	try { Authenticator.getWalletOperation().fillKeyPool(); } //Main.config.fillKeyPool();} 
+    	try { Authenticator.getWalletOperation().fillKeyPool(); } 
     	catch (IOException e) {e.printStackTrace();}
-    	try {keypool = Authenticator.getWalletOperation().getKeyPool(); } //Main.config.getKeyPool();} 
+    	try {keypool = Authenticator.getWalletOperation().getKeyPool(); }  
     	catch (IOException e) {e.printStackTrace();}
     	AddressBox.getItems().clear();
     	AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
@@ -908,4 +942,14 @@ public class Controller {
    	//	Transactions Pane
    	//
    	//#####################################
+    
+    //#####################################
+   	//
+   	//	Apps Pane
+   	//
+   	//#####################################
+    
+    @FXML protected void btnAppAuthenticator(MouseEvent event) {
+    	Main.instance.overlayUI("Pair_wallet.fxml");
+    }
 }
