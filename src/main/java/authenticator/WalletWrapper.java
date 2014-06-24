@@ -3,6 +3,8 @@ package authenticator;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.google.bitcoin.core.Address;
@@ -20,6 +22,7 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.script.Script;
 
 /**
  * <p>A wrapper class to handle all operations regarding the bitcoinj wallet.</p>
@@ -82,7 +85,7 @@ public class WalletWrapper extends BASE{
 	 * @throws ScriptException
 	 * @throws UnsupportedEncodingException
 	 */
-	public Coin getBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
+	public Coin getEstimatedBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
 	{
 		Coin retBalance = null;
 		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
@@ -97,22 +100,57 @@ public class WalletWrapper extends BASE{
 		return retBalance;
 	}
 	
+	/**
+	 * Get Bitcoinj conformed balance.<br>
+	 * Uses the <b>Wallet.BalanceType.AVAILABLE</b> flag
+	 * 
+	 * @return
+	 */
 	public Coin getConfirmedBalance()
 	{
 		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE);
 		return walletBalance;
 	}
 	
+	/**
+	 * Get Bitcoinj conformed balance.<br>
+	 * Equals <b>Wallet.BalanceType.ESTIMATED</b> - <b>Wallet.BalanceType.AVAILABLE</b>
+	 * 
+	 * @return
+	 */
 	public Coin getUnconfirmedBalance(){
 		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED).subtract(trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE));
 		return walletBalance;
 	}
 	
+	/**
+	 * Get combined estimated balance of the normal bitcoinj wallet and the watched Authenticator addresses
+	 * 
+	 * @return
+	 */
 	public Coin getCombinedEstimatedBalance()
 	{
 		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
 		Coin authenticatorBalance = trackedWallet.getWatchedBalance();
 		return walletBalance.add(authenticatorBalance);
+	}
+	
+	public Coin getPendingWatchedTransactionsBalacnce(ArrayList<String> addressArr){
+		ArrayList<TransactionOutput> watched = getUnspentOutputsForAddresses(addressArr);
+		Collection<Transaction> allPending = trackedWallet.getPendingTransactions();
+		Coin ret = Coin.ZERO;
+		for (Iterator<Transaction> iterator = allPending.iterator(); iterator.hasNext();){
+			Transaction tx  = iterator.next();
+			for (TransactionOutput output : tx.getOutputs()){
+				// check pendgin tx output is addressArr list
+				String add = output.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
+                if (!addressArr.contains(add)) continue;
+                // add amount
+                ret = ret.add(output.getValue());
+			}			
+		}
+			
+		return ret;
 	}
 	
 	public LinkedList<TransactionOutput> getWatchedOutputs(){

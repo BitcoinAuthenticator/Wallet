@@ -212,25 +212,6 @@ public class WalletOperation extends BASE{
 		return tx;
 	}
 	
-	/**
-	 * Get unspent balance of a single pairing between the wallet and an authenticator by pair ID.
-	 * 
-	 * @param pairID
-	 * @return the balance as a BigInteger {@link java.math.BigInteger}
-	 * @throws ScriptException
-	 * @throws UnsupportedEncodingException
-	 */
-	public Coin getBalance(String pairID) throws ScriptException, UnsupportedEncodingException
-	{
-		return getBalance(getAddressesArray(pairID));
-	}
-	/**
-	 * Returns the balance of the addresses using bitcoinj's wallet and its watched addresses.
-	 * @throws UnsupportedEncodingException 
-	 * @throws ScriptException */
-	public Coin getBalance(ArrayList<String> addresses) throws ScriptException, UnsupportedEncodingException {
-		return mWalletWrapper.getBalanceOfWatchedAddresses(addresses);
-	}
     
 	//#####################################
 	//
@@ -367,6 +348,48 @@ public class WalletOperation extends BASE{
 		configFile.addAddressAndPrivateKeyToPairing(pairID, privkey, addr, index);
 	}
 	
+	/**
+	 * Returns a pending balance for a particular paired authenticator
+	 * 
+	 * @param pairingID
+	 * @return
+	 */
+	public Coin getUnconfirmedBalance(String pairingID){
+		return getPendingBalanceForAddresses(this.getAddressesArray(pairingID));
+	}
+	private Coin getPendingBalanceForAddresses(ArrayList<String> addressArr)
+	{
+		return mWalletWrapper.getPendingWatchedTransactionsBalacnce(addressArr);
+	}
+	
+	/**
+	 * Return the estimated balance of a paired Authenticator
+	 * 
+	 * @param pairingID
+	 * @return
+	 */
+	public Coin getConfirmedBalance(String pairingID){
+		try {
+			Coin estimated = mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(this.getAddressesArray(pairingID));
+			Coin unConfirmed = getUnconfirmedBalance(pairingID);
+			return estimated.subtract(unConfirmed);
+		} catch (ScriptException | UnsupportedEncodingException e) { e.printStackTrace(); }
+		return Coin.ZERO;
+	}
+	
+	/**
+	 * Return the estimated balance of a paired Authenticator
+	 * 
+	 * @param pairingID
+	 * @return
+	 */
+	public Coin getEstimatedBalance(String pairingID){
+		try {
+			return mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(this.getAddressesArray(pairingID));
+		} catch (ScriptException | UnsupportedEncodingException e) { e.printStackTrace(); }
+		return Coin.ZERO;
+	}
+	
 	//#####################################
 	//
 	//		Pending Requests Control
@@ -410,23 +433,40 @@ public class WalletOperation extends BASE{
   	//	Regular Bitocoin Wallet Operations
   	//
   	//#####################################
-    /**
-     * Returns the regular (Not Paired authenticator wallet) balance
-     * @return
-     */
-    public static Coin getAccountConfirmedBalance()
+   
+	// balances
+	
+	/**
+	 * Get Bitcoinj conformed balance.<br>
+	 * Uses the <b>Wallet.BalanceType.AVAILABLE</b> flag
+	 * 
+	 * @return
+	 */
+    public static Coin getNormalAccountConfirmedBalance()
     {
     	return mWalletWrapper.getConfirmedBalance();
     }
     
-    public static Coin getAccountUnconfirmedBalance(){
+    /**
+	 * Get Bitcoinj conformed balance.<br>
+	 * Equals <b>Wallet.BalanceType.ESTIMATED</b> - <b>Wallet.BalanceType.AVAILABLE</b>
+	 * 
+	 * @return
+	 */
+    public static Coin getNormalAccountUnconfirmedBalance(){
     	return mWalletWrapper.getUnconfirmedBalance();
     }
     
-    public static Coin getGeneralAllWalletsCombinedEstimatedBalance()
+    /**
+	 * Get combined estimated balance of the normal bitcoinj wallet and the watched Authenticator addresses
+	 * 
+	 * @return
+	 */
+    public static Coin getCombinedEstimatedBalance()
     {
     	return mWalletWrapper.getCombinedEstimatedBalance();
     }
+    
     
     public NetworkParameters getNetworkParams()
 	{
@@ -447,11 +487,6 @@ public class WalletOperation extends BASE{
 	{
 		mWalletWrapper.addP2ShAddressToWatch(address);
 		this.LOG.info("Added address to watch: " + address.toString());
-	}
-	
-	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
-	{
-		return mWalletWrapper.getUnspentOutputsForAddresses(addressArr);
 	}
 	
 	public void connectInputs(List<TransactionInput> inputs)

@@ -196,13 +196,18 @@ public class Authenticator extends AbstractService{
 	 * @param acc
 	 * @return
 	 */
-	public static boolean changeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc)
+	public static boolean setActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc)
 	{
 		try {
 			getWalletOperation().writeActiveAccount(acc);
 			activeAccount = acc;
 			return true;
 		} catch (IOException e) { e.printStackTrace(); return false;}
+	}
+	
+	public static AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount()
+	{
+		return activeAccount;
 	}
 	
 	//#####################################

@@ -167,7 +167,7 @@ public class ConfigFile {
 				newKeyObj.setIndex(index);
 				
 				int i = o.getDescriptor().getIndex();
-				auth.getConfigAuthenticatorWalletBuilder().getPairedWallets(i).getGeneratedKeysList().add(newKeyObj.build());
+				auth.getConfigAuthenticatorWalletBuilder().getPairedWalletsBuilder(i).addGeneratedKeys(newKeyObj.build());
 				writeConfigFile(auth);
 				
 				break;

@@ -63,6 +63,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -191,7 +192,7 @@ public class Controller {
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);
         refreshBalanceLabel();
-        setAddresses();
+        setReceiveAddresses();
         
         Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
         
@@ -367,7 +368,7 @@ public class Controller {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                        	setAddresses();
+                        	setReceiveAddresses();
                             System.out.println("Done");
                         }
                     });
@@ -528,11 +529,16 @@ public class Controller {
 	   for(PairedAuthenticator po:all){
 		   AccountBox.getItems().add(po.getPairingName());
 	   }
-	   AccountBox.setValue("Main Wallet");
+	   
+	   if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
+		   AccountBox.setValue("Main Wallet");
+	   else
+		   AccountBox.setValue(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingName());
+		   
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
 	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
    		@Override public void changed(ObservableValue ov, String t, String t1) {
-   			//changeAccount(t1);
+   			changeAccount(t1);
    		}    
    	});
    }
@@ -583,16 +589,30 @@ public class Controller {
         } catch (IOException e) {e.printStackTrace();}*/
     }
     
-    public void refreshBalanceLabel() {
-    	Collection<Transaction> pendingtxs= bitcoin.wallet().getPendingTransactions();
+    @SuppressWarnings("static-access")
+	public void refreshBalanceLabel() {
+    	/*Collection<Transaction> pendingtxs= bitcoin.wallet().getPendingTransactions();
     	Coin unconfirmed = Coin.valueOf(0);
     	for (Transaction tx : pendingtxs){
     		unconfirmed = unconfirmed.add(tx.getValueSentToMe(bitcoin.wallet()));
     	}
         final Coin confirmed = (bitcoin.wallet().getBalance(Wallet.BalanceType.AVAILABLE)).subtract(unconfirmed);
-        final Coin watched = bitcoin.wallet().getWatchedBalance();
-        final Coin total = confirmed.add(watched);
-        lblConfirmedBalance.setText(total.toFriendlyString() + " BTC");
+        final Coin watched = bitcoin.wallet().getWatchedBalance();*/
+    	
+    	Coin unconfirmed = Coin.ZERO;
+    	Coin confirmed = Coin.ZERO;
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
+    	{
+	    	unconfirmed = Authenticator.getWalletOperation().getNormalAccountUnconfirmedBalance();
+	    	confirmed = Authenticator.getWalletOperation().getNormalAccountConfirmedBalance();
+    	}
+    	else{
+    		unconfirmed = Authenticator.getWalletOperation().getUnconfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
+	    	confirmed 	= Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
+    	}
+    	
+        //final Coin total = confirmed.add(unconfirmed);
+        lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
     }
     
@@ -638,8 +658,13 @@ public class Controller {
     			tx.addOutput(Coin.valueOf(satoshis), destination);
     		}
             Wallet.SendRequest req = Wallet.SendRequest.forTx(tx);
+            //
             if (txFee.getText().equals("")){req.feePerKb = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
-            else {req.feePerKb = Coin.valueOf((Long.valueOf(txFee.getText()).longValue())*100000000);}
+            else 
+            {
+            	double fee = (double) Double.parseDouble(txFee.getText())*100000000;
+            	req.feePerKb = Coin.valueOf((long)fee);//Coin.valueOf(Long.parseLong(txFee.getText()) * 100000000);
+            }
             req.changeAddress = bitcoin.wallet().getChangeAddress();
             sendResult = Main.bitcoin.wallet().sendCoins(req);
             Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
@@ -922,24 +947,58 @@ public class Controller {
         return BitcoinURI.convertToBitcoinURI(addr, null, Main.APP_NAME, null);
     }
     
-    private void setAddresses(){
-    	ArrayList<ECKey> keypool = null;
-    	try { Authenticator.getWalletOperation().fillKeyPool(); } 
-    	catch (IOException e) {e.printStackTrace();}
-    	try {keypool = Authenticator.getWalletOperation().getKeyPool(); }  
-    	catch (IOException e) {e.printStackTrace();}
+    @SuppressWarnings("unchecked")
+	private void setReceiveAddresses(){
     	AddressBox.getItems().clear();
-    	AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
-    	for (ECKey key : keypool){
-    		String addr = key.toAddress(Main.params).toString();
-    		AddressBox.getItems().addAll(addr);
-    	}                              
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal){
+    		ArrayList<ECKey> keypool = null;
+        	try { Authenticator.getWalletOperation().fillKeyPool(); } 
+        	catch (IOException e) {e.printStackTrace();}
+        	try {keypool = Authenticator.getWalletOperation().getKeyPool(); }  
+        	catch (IOException e) {e.printStackTrace();}
+        	
+        	AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
+        	for (ECKey key : keypool){
+        		String addr = key.toAddress(Main.params).toString();
+        		AddressBox.getItems().addAll(addr);
+        	}                              
+    	}
+    	else{
+    		ArrayList<String> add = Authenticator.getWalletOperation().getAddressesArray(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
+    		if(add.size() == 0){
+    			String newAdd;
+				try {
+					newAdd = Authenticator.getWalletOperation().genP2SHAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
+					add.add(newAdd);
+				} catch (NoSuchAlgorithmException | JSONException
+						| AddressFormatException e) { e.printStackTrace(); }
+    			
+    		}
+    		for (String address : add){
+        		AddressBox.getItems().addAll(address);
+        	}
+    		AddressBox.setValue(add.get(0));
+    		
+    	}
+    	
     	AddressBox.getItems().addAll("                                More");
-    	AddressBox.valueProperty().addListener(new ChangeListener<String>() {
+		AddressBox.valueProperty().addListener(new ChangeListener<String>() {
     		@Override public void changed(ObservableValue ov, String t, String t1) {
+    			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
-    				try {Authenticator.getWalletOperation().addMoreAddresses();} 
-    				catch (IOException e) {e.printStackTrace();}
+    				if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal){
+    					try {Authenticator.getWalletOperation().addMoreAddresses();} 
+        				catch (IOException e) {e.printStackTrace();}
+    				}
+    				else
+    				{
+    					String newAdd;
+        				try {
+        					newAdd = Authenticator.getWalletOperation().genP2SHAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
+        					AddressBox.getItems().add(0, newAdd);
+        				} catch (NoSuchAlgorithmException | JSONException
+        						| AddressFormatException e) { e.printStackTrace(); }
+    				}
     			}
     		}    
     	});
@@ -992,12 +1051,12 @@ public class Controller {
     	else {
     		b.setActiveAccountType(ActiveAccountType.Normal);
     	}
-    	if( Authenticator.changeActiveAccount(b.build()))
+    	if( Authenticator.setActiveAccount(b.build()))
     		updateUIForNewActiveAccount();
     }
     
     public void updateUIForNewActiveAccount(){
     	refreshBalanceLabel();
-        setAddresses();
+    	setReceiveAddresses();
     }
 }
