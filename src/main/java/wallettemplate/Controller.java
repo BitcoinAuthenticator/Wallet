@@ -940,8 +940,14 @@ public class Controller {
                 // Embed the image in a pane to ensure the drop-shadow interacts with the fade nicely, otherwise it looks weird.
                 // Then fix the width/height to stop it expanding to fill the parent, which would result in the image being
                 // non-centered on the screen. Finally fade/blur it in.
-                Pane pane = new Pane(view);
-                pane.setMaxSize(qrImage.getWidth(), qrImage.getHeight());
+                Button btnCopyURI = new Button("Copy URI");
+                VBox requestvbox = new VBox();
+                requestvbox.getChildren().add(view);
+                requestvbox.getChildren().add(btnCopyURI);
+                requestvbox.setStyle("-fx-background-color: white;");
+                Pane pane = new Pane(requestvbox);
+                pane.setMaxSize(360, 360);
+                pane.setStyle("-fx-background-color: white;");
                 final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
                 view.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
