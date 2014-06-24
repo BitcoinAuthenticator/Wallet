@@ -80,6 +80,7 @@ public class WalletOperation extends BASE{
 			 */
 			if(!configFile.checkConfigFile())
 		        configFile.setPaired(false);
+				//configFile.setOneName("NULL");
 		}
 	}
 	

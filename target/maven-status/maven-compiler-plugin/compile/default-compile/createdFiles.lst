@@ -2,6 +2,7 @@ authenticator/protobuf/ProtoConfig$ConfigSettings.class
 wallettemplate/Main$2.class
 wallettemplate/PairWallet$1$3.class
 wallettemplate/utils/BaseUI.class
+wallettemplate/Controller$15.class
 wallettemplate/Controller$NewAddress.class
 authenticator/operations/OperationActions.class
 authenticator/network/UpNp.class
@@ -17,6 +18,7 @@ wallettemplate/OneName.class
 wallettemplate/utils/GuiUtils.class
 wallettemplate/Main.class
 wallettemplate/PairWallet$1$2.class
+wallettemplate/Controller$14.class
 authenticator/protobuf/ProtoConfig$ConfigAddressBookOrBuilder.class
 authenticator/protobuf/ProtoConfig$ConfigAuthenticatorWallet$PairedAuthenticator$KeysObjectOrBuilder.class
 authenticator/BipSSS/BipSSS$InvalidContentTypeException.class
@@ -33,6 +35,7 @@ authenticator/operations/OperationsFactory$2.class
 wallettemplate/Controller$7.class
 wallettemplate/Controller$1.class
 authenticator/BASE.class
+wallettemplate/Controller$10$1.class
 authenticator/BipSSS/BipSSS$ContentType.class
 wallettemplate/Controller$PeerListener.class
 authenticator/operations/OperationsFactory$2$1.class
@@ -50,7 +53,6 @@ wallettemplate/PairWallet$1$1.class
 authenticator/protobuf/ProtoConfig$ConfigAuthenticatorWallet$PendingRequest$Builder.class
 authenticator/protobuf/ProtoConfig$ATOperationType$1.class
 authenticator/Utils/BAUtils.class
-wallettemplate/Controller$9$1.class
 authenticator/protobuf/ProtoConfig$ConfigAuthenticatorWallet$PairedAuthenticator$KeysObject.class
 wallettemplate/controls/ScrollPaneContentManager.class
 authenticator/protobuf/ProtoConfig$ConfigSettings$1.class
@@ -61,6 +63,7 @@ authenticator/protobuf/ProtoConfig$ConfigAuthenticatorWallet$PairedAuthenticator
 authenticator/operations/OperationsUtils/QRCode.class
 wallettemplate/utils/ThrottledRunLater.class
 authenticator/Utils/SafeList.class
+wallettemplate/Controller$16.class
 authenticator/protobuf/ProtoConfig$ConfigSettingsOrBuilder.class
 wallettemplate/utils/TextFieldValidator.class
 wallettemplate/controls/BitcoinAddressValidator.class
@@ -106,6 +109,7 @@ authenticator/BipSSS/BipSSS.class
 wallettemplate/Controller$TorListener$1.class
 authenticator/protobuf/ProtoConfig$ATOperationType.class
 authenticator/protobuf/ProtoConfig$ConfigAddressBook$1.class
+wallettemplate/Controller$14$1.class
 wallettemplate/Controller$TorListener.class
 authenticator/protobuf/ProtoConfig$ConfigAuthenticatorWallet$PendingRequest$1.class
 wallettemplate/Controller$3.class

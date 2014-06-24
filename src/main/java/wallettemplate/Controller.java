@@ -40,6 +40,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
@@ -126,7 +127,9 @@ public class Controller {
 	 @FXML private Button btnRequest;
 	 @FXML private Button btnClear;
 	 @FXML public ChoiceBox AccountBox;
-	 
+	 @FXML private TextField txReqLabel;
+	 @FXML private TextField txReqAmount;
+	 @FXML private TextArea txReqMemo;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -179,7 +182,7 @@ public class Controller {
         });
         
         // Peer icon
-        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));        
+        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));    
     }
     
     public void onBitcoinSetup() {
@@ -521,12 +524,22 @@ public class Controller {
 	   } catch (IOException e) { }
 	   
 	   AccountBox.getItems().clear();
-	   AccountBox.getItems().add("Main Wallet");
+	   AccountBox.getItems().add("Spending");
+	   AccountBox.getItems().add("Savings");
 	   for(PairedAuthenticator po:all){
 		   AccountBox.getItems().add(po.getPairingName());
 	   }
-	   AccountBox.setValue("Main Wallet");
+	   AccountBox.setValue("Spending");
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
+	   AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);	   
+	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
+   			@Override 
+   			public void changed(ObservableValue ov, String t, String t1) {
+   				AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);
+   			}    
+	   });
+	   
+
    }
    
    	//#####################################
@@ -778,19 +791,19 @@ public class Controller {
    	//#####################################
     
     @FXML protected void btnRequestPressed(MouseEvent event) {
-    	btnAdd.setStyle("-fx-background-color: #a1d2e7;");
+    	btnRequest.setStyle("-fx-background-color: #a1d2e7;");
     }
     
     @FXML protected void btnRequestReleased(MouseEvent event) {
-    	btnAdd.setStyle("-fx-background-color: #199bd6;");
+    	btnRequest.setStyle("-fx-background-color: #199bd6;");
     }
     
     @FXML protected void btnClearPressed(MouseEvent event) {
-    	btnSend.setStyle("-fx-background-color: #a1d2e7;");
+    	btnClear.setStyle("-fx-background-color: #a1d2e7;");
     }
     
     @FXML protected void btnClearReleased(MouseEvent event) {
-    	btnSend.setStyle("-fx-background-color: #199bd6;");
+    	btnClear.setStyle("-fx-background-color: #199bd6;");
     } 
     
     void createReceivePaneButtons(){
@@ -907,11 +920,57 @@ public class Controller {
         ReceiveHBox.getChildren().add(btnCopy);
         ReceiveHBox.getChildren().add(btnQR);
         ReceiveHBox.getChildren().add(btnKey);
+        
+        btnRequest.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+            	 // Serialize to PNG and back into an image. Pretty lame but it's the shortest code to write and I'm feeling
+                // lazy tonight.
+                byte[] imageBytes = null;
+				try {
+					imageBytes = QRCode
+					        .from(paymentRequestURI())
+					        .withSize(360, 360)
+					        .to(ImageType.PNG)
+					        .stream()
+					        .toByteArray();
+				} catch (AddressFormatException e1) {e1.printStackTrace();}
+                Image qrImage = new Image(new ByteArrayInputStream(imageBytes));
+                ImageView view = new ImageView(qrImage);
+                view.setEffect(new DropShadow());
+                // Embed the image in a pane to ensure the drop-shadow interacts with the fade nicely, otherwise it looks weird.
+                // Then fix the width/height to stop it expanding to fill the parent, which would result in the image being
+                // non-centered on the screen. Finally fade/blur it in.
+                Pane pane = new Pane(view);
+                pane.setMaxSize(qrImage.getWidth(), qrImage.getHeight());
+                final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+                view.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        overlay.done();
+                    }
+                });
+            }
+        });
+        btnClear.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+            	txReqLabel.setText("");
+            	txReqMemo.setText("");
+            	txReqAmount.setText("");
+            }
+        });
     }
     
     public String uri() throws AddressFormatException {
 		Address addr = new Address(Main.params, AddressBox.getValue().toString());
         return BitcoinURI.convertToBitcoinURI(addr, null, Main.APP_NAME, null);
+    }
+    
+    public String paymentRequestURI() throws AddressFormatException {
+		Address addr = new Address(Main.params, AddressBox.getValue().toString());
+		double amount = (double) Double.parseDouble(txReqAmount.getText())*100000000;
+		long satoshis = (long) amount;
+		Coin reqamount = Coin.valueOf(satoshis);
+        return BitcoinURI.convertToBitcoinURI(addr, reqamount, txReqLabel.getText().toString(), txReqMemo.getText().toString());
     }
     
     private void setAddresses(){

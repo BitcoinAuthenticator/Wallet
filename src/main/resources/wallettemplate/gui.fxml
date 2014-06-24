@@ -127,8 +127,8 @@
           </children>
         </HBox>
         <Separator layoutX="46.0" layoutY="97.0" minHeight="2.1999969482421875" prefHeight="2.1999969482421875" prefWidth="537.0" />
-        <TextField layoutX="67.0" layoutY="127.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
-        <TextField layoutX="67.0" layoutY="165.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+        <TextField fx:id="txReqLabel" layoutX="67.0" layoutY="127.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+        <TextField fx:id="txReqAmount" layoutX="67.0" layoutY="165.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
         <ChoiceBox layoutX="283.0" layoutY="169.0">
           <items>
             <FXCollections fx:factory="observableArrayList">
@@ -138,7 +138,7 @@
             </FXCollections>
           </items>
         </ChoiceBox>
-        <TextArea layoutX="67.0" layoutY="206.0" prefHeight="71.0" prefWidth="475.0" wrapText="true" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent" />
+        <TextArea fx:id="txReqMemo" layoutX="67.0" layoutY="206.0" prefHeight="71.0" prefWidth="475.0" wrapText="true" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent" />
         <Button fx:id="btnRequest" layoutX="67.0" layoutY="294.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="155.0" text="Request Payment" onMousePressed="#btnRequestPressed" onMouseReleased="#btnRequestReleased" styleClass="custom-button"/>
         <Button fx:id="btnClear" layoutX="261.0" layoutY="295.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="109.5" text="Clear" onMousePressed="#btnClearPressed" onMouseReleased="#btnClearReleased" styleClass="custom-button"/>
       </children>
@@ -231,7 +231,7 @@
                 <Font size="15.0" />
               </font>
             </Label>
-            <Button fx:id="btnLocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
+            <Button fx:id="btnLocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
               <graphic>
                 <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
                   <image>
@@ -502,7 +502,7 @@
         <Image url="@bitcoin_logo_plain_small.png" />
       </image>
     </ImageView>
-    <ChoiceBox fx:id="AccountBox" layoutX="65.0" layoutY="25.0" prefHeight="15.0" prefWidth="150.0" styleClass="choice-box-account">
+    <ChoiceBox fx:id="AccountBox" layoutX="65.0" layoutY="22.0" prefHeight="15.0" prefWidth="150.0" styleClass="choice-box-account">
       <items>
         <FXCollections fx:factory="observableArrayList" />
       </items>

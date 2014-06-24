@@ -20,6 +20,7 @@ import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
 import authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses;
+import authenticator.protobuf.ProtoConfig.ConfigSettings;
 
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -48,6 +49,19 @@ public class ConfigFile {
 			return true;
         return false;
 	}
+	
+	/*public void setOneName(String onename) throws IOException{
+		ConfigSettings settings = ProtoConfig.ConfigSettings.newBuilder().setOnename(onename).build();
+		FileOutputStream output = new FileOutputStream(filePath);  
+		settings.writeTo(output);          
+		output.close();
+	}
+	
+	public String getOneName() throws FileNotFoundException, IOException{
+		ConfigSettings settings = ConfigSettings.parseFrom(new FileInputStream(filePath));
+		String onename = settings.getOnename();
+		return onename;
+	}*/
 	
 	public void setPaired(boolean paired) throws IOException{
 		ConfigAuthenticatorWallet auth = ProtoConfig.ConfigAuthenticatorWallet.newBuilder().setPaired(paired).build();
