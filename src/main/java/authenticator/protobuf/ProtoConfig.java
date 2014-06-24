@@ -108,703 +108,86 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(enum_scope:authenticator.protobuf.ATOperationType)
   }
 
-  public interface ActiveAccountOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-
-    // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
-    /**
-     * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-     */
-    boolean hasPairedAuthenticator();
-    /**
-     * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-     */
-    authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedAuthenticator();
-    /**
-     * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-     */
-    authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedAuthenticatorOrBuilder();
-
-    // required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;
-    /**
-     * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-     */
-    boolean hasActiveAccountType();
-    /**
-     * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-     */
-    authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType getActiveAccountType();
-  }
   /**
-   * Protobuf type {@code authenticator.protobuf.ActiveAccount}
+   * Protobuf enum {@code authenticator.protobuf.ActiveAccountType}
    */
-  public static final class ActiveAccount extends
-      com.google.protobuf.GeneratedMessage
-      implements ActiveAccountOrBuilder {
-    // Use ActiveAccount.newBuilder() to construct.
-    private ActiveAccount(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private ActiveAccount(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+  public enum ActiveAccountType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>Normal = 0;</code>
+     */
+    Normal(0, 0),
+    /**
+     * <code>Authenticator = 1;</code>
+     */
+    Authenticator(1, 1),
+    ;
 
-    private static final ActiveAccount defaultInstance;
-    public static ActiveAccount getDefaultInstance() {
-      return defaultInstance;
-    }
+    /**
+     * <code>Normal = 0;</code>
+     */
+    public static final int Normal_VALUE = 0;
+    /**
+     * <code>Authenticator = 1;</code>
+     */
+    public static final int Authenticator_VALUE = 1;
 
-    public ActiveAccount getDefaultInstanceForType() {
-      return defaultInstance;
-    }
 
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ActiveAccount(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                subBuilder = pairedAuthenticator_.toBuilder();
-              }
-              pairedAuthenticator_ = input.readMessage(authenticator.protobuf.ProtoConfig.PairedAuthenticator.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(pairedAuthenticator_);
-                pairedAuthenticator_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000001;
-              break;
-            }
-            case 16: {
-              int rawValue = input.readEnum();
-              authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType value = authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(2, rawValue);
-              } else {
-                bitField0_ |= 0x00000002;
-                activeAccountType_ = value;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
+    public final int getNumber() { return value; }
+
+    public static ActiveAccountType valueOf(int value) {
+      switch (value) {
+        case 0: return Normal;
+        case 1: return Authenticator;
+        default: return null;
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ActiveAccountType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<ActiveAccountType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ActiveAccountType>() {
+            public ActiveAccountType findValueByNumber(int number) {
+              return ActiveAccountType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ActiveAccount_descriptor;
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(1);
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ActiveAccount_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              authenticator.protobuf.ProtoConfig.ActiveAccount.class, authenticator.protobuf.ProtoConfig.ActiveAccount.Builder.class);
+    private static final ActiveAccountType[] VALUES = values();
+
+    public static ActiveAccountType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
     }
 
-    public static com.google.protobuf.Parser<ActiveAccount> PARSER =
-        new com.google.protobuf.AbstractParser<ActiveAccount>() {
-      public ActiveAccount parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ActiveAccount(input, extensionRegistry);
-      }
-    };
+    private final int index;
+    private final int value;
 
-    @java.lang.Override
-    public com.google.protobuf.Parser<ActiveAccount> getParserForType() {
-      return PARSER;
+    private ActiveAccountType(int index, int value) {
+      this.index = index;
+      this.value = value;
     }
 
-    /**
-     * Protobuf enum {@code authenticator.protobuf.ActiveAccount.ActiveAccountType}
-     */
-    public enum ActiveAccountType
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>Normal = 0;</code>
-       */
-      Normal(0, 0),
-      /**
-       * <code>Authenticator = 1;</code>
-       */
-      Authenticator(1, 1),
-      ;
-
-      /**
-       * <code>Normal = 0;</code>
-       */
-      public static final int Normal_VALUE = 0;
-      /**
-       * <code>Authenticator = 1;</code>
-       */
-      public static final int Authenticator_VALUE = 1;
-
-
-      public final int getNumber() { return value; }
-
-      public static ActiveAccountType valueOf(int value) {
-        switch (value) {
-          case 0: return Normal;
-          case 1: return Authenticator;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<ActiveAccountType>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static com.google.protobuf.Internal.EnumLiteMap<ActiveAccountType>
-          internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<ActiveAccountType>() {
-              public ActiveAccountType findValueByNumber(int number) {
-                return ActiveAccountType.valueOf(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.ActiveAccount.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final ActiveAccountType[] VALUES = values();
-
-      public static ActiveAccountType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int index;
-      private final int value;
-
-      private ActiveAccountType(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:authenticator.protobuf.ActiveAccount.ActiveAccountType)
-    }
-
-    private int bitField0_;
-    // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
-    public static final int PAIREDAUTHENTICATOR_FIELD_NUMBER = 1;
-    private authenticator.protobuf.ProtoConfig.PairedAuthenticator pairedAuthenticator_;
-    /**
-     * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-     */
-    public boolean hasPairedAuthenticator() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedAuthenticator() {
-      return pairedAuthenticator_;
-    }
-    /**
-     * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedAuthenticatorOrBuilder() {
-      return pairedAuthenticator_;
-    }
-
-    // required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;
-    public static final int ACTIVEACCOUNTTYPE_FIELD_NUMBER = 2;
-    private authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType activeAccountType_;
-    /**
-     * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-     */
-    public boolean hasActiveAccountType() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType getActiveAccountType() {
-      return activeAccountType_;
-    }
-
-    private void initFields() {
-      pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
-      activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType.Normal;
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      if (!hasActiveAccountType()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (hasPairedAuthenticator()) {
-        if (!getPairedAuthenticator().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, pairedAuthenticator_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeEnum(2, activeAccountType_.getNumber());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, pairedAuthenticator_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, activeAccountType_.getNumber());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ActiveAccount parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ActiveAccount prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code authenticator.protobuf.ActiveAccount}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.ActiveAccountOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ActiveAccount_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ActiveAccount_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                authenticator.protobuf.ProtoConfig.ActiveAccount.class, authenticator.protobuf.ProtoConfig.ActiveAccount.Builder.class);
-      }
-
-      // Construct using authenticator.protobuf.ProtoConfig.ActiveAccount.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getPairedAuthenticatorFieldBuilder();
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        if (pairedAuthenticatorBuilder_ == null) {
-          pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
-        } else {
-          pairedAuthenticatorBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType.Normal;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ActiveAccount_descriptor;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ActiveAccount getDefaultInstanceForType() {
-        return authenticator.protobuf.ProtoConfig.ActiveAccount.getDefaultInstance();
-      }
-
-      public authenticator.protobuf.ProtoConfig.ActiveAccount build() {
-        authenticator.protobuf.ProtoConfig.ActiveAccount result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ActiveAccount buildPartial() {
-        authenticator.protobuf.ProtoConfig.ActiveAccount result = new authenticator.protobuf.ProtoConfig.ActiveAccount(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        if (pairedAuthenticatorBuilder_ == null) {
-          result.pairedAuthenticator_ = pairedAuthenticator_;
-        } else {
-          result.pairedAuthenticator_ = pairedAuthenticatorBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.activeAccountType_ = activeAccountType_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof authenticator.protobuf.ProtoConfig.ActiveAccount) {
-          return mergeFrom((authenticator.protobuf.ProtoConfig.ActiveAccount)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ActiveAccount other) {
-        if (other == authenticator.protobuf.ProtoConfig.ActiveAccount.getDefaultInstance()) return this;
-        if (other.hasPairedAuthenticator()) {
-          mergePairedAuthenticator(other.getPairedAuthenticator());
-        }
-        if (other.hasActiveAccountType()) {
-          setActiveAccountType(other.getActiveAccountType());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        if (!hasActiveAccountType()) {
-          
-          return false;
-        }
-        if (hasPairedAuthenticator()) {
-          if (!getPairedAuthenticator().isInitialized()) {
-            
-            return false;
-          }
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        authenticator.protobuf.ProtoConfig.ActiveAccount parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (authenticator.protobuf.ProtoConfig.ActiveAccount) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
-      private authenticator.protobuf.ProtoConfig.PairedAuthenticator pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> pairedAuthenticatorBuilder_;
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public boolean hasPairedAuthenticator() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedAuthenticator() {
-        if (pairedAuthenticatorBuilder_ == null) {
-          return pairedAuthenticator_;
-        } else {
-          return pairedAuthenticatorBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public Builder setPairedAuthenticator(authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
-        if (pairedAuthenticatorBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          pairedAuthenticator_ = value;
-          onChanged();
-        } else {
-          pairedAuthenticatorBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public Builder setPairedAuthenticator(
-          authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
-        if (pairedAuthenticatorBuilder_ == null) {
-          pairedAuthenticator_ = builderForValue.build();
-          onChanged();
-        } else {
-          pairedAuthenticatorBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public Builder mergePairedAuthenticator(authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
-        if (pairedAuthenticatorBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              pairedAuthenticator_ != authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance()) {
-            pairedAuthenticator_ =
-              authenticator.protobuf.ProtoConfig.PairedAuthenticator.newBuilder(pairedAuthenticator_).mergeFrom(value).buildPartial();
-          } else {
-            pairedAuthenticator_ = value;
-          }
-          onChanged();
-        } else {
-          pairedAuthenticatorBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public Builder clearPairedAuthenticator() {
-        if (pairedAuthenticatorBuilder_ == null) {
-          pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
-          onChanged();
-        } else {
-          pairedAuthenticatorBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder getPairedAuthenticatorBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getPairedAuthenticatorFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedAuthenticatorOrBuilder() {
-        if (pairedAuthenticatorBuilder_ != null) {
-          return pairedAuthenticatorBuilder_.getMessageOrBuilder();
-        } else {
-          return pairedAuthenticator_;
-        }
-      }
-      /**
-       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
-          getPairedAuthenticatorFieldBuilder() {
-        if (pairedAuthenticatorBuilder_ == null) {
-          pairedAuthenticatorBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder>(
-                  pairedAuthenticator_,
-                  getParentForChildren(),
-                  isClean());
-          pairedAuthenticator_ = null;
-        }
-        return pairedAuthenticatorBuilder_;
-      }
-
-      // required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;
-      private authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType.Normal;
-      /**
-       * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-       */
-      public boolean hasActiveAccountType() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType getActiveAccountType() {
-        return activeAccountType_;
-      }
-      /**
-       * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-       */
-      public Builder setActiveAccountType(authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000002;
-        activeAccountType_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required .authenticator.protobuf.ActiveAccount.ActiveAccountType activeAccountType = 2;</code>
-       */
-      public Builder clearActiveAccountType() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType.Normal;
-        onChanged();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ActiveAccount)
-    }
-
-    static {
-      defaultInstance = new ActiveAccount(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:authenticator.protobuf.ActiveAccount)
+    // @@protoc_insertion_point(enum_scope:authenticator.protobuf.ActiveAccountType)
   }
 
   public interface PairedAuthenticatorOrBuilder
@@ -5286,96 +4669,98 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(class_scope:authenticator.protobuf.PendingRequest)
   }
 
-  public interface ConfigAuthenticatorWalletOrBuilder
+  public interface AuthenticatorConfigurationOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // optional bool paired = 1;
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;
     /**
-     * <code>optional bool paired = 1;</code>
-     *
-     * <pre>
-     * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-     * </pre>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
      */
-    boolean hasPaired();
+    boolean hasConfigActiveAccount();
     /**
-     * <code>optional bool paired = 1;</code>
-     *
-     * <pre>
-     * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-     * </pre>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
      */
-    boolean getPaired();
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount getConfigActiveAccount();
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+     */
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder getConfigActiveAccountOrBuilder();
 
-    // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;
     /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
      */
-    java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> 
-        getPairedWalletsList();
+    boolean hasConfigAuthenticatorWallet();
     /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
      */
-    authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedWallets(int index);
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet getConfigAuthenticatorWallet();
     /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
      */
-    int getPairedWalletsCount();
-    /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-     */
-    java.util.List<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
-        getPairedWalletsOrBuilderList();
-    /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-     */
-    authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
-        int index);
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder getConfigAuthenticatorWalletOrBuilder();
 
-    // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;
     /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
      */
-    java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> 
-        getPendingRequestsList();
+    boolean hasConfigReceiveAddresses();
     /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
      */
-    authenticator.protobuf.ProtoConfig.PendingRequest getPendingRequests(int index);
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses getConfigReceiveAddresses();
     /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
      */
-    int getPendingRequestsCount();
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddressesOrBuilder getConfigReceiveAddressesOrBuilder();
+
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;
     /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
      */
-    java.util.List<? extends authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
-        getPendingRequestsOrBuilderList();
+    boolean hasConfigAddressBook();
     /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
      */
-    authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder getPendingRequestsOrBuilder(
-        int index);
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook getConfigAddressBook();
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+     */
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder getConfigAddressBookOrBuilder();
+
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     */
+    boolean hasConfigSettings();
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     */
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getConfigSettings();
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     */
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder getConfigSettingsOrBuilder();
   }
   /**
-   * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet}
+   * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration}
    */
-  public static final class ConfigAuthenticatorWallet extends
+  public static final class AuthenticatorConfiguration extends
       com.google.protobuf.GeneratedMessage
-      implements ConfigAuthenticatorWalletOrBuilder {
-    // Use ConfigAuthenticatorWallet.newBuilder() to construct.
-    private ConfigAuthenticatorWallet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      implements AuthenticatorConfigurationOrBuilder {
+    // Use AuthenticatorConfiguration.newBuilder() to construct.
+    private AuthenticatorConfiguration(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
       this.unknownFields = builder.getUnknownFields();
     }
-    private ConfigAuthenticatorWallet(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+    private AuthenticatorConfiguration(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-    private static final ConfigAuthenticatorWallet defaultInstance;
-    public static ConfigAuthenticatorWallet getDefaultInstance() {
+    private static final AuthenticatorConfiguration defaultInstance;
+    public static AuthenticatorConfiguration getDefaultInstance() {
       return defaultInstance;
     }
 
-    public ConfigAuthenticatorWallet getDefaultInstanceForType() {
+    public AuthenticatorConfiguration getDefaultInstanceForType() {
       return defaultInstance;
     }
 
@@ -5385,1187 +4770,7 @@ public final class ProtoConfig {
         getUnknownFields() {
       return this.unknownFields;
     }
-    private ConfigAuthenticatorWallet(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              paired_ = input.readBool();
-              break;
-            }
-            case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                pairedWallets_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PairedAuthenticator>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              pairedWallets_.add(input.readMessage(authenticator.protobuf.ProtoConfig.PairedAuthenticator.PARSER, extensionRegistry));
-              break;
-            }
-            case 26: {
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                pendingRequests_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PendingRequest>();
-                mutable_bitField0_ |= 0x00000004;
-              }
-              pendingRequests_.add(input.readMessage(authenticator.protobuf.ProtoConfig.PendingRequest.PARSER, extensionRegistry));
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-          pairedWallets_ = java.util.Collections.unmodifiableList(pairedWallets_);
-        }
-        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-          pendingRequests_ = java.util.Collections.unmodifiableList(pendingRequests_);
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<ConfigAuthenticatorWallet> PARSER =
-        new com.google.protobuf.AbstractParser<ConfigAuthenticatorWallet>() {
-      public ConfigAuthenticatorWallet parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ConfigAuthenticatorWallet(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ConfigAuthenticatorWallet> getParserForType() {
-      return PARSER;
-    }
-
-    private int bitField0_;
-    // optional bool paired = 1;
-    public static final int PAIRED_FIELD_NUMBER = 1;
-    private boolean paired_;
-    /**
-     * <code>optional bool paired = 1;</code>
-     *
-     * <pre>
-     * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-     * </pre>
-     */
-    public boolean hasPaired() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional bool paired = 1;</code>
-     *
-     * <pre>
-     * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-     * </pre>
-     */
-    public boolean getPaired() {
-      return paired_;
-    }
-
-    // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
-    public static final int PAIREDWALLETS_FIELD_NUMBER = 2;
-    private java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> pairedWallets_;
-    /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-     */
-    public java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> getPairedWalletsList() {
-      return pairedWallets_;
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-     */
-    public java.util.List<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
-        getPairedWalletsOrBuilderList() {
-      return pairedWallets_;
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-     */
-    public int getPairedWalletsCount() {
-      return pairedWallets_.size();
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedWallets(int index) {
-      return pairedWallets_.get(index);
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
-        int index) {
-      return pairedWallets_.get(index);
-    }
-
-    // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
-    public static final int PENDINGREQUESTS_FIELD_NUMBER = 3;
-    private java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> pendingRequests_;
-    /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-     */
-    public java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> getPendingRequestsList() {
-      return pendingRequests_;
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-     */
-    public java.util.List<? extends authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
-        getPendingRequestsOrBuilderList() {
-      return pendingRequests_;
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-     */
-    public int getPendingRequestsCount() {
-      return pendingRequests_.size();
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.PendingRequest getPendingRequests(int index) {
-      return pendingRequests_.get(index);
-    }
-    /**
-     * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder getPendingRequestsOrBuilder(
-        int index) {
-      return pendingRequests_.get(index);
-    }
-
-    private void initFields() {
-      paired_ = false;
-      pairedWallets_ = java.util.Collections.emptyList();
-      pendingRequests_ = java.util.Collections.emptyList();
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      for (int i = 0; i < getPairedWalletsCount(); i++) {
-        if (!getPairedWallets(i).isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      for (int i = 0; i < getPendingRequestsCount(); i++) {
-        if (!getPendingRequests(i).isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBool(1, paired_);
-      }
-      for (int i = 0; i < pairedWallets_.size(); i++) {
-        output.writeMessage(2, pairedWallets_.get(i));
-      }
-      for (int i = 0; i < pendingRequests_.size(); i++) {
-        output.writeMessage(3, pendingRequests_.get(i));
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, paired_);
-      }
-      for (int i = 0; i < pairedWallets_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, pairedWallets_.get(i));
-      }
-      for (int i = 0; i < pendingRequests_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, pendingRequests_.get(i));
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code authenticator.protobuf.ConfigAuthenticatorWallet}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWalletOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.class, authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.Builder.class);
-      }
-
-      // Construct using authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getPairedWalletsFieldBuilder();
-          getPendingRequestsFieldBuilder();
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        paired_ = false;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        if (pairedWalletsBuilder_ == null) {
-          pairedWallets_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        } else {
-          pairedWalletsBuilder_.clear();
-        }
-        if (pendingRequestsBuilder_ == null) {
-          pendingRequests_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
-        } else {
-          pendingRequestsBuilder_.clear();
-        }
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet getDefaultInstanceForType() {
-        return authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.getDefaultInstance();
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet build() {
-        authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet buildPartial() {
-        authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet result = new authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.paired_ = paired_;
-        if (pairedWalletsBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002)) {
-            pairedWallets_ = java.util.Collections.unmodifiableList(pairedWallets_);
-            bitField0_ = (bitField0_ & ~0x00000002);
-          }
-          result.pairedWallets_ = pairedWallets_;
-        } else {
-          result.pairedWallets_ = pairedWalletsBuilder_.build();
-        }
-        if (pendingRequestsBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
-            pendingRequests_ = java.util.Collections.unmodifiableList(pendingRequests_);
-            bitField0_ = (bitField0_ & ~0x00000004);
-          }
-          result.pendingRequests_ = pendingRequests_;
-        } else {
-          result.pendingRequests_ = pendingRequestsBuilder_.build();
-        }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet) {
-          return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet other) {
-        if (other == authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.getDefaultInstance()) return this;
-        if (other.hasPaired()) {
-          setPaired(other.getPaired());
-        }
-        if (pairedWalletsBuilder_ == null) {
-          if (!other.pairedWallets_.isEmpty()) {
-            if (pairedWallets_.isEmpty()) {
-              pairedWallets_ = other.pairedWallets_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-            } else {
-              ensurePairedWalletsIsMutable();
-              pairedWallets_.addAll(other.pairedWallets_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.pairedWallets_.isEmpty()) {
-            if (pairedWalletsBuilder_.isEmpty()) {
-              pairedWalletsBuilder_.dispose();
-              pairedWalletsBuilder_ = null;
-              pairedWallets_ = other.pairedWallets_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-              pairedWalletsBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getPairedWalletsFieldBuilder() : null;
-            } else {
-              pairedWalletsBuilder_.addAllMessages(other.pairedWallets_);
-            }
-          }
-        }
-        if (pendingRequestsBuilder_ == null) {
-          if (!other.pendingRequests_.isEmpty()) {
-            if (pendingRequests_.isEmpty()) {
-              pendingRequests_ = other.pendingRequests_;
-              bitField0_ = (bitField0_ & ~0x00000004);
-            } else {
-              ensurePendingRequestsIsMutable();
-              pendingRequests_.addAll(other.pendingRequests_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.pendingRequests_.isEmpty()) {
-            if (pendingRequestsBuilder_.isEmpty()) {
-              pendingRequestsBuilder_.dispose();
-              pendingRequestsBuilder_ = null;
-              pendingRequests_ = other.pendingRequests_;
-              bitField0_ = (bitField0_ & ~0x00000004);
-              pendingRequestsBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getPendingRequestsFieldBuilder() : null;
-            } else {
-              pendingRequestsBuilder_.addAllMessages(other.pendingRequests_);
-            }
-          }
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        for (int i = 0; i < getPairedWalletsCount(); i++) {
-          if (!getPairedWallets(i).isInitialized()) {
-            
-            return false;
-          }
-        }
-        for (int i = 0; i < getPendingRequestsCount(); i++) {
-          if (!getPendingRequests(i).isInitialized()) {
-            
-            return false;
-          }
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      // optional bool paired = 1;
-      private boolean paired_ ;
-      /**
-       * <code>optional bool paired = 1;</code>
-       *
-       * <pre>
-       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-       * </pre>
-       */
-      public boolean hasPaired() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional bool paired = 1;</code>
-       *
-       * <pre>
-       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-       * </pre>
-       */
-      public boolean getPaired() {
-        return paired_;
-      }
-      /**
-       * <code>optional bool paired = 1;</code>
-       *
-       * <pre>
-       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-       * </pre>
-       */
-      public Builder setPaired(boolean value) {
-        bitField0_ |= 0x00000001;
-        paired_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool paired = 1;</code>
-       *
-       * <pre>
-       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-       * </pre>
-       */
-      public Builder clearPaired() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        paired_ = false;
-        onChanged();
-        return this;
-      }
-
-      // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
-      private java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> pairedWallets_ =
-        java.util.Collections.emptyList();
-      private void ensurePairedWalletsIsMutable() {
-        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          pairedWallets_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PairedAuthenticator>(pairedWallets_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
-          authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> pairedWalletsBuilder_;
-
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> getPairedWalletsList() {
-        if (pairedWalletsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(pairedWallets_);
-        } else {
-          return pairedWalletsBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public int getPairedWalletsCount() {
-        if (pairedWalletsBuilder_ == null) {
-          return pairedWallets_.size();
-        } else {
-          return pairedWalletsBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedWallets(int index) {
-        if (pairedWalletsBuilder_ == null) {
-          return pairedWallets_.get(index);
-        } else {
-          return pairedWalletsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder setPairedWallets(
-          int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
-        if (pairedWalletsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePairedWalletsIsMutable();
-          pairedWallets_.set(index, value);
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder setPairedWallets(
-          int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
-        if (pairedWalletsBuilder_ == null) {
-          ensurePairedWalletsIsMutable();
-          pairedWallets_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder addPairedWallets(authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
-        if (pairedWalletsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePairedWalletsIsMutable();
-          pairedWallets_.add(value);
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder addPairedWallets(
-          int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
-        if (pairedWalletsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePairedWalletsIsMutable();
-          pairedWallets_.add(index, value);
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder addPairedWallets(
-          authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
-        if (pairedWalletsBuilder_ == null) {
-          ensurePairedWalletsIsMutable();
-          pairedWallets_.add(builderForValue.build());
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder addPairedWallets(
-          int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
-        if (pairedWalletsBuilder_ == null) {
-          ensurePairedWalletsIsMutable();
-          pairedWallets_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder addAllPairedWallets(
-          java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticator> values) {
-        if (pairedWalletsBuilder_ == null) {
-          ensurePairedWalletsIsMutable();
-          super.addAll(values, pairedWallets_);
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder clearPairedWallets() {
-        if (pairedWalletsBuilder_ == null) {
-          pairedWallets_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public Builder removePairedWallets(int index) {
-        if (pairedWalletsBuilder_ == null) {
-          ensurePairedWalletsIsMutable();
-          pairedWallets_.remove(index);
-          onChanged();
-        } else {
-          pairedWalletsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder getPairedWalletsBuilder(
-          int index) {
-        return getPairedWalletsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
-          int index) {
-        if (pairedWalletsBuilder_ == null) {
-          return pairedWallets_.get(index);  } else {
-          return pairedWalletsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public java.util.List<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
-           getPairedWalletsOrBuilderList() {
-        if (pairedWalletsBuilder_ != null) {
-          return pairedWalletsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(pairedWallets_);
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder addPairedWalletsBuilder() {
-        return getPairedWalletsFieldBuilder().addBuilder(
-            authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder addPairedWalletsBuilder(
-          int index) {
-        return getPairedWalletsFieldBuilder().addBuilder(
-            index, authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
-       */
-      public java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder> 
-           getPairedWalletsBuilderList() {
-        return getPairedWalletsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
-          authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
-          getPairedWalletsFieldBuilder() {
-        if (pairedWalletsBuilder_ == null) {
-          pairedWalletsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder>(
-                  pairedWallets_,
-                  ((bitField0_ & 0x00000002) == 0x00000002),
-                  getParentForChildren(),
-                  isClean());
-          pairedWallets_ = null;
-        }
-        return pairedWalletsBuilder_;
-      }
-
-      // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
-      private java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> pendingRequests_ =
-        java.util.Collections.emptyList();
-      private void ensurePendingRequestsIsMutable() {
-        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-          pendingRequests_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PendingRequest>(pendingRequests_);
-          bitField0_ |= 0x00000004;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
-          authenticator.protobuf.ProtoConfig.PendingRequest, authenticator.protobuf.ProtoConfig.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> pendingRequestsBuilder_;
-
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> getPendingRequestsList() {
-        if (pendingRequestsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(pendingRequests_);
-        } else {
-          return pendingRequestsBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public int getPendingRequestsCount() {
-        if (pendingRequestsBuilder_ == null) {
-          return pendingRequests_.size();
-        } else {
-          return pendingRequestsBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PendingRequest getPendingRequests(int index) {
-        if (pendingRequestsBuilder_ == null) {
-          return pendingRequests_.get(index);
-        } else {
-          return pendingRequestsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder setPendingRequests(
-          int index, authenticator.protobuf.ProtoConfig.PendingRequest value) {
-        if (pendingRequestsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePendingRequestsIsMutable();
-          pendingRequests_.set(index, value);
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder setPendingRequests(
-          int index, authenticator.protobuf.ProtoConfig.PendingRequest.Builder builderForValue) {
-        if (pendingRequestsBuilder_ == null) {
-          ensurePendingRequestsIsMutable();
-          pendingRequests_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder addPendingRequests(authenticator.protobuf.ProtoConfig.PendingRequest value) {
-        if (pendingRequestsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePendingRequestsIsMutable();
-          pendingRequests_.add(value);
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder addPendingRequests(
-          int index, authenticator.protobuf.ProtoConfig.PendingRequest value) {
-        if (pendingRequestsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePendingRequestsIsMutable();
-          pendingRequests_.add(index, value);
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder addPendingRequests(
-          authenticator.protobuf.ProtoConfig.PendingRequest.Builder builderForValue) {
-        if (pendingRequestsBuilder_ == null) {
-          ensurePendingRequestsIsMutable();
-          pendingRequests_.add(builderForValue.build());
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder addPendingRequests(
-          int index, authenticator.protobuf.ProtoConfig.PendingRequest.Builder builderForValue) {
-        if (pendingRequestsBuilder_ == null) {
-          ensurePendingRequestsIsMutable();
-          pendingRequests_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder addAllPendingRequests(
-          java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.PendingRequest> values) {
-        if (pendingRequestsBuilder_ == null) {
-          ensurePendingRequestsIsMutable();
-          super.addAll(values, pendingRequests_);
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder clearPendingRequests() {
-        if (pendingRequestsBuilder_ == null) {
-          pendingRequests_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public Builder removePendingRequests(int index) {
-        if (pendingRequestsBuilder_ == null) {
-          ensurePendingRequestsIsMutable();
-          pendingRequests_.remove(index);
-          onChanged();
-        } else {
-          pendingRequestsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PendingRequest.Builder getPendingRequestsBuilder(
-          int index) {
-        return getPendingRequestsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder getPendingRequestsOrBuilder(
-          int index) {
-        if (pendingRequestsBuilder_ == null) {
-          return pendingRequests_.get(index);  } else {
-          return pendingRequestsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public java.util.List<? extends authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
-           getPendingRequestsOrBuilderList() {
-        if (pendingRequestsBuilder_ != null) {
-          return pendingRequestsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(pendingRequests_);
-        }
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PendingRequest.Builder addPendingRequestsBuilder() {
-        return getPendingRequestsFieldBuilder().addBuilder(
-            authenticator.protobuf.ProtoConfig.PendingRequest.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.PendingRequest.Builder addPendingRequestsBuilder(
-          int index) {
-        return getPendingRequestsFieldBuilder().addBuilder(
-            index, authenticator.protobuf.ProtoConfig.PendingRequest.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
-       */
-      public java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest.Builder> 
-           getPendingRequestsBuilderList() {
-        return getPendingRequestsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
-          authenticator.protobuf.ProtoConfig.PendingRequest, authenticator.protobuf.ProtoConfig.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
-          getPendingRequestsFieldBuilder() {
-        if (pendingRequestsBuilder_ == null) {
-          pendingRequestsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              authenticator.protobuf.ProtoConfig.PendingRequest, authenticator.protobuf.ProtoConfig.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder>(
-                  pendingRequests_,
-                  ((bitField0_ & 0x00000004) == 0x00000004),
-                  getParentForChildren(),
-                  isClean());
-          pendingRequests_ = null;
-        }
-        return pendingRequestsBuilder_;
-      }
-
-      // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAuthenticatorWallet)
-    }
-
-    static {
-      defaultInstance = new ConfigAuthenticatorWallet(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigAuthenticatorWallet)
-  }
-
-  public interface ConfigReceiveAddressesOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-
-    // repeated string walletKey = 1;
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    java.util.List<java.lang.String>
-    getWalletKeyList();
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    int getWalletKeyCount();
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    java.lang.String getWalletKey(int index);
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getWalletKeyBytes(int index);
-
-    // repeated string authKey = 2;
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    java.util.List<java.lang.String>
-    getAuthKeyList();
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    int getAuthKeyCount();
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    java.lang.String getAuthKey(int index);
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getAuthKeyBytes(int index);
-  }
-  /**
-   * Protobuf type {@code authenticator.protobuf.ConfigReceiveAddresses}
-   */
-  public static final class ConfigReceiveAddresses extends
-      com.google.protobuf.GeneratedMessage
-      implements ConfigReceiveAddressesOrBuilder {
-    // Use ConfigReceiveAddresses.newBuilder() to construct.
-    private ConfigReceiveAddresses(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private ConfigReceiveAddresses(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final ConfigReceiveAddresses defaultInstance;
-    public static ConfigReceiveAddresses getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public ConfigReceiveAddresses getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ConfigReceiveAddresses(
+    private AuthenticatorConfiguration(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -6589,19 +4794,68 @@ public final class ProtoConfig {
               break;
             }
             case 10: {
-              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                walletKey_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000001;
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = configActiveAccount_.toBuilder();
               }
-              walletKey_.add(input.readBytes());
+              configActiveAccount_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(configActiveAccount_);
+                configActiveAccount_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
               break;
             }
             case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                authKey_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000002;
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = configAuthenticatorWallet_.toBuilder();
               }
-              authKey_.add(input.readBytes());
+              configAuthenticatorWallet_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(configAuthenticatorWallet_);
+                configAuthenticatorWallet_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+            case 26: {
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = configReceiveAddresses_.toBuilder();
+              }
+              configReceiveAddresses_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(configReceiveAddresses_);
+                configReceiveAddresses_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000004;
+              break;
+            }
+            case 34: {
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                subBuilder = configAddressBook_.toBuilder();
+              }
+              configAddressBook_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(configAddressBook_);
+                configAddressBook_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000008;
+              break;
+            }
+            case 42: {
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000010) == 0x00000010)) {
+                subBuilder = configSettings_.toBuilder();
+              }
+              configSettings_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(configSettings_);
+                configSettings_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000010;
               break;
             }
           }
@@ -6612,413 +4866,2020 @@ public final class ProtoConfig {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-          walletKey_ = new com.google.protobuf.UnmodifiableLazyStringList(walletKey_);
-        }
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-          authKey_ = new com.google.protobuf.UnmodifiableLazyStringList(authKey_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor;
+      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigReceiveAddresses_fieldAccessorTable
+      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses.class, authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses.Builder.class);
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<ConfigReceiveAddresses> PARSER =
-        new com.google.protobuf.AbstractParser<ConfigReceiveAddresses>() {
-      public ConfigReceiveAddresses parsePartialFrom(
+    public static com.google.protobuf.Parser<AuthenticatorConfiguration> PARSER =
+        new com.google.protobuf.AbstractParser<AuthenticatorConfiguration>() {
+      public AuthenticatorConfiguration parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ConfigReceiveAddresses(input, extensionRegistry);
+        return new AuthenticatorConfiguration(input, extensionRegistry);
       }
     };
 
     @java.lang.Override
-    public com.google.protobuf.Parser<ConfigReceiveAddresses> getParserForType() {
+    public com.google.protobuf.Parser<AuthenticatorConfiguration> getParserForType() {
       return PARSER;
     }
 
-    // repeated string walletKey = 1;
-    public static final int WALLETKEY_FIELD_NUMBER = 1;
-    private com.google.protobuf.LazyStringList walletKey_;
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    public java.util.List<java.lang.String>
-        getWalletKeyList() {
-      return walletKey_;
-    }
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    public int getWalletKeyCount() {
-      return walletKey_.size();
-    }
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    public java.lang.String getWalletKey(int index) {
-      return walletKey_.get(index);
-    }
-    /**
-     * <code>repeated string walletKey = 1;</code>
-     *
-     * <pre>
-     * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getWalletKeyBytes(int index) {
-      return walletKey_.getByteString(index);
-    }
+    public interface ConfigActiveAccountOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
 
-    // repeated string authKey = 2;
-    public static final int AUTHKEY_FIELD_NUMBER = 2;
-    private com.google.protobuf.LazyStringList authKey_;
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    public java.util.List<java.lang.String>
-        getAuthKeyList() {
-      return authKey_;
-    }
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    public int getAuthKeyCount() {
-      return authKey_.size();
-    }
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    public java.lang.String getAuthKey(int index) {
-      return authKey_.get(index);
-    }
-    /**
-     * <code>repeated string authKey = 2;</code>
-     *
-     * <pre>
-     * Same thing but generated from the Authenticator mpubkey. Used when paired.
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getAuthKeyBytes(int index) {
-      return authKey_.getByteString(index);
-    }
+      // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
+      /**
+       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+       */
+      boolean hasPairedAuthenticator();
+      /**
+       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+       */
+      authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedAuthenticator();
+      /**
+       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+       */
+      authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedAuthenticatorOrBuilder();
 
-    private void initFields() {
-      walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      // required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;
+      /**
+       * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+       */
+      boolean hasActiveAccountType();
+      /**
+       * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+       */
+      authenticator.protobuf.ProtoConfig.ActiveAccountType getActiveAccountType();
     }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      for (int i = 0; i < walletKey_.size(); i++) {
-        output.writeBytes(1, walletKey_.getByteString(i));
+    /**
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount}
+     */
+    public static final class ConfigActiveAccount extends
+        com.google.protobuf.GeneratedMessage
+        implements ConfigActiveAccountOrBuilder {
+      // Use ConfigActiveAccount.newBuilder() to construct.
+      private ConfigActiveAccount(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
       }
-      for (int i = 0; i < authKey_.size(); i++) {
-        output.writeBytes(2, authKey_.getByteString(i));
+      private ConfigActiveAccount(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final ConfigActiveAccount defaultInstance;
+      public static ConfigActiveAccount getDefaultInstance() {
+        return defaultInstance;
       }
-      getUnknownFields().writeTo(output);
-    }
 
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
+      public ConfigActiveAccount getDefaultInstanceForType() {
+        return defaultInstance;
+      }
 
-      size = 0;
-      {
-        int dataSize = 0;
-        for (int i = 0; i < walletKey_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(walletKey_.getByteString(i));
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ConfigActiveAccount(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                  subBuilder = pairedAuthenticator_.toBuilder();
+                }
+                pairedAuthenticator_ = input.readMessage(authenticator.protobuf.ProtoConfig.PairedAuthenticator.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(pairedAuthenticator_);
+                  pairedAuthenticator_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000001;
+                break;
+              }
+              case 16: {
+                int rawValue = input.readEnum();
+                authenticator.protobuf.ProtoConfig.ActiveAccountType value = authenticator.protobuf.ProtoConfig.ActiveAccountType.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(2, rawValue);
+                } else {
+                  bitField0_ |= 0x00000002;
+                  activeAccountType_ = value;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
         }
-        size += dataSize;
-        size += 1 * getWalletKeyList().size();
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < authKey_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(authKey_.getByteString(i));
-        }
-        size += dataSize;
-        size += 1 * getAuthKeyList().size();
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code authenticator.protobuf.ConfigReceiveAddresses}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.ConfigReceiveAddressesOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor;
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigReceiveAddresses_fieldAccessorTable
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses.class, authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses.Builder.class);
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder.class);
       }
 
-      // Construct using authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      public static com.google.protobuf.Parser<ConfigActiveAccount> PARSER =
+          new com.google.protobuf.AbstractParser<ConfigActiveAccount>() {
+        public ConfigActiveAccount parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ConfigActiveAccount(input, extensionRegistry);
         }
-      }
-      private static Builder create() {
-        return new Builder();
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ConfigActiveAccount> getParserForType() {
+        return PARSER;
       }
 
-      public Builder clear() {
-        super.clear();
-        walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
+      private int bitField0_;
+      // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
+      public static final int PAIREDAUTHENTICATOR_FIELD_NUMBER = 1;
+      private authenticator.protobuf.ProtoConfig.PairedAuthenticator pairedAuthenticator_;
+      /**
+       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+       */
+      public boolean hasPairedAuthenticator() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedAuthenticator() {
+        return pairedAuthenticator_;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedAuthenticatorOrBuilder() {
+        return pairedAuthenticator_;
       }
 
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
+      // required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;
+      public static final int ACTIVEACCOUNTTYPE_FIELD_NUMBER = 2;
+      private authenticator.protobuf.ProtoConfig.ActiveAccountType activeAccountType_;
+      /**
+       * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+       */
+      public boolean hasActiveAccountType() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ActiveAccountType getActiveAccountType() {
+        return activeAccountType_;
       }
 
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor;
+      private void initFields() {
+        pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
+        activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
       }
-
-      public authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses getDefaultInstanceForType() {
-        return authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses.getDefaultInstance();
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses build() {
-        authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses buildPartial() {
-        authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses result = new authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses(this);
-        int from_bitField0_ = bitField0_;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          walletKey_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              walletKey_);
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.walletKey_ = walletKey_;
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          authKey_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              authKey_);
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.authKey_ = authKey_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses) {
-          return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses other) {
-        if (other == authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses.getDefaultInstance()) return this;
-        if (!other.walletKey_.isEmpty()) {
-          if (walletKey_.isEmpty()) {
-            walletKey_ = other.walletKey_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureWalletKeyIsMutable();
-            walletKey_.addAll(other.walletKey_);
-          }
-          onChanged();
-        }
-        if (!other.authKey_.isEmpty()) {
-          if (authKey_.isEmpty()) {
-            authKey_ = other.authKey_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureAuthKeyIsMutable();
-            authKey_.addAll(other.authKey_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
+      private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        if (!hasActiveAccountType()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (hasPairedAuthenticator()) {
+          if (!getPairedAuthenticator().isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+        }
+        memoizedIsInitialized = 1;
         return true;
       }
 
-      public Builder mergeFrom(
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeMessage(1, pairedAuthenticator_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeEnum(2, activeAccountType_.getNumber());
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, pairedAuthenticator_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(2, activeAccountType_.getNumber());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getPairedAuthenticatorFieldBuilder();
           }
         }
-        return this;
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          if (pairedAuthenticatorBuilder_ == null) {
+            pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
+          } else {
+            pairedAuthenticatorBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000001);
+          activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount build() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount buildPartial() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          if (pairedAuthenticatorBuilder_ == null) {
+            result.pairedAuthenticator_ = pairedAuthenticator_;
+          } else {
+            result.pairedAuthenticator_ = pairedAuthenticatorBuilder_.build();
+          }
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.activeAccountType_ = activeAccountType_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount other) {
+          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance()) return this;
+          if (other.hasPairedAuthenticator()) {
+            mergePairedAuthenticator(other.getPairedAuthenticator());
+          }
+          if (other.hasActiveAccountType()) {
+            setActiveAccountType(other.getActiveAccountType());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasActiveAccountType()) {
+            
+            return false;
+          }
+          if (hasPairedAuthenticator()) {
+            if (!getPairedAuthenticator().isInitialized()) {
+              
+              return false;
+            }
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
+        private authenticator.protobuf.ProtoConfig.PairedAuthenticator pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> pairedAuthenticatorBuilder_;
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public boolean hasPairedAuthenticator() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedAuthenticator() {
+          if (pairedAuthenticatorBuilder_ == null) {
+            return pairedAuthenticator_;
+          } else {
+            return pairedAuthenticatorBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public Builder setPairedAuthenticator(authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
+          if (pairedAuthenticatorBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            pairedAuthenticator_ = value;
+            onChanged();
+          } else {
+            pairedAuthenticatorBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public Builder setPairedAuthenticator(
+            authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
+          if (pairedAuthenticatorBuilder_ == null) {
+            pairedAuthenticator_ = builderForValue.build();
+            onChanged();
+          } else {
+            pairedAuthenticatorBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public Builder mergePairedAuthenticator(authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
+          if (pairedAuthenticatorBuilder_ == null) {
+            if (((bitField0_ & 0x00000001) == 0x00000001) &&
+                pairedAuthenticator_ != authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance()) {
+              pairedAuthenticator_ =
+                authenticator.protobuf.ProtoConfig.PairedAuthenticator.newBuilder(pairedAuthenticator_).mergeFrom(value).buildPartial();
+            } else {
+              pairedAuthenticator_ = value;
+            }
+            onChanged();
+          } else {
+            pairedAuthenticatorBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public Builder clearPairedAuthenticator() {
+          if (pairedAuthenticatorBuilder_ == null) {
+            pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
+            onChanged();
+          } else {
+            pairedAuthenticatorBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000001);
+          return this;
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder getPairedAuthenticatorBuilder() {
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return getPairedAuthenticatorFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedAuthenticatorOrBuilder() {
+          if (pairedAuthenticatorBuilder_ != null) {
+            return pairedAuthenticatorBuilder_.getMessageOrBuilder();
+          } else {
+            return pairedAuthenticator_;
+          }
+        }
+        /**
+         * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
+            getPairedAuthenticatorFieldBuilder() {
+          if (pairedAuthenticatorBuilder_ == null) {
+            pairedAuthenticatorBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder>(
+                    pairedAuthenticator_,
+                    getParentForChildren(),
+                    isClean());
+            pairedAuthenticator_ = null;
+          }
+          return pairedAuthenticatorBuilder_;
+        }
+
+        // required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;
+        private authenticator.protobuf.ProtoConfig.ActiveAccountType activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
+        /**
+         * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+         */
+        public boolean hasActiveAccountType() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.ActiveAccountType getActiveAccountType() {
+          return activeAccountType_;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+         */
+        public Builder setActiveAccountType(authenticator.protobuf.ProtoConfig.ActiveAccountType value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000002;
+          activeAccountType_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
+         */
+        public Builder clearActiveAccountType() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount)
       }
+
+      static {
+        defaultInstance = new ConfigActiveAccount(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount)
+    }
+
+    public interface ConfigAuthenticatorWalletOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // optional bool paired = 1;
+      /**
+       * <code>optional bool paired = 1;</code>
+       *
+       * <pre>
+       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+       * </pre>
+       */
+      boolean hasPaired();
+      /**
+       * <code>optional bool paired = 1;</code>
+       *
+       * <pre>
+       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+       * </pre>
+       */
+      boolean getPaired();
+
+      // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> 
+          getPairedWalletsList();
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedWallets(int index);
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      int getPairedWalletsCount();
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      java.util.List<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
+          getPairedWalletsOrBuilderList();
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
+          int index);
+
+      // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> 
+          getPendingRequestsList();
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      authenticator.protobuf.ProtoConfig.PendingRequest getPendingRequests(int index);
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      int getPendingRequestsCount();
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      java.util.List<? extends authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
+          getPendingRequestsOrBuilderList();
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder getPendingRequestsOrBuilder(
+          int index);
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet}
+     */
+    public static final class ConfigAuthenticatorWallet extends
+        com.google.protobuf.GeneratedMessage
+        implements ConfigAuthenticatorWalletOrBuilder {
+      // Use ConfigAuthenticatorWallet.newBuilder() to construct.
+      private ConfigAuthenticatorWallet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private ConfigAuthenticatorWallet(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final ConfigAuthenticatorWallet defaultInstance;
+      public static ConfigAuthenticatorWallet getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public ConfigAuthenticatorWallet getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ConfigAuthenticatorWallet(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 8: {
+                bitField0_ |= 0x00000001;
+                paired_ = input.readBool();
+                break;
+              }
+              case 18: {
+                if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                  pairedWallets_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PairedAuthenticator>();
+                  mutable_bitField0_ |= 0x00000002;
+                }
+                pairedWallets_.add(input.readMessage(authenticator.protobuf.ProtoConfig.PairedAuthenticator.PARSER, extensionRegistry));
+                break;
+              }
+              case 26: {
+                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                  pendingRequests_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PendingRequest>();
+                  mutable_bitField0_ |= 0x00000004;
+                }
+                pendingRequests_.add(input.readMessage(authenticator.protobuf.ProtoConfig.PendingRequest.PARSER, extensionRegistry));
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+            pairedWallets_ = java.util.Collections.unmodifiableList(pairedWallets_);
+          }
+          if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+            pendingRequests_ = java.util.Collections.unmodifiableList(pendingRequests_);
+          }
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<ConfigAuthenticatorWallet> PARSER =
+          new com.google.protobuf.AbstractParser<ConfigAuthenticatorWallet>() {
+        public ConfigAuthenticatorWallet parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ConfigAuthenticatorWallet(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ConfigAuthenticatorWallet> getParserForType() {
+        return PARSER;
+      }
+
       private int bitField0_;
+      // optional bool paired = 1;
+      public static final int PAIRED_FIELD_NUMBER = 1;
+      private boolean paired_;
+      /**
+       * <code>optional bool paired = 1;</code>
+       *
+       * <pre>
+       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+       * </pre>
+       */
+      public boolean hasPaired() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional bool paired = 1;</code>
+       *
+       * <pre>
+       * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+       * </pre>
+       */
+      public boolean getPaired() {
+        return paired_;
+      }
+
+      // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
+      public static final int PAIREDWALLETS_FIELD_NUMBER = 2;
+      private java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> pairedWallets_;
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> getPairedWalletsList() {
+        return pairedWallets_;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public java.util.List<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
+          getPairedWalletsOrBuilderList() {
+        return pairedWallets_;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public int getPairedWalletsCount() {
+        return pairedWallets_.size();
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedWallets(int index) {
+        return pairedWallets_.get(index);
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
+          int index) {
+        return pairedWallets_.get(index);
+      }
+
+      // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
+      public static final int PENDINGREQUESTS_FIELD_NUMBER = 3;
+      private java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> pendingRequests_;
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> getPendingRequestsList() {
+        return pendingRequests_;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      public java.util.List<? extends authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
+          getPendingRequestsOrBuilderList() {
+        return pendingRequests_;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      public int getPendingRequestsCount() {
+        return pendingRequests_.size();
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.PendingRequest getPendingRequests(int index) {
+        return pendingRequests_.get(index);
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder getPendingRequestsOrBuilder(
+          int index) {
+        return pendingRequests_.get(index);
+      }
+
+      private void initFields() {
+        paired_ = false;
+        pairedWallets_ = java.util.Collections.emptyList();
+        pendingRequests_ = java.util.Collections.emptyList();
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        for (int i = 0; i < getPairedWalletsCount(); i++) {
+          if (!getPairedWallets(i).isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+        }
+        for (int i = 0; i < getPendingRequestsCount(); i++) {
+          if (!getPendingRequests(i).isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBool(1, paired_);
+        }
+        for (int i = 0; i < pairedWallets_.size(); i++) {
+          output.writeMessage(2, pairedWallets_.get(i));
+        }
+        for (int i = 0; i < pendingRequests_.size(); i++) {
+          output.writeMessage(3, pendingRequests_.get(i));
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(1, paired_);
+        }
+        for (int i = 0; i < pairedWallets_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, pairedWallets_.get(i));
+        }
+        for (int i = 0; i < pendingRequests_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, pendingRequests_.get(i));
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getPairedWalletsFieldBuilder();
+            getPendingRequestsFieldBuilder();
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          paired_ = false;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          if (pairedWalletsBuilder_ == null) {
+            pairedWallets_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            pairedWalletsBuilder_.clear();
+          }
+          if (pendingRequestsBuilder_ == null) {
+            pendingRequests_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            pendingRequestsBuilder_.clear();
+          }
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet build() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet buildPartial() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.paired_ = paired_;
+          if (pairedWalletsBuilder_ == null) {
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+              pairedWallets_ = java.util.Collections.unmodifiableList(pairedWallets_);
+              bitField0_ = (bitField0_ & ~0x00000002);
+            }
+            result.pairedWallets_ = pairedWallets_;
+          } else {
+            result.pairedWallets_ = pairedWalletsBuilder_.build();
+          }
+          if (pendingRequestsBuilder_ == null) {
+            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              pendingRequests_ = java.util.Collections.unmodifiableList(pendingRequests_);
+              bitField0_ = (bitField0_ & ~0x00000004);
+            }
+            result.pendingRequests_ = pendingRequests_;
+          } else {
+            result.pendingRequests_ = pendingRequestsBuilder_.build();
+          }
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet other) {
+          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance()) return this;
+          if (other.hasPaired()) {
+            setPaired(other.getPaired());
+          }
+          if (pairedWalletsBuilder_ == null) {
+            if (!other.pairedWallets_.isEmpty()) {
+              if (pairedWallets_.isEmpty()) {
+                pairedWallets_ = other.pairedWallets_;
+                bitField0_ = (bitField0_ & ~0x00000002);
+              } else {
+                ensurePairedWalletsIsMutable();
+                pairedWallets_.addAll(other.pairedWallets_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.pairedWallets_.isEmpty()) {
+              if (pairedWalletsBuilder_.isEmpty()) {
+                pairedWalletsBuilder_.dispose();
+                pairedWalletsBuilder_ = null;
+                pairedWallets_ = other.pairedWallets_;
+                bitField0_ = (bitField0_ & ~0x00000002);
+                pairedWalletsBuilder_ = 
+                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                     getPairedWalletsFieldBuilder() : null;
+              } else {
+                pairedWalletsBuilder_.addAllMessages(other.pairedWallets_);
+              }
+            }
+          }
+          if (pendingRequestsBuilder_ == null) {
+            if (!other.pendingRequests_.isEmpty()) {
+              if (pendingRequests_.isEmpty()) {
+                pendingRequests_ = other.pendingRequests_;
+                bitField0_ = (bitField0_ & ~0x00000004);
+              } else {
+                ensurePendingRequestsIsMutable();
+                pendingRequests_.addAll(other.pendingRequests_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.pendingRequests_.isEmpty()) {
+              if (pendingRequestsBuilder_.isEmpty()) {
+                pendingRequestsBuilder_.dispose();
+                pendingRequestsBuilder_ = null;
+                pendingRequests_ = other.pendingRequests_;
+                bitField0_ = (bitField0_ & ~0x00000004);
+                pendingRequestsBuilder_ = 
+                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                     getPendingRequestsFieldBuilder() : null;
+              } else {
+                pendingRequestsBuilder_.addAllMessages(other.pendingRequests_);
+              }
+            }
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          for (int i = 0; i < getPairedWalletsCount(); i++) {
+            if (!getPairedWallets(i).isInitialized()) {
+              
+              return false;
+            }
+          }
+          for (int i = 0; i < getPendingRequestsCount(); i++) {
+            if (!getPendingRequests(i).isInitialized()) {
+              
+              return false;
+            }
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // optional bool paired = 1;
+        private boolean paired_ ;
+        /**
+         * <code>optional bool paired = 1;</code>
+         *
+         * <pre>
+         * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+         * </pre>
+         */
+        public boolean hasPaired() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional bool paired = 1;</code>
+         *
+         * <pre>
+         * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+         * </pre>
+         */
+        public boolean getPaired() {
+          return paired_;
+        }
+        /**
+         * <code>optional bool paired = 1;</code>
+         *
+         * <pre>
+         * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+         * </pre>
+         */
+        public Builder setPaired(boolean value) {
+          bitField0_ |= 0x00000001;
+          paired_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional bool paired = 1;</code>
+         *
+         * <pre>
+         * Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+         * </pre>
+         */
+        public Builder clearPaired() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          paired_ = false;
+          onChanged();
+          return this;
+        }
+
+        // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
+        private java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> pairedWallets_ =
+          java.util.Collections.emptyList();
+        private void ensurePairedWalletsIsMutable() {
+          if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+            pairedWallets_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PairedAuthenticator>(pairedWallets_);
+            bitField0_ |= 0x00000002;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilder<
+            authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> pairedWalletsBuilder_;
+
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> getPairedWalletsList() {
+          if (pairedWalletsBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(pairedWallets_);
+          } else {
+            return pairedWalletsBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public int getPairedWalletsCount() {
+          if (pairedWalletsBuilder_ == null) {
+            return pairedWallets_.size();
+          } else {
+            return pairedWalletsBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticator getPairedWallets(int index) {
+          if (pairedWalletsBuilder_ == null) {
+            return pairedWallets_.get(index);
+          } else {
+            return pairedWalletsBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder setPairedWallets(
+            int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
+          if (pairedWalletsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePairedWalletsIsMutable();
+            pairedWallets_.set(index, value);
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder setPairedWallets(
+            int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
+          if (pairedWalletsBuilder_ == null) {
+            ensurePairedWalletsIsMutable();
+            pairedWallets_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder addPairedWallets(authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
+          if (pairedWalletsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePairedWalletsIsMutable();
+            pairedWallets_.add(value);
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder addPairedWallets(
+            int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator value) {
+          if (pairedWalletsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePairedWalletsIsMutable();
+            pairedWallets_.add(index, value);
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder addPairedWallets(
+            authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
+          if (pairedWalletsBuilder_ == null) {
+            ensurePairedWalletsIsMutable();
+            pairedWallets_.add(builderForValue.build());
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder addPairedWallets(
+            int index, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder builderForValue) {
+          if (pairedWalletsBuilder_ == null) {
+            ensurePairedWalletsIsMutable();
+            pairedWallets_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder addAllPairedWallets(
+            java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticator> values) {
+          if (pairedWalletsBuilder_ == null) {
+            ensurePairedWalletsIsMutable();
+            super.addAll(values, pairedWallets_);
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder clearPairedWallets() {
+          if (pairedWalletsBuilder_ == null) {
+            pairedWallets_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public Builder removePairedWallets(int index) {
+          if (pairedWalletsBuilder_ == null) {
+            ensurePairedWalletsIsMutable();
+            pairedWallets_.remove(index);
+            onChanged();
+          } else {
+            pairedWalletsBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder getPairedWalletsBuilder(
+            int index) {
+          return getPairedWalletsFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
+            int index) {
+          if (pairedWalletsBuilder_ == null) {
+            return pairedWallets_.get(index);  } else {
+            return pairedWalletsBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public java.util.List<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
+             getPairedWalletsOrBuilderList() {
+          if (pairedWalletsBuilder_ != null) {
+            return pairedWalletsBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(pairedWallets_);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder addPairedWalletsBuilder() {
+          return getPairedWalletsFieldBuilder().addBuilder(
+              authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder addPairedWalletsBuilder(
+            int index) {
+          return getPairedWalletsFieldBuilder().addBuilder(
+              index, authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
+         */
+        public java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder> 
+             getPairedWalletsBuilderList() {
+          return getPairedWalletsFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilder<
+            authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> 
+            getPairedWalletsFieldBuilder() {
+          if (pairedWalletsBuilder_ == null) {
+            pairedWalletsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder>(
+                    pairedWallets_,
+                    ((bitField0_ & 0x00000002) == 0x00000002),
+                    getParentForChildren(),
+                    isClean());
+            pairedWallets_ = null;
+          }
+          return pairedWalletsBuilder_;
+        }
+
+        // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
+        private java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> pendingRequests_ =
+          java.util.Collections.emptyList();
+        private void ensurePendingRequestsIsMutable() {
+          if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+            pendingRequests_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.PendingRequest>(pendingRequests_);
+            bitField0_ |= 0x00000004;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilder<
+            authenticator.protobuf.ProtoConfig.PendingRequest, authenticator.protobuf.ProtoConfig.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> pendingRequestsBuilder_;
+
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> getPendingRequestsList() {
+          if (pendingRequestsBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(pendingRequests_);
+          } else {
+            return pendingRequestsBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public int getPendingRequestsCount() {
+          if (pendingRequestsBuilder_ == null) {
+            return pendingRequests_.size();
+          } else {
+            return pendingRequestsBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PendingRequest getPendingRequests(int index) {
+          if (pendingRequestsBuilder_ == null) {
+            return pendingRequests_.get(index);
+          } else {
+            return pendingRequestsBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder setPendingRequests(
+            int index, authenticator.protobuf.ProtoConfig.PendingRequest value) {
+          if (pendingRequestsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePendingRequestsIsMutable();
+            pendingRequests_.set(index, value);
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder setPendingRequests(
+            int index, authenticator.protobuf.ProtoConfig.PendingRequest.Builder builderForValue) {
+          if (pendingRequestsBuilder_ == null) {
+            ensurePendingRequestsIsMutable();
+            pendingRequests_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder addPendingRequests(authenticator.protobuf.ProtoConfig.PendingRequest value) {
+          if (pendingRequestsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePendingRequestsIsMutable();
+            pendingRequests_.add(value);
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder addPendingRequests(
+            int index, authenticator.protobuf.ProtoConfig.PendingRequest value) {
+          if (pendingRequestsBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensurePendingRequestsIsMutable();
+            pendingRequests_.add(index, value);
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder addPendingRequests(
+            authenticator.protobuf.ProtoConfig.PendingRequest.Builder builderForValue) {
+          if (pendingRequestsBuilder_ == null) {
+            ensurePendingRequestsIsMutable();
+            pendingRequests_.add(builderForValue.build());
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder addPendingRequests(
+            int index, authenticator.protobuf.ProtoConfig.PendingRequest.Builder builderForValue) {
+          if (pendingRequestsBuilder_ == null) {
+            ensurePendingRequestsIsMutable();
+            pendingRequests_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder addAllPendingRequests(
+            java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.PendingRequest> values) {
+          if (pendingRequestsBuilder_ == null) {
+            ensurePendingRequestsIsMutable();
+            super.addAll(values, pendingRequests_);
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder clearPendingRequests() {
+          if (pendingRequestsBuilder_ == null) {
+            pendingRequests_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000004);
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public Builder removePendingRequests(int index) {
+          if (pendingRequestsBuilder_ == null) {
+            ensurePendingRequestsIsMutable();
+            pendingRequests_.remove(index);
+            onChanged();
+          } else {
+            pendingRequestsBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PendingRequest.Builder getPendingRequestsBuilder(
+            int index) {
+          return getPendingRequestsFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder getPendingRequestsOrBuilder(
+            int index) {
+          if (pendingRequestsBuilder_ == null) {
+            return pendingRequests_.get(index);  } else {
+            return pendingRequestsBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public java.util.List<? extends authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
+             getPendingRequestsOrBuilderList() {
+          if (pendingRequestsBuilder_ != null) {
+            return pendingRequestsBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(pendingRequests_);
+          }
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PendingRequest.Builder addPendingRequestsBuilder() {
+          return getPendingRequestsFieldBuilder().addBuilder(
+              authenticator.protobuf.ProtoConfig.PendingRequest.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public authenticator.protobuf.ProtoConfig.PendingRequest.Builder addPendingRequestsBuilder(
+            int index) {
+          return getPendingRequestsFieldBuilder().addBuilder(
+              index, authenticator.protobuf.ProtoConfig.PendingRequest.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
+         */
+        public java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest.Builder> 
+             getPendingRequestsBuilderList() {
+          return getPendingRequestsFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilder<
+            authenticator.protobuf.ProtoConfig.PendingRequest, authenticator.protobuf.ProtoConfig.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder> 
+            getPendingRequestsFieldBuilder() {
+          if (pendingRequestsBuilder_ == null) {
+            pendingRequestsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                authenticator.protobuf.ProtoConfig.PendingRequest, authenticator.protobuf.ProtoConfig.PendingRequest.Builder, authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder>(
+                    pendingRequests_,
+                    ((bitField0_ & 0x00000004) == 0x00000004),
+                    getParentForChildren(),
+                    isClean());
+            pendingRequests_ = null;
+          }
+          return pendingRequestsBuilder_;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet)
+      }
+
+      static {
+        defaultInstance = new ConfigAuthenticatorWallet(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet)
+    }
+
+    public interface ConfigReceiveAddressesOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
 
       // repeated string walletKey = 1;
-      private com.google.protobuf.LazyStringList walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureWalletKeyIsMutable() {
-        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          walletKey_ = new com.google.protobuf.LazyStringArrayList(walletKey_);
-          bitField0_ |= 0x00000001;
-         }
+      /**
+       * <code>repeated string walletKey = 1;</code>
+       *
+       * <pre>
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+       * </pre>
+       */
+      java.util.List<java.lang.String>
+      getWalletKeyList();
+      /**
+       * <code>repeated string walletKey = 1;</code>
+       *
+       * <pre>
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+       * </pre>
+       */
+      int getWalletKeyCount();
+      /**
+       * <code>repeated string walletKey = 1;</code>
+       *
+       * <pre>
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+       * </pre>
+       */
+      java.lang.String getWalletKey(int index);
+      /**
+       * <code>repeated string walletKey = 1;</code>
+       *
+       * <pre>
+       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+       * </pre>
+       */
+      com.google.protobuf.ByteString
+          getWalletKeyBytes(int index);
+
+      // repeated string authKey = 2;
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      java.util.List<java.lang.String>
+      getAuthKeyList();
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      int getAuthKeyCount();
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      java.lang.String getAuthKey(int index);
+      /**
+       * <code>repeated string authKey = 2;</code>
+       *
+       * <pre>
+       * Same thing but generated from the Authenticator mpubkey. Used when paired.
+       * </pre>
+       */
+      com.google.protobuf.ByteString
+          getAuthKeyBytes(int index);
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses}
+     */
+    public static final class ConfigReceiveAddresses extends
+        com.google.protobuf.GeneratedMessage
+        implements ConfigReceiveAddressesOrBuilder {
+      // Use ConfigReceiveAddresses.newBuilder() to construct.
+      private ConfigReceiveAddresses(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
       }
+      private ConfigReceiveAddresses(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final ConfigReceiveAddresses defaultInstance;
+      public static ConfigReceiveAddresses getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public ConfigReceiveAddresses getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ConfigReceiveAddresses(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                  walletKey_ = new com.google.protobuf.LazyStringArrayList();
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                walletKey_.add(input.readBytes());
+                break;
+              }
+              case 18: {
+                if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                  authKey_ = new com.google.protobuf.LazyStringArrayList();
+                  mutable_bitField0_ |= 0x00000002;
+                }
+                authKey_.add(input.readBytes());
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+            walletKey_ = new com.google.protobuf.UnmodifiableLazyStringList(walletKey_);
+          }
+          if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+            authKey_ = new com.google.protobuf.UnmodifiableLazyStringList(authKey_);
+          }
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<ConfigReceiveAddresses> PARSER =
+          new com.google.protobuf.AbstractParser<ConfigReceiveAddresses>() {
+        public ConfigReceiveAddresses parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ConfigReceiveAddresses(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ConfigReceiveAddresses> getParserForType() {
+        return PARSER;
+      }
+
+      // repeated string walletKey = 1;
+      public static final int WALLETKEY_FIELD_NUMBER = 1;
+      private com.google.protobuf.LazyStringList walletKey_;
       /**
        * <code>repeated string walletKey = 1;</code>
        *
@@ -7028,7 +6889,7 @@ public final class ProtoConfig {
        */
       public java.util.List<java.lang.String>
           getWalletKeyList() {
-        return java.util.Collections.unmodifiableList(walletKey_);
+        return walletKey_;
       }
       /**
        * <code>repeated string walletKey = 1;</code>
@@ -7061,93 +6922,10 @@ public final class ProtoConfig {
           getWalletKeyBytes(int index) {
         return walletKey_.getByteString(index);
       }
-      /**
-       * <code>repeated string walletKey = 1;</code>
-       *
-       * <pre>
-       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-       * </pre>
-       */
-      public Builder setWalletKey(
-          int index, java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureWalletKeyIsMutable();
-        walletKey_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string walletKey = 1;</code>
-       *
-       * <pre>
-       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-       * </pre>
-       */
-      public Builder addWalletKey(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureWalletKeyIsMutable();
-        walletKey_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string walletKey = 1;</code>
-       *
-       * <pre>
-       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-       * </pre>
-       */
-      public Builder addAllWalletKey(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureWalletKeyIsMutable();
-        super.addAll(values, walletKey_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string walletKey = 1;</code>
-       *
-       * <pre>
-       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-       * </pre>
-       */
-      public Builder clearWalletKey() {
-        walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string walletKey = 1;</code>
-       *
-       * <pre>
-       * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-       * </pre>
-       */
-      public Builder addWalletKeyBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureWalletKeyIsMutable();
-        walletKey_.add(value);
-        onChanged();
-        return this;
-      }
 
       // repeated string authKey = 2;
-      private com.google.protobuf.LazyStringList authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureAuthKeyIsMutable() {
-        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          authKey_ = new com.google.protobuf.LazyStringArrayList(authKey_);
-          bitField0_ |= 0x00000002;
-         }
-      }
+      public static final int AUTHKEY_FIELD_NUMBER = 2;
+      private com.google.protobuf.LazyStringList authKey_;
       /**
        * <code>repeated string authKey = 2;</code>
        *
@@ -7157,7 +6935,7 @@ public final class ProtoConfig {
        */
       public java.util.List<java.lang.String>
           getAuthKeyList() {
-        return java.util.Collections.unmodifiableList(authKey_);
+        return authKey_;
       }
       /**
        * <code>repeated string authKey = 2;</code>
@@ -7190,508 +6968,675 @@ public final class ProtoConfig {
           getAuthKeyBytes(int index) {
         return authKey_.getByteString(index);
       }
-      /**
-       * <code>repeated string authKey = 2;</code>
-       *
-       * <pre>
-       * Same thing but generated from the Authenticator mpubkey. Used when paired.
-       * </pre>
-       */
-      public Builder setAuthKey(
-          int index, java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureAuthKeyIsMutable();
-        authKey_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string authKey = 2;</code>
-       *
-       * <pre>
-       * Same thing but generated from the Authenticator mpubkey. Used when paired.
-       * </pre>
-       */
-      public Builder addAuthKey(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureAuthKeyIsMutable();
-        authKey_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string authKey = 2;</code>
-       *
-       * <pre>
-       * Same thing but generated from the Authenticator mpubkey. Used when paired.
-       * </pre>
-       */
-      public Builder addAllAuthKey(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureAuthKeyIsMutable();
-        super.addAll(values, authKey_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string authKey = 2;</code>
-       *
-       * <pre>
-       * Same thing but generated from the Authenticator mpubkey. Used when paired.
-       * </pre>
-       */
-      public Builder clearAuthKey() {
+
+      private void initFields() {
+        walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        for (int i = 0; i < walletKey_.size(); i++) {
+          output.writeBytes(1, walletKey_.getByteString(i));
+        }
+        for (int i = 0; i < authKey_.size(); i++) {
+          output.writeBytes(2, authKey_.getByteString(i));
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        {
+          int dataSize = 0;
+          for (int i = 0; i < walletKey_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(walletKey_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getWalletKeyList().size();
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < authKey_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(authKey_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getAuthKeyList().size();
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
       }
       /**
-       * <code>repeated string authKey = 2;</code>
-       *
-       * <pre>
-       * Same thing but generated from the Authenticator mpubkey. Used when paired.
-       * </pre>
+       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses}
        */
-      public Builder addAuthKeyBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureAuthKeyIsMutable();
-        authKey_.add(value);
-        onChanged();
-        return this;
-      }
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddressesOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_descriptor;
+        }
 
-      // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigReceiveAddresses)
-    }
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder.class);
+        }
 
-    static {
-      defaultInstance = new ConfigReceiveAddresses(true);
-      defaultInstance.initFields();
-    }
+        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
 
-    // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigReceiveAddresses)
-  }
-
-  public interface ConfigAddressBookOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-
-    // optional string address = 1;
-    /**
-     * <code>optional string address = 1;</code>
-     *
-     * <pre>
-     * This is a placeholder for the address book.
-     * </pre>
-     */
-    boolean hasAddress();
-    /**
-     * <code>optional string address = 1;</code>
-     *
-     * <pre>
-     * This is a placeholder for the address book.
-     * </pre>
-     */
-    java.lang.String getAddress();
-    /**
-     * <code>optional string address = 1;</code>
-     *
-     * <pre>
-     * This is a placeholder for the address book.
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getAddressBytes();
-  }
-  /**
-   * Protobuf type {@code authenticator.protobuf.ConfigAddressBook}
-   */
-  public static final class ConfigAddressBook extends
-      com.google.protobuf.GeneratedMessage
-      implements ConfigAddressBookOrBuilder {
-    // Use ConfigAddressBook.newBuilder() to construct.
-    private ConfigAddressBook(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private ConfigAddressBook(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final ConfigAddressBook defaultInstance;
-    public static ConfigAddressBook getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public ConfigAddressBook getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ConfigAddressBook(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              bitField0_ |= 0x00000001;
-              address_ = input.readBytes();
-              break;
-            }
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           }
         }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses build() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses buildPartial() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses(this);
+          int from_bitField0_ = bitField0_;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            walletKey_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                walletKey_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.walletKey_ = walletKey_;
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            authKey_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                authKey_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.authKey_ = authKey_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses other) {
+          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance()) return this;
+          if (!other.walletKey_.isEmpty()) {
+            if (walletKey_.isEmpty()) {
+              walletKey_ = other.walletKey_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureWalletKeyIsMutable();
+              walletKey_.addAll(other.walletKey_);
+            }
+            onChanged();
+          }
+          if (!other.authKey_.isEmpty()) {
+            if (authKey_.isEmpty()) {
+              authKey_ = other.authKey_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureAuthKeyIsMutable();
+              authKey_.addAll(other.authKey_);
+            }
+            onChanged();
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // repeated string walletKey = 1;
+        private com.google.protobuf.LazyStringList walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureWalletKeyIsMutable() {
+          if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+            walletKey_ = new com.google.protobuf.LazyStringArrayList(walletKey_);
+            bitField0_ |= 0x00000001;
+           }
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public java.util.List<java.lang.String>
+            getWalletKeyList() {
+          return java.util.Collections.unmodifiableList(walletKey_);
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public int getWalletKeyCount() {
+          return walletKey_.size();
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public java.lang.String getWalletKey(int index) {
+          return walletKey_.get(index);
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public com.google.protobuf.ByteString
+            getWalletKeyBytes(int index) {
+          return walletKey_.getByteString(index);
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public Builder setWalletKey(
+            int index, java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureWalletKeyIsMutable();
+          walletKey_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public Builder addWalletKey(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureWalletKeyIsMutable();
+          walletKey_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public Builder addAllWalletKey(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureWalletKeyIsMutable();
+          super.addAll(values, walletKey_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public Builder clearWalletKey() {
+          walletKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string walletKey = 1;</code>
+         *
+         * <pre>
+         * An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+         * </pre>
+         */
+        public Builder addWalletKeyBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureWalletKeyIsMutable();
+          walletKey_.add(value);
+          onChanged();
+          return this;
+        }
+
+        // repeated string authKey = 2;
+        private com.google.protobuf.LazyStringList authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureAuthKeyIsMutable() {
+          if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+            authKey_ = new com.google.protobuf.LazyStringArrayList(authKey_);
+            bitField0_ |= 0x00000002;
+           }
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public java.util.List<java.lang.String>
+            getAuthKeyList() {
+          return java.util.Collections.unmodifiableList(authKey_);
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public int getAuthKeyCount() {
+          return authKey_.size();
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public java.lang.String getAuthKey(int index) {
+          return authKey_.get(index);
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public com.google.protobuf.ByteString
+            getAuthKeyBytes(int index) {
+          return authKey_.getByteString(index);
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public Builder setAuthKey(
+            int index, java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureAuthKeyIsMutable();
+          authKey_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public Builder addAuthKey(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureAuthKeyIsMutable();
+          authKey_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public Builder addAllAuthKey(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureAuthKeyIsMutable();
+          super.addAll(values, authKey_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public Builder clearAuthKey() {
+          authKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string authKey = 2;</code>
+         *
+         * <pre>
+         * Same thing but generated from the Authenticator mpubkey. Used when paired.
+         * </pre>
+         */
+        public Builder addAuthKeyBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureAuthKeyIsMutable();
+          authKey_.add(value);
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses)
       }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAddressBook_descriptor;
+
+      static {
+        defaultInstance = new ConfigReceiveAddresses(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses)
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAddressBook_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              authenticator.protobuf.ProtoConfig.ConfigAddressBook.class, authenticator.protobuf.ProtoConfig.ConfigAddressBook.Builder.class);
-    }
+    public interface ConfigAddressBookOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
 
-    public static com.google.protobuf.Parser<ConfigAddressBook> PARSER =
-        new com.google.protobuf.AbstractParser<ConfigAddressBook>() {
-      public ConfigAddressBook parsePartialFrom(
+      // optional string address = 1;
+      /**
+       * <code>optional string address = 1;</code>
+       *
+       * <pre>
+       * This is a placeholder for the address book.
+       * </pre>
+       */
+      boolean hasAddress();
+      /**
+       * <code>optional string address = 1;</code>
+       *
+       * <pre>
+       * This is a placeholder for the address book.
+       * </pre>
+       */
+      java.lang.String getAddress();
+      /**
+       * <code>optional string address = 1;</code>
+       *
+       * <pre>
+       * This is a placeholder for the address book.
+       * </pre>
+       */
+      com.google.protobuf.ByteString
+          getAddressBytes();
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook}
+     */
+    public static final class ConfigAddressBook extends
+        com.google.protobuf.GeneratedMessage
+        implements ConfigAddressBookOrBuilder {
+      // Use ConfigAddressBook.newBuilder() to construct.
+      private ConfigAddressBook(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private ConfigAddressBook(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final ConfigAddressBook defaultInstance;
+      public static ConfigAddressBook getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public ConfigAddressBook getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ConfigAddressBook(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ConfigAddressBook(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ConfigAddressBook> getParserForType() {
-      return PARSER;
-    }
-
-    private int bitField0_;
-    // optional string address = 1;
-    public static final int ADDRESS_FIELD_NUMBER = 1;
-    private java.lang.Object address_;
-    /**
-     * <code>optional string address = 1;</code>
-     *
-     * <pre>
-     * This is a placeholder for the address book.
-     * </pre>
-     */
-    public boolean hasAddress() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional string address = 1;</code>
-     *
-     * <pre>
-     * This is a placeholder for the address book.
-     * </pre>
-     */
-    public java.lang.String getAddress() {
-      java.lang.Object ref = address_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          address_ = s;
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                address_ = input.readBytes();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
         }
-        return s;
       }
-    }
-    /**
-     * <code>optional string address = 1;</code>
-     *
-     * <pre>
-     * This is a placeholder for the address book.
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getAddressBytes() {
-      java.lang.Object ref = address_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        address_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private void initFields() {
-      address_ = "";
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getAddressBytes());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getAddressBytes());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigAddressBook parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigAddressBook prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code authenticator.protobuf.ConfigAddressBook}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.ConfigAddressBookOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAddressBook_descriptor;
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAddressBook_fieldAccessorTable
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                authenticator.protobuf.ProtoConfig.ConfigAddressBook.class, authenticator.protobuf.ProtoConfig.ConfigAddressBook.Builder.class);
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder.class);
       }
 
-      // Construct using authenticator.protobuf.ProtoConfig.ConfigAddressBook.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      public static com.google.protobuf.Parser<ConfigAddressBook> PARSER =
+          new com.google.protobuf.AbstractParser<ConfigAddressBook>() {
+        public ConfigAddressBook parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ConfigAddressBook(input, extensionRegistry);
         }
-      }
-      private static Builder create() {
-        return new Builder();
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ConfigAddressBook> getParserForType() {
+        return PARSER;
       }
 
-      public Builder clear() {
-        super.clear();
-        address_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigAddressBook_descriptor;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigAddressBook getDefaultInstanceForType() {
-        return authenticator.protobuf.ProtoConfig.ConfigAddressBook.getDefaultInstance();
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigAddressBook build() {
-        authenticator.protobuf.ProtoConfig.ConfigAddressBook result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigAddressBook buildPartial() {
-        authenticator.protobuf.ProtoConfig.ConfigAddressBook result = new authenticator.protobuf.ProtoConfig.ConfigAddressBook(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.address_ = address_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof authenticator.protobuf.ProtoConfig.ConfigAddressBook) {
-          return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigAddressBook)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigAddressBook other) {
-        if (other == authenticator.protobuf.ProtoConfig.ConfigAddressBook.getDefaultInstance()) return this;
-        if (other.hasAddress()) {
-          bitField0_ |= 0x00000001;
-          address_ = other.address_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        authenticator.protobuf.ProtoConfig.ConfigAddressBook parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigAddressBook) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
       private int bitField0_;
-
       // optional string address = 1;
-      private java.lang.Object address_ = "";
+      public static final int ADDRESS_FIELD_NUMBER = 1;
+      private java.lang.Object address_;
       /**
        * <code>optional string address = 1;</code>
        *
@@ -7711,13 +7656,16 @@ public final class ProtoConfig {
        */
       public java.lang.String getAddress() {
         java.lang.Object ref = address_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          address_ = s;
-          return s;
-        } else {
+        if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            address_ = s;
+          }
+          return s;
         }
       }
       /**
@@ -7730,7 +7678,7 @@ public final class ProtoConfig {
       public com.google.protobuf.ByteString
           getAddressBytes() {
         java.lang.Object ref = address_;
-        if (ref instanceof String) {
+        if (ref instanceof java.lang.String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
@@ -7740,477 +7688,474 @@ public final class ProtoConfig {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
-       * <code>optional string address = 1;</code>
-       *
-       * <pre>
-       * This is a placeholder for the address book.
-       * </pre>
-       */
-      public Builder setAddress(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        address_ = value;
-        onChanged();
-        return this;
+
+      private void initFields() {
+        address_ = "";
       }
-      /**
-       * <code>optional string address = 1;</code>
-       *
-       * <pre>
-       * This is a placeholder for the address book.
-       * </pre>
-       */
-      public Builder clearAddress() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        address_ = getDefaultInstance().getAddress();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string address = 1;</code>
-       *
-       * <pre>
-       * This is a placeholder for the address book.
-       * </pre>
-       */
-      public Builder setAddressBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        address_ = value;
-        onChanged();
-        return this;
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        memoizedIsInitialized = 1;
+        return true;
       }
 
-      // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigAddressBook)
-    }
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getAddressBytes());
+        }
+        getUnknownFields().writeTo(output);
+      }
 
-    static {
-      defaultInstance = new ConfigAddressBook(true);
-      defaultInstance.initFields();
-    }
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
 
-    // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigAddressBook)
-  }
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getAddressBytes());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
 
-  public interface ConfigSettingsOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
 
-    // optional string onename = 1;
-    /**
-     * <code>optional string onename = 1;</code>
-     *
-     * <pre>
-     * The user's OneName ID. Used for getting the avatar on start up.
-     * </pre>
-     */
-    boolean hasOnename();
-    /**
-     * <code>optional string onename = 1;</code>
-     *
-     * <pre>
-     * The user's OneName ID. Used for getting the avatar on start up.
-     * </pre>
-     */
-    java.lang.String getOnename();
-    /**
-     * <code>optional string onename = 1;</code>
-     *
-     * <pre>
-     * The user's OneName ID. Used for getting the avatar on start up.
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getOnenameBytes();
-  }
-  /**
-   * Protobuf type {@code authenticator.protobuf.ConfigSettings}
-   */
-  public static final class ConfigSettings extends
-      com.google.protobuf.GeneratedMessage
-      implements ConfigSettingsOrBuilder {
-    // Use ConfigSettings.newBuilder() to construct.
-    private ConfigSettings(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private ConfigSettings(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
 
-    private static final ConfigSettings defaultInstance;
-    public static ConfigSettings getDefaultInstance() {
-      return defaultInstance;
-    }
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
 
-    public ConfigSettings getDefaultInstanceForType() {
-      return defaultInstance;
-    }
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_descriptor;
+        }
 
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ConfigSettings(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              bitField0_ |= 0x00000001;
-              onename_ = input.readBytes();
-              break;
-            }
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           }
         }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          address_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook build() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook buildPartial() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.address_ = address_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook other) {
+          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance()) return this;
+          if (other.hasAddress()) {
+            bitField0_ |= 0x00000001;
+            address_ = other.address_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // optional string address = 1;
+        private java.lang.Object address_ = "";
+        /**
+         * <code>optional string address = 1;</code>
+         *
+         * <pre>
+         * This is a placeholder for the address book.
+         * </pre>
+         */
+        public boolean hasAddress() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional string address = 1;</code>
+         *
+         * <pre>
+         * This is a placeholder for the address book.
+         * </pre>
+         */
+        public java.lang.String getAddress() {
+          java.lang.Object ref = address_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            address_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string address = 1;</code>
+         *
+         * <pre>
+         * This is a placeholder for the address book.
+         * </pre>
+         */
+        public com.google.protobuf.ByteString
+            getAddressBytes() {
+          java.lang.Object ref = address_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            address_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string address = 1;</code>
+         *
+         * <pre>
+         * This is a placeholder for the address book.
+         * </pre>
+         */
+        public Builder setAddress(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          address_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string address = 1;</code>
+         *
+         * <pre>
+         * This is a placeholder for the address book.
+         * </pre>
+         */
+        public Builder clearAddress() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          address_ = getDefaultInstance().getAddress();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string address = 1;</code>
+         *
+         * <pre>
+         * This is a placeholder for the address book.
+         * </pre>
+         */
+        public Builder setAddressBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          address_ = value;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook)
       }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigSettings_descriptor;
+
+      static {
+        defaultInstance = new ConfigAddressBook(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook)
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              authenticator.protobuf.ProtoConfig.ConfigSettings.class, authenticator.protobuf.ProtoConfig.ConfigSettings.Builder.class);
-    }
+    public interface ConfigSettingsOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
 
-    public static com.google.protobuf.Parser<ConfigSettings> PARSER =
-        new com.google.protobuf.AbstractParser<ConfigSettings>() {
-      public ConfigSettings parsePartialFrom(
+      // optional string onename = 1;
+      /**
+       * <code>optional string onename = 1;</code>
+       *
+       * <pre>
+       * The user's OneName ID. Used for getting the avatar on start up.
+       * </pre>
+       */
+      boolean hasOnename();
+      /**
+       * <code>optional string onename = 1;</code>
+       *
+       * <pre>
+       * The user's OneName ID. Used for getting the avatar on start up.
+       * </pre>
+       */
+      java.lang.String getOnename();
+      /**
+       * <code>optional string onename = 1;</code>
+       *
+       * <pre>
+       * The user's OneName ID. Used for getting the avatar on start up.
+       * </pre>
+       */
+      com.google.protobuf.ByteString
+          getOnenameBytes();
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings}
+     */
+    public static final class ConfigSettings extends
+        com.google.protobuf.GeneratedMessage
+        implements ConfigSettingsOrBuilder {
+      // Use ConfigSettings.newBuilder() to construct.
+      private ConfigSettings(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private ConfigSettings(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final ConfigSettings defaultInstance;
+      public static ConfigSettings getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public ConfigSettings getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ConfigSettings(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ConfigSettings(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ConfigSettings> getParserForType() {
-      return PARSER;
-    }
-
-    private int bitField0_;
-    // optional string onename = 1;
-    public static final int ONENAME_FIELD_NUMBER = 1;
-    private java.lang.Object onename_;
-    /**
-     * <code>optional string onename = 1;</code>
-     *
-     * <pre>
-     * The user's OneName ID. Used for getting the avatar on start up.
-     * </pre>
-     */
-    public boolean hasOnename() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional string onename = 1;</code>
-     *
-     * <pre>
-     * The user's OneName ID. Used for getting the avatar on start up.
-     * </pre>
-     */
-    public java.lang.String getOnename() {
-      java.lang.Object ref = onename_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          onename_ = s;
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                onename_ = input.readBytes();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
         }
-        return s;
       }
-    }
-    /**
-     * <code>optional string onename = 1;</code>
-     *
-     * <pre>
-     * The user's OneName ID. Used for getting the avatar on start up.
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getOnenameBytes() {
-      java.lang.Object ref = onename_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        onename_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private void initFields() {
-      onename_ = "";
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getOnenameBytes());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getOnenameBytes());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static authenticator.protobuf.ProtoConfig.ConfigSettings parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ConfigSettings prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code authenticator.protobuf.ConfigSettings}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.ConfigSettingsOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigSettings_descriptor;
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                authenticator.protobuf.ProtoConfig.ConfigSettings.class, authenticator.protobuf.ProtoConfig.ConfigSettings.Builder.class);
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder.class);
       }
 
-      // Construct using authenticator.protobuf.ProtoConfig.ConfigSettings.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      public static com.google.protobuf.Parser<ConfigSettings> PARSER =
+          new com.google.protobuf.AbstractParser<ConfigSettings>() {
+        public ConfigSettings parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ConfigSettings(input, extensionRegistry);
         }
-      }
-      private static Builder create() {
-        return new Builder();
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ConfigSettings> getParserForType() {
+        return PARSER;
       }
 
-      public Builder clear() {
-        super.clear();
-        onename_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ConfigSettings_descriptor;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigSettings getDefaultInstanceForType() {
-        return authenticator.protobuf.ProtoConfig.ConfigSettings.getDefaultInstance();
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigSettings build() {
-        authenticator.protobuf.ProtoConfig.ConfigSettings result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public authenticator.protobuf.ProtoConfig.ConfigSettings buildPartial() {
-        authenticator.protobuf.ProtoConfig.ConfigSettings result = new authenticator.protobuf.ProtoConfig.ConfigSettings(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.onename_ = onename_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof authenticator.protobuf.ProtoConfig.ConfigSettings) {
-          return mergeFrom((authenticator.protobuf.ProtoConfig.ConfigSettings)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ConfigSettings other) {
-        if (other == authenticator.protobuf.ProtoConfig.ConfigSettings.getDefaultInstance()) return this;
-        if (other.hasOnename()) {
-          bitField0_ |= 0x00000001;
-          onename_ = other.onename_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        authenticator.protobuf.ProtoConfig.ConfigSettings parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (authenticator.protobuf.ProtoConfig.ConfigSettings) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
       private int bitField0_;
-
       // optional string onename = 1;
-      private java.lang.Object onename_ = "";
+      public static final int ONENAME_FIELD_NUMBER = 1;
+      private java.lang.Object onename_;
       /**
        * <code>optional string onename = 1;</code>
        *
@@ -8230,13 +8175,16 @@ public final class ProtoConfig {
        */
       public java.lang.String getOnename() {
         java.lang.Object ref = onename_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          onename_ = s;
-          return s;
-        } else {
+        if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            onename_ = s;
+          }
+          return s;
         }
       }
       /**
@@ -8249,7 +8197,7 @@ public final class ProtoConfig {
       public com.google.protobuf.ByteString
           getOnenameBytes() {
         java.lang.Object ref = onename_;
-        if (ref instanceof String) {
+        if (ref instanceof java.lang.String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
@@ -8259,70 +8207,1416 @@ public final class ProtoConfig {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
+      private void initFields() {
+        onename_ = "";
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getOnenameBytes());
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getOnenameBytes());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
       /**
-       * <code>optional string onename = 1;</code>
-       *
-       * <pre>
-       * The user's OneName ID. Used for getting the avatar on start up.
-       * </pre>
+       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings}
        */
-      public Builder setOnename(
-          java.lang.String value) {
-        if (value == null) {
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          onename_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings build() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings buildPartial() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.onename_ = onename_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings other) {
+          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance()) return this;
+          if (other.hasOnename()) {
+            bitField0_ |= 0x00000001;
+            onename_ = other.onename_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // optional string onename = 1;
+        private java.lang.Object onename_ = "";
+        /**
+         * <code>optional string onename = 1;</code>
+         *
+         * <pre>
+         * The user's OneName ID. Used for getting the avatar on start up.
+         * </pre>
+         */
+        public boolean hasOnename() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional string onename = 1;</code>
+         *
+         * <pre>
+         * The user's OneName ID. Used for getting the avatar on start up.
+         * </pre>
+         */
+        public java.lang.String getOnename() {
+          java.lang.Object ref = onename_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            onename_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string onename = 1;</code>
+         *
+         * <pre>
+         * The user's OneName ID. Used for getting the avatar on start up.
+         * </pre>
+         */
+        public com.google.protobuf.ByteString
+            getOnenameBytes() {
+          java.lang.Object ref = onename_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            onename_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string onename = 1;</code>
+         *
+         * <pre>
+         * The user's OneName ID. Used for getting the avatar on start up.
+         * </pre>
+         */
+        public Builder setOnename(
+            java.lang.String value) {
+          if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000001;
-        onename_ = value;
-        onChanged();
-        return this;
+          onename_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onename = 1;</code>
+         *
+         * <pre>
+         * The user's OneName ID. Used for getting the avatar on start up.
+         * </pre>
+         */
+        public Builder clearOnename() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onename_ = getDefaultInstance().getOnename();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onename = 1;</code>
+         *
+         * <pre>
+         * The user's OneName ID. Used for getting the avatar on start up.
+         * </pre>
+         */
+        public Builder setOnenameBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          onename_ = value;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings)
       }
-      /**
-       * <code>optional string onename = 1;</code>
-       *
-       * <pre>
-       * The user's OneName ID. Used for getting the avatar on start up.
-       * </pre>
-       */
-      public Builder clearOnename() {
+
+      static {
+        defaultInstance = new ConfigSettings(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings)
+    }
+
+    private int bitField0_;
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;
+    public static final int CONFIGACTIVEACCOUNT_FIELD_NUMBER = 1;
+    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount_;
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+     */
+    public boolean hasConfigActiveAccount() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount getConfigActiveAccount() {
+      return configActiveAccount_;
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder getConfigActiveAccountOrBuilder() {
+      return configActiveAccount_;
+    }
+
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;
+    public static final int CONFIGAUTHENTICATORWALLET_FIELD_NUMBER = 2;
+    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet_;
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+     */
+    public boolean hasConfigAuthenticatorWallet() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet getConfigAuthenticatorWallet() {
+      return configAuthenticatorWallet_;
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder getConfigAuthenticatorWalletOrBuilder() {
+      return configAuthenticatorWallet_;
+    }
+
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;
+    public static final int CONFIGRECEIVEADDRESSES_FIELD_NUMBER = 3;
+    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses_;
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+     */
+    public boolean hasConfigReceiveAddresses() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses getConfigReceiveAddresses() {
+      return configReceiveAddresses_;
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddressesOrBuilder getConfigReceiveAddressesOrBuilder() {
+      return configReceiveAddresses_;
+    }
+
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;
+    public static final int CONFIGADDRESSBOOK_FIELD_NUMBER = 4;
+    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook configAddressBook_;
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+     */
+    public boolean hasConfigAddressBook() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook getConfigAddressBook() {
+      return configAddressBook_;
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder getConfigAddressBookOrBuilder() {
+      return configAddressBook_;
+    }
+
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;
+    public static final int CONFIGSETTINGS_FIELD_NUMBER = 5;
+    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings configSettings_;
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     */
+    public boolean hasConfigSettings() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getConfigSettings() {
+      return configSettings_;
+    }
+    /**
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
+      return configSettings_;
+    }
+
+    private void initFields() {
+      configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
+      configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
+      configReceiveAddresses_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance();
+      configAddressBook_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance();
+      configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (hasConfigActiveAccount()) {
+        if (!getConfigActiveAccount().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasConfigAuthenticatorWallet()) {
+        if (!getConfigAuthenticatorWallet().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, configActiveAccount_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, configAuthenticatorWallet_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(3, configReceiveAddresses_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(4, configAddressBook_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeMessage(5, configSettings_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, configActiveAccount_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, configAuthenticatorWallet_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, configReceiveAddresses_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, configAddressBook_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, configSettings_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements authenticator.protobuf.ProtoConfig.AuthenticatorConfigurationOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Builder.class);
+      }
+
+      // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getConfigActiveAccountFieldBuilder();
+          getConfigAuthenticatorWalletFieldBuilder();
+          getConfigReceiveAddressesFieldBuilder();
+          getConfigAddressBookFieldBuilder();
+          getConfigSettingsFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (configActiveAccountBuilder_ == null) {
+          configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
+        } else {
+          configActiveAccountBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000001);
-        onename_ = getDefaultInstance().getOnename();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string onename = 1;</code>
-       *
-       * <pre>
-       * The user's OneName ID. Used for getting the avatar on start up.
-       * </pre>
-       */
-      public Builder setOnenameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        onename_ = value;
-        onChanged();
+        if (configAuthenticatorWalletBuilder_ == null) {
+          configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
+        } else {
+          configAuthenticatorWalletBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        if (configReceiveAddressesBuilder_ == null) {
+          configReceiveAddresses_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance();
+        } else {
+          configReceiveAddressesBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        if (configAddressBookBuilder_ == null) {
+          configAddressBook_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance();
+        } else {
+          configAddressBookBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        if (configSettingsBuilder_ == null) {
+          configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+        } else {
+          configSettingsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ConfigSettings)
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
+      }
+
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration getDefaultInstanceForType() {
+        return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.getDefaultInstance();
+      }
+
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration build() {
+        authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration buildPartial() {
+        authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (configActiveAccountBuilder_ == null) {
+          result.configActiveAccount_ = configActiveAccount_;
+        } else {
+          result.configActiveAccount_ = configActiveAccountBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (configAuthenticatorWalletBuilder_ == null) {
+          result.configAuthenticatorWallet_ = configAuthenticatorWallet_;
+        } else {
+          result.configAuthenticatorWallet_ = configAuthenticatorWalletBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (configReceiveAddressesBuilder_ == null) {
+          result.configReceiveAddresses_ = configReceiveAddresses_;
+        } else {
+          result.configReceiveAddresses_ = configReceiveAddressesBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        if (configAddressBookBuilder_ == null) {
+          result.configAddressBook_ = configAddressBook_;
+        } else {
+          result.configAddressBook_ = configAddressBookBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        if (configSettingsBuilder_ == null) {
+          result.configSettings_ = configSettings_;
+        } else {
+          result.configSettings_ = configSettingsBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration) {
+          return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration other) {
+        if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.getDefaultInstance()) return this;
+        if (other.hasConfigActiveAccount()) {
+          mergeConfigActiveAccount(other.getConfigActiveAccount());
+        }
+        if (other.hasConfigAuthenticatorWallet()) {
+          mergeConfigAuthenticatorWallet(other.getConfigAuthenticatorWallet());
+        }
+        if (other.hasConfigReceiveAddresses()) {
+          mergeConfigReceiveAddresses(other.getConfigReceiveAddresses());
+        }
+        if (other.hasConfigAddressBook()) {
+          mergeConfigAddressBook(other.getConfigAddressBook());
+        }
+        if (other.hasConfigSettings()) {
+          mergeConfigSettings(other.getConfigSettings());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (hasConfigActiveAccount()) {
+          if (!getConfigActiveAccount().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasConfigAuthenticatorWallet()) {
+          if (!getConfigAuthenticatorWallet().isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;
+      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder> configActiveAccountBuilder_;
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public boolean hasConfigActiveAccount() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount getConfigActiveAccount() {
+        if (configActiveAccountBuilder_ == null) {
+          return configActiveAccount_;
+        } else {
+          return configActiveAccountBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public Builder setConfigActiveAccount(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount value) {
+        if (configActiveAccountBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configActiveAccount_ = value;
+          onChanged();
+        } else {
+          configActiveAccountBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public Builder setConfigActiveAccount(
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder builderForValue) {
+        if (configActiveAccountBuilder_ == null) {
+          configActiveAccount_ = builderForValue.build();
+          onChanged();
+        } else {
+          configActiveAccountBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public Builder mergeConfigActiveAccount(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount value) {
+        if (configActiveAccountBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              configActiveAccount_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance()) {
+            configActiveAccount_ =
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.newBuilder(configActiveAccount_).mergeFrom(value).buildPartial();
+          } else {
+            configActiveAccount_ = value;
+          }
+          onChanged();
+        } else {
+          configActiveAccountBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public Builder clearConfigActiveAccount() {
+        if (configActiveAccountBuilder_ == null) {
+          configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
+          onChanged();
+        } else {
+          configActiveAccountBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder getConfigActiveAccountBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getConfigActiveAccountFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder getConfigActiveAccountOrBuilder() {
+        if (configActiveAccountBuilder_ != null) {
+          return configActiveAccountBuilder_.getMessageOrBuilder();
+        } else {
+          return configActiveAccount_;
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder> 
+          getConfigActiveAccountFieldBuilder() {
+        if (configActiveAccountBuilder_ == null) {
+          configActiveAccountBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder>(
+                  configActiveAccount_,
+                  getParentForChildren(),
+                  isClean());
+          configActiveAccount_ = null;
+        }
+        return configActiveAccountBuilder_;
+      }
+
+      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;
+      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder> configAuthenticatorWalletBuilder_;
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public boolean hasConfigAuthenticatorWallet() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet getConfigAuthenticatorWallet() {
+        if (configAuthenticatorWalletBuilder_ == null) {
+          return configAuthenticatorWallet_;
+        } else {
+          return configAuthenticatorWalletBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public Builder setConfigAuthenticatorWallet(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet value) {
+        if (configAuthenticatorWalletBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configAuthenticatorWallet_ = value;
+          onChanged();
+        } else {
+          configAuthenticatorWalletBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public Builder setConfigAuthenticatorWallet(
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder builderForValue) {
+        if (configAuthenticatorWalletBuilder_ == null) {
+          configAuthenticatorWallet_ = builderForValue.build();
+          onChanged();
+        } else {
+          configAuthenticatorWalletBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public Builder mergeConfigAuthenticatorWallet(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet value) {
+        if (configAuthenticatorWalletBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              configAuthenticatorWallet_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance()) {
+            configAuthenticatorWallet_ =
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.newBuilder(configAuthenticatorWallet_).mergeFrom(value).buildPartial();
+          } else {
+            configAuthenticatorWallet_ = value;
+          }
+          onChanged();
+        } else {
+          configAuthenticatorWalletBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public Builder clearConfigAuthenticatorWallet() {
+        if (configAuthenticatorWalletBuilder_ == null) {
+          configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
+          onChanged();
+        } else {
+          configAuthenticatorWalletBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder getConfigAuthenticatorWalletBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getConfigAuthenticatorWalletFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder getConfigAuthenticatorWalletOrBuilder() {
+        if (configAuthenticatorWalletBuilder_ != null) {
+          return configAuthenticatorWalletBuilder_.getMessageOrBuilder();
+        } else {
+          return configAuthenticatorWallet_;
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder> 
+          getConfigAuthenticatorWalletFieldBuilder() {
+        if (configAuthenticatorWalletBuilder_ == null) {
+          configAuthenticatorWalletBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder>(
+                  configAuthenticatorWallet_,
+                  getParentForChildren(),
+                  isClean());
+          configAuthenticatorWallet_ = null;
+        }
+        return configAuthenticatorWalletBuilder_;
+      }
+
+      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;
+      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddressesOrBuilder> configReceiveAddressesBuilder_;
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public boolean hasConfigReceiveAddresses() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses getConfigReceiveAddresses() {
+        if (configReceiveAddressesBuilder_ == null) {
+          return configReceiveAddresses_;
+        } else {
+          return configReceiveAddressesBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public Builder setConfigReceiveAddresses(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses value) {
+        if (configReceiveAddressesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configReceiveAddresses_ = value;
+          onChanged();
+        } else {
+          configReceiveAddressesBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public Builder setConfigReceiveAddresses(
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder builderForValue) {
+        if (configReceiveAddressesBuilder_ == null) {
+          configReceiveAddresses_ = builderForValue.build();
+          onChanged();
+        } else {
+          configReceiveAddressesBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public Builder mergeConfigReceiveAddresses(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses value) {
+        if (configReceiveAddressesBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              configReceiveAddresses_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance()) {
+            configReceiveAddresses_ =
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.newBuilder(configReceiveAddresses_).mergeFrom(value).buildPartial();
+          } else {
+            configReceiveAddresses_ = value;
+          }
+          onChanged();
+        } else {
+          configReceiveAddressesBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public Builder clearConfigReceiveAddresses() {
+        if (configReceiveAddressesBuilder_ == null) {
+          configReceiveAddresses_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance();
+          onChanged();
+        } else {
+          configReceiveAddressesBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder getConfigReceiveAddressesBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getConfigReceiveAddressesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddressesOrBuilder getConfigReceiveAddressesOrBuilder() {
+        if (configReceiveAddressesBuilder_ != null) {
+          return configReceiveAddressesBuilder_.getMessageOrBuilder();
+        } else {
+          return configReceiveAddresses_;
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigReceiveAddresses configReceiveAddresses = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddressesOrBuilder> 
+          getConfigReceiveAddressesFieldBuilder() {
+        if (configReceiveAddressesBuilder_ == null) {
+          configReceiveAddressesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddressesOrBuilder>(
+                  configReceiveAddresses_,
+                  getParentForChildren(),
+                  isClean());
+          configReceiveAddresses_ = null;
+        }
+        return configReceiveAddressesBuilder_;
+      }
+
+      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;
+      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook configAddressBook_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder> configAddressBookBuilder_;
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public boolean hasConfigAddressBook() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook getConfigAddressBook() {
+        if (configAddressBookBuilder_ == null) {
+          return configAddressBook_;
+        } else {
+          return configAddressBookBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public Builder setConfigAddressBook(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook value) {
+        if (configAddressBookBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configAddressBook_ = value;
+          onChanged();
+        } else {
+          configAddressBookBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public Builder setConfigAddressBook(
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder builderForValue) {
+        if (configAddressBookBuilder_ == null) {
+          configAddressBook_ = builderForValue.build();
+          onChanged();
+        } else {
+          configAddressBookBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public Builder mergeConfigAddressBook(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook value) {
+        if (configAddressBookBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              configAddressBook_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance()) {
+            configAddressBook_ =
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.newBuilder(configAddressBook_).mergeFrom(value).buildPartial();
+          } else {
+            configAddressBook_ = value;
+          }
+          onChanged();
+        } else {
+          configAddressBookBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public Builder clearConfigAddressBook() {
+        if (configAddressBookBuilder_ == null) {
+          configAddressBook_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance();
+          onChanged();
+        } else {
+          configAddressBookBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder getConfigAddressBookBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getConfigAddressBookFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder getConfigAddressBookOrBuilder() {
+        if (configAddressBookBuilder_ != null) {
+          return configAddressBookBuilder_.getMessageOrBuilder();
+        } else {
+          return configAddressBook_;
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook configAddressBook = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder> 
+          getConfigAddressBookFieldBuilder() {
+        if (configAddressBookBuilder_ == null) {
+          configAddressBookBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder>(
+                  configAddressBook_,
+                  getParentForChildren(),
+                  isClean());
+          configAddressBook_ = null;
+        }
+        return configAddressBookBuilder_;
+      }
+
+      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;
+      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder> configSettingsBuilder_;
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public boolean hasConfigSettings() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getConfigSettings() {
+        if (configSettingsBuilder_ == null) {
+          return configSettings_;
+        } else {
+          return configSettingsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public Builder setConfigSettings(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings value) {
+        if (configSettingsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configSettings_ = value;
+          onChanged();
+        } else {
+          configSettingsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public Builder setConfigSettings(
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder builderForValue) {
+        if (configSettingsBuilder_ == null) {
+          configSettings_ = builderForValue.build();
+          onChanged();
+        } else {
+          configSettingsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public Builder mergeConfigSettings(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings value) {
+        if (configSettingsBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+              configSettings_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance()) {
+            configSettings_ =
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.newBuilder(configSettings_).mergeFrom(value).buildPartial();
+          } else {
+            configSettings_ = value;
+          }
+          onChanged();
+        } else {
+          configSettingsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public Builder clearConfigSettings() {
+        if (configSettingsBuilder_ == null) {
+          configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+          onChanged();
+        } else {
+          configSettingsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder getConfigSettingsBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getConfigSettingsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
+        if (configSettingsBuilder_ != null) {
+          return configSettingsBuilder_.getMessageOrBuilder();
+        } else {
+          return configSettings_;
+        }
+      }
+      /**
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder> 
+          getConfigSettingsFieldBuilder() {
+        if (configSettingsBuilder_ == null) {
+          configSettingsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder>(
+                  configSettings_,
+                  getParentForChildren(),
+                  isClean());
+          configSettings_ = null;
+        }
+        return configSettingsBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration)
     }
 
     static {
-      defaultInstance = new ConfigSettings(true);
+      defaultInstance = new AuthenticatorConfiguration(true);
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigSettings)
+    // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration)
   }
 
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ActiveAccount_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ActiveAccount_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
   private static
@@ -8344,25 +9638,35 @@ public final class ProtoConfig {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor;
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_fieldAccessorTable;
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor;
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ConfigReceiveAddresses_fieldAccessorTable;
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ConfigAddressBook_descriptor;
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ConfigAddressBook_fieldAccessorTable;
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ConfigSettings_descriptor;
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable;
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -8372,55 +9676,63 @@ public final class ProtoConfig {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014config.proto\022\026authenticator.protobuf\"\341" +
-      "\001\n\rActiveAccount\022H\n\023pairedAuthenticator\030" +
-      "\001 \001(\0132+.authenticator.protobuf.PairedAut" +
-      "henticator\022R\n\021activeAccountType\030\002 \002(\01627." +
-      "authenticator.protobuf.ActiveAccount.Act" +
-      "iveAccountType\"2\n\021ActiveAccountType\022\n\n\006N" +
-      "ormal\020\000\022\021\n\rAuthenticator\020\001\"\272\002\n\023PairedAut" +
-      "henticator\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_pu" +
-      "blic_key\030\002 \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GC" +
-      "M\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 ",
-      "\002(\010\022\016\n\006keys_n\030\007 \002(\005\022M\n\rgeneratedKeys\030\010 \003" +
-      "(\01326.authenticator.protobuf.PairedAuthen" +
-      "ticator.KeysObject\022\023\n\013pairingName\030\t \002(\t\032" +
-      ">\n\nKeysObject\022\020\n\010priv_key\030\001 \002(\t\022\017\n\007addre" +
-      "ss\030\002 \002(\t\022\r\n\005index\030\003 \002(\005\"\372\002\n\016PendingReque" +
-      "st\022\021\n\tpairingID\030\001 \002(\t\022\021\n\trequestID\030\002 \002(\t" +
-      "\022>\n\roperationType\030\003 \002(\0162\'.authenticator." +
-      "protobuf.ATOperationType\022\r\n\005rawTx\030\004 \001(\t\022" +
-      "\027\n\017payloadIncoming\030\005 \001(\t\022\'\n\037payloadToSen" +
-      "dInCaseOfConnection\030\006 \001(\t\022A\n\010contract\030\007 ",
-      "\002(\0132/.authenticator.protobuf.PendingRequ" +
-      "est.Contract\032n\n\010Contract\022%\n\035ShouldSendPa" +
-      "yloadOnConnection\030\001 \001(\010\022;\n3ShouldReceive" +
-      "PayloadAfterSendingPayloadOnConnection\030\002" +
-      " \001(\010\"\260\001\n\031ConfigAuthenticatorWallet\022\016\n\006pa" +
+      "\n\014config.proto\022\026authenticator.protobuf\"\272" +
+      "\002\n\023PairedAuthenticator\022\017\n\007aes_key\030\001 \002(\t\022" +
+      "\031\n\021master_public_key\030\002 \002(\t\022\022\n\nchain_code" +
+      "\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t\022\017" +
+      "\n\007testnet\030\006 \002(\010\022\016\n\006keys_n\030\007 \002(\005\022M\n\rgener" +
+      "atedKeys\030\010 \003(\01326.authenticator.protobuf." +
+      "PairedAuthenticator.KeysObject\022\023\n\013pairin" +
+      "gName\030\t \002(\t\032>\n\nKeysObject\022\020\n\010priv_key\030\001 " +
+      "\002(\t\022\017\n\007address\030\002 \002(\t\022\r\n\005index\030\003 \002(\005\"\372\002\n\016" +
+      "PendingRequest\022\021\n\tpairingID\030\001 \002(\t\022\021\n\treq",
+      "uestID\030\002 \002(\t\022>\n\roperationType\030\003 \002(\0162\'.au" +
+      "thenticator.protobuf.ATOperationType\022\r\n\005" +
+      "rawTx\030\004 \001(\t\022\027\n\017payloadIncoming\030\005 \001(\t\022\'\n\037" +
+      "payloadToSendInCaseOfConnection\030\006 \001(\t\022A\n" +
+      "\010contract\030\007 \002(\0132/.authenticator.protobuf" +
+      ".PendingRequest.Contract\032n\n\010Contract\022%\n\035" +
+      "ShouldSendPayloadOnConnection\030\001 \001(\010\022;\n3S" +
+      "houldReceivePayloadAfterSendingPayloadOn" +
+      "Connection\030\002 \001(\010\"\373\007\n\032AuthenticatorConfig" +
+      "uration\022c\n\023configActiveAccount\030\001 \001(\0132F.a",
+      "uthenticator.protobuf.AuthenticatorConfi" +
+      "guration.ConfigActiveAccount\022o\n\031configAu" +
+      "thenticatorWallet\030\002 \001(\0132L.authenticator." +
+      "protobuf.AuthenticatorConfiguration.Conf" +
+      "igAuthenticatorWallet\022i\n\026configReceiveAd" +
+      "dresses\030\003 \001(\0132I.authenticator.protobuf.A" +
+      "uthenticatorConfiguration.ConfigReceiveA" +
+      "ddresses\022_\n\021configAddressBook\030\004 \001(\0132D.au" +
+      "thenticator.protobuf.AuthenticatorConfig" +
+      "uration.ConfigAddressBook\022Y\n\016configSetti",
+      "ngs\030\005 \001(\0132A.authenticator.protobuf.Authe" +
+      "nticatorConfiguration.ConfigSettings\032\245\001\n" +
+      "\023ConfigActiveAccount\022H\n\023pairedAuthentica" +
+      "tor\030\001 \001(\0132+.authenticator.protobuf.Paire" +
+      "dAuthenticator\022D\n\021activeAccountType\030\002 \002(" +
+      "\0162).authenticator.protobuf.ActiveAccount" +
+      "Type\032\260\001\n\031ConfigAuthenticatorWallet\022\016\n\006pa" +
       "ired\030\001 \001(\010\022B\n\rpairedWallets\030\002 \003(\0132+.auth" +
       "enticator.protobuf.PairedAuthenticator\022?" +
-      "\n\017pendingRequests\030\003 \003(\0132&.authenticator." +
-      "protobuf.PendingRequest\"<\n\026ConfigReceive" +
-      "Addresses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030",
-      "\002 \003(\t\"$\n\021ConfigAddressBook\022\017\n\007address\030\001 " +
-      "\001(\t\"!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*_" +
+      "\n\017pendingRequests\030\003 \003(\0132&.authenticator.",
+      "protobuf.PendingRequest\032<\n\026ConfigReceive" +
+      "Addresses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030" +
+      "\002 \003(\t\032$\n\021ConfigAddressBook\022\017\n\007address\030\001 " +
+      "\001(\t\032!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*_" +
       "\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006Unpair" +
       "\020\001\022\n\n\006SignTx\020\002\022\'\n#updateIpAddressesForPr" +
-      "eviousMessage\020\003B\rB\013ProtoConfig"
+      "eviousMessage\020\003*2\n\021ActiveAccountType\022\n\n\006" +
+      "Normal\020\000\022\021\n\rAuthenticator\020\001B\rB\013ProtoConf" +
+      "ig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_authenticator_protobuf_ActiveAccount_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_authenticator_protobuf_ActiveAccount_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ActiveAccount_descriptor,
-              new java.lang.String[] { "PairedAuthenticator", "ActiveAccountType", });
           internal_static_authenticator_protobuf_PairedAuthenticator_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+            getDescriptor().getMessageTypes().get(0);
           internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_PairedAuthenticator_descriptor,
@@ -8432,7 +9744,7 @@ public final class ProtoConfig {
               internal_static_authenticator_protobuf_PairedAuthenticator_KeysObject_descriptor,
               new java.lang.String[] { "PrivKey", "Address", "Index", });
           internal_static_authenticator_protobuf_PendingRequest_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+            getDescriptor().getMessageTypes().get(1);
           internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_PendingRequest_descriptor,
@@ -8443,29 +9755,41 @@ public final class ProtoConfig {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor,
               new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", });
-          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor =
-            getDescriptor().getMessageTypes().get(3);
-          internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_fieldAccessorTable = new
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
+            getDescriptor().getMessageTypes().get(2);
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ConfigAuthenticatorWallet_descriptor,
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
+              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigReceiveAddresses", "ConfigAddressBook", "ConfigSettings", });
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
+            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor,
+              new java.lang.String[] { "PairedAuthenticator", "ActiveAccountType", });
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor =
+            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(1);
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor,
               new java.lang.String[] { "Paired", "PairedWallets", "PendingRequests", });
-          internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor =
-            getDescriptor().getMessageTypes().get(4);
-          internal_static_authenticator_protobuf_ConfigReceiveAddresses_fieldAccessorTable = new
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_descriptor =
+            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(2);
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ConfigReceiveAddresses_descriptor,
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigReceiveAddresses_descriptor,
               new java.lang.String[] { "WalletKey", "AuthKey", });
-          internal_static_authenticator_protobuf_ConfigAddressBook_descriptor =
-            getDescriptor().getMessageTypes().get(5);
-          internal_static_authenticator_protobuf_ConfigAddressBook_fieldAccessorTable = new
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_descriptor =
+            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ConfigAddressBook_descriptor,
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_descriptor,
               new java.lang.String[] { "Address", });
-          internal_static_authenticator_protobuf_ConfigSettings_descriptor =
-            getDescriptor().getMessageTypes().get(6);
-          internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable = new
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor =
+            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(4);
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ConfigSettings_descriptor,
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor,
               new java.lang.String[] { "Onename", });
           return null;
         }

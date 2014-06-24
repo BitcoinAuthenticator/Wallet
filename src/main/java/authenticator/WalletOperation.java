@@ -22,7 +22,7 @@ import org.json.simple.parser.ParseException;
 
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
-import authenticator.protobuf.ProtoConfig.ActiveAccount;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 
@@ -397,11 +397,11 @@ public class WalletOperation extends BASE{
 	//		Active account Control
 	//
 	//#####################################
-	public ActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
+	public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
 		return configFile.getActiveAccount();
 	}
 	
-	public void writeActiveAccount(ActiveAccount acc) throws FileNotFoundException, IOException{
+	public void writeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc) throws FileNotFoundException, IOException{
 		configFile.writeActiveAccount(acc);
 	}
 		

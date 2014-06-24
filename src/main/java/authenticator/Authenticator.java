@@ -1,5 +1,6 @@
 package authenticator;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,11 +13,12 @@ import com.google.bitcoin.core.Wallet;
 import com.google.common.util.concurrent.AbstractService;
 
 import authenticator.Utils.SafeList;
+import authenticator.db.ConfigFile;
 import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
-import authenticator.protobuf.ProtoConfig.ActiveAccount;
-import authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType;
+import authenticator.protobuf.ProtoConfig.ActiveAccountType;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
@@ -43,7 +45,7 @@ public class Authenticator extends AbstractService{
 	private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
-	private static ActiveAccount activeAccount;
+	private static AuthenticatorConfiguration.ConfigActiveAccount activeAccount;
 	// Listeners
 	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
 	private static OnAuthenticatoGUIUpdateListener mListener;
@@ -148,7 +150,7 @@ public class Authenticator extends AbstractService{
 		List<PairedAuthenticator> all = null;
 		try {
 			all = this.getWalletOperation().getAllPairingObjectArray();
-		} catch (IOException e1) { e1.printStackTrace(); }
+		} catch (Exception e1) { e1.printStackTrace(); }
 		if(all != null)
 		for(PairedAuthenticator po: all)
 		for(PairedAuthenticator.KeysObject ko: po.getGeneratedKeysList())
@@ -169,7 +171,7 @@ public class Authenticator extends AbstractService{
 		this.activeAccount = null;
 		try {
 			this.activeAccount = getWalletOperation().getActiveAccount();
-		} catch (IOException e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); }
 		
 		/**
 		 * In case no active account found.
@@ -177,9 +179,10 @@ public class Authenticator extends AbstractService{
 		 */
 		if(this.activeAccount == null)
 		{
-			ActiveAccount.Builder b = ActiveAccount.newBuilder();
-			b.setActiveAccountType(ActiveAccountType.Normal); // default is the normal account
 			try {
+				AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
+				//b.mergeDelimitedFrom(new FileInputStream(ConfigFile.filePath));
+				b.setActiveAccountType(ActiveAccountType.Normal);
 				getWalletOperation().writeActiveAccount(b.build());
 				this.activeAccount = b.build();
 			} catch (IOException e) { e.printStackTrace(); }
@@ -193,7 +196,7 @@ public class Authenticator extends AbstractService{
 	 * @param acc
 	 * @return
 	 */
-	public static boolean changeActiveAccount(ActiveAccount acc)
+	public static boolean changeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc)
 	{
 		try {
 			getWalletOperation().writeActiveAccount(acc);

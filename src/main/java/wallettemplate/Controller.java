@@ -2,8 +2,8 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
-import authenticator.protobuf.ProtoConfig.ActiveAccount;
-import authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType;
+import authenticator.protobuf.ProtoConfig.ActiveAccountType;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
@@ -532,7 +532,7 @@ public class Controller {
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
 	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
    		@Override public void changed(ObservableValue ov, String t, String t1) {
-   			changeAccount(t1);
+   			//changeAccount(t1);
    		}    
    	});
    }
@@ -984,7 +984,7 @@ public class Controller {
     	}
     	
     	// change account
-    	ActiveAccount.Builder b = ActiveAccount.newBuilder();
+    	AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
     	if(selectedAuth != null){
     		b.setActiveAccountType(ActiveAccountType.Authenticator);
     		b.setPairedAuthenticator(selectedAuth);

@@ -9,14 +9,9 @@ enum ATOperationType {
 	updateIpAddressesForPreviousMessage = 3;
 }
 
-message ActiveAccount{
-	enum ActiveAccountType {
-	    Normal	 		= 0;
-		Authenticator 	= 1;
-	}
-	
-	optional PairedAuthenticator pairedAuthenticator = 1;
-	required ActiveAccountType activeAccountType 	 = 2;
+enum ActiveAccountType {
+    Normal	 		= 0;
+	Authenticator 	= 1;
 }
 
 //
@@ -60,30 +55,44 @@ message PendingRequest{
 	required Contract contract 									= 7;
 }
 
-message ConfigAuthenticatorWallet {
-
-  	optional bool paired = 1;  // Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+message AuthenticatorConfiguration{
+	message ConfigActiveAccount{
+		optional PairedAuthenticator pairedAuthenticator = 1;
+		required ActiveAccountType activeAccountType 	 = 2;
+	}
 	
-	repeated PairedAuthenticator pairedWallets = 2; 
-	repeated PendingRequest pendingRequests 	= 3; 
+	message ConfigAuthenticatorWallet {
+	
+	  	optional bool paired = 1;  // Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
+		
+		repeated PairedAuthenticator pairedWallets  = 2; 
+		repeated PendingRequest pendingRequests 	= 3; 
+	}
+	
+	message ConfigReceiveAddresses {
+	
+		repeated string walletKey = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+		repeated string authKey = 2; // Same thing but generated from the Authenticator mpubkey. Used when paired.
+	
+	}
+	
+	message ConfigAddressBook {
+	
+		optional string address = 1; // This is a placeholder for the address book.
+	
+	}
+	
+	message ConfigSettings {
+	
+		optional string onename = 1; // The user's OneName ID. Used for getting the avatar on start up.
+	
+	}
+	
+	optional ConfigActiveAccount configActiveAccount 				= 1;
+	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
+	optional ConfigReceiveAddresses configReceiveAddresses 			= 3;
+	optional ConfigAddressBook configAddressBook 					= 4;
+	optional ConfigSettings configSettings							= 5;
 }
 
-message ConfigReceiveAddresses {
-
-	repeated string walletKey = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-	repeated string authKey = 2; // Same thing but generated from the Authenticator mpubkey. Used when paired.
-
-}
-
-message ConfigAddressBook {
-
-	optional string address = 1; // This is a placeholder for the address book.
-
-}
-
-message ConfigSettings {
-
-	optional string onename = 1; // The user's OneName ID. Used for getting the avatar on start up.
-
-}
 
