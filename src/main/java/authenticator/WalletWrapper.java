@@ -87,7 +87,7 @@ public class WalletWrapper extends BASE{
 	 */
 	public Coin getEstimatedBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
 	{
-		Coin retBalance = null;
+		Coin retBalance = Coin.ZERO;
 		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
 		for(TransactionOutput Txout: allWatchedAddresses)
 			for(String lookedAddr: addressArr){

@@ -369,9 +369,11 @@ public class WalletOperation extends BASE{
 	 * @return
 	 */
 	public Coin getConfirmedBalance(String pairingID){
+		Coin estimated = Coin.ZERO;
+		Coin unConfirmed = Coin.ZERO;
 		try {
-			Coin estimated = mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(this.getAddressesArray(pairingID));
-			Coin unConfirmed = getUnconfirmedBalance(pairingID);
+			estimated = mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(this.getAddressesArray(pairingID));
+			unConfirmed = getUnconfirmedBalance(pairingID);
 			return estimated.subtract(unConfirmed);
 		} catch (ScriptException | UnsupportedEncodingException e) { e.printStackTrace(); }
 		return Coin.ZERO;
