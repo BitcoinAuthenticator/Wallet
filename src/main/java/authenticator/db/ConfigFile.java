@@ -16,9 +16,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import authenticator.protobuf.ProtoConfig;
+import authenticator.protobuf.ProtoConfig.ActiveAccount;
 import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.ConfigReceiveAddresses;
 
 import com.google.bitcoin.core.ECKey;
@@ -218,6 +219,16 @@ public class ConfigFile {
 		
 		FileOutputStream output = new FileOutputStream(filePath);  
 		b1.build().writeTo(output);          
+		output.close();
+	}
+	
+	public ActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
+		return ActiveAccount.parseFrom(new FileInputStream(filePath));
+	}
+	
+	public void writeActiveAccount(ActiveAccount acc) throws FileNotFoundException, IOException{
+		FileOutputStream output = new FileOutputStream(filePath); 
+		acc.writeTo(output);
 		output.close();
 	}
 }

@@ -2,7 +2,9 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.ActiveAccount;
+import authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
@@ -514,6 +516,7 @@ public class Controller {
  	     AppsPane.setVisible(true);
     }
    
+   @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
 	   List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 	   try {
@@ -527,6 +530,11 @@ public class Controller {
 	   }
 	   AccountBox.setValue("Main Wallet");
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
+	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
+   		@Override public void changed(ObservableValue ov, String t, String t1) {
+   			changeAccount(t1);
+   		}    
+   	});
    }
    
    	//#####################################
@@ -951,5 +959,45 @@ public class Controller {
     
     @FXML protected void btnAppAuthenticator(MouseEvent event) {
     	Main.instance.overlayUI("Pair_wallet.fxml");
+    }
+    
+    //#####################################
+   	//
+   	//	Change account
+   	//
+   	//#####################################
+    
+    public void changeAccount(String toValue){
+    	List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+    	try {
+    		all = Authenticator.getWalletOperation().getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+    	
+    	// find selected paired authenticator
+    	PairedAuthenticator selectedAuth = null;
+    	for(PairedAuthenticator po:all){
+    		if(po.getPairingName().equals(toValue))
+    		{
+    			selectedAuth = po;
+    			break;
+    		}
+    	}
+    	
+    	// change account
+    	ActiveAccount.Builder b = ActiveAccount.newBuilder();
+    	if(selectedAuth != null){
+    		b.setActiveAccountType(ActiveAccountType.Authenticator);
+    		b.setPairedAuthenticator(selectedAuth);
+    	}
+    	else {
+    		b.setActiveAccountType(ActiveAccountType.Normal);
+    	}
+    	if( Authenticator.changeActiveAccount(b.build()))
+    		updateUIForNewActiveAccount();
+    }
+    
+    public void updateUIForNewActiveAccount(){
+    	refreshBalanceLabel();
+        setAddresses();
     }
 }

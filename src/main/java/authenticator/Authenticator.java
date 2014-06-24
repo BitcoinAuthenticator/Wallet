@@ -15,8 +15,10 @@ import authenticator.Utils.SafeList;
 import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
+import authenticator.protobuf.ProtoConfig.ActiveAccount;
+import authenticator.protobuf.ProtoConfig.ActiveAccount.ActiveAccountType;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
 
 /**
@@ -41,6 +43,7 @@ public class Authenticator extends AbstractService{
 	private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
+	private static ActiveAccount activeAccount;
 	// Listeners
 	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
 	private static OnAuthenticatoGUIUpdateListener mListener;
@@ -67,6 +70,7 @@ public class Authenticator extends AbstractService{
 		}
 		new OperationsFactory(); // to instantiate various things
 		verifyWalletIsWatchingAuthenticatorAddresses();
+		loadActiveAccount();
 	}
 	
 	//#####################################
@@ -160,6 +164,44 @@ public class Authenticator extends AbstractService{
 		}
 	}
 	
+	private void loadActiveAccount()
+	{
+		this.activeAccount = null;
+		try {
+			this.activeAccount = getWalletOperation().getActiveAccount();
+		} catch (IOException e) { e.printStackTrace(); }
+		
+		/**
+		 * In case no active account found.
+		 * Maybe because its a new wallet
+		 */
+		if(this.activeAccount == null)
+		{
+			ActiveAccount.Builder b = ActiveAccount.newBuilder();
+			b.setActiveAccountType(ActiveAccountType.Normal); // default is the normal account
+			try {
+				getWalletOperation().writeActiveAccount(b.build());
+				this.activeAccount = b.build();
+			} catch (IOException e) { e.printStackTrace(); }
+		}		
+	}
+	
+	/**
+	 * Will return <b>true</b> if change was successful.<br>
+	 * Will return <b>false</b> if change was not successful.<br>
+	 * 
+	 * @param acc
+	 * @return
+	 */
+	public static boolean changeActiveAccount(ActiveAccount acc)
+	{
+		try {
+			getWalletOperation().writeActiveAccount(acc);
+			activeAccount = acc;
+			return true;
+		} catch (IOException e) { e.printStackTrace(); return false;}
+	}
+	
 	//#####################################
 	//
 	//		Getters and Setters
@@ -189,6 +231,7 @@ public class Authenticator extends AbstractService{
 		assert(mApplicationParams != null);
 		assert(operationsQueue != null);
 		assert(pendingRequests != null);
+		assert(activeAccount != null);
 		try { 
 			mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)}); 
 			notifyStarted();

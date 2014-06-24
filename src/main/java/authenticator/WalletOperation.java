@@ -1,7 +1,9 @@
 package authenticator;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,8 +22,9 @@ import org.json.simple.parser.ParseException;
 
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
+import authenticator.protobuf.ProtoConfig.ActiveAccount;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.PendingRequest;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -388,7 +391,20 @@ public class WalletOperation extends BASE{
 		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 			return configFile.getPendingRequests();
 		}
-			
+		
+	//#####################################
+	//
+	//		Active account Control
+	//
+	//#####################################
+	public ActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
+		return configFile.getActiveAccount();
+	}
+	
+	public void writeActiveAccount(ActiveAccount acc) throws FileNotFoundException, IOException{
+		configFile.writeActiveAccount(acc);
+	}
+		
 	//#####################################
   	//
   	//	Regular Bitocoin Wallet Operations

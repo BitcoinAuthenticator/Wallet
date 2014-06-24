@@ -62,9 +62,9 @@ import authenticator.GCM.dispacher.MessageType;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PendingRequest;
+import authenticator.protobuf.ProtoConfig.PendingRequest;
 
 public class OperationsFactory extends BASE{
 	

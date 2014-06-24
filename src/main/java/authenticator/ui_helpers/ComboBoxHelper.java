@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javafx.scene.control.ComboBox;
 import authenticator.Authenticator;
-import authenticator.protobuf.ProtoConfig.ConfigAuthenticatorWallet.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 
 public class ComboBoxHelper {
 
