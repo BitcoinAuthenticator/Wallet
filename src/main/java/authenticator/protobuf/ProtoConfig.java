@@ -9,6 +9,88 @@ public final class ProtoConfig {
       com.google.protobuf.ExtensionRegistry registry) {
   }
   /**
+   * Protobuf enum {@code authenticator.protobuf.ATGCMMessageType}
+   */
+  public enum ATGCMMessageType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>SignTX = 2;</code>
+     */
+    SignTX(0, 2),
+    /**
+     * <code>UpdatePendingRequestIPs = 4;</code>
+     */
+    UpdatePendingRequestIPs(1, 4),
+    ;
+
+    /**
+     * <code>SignTX = 2;</code>
+     */
+    public static final int SignTX_VALUE = 2;
+    /**
+     * <code>UpdatePendingRequestIPs = 4;</code>
+     */
+    public static final int UpdatePendingRequestIPs_VALUE = 4;
+
+
+    public final int getNumber() { return value; }
+
+    public static ATGCMMessageType valueOf(int value) {
+      switch (value) {
+        case 2: return SignTX;
+        case 4: return UpdatePendingRequestIPs;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ATGCMMessageType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<ATGCMMessageType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ATGCMMessageType>() {
+            public ATGCMMessageType findValueByNumber(int number) {
+              return ATGCMMessageType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final ATGCMMessageType[] VALUES = values();
+
+    public static ATGCMMessageType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private ATGCMMessageType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:authenticator.protobuf.ATGCMMessageType)
+  }
+
+  /**
    * Protobuf enum {@code authenticator.protobuf.ATOperationType}
    */
   public enum ATOperationType
@@ -22,13 +104,17 @@ public final class ProtoConfig {
      */
     Unpair(1, 1),
     /**
-     * <code>SignTx = 2;</code>
+     * <code>SignAndBroadcastAuthenticatorTx = 2;</code>
      */
-    SignTx(2, 2),
+    SignAndBroadcastAuthenticatorTx(2, 2),
     /**
-     * <code>updateIpAddressesForPreviousMessage = 3;</code>
+     * <code>BroadcastNormalTx = 3;</code>
      */
-    updateIpAddressesForPreviousMessage(3, 3),
+    BroadcastNormalTx(3, 3),
+    /**
+     * <code>updateIpAddressesForPreviousMessage = 4;</code>
+     */
+    updateIpAddressesForPreviousMessage(4, 4),
     ;
 
     /**
@@ -40,13 +126,17 @@ public final class ProtoConfig {
      */
     public static final int Unpair_VALUE = 1;
     /**
-     * <code>SignTx = 2;</code>
+     * <code>SignAndBroadcastAuthenticatorTx = 2;</code>
      */
-    public static final int SignTx_VALUE = 2;
+    public static final int SignAndBroadcastAuthenticatorTx_VALUE = 2;
     /**
-     * <code>updateIpAddressesForPreviousMessage = 3;</code>
+     * <code>BroadcastNormalTx = 3;</code>
      */
-    public static final int updateIpAddressesForPreviousMessage_VALUE = 3;
+    public static final int BroadcastNormalTx_VALUE = 3;
+    /**
+     * <code>updateIpAddressesForPreviousMessage = 4;</code>
+     */
+    public static final int updateIpAddressesForPreviousMessage_VALUE = 4;
 
 
     public final int getNumber() { return value; }
@@ -55,8 +145,9 @@ public final class ProtoConfig {
       switch (value) {
         case 0: return Pairing;
         case 1: return Unpair;
-        case 2: return SignTx;
-        case 3: return updateIpAddressesForPreviousMessage;
+        case 2: return SignAndBroadcastAuthenticatorTx;
+        case 3: return BroadcastNormalTx;
+        case 4: return updateIpAddressesForPreviousMessage;
         default: return null;
       }
     }
@@ -83,7 +174,7 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(0);
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final ATOperationType[] VALUES = values();
@@ -165,7 +256,7 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(1);
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(2);
     }
 
     private static final ActiveAccountType[] VALUES = values();
@@ -2841,35 +2932,25 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getRawTxBytes();
 
-    // optional string payloadIncoming = 5;
+    // optional bytes payloadIncoming = 5;
     /**
-     * <code>optional string payloadIncoming = 5;</code>
+     * <code>optional bytes payloadIncoming = 5;</code>
      */
     boolean hasPayloadIncoming();
     /**
-     * <code>optional string payloadIncoming = 5;</code>
+     * <code>optional bytes payloadIncoming = 5;</code>
      */
-    java.lang.String getPayloadIncoming();
-    /**
-     * <code>optional string payloadIncoming = 5;</code>
-     */
-    com.google.protobuf.ByteString
-        getPayloadIncomingBytes();
+    com.google.protobuf.ByteString getPayloadIncoming();
 
-    // optional string payloadToSendInCaseOfConnection = 6;
+    // optional bytes payloadToSendInCaseOfConnection = 6;
     /**
-     * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+     * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
      */
     boolean hasPayloadToSendInCaseOfConnection();
     /**
-     * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+     * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
      */
-    java.lang.String getPayloadToSendInCaseOfConnection();
-    /**
-     * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
-     */
-    com.google.protobuf.ByteString
-        getPayloadToSendInCaseOfConnectionBytes();
+    com.google.protobuf.ByteString getPayloadToSendInCaseOfConnection();
 
     // required .authenticator.protobuf.PendingRequest.Contract contract = 7;
     /**
@@ -3647,90 +3728,36 @@ public final class ProtoConfig {
       }
     }
 
-    // optional string payloadIncoming = 5;
+    // optional bytes payloadIncoming = 5;
     public static final int PAYLOADINCOMING_FIELD_NUMBER = 5;
-    private java.lang.Object payloadIncoming_;
+    private com.google.protobuf.ByteString payloadIncoming_;
     /**
-     * <code>optional string payloadIncoming = 5;</code>
+     * <code>optional bytes payloadIncoming = 5;</code>
      */
     public boolean hasPayloadIncoming() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional string payloadIncoming = 5;</code>
+     * <code>optional bytes payloadIncoming = 5;</code>
      */
-    public java.lang.String getPayloadIncoming() {
-      java.lang.Object ref = payloadIncoming_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          payloadIncoming_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string payloadIncoming = 5;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPayloadIncomingBytes() {
-      java.lang.Object ref = payloadIncoming_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        payloadIncoming_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.google.protobuf.ByteString getPayloadIncoming() {
+      return payloadIncoming_;
     }
 
-    // optional string payloadToSendInCaseOfConnection = 6;
+    // optional bytes payloadToSendInCaseOfConnection = 6;
     public static final int PAYLOADTOSENDINCASEOFCONNECTION_FIELD_NUMBER = 6;
-    private java.lang.Object payloadToSendInCaseOfConnection_;
+    private com.google.protobuf.ByteString payloadToSendInCaseOfConnection_;
     /**
-     * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+     * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
      */
     public boolean hasPayloadToSendInCaseOfConnection() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+     * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
      */
-    public java.lang.String getPayloadToSendInCaseOfConnection() {
-      java.lang.Object ref = payloadToSendInCaseOfConnection_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          payloadToSendInCaseOfConnection_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPayloadToSendInCaseOfConnectionBytes() {
-      java.lang.Object ref = payloadToSendInCaseOfConnection_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        payloadToSendInCaseOfConnection_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.google.protobuf.ByteString getPayloadToSendInCaseOfConnection() {
+      return payloadToSendInCaseOfConnection_;
     }
 
     // required .authenticator.protobuf.PendingRequest.Contract contract = 7;
@@ -3760,8 +3787,8 @@ public final class ProtoConfig {
       requestID_ = "";
       operationType_ = authenticator.protobuf.ProtoConfig.ATOperationType.Pairing;
       rawTx_ = "";
-      payloadIncoming_ = "";
-      payloadToSendInCaseOfConnection_ = "";
+      payloadIncoming_ = com.google.protobuf.ByteString.EMPTY;
+      payloadToSendInCaseOfConnection_ = com.google.protobuf.ByteString.EMPTY;
       contract_ = authenticator.protobuf.ProtoConfig.PendingRequest.Contract.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
@@ -3805,10 +3832,10 @@ public final class ProtoConfig {
         output.writeBytes(4, getRawTxBytes());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getPayloadIncomingBytes());
+        output.writeBytes(5, payloadIncoming_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(6, getPayloadToSendInCaseOfConnectionBytes());
+        output.writeBytes(6, payloadToSendInCaseOfConnection_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeMessage(7, contract_);
@@ -3840,11 +3867,11 @@ public final class ProtoConfig {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getPayloadIncomingBytes());
+          .computeBytesSize(5, payloadIncoming_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(6, getPayloadToSendInCaseOfConnectionBytes());
+          .computeBytesSize(6, payloadToSendInCaseOfConnection_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
@@ -3975,9 +4002,9 @@ public final class ProtoConfig {
         bitField0_ = (bitField0_ & ~0x00000004);
         rawTx_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
-        payloadIncoming_ = "";
+        payloadIncoming_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000010);
-        payloadToSendInCaseOfConnection_ = "";
+        payloadToSendInCaseOfConnection_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000020);
         if (contractBuilder_ == null) {
           contract_ = authenticator.protobuf.ProtoConfig.PendingRequest.Contract.getDefaultInstance();
@@ -4080,14 +4107,10 @@ public final class ProtoConfig {
           onChanged();
         }
         if (other.hasPayloadIncoming()) {
-          bitField0_ |= 0x00000010;
-          payloadIncoming_ = other.payloadIncoming_;
-          onChanged();
+          setPayloadIncoming(other.getPayloadIncoming());
         }
         if (other.hasPayloadToSendInCaseOfConnection()) {
-          bitField0_ |= 0x00000020;
-          payloadToSendInCaseOfConnection_ = other.payloadToSendInCaseOfConnection_;
-          onChanged();
+          setPayloadToSendInCaseOfConnection(other.getPayloadToSendInCaseOfConnection());
         }
         if (other.hasContract()) {
           mergeContract(other.getContract());
@@ -4393,49 +4416,24 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional string payloadIncoming = 5;
-      private java.lang.Object payloadIncoming_ = "";
+      // optional bytes payloadIncoming = 5;
+      private com.google.protobuf.ByteString payloadIncoming_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>optional string payloadIncoming = 5;</code>
+       * <code>optional bytes payloadIncoming = 5;</code>
        */
       public boolean hasPayloadIncoming() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional string payloadIncoming = 5;</code>
+       * <code>optional bytes payloadIncoming = 5;</code>
        */
-      public java.lang.String getPayloadIncoming() {
-        java.lang.Object ref = payloadIncoming_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          payloadIncoming_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public com.google.protobuf.ByteString getPayloadIncoming() {
+        return payloadIncoming_;
       }
       /**
-       * <code>optional string payloadIncoming = 5;</code>
+       * <code>optional bytes payloadIncoming = 5;</code>
        */
-      public com.google.protobuf.ByteString
-          getPayloadIncomingBytes() {
-        java.lang.Object ref = payloadIncoming_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          payloadIncoming_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string payloadIncoming = 5;</code>
-       */
-      public Builder setPayloadIncoming(
-          java.lang.String value) {
+      public Builder setPayloadIncoming(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -4445,7 +4443,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>optional string payloadIncoming = 5;</code>
+       * <code>optional bytes payloadIncoming = 5;</code>
        */
       public Builder clearPayloadIncoming() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -4453,63 +4451,25 @@ public final class ProtoConfig {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional string payloadIncoming = 5;</code>
-       */
-      public Builder setPayloadIncomingBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        payloadIncoming_ = value;
-        onChanged();
-        return this;
-      }
 
-      // optional string payloadToSendInCaseOfConnection = 6;
-      private java.lang.Object payloadToSendInCaseOfConnection_ = "";
+      // optional bytes payloadToSendInCaseOfConnection = 6;
+      private com.google.protobuf.ByteString payloadToSendInCaseOfConnection_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
        */
       public boolean hasPayloadToSendInCaseOfConnection() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
        */
-      public java.lang.String getPayloadToSendInCaseOfConnection() {
-        java.lang.Object ref = payloadToSendInCaseOfConnection_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          payloadToSendInCaseOfConnection_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public com.google.protobuf.ByteString getPayloadToSendInCaseOfConnection() {
+        return payloadToSendInCaseOfConnection_;
       }
       /**
-       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
        */
-      public com.google.protobuf.ByteString
-          getPayloadToSendInCaseOfConnectionBytes() {
-        java.lang.Object ref = payloadToSendInCaseOfConnection_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          payloadToSendInCaseOfConnection_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
-       */
-      public Builder setPayloadToSendInCaseOfConnection(
-          java.lang.String value) {
+      public Builder setPayloadToSendInCaseOfConnection(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -4519,24 +4479,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
+       * <code>optional bytes payloadToSendInCaseOfConnection = 6;</code>
        */
       public Builder clearPayloadToSendInCaseOfConnection() {
         bitField0_ = (bitField0_ & ~0x00000020);
         payloadToSendInCaseOfConnection_ = getDefaultInstance().getPayloadToSendInCaseOfConnection();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string payloadToSendInCaseOfConnection = 6;</code>
-       */
-      public Builder setPayloadToSendInCaseOfConnectionBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-        payloadToSendInCaseOfConnection_ = value;
         onChanged();
         return this;
       }
@@ -9688,8 +9635,8 @@ public final class ProtoConfig {
       "PendingRequest\022\021\n\tpairingID\030\001 \002(\t\022\021\n\treq",
       "uestID\030\002 \002(\t\022>\n\roperationType\030\003 \002(\0162\'.au" +
       "thenticator.protobuf.ATOperationType\022\r\n\005" +
-      "rawTx\030\004 \001(\t\022\027\n\017payloadIncoming\030\005 \001(\t\022\'\n\037" +
-      "payloadToSendInCaseOfConnection\030\006 \001(\t\022A\n" +
+      "rawTx\030\004 \001(\t\022\027\n\017payloadIncoming\030\005 \001(\014\022\'\n\037" +
+      "payloadToSendInCaseOfConnection\030\006 \001(\014\022A\n" +
       "\010contract\030\007 \002(\0132/.authenticator.protobuf" +
       ".PendingRequest.Contract\032n\n\010Contract\022%\n\035" +
       "ShouldSendPayloadOnConnection\030\001 \001(\010\022;\n3S" +
@@ -9719,12 +9666,14 @@ public final class ProtoConfig {
       "protobuf.PendingRequest\032<\n\026ConfigReceive" +
       "Addresses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030" +
       "\002 \003(\t\032$\n\021ConfigAddressBook\022\017\n\007address\030\001 " +
-      "\001(\t\032!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*_" +
-      "\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006Unpair" +
-      "\020\001\022\n\n\006SignTx\020\002\022\'\n#updateIpAddressesForPr" +
-      "eviousMessage\020\003*2\n\021ActiveAccountType\022\n\n\006" +
-      "Normal\020\000\022\021\n\rAuthenticator\020\001B\rB\013ProtoConf" +
-      "ig"
+      "\001(\t\032!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*;" +
+      "\n\020ATGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027Update" +
+      "PendingRequestIPs\020\004*\217\001\n\017ATOperationType\022" +
+      "\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroad" +
+      "castAuthenticatorTx\020\002\022\025\n\021BroadcastNormal" +
+      "Tx\020\003\022\'\n#updateIpAddressesForPreviousMess" +
+      "age\020\004*2\n\021ActiveAccountType\022\n\n\006Normal\020\000\022\021",
+      "\n\rAuthenticator\020\001B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

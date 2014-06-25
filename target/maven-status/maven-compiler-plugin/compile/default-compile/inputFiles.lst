@@ -2,7 +2,6 @@
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/Main.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/BaseUI.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/OperationsUtils/DisplayQR.java
-/home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/GCM/dispacher/MessageType.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/OneName.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/protobuf/ProtoConfig.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/OperationsFactory.java
@@ -12,7 +11,6 @@
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/OperationActions.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/Utils/BAUtils.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/Authenticator.java
-/home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/ui_helpers/PopUpNotification.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/wallettemplate/utils/GuiUtils.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/operations/OnOperationUIUpdate.java
 /home/chris/workspace/BitcoinAuthWallet/src/main/java/authenticator/GCM/GCMSender.java

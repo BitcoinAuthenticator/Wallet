@@ -51,17 +51,14 @@ import com.google.common.collect.ImmutableList;
 
 /**
  *<p>A super class for handling all wallet operations<br>
- * This class covers DB data retrieving, bitcoinj wallet operations<br></p>
+ * This class covers DB data retrieving, bitcoinj wallet operations, Authenticator wallet operations<br></p>
  * 
  * <b>Main components are:</b>
- * <ol><li>{@link authenticator.WalletWrapper}</li></ol>
- * 
- * <b>Main sections are:</b>
- * <ol><li>Authenticator Wallet Operations - all authenticator related operations</li>
- * <li> DAL - Data Access Layer, uses {@link authenticator.db.WalletFile}</li>
- * <li>Regular Bitocoin Wallet Operations - all operations regarding the regular bitcoinj wallet.<br>
- * This template wallet is first and foremost a working bitcoinj wallet.</li>
- * <li>Helper functions</li>
+ * <ol>
+ * <li>{@link authenticator.WalletWrapper} for normal bitcoinj wallet operations</li>
+ * <li>Authenticator wallet operations</li>
+ * <li>Pending requests control</li>
+ * <li>Active account control</li>
  * </ol>
  * @author Alon
  */
@@ -150,9 +147,9 @@ public class WalletOperation extends BASE{
 	
 	/**Builds a raw unsigned transaction*/
 	@SuppressWarnings("static-access")
-	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
+	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to, Coin fee) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
 		//Get total output
-		Coin totalOut = null;
+		Coin totalOut = Coin.ZERO;
 		for (TransactionOutput out:to){
 			totalOut = totalOut.add(out.getValue());
 		}
@@ -164,11 +161,10 @@ public class WalletOperation extends BASE{
 		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
 		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
 		// Calculate fee
-		Coin fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
 		// Coin selection
 		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee), candidates);
 		// add inputs
-		Coin inAmount = null;
+		Coin inAmount = Coin.ZERO;
 		for (TransactionOutput input : outSelected){
             tx.addInput(input);
             inAmount = inAmount.add(input.getValue());
@@ -417,12 +413,23 @@ public class WalletOperation extends BASE{
 		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 			return configFile.getPendingRequests();
 		}
+	
+		/**
+		 * Get change address for an Authenticator Tx
+		 * 
+		 * @param pairingID
+		 * @return P2SH Address
+		 */
+		public Address getChangeAddress(String pairingID){
+			return null;
+		}
 		
 	//#####################################
 	//
 	//		Active account Control
 	//
 	//#####################################
+		
 	public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
 		return configFile.getActiveAccount();
 	}
@@ -481,6 +488,11 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.isAuthenticatorAddressWatched(address);
 	}
     
+    public boolean isTransactionOutputMine(TransactionOutput out)
+	{
+		return mWalletWrapper.isTransactionOutputMine(out);
+	}
+    
     public void addP2ShAddressToWatch(String address) throws AddressFormatException
 	{
     	mWalletWrapper.addP2ShAddressToWatch(address);
@@ -528,14 +540,19 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
 	}
 
+	/**
+	 * Get change address for a normal bitcoin Tx
+	 * 
+	 * @return Pay-To-Pubhash address
+	 */
+	public Address getChangeAddress(){
+		return mWalletWrapper.getChangeAddress();
+	}
 	
-	//#####################################
-	//
-	//		Helper functions
-	//
-	//#####################################    
-  
-    
+	public List<Transaction> getRecentTransactions(){
+		return mWalletWrapper.getRecentTransactions();
+	}
+ 
 }
 
 

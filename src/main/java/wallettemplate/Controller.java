@@ -2,6 +2,9 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
+import authenticator.operations.ATOperation;
+import authenticator.operations.OnOperationUIUpdate;
+import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
@@ -20,6 +23,7 @@ import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.uri.BitcoinURI;
+import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.subgraph.orchid.TorClient;
@@ -32,6 +36,8 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -44,6 +50,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
@@ -55,6 +63,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
@@ -80,6 +89,7 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.imageio.ImageIO;
 
+import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -141,6 +151,8 @@ public class Controller {
 	 @FXML private TextField txReqAmount;
 	 @FXML private TextArea txReqMemo;
 	 @FXML private ChoiceBox reqCurrencyBox;
+	 @FXML public ScrollPane scrlViewTxHistory;
+	 private ScrollPaneContentManager scrlViewTxHistoryContentManager;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -196,7 +208,15 @@ public class Controller {
         });
         
         // Peer icon
-        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));    
+        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));      
+        
+        // transaction history scrollPane
+        scrlViewTxHistoryContentManager = new ScrollPaneContentManager()
+        									.setSpacingBetweenItems(15)
+        									.setScrollStyle(scrlViewTxHistory.getStyle());
+		scrlViewTxHistory.setFitToHeight(true);
+		scrlViewTxHistory.setFitToWidth(true);
+		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
     }
     
     public void onBitcoinSetup() {
@@ -207,6 +227,7 @@ public class Controller {
     	tor.addInitializationListener(listener);
         refreshBalanceLabel();
         setReceiveAddresses();
+        setTxHistoryContent();
         
         Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
         
@@ -349,6 +370,7 @@ public class Controller {
         public void onWalletChanged(Wallet wallet) {
             checkGuiThread();
             refreshBalanceLabel();
+            setTxHistoryContent();
             //setAddresses();
         }
         
@@ -634,6 +656,69 @@ public class Controller {
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
     }
     
+    @SuppressWarnings("unused")
+	public void setTxHistoryContent(){
+    	scrlViewTxHistoryContentManager.clearAll();
+    	List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
+    	for(Transaction tx:txAll){
+    		for(TransactionOutput out:tx.getOutputs()){
+    			String addStr = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+    			String tip = "";
+    			// build node 
+        		HBox mainNode = new HBox();
+        		
+        		// left box
+        		VBox leftBox = new VBox();
+    	    		Label l1 = new Label();
+    	    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
+    	    		l1.setTextFill(Paint.valueOf("#6e86a0"));
+    	    		l1.setFont(Font.font(16));
+    	    		l1.setText("To: " + addStr.substring(0, 6)); 
+    	    		tip += "To: " + addStr + "\n";
+    	    		leftBox.getChildren().add(l1);
+    	    		
+    	    		Label l2 = new Label();
+    	    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
+    	    		l2.setTextFill(Paint.valueOf("#6e86a0"));
+    	    		l2.setFont(Font.font(12));
+    	    		l2.setText(tx.getUpdateTime().toLocaleString());
+    	    		tip += "When: " + tx.getUpdateTime().toLocaleString() + "\n";
+    	    		leftBox.getChildren().add(l2);
+    	    		
+        		mainNode.getChildren().add(leftBox);
+    	    		
+        		// right box
+        		VBox rightBox = new VBox();
+        		rightBox.setPadding(new Insets(0,0,0,40));
+    	    		Label l3 = new Label();
+    	    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
+    	    		//check is it receiving or sending
+    	    		try {
+    	    			Address add = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams());
+						if(Authenticator.getWalletOperation().isWatchingAddress(add.toString()) || 
+								Authenticator.getWalletOperation().isTransactionOutputMine(out)){
+							l3.setTextFill(Paint.valueOf("#25db61"));
+							l3.setText(out.getValue().toFriendlyString() + " BTC");
+							tip+= "Amount: " + out.getValue().toFriendlyString() + " BTC\n";
+						}
+						else{
+							l3.setTextFill(Paint.valueOf("#f94920"));
+							l3.setText("-" + out.getValue().toFriendlyString() + " BTC");
+							tip += "Amount: -" + out.getValue().toFriendlyString() + " BTC\n";							
+						}
+					} catch (Exception e) { e.printStackTrace(); }
+    	    		l3.setFont(Font.font(16));
+    	    		rightBox.getChildren().add(l3);
+    	    		
+        		mainNode.getChildren().add(rightBox);
+        		Tooltip.install(mainNode, new Tooltip(tip));
+    	    		
+        		// add to scroll
+        		scrlViewTxHistoryContentManager.addItem(mainNode);
+    		}
+    	}
+    }
+    
     //#####################################
    	//
    	//	Send Pane
@@ -656,54 +741,234 @@ public class Controller {
     	btnSend.setStyle("-fx-background-color: #199bd6;");
     } 
     
+    private boolean ValidateTx()
+    {
+    	//Check tx message
+    	if(txMsgLabel.getText().length() < 3)
+    		return false;
+    	//Check Outputs
+    	if(scrlContent.getCount() == 0)
+    		return false;
+    	for(Node n:scrlContent.getChildren())
+    	{
+    		NewAddress na = (NewAddress)n;
+    		if(!na.validate())
+    			return false;
+    	}
+    	//check sufficient funds
+    	Coin amount = Coin.ZERO;
+    	for(Node n:scrlContent.getChildren())
+    	{
+    		NewAddress na = (NewAddress)n;
+    		double a = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+    		amount = amount.add(Coin.valueOf((long)a));
+    	}
+    	amount = amount.add(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE);
+    	//
+    	Coin confirmed = Coin.ZERO;
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
+	    	confirmed = Authenticator.getWalletOperation().getNormalAccountConfirmedBalance();
+    	else
+	    	confirmed 	= Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());    	
+    	
+    	if(amount.compareTo(confirmed) > 0) return false;
+    	
+    	//Check min dust amount 
+    	if(amount.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) return false;
+    	
+    	return true;
+    }
+    
     @FXML protected void SendTx(ActionEvent event) throws IOException, JSONException{
-    	try {
-    		Transaction tx = new Transaction(Main.params);
-    		Address destination = null;
-    		for(Node n:scrlContent.getChildren()) {
-    			NewAddress na = (NewAddress)n;
-    			if (na.txfAddress.getText().substring(0,1).equals("+")){
-    				destination = new Address(Main.params, OneName.getAddress(na.txfAddress.getText().substring(1)));
-    			}
-    			else {
-    				destination = new Address(Main.params, na.txfAddress.getText());
-    			}
-    			double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
-    			long satoshis = (long) amount;
-    			if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) {
-    				//Do something here
-    			}
-    			tx.addOutput(Coin.valueOf(satoshis), destination);
-    		}
-            Wallet.SendRequest req = Wallet.SendRequest.forTx(tx);
-            //
-            if (txFee.getText().equals("")){req.feePerKb = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
-            else 
-            {
-            	double fee = (double) Double.parseDouble(txFee.getText())*100000000;
-            	req.feePerKb = Coin.valueOf((long)fee);//Coin.valueOf(Long.parseLong(txFee.getText()) * 100000000);
-            }
-            req.changeAddress = bitcoin.wallet().getChangeAddress();
-            sendResult = Main.bitcoin.wallet().sendCoins(req);
-            Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
-                @Override
-                public void onSuccess(Transaction result) {
-                    //put something here
+    	
+    	if(ValidateTx())
+    	/**
+    	 * Normal bitcoin Tx
+    	 */
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
+    		// TODO - move to authenticator ?
+    		try {
+        		Transaction tx = new Transaction(Main.params);
+        		Address destination = null;
+        		for(Node n:scrlContent.getChildren()) {
+        			NewAddress na = (NewAddress)n;
+        			if (na.txfAddress.getText().substring(0,1).equals("+")){
+        				destination = new Address(Main.params, OneName.getAddress(na.txfAddress.getText().substring(1)));
+        			}
+        			else {
+        				destination = new Address(Main.params, na.txfAddress.getText());
+        			}
+        			double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+        			long satoshis = (long) amount;
+        			if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) {
+        				//Do something here
+        			}
+        			tx.addOutput(Coin.valueOf(satoshis), destination);
+        		}
+                Wallet.SendRequest req = Wallet.SendRequest.forTx(tx);
+                //
+                if (txFee.getText().equals("")){req.feePerKb = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+                else 
+                {
+                	double fee = (double) Double.parseDouble(txFee.getText())*100000000;
+                	req.feePerKb = Coin.valueOf((long)fee);//Coin.valueOf(Long.parseLong(txFee.getText()) * 100000000);
                 }
+                req.changeAddress = bitcoin.wallet().getChangeAddress();
+                sendResult = Main.bitcoin.wallet().sendCoins(req);
+                Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
+                    @Override
+                    public void onSuccess(Transaction result) {
+                        //put something here
+                    }
 
-                @Override
-                public void onFailure(Throwable t) {
-                    // We died trying to empty the wallet.
-                    crashAlert(t);
+                    @Override
+                    public void onFailure(Throwable t) {
+                        // We died trying to empty the wallet.
+                        crashAlert(t);
+                    }
+                });
+            } catch (AddressFormatException e) {
+                // Cannot happen because we already validated it when the text field changed.
+                throw new RuntimeException(e);
+            } catch (InsufficientMoneyException e) {
+                informationalAlert("Could not empty the wallet",
+                        "You may have too little money left in the wallet to make a transaction.");
+            }
+    	
+    	/**
+    	 * Authenticator Tx
+    	 * 
+    	 */
+    	else{
+    		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
+        	for(Node n:scrlContent.getChildren())
+        	{
+        		NewAddress na = (NewAddress)n;
+        		Address add;
+				try {
+					add = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText());
+					double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+					long satoshis = (long) amount;
+					if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+						TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
+											        				null, 
+											        				Coin.valueOf(satoshis), 
+											        				add);
+						to.add(out);
+					}
+					
+				} catch (AddressFormatException e) { 
+					Platform.runLater(new Runnable() {
+					      @Override public void run() {
+					    	  Dialogs.create()
+						        .owner(Main.stage)
+						        .title("Error !")
+						        .masthead("Wrong Address")
+						        .message("")
+						        .showConfirm();   
+					      }
+					    });
+				}
+        		
+        	}
+        	try {
+        		String pairID = Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID();
+        		Coin fee = Coin.ZERO;
+        		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+                else 
+                {
+                	double f = (double) Double.parseDouble(txFee.getText())*100000000;
+                	fee = Coin.valueOf((long)f);
                 }
-            });
-        } catch (AddressFormatException e) {
-            // Cannot happen because we already validated it when the text field changed.
-            throw new RuntimeException(e);
-        } catch (InsufficientMoneyException e) {
-            informationalAlert("Could not empty the wallet",
-                    "You may have too little money left in the wallet to make a transaction.");
-        }
+				Transaction tx = Authenticator.getWalletOperation().mktx(pairID, to,fee);
+				ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx, pairID, txMsgLabel.getText(),false,null);
+				op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+					@Override
+					public void onBegin(String str) { }
+
+					@Override
+					public void statusReport(String report) {
+
+					}
+
+					@Override
+					public void onFinished(String str) {
+							Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Success !")
+							        .masthead("Broadcasting Completed")
+							        .message("Waiting for the Authenticator to sign")
+							        .showInformation();  
+						      }
+						    });
+					}
+
+					@Override
+					public void onError(Exception e, Throwable t) {
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  String desc = "";
+						    	  if(t != null){
+						    		  Throwable rootCause = Throwables.getRootCause(t);
+						    		  desc = rootCause.toString();
+						    	  }
+						    	  if(e != null){
+						    		  desc = e.toString();
+						    	  }
+						    	  //
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Error")
+							        .masthead("Error broadcasting Tx")
+							        .message(desc)
+							        .showError();   
+						      }
+						    });
+					}
+
+					@Override
+					public void onUserCancel(String reason) {
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Error")
+							        .masthead("Authenticator Refused The Transaction")
+							        .message(reason)
+							        .showError();   
+						      }
+						    });
+					}
+
+					@Override
+					public void onUserOk(String msg) { }
+
+				});
+				Authenticator.operationsQueue.add(op);
+
+			} catch (NoSuchAlgorithmException | AddressFormatException | JSONException | IOException e) {
+				
+				
+				Platform.runLater(new Runnable() {
+				      @Override public void run() {
+				    	  Dialogs.create()
+					        .owner(Main.stage)
+					        .title("Error")
+					        .masthead("Something Is not Right ...")
+					        .message("Make Sure:\n" +
+									"  1) You entered correct values in all fields\n"+
+									"  2) You have sufficient funds to cover your outputs\n"+
+									"  3) Outputs amount to at least the dust value(" + Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.toString() + ")\n" +
+									"  4) A Tx message, at least 3 characters long\n")
+					        .showError();   
+				      }
+				    });
+			}
+    	}
+
+    	
     }
     
     @FXML protected void add() {
@@ -833,6 +1098,23 @@ public class Controller {
     		main.getChildren().add(b);
     		this.getChildren().add(main);
     	}
+    	
+    	public boolean validate()
+        {
+        	if(txfAddress.getText().length() == 0)
+        		return false;
+        	if(txfAmount.getText().length() == 0)
+        		return false;
+        	if(txfAmount.getText().matches("[a-zA-Z]+"))
+        		return false;
+        	// check dust amount 
+        	double fee = (double) Double.parseDouble(txfAmount.getText())*100000000;
+        	Coin am = Coin.valueOf((long)fee);
+        	if(am.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
+        		return false;
+        	
+        	return true;
+        }
     }
     
     //#####################################
@@ -1285,5 +1567,6 @@ public class Controller {
     public void updateUIForNewActiveAccount(){
     	refreshBalanceLabel();
     	setReceiveAddresses();
+    	setTxHistoryContent();
     }
 }

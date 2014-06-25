@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -55,6 +56,12 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.getNetworkParameters();
 	}
 	
+	//#####################################
+	//
+	//		Addresses
+	//
+	//#####################################
+	
 	/**
 	 * Add A new P2Sh authenticator address to watch list 
 	 * @param add
@@ -76,6 +83,26 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.isAddressWatched(address);
 	}
 	
+	public boolean isTransactionOutputMine(TransactionOutput out)
+	{
+		return out.isMine(trackedWallet);
+	}
+	
+	/**
+	 * Get change address for a normal bitcoin Tx
+	 * 
+	 * @return Pay-To-Pubhash address
+	 */
+	public Address getChangeAddress(){
+		return trackedWallet.getChangeAddress();
+	}
+	
+	//#####################################
+	//
+	//		Balances
+	//
+	//#####################################
+
 	/**
 	 * Will Check with wallet's watched addresses for a total balance. A use case will be to pass all the addresses of a single 
 	 * authenticator pairing to get the total unspent balance.
@@ -153,6 +180,12 @@ public class WalletWrapper extends BASE{
 		return ret;
 	}
 	
+	//#####################################
+	//
+	//		Transaction outputs
+	//
+	//#####################################
+	
 	public LinkedList<TransactionOutput> getWatchedOutputs(){
 		return trackedWallet.getWatchedOutputs(false);
 	}
@@ -175,7 +208,7 @@ public class WalletWrapper extends BASE{
 	{
 		//TODO some kind of coin selection
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
-		Coin amount = null;
+		Coin amount = Coin.ZERO;
 		for(TransactionOutput out: candidates)
 		{
 			if(amount.compareTo(value) < 0 ){
@@ -186,11 +219,12 @@ public class WalletWrapper extends BASE{
 		}
 		return ret;
 	}
-	
-	public NetworkParameters getNetworkParams()
-	{
-		return trackedWallet.getNetworkParameters();
-	}
+		
+	//#####################################
+	//
+	//		Broadcasting
+	//
+	//#####################################
 	
 	public Wallet.SendResult broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
 	{
@@ -210,10 +244,22 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.sendCoins(req);
 	}
 	
+	//#####################################
+	//
+	//		Listeners
+	//
+	//#####################################
+	
 	public void addEventListener(WalletEventListener listener)
 	{
 		trackedWallet.addEventListener(listener);
 	}
+	
+	//#####################################
+	//
+	//		Keys
+	//
+	//#####################################
 	
 	public DeterministicKey currentReceiveKey(){
 		return trackedWallet.currentReceiveKey();
@@ -221,5 +267,28 @@ public class WalletWrapper extends BASE{
 	
 	public DeterministicKey freshReceiveKey(){
 		return trackedWallet.freshReceiveKey();
+	}
+	
+	//#####################################
+	//
+	//		Transactions
+	//
+	//#####################################
+	
+	public List<Transaction> getRecentTransactions(){
+		List<Transaction> ret = trackedWallet.getRecentTransactions(10, false);
+		
+		return ret;
+	}
+	
+	//#####################################
+	//
+	//		other
+	//
+	//#####################################
+	
+	public NetworkParameters getNetworkParams()
+	{
+		return trackedWallet.getNetworkParameters();
 	}
 }

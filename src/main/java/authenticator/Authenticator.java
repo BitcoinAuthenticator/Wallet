@@ -32,6 +32,8 @@ import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
  * <li>operationsQueue - all operations regarding communication with the Authenticators are added to this queue and executed by the
  * 	  TCPListener.</li>
  * <li>{@link authenticator.WalletOperation}</li>
+ * <li>{@link authenticator.protobuf.ProtoConfig.ActiveAccountType} - Current active account. Will effect operations that depend on the active account</li>
+ * <li>{@link authenticator.AuthenticatorGeneralEventsListener} - General events listener for the authenticatro. For Example: a new paired Authenticator was added</li>
  * </ol>
  * <br>
  * @author alon
@@ -77,17 +79,15 @@ public class Authenticator extends AbstractService{
 	
 	//#####################################
 	//
-	// 		Authenticator Control
-	//
-	//#####################################
-
-	
-	//#####################################
-	//
 	//		Operations Queue Control
 	//
 	//#####################################
 	
+	/**
+	 * Add operation to the operation queue. The wallet will execute the operation asynchronously
+	 * 
+	 * @param operation
+	 */
 	public void addOperation(ATOperation operation)
 	{
 		if(this.isRunning())
@@ -134,6 +134,12 @@ public class Authenticator extends AbstractService{
 	//		Getters & Setter
 	//
 	//#####################################
+	/**
+	 * Get the Authenticator instance of the {@link authenticator.WalletOperation} object.<br>
+	 * Used for all funds management. 
+	 * 
+	 * @return
+	 */
 	public static WalletOperation getWalletOperation()
 	{
 		return mWalletOperation;
@@ -144,6 +150,10 @@ public class Authenticator extends AbstractService{
 	//			General
 	//
 	//#####################################
+	/**
+	 * An init function to verify all P2SH addresses generated between the wallet and the various Authenticators are watched by the bitcoinj engine
+	 * 
+	 */
 	private void verifyWalletIsWatchingAuthenticatorAddresses()
 	{
 		@SuppressWarnings("static-access")
@@ -166,6 +176,9 @@ public class Authenticator extends AbstractService{
 		}
 	}
 	
+	/**
+	 * Does what it says
+	 */
 	private void loadActiveAccount()
 	{
 		this.activeAccount = null;
@@ -216,9 +229,17 @@ public class Authenticator extends AbstractService{
 	//
 	//#####################################
 	
+	/**
+	 * Get {@link authenticator.ui_helpers.BAApplication.BAApplicationParameters} object.<br>
+	 * Object is populated when the wallet is luanched.
+	 * 
+	 * 
+	 * @return
+	 */
 	public static BAApplicationParameters getApplicationParams(){
 		return mApplicationParams;
 	}
+	
 	public Authenticator setApplicationParams(BAApplicationParameters params){
 		mApplicationParams = params;
 		return this;

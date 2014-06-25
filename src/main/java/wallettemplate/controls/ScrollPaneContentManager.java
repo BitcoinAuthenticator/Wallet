@@ -10,9 +10,15 @@ public class ScrollPaneContentManager extends VBox{
 		super();
 		}
 
+	public ScrollPaneContentManager setScrollStyle(String style)
+	{
+		this.setStyle("-fx-background-color: white");
+		return this;
+	}
+	
 	public ScrollPaneContentManager setSpacingBetweenItems(double spacing)
 	{
-		this.setSpacing(10);
+		this.setSpacing(spacing);
 		return this;
 	}
 

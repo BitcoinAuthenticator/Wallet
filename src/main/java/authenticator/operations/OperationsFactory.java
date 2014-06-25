@@ -1,5 +1,6 @@
 package authenticator.operations;
 
+import static wallettemplate.Main.bitcoin;
 import static wallettemplate.utils.GuiUtils.crashAlert;
 
 import java.io.ByteArrayOutputStream;
@@ -35,10 +36,12 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.TransactionInput.ConnectMode;
 import com.google.bitcoin.core.TransactionInput.ConnectionResult;
 import com.google.bitcoin.core.TransactionOutPoint;
@@ -53,15 +56,16 @@ import com.google.bitcoin.script.ScriptChunk;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.protobuf.ByteString;
 
 import authenticator.Authenticator;
 import authenticator.BASE;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
-import authenticator.GCM.dispacher.MessageType;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
+import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
@@ -74,6 +78,12 @@ public class OperationsFactory extends BASE{
 		staticLooger = this.LOG;
 	}
 
+	/**
+	 * An operation for pairing the wallet with an Authenticator app.
+	 * 
+	 * @param pairingName
+	 * @return
+	 */
 	static public ATOperation PAIRING_OPERATION(String pairingName){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
@@ -120,8 +130,13 @@ public class OperationsFactory extends BASE{
 	}
 
 	/**
-	 * Responsable for the complete process of taking a raw transaction, singing it, maeke the authenticator sign it and then broadcast
+	 * Responsable for the complete process of taking a raw transaction, singing it, make the authenticator sign it and then broadcast
 	 * <br>
+	 * Because the signing operations can, and will be, not immediate. The operation will prepare the payload for signing and then create
+	 * a pending request + broadcast a GCM sign request to the Authenticator app.<br>
+	 * When the Authenticator will ask for the payload, the {@link authenticator.network.TCPListener TCPListener} will reference the 
+	 * generated payload for signing with the pending request ID. After matching the pending reuqest ID, the operation will continue and finalize.
+	 * <br><br>
 	 * <b>onlyComplete is True if should only complete the the deciphering of a received Authenticator signiture <b>
 	 * 
 	 * @param tx
@@ -130,12 +145,12 @@ public class OperationsFactory extends BASE{
 	 * @param onlyComplete
 	 * @return
 	 */
-	static public ATOperation SIGN_AND_BROADCAST_TX_OPERATION(Transaction tx, 
+	static public ATOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Transaction tx, 
 																String pairingID, 
 																@Nullable String txMessage,
 																boolean onlyComplete, 
 																@Nullable byte[] authenticatorByteResponse){
-		return new ATOperation(ATOperationType.SignTx)
+		return new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
 					//int timeout = 5;
@@ -157,8 +172,8 @@ public class OperationsFactory extends BASE{
 							PendingRequest.Builder pr = PendingRequest.newBuilder();
 							pr.setPairingID(pairingID);
 							pr.setRequestID(reqID);
-							pr.setOperationType(ATOperationType.SignTx);
-							pr.setPayloadToSendInCaseOfConnection(cypherBytes.toString());
+							pr.setOperationType(ATOperationType.SignAndBroadcastAuthenticatorTx);
+							pr.setPayloadToSendInCaseOfConnection(ByteString.copyFrom(cypherBytes));
 							pr.setRawTx(BAUtils.getStringTransaction(tx));
 							PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
 							cb.setShouldSendPayloadOnConnection(true);
@@ -301,7 +316,7 @@ public class OperationsFactory extends BASE{
 								secretkey);
 						
 						// returns the request ID
-						return disp.dispachMessage(MessageType.signTx, d, new String[]{ txMessage });
+						return disp.dispachMessage(ATGCMMessageType.SignTX, d, new String[]{ txMessage });
 					 }
 					 
 					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
@@ -354,6 +369,16 @@ public class OperationsFactory extends BASE{
 				});
 	}
 	
+	/**
+	 * If a pending request to the Authenticator app was made, change in the wallet IP will break any attempt to finalize the operation.<br>
+	 * To resolve the problem, everytime the wallet is launched, it will search for pending requests {@link authenticator.network.TCPListener#sendUpdatesToPendingRequests() here}
+	 * and send a GCM notification to remind the Authenticator's user of the pending request and update the IPs at the same time.
+	 * 
+	 * 
+	 * @param requestID
+	 * @param pairingID
+	 * @return
+	 */
 	static public ATOperation UPDATE_PENDING_REQUEST_IPS(String requestID, String pairingID){
 		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
 					.SetDescription("Update pending requests to Authenticator")
@@ -378,7 +403,7 @@ public class OperationsFactory extends BASE{
 									null);
 							
 							// returns the request ID
-							disp.dispachMessage(MessageType.updateIpAddressesForPreviousMessage, d, new String[]{ requestID });
+							disp.dispachMessage(ATGCMMessageType.UpdatePendingRequestIPs, d, new String[]{ requestID });
 						}
 
 						@Override
@@ -389,4 +414,56 @@ public class OperationsFactory extends BASE{
 						
 					});
 	}
+
+	/*static public ATOperation BROADCAST_NORMAL_TRANSACTION(Transaction tx,Coin fee){
+		return new ATOperation(ATOperationType.BroadcastNormalTx)
+		.SetDescription("Send normal bitcoin Tx")
+		.SetFinishedMsg("Tx Broadcast complete")
+		.SetOperationAction(new OperationActions(){
+			Wallet.SendRequest req = null;
+			Wallet.SendResult sendResult = null;
+			@Override
+			public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
+				//
+				// Prepare SendRequest
+				//
+				req = Wallet.SendRequest.forTx(tx);
+				req.feePerKb = fee;
+				req.changeAddress = Authenticator.getWalletOperation().getChangeAddress();
+			}
+
+			@Override
+			public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener)
+					throws Exception {
+				try{
+					sendResult = Authenticator.getWalletOperation().sendCoins(req);
+					Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
+					        @Override
+					        public void onSuccess(Transaction result) {
+					            if(listenerUI != null)
+					            	listenerUI.onFinished("");
+					    }
+					
+					    @Override
+					    public void onFailure(Throwable t) {
+					    	if(listenerUI != null)
+				            	listenerUI.onError(null, t);
+					    }
+					});
+				}
+				catch (Exception e){
+					if(listenerUI != null)
+						listenerUI.onError(e, null);
+				}
+			}
+
+			@Override
+			public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
+
+			@Override
+			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
+				
+			}
+		});
+	}*/
 }

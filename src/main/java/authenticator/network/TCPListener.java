@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 import com.google.bitcoin.core.Transaction;
+import com.google.protobuf.ByteString;
 
 import wallettemplate.Main;
 import authenticator.Authenticator;
@@ -23,9 +24,27 @@ import authenticator.Utils.BAUtils;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
-import authenticator.ui_helpers.PopUpNotification;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 
+/**
+ * <b>The heart of the wallet operation.</b><br>
+ * <br>
+ * <b>When does it start ?</b><br>
+ * This listener is launched on wallet startup by {@link authenticator.Authenticator#doStart()} function.<br>
+ * <br>
+ * <b>What does it do ?</b><br>
+ * The listener is responsible for 2 main operations:<br>
+ * <ol>
+ * <li>Inbound Operations - The listener will listen on the socket for any inbound communication. When it hooks to another socket, it will expect a requestID for reference.<br>
+ * 		When the requestID is received, it will search it in the pending requests file. When the pending operation is found, the TCPListener will follow the
+ * 		{@link authenticator.protobuf.ProtoConfig.PendingRequest.Contract Contract} to complete the reques.</li>
+ * <li>Outbound Operations - When calling {@link authenticator.Authenticator#addOperation(ATOperation operation) addOperation}, the authenticator will add
+ * 	   an operation to the operation queue. Here, the TCPListener will look for operations to execute from the said queue.</li>
+ * <ol>
+ * 
+ * @author alon
+ *
+ */
 public class TCPListener extends BASE{
 	public static Socket socket;
 	private static Thread listenerThread;
@@ -122,7 +141,7 @@ public class TCPListener extends BASE{
 									if(pendingReq != null){ // find pending request
 										// Should we send something on connection ? 
 										if(pendingReq.getContract().getShouldSendPayloadOnConnection()){
-											byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().getBytes();
+											byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().toByteArray();
 											outStream.writeInt(p.length);
 											outStream.write(p);
 											logAsInfo("Sent transaction");
@@ -133,7 +152,7 @@ public class TCPListener extends BASE{
 											byte[] in = new byte[keysize];
 											inStream.read(in);
 											PendingRequest.Builder b = PendingRequest.newBuilder(pendingReq);
-											b.setPayloadIncoming(in.toString());
+											b.setPayloadIncoming(ByteString.copyFrom(in));
 											pendingReq = b.build();
 										}
 										//cleanup
@@ -141,15 +160,15 @@ public class TCPListener extends BASE{
 										outStream.close();
 										// Complete Operation ?
 										switch(pendingReq.getOperationType()){
-										case SignTx:
+										case SignAndBroadcastAuthenticatorTx:
 											byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
 											Transaction tx = new Transaction(Authenticator.getWalletOperation().getNetworkParams(),txBytes);
 											 
-											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx,
+											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx,
 													pendingReq.getPairingID(), 
 													null,
 													true,
-													pendingReq.getPayloadIncoming().getBytes());
+													pendingReq.getPayloadIncoming().toByteArray());
 											op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 												@Override
@@ -284,11 +303,11 @@ public class TCPListener extends BASE{
 	
 	//##
 	public void sendUpdatesToPendingRequests(){
-		/*try {
+		try {
 			for(PendingRequest o:Authenticator.getWalletOperation().getPendingRequests()){
 				ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(o.getRequestID(), o.getPairingID());
 				Authenticator.operationsQueue.add(op);
 			}
-		} catch (IOException e) { e.printStackTrace(); }*/
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 }

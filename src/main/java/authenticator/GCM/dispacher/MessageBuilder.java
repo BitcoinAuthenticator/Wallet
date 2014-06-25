@@ -8,26 +8,18 @@ import java.sql.Timestamp;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
+
 
 public class MessageBuilder extends JSONObject{
-	public MessageBuilder(MessageType type,String ... arg) throws JSONException
+	public MessageBuilder(ATGCMMessageType type,String ... arg) throws JSONException
 	{
 		JSONObject reqPayload;
 		switch (type){
-			case test:
-				this.append("data","Hello World");
-				break;
-			/**
-			 * arg - <br>
-			 * 0 - PairingID<br>
-			 * 1 - ExternalIP <br>
-			 * 2 - LocalIP <br>
-			 * 3 - CustomMsg <br>
-			 */
-			case signTx:
+			case SignTX:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
 				this.put("PairingID", arg[0]); 
-				this.put("RequestType", type.getValue()); 
+				this.put("RequestType", ATGCMMessageType.SignTX_VALUE); 
 				reqPayload = new JSONObject();
 				reqPayload.put("ExternalIP", arg[1]);
 				reqPayload.put("LocalIP", arg[2]);
@@ -43,10 +35,10 @@ public class MessageBuilder extends JSONObject{
 			 * 3 - CustomMsg <br>
 			 * 4 - RequestID
 			 */
-			case updateIpAddressesForPreviousMessage:
+			case UpdatePendingRequestIPs:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
 				this.put("PairingID", arg[0]); 
-				this.put("RequestType", type.getValue()); 
+				this.put("RequestType", ATGCMMessageType.UpdatePendingRequestIPs_VALUE); 
 				reqPayload = new JSONObject();
 				reqPayload.put("ExternalIP", arg[1]);
 				reqPayload.put("LocalIP", arg[2]);
