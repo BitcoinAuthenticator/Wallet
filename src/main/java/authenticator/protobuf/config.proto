@@ -61,6 +61,21 @@ message PendingRequest{
 	required Contract contract 									= 7;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//
+//	Configuration message, holds all the settings of the wallet
+//
+//
+//
+//
+//
+////////////////////////////////////////////////////////////////////////
+
 message AuthenticatorConfiguration{
 	message ConfigActiveAccount{
 		optional PairedAuthenticator pairedAuthenticator = 1;

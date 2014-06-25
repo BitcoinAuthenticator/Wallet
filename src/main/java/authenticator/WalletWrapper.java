@@ -55,6 +55,12 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.getNetworkParameters();
 	}
 	
+	//#####################################
+	//
+	//		Addresses
+	//
+	//#####################################
+	
 	/**
 	 * Add A new P2Sh authenticator address to watch list 
 	 * @param add
@@ -76,6 +82,21 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.isAddressWatched(address);
 	}
 	
+	/**
+	 * Get change address for a normal bitcoin Tx
+	 * 
+	 * @return Pay-To-Pubhash address
+	 */
+	public Address getChangeAddress(){
+		return trackedWallet.getChangeAddress();
+	}
+	
+	//#####################################
+	//
+	//		Balances
+	//
+	//#####################################
+
 	/**
 	 * Will Check with wallet's watched addresses for a total balance. A use case will be to pass all the addresses of a single 
 	 * authenticator pairing to get the total unspent balance.
@@ -153,6 +174,12 @@ public class WalletWrapper extends BASE{
 		return ret;
 	}
 	
+	//#####################################
+	//
+	//		Transaction outputs
+	//
+	//#####################################
+	
 	public LinkedList<TransactionOutput> getWatchedOutputs(){
 		return trackedWallet.getWatchedOutputs(false);
 	}
@@ -186,11 +213,12 @@ public class WalletWrapper extends BASE{
 		}
 		return ret;
 	}
-	
-	public NetworkParameters getNetworkParams()
-	{
-		return trackedWallet.getNetworkParameters();
-	}
+		
+	//#####################################
+	//
+	//		Broadcasting
+	//
+	//#####################################
 	
 	public Wallet.SendResult broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
 	{
@@ -210,10 +238,22 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.sendCoins(req);
 	}
 	
+	//#####################################
+	//
+	//		Listeners
+	//
+	//#####################################
+	
 	public void addEventListener(WalletEventListener listener)
 	{
 		trackedWallet.addEventListener(listener);
 	}
+	
+	//#####################################
+	//
+	//		Keys
+	//
+	//#####################################
 	
 	public DeterministicKey currentReceiveKey(){
 		return trackedWallet.currentReceiveKey();
@@ -223,12 +263,14 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.freshReceiveKey();
 	}
 	
-	/**
-	 * Get change address for a normal bitcoin Tx
-	 * 
-	 * @return Pay-To-Pubhash address
-	 */
-	public Address getChangeAddress(){
-		return trackedWallet.getChangeAddress();
+	//#####################################
+	//
+	//		other
+	//
+	//#####################################
+	
+	public NetworkParameters getNetworkParams()
+	{
+		return trackedWallet.getNetworkParameters();
 	}
 }
