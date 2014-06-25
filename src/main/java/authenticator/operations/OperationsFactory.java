@@ -1,5 +1,6 @@
 package authenticator.operations;
 
+import static wallettemplate.Main.bitcoin;
 import static wallettemplate.utils.GuiUtils.crashAlert;
 
 import java.io.ByteArrayOutputStream;
@@ -35,10 +36,12 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.TransactionInput.ConnectMode;
 import com.google.bitcoin.core.TransactionInput.ConnectionResult;
 import com.google.bitcoin.core.TransactionOutPoint;
@@ -53,6 +56,7 @@ import com.google.bitcoin.script.ScriptChunk;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.protobuf.ByteString;
 
 import authenticator.Authenticator;
 import authenticator.BASE;
@@ -130,12 +134,12 @@ public class OperationsFactory extends BASE{
 	 * @param onlyComplete
 	 * @return
 	 */
-	static public ATOperation SIGN_AND_BROADCAST_TX_OPERATION(Transaction tx, 
+	static public ATOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Transaction tx, 
 																String pairingID, 
 																@Nullable String txMessage,
 																boolean onlyComplete, 
 																@Nullable byte[] authenticatorByteResponse){
-		return new ATOperation(ATOperationType.SignTx)
+		return new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
 					//int timeout = 5;
@@ -157,8 +161,8 @@ public class OperationsFactory extends BASE{
 							PendingRequest.Builder pr = PendingRequest.newBuilder();
 							pr.setPairingID(pairingID);
 							pr.setRequestID(reqID);
-							pr.setOperationType(ATOperationType.SignTx);
-							pr.setPayloadToSendInCaseOfConnection(cypherBytes.toString());
+							pr.setOperationType(ATOperationType.SignAndBroadcastAuthenticatorTx);
+							pr.setPayloadToSendInCaseOfConnection(ByteString.copyFrom(cypherBytes));
 							pr.setRawTx(BAUtils.getStringTransaction(tx));
 							PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
 							cb.setShouldSendPayloadOnConnection(true);
@@ -389,4 +393,56 @@ public class OperationsFactory extends BASE{
 						
 					});
 	}
+
+	/*static public ATOperation BROADCAST_NORMAL_TRANSACTION(Transaction tx,Coin fee){
+		return new ATOperation(ATOperationType.BroadcastNormalTx)
+		.SetDescription("Send normal bitcoin Tx")
+		.SetFinishedMsg("Tx Broadcast complete")
+		.SetOperationAction(new OperationActions(){
+			Wallet.SendRequest req = null;
+			Wallet.SendResult sendResult = null;
+			@Override
+			public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
+				//
+				// Prepare SendRequest
+				//
+				req = Wallet.SendRequest.forTx(tx);
+				req.feePerKb = fee;
+				req.changeAddress = Authenticator.getWalletOperation().getChangeAddress();
+			}
+
+			@Override
+			public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener)
+					throws Exception {
+				try{
+					sendResult = Authenticator.getWalletOperation().sendCoins(req);
+					Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
+					        @Override
+					        public void onSuccess(Transaction result) {
+					            if(listenerUI != null)
+					            	listenerUI.onFinished("");
+					    }
+					
+					    @Override
+					    public void onFailure(Throwable t) {
+					    	if(listenerUI != null)
+				            	listenerUI.onError(null, t);
+					    }
+					});
+				}
+				catch (Exception e){
+					if(listenerUI != null)
+						listenerUI.onError(e, null);
+				}
+			}
+
+			@Override
+			public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
+
+			@Override
+			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
+				
+			}
+		});
+	}*/
 }

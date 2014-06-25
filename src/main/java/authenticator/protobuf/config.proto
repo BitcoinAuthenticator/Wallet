@@ -5,8 +5,9 @@ option java_outer_classname="ProtoConfig";
 enum ATOperationType {
     Pairing 							= 0;
 	Unpair 								= 1;
-	SignTx 								= 2;
-	updateIpAddressesForPreviousMessage = 3;
+	SignAndBroadcastAuthenticatorTx		= 2;
+	BroadcastNormalTx					= 3;
+	updateIpAddressesForPreviousMessage = 4;
 }
 
 enum ActiveAccountType {
@@ -50,8 +51,8 @@ message PendingRequest{
 	required string requestID 									= 2;
 	required ATOperationType operationType					 	= 3;
 	optional string rawTx 										= 4;
-	optional string payloadIncoming 							= 5;
-	optional string payloadToSendInCaseOfConnection 			= 6;
+	optional bytes payloadIncoming 								= 5;
+	optional bytes payloadToSendInCaseOfConnection 				= 6;
 	required Contract contract 									= 7;
 }
 

@@ -175,7 +175,7 @@ public class WalletWrapper extends BASE{
 	{
 		//TODO some kind of coin selection
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
-		Coin amount = null;
+		Coin amount = Coin.ZERO;
 		for(TransactionOutput out: candidates)
 		{
 			if(amount.compareTo(value) < 0 ){
@@ -221,5 +221,14 @@ public class WalletWrapper extends BASE{
 	
 	public DeterministicKey freshReceiveKey(){
 		return trackedWallet.freshReceiveKey();
+	}
+	
+	/**
+	 * Get change address for a normal bitcoin Tx
+	 * 
+	 * @return Pay-To-Pubhash address
+	 */
+	public Address getChangeAddress(){
+		return trackedWallet.getChangeAddress();
 	}
 }

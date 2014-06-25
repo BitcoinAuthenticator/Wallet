@@ -149,9 +149,9 @@ public class WalletOperation extends BASE{
 	
 	/**Builds a raw unsigned transaction*/
 	@SuppressWarnings("static-access")
-	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
+	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to, Coin fee) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
 		//Get total output
-		Coin totalOut = null;
+		Coin totalOut = Coin.ZERO;
 		for (TransactionOutput out:to){
 			totalOut = totalOut.add(out.getValue());
 		}
@@ -163,11 +163,10 @@ public class WalletOperation extends BASE{
 		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
 		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
 		// Calculate fee
-		Coin fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
 		// Coin selection
 		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee), candidates);
 		// add inputs
-		Coin inAmount = null;
+		Coin inAmount = Coin.ZERO;
 		for (TransactionOutput input : outSelected){
             tx.addInput(input);
             inAmount = inAmount.add(input.getValue());
@@ -416,12 +415,23 @@ public class WalletOperation extends BASE{
 		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 			return configFile.getPendingRequests();
 		}
+	
+		/**
+		 * Get change address for an Authenticator Tx
+		 * 
+		 * @param pairingID
+		 * @return P2SH Address
+		 */
+		public Address getChangeAddress(String pairingID){
+			return null;
+		}
 		
 	//#####################################
 	//
 	//		Active account Control
 	//
 	//#####################################
+		
 	public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
 		return configFile.getActiveAccount();
 	}
@@ -527,6 +537,14 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
 	}
 
+	/**
+	 * Get change address for a normal bitcoin Tx
+	 * 
+	 * @return Pay-To-Pubhash address
+	 */
+	public Address getChangeAddress(){
+		return mWalletWrapper.getChangeAddress();
+	}
 	
 	//#####################################
 	//

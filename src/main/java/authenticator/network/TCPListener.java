@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 import com.google.bitcoin.core.Transaction;
+import com.google.protobuf.ByteString;
 
 import wallettemplate.Main;
 import authenticator.Authenticator;
@@ -122,7 +123,7 @@ public class TCPListener extends BASE{
 									if(pendingReq != null){ // find pending request
 										// Should we send something on connection ? 
 										if(pendingReq.getContract().getShouldSendPayloadOnConnection()){
-											byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().getBytes();
+											byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().toByteArray();
 											outStream.writeInt(p.length);
 											outStream.write(p);
 											logAsInfo("Sent transaction");
@@ -133,7 +134,7 @@ public class TCPListener extends BASE{
 											byte[] in = new byte[keysize];
 											inStream.read(in);
 											PendingRequest.Builder b = PendingRequest.newBuilder(pendingReq);
-											b.setPayloadIncoming(in.toString());
+											b.setPayloadIncoming(ByteString.copyFrom(in));
 											pendingReq = b.build();
 										}
 										//cleanup
@@ -141,15 +142,15 @@ public class TCPListener extends BASE{
 										outStream.close();
 										// Complete Operation ?
 										switch(pendingReq.getOperationType()){
-										case SignTx:
+										case SignAndBroadcastAuthenticatorTx:
 											byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
 											Transaction tx = new Transaction(Authenticator.getWalletOperation().getNetworkParams(),txBytes);
 											 
-											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_TX_OPERATION(tx,
+											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx,
 													pendingReq.getPairingID(), 
 													null,
 													true,
-													pendingReq.getPayloadIncoming().getBytes());
+													pendingReq.getPayloadIncoming().toByteArray());
 											op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 												@Override
@@ -284,11 +285,11 @@ public class TCPListener extends BASE{
 	
 	//##
 	public void sendUpdatesToPendingRequests(){
-		/*try {
+		try {
 			for(PendingRequest o:Authenticator.getWalletOperation().getPendingRequests()){
 				ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(o.getRequestID(), o.getPairingID());
 				Authenticator.operationsQueue.add(op);
 			}
-		} catch (IOException e) { e.printStackTrace(); }*/
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 }
