@@ -14,31 +14,31 @@ public final class ProtoConfig {
   public enum ATGCMMessageType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>SignTX = 1;</code>
+     * <code>SignTX = 2;</code>
      */
-    SignTX(0, 1),
+    SignTX(0, 2),
     /**
-     * <code>UpdatePendingRequestIPs = 2;</code>
+     * <code>UpdatePendingRequestIPs = 4;</code>
      */
-    UpdatePendingRequestIPs(1, 2),
+    UpdatePendingRequestIPs(1, 4),
     ;
 
     /**
-     * <code>SignTX = 1;</code>
+     * <code>SignTX = 2;</code>
      */
-    public static final int SignTX_VALUE = 1;
+    public static final int SignTX_VALUE = 2;
     /**
-     * <code>UpdatePendingRequestIPs = 2;</code>
+     * <code>UpdatePendingRequestIPs = 4;</code>
      */
-    public static final int UpdatePendingRequestIPs_VALUE = 2;
+    public static final int UpdatePendingRequestIPs_VALUE = 4;
 
 
     public final int getNumber() { return value; }
 
     public static ATGCMMessageType valueOf(int value) {
       switch (value) {
-        case 1: return SignTX;
-        case 2: return UpdatePendingRequestIPs;
+        case 2: return SignTX;
+        case 4: return UpdatePendingRequestIPs;
         default: return null;
       }
     }
@@ -9667,8 +9667,8 @@ public final class ProtoConfig {
       "Addresses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030" +
       "\002 \003(\t\032$\n\021ConfigAddressBook\022\017\n\007address\030\001 " +
       "\001(\t\032!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*;" +
-      "\n\020ATGCMMessageType\022\n\n\006SignTX\020\001\022\033\n\027Update" +
-      "PendingRequestIPs\020\002*\217\001\n\017ATOperationType\022" +
+      "\n\020ATGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027Update" +
+      "PendingRequestIPs\020\004*\217\001\n\017ATOperationType\022" +
       "\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroad" +
       "castAuthenticatorTx\020\002\022\025\n\021BroadcastNormal" +
       "Tx\020\003\022\'\n#updateIpAddressesForPreviousMess" +
