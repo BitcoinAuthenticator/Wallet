@@ -24,9 +24,27 @@ import authenticator.Utils.BAUtils;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
-import authenticator.ui_helpers.PopUpNotification;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 
+/**
+ * <b>The heart of the wallet operation.</b><br>
+ * <br>
+ * <b>When does it start ?</b><br>
+ * This listener is launched on wallet startup by {@link authenticator.Authenticator#doStart()} function.<br>
+ * <br>
+ * <b>What does it do ?</b><br>
+ * The listener is responsible for 2 main operations:<br>
+ * <ol>
+ * <li>Inbound Operations - The listener will listen on the socket for any inbound communication. When it hooks to another socket, it will expect a requestID for reference.<br>
+ * 		When the requestID is received, it will search it in the pending requests file. When the pending operation is found, the TCPListener will follow the
+ * 		{@link authenticator.protobuf.ProtoConfig.PendingRequest.Contract Contract} to complete the reques.</li>
+ * <li>Outbound Operations - When calling {@link authenticator.Authenticator#addOperation(ATOperation operation) addOperation}, the authenticator will add
+ * 	   an operation to the operation queue. Here, the TCPListener will look for operations to execute from the said queue.</li>
+ * <ol>
+ * 
+ * @author alon
+ *
+ */
 public class TCPListener extends BASE{
 	public static Socket socket;
 	private static Thread listenerThread;

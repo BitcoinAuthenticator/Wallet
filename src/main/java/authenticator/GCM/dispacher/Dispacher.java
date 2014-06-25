@@ -13,7 +13,14 @@ import org.xml.sax.SAXException;
 import authenticator.Authenticator;
 import authenticator.GCM.GCMSender;
 import authenticator.network.UpNp;
+import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 
+/**
+ * A wrapper class for dispaching GCM notifications to devices.
+ * 
+ * @author alon
+ *
+ */
 public class Dispacher {
 	DataOutputStream outStream;
 	DataInputStream inStream;
@@ -26,10 +33,10 @@ public class Dispacher {
 		inStream = in;
 	}
 	
-	public String dispachMessage(MessageType msgType, Device device, String ... args) throws JSONException, IOException
+	public String dispachMessage(ATGCMMessageType msgType, Device device, String ... args) throws JSONException, IOException
 	{
 		switch (msgType){
-		case signTx:
+		case SignTX:
 			if(device.gcmRegId != null)
 			{
 				final int port = 1234;
@@ -40,7 +47,7 @@ public class Dispacher {
 					if (!plugnplay.isPortMapped(port)) // TODO - move port to singelton
 						plugnplay.run(null);
 					//assert(plugnplay.isPortMapped(port));
-					msgGCM = new MessageBuilder(MessageType.signTx,
+					msgGCM = new MessageBuilder(ATGCMMessageType.SignTX,
 							new String[]{new String(device.pairingID),plugnplay.getExternalIP(),
 							   plugnplay.getLocalIP().substring(1), args[0]});
 					ArrayList<String> devicesList = new ArrayList<String>();
@@ -59,7 +66,7 @@ public class Dispacher {
 			else
 				;//TODO
 			break;
-		case updateIpAddressesForPreviousMessage:
+		case UpdatePendingRequestIPs:
 			if(device.gcmRegId != null)
 			{
 				plugnplay = new UpNp();
@@ -68,7 +75,7 @@ public class Dispacher {
 					if (!plugnplay.isPortMapped(Authenticator.LISTENER_PORT))
 						plugnplay.run(null);
 					//assert(plugnplay.isPortMapped(port));
-					msgGCM = new MessageBuilder(MessageType.updateIpAddressesForPreviousMessage,
+					msgGCM = new MessageBuilder(ATGCMMessageType.UpdatePendingRequestIPs,
 							new String[]{new String(device.pairingID),
 											plugnplay.getExternalIP(),
 										    plugnplay.getLocalIP().substring(1), 

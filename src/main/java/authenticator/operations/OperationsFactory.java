@@ -62,10 +62,10 @@ import authenticator.Authenticator;
 import authenticator.BASE;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
-import authenticator.GCM.dispacher.MessageType;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
+import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
@@ -78,6 +78,12 @@ public class OperationsFactory extends BASE{
 		staticLooger = this.LOG;
 	}
 
+	/**
+	 * An operation for pairing the wallet with an Authenticator app.
+	 * 
+	 * @param pairingName
+	 * @return
+	 */
 	static public ATOperation PAIRING_OPERATION(String pairingName){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
@@ -124,8 +130,13 @@ public class OperationsFactory extends BASE{
 	}
 
 	/**
-	 * Responsable for the complete process of taking a raw transaction, singing it, maeke the authenticator sign it and then broadcast
+	 * Responsable for the complete process of taking a raw transaction, singing it, make the authenticator sign it and then broadcast
 	 * <br>
+	 * Because the signing operations can, and will be, not immediate. The operation will prepare the payload for signing and then create
+	 * a pending request + broadcast a GCM sign request to the Authenticator app.<br>
+	 * When the Authenticator will ask for the payload, the {@link authenticator.network.TCPListener TCPListener} will reference the 
+	 * generated payload for signing with the pending request ID. After matching the pending reuqest ID, the operation will continue and finalize.
+	 * <br><br>
 	 * <b>onlyComplete is True if should only complete the the deciphering of a received Authenticator signiture <b>
 	 * 
 	 * @param tx
@@ -305,7 +316,7 @@ public class OperationsFactory extends BASE{
 								secretkey);
 						
 						// returns the request ID
-						return disp.dispachMessage(MessageType.signTx, d, new String[]{ txMessage });
+						return disp.dispachMessage(ATGCMMessageType.SignTX, d, new String[]{ txMessage });
 					 }
 					 
 					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
@@ -358,6 +369,16 @@ public class OperationsFactory extends BASE{
 				});
 	}
 	
+	/**
+	 * If a pending request to the Authenticator app was made, change in the wallet IP will break any attempt to finalize the operation.<br>
+	 * To resolve the problem, everytime the wallet is launched, it will search for pending requests {@link authenticator.network.TCPListener#sendUpdatesToPendingRequests() here}
+	 * and send a GCM notification to remind the Authenticator's user of the pending request and update the IPs at the same time.
+	 * 
+	 * 
+	 * @param requestID
+	 * @param pairingID
+	 * @return
+	 */
 	static public ATOperation UPDATE_PENDING_REQUEST_IPS(String requestID, String pairingID){
 		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
 					.SetDescription("Update pending requests to Authenticator")
@@ -382,7 +403,7 @@ public class OperationsFactory extends BASE{
 									null);
 							
 							// returns the request ID
-							disp.dispachMessage(MessageType.updateIpAddressesForPreviousMessage, d, new String[]{ requestID });
+							disp.dispachMessage(ATGCMMessageType.UpdatePendingRequestIPs, d, new String[]{ requestID });
 						}
 
 						@Override

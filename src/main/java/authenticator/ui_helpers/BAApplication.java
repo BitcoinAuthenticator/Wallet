@@ -110,6 +110,13 @@ public class BAApplication extends Application{
 	    }
 	}
 	
+	/**
+	 * An Application parameters specific to the wallet object.<br>
+	 * Is initialized when wallet is launched.
+	 * 
+	 * @author alon
+	 *
+	 */
 	public class BAApplicationParameters{
 		NetworkType bitcoinNetworkType;
 		public NetworkType getBitcoinNetworkType(){ return bitcoinNetworkType; }

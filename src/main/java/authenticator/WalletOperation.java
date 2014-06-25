@@ -51,17 +51,14 @@ import com.google.common.collect.ImmutableList;
 
 /**
  *<p>A super class for handling all wallet operations<br>
- * This class covers DB data retrieving, bitcoinj wallet operations<br></p>
+ * This class covers DB data retrieving, bitcoinj wallet operations, Authenticator wallet operations<br></p>
  * 
  * <b>Main components are:</b>
- * <ol><li>{@link authenticator.WalletWrapper}</li></ol>
- * 
- * <b>Main sections are:</b>
- * <ol><li>Authenticator Wallet Operations - all authenticator related operations</li>
- * <li> DAL - Data Access Layer, uses {@link authenticator.db.WalletFile}</li>
- * <li>Regular Bitocoin Wallet Operations - all operations regarding the regular bitcoinj wallet.<br>
- * This template wallet is first and foremost a working bitcoinj wallet.</li>
- * <li>Helper functions</li>
+ * <ol>
+ * <li>{@link authenticator.WalletWrapper} for normal bitcoinj wallet operations</li>
+ * <li>Authenticator wallet operations</li>
+ * <li>Pending requests control</li>
+ * <li>Active account control</li>
  * </ol>
  * @author Alon
  */
@@ -545,14 +542,7 @@ public class WalletOperation extends BASE{
 	public Address getChangeAddress(){
 		return mWalletWrapper.getChangeAddress();
 	}
-	
-	//#####################################
-	//
-	//		Helper functions
-	//
-	//#####################################    
-  
-    
+ 
 }
 
 

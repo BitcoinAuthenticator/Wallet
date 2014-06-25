@@ -2,6 +2,11 @@ package authenticator.protobuf;
 
 option java_outer_classname="ProtoConfig";
 
+enum ATGCMMessageType{
+	SignTX 					= 2;
+	UpdatePendingRequestIPs	= 4;
+}
+
 enum ATOperationType {
     Pairing 							= 0;
 	Unpair 								= 1;

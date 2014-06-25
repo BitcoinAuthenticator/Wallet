@@ -9,6 +9,88 @@ public final class ProtoConfig {
       com.google.protobuf.ExtensionRegistry registry) {
   }
   /**
+   * Protobuf enum {@code authenticator.protobuf.ATGCMMessageType}
+   */
+  public enum ATGCMMessageType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>SignTX = 1;</code>
+     */
+    SignTX(0, 1),
+    /**
+     * <code>UpdatePendingRequestIPs = 2;</code>
+     */
+    UpdatePendingRequestIPs(1, 2),
+    ;
+
+    /**
+     * <code>SignTX = 1;</code>
+     */
+    public static final int SignTX_VALUE = 1;
+    /**
+     * <code>UpdatePendingRequestIPs = 2;</code>
+     */
+    public static final int UpdatePendingRequestIPs_VALUE = 2;
+
+
+    public final int getNumber() { return value; }
+
+    public static ATGCMMessageType valueOf(int value) {
+      switch (value) {
+        case 1: return SignTX;
+        case 2: return UpdatePendingRequestIPs;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ATGCMMessageType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<ATGCMMessageType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ATGCMMessageType>() {
+            public ATGCMMessageType findValueByNumber(int number) {
+              return ATGCMMessageType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final ATGCMMessageType[] VALUES = values();
+
+    public static ATGCMMessageType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private ATGCMMessageType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:authenticator.protobuf.ATGCMMessageType)
+  }
+
+  /**
    * Protobuf enum {@code authenticator.protobuf.ATOperationType}
    */
   public enum ATOperationType
@@ -92,7 +174,7 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(0);
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final ATOperationType[] VALUES = values();
@@ -174,7 +256,7 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(1);
+      return authenticator.protobuf.ProtoConfig.getDescriptor().getEnumTypes().get(2);
     }
 
     private static final ActiveAccountType[] VALUES = values();
@@ -9584,13 +9666,14 @@ public final class ProtoConfig {
       "protobuf.PendingRequest\032<\n\026ConfigReceive" +
       "Addresses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030" +
       "\002 \003(\t\032$\n\021ConfigAddressBook\022\017\n\007address\030\001 " +
-      "\001(\t\032!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*\217" +
-      "\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006Unpai" +
-      "r\020\001\022#\n\037SignAndBroadcastAuthenticatorTx\020\002" +
-      "\022\025\n\021BroadcastNormalTx\020\003\022\'\n#updateIpAddre" +
-      "ssesForPreviousMessage\020\004*2\n\021ActiveAccoun" +
-      "tType\022\n\n\006Normal\020\000\022\021\n\rAuthenticator\020\001B\rB\013" +
-      "ProtoConfig"
+      "\001(\t\032!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*;" +
+      "\n\020ATGCMMessageType\022\n\n\006SignTX\020\001\022\033\n\027Update" +
+      "PendingRequestIPs\020\002*\217\001\n\017ATOperationType\022" +
+      "\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroad" +
+      "castAuthenticatorTx\020\002\022\025\n\021BroadcastNormal" +
+      "Tx\020\003\022\'\n#updateIpAddressesForPreviousMess" +
+      "age\020\004*2\n\021ActiveAccountType\022\n\n\006Normal\020\000\022\021",
+      "\n\rAuthenticator\020\001B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
