@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -80,6 +81,11 @@ public class WalletWrapper extends BASE{
 	public boolean isAuthenticatorAddressWatched(Address address)
 	{
 		return trackedWallet.isAddressWatched(address);
+	}
+	
+	public boolean isTransactionOutputMine(TransactionOutput out)
+	{
+		return out.isMine(trackedWallet);
 	}
 	
 	/**
@@ -261,6 +267,18 @@ public class WalletWrapper extends BASE{
 	
 	public DeterministicKey freshReceiveKey(){
 		return trackedWallet.freshReceiveKey();
+	}
+	
+	//#####################################
+	//
+	//		Transactions
+	//
+	//#####################################
+	
+	public List<Transaction> getRecentTransactions(){
+		List<Transaction> ret = trackedWallet.getRecentTransactions(10, false);
+		
+		return ret;
 	}
 	
 	//#####################################

@@ -35,6 +35,8 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -46,6 +48,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
@@ -57,6 +61,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -134,6 +139,9 @@ public class Controller {
 	 @FXML private Button btnRequest;
 	 @FXML private Button btnClear;
 	 @FXML public ChoiceBox AccountBox;
+	 //
+	 @FXML public ScrollPane scrlViewTxHistory;
+	 private ScrollPaneContentManager scrlViewTxHistoryContentManager;
 	 
 	 private double xOffset = 0;
 	 private double yOffset = 0;
@@ -187,7 +195,15 @@ public class Controller {
         });
         
         // Peer icon
-        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));        
+        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));      
+        
+        // transaction history scrollPane
+        scrlViewTxHistoryContentManager = new ScrollPaneContentManager()
+        									.setSpacingBetweenItems(15)
+        									.setScrollStyle(scrlViewTxHistory.getStyle());
+		scrlViewTxHistory.setFitToHeight(true);
+		scrlViewTxHistory.setFitToWidth(true);
+		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
     }
     
     public void onBitcoinSetup() {
@@ -198,6 +214,7 @@ public class Controller {
     	tor.addInitializationListener(listener);
         refreshBalanceLabel();
         setReceiveAddresses();
+        setTxHistoryContent();
         
         Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
         
@@ -340,6 +357,7 @@ public class Controller {
         public void onWalletChanged(Wallet wallet) {
             checkGuiThread();
             refreshBalanceLabel();
+            setTxHistoryContent();
             //setAddresses();
         }
         
@@ -619,6 +637,69 @@ public class Controller {
         //final Coin total = confirmed.add(unconfirmed);
         lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
+    }
+    
+    @SuppressWarnings("unused")
+	public void setTxHistoryContent(){
+    	scrlViewTxHistoryContentManager.clearAll();
+    	List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
+    	for(Transaction tx:txAll){
+    		for(TransactionOutput out:tx.getOutputs()){
+    			String addStr = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+    			String tip = "";
+    			// build node 
+        		HBox mainNode = new HBox();
+        		
+        		// left box
+        		VBox leftBox = new VBox();
+    	    		Label l1 = new Label();
+    	    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
+    	    		l1.setTextFill(Paint.valueOf("#6e86a0"));
+    	    		l1.setFont(Font.font(16));
+    	    		l1.setText("To: " + addStr.substring(0, 6)); 
+    	    		tip += "To: " + addStr + "\n";
+    	    		leftBox.getChildren().add(l1);
+    	    		
+    	    		Label l2 = new Label();
+    	    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
+    	    		l2.setTextFill(Paint.valueOf("#6e86a0"));
+    	    		l2.setFont(Font.font(12));
+    	    		l2.setText(tx.getUpdateTime().toLocaleString());
+    	    		tip += "When: " + tx.getUpdateTime().toLocaleString() + "\n";
+    	    		leftBox.getChildren().add(l2);
+    	    		
+        		mainNode.getChildren().add(leftBox);
+    	    		
+        		// right box
+        		VBox rightBox = new VBox();
+        		rightBox.setPadding(new Insets(0,0,0,40));
+    	    		Label l3 = new Label();
+    	    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
+    	    		//check is it receiving or sending
+    	    		try {
+    	    			Address add = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams());
+						if(Authenticator.getWalletOperation().isWatchingAddress(add.toString()) || 
+								Authenticator.getWalletOperation().isTransactionOutputMine(out)){
+							l3.setTextFill(Paint.valueOf("#25db61"));
+							l3.setText(out.getValue().toFriendlyString() + " BTC");
+							tip+= "Amount: " + out.getValue().toFriendlyString() + " BTC\n";
+						}
+						else{
+							l3.setTextFill(Paint.valueOf("#f94920"));
+							l3.setText("-" + out.getValue().toFriendlyString() + " BTC");
+							tip += "Amount: -" + out.getValue().toFriendlyString() + " BTC\n";							
+						}
+					} catch (Exception e) { e.printStackTrace(); }
+    	    		l3.setFont(Font.font(16));
+    	    		rightBox.getChildren().add(l3);
+    	    		
+        		mainNode.getChildren().add(rightBox);
+        		Tooltip.install(mainNode, new Tooltip(tip));
+    	    		
+        		// add to scroll
+        		scrlViewTxHistoryContentManager.addItem(mainNode);
+    		}
+    	}
     }
     
     //#####################################
@@ -1260,5 +1341,6 @@ public class Controller {
     public void updateUIForNewActiveAccount(){
     	refreshBalanceLabel();
     	setReceiveAddresses();
+    	setTxHistoryContent();
     }
 }

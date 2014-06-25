@@ -487,6 +487,11 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.isAuthenticatorAddressWatched(address);
 	}
     
+    public boolean isTransactionOutputMine(TransactionOutput out)
+	{
+		return mWalletWrapper.isTransactionOutputMine(out);
+	}
+    
     public void addP2ShAddressToWatch(String address) throws AddressFormatException
 	{
     	mWalletWrapper.addP2ShAddressToWatch(address);
@@ -541,6 +546,10 @@ public class WalletOperation extends BASE{
 	 */
 	public Address getChangeAddress(){
 		return mWalletWrapper.getChangeAddress();
+	}
+	
+	public List<Transaction> getRecentTransactions(){
+		return mWalletWrapper.getRecentTransactions();
 	}
  
 }
