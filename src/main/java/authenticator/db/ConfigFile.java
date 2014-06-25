@@ -100,7 +100,7 @@ public class ConfigFile {
 	public void addMoreAddresses() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		Main.controller.AddressBox.getItems().remove(Main.controller.AddressBox.getItems().indexOf("                                More"));		
-		for (int i=0; i<10; i++){
+		for (int i=0; i<5; i++){
 			DeterministicKey newkey = Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
 			String pubkey =  KeyUtils.bytesToHex(newkey.getPubKey());
 			auth.getConfigReceiveAddressesBuilder().addWalletKey(pubkey);

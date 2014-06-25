@@ -31,6 +31,7 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -55,12 +56,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.KeyUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -72,6 +77,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
+import javax.imageio.ImageIO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -133,6 +140,7 @@ public class Controller {
 	 @FXML private TextField txReqLabel;
 	 @FXML private TextField txReqAmount;
 	 @FXML private TextArea txReqMemo;
+	 @FXML private ChoiceBox reqCurrencyBox;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
@@ -165,6 +173,9 @@ public class Controller {
         scrlpane.setPadding(new Insets (5,0,0,5));
         scrlpane.setFocusTraversable(false);
         syncProgress.setProgress(-1);
+        lblName.setFont(Font.font(null, FontWeight.BOLD, 15));
+        lblConfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
+        lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
         createReceivePaneButtons();
         
         // Pane Control
@@ -571,7 +582,7 @@ public class Controller {
     void setName(String name) {
     	lblName.setText("Welcome back, " + name);
     	lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
-                lblName.getText(), 0.0D));
+                lblName.getText(), 0.0D)+20);
     }
     
     @FXML protected void drag1(MouseEvent event) {
@@ -799,8 +810,21 @@ public class Controller {
 
     		HBox b = new HBox();
     		txfAmount = new TextField();
-    		txfAmount.setPromptText("Amount (bits)");
+    		txfAmount.setPromptText("Amount (BTC)");
     		txfAmount.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1;");
+    		txfAmount.lengthProperty().addListener(new ChangeListener<Number>(){
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
+                      if(newValue.intValue() > oldValue.intValue()){
+                          char ch = txfAmount.getText().charAt(oldValue.intValue());  
+                          //Check if the new character is the number or other's
+                          if(!(ch >= '0' && ch <= '9') && ch != '.'){       
+                               //if it's not number then just setText to previous one
+                               txfAmount.setText(txfAmount.getText().substring(0,txfAmount.getText().length()-1)); 
+                          }
+                     }
+                }
+    		});
     		b.setMargin(txfAmount, new Insets(4,200,0,0));
     		b.getChildren().add(txfAmount);
     		amountInSatoshi = new Label();
@@ -946,51 +970,195 @@ public class Controller {
         });
         ReceiveHBox.getChildren().add(btnCopy);
         ReceiveHBox.getChildren().add(btnQR);
-        ReceiveHBox.getChildren().add(btnKey);
+        ReceiveHBox.getChildren().add(btnKey); 
         
+        txReqAmount.lengthProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
+                  if(newValue.intValue() > oldValue.intValue()){
+                      char ch = txReqAmount.getText().charAt(oldValue.intValue());  
+                      //Check if the new character is the number or other's
+                      if(!(ch >= '0' && ch <= '9') && ch != '.'){       
+                           //if it's not number then just setText to previous one
+                           txReqAmount.setText(txReqAmount.getText().substring(0,txReqAmount.getText().length()-1)); 
+                      }
+                 }
+            }
+        });
+        //reqCurrencyBox.setValue("BTC");
+        //Payment Request Window
         btnRequest.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-            	 // Serialize to PNG and back into an image. Pretty lame but it's the shortest code to write and I'm feeling
-                // lazy tonight.
-                byte[] imageBytes = null;
-				try {
-					imageBytes = QRCode
-					        .from(paymentRequestURI())
-					        .withSize(360, 360)
-					        .to(ImageType.PNG)
-					        .stream()
-					        .toByteArray();
-				} catch (AddressFormatException e1) {e1.printStackTrace();}
-                Image qrImage = new Image(new ByteArrayInputStream(imageBytes));
-                ImageView view = new ImageView(qrImage);
-                view.setEffect(new DropShadow());
-                // Embed the image in a pane to ensure the drop-shadow interacts with the fade nicely, otherwise it looks weird.
-                // Then fix the width/height to stop it expanding to fill the parent, which would result in the image being
-                // non-centered on the screen. Finally fade/blur it in.
-                Button btnCopyURI = new Button("Copy URI");
-                VBox requestvbox = new VBox();
-                requestvbox.getChildren().add(view);
-                requestvbox.getChildren().add(btnCopyURI);
-                requestvbox.setStyle("-fx-background-color: white;");
-                Pane pane = new Pane(requestvbox);
-                pane.setMaxSize(360, 360);
-                pane.setStyle("-fx-background-color: white;");
-                final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
-                view.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        overlay.done();
-                    }
-                });
-            }
-        });
-        btnClear.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-            	txReqLabel.setText("");
-            	txReqMemo.setText("");
-            	txReqAmount.setText("");
-            }
-        });
+            	if (txReqAmount.getText().toString().equals("")){
+            		informationalAlert("You messed up!",
+                            "A payment request for zero bitcoins?");
+            	}
+            	else {
+            		byte[] imageBytes = null;
+            		try {
+            			imageBytes = QRCode
+            					.from(paymentRequestURI())
+            					.withSize(300, 300)
+            					.to(ImageType.PNG)
+            					.stream()
+            					.toByteArray();
+            		} catch (AddressFormatException e1) {e1.printStackTrace();}
+            		Image qrImage = new Image(new ByteArrayInputStream(imageBytes));
+            		ImageView view = new ImageView(qrImage);
+            		Button btnCopyURI = new Button("Copy URI");
+            		btnCopyURI.setOnAction(new EventHandler<ActionEvent>() {
+            			@Override 
+            			public void handle(ActionEvent e) {
+            				Clipboard clipboard = Clipboard.getSystemClipboard();
+            				ClipboardContent content = new ClipboardContent();
+            				try {content.putString(paymentRequestURI());} 
+            				catch (AddressFormatException e1) {e1.printStackTrace();}
+            				try {content.putHtml(String.format("<a href='%s'>%s</a>", paymentRequestURI(), paymentRequestURI()));} 
+            				catch (AddressFormatException e1) {e1.printStackTrace();}
+            				clipboard.setContent(content);
+            			}
+            		});
+            		btnCopyURI.getStyleClass().add("custom-button");
+            		btnCopyURI.setOnMousePressed(new EventHandler<MouseEvent>(){
+            			@Override
+            			public void handle(MouseEvent t) {
+            				btnCopyURI.setStyle("-fx-background-color: #a1d2e7;");
+            			}
+            		});
+            		btnCopyURI.setOnMouseReleased(new EventHandler<MouseEvent>(){
+            			@Override
+            			public void handle(MouseEvent t) {
+            				btnCopyURI.setStyle("-fx-background-color: #199bd6;");
+            			}
+            		});
+            		Button btnSaveImg = new Button("Save Image");
+            		btnSaveImg.setOnAction(new EventHandler<ActionEvent>() {
+            			@Override 
+            			public void handle(ActionEvent e) {
+            				FileChooser fileChooser = new FileChooser();
+            				fileChooser.setTitle("Save Image");
+            				File file = fileChooser.showSaveDialog(Main.stg);
+            				if (file != null) {
+            					try {
+            						ImageIO.write(SwingFXUtils.fromFXImage(qrImage,
+            								null), "png", file);
+            					} catch (IOException ex) {
+            						System.out.println(ex.getMessage());
+            					}
+            				}
+            			}
+            		});
+            		btnSaveImg.getStyleClass().add("custom-button");
+            		btnSaveImg.setOnMousePressed(new EventHandler<MouseEvent>(){
+            			@Override
+            			public void handle(MouseEvent t) {
+            				btnSaveImg.setStyle("-fx-background-color: #a1d2e7;");
+            			}
+            		});
+            		btnSaveImg.setOnMouseReleased(new EventHandler<MouseEvent>(){
+            			@Override
+            			public void handle(MouseEvent t) {
+            				btnSaveImg.setStyle("-fx-background-color: #199bd6;");
+            			}
+            		});
+            		Button btnReqClose = new Button("Close");
+            		btnReqClose.getStyleClass().add("custom-button");
+            		btnReqClose.setOnMousePressed(new EventHandler<MouseEvent>(){
+            			@Override
+            			public void handle(MouseEvent t) {
+            				btnReqClose.setStyle("-fx-background-color: #a1d2e7;");
+            			}
+            		});
+            		btnReqClose.setOnMouseReleased(new EventHandler<MouseEvent>(){
+            			@Override
+            			public void handle(MouseEvent t) {
+            				btnReqClose.setStyle("-fx-background-color: #199bd6;");
+            			}
+            		});
+            		txReqMemo.setFocusTraversable(false);
+            		Label lblReqAddr1 = new Label();
+            		Label lblReqAddr2 = new Label();
+            		HBox reqAddrHbox = new HBox();
+            		reqAddrHbox.setPadding(new Insets(10,0,0,0));
+            		reqAddrHbox.getChildren().add(lblReqAddr1);
+            		reqAddrHbox.getChildren().add(lblReqAddr2);
+            		Label lblReqDetails =  new Label();
+            		Label lblReqAmount1 = new Label();
+            		Label lblReqAmount2 = new Label();
+            		HBox reqAmountHbox = new HBox();
+            		reqAmountHbox.setPadding(new Insets(10,0,0,0));
+            		reqAmountHbox.getChildren().add(lblReqAmount1);
+            		reqAmountHbox.getChildren().add(lblReqAmount2);
+            		Label lblReqLabel1 = new Label();
+            		Label lblReqLabel2 = new Label();
+            		HBox reqLabelHbox = new HBox();
+            		reqLabelHbox.setPadding(new Insets(10,0,0,0));
+            		reqLabelHbox.getChildren().add(lblReqLabel1);
+            		reqLabelHbox.getChildren().add(lblReqLabel2);
+            		Label lblReqMemo1 = new Label();
+            		Label lblReqMemo2 = new Label();
+            		HBox reqMemoHbox = new HBox();
+            		reqMemoHbox.setPadding(new Insets(10,0,0,0));
+            		reqMemoHbox.getChildren().add(lblReqMemo1);
+            		reqMemoHbox.getChildren().add(lblReqMemo2);
+            		lblReqDetails.setText("Payment Details");
+            		lblReqDetails.setFont(new Font(20));
+            		lblReqAmount1.setText("Amount:   ");
+            		lblReqAmount2.setText(txReqAmount.getText().toString() + " BTC");
+            		lblReqAmount1.setFont(Font.font(null, FontWeight.BOLD, 14));
+            		lblReqAddr1.setText("Address:  ");
+            		lblReqAddr1.setFont(Font.font(null, FontWeight.BOLD, 14));
+            		lblReqAddr2.setText(AddressBox.getValue().toString());
+            		lblReqLabel1.setText("Label:    ");
+            		lblReqLabel1.setFont(Font.font(null, FontWeight.BOLD, 14));
+            		lblReqLabel2.setText(txReqLabel.getText().toString());
+            		lblReqMemo1.setText("Memo:     ");
+            		lblReqMemo1.setFont(Font.font(null, FontWeight.BOLD, 14));
+            		lblReqMemo2.setText(txReqMemo.getText().toString());
+            		lblReqMemo2.setWrapText(true);
+            		lblReqMemo2.setPrefWidth(300);
+            		HBox reqHbox = new HBox();
+            		VBox ivVbox = new VBox();
+            		ivVbox.getChildren().add(view);
+            		ivVbox.setPadding(new Insets(30,0,0,0));
+            		reqHbox.getChildren().add(ivVbox);
+            		VBox reqVbox = new VBox();
+            		reqVbox.getChildren().add(lblReqDetails);
+            		reqVbox.getChildren().add(reqLabelHbox);
+            		reqVbox.getChildren().add(reqAddrHbox);
+            		reqVbox.getChildren().add(reqAmountHbox);
+            		reqVbox.getChildren().add(reqMemoHbox);
+            		HBox btnHbox = new HBox();
+            		btnHbox.setPadding(new Insets(10,0,0,0));
+            		btnHbox.setMargin(btnCopyURI, new Insets(0,10,0,0));
+            		btnHbox.setMargin(btnSaveImg, new Insets(0,10,0,0));
+            		btnHbox.getChildren().add(btnCopyURI);
+            		btnHbox.getChildren().add(btnSaveImg);
+            		btnHbox.getChildren().add(btnReqClose);
+            		reqVbox.getChildren().add(btnHbox);
+            		reqVbox.setPadding(new Insets(70,0,0,0));
+            		reqHbox.getChildren().add(reqVbox);
+            		Pane pane = new Pane(reqHbox);
+            		pane.setMaxSize(700, 360);
+            		pane.setStyle("-fx-background-color: white;");
+            		pane.setEffect(new DropShadow());
+            		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+            		btnReqClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            			@Override
+            				public void handle(MouseEvent event) {
+            				overlay.done();
+            			}
+            		});
+            	}
+            	}
+            });
+        	btnClear.setOnAction(new EventHandler<ActionEvent>() {
+        		@Override public void handle(ActionEvent e) {
+        			txReqLabel.setText("");
+        			txReqMemo.setText("");
+        			txReqAmount.setText("");
+        		}
+        	});
     }
     
     public String uri() throws AddressFormatException {

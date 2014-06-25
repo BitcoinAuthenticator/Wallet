@@ -1,6 +1,7 @@
 wallettemplate/Main$2.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigSettings$Builder.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigActiveAccount$Builder.class
+wallettemplate/Controller$15$9.class
 wallettemplate/PairWallet$1$3.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigSettings$1.class
 authenticator/protobuf/ProtoConfig$PendingRequest$1.class
@@ -8,6 +9,7 @@ wallettemplate/utils/BaseUI.class
 wallettemplate/Controller$15.class
 wallettemplate/Controller$NewAddress.class
 authenticator/operations/OperationActions.class
+wallettemplate/Controller$15$3.class
 authenticator/network/UpNp.class
 wallettemplate/Controller$2.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigAddressBook$1.class
@@ -31,11 +33,13 @@ authenticator/protobuf/ProtoConfig.class
 authenticator/network/TCPListener$1.class
 wallettemplate/PairWallet.class
 authenticator/ui_helpers/PopUpNotification.class
+wallettemplate/Controller$15$8.class
 authenticator/operations/OperationsFactory$2.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigActiveAccount$1.class
 wallettemplate/Controller$7.class
 wallettemplate/Controller$1.class
 authenticator/protobuf/ProtoConfig$PairedAuthenticator.class
+wallettemplate/Controller$15$2.class
 authenticator/BASE.class
 authenticator/protobuf/ProtoConfig$ActiveAccountType$1.class
 wallettemplate/Controller$10$1.class
@@ -64,6 +68,7 @@ authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigAuthenticato
 authenticator/protobuf/ProtoConfig$PairedAuthenticator$KeysObject$Builder.class
 wallettemplate/utils/KeyUtils.class
 authenticator/db/ConfigFile.class
+wallettemplate/Controller$17.class
 authenticator/operations/OperationsUtils/QRCode.class
 wallettemplate/utils/ThrottledRunLater.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$1.class
@@ -77,6 +82,7 @@ authenticator/protobuf/ProtoConfig$PendingRequest.class
 wallettemplate/utils/TextUtils.class
 authenticator/operations/OperationsUtils/DisplayQR.class
 wallettemplate/OneNameController.class
+wallettemplate/Controller$15$6.class
 wallettemplate/Controller$12.class
 authenticator/ui_helpers/BAApplication$BAApplicationParameters.class
 authenticator/ui_helpers/BAApplication$NetworkType.class
@@ -96,6 +102,7 @@ authenticator/protobuf/ProtoConfig$PendingRequest$Contract$Builder.class
 wallettemplate/Main$2$2.class
 wallettemplate/Main$OverlayUI.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigAddressBook$Builder.class
+wallettemplate/Controller$15$1.class
 authenticator/operations/OperationsUtils/PairingProtocol.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigActiveAccountOrBuilder.class
 authenticator/protobuf/ProtoConfig$PairedAuthenticator$1.class
@@ -119,20 +126,22 @@ wallettemplate/Controller$ProgressBarUpdater.class
 authenticator/ui_helpers/ComboBoxHelper.class
 authenticator/protobuf/ProtoConfig$ActiveAccountType.class
 authenticator/BipSSS/BipSSS.class
+wallettemplate/Controller$NewAddress$3.class
 wallettemplate/Controller$TorListener$1.class
 authenticator/protobuf/ProtoConfig$ATOperationType.class
-wallettemplate/Controller$14$1.class
 wallettemplate/Controller$TorListener.class
 wallettemplate/Controller$3.class
 wallettemplate/Controller$6.class
 authenticator/protobuf/ProtoConfig$1.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$ConfigReceiveAddressesOrBuilder.class
 authenticator/protobuf/ProtoConfig$AuthenticatorConfiguration$Builder.class
+wallettemplate/Controller$15$7.class
 authenticator/operations/OperationsFactory$1.class
 wallettemplate/Controller$11.class
 wallettemplate/controls/ClickableBitcoinAddress.class
 authenticator/operations/OperationsFactory.class
 wallettemplate/PairWallet$1$4.class
+wallettemplate/Controller$15$4.class
 wallettemplate/Controller$5.class
 wallettemplate/Controller$WalletListener$1.class
 authenticator/BipSSS/Gf256.class
@@ -143,6 +152,7 @@ wallettemplate/controls/ClickableBitcoinAddress$1.class
 wallettemplate/PairWallet$1.class
 authenticator/operations/ATOperation.class
 wallettemplate/Controller$4.class
+wallettemplate/Controller$15$5.class
 wallettemplate/Main$1.class
 wallettemplate/Controller$AuthenticatorGeneralEvents.class
 authenticator/operations/OperationsUtils/CommunicationObjects/SignMessage$KeyIndex.class
