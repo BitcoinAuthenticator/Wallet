@@ -106,6 +106,22 @@
     -->
     <Pane fx:id="ReceivePane" layoutX="196.0" layoutY="74.0" prefHeight="338.0" prefWidth="629.0" visible="false">
       <children>
+      <Pane fx:id="RequestPane" layoutX="0.0" layoutY="90.0" prefHeight="250.0" prefWidth="600.0">
+	        <Separator layoutX="46.0" layoutY="7.0" minHeight="2.1999969482421875" prefHeight="2.1999969482421875" prefWidth="537.0" />
+	        <TextField fx:id="txReqLabel" layoutX="67.0" layoutY="27.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+	        <TextField fx:id="txReqAmount" layoutX="67.0" layoutY="65.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+	        <ChoiceBox layoutX="283.0" layoutY="67.0" prefHeight="25.0" value="BTC">
+	          <items>
+	            <FXCollections fx:factory="observableArrayList">
+	              <String fx:value="BTC" />
+	              <String fx:value="USD" />
+	            </FXCollections>
+	          </items>
+	        </ChoiceBox>
+	        <TextArea fx:id="txReqMemo" layoutX="67.0" layoutY="106.0" prefHeight="71.0" prefWidth="475.0" wrapText="true" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent;" />
+	        <Button fx:id="btnRequest" layoutX="67.0" layoutY="194.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="155.0" text="Request Payment" onMousePressed="#btnRequestPressed" onMouseReleased="#btnRequestReleased" styleClass="custom-button"/>
+	        <Button fx:id="btnClear" layoutX="251.0" layoutY="194.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="109.5" text="Clear" onMousePressed="#btnClearPressed" onMouseReleased="#btnClearReleased" styleClass="custom-button"/>
+        </Pane>
         <HBox fx:id="ReceiveHBox" layoutX="0.0" layoutY="14.0" prefHeight="64.0" prefWidth="629.0">
           <children>
             <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
@@ -126,22 +142,6 @@
             </ChoiceBox>
           </children>
         </HBox>
-        <Pane fx:id="RequestPane" layoutX="0.0" layoutY="85.0" prefHeight="250.0" prefWidth="600.0">
-	        <Separator layoutX="46.0" layoutY="10.0" minHeight="2.1999969482421875" prefHeight="2.1999969482421875" prefWidth="537.0" />
-	        <TextField fx:id="txReqLabel" layoutX="67.0" layoutY="27.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
-	        <TextField fx:id="txReqAmount" layoutX="67.0" layoutY="65.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
-	        <ChoiceBox layoutX="283.0" layoutY="65.0" prefHeight="25.0" value="BTC">
-	          <items>
-	            <FXCollections fx:factory="observableArrayList">
-	              <String fx:value="BTC" />
-	              <String fx:value="USD" />
-	            </FXCollections>
-	          </items>
-	        </ChoiceBox>
-	        <TextArea fx:id="txReqMemo" layoutX="67.0" layoutY="106.0" prefHeight="71.0" prefWidth="475.0" wrapText="true" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent;" />
-	        <Button fx:id="btnRequest" layoutX="67.0" layoutY="194.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="155.0" text="Request Payment" onMousePressed="#btnRequestPressed" onMouseReleased="#btnRequestReleased" styleClass="custom-button"/>
-	        <Button fx:id="btnClear" layoutX="251.0" layoutY="194.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="109.5" text="Clear" onMousePressed="#btnClearPressed" onMouseReleased="#btnClearReleased" styleClass="custom-button"/>
-        </Pane>
       </children>
     </Pane>
     <!-- 

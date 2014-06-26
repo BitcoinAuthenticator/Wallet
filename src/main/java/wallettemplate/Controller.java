@@ -668,8 +668,12 @@ public class Controller {
 	public void setTxHistoryContent(){
     	scrlViewTxHistoryContentManager.clearAll();
     	List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
-    	for(Transaction tx:txAll){
-    		String txid = tx.getHashAsString();
+    	int size = txAll.size();
+    	int n;
+    	if (size < 10) {n=size;}
+    	else {size =  10;}
+    	for(int i=0; i<size; i++){
+    		String txid = txAll.get(i).getHashAsString();
     		String tip = "";
     		// build node 
     		HBox mainNode = new HBox();
@@ -680,7 +684,7 @@ public class Controller {
     		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
     		l1.setTextFill(Paint.valueOf("#6e86a0"));
     		l1.setFont(Font.font(13));
-    		l1.setText(tx.getUpdateTime().toLocaleString()); 
+    		l1.setText(txAll.get(i).getUpdateTime().toLocaleString()); 
     		tip += "Txid: " + txid + "\n";
     		leftBox.getChildren().add(l1);
     		
@@ -689,7 +693,7 @@ public class Controller {
     		l2.setTextFill(Paint.valueOf("#6e86a0"));
     		l2.setFont(Font.font(11));
     		l2.setText(txid.substring(0, 20) + "...");
-    		tip += "When: " + tx.getUpdateTime().toLocaleString() + "\n";
+    		tip += "When: " + txAll.get(i).getUpdateTime().toLocaleString() + "\n";
     		leftBox.getChildren().add(l2);
     		
     		mainNode.getChildren().add(leftBox);
@@ -702,8 +706,8 @@ public class Controller {
     		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
     		l3.setPadding(new Insets(0,5,0,0));
     		//check is it receiving or sending
-    		Coin enter = tx.getValueSentToMe(Main.bitcoin.wallet());
-    		Coin exit = tx.getValueSentFromMe(Main.bitcoin.wallet());
+    		Coin enter = txAll.get(i).getValueSentToMe(Main.bitcoin.wallet());
+    		Coin exit = txAll.get(i).getValueSentFromMe(Main.bitcoin.wallet());
     		Image in = new Image(Main.class.getResourceAsStream("in.png"));
     		Image out = new Image(Main.class.getResourceAsStream("out.png"));
     		ImageView arrow = null;
