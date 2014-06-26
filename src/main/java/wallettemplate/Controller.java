@@ -710,19 +710,19 @@ public class Controller {
     		Image in = new Image(Main.class.getResourceAsStream("in.png"));
     		Image out = new Image(Main.class.getResourceAsStream("out.png"));
     		ImageView arrow = null;
-    		if (enter.compareTo(Coin.ZERO) > 0){
+    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
+    			l3.setTextFill(Paint.valueOf("#ea4f4a"));
+    			l3.setText("-" + exit.subtract(enter).toFriendlyString() + " BTC"); // get total out minus enter to subtract change amount
+    			tip += "Amount: -" + exit.subtract(enter).toFriendlyString() + " BTC\n";	
+    			arrow = new ImageView(out);
+    		}
+    		else {//if (enter.compareTo(Coin.ZERO) > 0){
     			l3.setTextFill(Paint.valueOf("#98d947"));
     			l3.setText(enter.toFriendlyString() + " BTC");
     			tip+= "Amount: " + enter.toFriendlyString() + " BTC\n";
     			arrow = new ImageView(in);
     		}
-    		if (exit.compareTo(Coin.ZERO) > 0){
-    			l3.setTextFill(Paint.valueOf("#ea4f4a"));
-    			l3.setText("-" + exit.toFriendlyString() + " BTC");
-    			tip += "Amount: -" + exit.toFriendlyString() + " BTC\n";	
-    			arrow = new ImageView(out);
-    		}
-    		l3.setFont(Font.font(13));
+     		l3.setFont(Font.font(13));
     		content.getChildren().add(l3);
     		content.getChildren().add(arrow);
     		rightBox.getChildren().add(content);
