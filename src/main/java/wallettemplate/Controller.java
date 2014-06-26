@@ -19,6 +19,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.script.Script;
@@ -563,24 +564,28 @@ public class Controller {
 	   AccountBox.getItems().clear();
 	   AccountBox.getItems().add("Spending");
 	   AccountBox.getItems().add("Savings");
-	   AccountBox.setValue("Spending");
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
-	   AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);	   
 	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
    			@Override 
    			public void changed(ObservableValue ov, String t, String t1) {
-   				AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);
+   				if(t1 != null && t1.length() > 0){
+					AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
+					changeAccount(t1);
+   				}
    			}    
 	   });
 	   for(PairedAuthenticator po:all){
 		   AccountBox.getItems().add(po.getPairingName());
 	   }
 	   
-	   if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
-		   AccountBox.setValue("Main Wallet");
+	   if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending)
+		   AccountBox.setValue("Spending");
+	   else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
+		   AccountBox.setValue("Savings");
 	   else
 		   AccountBox.setValue(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingName());
-		   
+	
+	   AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);
    }
    
    	//#####################################
@@ -641,7 +646,9 @@ public class Controller {
     	
     	Coin unconfirmed = Coin.ZERO;
     	Coin confirmed = Coin.ZERO;
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
+    	//TODO - split savings and spending
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
     	{
 	    	unconfirmed = Authenticator.getWalletOperation().getNormalAccountUnconfirmedBalance();
 	    	confirmed = Authenticator.getWalletOperation().getNormalAccountConfirmedBalance();
@@ -663,60 +670,106 @@ public class Controller {
     	for(Transaction tx:txAll){
     		for(TransactionOutput out:tx.getOutputs()){
     			String addStr = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-    			String tip = "";
-    			// build node 
-        		HBox mainNode = new HBox();
-        		
-        		// left box
-        		VBox leftBox = new VBox();
-    	    		Label l1 = new Label();
-    	    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
-    	    		l1.setTextFill(Paint.valueOf("#6e86a0"));
-    	    		l1.setFont(Font.font(16));
-    	    		l1.setText("To: " + addStr.substring(0, 6)); 
-    	    		tip += "To: " + addStr + "\n";
-    	    		leftBox.getChildren().add(l1);
-    	    		
-    	    		Label l2 = new Label();
-    	    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
-    	    		l2.setTextFill(Paint.valueOf("#6e86a0"));
-    	    		l2.setFont(Font.font(12));
-    	    		l2.setText(tx.getUpdateTime().toLocaleString());
-    	    		tip += "When: " + tx.getUpdateTime().toLocaleString() + "\n";
-    	    		leftBox.getChildren().add(l2);
-    	    		
-        		mainNode.getChildren().add(leftBox);
-    	    		
-        		// right box
-        		VBox rightBox = new VBox();
-        		rightBox.setPadding(new Insets(0,0,0,40));
-    	    		Label l3 = new Label();
-    	    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
-    	    		//check is it receiving or sending
-    	    		try {
-    	    			Address add = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams());
-						if(Authenticator.getWalletOperation().isWatchingAddress(add.toString()) || 
-								Authenticator.getWalletOperation().isTransactionOutputMine(out)){
-							l3.setTextFill(Paint.valueOf("#25db61"));
-							l3.setText(out.getValue().toFriendlyString() + " BTC");
-							tip+= "Amount: " + out.getValue().toFriendlyString() + " BTC\n";
-						}
-						else{
-							l3.setTextFill(Paint.valueOf("#f94920"));
-							l3.setText("-" + out.getValue().toFriendlyString() + " BTC");
-							tip += "Amount: -" + out.getValue().toFriendlyString() + " BTC\n";							
-						}
-					} catch (Exception e) { e.printStackTrace(); }
-    	    		l3.setFont(Font.font(16));
-    	    		rightBox.getChildren().add(l3);
-    	    		
-        		mainNode.getChildren().add(rightBox);
-        		Tooltip.install(mainNode, new Tooltip(tip));
-    	    		
-        		// add to scroll
-        		scrlViewTxHistoryContentManager.addItem(mainNode);
+    			String date = tx.getUpdateTime().toLocaleString();
+    			double amount = 0;
+    			// check amount
+    			try {
+	    			Address add = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams());
+	    			// was sent to me
+					if(Authenticator.getWalletOperation().isWatchingAddress(add.toString()) || 
+							Authenticator.getWalletOperation().isTransactionOutputMine(out)){
+						addTxHistoryNode(addStr, out.getValue().toFriendlyString(), false, date);
+					}
+					// i sent
+					else
+					{
+						
+					}
+				} catch (Exception e) { e.printStackTrace(); }
+    			
+    			
+    		}
+    		for(TransactionInput in:tx.getInputs()){
+    			/**
+    			 * If there is an input that is mine, this Tx was created by me.
+    			 * Go over all outputs, any output that is not mine is a spending output to someone.
+    			 */
+    			if(in.getConnectedOutput() != null){ 
+    				for(TransactionOutput out:tx.getOutputs()){
+    					String addStr = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+            			String date = tx.getUpdateTime().toLocaleString();
+            			double amount = 0;
+            			// check amount
+            			try {
+        	    			Address add = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams());
+        					if(!Authenticator.getWalletOperation().isWatchingAddress(add.toString()) && 
+        							!Authenticator.getWalletOperation().isTransactionOutputMine(out)){
+        						addTxHistoryNode(addStr, out.getValue().toFriendlyString(), true, date);
+        					}
+        				} catch (Exception e) { e.printStackTrace(); }
+    				}
+    				
+    				break;
+    			}
+    		    			
     		}
     	}
+    }
+    
+    private void addTxHistoryNode(String addStr, String amount,boolean isSpending, String date){
+    	String tip = "";
+		// build node 
+		HBox mainNode = new HBox();
+		
+		// left box
+		VBox leftBox = new VBox();
+    		Label l1 = new Label();
+    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		l1.setTextFill(Paint.valueOf("#6e86a0"));
+    		l1.setFont(Font.font(16));
+    		if(!isSpending)
+    			l1.setText("From: " + addStr.substring(0, 6)); 
+    		else
+    			l1.setText("To: " + addStr.substring(0, 6)); 
+    		tip += "To: " + addStr + "\n";
+    		leftBox.getChildren().add(l1);
+    		
+    		Label l2 = new Label();
+    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		l2.setTextFill(Paint.valueOf("#6e86a0"));
+    		l2.setFont(Font.font(12));
+    		l2.setText(date);
+    		tip += "When: " + date + "\n";
+    		leftBox.getChildren().add(l2);
+    		
+		mainNode.getChildren().add(leftBox);
+    		
+		// right box
+		VBox rightBox = new VBox();
+		rightBox.setPadding(new Insets(0,0,0,40));
+    		Label l3 = new Label();
+    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		//check is it receiving or sending
+    		try {
+				if(!isSpending){
+					l3.setTextFill(Paint.valueOf("#25db61"));
+					l3.setText(amount + " BTC");
+					tip+= "Amount: " + amount + " BTC\n";
+				}
+				else{
+					l3.setTextFill(Paint.valueOf("#f94920"));
+					l3.setText("-" + amount + " BTC");
+					tip += "Amount: -" + amount + " BTC\n";							
+				}
+			} catch (Exception e) { e.printStackTrace(); }
+    		l3.setFont(Font.font(16));
+    		rightBox.getChildren().add(l3);
+    		
+		mainNode.getChildren().add(rightBox);
+		Tooltip.install(mainNode, new Tooltip(tip));
+    		
+		// add to scroll
+		scrlViewTxHistoryContentManager.addItem(mainNode);
     }
     
     //#####################################
@@ -766,7 +819,9 @@ public class Controller {
     	amount = amount.add(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE);
     	//
     	Coin confirmed = Coin.ZERO;
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
+    	//TODO - split savings and spending
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
 	    	confirmed = Authenticator.getWalletOperation().getNormalAccountConfirmedBalance();
     	else
 	    	confirmed 	= Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());    	
@@ -785,7 +840,9 @@ public class Controller {
     	/**
     	 * Normal bitcoin Tx
     	 */
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal)
+    		//TODO - split savings and spending
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
     		// TODO - move to authenticator ?
     		try {
         		Transaction tx = new Transaction(Main.params);
@@ -1459,7 +1516,9 @@ public class Controller {
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
     	AddressBox.getItems().clear();
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal){
+    	//TODO - split savings and spending
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
     		ArrayList<ECKey> keypool = null;
         	try { Authenticator.getWalletOperation().fillKeyPool(); } 
         	catch (IOException e) {e.printStackTrace();}
@@ -1495,7 +1554,9 @@ public class Controller {
     		@Override public void changed(ObservableValue ov, String t, String t1) {
     			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
-    				if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Normal){
+    				//TODO - split savings and spending
+    				if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+    		    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
     					try {Authenticator.getWalletOperation().addMoreAddresses();} 
         				catch (IOException e) {e.printStackTrace();}
     				}
@@ -1558,7 +1619,10 @@ public class Controller {
     		b.setPairedAuthenticator(selectedAuth);
     	}
     	else {
-    		b.setActiveAccountType(ActiveAccountType.Normal);
+    		if(AccountBox.getValue().toString().equals("Savings"))
+    			b.setActiveAccountType(ActiveAccountType.Savings);
+    		else
+    			b.setActiveAccountType(ActiveAccountType.Spending);
     	}
     	if( Authenticator.setActiveAccount(b.build()))
     		updateUIForNewActiveAccount();

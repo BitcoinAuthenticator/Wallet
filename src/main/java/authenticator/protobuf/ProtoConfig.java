@@ -205,31 +205,40 @@ public final class ProtoConfig {
   public enum ActiveAccountType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>Normal = 0;</code>
+     * <code>Spending = 0;</code>
      */
-    Normal(0, 0),
+    Spending(0, 0),
     /**
-     * <code>Authenticator = 1;</code>
+     * <code>Savings = 1;</code>
      */
-    Authenticator(1, 1),
+    Savings(1, 1),
+    /**
+     * <code>Authenticator = 2;</code>
+     */
+    Authenticator(2, 2),
     ;
 
     /**
-     * <code>Normal = 0;</code>
+     * <code>Spending = 0;</code>
      */
-    public static final int Normal_VALUE = 0;
+    public static final int Spending_VALUE = 0;
     /**
-     * <code>Authenticator = 1;</code>
+     * <code>Savings = 1;</code>
      */
-    public static final int Authenticator_VALUE = 1;
+    public static final int Savings_VALUE = 1;
+    /**
+     * <code>Authenticator = 2;</code>
+     */
+    public static final int Authenticator_VALUE = 2;
 
 
     public final int getNumber() { return value; }
 
     public static ActiveAccountType valueOf(int value) {
       switch (value) {
-        case 0: return Normal;
-        case 1: return Authenticator;
+        case 0: return Spending;
+        case 1: return Savings;
+        case 2: return Authenticator;
         default: return null;
       }
     }
@@ -5026,7 +5035,7 @@ public final class ProtoConfig {
 
       private void initFields() {
         pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
-        activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
+        activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Spending;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -5196,7 +5205,7 @@ public final class ProtoConfig {
             pairedAuthenticatorBuilder_.clear();
           }
           bitField0_ = (bitField0_ & ~0x00000001);
-          activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
+          activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Spending;
           bitField0_ = (bitField0_ & ~0x00000002);
           return this;
         }
@@ -5415,7 +5424,7 @@ public final class ProtoConfig {
         }
 
         // required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;
-        private authenticator.protobuf.ProtoConfig.ActiveAccountType activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
+        private authenticator.protobuf.ProtoConfig.ActiveAccountType activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Spending;
         /**
          * <code>required .authenticator.protobuf.ActiveAccountType activeAccountType = 2;</code>
          */
@@ -5445,7 +5454,7 @@ public final class ProtoConfig {
          */
         public Builder clearActiveAccountType() {
           bitField0_ = (bitField0_ & ~0x00000002);
-          activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Normal;
+          activeAccountType_ = authenticator.protobuf.ProtoConfig.ActiveAccountType.Spending;
           onChanged();
           return this;
         }
@@ -9672,8 +9681,9 @@ public final class ProtoConfig {
       "\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroad" +
       "castAuthenticatorTx\020\002\022\025\n\021BroadcastNormal" +
       "Tx\020\003\022\'\n#updateIpAddressesForPreviousMess" +
-      "age\020\004*2\n\021ActiveAccountType\022\n\n\006Normal\020\000\022\021",
-      "\n\rAuthenticator\020\001B\rB\013ProtoConfig"
+      "age\020\004*A\n\021ActiveAccountType\022\014\n\010Spending\020\000",
+      "\022\013\n\007Savings\020\001\022\021\n\rAuthenticator\020\002B\rB\013Prot" +
+      "oConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

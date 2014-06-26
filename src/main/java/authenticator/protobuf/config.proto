@@ -16,8 +16,9 @@ enum ATOperationType {
 }
 
 enum ActiveAccountType {
-    Normal	 		= 0;
-	Authenticator 	= 1;
+    Spending	 	= 0;
+    Savings			= 1;
+	Authenticator 	= 2;
 }
 
 //
