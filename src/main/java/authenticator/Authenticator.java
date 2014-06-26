@@ -188,16 +188,22 @@ public class Authenticator extends AbstractService{
 		
 		/**
 		 * In case no active account found.
-		 * Maybe because its a new wallet
+		 * Its a new wallet
 		 */
 		if(this.activeAccount == null)
 		{
 			try {
-				AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
-				//b.mergeDelimitedFrom(new FileInputStream(ConfigFile.filePath));
-				b.setActiveAccountType(ActiveAccountType.Normal);
-				getWalletOperation().writeActiveAccount(b.build());
-				this.activeAccount = b.build();
+				//Spending account
+				AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
+				b1.setActiveAccountType(ActiveAccountType.Spending);
+				getWalletOperation().writeActiveAccount(b1.build());
+				this.activeAccount = b1.build();
+				
+				// Savings account
+				AuthenticatorConfiguration.ConfigActiveAccount.Builder b2 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
+				b2.setActiveAccountType(ActiveAccountType.Savings);
+				getWalletOperation().writeActiveAccount(b2.build());
+				
 			} catch (IOException e) { e.printStackTrace(); }
 		}		
 	}
