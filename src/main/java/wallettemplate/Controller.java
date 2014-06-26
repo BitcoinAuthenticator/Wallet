@@ -73,11 +73,13 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.KeyUtils;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -133,8 +135,7 @@ public class Controller {
 	 @FXML private Label lblUnconfirmedBalance;
 	 @FXML ImageView ivAvatar;
 	 @FXML Label lblName;
-	 @FXML
-	 public ChoiceBox AddressBox;
+	 @FXML public ChoiceBox AddressBox;
 	 @FXML private TextField txMsgLabel;
 	 @FXML private TextField txFee;
 	 @FXML private Button btnConnection0;
@@ -212,9 +213,9 @@ public class Controller {
         
         // transaction history scrollPane
         scrlViewTxHistoryContentManager = new ScrollPaneContentManager()
-        									.setSpacingBetweenItems(15)
+        									.setSpacingBetweenItems(20)
         									.setScrollStyle(scrlViewTxHistory.getStyle());
-		scrlViewTxHistory.setFitToHeight(true);
+		scrlViewTxHistory.setPrefHeight(190);
 		scrlViewTxHistory.setFitToWidth(true);
 		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
     }
@@ -604,7 +605,7 @@ public class Controller {
     void setName(String name) {
     	lblName.setText("Welcome back, " + name);
     	lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
-                lblName.getText(), 0.0D)+20);
+                lblName.getText(), 0.0D));
     }
     
     @FXML protected void drag1(MouseEvent event) {
@@ -661,61 +662,66 @@ public class Controller {
     	scrlViewTxHistoryContentManager.clearAll();
     	List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
     	for(Transaction tx:txAll){
-    		for(TransactionOutput out:tx.getOutputs()){
-    			String addStr = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-    			String tip = "";
-    			// build node 
-        		HBox mainNode = new HBox();
+    		String txid = tx.getHashAsString();
+    		String tip = "";
+    		// build node 
+    		HBox mainNode = new HBox();
         		
-        		// left box
-        		VBox leftBox = new VBox();
-    	    		Label l1 = new Label();
-    	    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
-    	    		l1.setTextFill(Paint.valueOf("#6e86a0"));
-    	    		l1.setFont(Font.font(16));
-    	    		l1.setText("To: " + addStr.substring(0, 6)); 
-    	    		tip += "To: " + addStr + "\n";
-    	    		leftBox.getChildren().add(l1);
-    	    		
-    	    		Label l2 = new Label();
-    	    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
-    	    		l2.setTextFill(Paint.valueOf("#6e86a0"));
-    	    		l2.setFont(Font.font(12));
-    	    		l2.setText(tx.getUpdateTime().toLocaleString());
-    	    		tip += "When: " + tx.getUpdateTime().toLocaleString() + "\n";
-    	    		leftBox.getChildren().add(l2);
-    	    		
-        		mainNode.getChildren().add(leftBox);
-    	    		
-        		// right box
-        		VBox rightBox = new VBox();
-        		rightBox.setPadding(new Insets(0,0,0,40));
-    	    		Label l3 = new Label();
-    	    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
-    	    		//check is it receiving or sending
-    	    		try {
-    	    			Address add = out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams());
-						if(Authenticator.getWalletOperation().isWatchingAddress(add.toString()) || 
-								Authenticator.getWalletOperation().isTransactionOutputMine(out)){
-							l3.setTextFill(Paint.valueOf("#25db61"));
-							l3.setText(out.getValue().toFriendlyString() + " BTC");
-							tip+= "Amount: " + out.getValue().toFriendlyString() + " BTC\n";
-						}
-						else{
-							l3.setTextFill(Paint.valueOf("#f94920"));
-							l3.setText("-" + out.getValue().toFriendlyString() + " BTC");
-							tip += "Amount: -" + out.getValue().toFriendlyString() + " BTC\n";							
-						}
-					} catch (Exception e) { e.printStackTrace(); }
-    	    		l3.setFont(Font.font(16));
-    	    		rightBox.getChildren().add(l3);
-    	    		
-        		mainNode.getChildren().add(rightBox);
-        		Tooltip.install(mainNode, new Tooltip(tip));
-    	    		
-        		// add to scroll
-        		scrlViewTxHistoryContentManager.addItem(mainNode);
+    		// left box
+    		VBox leftBox = new VBox();
+    		Label l1 = new Label();
+    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		l1.setTextFill(Paint.valueOf("#6e86a0"));
+    		l1.setFont(Font.font(13));
+    		l1.setText(tx.getUpdateTime().toLocaleString()); 
+    		tip += "Txid: " + txid + "\n";
+    		leftBox.getChildren().add(l1);
+    		
+    		Label l2 = new Label();
+    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		l2.setTextFill(Paint.valueOf("#6e86a0"));
+    		l2.setFont(Font.font(11));
+    		l2.setText(txid.substring(0, 20) + "...");
+    		tip += "When: " + tx.getUpdateTime().toLocaleString() + "\n";
+    		leftBox.getChildren().add(l2);
+    		
+    		mainNode.getChildren().add(leftBox);
+    		
+    		// right box
+    		VBox rightBox = new VBox();
+    		HBox content = new HBox();
+    		rightBox.setPadding(new Insets(0,0,0,40));
+    		Label l3 = new Label();
+    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		l3.setPadding(new Insets(0,5,0,0));
+    		//check is it receiving or sending
+    		Coin enter = tx.getValueSentToMe(Main.bitcoin.wallet());
+    		Coin exit = tx.getValueSentFromMe(Main.bitcoin.wallet());
+    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
+    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
+    		ImageView arrow = null;
+    		if (enter.compareTo(Coin.ZERO) > 0){
+    			l3.setTextFill(Paint.valueOf("#98d947"));
+    			l3.setText(enter.toFriendlyString() + " BTC");
+    			tip+= "Amount: " + enter.toFriendlyString() + " BTC\n";
+    			arrow = new ImageView(in);
     		}
+    		if (exit.compareTo(Coin.ZERO) > 0){
+    			l3.setTextFill(Paint.valueOf("#ea4f4a"));
+    			l3.setText("-" + exit.toFriendlyString() + " BTC");
+    			tip += "Amount: -" + exit.toFriendlyString() + " BTC\n";	
+    			arrow = new ImageView(out);
+    		}
+    		l3.setFont(Font.font(13));
+    		content.getChildren().add(l3);
+    		content.getChildren().add(arrow);
+    		rightBox.getChildren().add(content);
+    		
+    		mainNode.getChildren().add(rightBox);
+    		Tooltip.install(mainNode, new Tooltip(tip));
+    		
+    		// add to scroll
+    		scrlViewTxHistoryContentManager.addItem(mainNode);		
     	}
     }
     
