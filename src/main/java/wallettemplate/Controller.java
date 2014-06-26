@@ -418,21 +418,7 @@ public class Controller {
         	
         	
         	refreshBalanceLabel();
-        	/*try {
-        	    File yourFile = new File("coins.wav");
-        	    AudioInputStream stream;
-        	    AudioFormat format;
-        	    DataLine.Info info;
-        	    Clip clip;
-
-        	    stream = AudioSystem.getAudioInputStream(yourFile);
-        	    format = stream.getFormat();
-        	    info = new DataLine.Info(Clip.class, format);
-        	    clip = (Clip) AudioSystem.getLine(info);
-        	    clip.open(stream);
-        	    clip.start();
-        	}
-        	catch (Exception e) {}*/
+      
         }
         
         public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
@@ -628,26 +614,10 @@ public class Controller {
     
     @FXML protected void openOneNameDialog(ActionEvent event){
     	Main.instance.overlayUI("OneName.fxml");
-    	/*Parent root;
-        try {
-            root = FXMLLoader.load(getClass().getResource("OneName.fxml"));
-            stage = new Stage();
-            stage.setTitle("OneName");
-            stage.setScene(new Scene(root, 255, 110));
-            stage.show();
-        } catch (IOException e) {e.printStackTrace();}*/
     }
     
     @SuppressWarnings("static-access")
 	public void refreshBalanceLabel() {
-    	/*Collection<Transaction> pendingtxs= bitcoin.wallet().getPendingTransactions();
-    	Coin unconfirmed = Coin.valueOf(0);
-    	for (Transaction tx : pendingtxs){
-    		unconfirmed = unconfirmed.add(tx.getValueSentToMe(bitcoin.wallet()));
-    	}
-        final Coin confirmed = (bitcoin.wallet().getBalance(Wallet.BalanceType.AVAILABLE)).subtract(unconfirmed);
-        final Coin watched = bitcoin.wallet().getWatchedBalance();*/
-    	
     	Coin unconfirmed = Coin.ZERO;
     	Coin confirmed = Coin.ZERO;
     	//TODO - split savings and spending
@@ -716,7 +686,7 @@ public class Controller {
     			tip += "Amount: -" + exit.subtract(enter).toFriendlyString() + " BTC\n";	
     			arrow = new ImageView(out);
     		}
-    		else {//if (enter.compareTo(Coin.ZERO) > 0){
+    		else { // i only received coins
     			l3.setTextFill(Paint.valueOf("#98d947"));
     			l3.setText(enter.toFriendlyString() + " BTC");
     			tip+= "Amount: " + enter.toFriendlyString() + " BTC\n";
@@ -762,62 +732,6 @@ public class Controller {
     		// add to scroll
     		scrlViewTxHistoryContentManager.addItem(mainNode);		
     	}
-    }
-    
-    private void addTxHistoryNode(String addStr, String amount,boolean isSpending, String date){
-    	String tip = "";
-		// build node 
-		HBox mainNode = new HBox();
-		
-		// left box
-		VBox leftBox = new VBox();
-    		Label l1 = new Label();
-    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		l1.setTextFill(Paint.valueOf("#6e86a0"));
-    		l1.setFont(Font.font(16));
-    		if(!isSpending)
-    			l1.setText("From: " + addStr.substring(0, 6)); 
-    		else
-    			l1.setText("To: " + addStr.substring(0, 6)); 
-    		tip += "To: " + addStr + "\n";
-    		leftBox.getChildren().add(l1);
-    		
-    		Label l2 = new Label();
-    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		l2.setTextFill(Paint.valueOf("#6e86a0"));
-    		l2.setFont(Font.font(12));
-    		l2.setText(date);
-    		tip += "When: " + date + "\n";
-    		leftBox.getChildren().add(l2);
-    		
-		mainNode.getChildren().add(leftBox);
-    		
-		// right box
-		VBox rightBox = new VBox();
-		rightBox.setPadding(new Insets(0,0,0,40));
-    		Label l3 = new Label();
-    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		//check is it receiving or sending
-    		try {
-				if(!isSpending){
-					l3.setTextFill(Paint.valueOf("#25db61"));
-					l3.setText(amount + " BTC");
-					tip+= "Amount: " + amount + " BTC\n";
-				}
-				else{
-					l3.setTextFill(Paint.valueOf("#f94920"));
-					l3.setText("-" + amount + " BTC");
-					tip += "Amount: -" + amount + " BTC\n";							
-				}
-			} catch (Exception e) { e.printStackTrace(); }
-    		l3.setFont(Font.font(16));
-    		rightBox.getChildren().add(l3);
-    		
-		mainNode.getChildren().add(rightBox);
-		Tooltip.install(mainNode, new Tooltip(tip));
-    		
-		// add to scroll
-		scrlViewTxHistoryContentManager.addItem(mainNode);
     }
     
     //#####################################
