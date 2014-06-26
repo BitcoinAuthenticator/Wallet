@@ -47,7 +47,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -74,6 +76,7 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.KeyUtils;
 
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -725,6 +728,35 @@ public class Controller {
     		rightBox.getChildren().add(content);
     		
     		mainNode.getChildren().add(rightBox);
+    		mainNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    		    @Override
+    		    public void handle(MouseEvent mouseEvent) {
+                   if(!mouseEvent.isPrimaryButtonDown()){
+                	   final ContextMenu contextMenu = new ContextMenu();
+                	   MenuItem openInBlockchainInfo = new MenuItem("Open In blockchain.info");
+                	   openInBlockchainInfo.setOnAction(new EventHandler<ActionEvent>() {
+                		    @Override
+                		    public void handle(ActionEvent event) {
+                		    	String url = "https://blockchain.info/tx/" + txid; 
+                         	   // open the default web browser for the HTML page
+         	            	   try {
+         							Desktop.getDesktop().browse(java.net.URI.create(url));
+         	            	   } catch (IOException e) { e.printStackTrace(); }
+                		    }
+                		});
+                	   MenuItem cancel = new MenuItem("Cancel");
+                	   cancel.setOnAction(new EventHandler<ActionEvent>() {
+               		    @Override
+               		    public void handle(ActionEvent event) {
+               		    	contextMenu.hide();
+               		    }
+               		});
+                	contextMenu.getItems().addAll(openInBlockchainInfo, cancel);
+                	contextMenu.show(Main.stage);
+                	
+                   }
+    		    }
+    		});
     		Tooltip.install(mainNode, new Tooltip(tip));
     		
     		// add to scroll
