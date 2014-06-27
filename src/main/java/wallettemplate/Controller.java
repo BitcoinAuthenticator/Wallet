@@ -2,6 +2,7 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
+import authenticator.network.OneName;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
@@ -230,6 +231,7 @@ public class Controller {
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);
+    	setupOneName(Authenticator.getWalletOperation().getOnename());
         refreshBalanceLabel();
         setReceiveAddresses();
         setTxHistoryContent();
@@ -245,6 +247,11 @@ public class Controller {
 		@Override
 		public void onNewPairedAuthenticator() {
 			setAccountChoiceBox();
+		}
+
+		@Override
+		public void onNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile) {
+			setupOneName(profile);
 		}
     }
     
@@ -591,17 +598,31 @@ public class Controller {
    @FXML protected void unlockWallet(ActionEvent event){
 	   
    }
-    
-    void setAvatar(Image img) {
-        ivAvatar.setImage(img);
-      }
-    
-    void setName(String name) {
-    	lblName.setText("Welcome back, " + name);
-    	lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
-                lblName.getText(), 0.0D));
-    }
-    
+   
+   public void setupOneName(AuthenticatorConfiguration.ConfigOneNameProfile one){
+	   
+	   // get image
+	   File imgFile = null;
+	   BufferedImage bimg = null;
+	   Image img = null;
+	   try {
+		    imgFile = new File(one.getOnenameAvatarFilePath());
+			bimg = ImageIO.read(imgFile);
+			img = OneName.createImage(bimg);
+	   } catch (IOException e) { e.printStackTrace(); }
+	   
+	   if(img != null && one != null)
+		   setUserProfileAvatarAndName(img,one.getOnename());	   
+   }
+   
+	public void setUserProfileAvatarAndName(Image img, String name) {
+		ivAvatar.setImage(img);
+		//
+		lblName.setText("Welcome back, " + name);
+		lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
+		lblName.getText(), 0.0D));
+	}
+
     @FXML protected void drag1(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();

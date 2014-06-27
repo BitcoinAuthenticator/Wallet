@@ -216,4 +216,15 @@ public class ConfigFile {
 		auth.setConfigActiveAccount(acc);
 		writeConfigFile(auth);
 	}
+
+	public AuthenticatorConfiguration.ConfigOneNameProfile getOnename() throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigOneNameProfile();
+	}
+	
+	public void writeOnename(AuthenticatorConfiguration.ConfigOneNameProfile one) throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.setConfigOneNameProfile(one);
+		writeConfigFile(auth);
+	}
 }

@@ -19,7 +19,6 @@ import com.google.protobuf.ByteString;
 import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;
-import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
@@ -49,7 +48,6 @@ public class TCPListener extends BASE{
 	public static Socket socket;
 	private static Thread listenerThread;
 	private static UpNp plugnplay;
-	private static OnAuthenticatoGUIUpdateListener mListener;
 	private ServerSocket ss = null;
 	
 	/**
@@ -58,9 +56,8 @@ public class TCPListener extends BASE{
 	private boolean shouldStopListener;
 	private boolean isRunning;
 	
-	public TCPListener(OnAuthenticatoGUIUpdateListener listener){
+	public TCPListener(){
 		super(TCPListener.class);
-		mListener = listener;
 		isRunning = false;
 	}
 	

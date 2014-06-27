@@ -4684,19 +4684,19 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBookOrBuilder getConfigAddressBookOrBuilder();
 
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;
     /**
-     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      */
-    boolean hasConfigSettings();
+    boolean hasConfigOneNameProfile();
     /**
-     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      */
-    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getConfigSettings();
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getConfigOneNameProfile();
     /**
-     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      */
-    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder getConfigSettingsOrBuilder();
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder();
   }
   /**
    * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration}
@@ -4802,14 +4802,14 @@ public final class ProtoConfig {
               break;
             }
             case 42: {
-              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder subBuilder = null;
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder subBuilder = null;
               if (((bitField0_ & 0x00000010) == 0x00000010)) {
-                subBuilder = configSettings_.toBuilder();
+                subBuilder = configOneNameProfile_.toBuilder();
               }
-              configSettings_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.PARSER, extensionRegistry);
+              configOneNameProfile_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(configSettings_);
-                configSettings_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(configOneNameProfile_);
+                configOneNameProfile_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000010;
               break;
@@ -7983,12 +7983,12 @@ public final class ProtoConfig {
       // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigAddressBook)
     }
 
-    public interface ConfigSettingsOrBuilder
+    public interface ConfigOneNameProfileOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
 
-      // optional string onename = 1;
+      // required string onename = 1;
       /**
-       * <code>optional string onename = 1;</code>
+       * <code>required string onename = 1;</code>
        *
        * <pre>
        * The user's OneName ID. Used for getting the avatar on start up.
@@ -7996,7 +7996,7 @@ public final class ProtoConfig {
        */
       boolean hasOnename();
       /**
-       * <code>optional string onename = 1;</code>
+       * <code>required string onename = 1;</code>
        *
        * <pre>
        * The user's OneName ID. Used for getting the avatar on start up.
@@ -8004,7 +8004,7 @@ public final class ProtoConfig {
        */
       java.lang.String getOnename();
       /**
-       * <code>optional string onename = 1;</code>
+       * <code>required string onename = 1;</code>
        *
        * <pre>
        * The user's OneName ID. Used for getting the avatar on start up.
@@ -8012,26 +8012,71 @@ public final class ProtoConfig {
        */
       com.google.protobuf.ByteString
           getOnenameBytes();
+
+      // optional string onenameFormatted = 2;
+      /**
+       * <code>optional string onenameFormatted = 2;</code>
+       */
+      boolean hasOnenameFormatted();
+      /**
+       * <code>optional string onenameFormatted = 2;</code>
+       */
+      java.lang.String getOnenameFormatted();
+      /**
+       * <code>optional string onenameFormatted = 2;</code>
+       */
+      com.google.protobuf.ByteString
+          getOnenameFormattedBytes();
+
+      // optional string onenameAvatarURL = 3;
+      /**
+       * <code>optional string onenameAvatarURL = 3;</code>
+       */
+      boolean hasOnenameAvatarURL();
+      /**
+       * <code>optional string onenameAvatarURL = 3;</code>
+       */
+      java.lang.String getOnenameAvatarURL();
+      /**
+       * <code>optional string onenameAvatarURL = 3;</code>
+       */
+      com.google.protobuf.ByteString
+          getOnenameAvatarURLBytes();
+
+      // optional string onenameAvatarFilePath = 4;
+      /**
+       * <code>optional string onenameAvatarFilePath = 4;</code>
+       */
+      boolean hasOnenameAvatarFilePath();
+      /**
+       * <code>optional string onenameAvatarFilePath = 4;</code>
+       */
+      java.lang.String getOnenameAvatarFilePath();
+      /**
+       * <code>optional string onenameAvatarFilePath = 4;</code>
+       */
+      com.google.protobuf.ByteString
+          getOnenameAvatarFilePathBytes();
     }
     /**
-     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings}
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile}
      */
-    public static final class ConfigSettings extends
+    public static final class ConfigOneNameProfile extends
         com.google.protobuf.GeneratedMessage
-        implements ConfigSettingsOrBuilder {
-      // Use ConfigSettings.newBuilder() to construct.
-      private ConfigSettings(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        implements ConfigOneNameProfileOrBuilder {
+      // Use ConfigOneNameProfile.newBuilder() to construct.
+      private ConfigOneNameProfile(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
         this.unknownFields = builder.getUnknownFields();
       }
-      private ConfigSettings(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+      private ConfigOneNameProfile(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-      private static final ConfigSettings defaultInstance;
-      public static ConfigSettings getDefaultInstance() {
+      private static final ConfigOneNameProfile defaultInstance;
+      public static ConfigOneNameProfile getDefaultInstance() {
         return defaultInstance;
       }
 
-      public ConfigSettings getDefaultInstanceForType() {
+      public ConfigOneNameProfile getDefaultInstanceForType() {
         return defaultInstance;
       }
 
@@ -8041,7 +8086,7 @@ public final class ProtoConfig {
           getUnknownFields() {
         return this.unknownFields;
       }
-      private ConfigSettings(
+      private ConfigOneNameProfile(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -8069,6 +8114,21 @@ public final class ProtoConfig {
                 onename_ = input.readBytes();
                 break;
               }
+              case 18: {
+                bitField0_ |= 0x00000002;
+                onenameFormatted_ = input.readBytes();
+                break;
+              }
+              case 26: {
+                bitField0_ |= 0x00000004;
+                onenameAvatarURL_ = input.readBytes();
+                break;
+              }
+              case 34: {
+                bitField0_ |= 0x00000008;
+                onenameAvatarFilePath_ = input.readBytes();
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -8083,37 +8143,37 @@ public final class ProtoConfig {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder.class);
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder.class);
       }
 
-      public static com.google.protobuf.Parser<ConfigSettings> PARSER =
-          new com.google.protobuf.AbstractParser<ConfigSettings>() {
-        public ConfigSettings parsePartialFrom(
+      public static com.google.protobuf.Parser<ConfigOneNameProfile> PARSER =
+          new com.google.protobuf.AbstractParser<ConfigOneNameProfile>() {
+        public ConfigOneNameProfile parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ConfigSettings(input, extensionRegistry);
+          return new ConfigOneNameProfile(input, extensionRegistry);
         }
       };
 
       @java.lang.Override
-      public com.google.protobuf.Parser<ConfigSettings> getParserForType() {
+      public com.google.protobuf.Parser<ConfigOneNameProfile> getParserForType() {
         return PARSER;
       }
 
       private int bitField0_;
-      // optional string onename = 1;
+      // required string onename = 1;
       public static final int ONENAME_FIELD_NUMBER = 1;
       private java.lang.Object onename_;
       /**
-       * <code>optional string onename = 1;</code>
+       * <code>required string onename = 1;</code>
        *
        * <pre>
        * The user's OneName ID. Used for getting the avatar on start up.
@@ -8123,7 +8183,7 @@ public final class ProtoConfig {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string onename = 1;</code>
+       * <code>required string onename = 1;</code>
        *
        * <pre>
        * The user's OneName ID. Used for getting the avatar on start up.
@@ -8144,7 +8204,7 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>optional string onename = 1;</code>
+       * <code>required string onename = 1;</code>
        *
        * <pre>
        * The user's OneName ID. Used for getting the avatar on start up.
@@ -8164,14 +8224,150 @@ public final class ProtoConfig {
         }
       }
 
+      // optional string onenameFormatted = 2;
+      public static final int ONENAMEFORMATTED_FIELD_NUMBER = 2;
+      private java.lang.Object onenameFormatted_;
+      /**
+       * <code>optional string onenameFormatted = 2;</code>
+       */
+      public boolean hasOnenameFormatted() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string onenameFormatted = 2;</code>
+       */
+      public java.lang.String getOnenameFormatted() {
+        java.lang.Object ref = onenameFormatted_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            onenameFormatted_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string onenameFormatted = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getOnenameFormattedBytes() {
+        java.lang.Object ref = onenameFormatted_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          onenameFormatted_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // optional string onenameAvatarURL = 3;
+      public static final int ONENAMEAVATARURL_FIELD_NUMBER = 3;
+      private java.lang.Object onenameAvatarURL_;
+      /**
+       * <code>optional string onenameAvatarURL = 3;</code>
+       */
+      public boolean hasOnenameAvatarURL() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string onenameAvatarURL = 3;</code>
+       */
+      public java.lang.String getOnenameAvatarURL() {
+        java.lang.Object ref = onenameAvatarURL_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            onenameAvatarURL_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string onenameAvatarURL = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getOnenameAvatarURLBytes() {
+        java.lang.Object ref = onenameAvatarURL_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          onenameAvatarURL_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // optional string onenameAvatarFilePath = 4;
+      public static final int ONENAMEAVATARFILEPATH_FIELD_NUMBER = 4;
+      private java.lang.Object onenameAvatarFilePath_;
+      /**
+       * <code>optional string onenameAvatarFilePath = 4;</code>
+       */
+      public boolean hasOnenameAvatarFilePath() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string onenameAvatarFilePath = 4;</code>
+       */
+      public java.lang.String getOnenameAvatarFilePath() {
+        java.lang.Object ref = onenameAvatarFilePath_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            onenameAvatarFilePath_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string onenameAvatarFilePath = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getOnenameAvatarFilePathBytes() {
+        java.lang.Object ref = onenameAvatarFilePath_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          onenameAvatarFilePath_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
       private void initFields() {
         onename_ = "";
+        onenameFormatted_ = "";
+        onenameAvatarURL_ = "";
+        onenameAvatarFilePath_ = "";
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
 
+        if (!hasOnename()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
         memoizedIsInitialized = 1;
         return true;
       }
@@ -8181,6 +8377,15 @@ public final class ProtoConfig {
         getSerializedSize();
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           output.writeBytes(1, getOnenameBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, getOnenameFormattedBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBytes(3, getOnenameAvatarURLBytes());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeBytes(4, getOnenameAvatarFilePathBytes());
         }
         getUnknownFields().writeTo(output);
       }
@@ -8195,6 +8400,18 @@ public final class ProtoConfig {
           size += com.google.protobuf.CodedOutputStream
             .computeBytesSize(1, getOnenameBytes());
         }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, getOnenameFormattedBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(3, getOnenameAvatarURLBytes());
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(4, getOnenameAvatarFilePathBytes());
+        }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
         return size;
@@ -8207,53 +8424,53 @@ public final class ProtoConfig {
         return super.writeReplace();
       }
 
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(byte[] data)
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(java.io.InputStream input)
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseDelimitedFrom(java.io.InputStream input)
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseDelimitedFrom(
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parseFrom(
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -8262,7 +8479,7 @@ public final class ProtoConfig {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings prototype) {
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -8274,24 +8491,24 @@ public final class ProtoConfig {
         return builder;
       }
       /**
-       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings}
+       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder {
+         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder.class);
+                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder.class);
         }
 
-        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.newBuilder()
+        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.newBuilder()
         private Builder() {
           maybeForceBuilderInitialization();
         }
@@ -8313,6 +8530,12 @@ public final class ProtoConfig {
           super.clear();
           onename_ = "";
           bitField0_ = (bitField0_ & ~0x00000001);
+          onenameFormatted_ = "";
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onenameAvatarURL_ = "";
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onenameAvatarFilePath_ = "";
+          bitField0_ = (bitField0_ & ~0x00000008);
           return this;
         }
 
@@ -8322,48 +8545,75 @@ public final class ProtoConfig {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
         }
 
-        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getDefaultInstanceForType() {
-          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
         }
 
-        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings build() {
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings result = buildPartial();
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile build() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings buildPartial() {
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings(this);
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile buildPartial() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
             to_bitField0_ |= 0x00000001;
           }
           result.onename_ = onename_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.onenameFormatted_ = onenameFormatted_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.onenameAvatarURL_ = onenameAvatarURL_;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.onenameAvatarFilePath_ = onenameAvatarFilePath_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings) {
-            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings)other);
+          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings other) {
-          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance()) return this;
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile other) {
+          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance()) return this;
           if (other.hasOnename()) {
             bitField0_ |= 0x00000001;
             onename_ = other.onename_;
+            onChanged();
+          }
+          if (other.hasOnenameFormatted()) {
+            bitField0_ |= 0x00000002;
+            onenameFormatted_ = other.onenameFormatted_;
+            onChanged();
+          }
+          if (other.hasOnenameAvatarURL()) {
+            bitField0_ |= 0x00000004;
+            onenameAvatarURL_ = other.onenameAvatarURL_;
+            onChanged();
+          }
+          if (other.hasOnenameAvatarFilePath()) {
+            bitField0_ |= 0x00000008;
+            onenameAvatarFilePath_ = other.onenameAvatarFilePath_;
             onChanged();
           }
           this.mergeUnknownFields(other.getUnknownFields());
@@ -8371,6 +8621,10 @@ public final class ProtoConfig {
         }
 
         public final boolean isInitialized() {
+          if (!hasOnename()) {
+            
+            return false;
+          }
           return true;
         }
 
@@ -8378,11 +8632,11 @@ public final class ProtoConfig {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings parsedMessage = null;
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings) e.getUnfinishedMessage();
+            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -8393,10 +8647,10 @@ public final class ProtoConfig {
         }
         private int bitField0_;
 
-        // optional string onename = 1;
+        // required string onename = 1;
         private java.lang.Object onename_ = "";
         /**
-         * <code>optional string onename = 1;</code>
+         * <code>required string onename = 1;</code>
          *
          * <pre>
          * The user's OneName ID. Used for getting the avatar on start up.
@@ -8406,7 +8660,7 @@ public final class ProtoConfig {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
-         * <code>optional string onename = 1;</code>
+         * <code>required string onename = 1;</code>
          *
          * <pre>
          * The user's OneName ID. Used for getting the avatar on start up.
@@ -8424,7 +8678,7 @@ public final class ProtoConfig {
           }
         }
         /**
-         * <code>optional string onename = 1;</code>
+         * <code>required string onename = 1;</code>
          *
          * <pre>
          * The user's OneName ID. Used for getting the avatar on start up.
@@ -8444,7 +8698,7 @@ public final class ProtoConfig {
           }
         }
         /**
-         * <code>optional string onename = 1;</code>
+         * <code>required string onename = 1;</code>
          *
          * <pre>
          * The user's OneName ID. Used for getting the avatar on start up.
@@ -8461,7 +8715,7 @@ public final class ProtoConfig {
           return this;
         }
         /**
-         * <code>optional string onename = 1;</code>
+         * <code>required string onename = 1;</code>
          *
          * <pre>
          * The user's OneName ID. Used for getting the avatar on start up.
@@ -8474,7 +8728,7 @@ public final class ProtoConfig {
           return this;
         }
         /**
-         * <code>optional string onename = 1;</code>
+         * <code>required string onename = 1;</code>
          *
          * <pre>
          * The user's OneName ID. Used for getting the avatar on start up.
@@ -8491,15 +8745,237 @@ public final class ProtoConfig {
           return this;
         }
 
-        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings)
+        // optional string onenameFormatted = 2;
+        private java.lang.Object onenameFormatted_ = "";
+        /**
+         * <code>optional string onenameFormatted = 2;</code>
+         */
+        public boolean hasOnenameFormatted() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional string onenameFormatted = 2;</code>
+         */
+        public java.lang.String getOnenameFormatted() {
+          java.lang.Object ref = onenameFormatted_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            onenameFormatted_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string onenameFormatted = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getOnenameFormattedBytes() {
+          java.lang.Object ref = onenameFormatted_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            onenameFormatted_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string onenameFormatted = 2;</code>
+         */
+        public Builder setOnenameFormatted(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          onenameFormatted_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onenameFormatted = 2;</code>
+         */
+        public Builder clearOnenameFormatted() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onenameFormatted_ = getDefaultInstance().getOnenameFormatted();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onenameFormatted = 2;</code>
+         */
+        public Builder setOnenameFormattedBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          onenameFormatted_ = value;
+          onChanged();
+          return this;
+        }
+
+        // optional string onenameAvatarURL = 3;
+        private java.lang.Object onenameAvatarURL_ = "";
+        /**
+         * <code>optional string onenameAvatarURL = 3;</code>
+         */
+        public boolean hasOnenameAvatarURL() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>optional string onenameAvatarURL = 3;</code>
+         */
+        public java.lang.String getOnenameAvatarURL() {
+          java.lang.Object ref = onenameAvatarURL_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            onenameAvatarURL_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string onenameAvatarURL = 3;</code>
+         */
+        public com.google.protobuf.ByteString
+            getOnenameAvatarURLBytes() {
+          java.lang.Object ref = onenameAvatarURL_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            onenameAvatarURL_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string onenameAvatarURL = 3;</code>
+         */
+        public Builder setOnenameAvatarURL(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          onenameAvatarURL_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onenameAvatarURL = 3;</code>
+         */
+        public Builder clearOnenameAvatarURL() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onenameAvatarURL_ = getDefaultInstance().getOnenameAvatarURL();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onenameAvatarURL = 3;</code>
+         */
+        public Builder setOnenameAvatarURLBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          onenameAvatarURL_ = value;
+          onChanged();
+          return this;
+        }
+
+        // optional string onenameAvatarFilePath = 4;
+        private java.lang.Object onenameAvatarFilePath_ = "";
+        /**
+         * <code>optional string onenameAvatarFilePath = 4;</code>
+         */
+        public boolean hasOnenameAvatarFilePath() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        /**
+         * <code>optional string onenameAvatarFilePath = 4;</code>
+         */
+        public java.lang.String getOnenameAvatarFilePath() {
+          java.lang.Object ref = onenameAvatarFilePath_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            onenameAvatarFilePath_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string onenameAvatarFilePath = 4;</code>
+         */
+        public com.google.protobuf.ByteString
+            getOnenameAvatarFilePathBytes() {
+          java.lang.Object ref = onenameAvatarFilePath_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            onenameAvatarFilePath_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string onenameAvatarFilePath = 4;</code>
+         */
+        public Builder setOnenameAvatarFilePath(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+          onenameAvatarFilePath_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onenameAvatarFilePath = 4;</code>
+         */
+        public Builder clearOnenameAvatarFilePath() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onenameAvatarFilePath_ = getDefaultInstance().getOnenameAvatarFilePath();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string onenameAvatarFilePath = 4;</code>
+         */
+        public Builder setOnenameAvatarFilePathBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+          onenameAvatarFilePath_ = value;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile)
       }
 
       static {
-        defaultInstance = new ConfigSettings(true);
+        defaultInstance = new ConfigOneNameProfile(true);
         defaultInstance.initFields();
       }
 
-      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings)
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile)
     }
 
     private int bitField0_;
@@ -8591,26 +9067,26 @@ public final class ProtoConfig {
       return configAddressBook_;
     }
 
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;
-    public static final int CONFIGSETTINGS_FIELD_NUMBER = 5;
-    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings configSettings_;
+    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;
+    public static final int CONFIGONENAMEPROFILE_FIELD_NUMBER = 5;
+    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile_;
     /**
-     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      */
-    public boolean hasConfigSettings() {
+    public boolean hasConfigOneNameProfile() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      */
-    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getConfigSettings() {
-      return configSettings_;
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getConfigOneNameProfile() {
+      return configOneNameProfile_;
     }
     /**
-     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+     * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      */
-    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
-      return configSettings_;
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder() {
+      return configOneNameProfile_;
     }
 
     private void initFields() {
@@ -8618,7 +9094,7 @@ public final class ProtoConfig {
       configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
       configReceiveAddresses_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.getDefaultInstance();
       configAddressBook_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAddressBook.getDefaultInstance();
-      configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+      configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8633,6 +9109,12 @@ public final class ProtoConfig {
       }
       if (hasConfigAuthenticatorWallet()) {
         if (!getConfigAuthenticatorWallet().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasConfigOneNameProfile()) {
+        if (!getConfigOneNameProfile().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -8657,7 +9139,7 @@ public final class ProtoConfig {
         output.writeMessage(4, configAddressBook_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeMessage(5, configSettings_);
+        output.writeMessage(5, configOneNameProfile_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -8686,7 +9168,7 @@ public final class ProtoConfig {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, configSettings_);
+          .computeMessageSize(5, configOneNameProfile_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -8800,7 +9282,7 @@ public final class ProtoConfig {
           getConfigAuthenticatorWalletFieldBuilder();
           getConfigReceiveAddressesFieldBuilder();
           getConfigAddressBookFieldBuilder();
-          getConfigSettingsFieldBuilder();
+          getConfigOneNameProfileFieldBuilder();
         }
       }
       private static Builder create() {
@@ -8833,10 +9315,10 @@ public final class ProtoConfig {
           configAddressBookBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
-        if (configSettingsBuilder_ == null) {
-          configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+        if (configOneNameProfileBuilder_ == null) {
+          configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
         } else {
-          configSettingsBuilder_.clear();
+          configOneNameProfileBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000010);
         return this;
@@ -8902,10 +9384,10 @@ public final class ProtoConfig {
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
-        if (configSettingsBuilder_ == null) {
-          result.configSettings_ = configSettings_;
+        if (configOneNameProfileBuilder_ == null) {
+          result.configOneNameProfile_ = configOneNameProfile_;
         } else {
-          result.configSettings_ = configSettingsBuilder_.build();
+          result.configOneNameProfile_ = configOneNameProfileBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -8935,8 +9417,8 @@ public final class ProtoConfig {
         if (other.hasConfigAddressBook()) {
           mergeConfigAddressBook(other.getConfigAddressBook());
         }
-        if (other.hasConfigSettings()) {
-          mergeConfigSettings(other.getConfigSettings());
+        if (other.hasConfigOneNameProfile()) {
+          mergeConfigOneNameProfile(other.getConfigOneNameProfile());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -8951,6 +9433,12 @@ public final class ProtoConfig {
         }
         if (hasConfigAuthenticatorWallet()) {
           if (!getConfigAuthenticatorWallet().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasConfigOneNameProfile()) {
+          if (!getConfigOneNameProfile().isInitialized()) {
             
             return false;
           }
@@ -9445,121 +9933,121 @@ public final class ProtoConfig {
         return configAddressBookBuilder_;
       }
 
-      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;
-      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;
+      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder> configSettingsBuilder_;
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder> configOneNameProfileBuilder_;
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public boolean hasConfigSettings() {
+      public boolean hasConfigOneNameProfile() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings getConfigSettings() {
-        if (configSettingsBuilder_ == null) {
-          return configSettings_;
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getConfigOneNameProfile() {
+        if (configOneNameProfileBuilder_ == null) {
+          return configOneNameProfile_;
         } else {
-          return configSettingsBuilder_.getMessage();
+          return configOneNameProfileBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public Builder setConfigSettings(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings value) {
-        if (configSettingsBuilder_ == null) {
+      public Builder setConfigOneNameProfile(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile value) {
+        if (configOneNameProfileBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          configSettings_ = value;
+          configOneNameProfile_ = value;
           onChanged();
         } else {
-          configSettingsBuilder_.setMessage(value);
+          configOneNameProfileBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00000010;
         return this;
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public Builder setConfigSettings(
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder builderForValue) {
-        if (configSettingsBuilder_ == null) {
-          configSettings_ = builderForValue.build();
+      public Builder setConfigOneNameProfile(
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder builderForValue) {
+        if (configOneNameProfileBuilder_ == null) {
+          configOneNameProfile_ = builderForValue.build();
           onChanged();
         } else {
-          configSettingsBuilder_.setMessage(builderForValue.build());
+          configOneNameProfileBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00000010;
         return this;
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public Builder mergeConfigSettings(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings value) {
-        if (configSettingsBuilder_ == null) {
+      public Builder mergeConfigOneNameProfile(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile value) {
+        if (configOneNameProfileBuilder_ == null) {
           if (((bitField0_ & 0x00000010) == 0x00000010) &&
-              configSettings_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance()) {
-            configSettings_ =
-              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.newBuilder(configSettings_).mergeFrom(value).buildPartial();
+              configOneNameProfile_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance()) {
+            configOneNameProfile_ =
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.newBuilder(configOneNameProfile_).mergeFrom(value).buildPartial();
           } else {
-            configSettings_ = value;
+            configOneNameProfile_ = value;
           }
           onChanged();
         } else {
-          configSettingsBuilder_.mergeFrom(value);
+          configOneNameProfileBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00000010;
         return this;
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public Builder clearConfigSettings() {
-        if (configSettingsBuilder_ == null) {
-          configSettings_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.getDefaultInstance();
+      public Builder clearConfigOneNameProfile() {
+        if (configOneNameProfileBuilder_ == null) {
+          configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
           onChanged();
         } else {
-          configSettingsBuilder_.clear();
+          configOneNameProfileBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder getConfigSettingsBuilder() {
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder getConfigOneNameProfileBuilder() {
         bitField0_ |= 0x00000010;
         onChanged();
-        return getConfigSettingsFieldBuilder().getBuilder();
+        return getConfigOneNameProfileFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
-      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
-        if (configSettingsBuilder_ != null) {
-          return configSettingsBuilder_.getMessageOrBuilder();
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder() {
+        if (configOneNameProfileBuilder_ != null) {
+          return configOneNameProfileBuilder_.getMessageOrBuilder();
         } else {
-          return configSettings_;
+          return configOneNameProfile_;
         }
       }
       /**
-       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigSettings configSettings = 5;</code>
+       * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder> 
-          getConfigSettingsFieldBuilder() {
-        if (configSettingsBuilder_ == null) {
-          configSettingsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettings.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigSettingsOrBuilder>(
-                  configSettings_,
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder> 
+          getConfigOneNameProfileFieldBuilder() {
+        if (configOneNameProfileBuilder_ == null) {
+          configOneNameProfileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder>(
+                  configOneNameProfile_,
                   getParentForChildren(),
                   isClean());
-          configSettings_ = null;
+          configOneNameProfile_ = null;
         }
-        return configSettingsBuilder_;
+        return configOneNameProfileBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration)
@@ -9619,10 +10107,10 @@ public final class ProtoConfig {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor;
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable;
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -9650,7 +10138,7 @@ public final class ProtoConfig {
       ".PendingRequest.Contract\032n\n\010Contract\022%\n\035" +
       "ShouldSendPayloadOnConnection\030\001 \001(\010\022;\n3S" +
       "houldReceivePayloadAfterSendingPayloadOn" +
-      "Connection\030\002 \001(\010\"\373\007\n\032AuthenticatorConfig" +
+      "Connection\030\002 \001(\010\"\340\010\n\032AuthenticatorConfig" +
       "uration\022c\n\023configActiveAccount\030\001 \001(\0132F.a",
       "uthenticator.protobuf.AuthenticatorConfi" +
       "guration.ConfigActiveAccount\022o\n\031configAu" +
@@ -9661,29 +10149,31 @@ public final class ProtoConfig {
       "uthenticatorConfiguration.ConfigReceiveA" +
       "ddresses\022_\n\021configAddressBook\030\004 \001(\0132D.au" +
       "thenticator.protobuf.AuthenticatorConfig" +
-      "uration.ConfigAddressBook\022Y\n\016configSetti",
-      "ngs\030\005 \001(\0132A.authenticator.protobuf.Authe" +
-      "nticatorConfiguration.ConfigSettings\032\245\001\n" +
-      "\023ConfigActiveAccount\022H\n\023pairedAuthentica" +
-      "tor\030\001 \001(\0132+.authenticator.protobuf.Paire" +
-      "dAuthenticator\022D\n\021activeAccountType\030\002 \002(" +
-      "\0162).authenticator.protobuf.ActiveAccount" +
-      "Type\032\260\001\n\031ConfigAuthenticatorWallet\022\016\n\006pa" +
-      "ired\030\001 \001(\010\022B\n\rpairedWallets\030\002 \003(\0132+.auth" +
-      "enticator.protobuf.PairedAuthenticator\022?" +
-      "\n\017pendingRequests\030\003 \003(\0132&.authenticator.",
-      "protobuf.PendingRequest\032<\n\026ConfigReceive" +
-      "Addresses\022\021\n\twalletKey\030\001 \003(\t\022\017\n\007authKey\030" +
-      "\002 \003(\t\032$\n\021ConfigAddressBook\022\017\n\007address\030\001 " +
-      "\001(\t\032!\n\016ConfigSettings\022\017\n\007onename\030\001 \001(\t*;" +
-      "\n\020ATGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027Update" +
-      "PendingRequestIPs\020\004*\217\001\n\017ATOperationType\022" +
-      "\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroad" +
-      "castAuthenticatorTx\020\002\022\025\n\021BroadcastNormal" +
-      "Tx\020\003\022\'\n#updateIpAddressesForPreviousMess" +
-      "age\020\004*A\n\021ActiveAccountType\022\014\n\010Spending\020\000",
-      "\022\013\n\007Savings\020\001\022\021\n\rAuthenticator\020\002B\rB\013Prot" +
-      "oConfig"
+      "uration.ConfigAddressBook\022e\n\024configOneNa",
+      "meProfile\030\005 \001(\0132G.authenticator.protobuf" +
+      ".AuthenticatorConfiguration.ConfigOneNam" +
+      "eProfile\032\245\001\n\023ConfigActiveAccount\022H\n\023pair" +
+      "edAuthenticator\030\001 \001(\0132+.authenticator.pr" +
+      "otobuf.PairedAuthenticator\022D\n\021activeAcco" +
+      "untType\030\002 \002(\0162).authenticator.protobuf.A" +
+      "ctiveAccountType\032\260\001\n\031ConfigAuthenticator" +
+      "Wallet\022\016\n\006paired\030\001 \001(\010\022B\n\rpairedWallets\030" +
+      "\002 \003(\0132+.authenticator.protobuf.PairedAut" +
+      "henticator\022?\n\017pendingRequests\030\003 \003(\0132&.au",
+      "thenticator.protobuf.PendingRequest\032<\n\026C" +
+      "onfigReceiveAddresses\022\021\n\twalletKey\030\001 \003(\t" +
+      "\022\017\n\007authKey\030\002 \003(\t\032$\n\021ConfigAddressBook\022\017" +
+      "\n\007address\030\001 \001(\t\032z\n\024ConfigOneNameProfile\022" +
+      "\017\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001" +
+      "(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onenameA" +
+      "vatarFilePath\030\004 \001(\t*;\n\020ATGCMMessageType\022" +
+      "\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs\020\004" +
+      "*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006Unp" +
+      "air\020\001\022#\n\037SignAndBroadcastAuthenticatorTx",
+      "\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#updateIpAdd" +
+      "ressesForPreviousMessage\020\004*A\n\021ActiveAcco" +
+      "untType\022\014\n\010Spending\020\000\022\013\n\007Savings\020\001\022\021\n\rAu" +
+      "thenticator\020\002B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -9719,7 +10209,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
-              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigReceiveAddresses", "ConfigAddressBook", "ConfigSettings", });
+              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigReceiveAddresses", "ConfigAddressBook", "ConfigOneNameProfile", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
@@ -9744,12 +10234,12 @@ public final class ProtoConfig {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAddressBook_descriptor,
               new java.lang.String[] { "Address", });
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor =
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(4);
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_fieldAccessorTable = new
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigSettings_descriptor,
-              new java.lang.String[] { "Onename", });
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor,
+              new java.lang.String[] { "Onename", "OnenameFormatted", "OnenameAvatarURL", "OnenameAvatarFilePath", });
           return null;
         }
       };

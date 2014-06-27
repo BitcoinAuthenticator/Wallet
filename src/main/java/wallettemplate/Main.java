@@ -1,7 +1,6 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
-import authenticator.OnAuthenticatoGUIUpdateListener;
 import authenticator.db.ConfigFile;
 import authenticator.ui_helpers.BAApplication;
 
@@ -163,18 +162,8 @@ public class Main extends BAApplication {
         /**
          * Authenticator Operation Setup
          */
-    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), new OnAuthenticatoGUIUpdateListener(){
-    		@Override
-    		public void simpleTextMessage(String msg) {
-    			
-    		}
-
-    		@Override
-    		public void riseAlertToUser(String msg, String title) {
-
-    		}
-    	})
-    	.setApplicationParams(ApplicationParams);
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup())
+    							.setApplicationParams(ApplicationParams);
     	auth.startAsync();
     	auth.awaitRunning();
     

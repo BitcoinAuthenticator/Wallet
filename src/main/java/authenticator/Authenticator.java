@@ -50,18 +50,14 @@ public class Authenticator extends AbstractService{
 	private static AuthenticatorConfiguration.ConfigActiveAccount activeAccount;
 	// Listeners
 	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
-	private static OnAuthenticatoGUIUpdateListener mListener;
 
 	public Authenticator(){}
-	public Authenticator(Wallet wallet, PeerGroup peerGroup, OnAuthenticatoGUIUpdateListener listener) throws IOException
+	public Authenticator(Wallet wallet, PeerGroup peerGroup) throws IOException
 	{
-		//super(Authenticator.class);
-		if(mListener == null)
-			mListener = listener;
 		if(generalEventsListeners == null)
 			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
 		if(mTCPListener == null)
-			mTCPListener = new TCPListener(mListener);
+			mTCPListener = new TCPListener();
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
 		if(mWalletOperation == null)
@@ -92,10 +88,6 @@ public class Authenticator extends AbstractService{
 	{
 		if(this.isRunning())
 			operationsQueue.add(operation);
-		else{
-			mListener.simpleTextMessage("Queue is not running, Cannot add operation");
-			//LOG.error("Queue is not running, Cannot add operation");
-		}
 	}
 	
 	//#####################################
@@ -261,7 +253,6 @@ public class Authenticator extends AbstractService{
 	@Override
 	protected void doStart() {
 		assert(this.getWalletOperation() != null);
-		assert(mListener != null);
 		assert(mTCPListener != null);
 		assert(mApplicationParams != null);
 		assert(operationsQueue != null);
@@ -297,5 +288,10 @@ public class Authenticator extends AbstractService{
 	public static void fireOnNewPairedAuthenticator(){
 		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
 			l.onNewPairedAuthenticator();
+	}
+	
+	public static void fireonNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile){
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onNewUserNamecoinIdentitySelection(profile);
 	}
 }

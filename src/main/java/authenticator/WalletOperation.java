@@ -389,6 +389,8 @@ public class WalletOperation extends BASE{
 		return Coin.ZERO;
 	}
 	
+	
+	
 	//#####################################
 	//
 	//		Pending Requests Control
@@ -422,6 +424,23 @@ public class WalletOperation extends BASE{
 		 */
 		public Address getChangeAddress(String pairingID){
 			return null;
+		}
+		
+	//#####################################
+	//
+	//		One name
+	//
+	//#####################################
+		
+		public AuthenticatorConfiguration.ConfigOneNameProfile getOnename(){
+			try {
+				return configFile.getOnename();
+			} catch (IOException e) { e.printStackTrace(); }
+			return null;
+		}
+		
+		public void writeOnename(AuthenticatorConfiguration.ConfigOneNameProfile one) throws FileNotFoundException, IOException{
+			configFile.writeOnename(one);
 		}
 		
 	//#####################################

@@ -1,4 +1,4 @@
-package wallettemplate;
+package authenticator.network;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -24,6 +24,10 @@ import javax.imageio.ImageIO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import authenticator.Authenticator;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import wallettemplate.Main;
 
 public class OneName {
 	
@@ -76,11 +80,25 @@ public class OneName {
 	    	x=0;
 	    	y=(height-73)/2;
 	    }
-	    BufferedImage croppedImage = scaledImage.getSubimage(x, y, 73, 73);
-	    //Set image on GUI
-	    Image img = createImage(croppedImage);
-	    Main.controller.setAvatar(img);
-	    Main.controller.setName(formattedname);
+	    
+	    // Save image
+	    //Image img = createImage(croppedImage);
+	    String imgPath = "";
+	    try {
+	        // retrieve image
+	    	BufferedImage croppedImage = scaledImage.getSubimage(x, y, 73, 73);
+	        File outputfile = new File("oneAvatar.png");
+	        ImageIO.write(croppedImage, "png", outputfile);
+	        imgPath = outputfile.getAbsolutePath();
+	    } catch (IOException e) {  e.printStackTrace(); }
+	    
+	    AuthenticatorConfiguration.ConfigOneNameProfile.Builder onb = AuthenticatorConfiguration.ConfigOneNameProfile.newBuilder();
+	    onb.setOnename(onename);
+	    onb.setOnenameFormatted(formattedname);
+	    onb.setOnenameAvatarURL(imgURL);
+	    onb.setOnenameAvatarFilePath(imgPath);
+	    Authenticator.getWalletOperation().writeOnename(onb.build());
+	    Authenticator.fireonNewUserNamecoinIdentitySelection(onb.build());
 	}
 	/**For reading the JSON*/
 	private static String readAll(Reader rd) throws IOException {

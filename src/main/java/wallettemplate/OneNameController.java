@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import org.json.JSONException;
 
+import authenticator.network.OneName;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import wallettemplate.OneName;
 
 public class OneNameController {
 	@FXML private TextField txtOneName;

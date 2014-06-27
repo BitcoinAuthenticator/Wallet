@@ -104,17 +104,18 @@ message AuthenticatorConfiguration{
 	
 	}
 	
-	message ConfigSettings {
-	
-		optional string onename = 1; // The user's OneName ID. Used for getting the avatar on start up.
-	
+	message ConfigOneNameProfile {
+		required string onename	     			= 1; // The user's OneName ID. Used for getting the avatar on start up.
+		optional string onenameFormatted	   	= 2;
+		optional string onenameAvatarURL 		= 3;
+		optional string onenameAvatarFilePath	= 4;
 	}
 	
 	optional ConfigActiveAccount configActiveAccount 				= 1;
 	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
 	optional ConfigReceiveAddresses configReceiveAddresses 			= 3;
 	optional ConfigAddressBook configAddressBook 					= 4;
-	optional ConfigSettings configSettings							= 5;
+	optional ConfigOneNameProfile configOneNameProfile				= 5;
 }
 
 
