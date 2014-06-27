@@ -112,7 +112,7 @@ public class ConfigFile {
 	
 	public void addMoreSpendingAddresses() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		Main.controller.AddressBox.getItems().remove(Main.controller.AddressBox.getItems().indexOf("                                More"));		
+		Main.controller.		
 		for (int i=0; i<5; i++){
 			DeterministicKey newkey = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				//Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
 			String pubkey =  KeyUtils.bytesToHex(newkey.getPubKey());
@@ -167,7 +167,7 @@ public class ConfigFile {
 		writeConfigFile(auth);
 	}
 	
-	public List<ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.CachedAddrees> getSpendingAddressFromPool(){
+	public List<CachedAddrees> getSpendingAddressFromPool(){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigReceiveAddresses().getWalletSpendingAddressList();
 	}
@@ -182,7 +182,7 @@ public class ConfigFile {
 		return keypool;
 	}
 	
-	public ArrayList<String> getSpendingAddressStringPool(ArrayList<CachedAddrees> cache) throws FileNotFoundException, IOException{
+	public ArrayList<String> getSpendingAddressStringPool(List<CachedAddrees> cache) throws FileNotFoundException, IOException{
 		ArrayList<String> keypool = new ArrayList<String>();
 		for (CachedAddrees add : cache){
 			//ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(pubkey));
@@ -200,7 +200,7 @@ public class ConfigFile {
 	/**This method is used during pairing. It saves the data from the Autheticator to file
 	 * @throws IOException */
 	@SuppressWarnings("unchecked")
-	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName) throws IOException{
+	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName, int accountIndex) throws IOException{
 		// Create new pairing item
 		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
 									newPair.setAesKey(key);
@@ -211,6 +211,7 @@ public class ConfigFile {
 									newPair.setPairingName(pairName);
 									newPair.setTestnet(false);
 									newPair.setKeysN(0);
+									newPair.setWalletAccountIndex(accountIndex);
 
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.getConfigAuthenticatorWalletBuilder().addPairedWallets(newPair.build());

@@ -30,7 +30,8 @@ public class PairWallet extends BaseUI{
     }
     private void runPairing(String pairName)
     {
-    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName).SetOperationUIUpdate(new OnOperationUIUpdate(){
+    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName,
+    										Authenticator.getWalletOperation().generateNewAccount()).SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 			@Override
 			public void onBegin(String str) {

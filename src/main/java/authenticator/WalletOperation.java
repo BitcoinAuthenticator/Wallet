@@ -22,6 +22,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import wallettemplate.Main;
 import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.db.ConfigFile;
@@ -101,12 +102,8 @@ public class WalletOperation extends BASE{
 			 * the next fresh key
 			 */
 			List<Integer> accountByNumberOfKeys = new ArrayList<Integer>();
-			// 1) get Pay-To-Pub-Hash account
-			try {
-				fillSpendingKeyPool();
-				ArrayList<CachedAddrees> s = getSpendingAddressFromPool();		
-				accountByNumberOfKeys.add(s.size());
-			} catch (AddressFormatException e) { e.printStackTrace(); }
+			List<CachedAddrees> s = getSpendingAddressFromPool();		
+			accountByNumberOfKeys.add(s.size());
 			
 			// 2)	Authenticator paired accounts
 			List<PairedAuthenticator> all = getAllPairingObjectArray();
@@ -274,6 +271,10 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
+	public int generateNewAccount(){
+		return authenticatorWalletHierarchy.generateNewAccount();
+	}
+	
 	public DeterministicKey getNextSpendingKey(int accountI) throws AddressFormatException{
 		DeterministicKey ret = authenticatorWalletHierarchy.getNextSpendingKey(accountI);
 		addAddressToWatch( ret.toAddress(getNetworkParams()).toString() );
@@ -307,7 +308,7 @@ public class WalletOperation extends BASE{
 		if ( cached.size() < 10){
 			int num = (10 - cached.size());
 			for (int i=0; i<num; i++){
-				DeterministicKey newkey = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
+				DeterministicKey newkey = getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
 				//
 				CachedAddrees.Builder b = CachedAddrees.newBuilder();
 								      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
@@ -320,10 +321,11 @@ public class WalletOperation extends BASE{
 		configFile.writeCachedSpendingAddresses(forWriting);
 	}
 	
-	public void addMoreSpendingAddresses() throws FileNotFoundException, IOException, AddressFormatException{
+	public ArrayList<String> addMoreSpendingAddresses() throws FileNotFoundException, IOException, AddressFormatException{
 		ArrayList<CachedAddrees> forWriting = new ArrayList<CachedAddrees>();
+		ArrayList<String> ret = new ArrayList<String>();
 		for (int i=0; i<5; i++){
-			DeterministicKey newkey = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
+			DeterministicKey newkey = getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
 			//
 			CachedAddrees.Builder b = CachedAddrees.newBuilder();
 							      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
@@ -331,8 +333,10 @@ public class WalletOperation extends BASE{
 								  b.setKeyIndex(newkey.getChildNumber().getI());
 								  b.setIsUsed(false);
 		    forWriting.add(b.build());
+		    ret.add(newkey.toAddress(getNetworkParams()).toString());
 		}
 		configFile.writeCachedSpendingAddresses(forWriting);
+		return ret;
 	}
 	
 	public ArrayList<String> getNotUsedSpendingAddressStringPool() throws FileNotFoundException, IOException{
@@ -341,12 +345,12 @@ public class WalletOperation extends BASE{
 	}
 	
 	public ArrayList<String> getSpendingAddressStringPool() throws FileNotFoundException, IOException{
-		ArrayList<CachedAddrees> all = getSpendingAddressFromPool();
+		List<CachedAddrees> all = getSpendingAddressFromPool();
 		return configFile.getSpendingAddressStringPool(all);
 	}
 	
-	public ArrayList<CachedAddrees> getSpendingAddressFromPool() throws FileNotFoundException, IOException{
-		return (ArrayList<CachedAddrees>) configFile.getSpendingAddressFromPool();
+	public List<CachedAddrees> getSpendingAddressFromPool() throws FileNotFoundException, IOException{
+		return configFile.getSpendingAddressFromPool();
 	}
 	
 	public ArrayList<CachedAddrees> getNotUsedSpendingAddressFromPool() throws FileNotFoundException, IOException{
@@ -481,8 +485,8 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName) throws IOException{
-		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, pairName);
+	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName, int accountIndex) throws IOException{
+		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, pairName, accountIndex);
 	}
 	
 	public void addGeneratedAddressForPairing(String pairID, String addr, int indexWallet, int indexAuth) throws FileNotFoundException, IOException, ParseException{

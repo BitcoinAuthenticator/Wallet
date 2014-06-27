@@ -36,6 +36,7 @@ public class PairingProtocol {
    * args[] - 
    * 	0 - Pairing name
    * 	1 - Pair type, by default "blockchain"
+   * 	2 - Wallet Account Index
    * 
    * 
    * @param {@link java.net.ServerSocket} ss
@@ -113,7 +114,7 @@ public class PairingProtocol {
 		  			 "pairing ID: " + pairingID);
 		  //Save to file
 		  ConfigFile configFile = new ConfigFile();
-		  configFile.writePairingData(mPubKey, chaincode, key, GCM, pairingID, args[0]);
+		  configFile.writePairingData(mPubKey, chaincode, key, GCM, pairingID, args[0], Integer.parseInt(args[2]));
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");

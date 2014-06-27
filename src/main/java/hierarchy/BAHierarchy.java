@@ -47,18 +47,22 @@ public class BAHierarchy{
 		return this;
 	}
 		
+	
+	public void buildWalletHierarchyForStartup(List<Integer> accountByNumberOfKeys){
+		accountsHeightsUsed = new ArrayList<ChildNumber>();
+		for(int i=0;i < accountByNumberOfKeys.size(); i++){
+			ChildNumber in = new ChildNumber(accountByNumberOfKeys.get(i),false); // not hardened
+			accountsHeightsUsed.add(in);
+		}
+	}
+	
+	
+	
 	/**
 	 * This function is designed to reconstruct async all the wallet's hierarchy on wallet's startup.<br>
 	 * <b>Do not mistake with wallet reconstruction from seed.</b>
 	 * @param accountByNumberOfKeys
 	 */
-	public void buildWalletHierarchyForStartup(List<Integer> accountByNumberOfKeys){
-		accountsHeightsUsed = new ArrayList<ChildNumber>();
-		for(int i=0;i < accountByNumberOfKeys.size(); i++){
-			ChildNumber in = new ChildNumber(accountByNumberOfKeys.get(i)-1,false); // not hardened
-			accountsHeightsUsed.add(in);
-		}
-	}
 	/*public void buildWalletHierarchyForStartup(List<Integer> accountByNumberOfKeys){
 		for(int i=0;i < accountByNumberOfKeys.size(); i++)
 			buildWalletHierarchy(i, HierarchyAddressTypes.Spending ,0,	accountByNumberOfKeys.get(i));
@@ -95,12 +99,12 @@ public class BAHierarchy{
  	    p.add(account);
  	    // address type
  	    ChildNumber addressType = new ChildNumber(HierarchyAddressTypes.Spending_VALUE,false); // TODO - also savings addresses
- 	    p.add(addressType);
- 	    // address
- 	    ChildNumber ind = new ChildNumber(accountsHeightsUsed.get(accountIndex).getI() + 1,false);
-	    accountsHeightsUsed.set(accountIndex,ind ); 
+ 	    p.add(addressType);	    
 	    
-	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
+	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, accountsHeightsUsed.get(accountIndex));	
+	    
+	    accountsHeightsUsed.set(accountIndex,new ChildNumber(accountsHeightsUsed.get(accountIndex).getI() + 1,false) ); 
+	    
 		return ret;
 	}
 	
@@ -118,6 +122,12 @@ public class BAHierarchy{
 	    accountsHeightsUsed.set(accountIndex,ind ); 
 	    
 	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
+		return ret;
+	}
+	
+	public int generateNewAccount(){
+		int ret = accountsHeightsUsed.size();
+		accountsHeightsUsed.add(new ChildNumber(0,false));
 		return ret;
 	}
 	

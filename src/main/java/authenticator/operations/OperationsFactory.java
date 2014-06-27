@@ -84,12 +84,12 @@ public class OperationsFactory extends BASE{
 	 * @param pairingName
 	 * @return
 	 */
-	static public ATOperation PAIRING_OPERATION(String pairingName){
+	static public ATOperation PAIRING_OPERATION(String pairingName, int walletAccountIndex){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, "blockchain", pairingName})
+					.SetArguments(new String[]{pairingName, "blockchain", Integer.toString(walletAccountIndex)})
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;

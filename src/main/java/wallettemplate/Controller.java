@@ -220,8 +220,8 @@ public class Controller {
         scrlViewTxHistoryContentManager = new ScrollPaneContentManager()
         									.setSpacingBetweenItems(20)
         									.setScrollStyle(scrlViewTxHistory.getStyle());
-		scrlViewTxHistory.setPrefHeight(190);
-		scrlViewTxHistory.setFitToWidth(true);
+		//scrlViewTxHistory.setPrefHeight(100);
+		//scrlViewTxHistory.setFitToWidth(true);
 		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
     }
     
@@ -1549,7 +1549,14 @@ public class Controller {
     				//TODO - split savings and spending
     				if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
     		    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-    					try {Authenticator.getWalletOperation().addMoreSpendingAddresses();} 
+    					try 
+    					{
+    						ArrayList<String> newAdd = Authenticator.getWalletOperation().addMoreSpendingAddresses();
+    						AddressBox.getItems().remove(Main.controller.AddressBox.getItems().indexOf("                                More"));
+    						for(String s:newAdd)
+    							AddressBox.getItems().addAll(s);
+    						Main.controller.AddressBox.getItems().addAll("                                More");
+    					} 
         				catch (IOException | AddressFormatException e) {e.printStackTrace();}
     				}
     				else
