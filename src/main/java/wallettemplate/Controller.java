@@ -1577,6 +1577,10 @@ public class Controller {
     	Main.instance.overlayUI("Pair_wallet.fxml");
     }
     
+    @FXML protected void btnOneName(MouseEvent event) {
+    	Main.instance.overlayUI("DisplayOneName.fxml");
+    }
+    
     //#####################################
    	//
    	//	Change account
