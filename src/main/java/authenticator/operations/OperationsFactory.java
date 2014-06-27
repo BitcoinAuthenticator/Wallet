@@ -261,7 +261,7 @@ public class OperationsFactory extends BASE{
 							for (PairedAuthenticator .KeysObject ko: pairingObj.getGeneratedKeysList()){
 								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 								if(inAddress.equals(ko.getAddress())){
-									indexArr.add(ko.getIndex());
+									indexArr.add(ko.getIndexAuth());
 									BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
 									byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
 									pubKeysArr.add(pubkey);
@@ -338,7 +338,7 @@ public class OperationsFactory extends BASE{
 										//Authenticator Key
 										HDKeyDerivation HDKey = null;
 										DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
-										DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, ko.getIndex());
+										DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, ko.getIndexAuth());
 										byte[] childpublickey = childKey.getPubKey();
 										ECKey authKey = new ECKey(null, childpublickey);
 										

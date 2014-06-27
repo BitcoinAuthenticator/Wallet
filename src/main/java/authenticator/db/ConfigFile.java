@@ -15,9 +15,11 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet;
+
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.wallet.KeyChain;
+import com.google.protobuf.ByteString;
 
 import wallettemplate.Main;
 import wallettemplate.utils.KeyUtils;
@@ -60,18 +62,12 @@ public class ConfigFile {
         return false;
 	}
 	
-	/*public void setOneName(String onename) throws IOException{
-		ConfigSettings settings = ProtoConfig.ConfigSettings.newBuilder().setOnename(onename).build();
-		FileOutputStream output = new FileOutputStream(filePath);  
-		settings.writeTo(output);          
-		output.close();
+	public void initConfigFile(byte[] seed) throws IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.setHierarchySeed(ByteString.copyFrom(seed));
+		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
+		writeConfigFile(auth);
 	}
-	
-	public String getOneName() throws FileNotFoundException, IOException{
-		ConfigSettings settings = ConfigSettings.parseFrom(new FileInputStream(filePath));
-		String onename = settings.getOnename();
-		return onename;
-	}*/
 	
 	public void setPaired(boolean paired) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
@@ -176,7 +172,7 @@ public class ConfigFile {
 				PairedAuthenticator.KeysObject.Builder newKeyObj = PairedAuthenticator.KeysObject.newBuilder();
 				newKeyObj.setPrivKey(privkey);
 				newKeyObj.setAddress(addr);
-				newKeyObj.setIndex(index);
+				newKeyObj.setIndexAuth(index);
 				
 				int i = o.getDescriptor().getIndex();
 				auth.getConfigAuthenticatorWalletBuilder().getPairedWalletsBuilder(i).addGeneratedKeys(newKeyObj.build());
@@ -225,6 +221,17 @@ public class ConfigFile {
 	public void writeOnename(AuthenticatorConfiguration.ConfigOneNameProfile one) throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.setConfigOneNameProfile(one);
+		writeConfigFile(auth);
+	}
+	
+	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getHierarchySeed().toByteArray();
+	}
+	
+	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.setHierarchySeed(ByteString.copyFrom(seed));
 		writeConfigFile(auth);
 	}
 }

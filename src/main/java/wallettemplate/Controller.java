@@ -253,6 +253,9 @@ public class Controller {
 		public void onNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile) {
 			setupOneName(profile);
 		}
+
+		@Override
+		public void onFinishedBuildingWalletHierarchy() { }
     }
     
     public class ProgressBarUpdater extends DownloadListener {

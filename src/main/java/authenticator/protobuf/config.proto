@@ -26,9 +26,10 @@ enum ActiveAccountType {
 //
 message PairedAuthenticator{
 	message KeysObject{
-		required string priv_key 	= 1;
-		required string address 	= 2;
-		required int32 	index 		= 3;
+		required string priv_key 		= 1;
+		required int32 	indexWallet 	= 2; // should replace priv_key
+		required string address 		= 3;
+		required int32 	indexAuth 		= 4;
 	}
 	
 	required string 	aes_key 			= 1;
@@ -92,10 +93,7 @@ message AuthenticatorConfiguration{
 	}
 	
 	message ConfigReceiveAddresses {
-	
 		repeated string walletKey = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-		repeated string authKey = 2; // Same thing but generated from the Authenticator mpubkey. Used when paired.
-	
 	}
 	
 	message ConfigAddressBook {
@@ -116,6 +114,7 @@ message AuthenticatorConfiguration{
 	optional ConfigReceiveAddresses configReceiveAddresses 			= 3;
 	optional ConfigAddressBook configAddressBook 					= 4;
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
+	required bytes hierarchySeed									= 6;
 }
 
 

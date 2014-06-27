@@ -1,5 +1,7 @@
 package authenticator;
 
+import hierarchy.BAHierarchy;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,6 +24,7 @@ import org.json.simple.parser.ParseException;
 
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
@@ -47,6 +50,7 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
 
 
 /**
@@ -75,13 +79,36 @@ public class WalletOperation extends BASE{
 		if(configFile == null){
 			configFile = new ConfigFile();
 			/**
-			 * Check to see if a config file exists, if not, 
-			 * set the paired parameter to false, creating the file.
+			 * Check to see if a config file exists, if not, initialize
 			 */
-			if(!configFile.checkConfigFile())
-		        configFile.setPaired(false);
+			if(!configFile.checkConfigFile()){
+				byte[] seed = BAHierarchy.generateMnemonicSeed();
+				configFile.initConfigFile(seed);
+		        //configFile.setPaired(false);
 				//configFile.setOneName("NULL");
+			}
 		}
+		
+		loadHierarchy();
+	}
+	
+	private void loadHierarchy() throws FileNotFoundException, IOException
+	{
+		byte[] seed = configFile.getHierarchySeed();
+		BAHierarchy h = new BAHierarchy(seed,HierarchyCoinTypes.CoinBitcoin);
+		List<Integer> accountByNumberOfKeys = new ArrayList<Integer>();
+		// 1) get Pay-To-Pub-Hash account
+		fillKeyPool();
+		ArrayList<ECKey> s = getKeyPool();		
+		accountByNumberOfKeys.add(s.size());
+		
+		// 2)	Authenticator paired accounts
+		List<PairedAuthenticator> all = getAllPairingObjectArray();
+		for(PairedAuthenticator po:all){
+			accountByNumberOfKeys.add(po.getGeneratedKeysCount());
+		}
+		
+		h.buildWalletHierarchyForStartup(accountByNumberOfKeys);
 	}
 	
 	//#####################################
@@ -215,6 +242,15 @@ public class WalletOperation extends BASE{
 	//		 BL - Protocol buffers
 	//
 	//#####################################
+	
+	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
+		return configFile.getHierarchySeed();
+	}
+	
+	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
+		configFile.writeHierarchySeed(seed);
+	}
+	
 	public void removeAddressFromPool(String address) throws FileNotFoundException, IOException
 	{
 		configFile.removeAddress(address);

@@ -1,0 +1,16 @@
+package authenticator.protobuf;
+
+option java_outer_classname="AuthWalletHierarchy";
+
+enum HierarchyPurpose{
+	Bip43 					= 44; // 0x8000002C as in Bip43
+}
+
+enum HierarchyCoinTypes{
+	CoinBitcoin 			= 0; // 0x80000000 as in Bip44
+}
+
+enum HierarchyAddressTypes{
+	Spending 			= 0; // external
+	Savings				= 1; // internal / change
+}

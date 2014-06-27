@@ -1,5 +1,7 @@
 package authenticator;
 
+import hierarchy.BAHierarchy;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import authenticator.db.ConfigFile;
 import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
@@ -142,6 +145,7 @@ public class Authenticator extends AbstractService{
 	//			General
 	//
 	//#####################################
+	
 	/**
 	 * An init function to verify all P2SH addresses generated between the wallet and the various Authenticators are watched by the bitcoinj engine
 	 * 
@@ -293,5 +297,10 @@ public class Authenticator extends AbstractService{
 	public static void fireonNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile){
 		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
 			l.onNewUserNamecoinIdentitySelection(profile);
+	}
+	
+	public static void fireOnFinishedDiscoveringWalletHierarchy(){
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onFinishedBuildingWalletHierarchy();
 	}
 }
