@@ -27,19 +27,8 @@ public class OneNameControllerDisplay {
 	
 	// Called by FXMLLoader
     public void initialize() {
-    	if(Authenticator.getWalletOperation().getOnename() != null){
-    		engine = webView.getEngine();
-    		engine.load("https://onename.io/" + Authenticator.getWalletOperation().getOnename().getOnename());
-    	}
-		else
-		{
-			Dialogs.create()
-			        .owner(Main.stage)
-			        .title("Cannot display your OneName account")
-			        .message("Please press on your avatr picture on the overview panel to set your OneName account")
-			        .showConfirm();
-			overlayUi.done();
-		}
+    	engine = webView.getEngine();
+		engine.load("https://onename.io/" + Authenticator.getWalletOperation().getOnename().getOnename());
     }
     
     public void btnBack(ActionEvent event) { goBack(); }

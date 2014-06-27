@@ -609,7 +609,7 @@ public class Controller {
 		    imgFile = new File(one.getOnenameAvatarFilePath());
 			bimg = ImageIO.read(imgFile);
 			img = OneName.createImage(bimg);
-	   } catch (IOException e) { e.printStackTrace(); }
+	   } catch (Exception e) { e.printStackTrace(); }
 	   
 	   if(img != null && one != null)
 		   setUserProfileAvatarAndName(img,one.getOnename());	   
@@ -1578,7 +1578,14 @@ public class Controller {
     }
     
     @FXML protected void btnOneName(MouseEvent event) {
-    	Main.instance.overlayUI("DisplayOneName.fxml");
+    	if(Authenticator.getWalletOperation().getOnename() != null)
+    		Main.instance.overlayUI("DisplayOneName.fxml");
+    	else
+    		Dialogs.create()
+		        .owner(Main.stage)
+		        .title("Cannot display your OneName account")
+		        .message("Please press on your avatr picture on the overview panel to set your OneName account")
+		        .showWarning();
     }
     
     //#####################################

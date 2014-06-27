@@ -434,7 +434,10 @@ public class WalletOperation extends BASE{
 		
 		public AuthenticatorConfiguration.ConfigOneNameProfile getOnename(){
 			try {
-				return configFile.getOnename();
+				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
+				if(on.getOnename().length() == 0)
+					return null;
+				return on;
 			} catch (IOException e) { e.printStackTrace(); }
 			return null;
 		}
