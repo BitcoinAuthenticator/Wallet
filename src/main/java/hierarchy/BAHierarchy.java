@@ -25,6 +25,7 @@ public class BAHierarchy{
 	
 	DeterministicHierarchy hierarchy;
 	DeterministicKey rootKey;
+	List<ChildNumber> accountsHeightsUsed;
 	
 	@SuppressWarnings("static-access")
 	public BAHierarchy(byte[] seed, HierarchyCoinTypes coinType){
@@ -52,6 +53,13 @@ public class BAHierarchy{
 	 * @param accountByNumberOfKeys
 	 */
 	public void buildWalletHierarchyForStartup(List<Integer> accountByNumberOfKeys){
+		accountsHeightsUsed = new ArrayList<ChildNumber>();
+		for(int i=0;i < accountByNumberOfKeys.size(); i++){
+			ChildNumber in = new ChildNumber(accountByNumberOfKeys.get(i)-1,false); // not hardened
+			accountsHeightsUsed.add(in);
+		}
+	}
+	/*public void buildWalletHierarchyForStartup(List<Integer> accountByNumberOfKeys){
 		for(int i=0;i < accountByNumberOfKeys.size(); i++)
 			buildWalletHierarchy(i, HierarchyAddressTypes.Spending ,0,	accountByNumberOfKeys.get(i));
 	}
@@ -77,6 +85,40 @@ public class BAHierarchy{
 			         }
 		}).start();
 		
+	}*/
+	
+	public DeterministicKey getNextSpendingKey(int accountIndex){
+		// root
+		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
+		// account
+		ChildNumber account = new ChildNumber(accountIndex,true);
+ 	    p.add(account);
+ 	    // address type
+ 	    ChildNumber addressType = new ChildNumber(HierarchyAddressTypes.Spending_VALUE,false); // TODO - also savings addresses
+ 	    p.add(addressType);
+ 	    // address
+ 	    ChildNumber ind = new ChildNumber(accountsHeightsUsed.get(accountIndex).getI() + 1,false);
+	    accountsHeightsUsed.set(accountIndex,ind ); 
+	    
+	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
+		return ret;
+	}
+	
+	public DeterministicKey getKeyFromAcoount(int accountIndex, int addressKey){
+		// root
+		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
+		// account
+		ChildNumber account = new ChildNumber(accountIndex,true);
+ 	    p.add(account);
+ 	    // address type
+ 	    ChildNumber addressType = new ChildNumber(HierarchyAddressTypes.Spending_VALUE,false); // TODO - also savings addresses
+ 	    p.add(addressType);
+ 	    // address
+ 	    ChildNumber ind = new ChildNumber(addressKey,false);
+	    accountsHeightsUsed.set(accountIndex,ind ); 
+	    
+	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
+		return ret;
 	}
 	
 	/**

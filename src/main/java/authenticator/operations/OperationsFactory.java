@@ -258,13 +258,15 @@ public class OperationsFactory extends BASE{
 						ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>();
 						ArrayList<Integer> indexArr = new ArrayList<Integer>();
 						for(TransactionInput in:tx.getInputs())
-							for (PairedAuthenticator .KeysObject ko: pairingObj.getGeneratedKeysList()){
+							for (PairedAuthenticator.KeysObject ko: pairingObj.getGeneratedKeysList()){
 								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 								if(inAddress.equals(ko.getAddress())){
 									indexArr.add(ko.getIndexAuth());
-									BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
-									byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
-									pubKeysArr.add(pubkey);
+									//BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
+									//byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
+									DeterministicKey pubkey = Authenticator.getWalletOperation().getKeyFromAcoount(pairingObj.getWalletAccountIndex(),
+																													ko.getIndexWallet());
+									pubKeysArr.add(pubkey.getPubKey());
 									break;
 								}
 							}
@@ -343,9 +345,10 @@ public class OperationsFactory extends BASE{
 										ECKey authKey = new ECKey(null, childpublickey);
 										
 										//Wallet key
-										BigInteger privatekey = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
-										byte[] walletPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
-										ECKey walletKey = new ECKey(privatekey, walletPublicKey, true);
+										//BigInteger privatekey = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
+										//byte[] walletPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
+										DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAcoount(po.getWalletAccountIndex(),ko.getIndexWallet());
+										ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
 										
 										// Create Program for the script
 										List<ECKey> keys = ImmutableList.of(authKey, walletKey);

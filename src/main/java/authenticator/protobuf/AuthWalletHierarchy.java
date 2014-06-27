@@ -268,6 +268,79 @@ public final class AuthWalletHierarchy {
     // @@protoc_insertion_point(enum_scope:authenticator.protobuf.HierarchyAddressTypes)
   }
 
+  /**
+   * Protobuf enum {@code authenticator.protobuf.HierarchyPrefixedAccountIndex}
+   */
+  public enum HierarchyPrefixedAccountIndex
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>General = 0;</code>
+     */
+    General(0, 0),
+    ;
+
+    /**
+     * <code>General = 0;</code>
+     */
+    public static final int General_VALUE = 0;
+
+
+    public final int getNumber() { return value; }
+
+    public static HierarchyPrefixedAccountIndex valueOf(int value) {
+      switch (value) {
+        case 0: return General;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<HierarchyPrefixedAccountIndex>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<HierarchyPrefixedAccountIndex>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<HierarchyPrefixedAccountIndex>() {
+            public HierarchyPrefixedAccountIndex findValueByNumber(int number) {
+              return HierarchyPrefixedAccountIndex.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return authenticator.protobuf.AuthWalletHierarchy.getDescriptor().getEnumTypes().get(3);
+    }
+
+    private static final HierarchyPrefixedAccountIndex[] VALUES = values();
+
+    public static HierarchyPrefixedAccountIndex valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private HierarchyPrefixedAccountIndex(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:authenticator.protobuf.HierarchyPrefixedAccountIndex)
+  }
+
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -281,7 +354,9 @@ public final class AuthWalletHierarchy {
       "or.protobuf*\035\n\020HierarchyPurpose\022\t\n\005Bip43" +
       "\020,*%\n\022HierarchyCoinTypes\022\017\n\013CoinBitcoin\020" +
       "\000*2\n\025HierarchyAddressTypes\022\014\n\010Spending\020\000" +
-      "\022\013\n\007Savings\020\001B\025B\023AuthWalletHierarchy"
+      "\022\013\n\007Savings\020\001*,\n\035HierarchyPrefixedAccoun" +
+      "tIndex\022\013\n\007General\020\000B\025B\023AuthWalletHierarc" +
+      "hy"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

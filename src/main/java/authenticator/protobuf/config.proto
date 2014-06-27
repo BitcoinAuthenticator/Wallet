@@ -26,7 +26,7 @@ enum ActiveAccountType {
 //
 message PairedAuthenticator{
 	message KeysObject{
-		required string priv_key 		= 1;
+		//required string priv_key 		= 1;
 		required int32 	indexWallet 	= 2; // should replace priv_key
 		required string address 		= 3;
 		required int32 	indexAuth 		= 4;
@@ -41,6 +41,7 @@ message PairedAuthenticator{
 	required int32 		keys_n 				= 7;
 	repeated KeysObject generatedKeys 		= 8;
 	required string 	pairingName 		= 9;
+	required int32		walletAccountIndex	= 10;
 }
 
 //
@@ -93,7 +94,15 @@ message AuthenticatorConfiguration{
 	}
 	
 	message ConfigReceiveAddresses {
-		repeated string walletKey = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+		message CachedAddrees{
+			required int32 accountIndex	= 1;
+			required int32 keyIndex		= 2;
+			required string addressStr	= 3;
+			required bool isUsed		= 4;
+		}
+	
+		repeated CachedAddrees walletSpendingAddress = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+		//repeated CachedAddrees walletSavingsAddress  = 2; //TODO
 	}
 	
 	message ConfigAddressBook {

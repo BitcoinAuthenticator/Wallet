@@ -1,4 +1,4 @@
-package wallettemplate.utils;
+package authenticator.Utils;
 
 public class KeyUtils {
 

@@ -10,19 +10,23 @@ import java.util.List;
 
 import org.json.simple.parser.ParseException;
 
+import authenticator.Authenticator;
+import authenticator.Utils.KeyUtils;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyPrefixedAccountIndex;
 import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.CachedAddrees;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.wallet.KeyChain;
 import com.google.protobuf.ByteString;
 
 import wallettemplate.Main;
-import wallettemplate.utils.KeyUtils;
 
 public class ConfigFile {
 	
@@ -80,35 +84,55 @@ public class ConfigFile {
 		return auth.getConfigAuthenticatorWallet().getPaired();
 	}
 	
-	public void fillKeyPool() throws FileNotFoundException, IOException{
+	public void writeCachedSpendingAddresses(List<CachedAddrees> add) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		if ( auth.getConfigReceiveAddresses().getWalletKeyCount()<10){
-			int num = (10 - auth.getConfigReceiveAddresses().getWalletKeyCount());
+		for(CachedAddrees c: add)
+			auth.getConfigReceiveAddressesBuilder().addWalletSpendingAddress(c);
+		writeConfigFile(auth);
+	}
+	
+	/*public void fillSpendingKeyPool() throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		if ( auth.getConfigReceiveAddresses().getWalletSpendingAddressCount() < 10){
+			int num = (10 - auth.getConfigReceiveAddresses().getWalletSpendingAddressCount());
 			for (int i=0; i<num; i++){
-				DeterministicKey newkey = Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
+				DeterministicKey newkey = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				//Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
 				String pubkey =  KeyUtils.bytesToHex(newkey.getPubKey());
-				auth.getConfigReceiveAddressesBuilder().addWalletKey(pubkey);
+				//
+				CachedAddrees.Builder b = CachedAddrees.newBuilder();
+								      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
+									  b.setAddressStr(newkey.toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
+									  b.setKeyIndex(newkey.getChildNumber().getI());
+									  b.setIsUsed(false);
+				auth.getConfigReceiveAddressesBuilder().addWalletSpendingAddress(b.build());
 			}
 			writeConfigFile(auth);
 		}
 	}	
 	
-	public void addMoreAddresses() throws FileNotFoundException, IOException{
+	public void addMoreSpendingAddresses() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		Main.controller.AddressBox.getItems().remove(Main.controller.AddressBox.getItems().indexOf("                                More"));		
 		for (int i=0; i<5; i++){
-			DeterministicKey newkey = Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
+			DeterministicKey newkey = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				//Main.bitcoin.wallet().freshKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
 			String pubkey =  KeyUtils.bytesToHex(newkey.getPubKey());
-			auth.getConfigReceiveAddressesBuilder().addWalletKey(pubkey);
+			//
+			CachedAddrees.Builder b = CachedAddrees.newBuilder();
+							      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
+								  b.setAddressStr(newkey.toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
+								  b.setKeyIndex(newkey.getChildNumber().getI());
+								  b.setIsUsed(false);
+			auth.getConfigReceiveAddressesBuilder().addWalletSpendingAddress(b.build());
+			
 			String addr = newkey.toAddress(Main.params).toString();
     		Main.controller.AddressBox.getItems().addAll(addr);
 		}
 		Main.controller.AddressBox.getItems().addAll("                                More");
 		Main.controller.AddressBox.setValue(Main.controller.AddressBox.getItems().get(0));
 		writeConfigFile(auth);  
-	}	
+	}*/	
 	
-	public void removeAddress(String address) throws FileNotFoundException, IOException {
+	/*public void removeSpendingAddress(String address) throws FileNotFoundException, IOException {
 		System.out.println("rec addr: " + address);
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		ArrayList<ECKey> keypool = new ArrayList<ECKey>();
@@ -126,14 +150,44 @@ public class ConfigFile {
 			auth.getConfigReceiveAddressesBuilder().addWalletKey(pubkey);
 		}
 		writeConfigFile(auth);
+	}*/
+	
+	public void markCachedSpendingAddressAsUsed(String addStr) throws IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		for (CachedAddrees c : auth.getConfigReceiveAddresses().getWalletSpendingAddressList()){
+			if(c.getAddressStr().equals(addStr))
+			{
+				CachedAddrees.Builder b = CachedAddrees.newBuilder(c);
+				b.setIsUsed(true);
+				auth.getConfigReceiveAddressesBuilder().setWalletSpendingAddress(c.getDescriptor().getIndex(), b.build());
+				
+				break;
+			}
+		}
+		writeConfigFile(auth);
 	}
 	
-	public ArrayList<ECKey> getKeyPool() throws FileNotFoundException, IOException{
-		ArrayList<ECKey> keypool = new ArrayList<ECKey>();
+	public List<ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.CachedAddrees> getSpendingAddressFromPool(){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		for (String pubkey : auth.getConfigReceiveAddresses().getWalletKeyList()){
-			ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(pubkey));
-			keypool.add(key);
+		return auth.getConfigReceiveAddresses().getWalletSpendingAddressList();
+	}
+	
+	public ArrayList<CachedAddrees> getNotUsedSpendingAddressFromPool() throws FileNotFoundException, IOException{
+		ArrayList<CachedAddrees> keypool = new ArrayList<CachedAddrees>();
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		for (CachedAddrees add : auth.getConfigReceiveAddresses().getWalletSpendingAddressList()){
+			if(add.getIsUsed() == false)
+				keypool.add(add);
+		}
+		return keypool;
+	}
+	
+	public ArrayList<String> getSpendingAddressStringPool(ArrayList<CachedAddrees> cache) throws FileNotFoundException, IOException{
+		ArrayList<String> keypool = new ArrayList<String>();
+		for (CachedAddrees add : cache){
+			//ECKey key = ECKey.fromPublicOnly(KeyUtils.hexStringToByteArray(pubkey));
+			//keypool.add(key);
+			keypool.add(add.getAddressStr());
 		}
 		return keypool;
 	}
@@ -164,15 +218,15 @@ public class ConfigFile {
 	}
 	
 	@SuppressWarnings({ "unchecked", "static-access" })
-	public void addAddressAndPrivateKeyToPairing(String pairID, String privkey, String addr, int index) throws FileNotFoundException, IOException, ParseException{
+	public void addGeneratedAddressForPairing(String pairID, String addr, int indexWallet, int indexAuth) throws FileNotFoundException, IOException, ParseException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		for(PairedAuthenticator o:auth.getConfigAuthenticatorWallet().getPairedWalletsList())
 		{
 			if(o.getPairingID().equals(pairID)){
 				PairedAuthenticator.KeysObject.Builder newKeyObj = PairedAuthenticator.KeysObject.newBuilder();
-				newKeyObj.setPrivKey(privkey);
 				newKeyObj.setAddress(addr);
-				newKeyObj.setIndexAuth(index);
+				newKeyObj.setIndexAuth(indexAuth);
+				newKeyObj.setIndexWallet(indexWallet);
 				
 				int i = o.getDescriptor().getIndex();
 				auth.getConfigAuthenticatorWalletBuilder().getPairedWalletsBuilder(i).addGeneratedKeys(newKeyObj.build());

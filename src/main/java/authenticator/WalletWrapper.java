@@ -66,11 +66,11 @@ public class WalletWrapper extends BASE{
 	 * Add A new P2Sh authenticator address to watch list 
 	 * @param add
 	 */
-	public void addP2ShAddressToWatch(String address) throws AddressFormatException
+	public void addAddressToWatch(String address) throws AddressFormatException
 	{
-		addP2ShAddressToWatch(new Address(trackedWallet.getNetworkParameters(),address));
+		addAddressToWatch(new Address(trackedWallet.getNetworkParameters(),address));
 	}
-	public void addP2ShAddressToWatch(final Address address)
+	public void addAddressToWatch(final Address address)
 	{
 		trackedWallet.addWatchedAddress(address);
 	}
@@ -93,39 +93,15 @@ public class WalletWrapper extends BASE{
 	 * 
 	 * @return Pay-To-Pubhash address
 	 */
-	public Address getChangeAddress(){
+	/*public Address getChangeAddress(){
 		return trackedWallet.getChangeAddress();
-	}
+	}*/
 	
 	//#####################################
 	//
 	//		Balances
 	//
 	//#####################################
-
-	/**
-	 * Will Check with wallet's watched addresses for a total balance. A use case will be to pass all the addresses of a single 
-	 * authenticator pairing to get the total unspent balance.
-	 * 
-	 * @param addressArr
-	 * @return balance of specific addresses as a BigInteger{@link java.math.BigInteger}
-	 * @throws ScriptException
-	 * @throws UnsupportedEncodingException
-	 */
-	public Coin getEstimatedBalanceOfWatchedAddresses(ArrayList<String> addressArr) throws ScriptException, UnsupportedEncodingException
-	{
-		Coin retBalance = Coin.ZERO;
-		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
-		for(TransactionOutput Txout: allWatchedAddresses)
-			for(String lookedAddr: addressArr){
-				String TxOutAddress = Txout.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
-				if(TxOutAddress.equals(lookedAddr)){
-					retBalance = retBalance.add(Txout.getValue());
-					break;
-				}
-			}		
-		return retBalance;
-	}
 	
 	/**
 	 * Get Bitcoinj conformed balance.<br>
@@ -133,11 +109,11 @@ public class WalletWrapper extends BASE{
 	 * 
 	 * @return
 	 */
-	public Coin getConfirmedBalance()
+	/*public Coin getConfirmedBalance()
 	{
 		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE);
 		return walletBalance;
-	}
+	}*/
 	
 	/**
 	 * Get Bitcoinj conformed balance.<br>
@@ -145,22 +121,22 @@ public class WalletWrapper extends BASE{
 	 * 
 	 * @return
 	 */
-	public Coin getUnconfirmedBalance(){
+	/*public Coin getUnconfirmedBalance(){
 		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED).subtract(trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE));
 		return walletBalance;
-	}
+	}*/
 	
 	/**
 	 * Get combined estimated balance of the normal bitcoinj wallet and the watched Authenticator addresses
 	 * 
 	 * @return
 	 */
-	public Coin getCombinedEstimatedBalance()
+	/*public Coin getCombinedEstimatedBalance()
 	{
 		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
 		Coin authenticatorBalance = trackedWallet.getWatchedBalance();
 		return walletBalance.add(authenticatorBalance);
-	}
+	}*/
 	
 	public Coin getPendingWatchedTransactionsBalacnce(ArrayList<String> addressArr){
 		ArrayList<TransactionOutput> watched = getUnspentOutputsForAddresses(addressArr);
@@ -178,6 +154,30 @@ public class WalletWrapper extends BASE{
 		}
 			
 		return ret;
+	}
+	
+	/**
+	 * Will Check with wallet's watched addresses for a total balance. A use case will be to pass all the addresses of a single 
+	 * authenticator pairing to get the total unspent balance.
+	 * 
+	 * @param addressArr
+	 * @return balance of specific addresses as a BigInteger{@link java.math.BigInteger}
+	 * @throws ScriptException
+	 * @throws UnsupportedEncodingException
+	 */
+	public Coin getEstimatedBalanceOfWatchedAddresses(ArrayList<String> addressArr)
+	{
+		Coin retBalance = Coin.ZERO;
+		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
+		for(TransactionOutput Txout: allWatchedAddresses)
+			for(String lookedAddr: addressArr){
+				String TxOutAddress = Txout.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
+				if(TxOutAddress.equals(lookedAddr)){
+					retBalance = retBalance.add(Txout.getValue());
+					break;
+				}
+			}		
+		return retBalance;
 	}
 	
 	//#####################################
@@ -261,13 +261,13 @@ public class WalletWrapper extends BASE{
 	//
 	//#####################################
 	
-	public DeterministicKey currentReceiveKey(){
+	/*public DeterministicKey currentReceiveKey(){
 		return trackedWallet.currentReceiveKey();
-	}
+	}*/
 	
-	public DeterministicKey freshReceiveKey(){
+	/*public DeterministicKey freshReceiveKey(){
 		return trackedWallet.freshReceiveKey();
-	}
+	}*/
 	
 	//#####################################
 	//

@@ -23,11 +23,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import authenticator.Utils.BAUtils;
+import authenticator.Utils.KeyUtils;
 import authenticator.db.ConfigFile;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyPrefixedAccountIndex;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.CachedAddrees;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -69,6 +72,7 @@ import com.google.protobuf.ByteString;
 public class WalletOperation extends BASE{
 	
 	private static WalletWrapper mWalletWrapper;
+	private static BAHierarchy authenticatorWalletHierarchy;
 	public static ConfigFile configFile;
 	
 	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
@@ -88,14 +92,39 @@ public class WalletOperation extends BASE{
 				//configFile.setOneName("NULL");
 			}
 		}
-		
-		loadHierarchy();
+		if(authenticatorWalletHierarchy == null)
+		{
+			byte[] seed = configFile.getHierarchySeed();
+			authenticatorWalletHierarchy = new BAHierarchy(seed,HierarchyCoinTypes.CoinBitcoin);
+			/**
+			 * Load num of keys generated in every account to get 
+			 * the next fresh key
+			 */
+			List<Integer> accountByNumberOfKeys = new ArrayList<Integer>();
+			// 1) get Pay-To-Pub-Hash account
+			try {
+				fillSpendingKeyPool();
+				ArrayList<CachedAddrees> s = getSpendingAddressFromPool();		
+				accountByNumberOfKeys.add(s.size());
+			} catch (AddressFormatException e) { e.printStackTrace(); }
+			
+			// 2)	Authenticator paired accounts
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator po:all){
+				accountByNumberOfKeys.add(po.getGeneratedKeysCount());
+			}
+			
+			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountByNumberOfKeys);
+		}
 	}
 	
-	private void loadHierarchy() throws FileNotFoundException, IOException
-	{
-		byte[] seed = configFile.getHierarchySeed();
-		BAHierarchy h = new BAHierarchy(seed,HierarchyCoinTypes.CoinBitcoin);
+	//#####################################
+	//
+	//	Authenticator Wallet Hierarchy
+	//
+	//#####################################
+	
+	/*public void loadHierarchy() throws FileNotFoundException, IOException{
 		List<Integer> accountByNumberOfKeys = new ArrayList<Integer>();
 		// 1) get Pay-To-Pub-Hash account
 		fillKeyPool();
@@ -108,8 +137,8 @@ public class WalletOperation extends BASE{
 			accountByNumberOfKeys.add(po.getGeneratedKeysCount());
 		}
 		
-		h.buildWalletHierarchyForStartup(accountByNumberOfKeys);
-	}
+		authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountByNumberOfKeys);
+	}*/
 	
 	//#####################################
 	//
@@ -147,22 +176,24 @@ public class WalletOperation extends BASE{
 	  		//Select network parameters
 	  		NetworkParameters params = Authenticator.getWalletOperation().getNetworkParams();
 			ECKey childPubKey = new ECKey(null, childpublickey);
-			//Create a new key pair which will kept in the wallet.
-			ECKey walletKey = new ECKey();
-			byte[] privkey = walletKey.getPrivKeyBytes();
-			List<ECKey> keys = ImmutableList.of(childPubKey, walletKey);
+			//Create a new key pair for wallet
+			//ECKey walletKey = new ECKey();
+			//byte[] privkey = walletKey.getPrivKeyBytes();
+			DeterministicKey walletHDKey = getNextSpendingKey(this.getAccountIndexForPairing(pairingID));
+			ECKey walletKey = new ECKey(null, walletHDKey.getPubKey()); 
 			//Create a 2-of-2 multisig output script.
+			List<ECKey> keys = ImmutableList.of(childPubKey, walletKey);
 			byte[] scriptpubkey = Script.createMultiSigOutputScript(2,keys);
 			Script script = ScriptBuilder.createP2SHOutputScript(Utils.sha256hash160(scriptpubkey));
 			//Create the address
 			Address multisigaddr = Address.fromP2SHScript(params, script);
 			//Save keys to file
-			this.addAddressAndPrivateKeyToPairing(pairingID, 
-					BAUtils.bytesToHex(privkey), 
+			this.addGeneratedAddressForPairing(pairingID,
 					multisigaddr.toString(), 
+					this.getAccountIndexForPairing(pairingID),
 					index);
 			String ret = multisigaddr.toString();
-			mWalletWrapper.addP2ShAddressToWatch(ret);
+			mWalletWrapper.addAddressToWatch(ret);
 			this.LOG.info("Generated a new address: " + ret);
 			return ret;
 		} catch (IOException | ParseException e) {
@@ -239,9 +270,19 @@ public class WalletOperation extends BASE{
     
 	//#####################################
 	//
-	//		 BL - Protocol buffers
+	//		 Keys handling
 	//
 	//#####################################
+	
+	public DeterministicKey getNextSpendingKey(int accountI) throws AddressFormatException{
+		DeterministicKey ret = authenticatorWalletHierarchy.getNextSpendingKey(accountI);
+		addAddressToWatch( ret.toAddress(getNetworkParams()).toString() );
+		return ret;
+	}
+	
+	public DeterministicKey getKeyFromAcoount(int accountIndex, int addressKey){
+		return authenticatorWalletHierarchy.getKeyFromAcoount(accountIndex,addressKey);
+	}
 	
 	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
 		return configFile.getHierarchySeed();
@@ -251,38 +292,80 @@ public class WalletOperation extends BASE{
 		configFile.writeHierarchySeed(seed);
 	}
 	
-	public void removeAddressFromPool(String address) throws FileNotFoundException, IOException
+	/*public void removeAddressFromPool(String address) throws FileNotFoundException, IOException
 	{
 		configFile.removeAddress(address);
+	}*/
+	
+	public void markCachedSpendingAddressAsUsed(String addStr) throws IOException{
+		configFile.markCachedSpendingAddressAsUsed(addStr);
 	}
 	
-	public void fillKeyPool() throws FileNotFoundException, IOException{
-		configFile.fillKeyPool();
+	public void fillSpendingKeyPool() throws FileNotFoundException, IOException, AddressFormatException{
+		ArrayList<CachedAddrees> cached = getNotUsedSpendingAddressFromPool();
+		ArrayList<CachedAddrees> forWriting = new ArrayList<CachedAddrees>();
+		if ( cached.size() < 10){
+			int num = (10 - cached.size());
+			for (int i=0; i<num; i++){
+				DeterministicKey newkey = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
+				//
+				CachedAddrees.Builder b = CachedAddrees.newBuilder();
+								      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
+									  b.setAddressStr(newkey.toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
+									  b.setKeyIndex(newkey.getChildNumber().getI());
+									  b.setIsUsed(false);
+			    forWriting.add(b.build());
+			}
+		}
+		configFile.writeCachedSpendingAddresses(forWriting);
 	}
 	
-	public ArrayList<ECKey> getKeyPool() throws FileNotFoundException, IOException{
-		return configFile.getKeyPool();
+	public void addMoreSpendingAddresses() throws FileNotFoundException, IOException, AddressFormatException{
+		ArrayList<CachedAddrees> forWriting = new ArrayList<CachedAddrees>();
+		for (int i=0; i<5; i++){
+			DeterministicKey newkey = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
+			//
+			CachedAddrees.Builder b = CachedAddrees.newBuilder();
+							      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
+								  b.setAddressStr(newkey.toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
+								  b.setKeyIndex(newkey.getChildNumber().getI());
+								  b.setIsUsed(false);
+		    forWriting.add(b.build());
+		}
+		configFile.writeCachedSpendingAddresses(forWriting);
 	}
 	
-	public void addMoreAddresses() throws FileNotFoundException, IOException{
-		configFile.addMoreAddresses();
+	public ArrayList<String> getNotUsedSpendingAddressStringPool() throws FileNotFoundException, IOException{
+		ArrayList<CachedAddrees> all = getNotUsedSpendingAddressFromPool();
+		return configFile.getSpendingAddressStringPool(all);
 	}
 	
-	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
-	{
-		return configFile.getAllPairingObjectArray();
+	public ArrayList<String> getSpendingAddressStringPool() throws FileNotFoundException, IOException{
+		ArrayList<CachedAddrees> all = getSpendingAddressFromPool();
+		return configFile.getSpendingAddressStringPool(all);
 	}
 	
-	public PairedAuthenticator getPairingObject(String pairID)
-	{
+	public ArrayList<CachedAddrees> getSpendingAddressFromPool() throws FileNotFoundException, IOException{
+		return (ArrayList<CachedAddrees>) configFile.getSpendingAddressFromPool();
+	}
+	
+	public ArrayList<CachedAddrees> getNotUsedSpendingAddressFromPool() throws FileNotFoundException, IOException{
+		return configFile.getNotUsedSpendingAddressFromPool();
+	}
+	
+	public int getAccountIndexForPairing(String PairID){
 		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
 			all = getAllPairingObjectArray();
 		} catch (IOException e) { e.printStackTrace(); }
 		for(PairedAuthenticator po: all)
-			if(po.getPairingID().equals(pairID))
-				return po;
-		return null;
+		{
+			if(po.getPairingID().equals(PairID))
+			{
+				return po.getWalletAccountIndex();
+			}
+		}
+		return -1;
 	}
 	
 	/**
@@ -304,6 +387,7 @@ public class WalletOperation extends BASE{
 		}
 		return null;
 	}
+	
 	public ArrayList<String> getAddressesArray(String PairID){
 		List<PairedAuthenticator.KeysObject> keys = getKeysArray(PairID);
 		ArrayList<String> ret = new ArrayList<String>();
@@ -361,6 +445,30 @@ public class WalletOperation extends BASE{
 		return "";
 	}
 	
+	
+	//#####################################
+	//
+	//		 Pairing handling
+	//
+	//#####################################
+	
+	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
+	{
+		return configFile.getAllPairingObjectArray();
+	}
+	
+	public PairedAuthenticator getPairingObject(String pairID)
+	{
+		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+		try {
+			all = getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+		for(PairedAuthenticator po: all)
+			if(po.getPairingID().equals(pairID))
+				return po;
+		return null;
+	}
+	
 	public ArrayList<String> getPairingIDs()
 	{
 		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
@@ -377,9 +485,15 @@ public class WalletOperation extends BASE{
 		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, pairName);
 	}
 	
-	public void addAddressAndPrivateKeyToPairing(String pairID, String privkey, String addr, int index) throws FileNotFoundException, IOException, ParseException{
-		configFile.addAddressAndPrivateKeyToPairing(pairID, privkey, addr, index);
+	public void addGeneratedAddressForPairing(String pairID, String addr, int indexWallet, int indexAuth) throws FileNotFoundException, IOException, ParseException{
+		configFile.addGeneratedAddressForPairing(pairID,  addr, indexWallet, indexAuth);
 	}
+	
+	//#####################################
+	//
+	//		 Balances handling
+	//
+	//#####################################
 	
 	/**
 	 * Returns a pending balance for a particular paired authenticator
@@ -390,41 +504,39 @@ public class WalletOperation extends BASE{
 	public Coin getUnconfirmedBalance(String pairingID){
 		return getPendingBalanceForAddresses(this.getAddressesArray(pairingID));
 	}
+	
+	public Coin getConfirmedBalance(String pairingID) 
+	{
+		return getConfirmedBalance(this.getAddressesArray(pairingID));
+	}
+	
+	public Coin getUnconfirmedSpendingBalance(){
+		try {
+			return getPendingBalanceForAddresses(getSpendingAddressStringPool());
+		} catch (IOException e) { e.printStackTrace();  }
+		return Coin.ZERO;
+	}
+	
+	public Coin getConfirmedSpendingBalance(){
+		try {
+			return getConfirmedBalance(getSpendingAddressStringPool());
+		} catch (IOException e) { e.printStackTrace(); }
+		return Coin.ZERO;
+	}
+	
+	
+	
 	private Coin getPendingBalanceForAddresses(ArrayList<String> addressArr)
 	{
 		return mWalletWrapper.getPendingWatchedTransactionsBalacnce(addressArr);
 	}
 	
-	/**
-	 * Return the estimated balance of a paired Authenticator
-	 * 
-	 * @param pairingID
-	 * @return
-	 */
-	public Coin getConfirmedBalance(String pairingID){
-		Coin estimated = Coin.ZERO;
-		Coin unConfirmed = Coin.ZERO;
-		try {
-			estimated = mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(this.getAddressesArray(pairingID));
-			unConfirmed = getUnconfirmedBalance(pairingID);
-			return estimated.subtract(unConfirmed);
-		} catch (ScriptException | UnsupportedEncodingException e) { e.printStackTrace(); }
-		return Coin.ZERO;
+	private Coin getConfirmedBalance(ArrayList<String> addressArr)
+	{
+		Coin estimated = mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(addressArr);
+		Coin unconfirmed = getPendingBalanceForAddresses(addressArr);
+		return estimated.subtract(unconfirmed);
 	}
-	
-	/**
-	 * Return the estimated balance of a paired Authenticator
-	 * 
-	 * @param pairingID
-	 * @return
-	 */
-	public Coin getEstimatedBalance(String pairingID){
-		try {
-			return mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(this.getAddressesArray(pairingID));
-		} catch (ScriptException | UnsupportedEncodingException e) { e.printStackTrace(); }
-		return Coin.ZERO;
-	}
-	
 	
 	
 	//#####################################
@@ -450,16 +562,6 @@ public class WalletOperation extends BASE{
 		
 		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 			return configFile.getPendingRequests();
-		}
-	
-		/**
-		 * Get change address for an Authenticator Tx
-		 * 
-		 * @param pairingID
-		 * @return P2SH Address
-		 */
-		public Address getChangeAddress(String pairingID){
-			return null;
 		}
 		
 	//#####################################
@@ -501,40 +603,6 @@ public class WalletOperation extends BASE{
   	//	Regular Bitocoin Wallet Operations
   	//
   	//#####################################
-   
-	// balances
-	
-	/**
-	 * Get Bitcoinj conformed balance.<br>
-	 * Uses the <b>Wallet.BalanceType.AVAILABLE</b> flag
-	 * 
-	 * @return
-	 */
-    public static Coin getNormalAccountConfirmedBalance()
-    {
-    	return mWalletWrapper.getConfirmedBalance();
-    }
-    
-    /**
-	 * Get Bitcoinj conformed balance.<br>
-	 * Equals <b>Wallet.BalanceType.ESTIMATED</b> - <b>Wallet.BalanceType.AVAILABLE</b>
-	 * 
-	 * @return
-	 */
-    public static Coin getNormalAccountUnconfirmedBalance(){
-    	return mWalletWrapper.getUnconfirmedBalance();
-    }
-    
-    /**
-	 * Get combined estimated balance of the normal bitcoinj wallet and the watched Authenticator addresses
-	 * 
-	 * @return
-	 */
-    public static Coin getCombinedEstimatedBalance()
-    {
-    	return mWalletWrapper.getCombinedEstimatedBalance();
-    }
-    
     
     public NetworkParameters getNetworkParams()
 	{
@@ -551,17 +619,12 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.isTransactionOutputMine(out);
 	}
     
-    public void addP2ShAddressToWatch(String address) throws AddressFormatException
+    public void addAddressToWatch(String address) throws AddressFormatException
 	{
-    	mWalletWrapper.addP2ShAddressToWatch(address);
+    	mWalletWrapper.addAddressToWatch(address);
     	this.LOG.info("Added address to watch: " + address);
 	}
-	public void addP2ShAddressToWatch(final Address address)
-	{
-		mWalletWrapper.addP2ShAddressToWatch(address);
-		this.LOG.info("Added address to watch: " + address.toString());
-	}
-	
+    
 	public void connectInputs(List<TransactionInput> inputs)
 	{
 		LinkedList<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
@@ -586,25 +649,9 @@ public class WalletOperation extends BASE{
 	{
 		mWalletWrapper.addEventListener(listener);
 	}
-	public DeterministicKey currentReceiveKey(){
-		return mWalletWrapper.currentReceiveKey();
-	}
-	
-	public DeterministicKey freshReceiveKey(){
-		return mWalletWrapper.freshReceiveKey();
-	}
 	
 	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
 		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
-	}
-
-	/**
-	 * Get change address for a normal bitcoin Tx
-	 * 
-	 * @return Pay-To-Pubhash address
-	 */
-	public Address getChangeAddress(){
-		return mWalletWrapper.getChangeAddress();
 	}
 	
 	public List<Transaction> getRecentTransactions(){

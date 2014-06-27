@@ -2,6 +2,7 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
+import authenticator.Utils.KeyUtils;
 import authenticator.network.OneName;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
@@ -75,7 +76,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
-import wallettemplate.utils.KeyUtils;
 
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
@@ -401,7 +401,7 @@ public class Controller {
                 		if (out.isMine(Main.bitcoin.wallet())){
                 			Script scr = out.getScriptPubKey();
                 			String addr = scr.getToAddress(Main.params).toString();
-                			try {Authenticator.getWalletOperation().removeAddressFromPool(addr);} //Main.config.removeAddress(addr);} 
+                			try {Authenticator.getWalletOperation().markCachedSpendingAddressAsUsed(addr);}
                 			catch (IOException e) {e.printStackTrace();}
                 		}
                 	}
@@ -648,8 +648,8 @@ public class Controller {
     	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
     			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
     	{
-	    	unconfirmed = Authenticator.getWalletOperation().getNormalAccountUnconfirmedBalance();
-	    	confirmed = Authenticator.getWalletOperation().getNormalAccountConfirmedBalance();
+	    	unconfirmed = Authenticator.getWalletOperation().getUnconfirmedSpendingBalance();
+	    	confirmed = Authenticator.getWalletOperation().getConfirmedSpendingBalance();
     	}
     	else{
     		unconfirmed = Authenticator.getWalletOperation().getUnconfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
@@ -812,7 +812,7 @@ public class Controller {
     	//TODO - split savings and spending
     	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
     			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
-	    	confirmed = Authenticator.getWalletOperation().getNormalAccountConfirmedBalance();
+	    	confirmed = Authenticator.getWalletOperation().getConfirmedSpendingBalance();
     	else
 	    	confirmed 	= Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());    	
     	
@@ -1286,14 +1286,14 @@ public class Controller {
             @Override 
             public void handle(ActionEvent e) {
             	//copy public key here     
-            	ArrayList<ECKey> keypool = null;
-            	try {keypool = Authenticator.getWalletOperation().getKeyPool(); } //Main.config.getKeyPool();} 
+            	ArrayList<String> keypool = null;
+            	try {keypool = Authenticator.getWalletOperation().getNotUsedSpendingAddressStringPool(); } //Main.config.getKeyPool();} 
             	catch (IOException e1) {e1.printStackTrace();}
             	int pos = AddressBox.getItems().indexOf(AddressBox.getValue());
-            	String pubkey = KeyUtils.bytesToHex(keypool.get(pos).getPubKey());
+            	//String pubkey = KeyUtils.bytesToHex(keypool.get(pos).getPubKey());
             	final Clipboard clipboard = Clipboard.getSystemClipboard();
                 final ClipboardContent content = new ClipboardContent();
-                content.putString(pubkey);
+                content.putString(keypool.get(pos));
                 clipboard.setContent(content);
             }
         });
@@ -1509,17 +1509,19 @@ public class Controller {
     	//TODO - split savings and spending
     	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
     			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-    		ArrayList<ECKey> keypool = null;
-        	try { Authenticator.getWalletOperation().fillKeyPool(); } 
-        	catch (IOException e) {e.printStackTrace();}
-        	try {keypool = Authenticator.getWalletOperation().getKeyPool(); }  
+    		ArrayList<String> keypool = null;
+        	try { Authenticator.getWalletOperation().fillSpendingKeyPool();; } 
+        	catch (IOException e) {e.printStackTrace();} catch (AddressFormatException e) { e.printStackTrace(); }
+        	try {keypool = Authenticator.getWalletOperation().getNotUsedSpendingAddressStringPool(); }  
         	catch (IOException e) {e.printStackTrace();}
         	
-        	AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
+        	/*AddressBox.setValue(keypool.get(0).toAddress(Main.params).toString());
         	for (ECKey key : keypool){
         		String addr = key.toAddress(Main.params).toString();
         		AddressBox.getItems().addAll(addr);
-        	}                              
+        	} */
+        	for(String s:keypool)
+        		AddressBox.getItems().addAll(s);
     	}
     	else{
     		ArrayList<String> add = Authenticator.getWalletOperation().getAddressesArray(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
@@ -1547,8 +1549,8 @@ public class Controller {
     				//TODO - split savings and spending
     				if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
     		    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-    					try {Authenticator.getWalletOperation().addMoreAddresses();} 
-        				catch (IOException e) {e.printStackTrace();}
+    					try {Authenticator.getWalletOperation().addMoreSpendingAddresses();} 
+        				catch (IOException | AddressFormatException e) {e.printStackTrace();}
     				}
     				else
     				{

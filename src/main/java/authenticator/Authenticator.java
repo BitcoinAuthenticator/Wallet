@@ -72,7 +72,7 @@ public class Authenticator extends AbstractService{
 			initPendingRequests();
 		}
 		new OperationsFactory(); // to instantiate various things
-		verifyWalletIsWatchingAuthenticatorAddresses();
+		//verifyWalletIsWatchingAuthenticatorAddresses();
 		loadActiveAccount();
 	}
 	
@@ -150,7 +150,7 @@ public class Authenticator extends AbstractService{
 	 * An init function to verify all P2SH addresses generated between the wallet and the various Authenticators are watched by the bitcoinj engine
 	 * 
 	 */
-	private void verifyWalletIsWatchingAuthenticatorAddresses()
+	/*private void verifyWalletIsWatchingAuthenticatorAddresses()
 	{
 		@SuppressWarnings("static-access")
 		List<PairedAuthenticator> all = null;
@@ -165,12 +165,12 @@ public class Authenticator extends AbstractService{
 				@SuppressWarnings("static-access")
 				boolean isWatched = this.getWalletOperation().isWatchingAddress(ko.getAddress());
 				if(!isWatched)
-					getWalletOperation().addP2ShAddressToWatch(ko.getAddress());
+					getWalletOperation().addAddressToWatch(ko.getAddress());
 			} catch (AddressFormatException e) {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Does what it says

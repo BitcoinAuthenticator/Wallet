@@ -14,3 +14,7 @@ enum HierarchyAddressTypes{
 	Spending 			= 0; // external
 	Savings				= 1; // internal / change
 }
+
+enum HierarchyPrefixedAccountIndex{
+	General 			= 0; 
+}
