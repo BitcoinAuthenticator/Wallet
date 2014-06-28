@@ -211,7 +211,7 @@
             <Image url="@ovrImage.png" />
           </image>
         </ImageView>
-        <ScrollPane fx:id="scrlViewTxHistory" layoutX="280.0" layoutY="95.0" prefHeight="220.0" prefWidth="340.0" style="-fx-background-color: black"/>
+        <ScrollPane fx:id="scrlViewTxHistory" layoutX="280.0" layoutY="95.0" prefHeight="220.0" prefWidth="340.0"/>
         <ImageView fx:id="ivAvatar" fitHeight="73.0" fitWidth="73.0" layoutX="35.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
           <image>
             <Image url="@DefaultAvatar.png" />

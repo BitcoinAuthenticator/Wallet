@@ -7,8 +7,11 @@ import authenticator.network.OneName;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyPrefixedAccountIndex;
 import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.CachedAddrees;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
@@ -24,6 +27,7 @@ import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.common.base.Throwables;
@@ -826,12 +830,192 @@ public class Controller {
     
     @FXML protected void SendTx(ActionEvent event) throws IOException, JSONException{
     	
-    	if(ValidateTx())
+    	if(!ValidateTx()){
+    		Dialogs.create()
+	        .owner(Main.stage)
+	        .title("Error")
+	        .masthead("Something Is not Right ...")
+	        .message("Make Sure:\n" +
+					"  1) You entered correct values in all fields\n"+
+					"  2) You have sufficient funds to cover your outputs\n"+
+					"  3) Outputs amount to at least the dust value(" + Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.toString() + ")\n" +
+					"  4) A Tx message, at least 3 characters long\n")
+	        .showError();  
+    	}
+    	else{
+    		// collect Tx outputs
+    		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
+        	for(Node n:scrlContent.getChildren())
+        	{
+        		NewAddress na = (NewAddress)n;
+        		Address add;
+				try {
+					add = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText());
+					double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+					long satoshis = (long) amount;
+					if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+						TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
+											        				null, 
+											        				Coin.valueOf(satoshis), 
+											        				add);
+						to.add(out);
+					}
+					
+				} catch (AddressFormatException e) { 
+					Platform.runLater(new Runnable() {
+					      @Override public void run() {
+					    	  Dialogs.create()
+						        .owner(Main.stage)
+						        .title("Error !")
+						        .masthead("Wrong Address")
+						        .message("")
+						        .showConfirm();   
+					      }
+					    });
+				}
+        		
+        	}
+        	
+        	//	get fee
+        	Coin fee = Coin.ZERO;
+    		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+            else 
+            {
+            	double f = (double) Double.parseDouble(txFee.getText())*100000000;
+            	fee = Coin.valueOf((long)f);
+            }
+    		
+    		// get input addresses / change address
+    		ArrayList<String> addresses;
+    		DeterministicKey changeaddr = null;
+    		String pairID = Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID();
+    		if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+        			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+    			// inputs
+    			addresses = Authenticator.getWalletOperation().getSpendingAddressStringPool();
+    			// change address
+    			try {
+					changeaddr = Authenticator.getWalletOperation().getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE, HierarchyAddressTypes.Savings);
+				} catch (AddressFormatException e) { e.printStackTrace(); }
+    		}
+    		else{
+    			// inputs
+    			addresses = Authenticator.getWalletOperation().getAddressesArray(pairID);
+    			// change address
+    			try {
+    				int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+					changeaddr = Authenticator.getWalletOperation().getNextSpendingKey(accountID, HierarchyAddressTypes.Savings);
+				} catch (AddressFormatException e) { e.printStackTrace(); }
+    		}
+    		   
+    		// complete Tx
+    		Transaction tx;
+			try {
+				tx = Authenticator.getWalletOperation().mkUnsignedTx(addresses, to,fee,changeaddr);
+				
+				// broadcast
+	    		ATOperation op = null;
+	    		if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+	        			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+	    			Map<String,ECKey> keys = new HashMap<String,ECKey>();
+	    			for(TransactionInput in:tx.getInputs()){
+	    				// get address
+	    				String add = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+	    				
+	    				// find key
+	    				CachedAddrees ca = Authenticator.getWalletOperation().getCachedSpendingAddressFromString(add);
+	    				
+	    				//get ECKey
+	    				int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+	    				ECKey addECKey = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, HierarchyAddressTypes.Spending, ca.getKeyIndex());
+	    				
+	    				//add key
+	    				keys.put(add, addECKey);
+	    			}
+	    			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(tx,keys);
+	    		}
+	    		else
+	    			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx, pairID, txMsgLabel.getText(),false,null);
+	    		
+	    		// operation listeners
+	    		op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+					@Override
+					public void onBegin(String str) { }
+
+					@Override
+					public void statusReport(String report) {
+
+					}
+
+					@Override
+					public void onFinished(String str) {
+							Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Success !")
+							        .masthead("Broadcasting Completed")
+							        .message("If this is a multisig P2SH transaction, we are waiting for the Authenticator to sign")
+							        .showInformation();  
+						      }
+						    });
+					}
+
+					@Override
+					public void onError(Exception e, Throwable t) {
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  String desc = "";
+						    	  if(t != null){
+						    		  Throwable rootCause = Throwables.getRootCause(t);
+						    		  desc = rootCause.toString();
+						    	  }
+						    	  if(e != null){
+						    		  desc = e.toString();
+						    	  }
+						    	  //
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Error")
+							        .masthead("Error broadcasting Tx")
+							        .message(desc)
+							        .showError();   
+						      }
+						    });
+					}
+
+					@Override
+					public void onUserCancel(String reason) {
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Error")
+							        .masthead("Authenticator Refused The Transaction")
+							        .message(reason)
+							        .showError();   
+						      }
+						    });
+					}
+
+					@Override
+					public void onUserOk(String msg) { }
+
+				});
+				Authenticator.operationsQueue.add(op);
+			} catch (NoSuchAlgorithmException | AddressFormatException e1) { e1.printStackTrace(); }
+    	}
+    		
+    		
+    	
+    	
+    	
+    	    	
     	/**
     	 * Normal bitcoin Tx
     	 */
     		//TODO - split savings and spending
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+    	/*if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
     			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
     		// TODO - move to authenticator ?
     		try {
@@ -880,13 +1064,13 @@ public class Controller {
             } catch (InsufficientMoneyException e) {
                 informationalAlert("Could not empty the wallet",
                         "You may have too little money left in the wallet to make a transaction.");
-            }
+            }*/
     	
     	/**
     	 * Authenticator Tx
     	 * 
     	 */
-    	else{
+    	/*else{
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
         	for(Node n:scrlContent.getChildren())
         	{
@@ -1013,7 +1197,7 @@ public class Controller {
 				      }
 				    });
 			}
-    	}
+    	}*/
 
     	
     }
@@ -1528,7 +1712,7 @@ public class Controller {
     		if(add.size() == 0){
     			String newAdd;
 				try {
-					newAdd = Authenticator.getWalletOperation().genP2SHAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
+					newAdd = Authenticator.getWalletOperation().genP2SHAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID(), HierarchyAddressTypes.Spending);
 					add.add(newAdd);
 				} catch (NoSuchAlgorithmException | JSONException
 						| AddressFormatException e) { e.printStackTrace(); }
@@ -1563,7 +1747,7 @@ public class Controller {
     				{
     					String newAdd;
         				try {
-        					newAdd = Authenticator.getWalletOperation().genP2SHAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID());
+        					newAdd = Authenticator.getWalletOperation().genP2SHAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID(), HierarchyAddressTypes.Spending);
         					AddressBox.getItems().add(0, newAdd);
         				} catch (NoSuchAlgorithmException | JSONException
         						| AddressFormatException e) { e.printStackTrace(); }

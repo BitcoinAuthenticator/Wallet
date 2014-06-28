@@ -13,6 +13,7 @@ import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyPurpose;
 
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicHierarchy;
@@ -56,42 +57,7 @@ public class BAHierarchy{
 		}
 	}
 	
-	
-	
-	/**
-	 * This function is designed to reconstruct async all the wallet's hierarchy on wallet's startup.<br>
-	 * <b>Do not mistake with wallet reconstruction from seed.</b>
-	 * @param accountByNumberOfKeys
-	 */
-	/*public void buildWalletHierarchyForStartup(List<Integer> accountByNumberOfKeys){
-		for(int i=0;i < accountByNumberOfKeys.size(); i++)
-			buildWalletHierarchy(i, HierarchyAddressTypes.Spending ,0,	accountByNumberOfKeys.get(i));
-	}
-	
-	private void buildWalletHierarchy(int accountIndex,HierarchyAddressTypes addressTypeIndex,int from, int to){
-		new Thread(new Runnable() {
-			           public void run() {			
-			        	   List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
-			        	   ChildNumber account = new ChildNumber(accountIndex,true);
-			        	   p.add(account);
-			        	   ChildNumber addressType = new ChildNumber(addressTypeIndex.getNumber(),false);
-			        	   p.add(addressType);
-			        	   //
-			        	   for(int i=from;i <= to;i++){
-			       			ChildNumber index = new ChildNumber(i,true); // accounts are hardened
-			       			p.add(index);
-			       			hierarchy.deriveChild(p, false, true, index);
-			       		}		
-			        	   
-			        	   
-			        	   
-			        	Authenticator.fireOnFinishedDiscoveringWalletHierarchy();
-			         }
-		}).start();
-		
-	}*/
-	
-	public DeterministicKey getNextSpendingKey(int accountIndex){
+	public DeterministicKey getNextSpendingKey(int accountIndex, HierarchyAddressTypes type){
 		// root
 		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
 		// account
@@ -108,7 +74,12 @@ public class BAHierarchy{
 		return ret;
 	}
 	
-	public DeterministicKey getKeyFromAcoount(int accountIndex, int addressKey){
+	public ECKey getECKeyFromAcoount(int accountIndex, HierarchyAddressTypes type, int addressKey){
+		DeterministicKey hdKey = getKeyFromAcoount(accountIndex,type,addressKey);
+		return ECKey.fromPrivate(hdKey.getPrivKeyBytes());
+	}
+	
+	public DeterministicKey getKeyFromAcoount(int accountIndex, HierarchyAddressTypes type, int addressKey){
 		// root
 		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
 		// account

@@ -9,6 +9,14 @@
 	-fx-background-color:transparent;
 }
 
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+}
+
 /* The main scrollbar **track** CSS class  */
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{

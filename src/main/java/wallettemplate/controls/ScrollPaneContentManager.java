@@ -12,7 +12,7 @@ public class ScrollPaneContentManager extends VBox{
 
 	public ScrollPaneContentManager setScrollStyle(String style)
 	{
-		this.setStyle("-fx-background-color: white");
+		this.setStyle(style);//"-fx-background-color: white");
 		return this;
 	}
 	

@@ -26,6 +26,7 @@ import wallettemplate.Main;
 import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.db.ConfigFile;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyPrefixedAccountIndex;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
@@ -51,6 +52,7 @@ import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.common.collect.ImmutableList;
@@ -156,7 +158,8 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException 
 	 */
 	@SuppressWarnings("static-access")
-	public String genP2SHAddress(String pairingID) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+	// TODO - use addressType
+	public String genP2SHAddress(String pairingID, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		try {
 			//Derive the child public key from the master public key.
 			ArrayList<String> keyandchain = this.getPublicKeyAndChain(pairingID);
@@ -176,7 +179,7 @@ public class WalletOperation extends BASE{
 			//Create a new key pair for wallet
 			//ECKey walletKey = new ECKey();
 			//byte[] privkey = walletKey.getPrivKeyBytes();
-			DeterministicKey walletHDKey = getNextSpendingKey(this.getAccountIndexForPairing(pairingID));
+			DeterministicKey walletHDKey = getNextSpendingKey(this.getAccountIndexForPairing(pairingID), HierarchyAddressTypes.Spending);
 			ECKey walletKey = new ECKey(null, walletHDKey.getPubKey()); 
 			//Create a 2-of-2 multisig output script.
 			List<ECKey> keys = ImmutableList.of(childPubKey, walletKey);
@@ -202,7 +205,7 @@ public class WalletOperation extends BASE{
 	
 	/**Builds a raw unsigned transaction*/
 	@SuppressWarnings("static-access")
-	public Transaction mktx(String pairingID, ArrayList<TransactionOutput>to, Coin fee) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
+	public Transaction mkUnsignedTx(ArrayList<String> candidateInputAddresses, ArrayList<TransactionOutput>to, Coin fee, DeterministicKey changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
 		//Get total output
 		Coin totalOut = Coin.ZERO;
 		for (TransactionOutput out:to){
@@ -213,9 +216,8 @@ public class WalletOperation extends BASE{
 			throw new IllegalArgumentException("Tried to send dust with ensureMinRequiredFee set - no way to complete this");
 		
 		//Get unspent watched addresses of this pairing ID
-		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(this.getAddressesArray(pairingID));
+		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(candidateInputAddresses);
 		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
-		// Calculate fee
 		// Coin selection
 		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee), candidates);
 		// add inputs
@@ -233,7 +235,7 @@ public class WalletOperation extends BASE{
 		for (TransactionOutput output : to)
             tx.addOutput(output);
 		//Add the change
-		String changeaddr = genP2SHAddress(pairingID);
+		String changeaddr = changeAdd.toAddress(getNetworkParams()).toString(); 
 		Address change = new Address(this.mWalletWrapper.getNetworkParameters(), changeaddr);
 		Coin rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
@@ -253,6 +255,8 @@ public class WalletOperation extends BASE{
 					", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}
 		
+		
+		
 		// Check size.
         int size = tx.bitcoinSerialize().length;
         if (size > Transaction.MAX_STANDARD_TX_SIZE) {
@@ -264,6 +268,28 @@ public class WalletOperation extends BASE{
 		return tx;
 	}
 	
+	public Transaction signStandardTx(Transaction tx, Map<String,ECKey> keys){
+		// sign
+		for(int index=0;index < tx.getInputs().size(); index++){
+			TransactionInput in = tx.getInput(index);
+			TransactionOutput connectedOutput = in.getConnectedOutput();
+			String addFrom = connectedOutput.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+			TransactionSignature sig = tx.calculateSignature(index, keys.get(addFrom), 
+					connectedOutput.getScriptPubKey(), 
+					Transaction.SigHash.ALL, 
+					false);
+			Script inputScript = ScriptBuilder.createInputScript(sig, keys.get(addFrom));
+			in.setScriptSig(inputScript);
+			
+			try {
+				in.getScriptSig().correctlySpends(tx, index, connectedOutput.getScriptPubKey(), false);
+			} catch (ScriptException e) {
+	            return null;
+	        }
+		}
+		
+		return tx;
+	}
     
 	//#####################################
 	//
@@ -275,14 +301,18 @@ public class WalletOperation extends BASE{
 		return authenticatorWalletHierarchy.generateNewAccount();
 	}
 	
-	public DeterministicKey getNextSpendingKey(int accountI) throws AddressFormatException{
-		DeterministicKey ret = authenticatorWalletHierarchy.getNextSpendingKey(accountI);
+	public DeterministicKey getNextSpendingKey(int accountI, HierarchyAddressTypes type) throws AddressFormatException{
+		DeterministicKey ret = authenticatorWalletHierarchy.getNextSpendingKey(accountI, HierarchyAddressTypes.Spending);
 		addAddressToWatch( ret.toAddress(getNetworkParams()).toString() );
 		return ret;
 	}
 	
-	public DeterministicKey getKeyFromAcoount(int accountIndex, int addressKey){
-		return authenticatorWalletHierarchy.getKeyFromAcoount(accountIndex,addressKey);
+	public ECKey getECKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey){
+		return authenticatorWalletHierarchy.getECKeyFromAcoount(accountIndex, type, addressKey);
+	}
+	
+	public DeterministicKey getKeyFromAcoount(int accountIndex, HierarchyAddressTypes type, int addressKey){
+		return authenticatorWalletHierarchy.getKeyFromAcoount(accountIndex, type, addressKey);
 	}
 	
 	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
@@ -308,7 +338,7 @@ public class WalletOperation extends BASE{
 		if ( cached.size() < 10){
 			int num = (10 - cached.size());
 			for (int i=0; i<num; i++){
-				DeterministicKey newkey = getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
+				DeterministicKey newkey = getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE, HierarchyAddressTypes.Spending); //TODO - may be also savings 				
 				//
 				CachedAddrees.Builder b = CachedAddrees.newBuilder();
 								      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
@@ -325,7 +355,7 @@ public class WalletOperation extends BASE{
 		ArrayList<CachedAddrees> forWriting = new ArrayList<CachedAddrees>();
 		ArrayList<String> ret = new ArrayList<String>();
 		for (int i=0; i<5; i++){
-			DeterministicKey newkey = getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE); //TODO - may be also savings 				
+			DeterministicKey newkey = getNextSpendingKey(HierarchyPrefixedAccountIndex.General_VALUE, HierarchyAddressTypes.Spending); //TODO - may be also savings 				
 			//
 			CachedAddrees.Builder b = CachedAddrees.newBuilder();
 							      b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
@@ -337,6 +367,15 @@ public class WalletOperation extends BASE{
 		}
 		configFile.writeCachedSpendingAddresses(forWriting);
 		return ret;
+	}
+	
+	public CachedAddrees getCachedSpendingAddressFromString(String addressStr) throws FileNotFoundException, IOException{
+		List<CachedAddrees> all = getSpendingAddressFromPool();
+		for(CachedAddrees ca:all){
+			if(ca.getAddressStr().equals(addressStr))
+				return ca;
+		}
+		return null;
 	}
 	
 	public ArrayList<String> getNotUsedSpendingAddressStringPool() throws FileNotFoundException, IOException{

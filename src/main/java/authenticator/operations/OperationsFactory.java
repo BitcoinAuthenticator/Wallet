@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Map;
 
 import javafx.application.Platform;
 
@@ -38,6 +39,7 @@ import org.slf4j.Logger;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
@@ -65,6 +67,7 @@ import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
@@ -265,6 +268,7 @@ public class OperationsFactory extends BASE{
 									//BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
 									//byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
 									DeterministicKey pubkey = Authenticator.getWalletOperation().getKeyFromAcoount(pairingObj.getWalletAccountIndex(),
+																													HierarchyAddressTypes.Spending,
 																													ko.getIndexWallet());
 									pubKeysArr.add(pubkey.getPubKey());
 									break;
@@ -322,7 +326,7 @@ public class OperationsFactory extends BASE{
 					 }
 					 
 					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
-					void complete(ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException
+					void complete(ArrayList<byte[]> AuthSigs, PairedAuthenticator po)
 					 {
 							//Prep the keys needed for signing
 							byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
@@ -347,7 +351,7 @@ public class OperationsFactory extends BASE{
 										//Wallet key
 										//BigInteger privatekey = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
 										//byte[] walletPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
-										DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAcoount(po.getWalletAccountIndex(),ko.getIndexWallet());
+										DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAcoount(po.getWalletAccountIndex(), HierarchyAddressTypes.Spending, ko.getIndexWallet());
 										ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
 										
 										// Create Program for the script
@@ -363,6 +367,14 @@ public class OperationsFactory extends BASE{
 										Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
 										TransactionInput input = inputs.get(i);
 										input.setScriptSig(inputScript);
+										
+										//check signature
+										try{
+											in.getScriptSig().correctlySpends(tx, i, scriptpubkey, false);
+										} catch (ScriptException e) {
+								            throw new ScriptException("Failed to sign transaction");
+								        }
+									
 										break;
 									}
 								}
@@ -418,41 +430,39 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	/*static public ATOperation BROADCAST_NORMAL_TRANSACTION(Transaction tx,Coin fee){
+	static public ATOperation BROADCAST_NORMAL_TRANSACTION(Transaction tx, Map<String,ECKey> keys){
 		return new ATOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
 		.SetOperationAction(new OperationActions(){
-			Wallet.SendRequest req = null;
-			Wallet.SendResult sendResult = null;
 			@Override
-			public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
-				//
-				// Prepare SendRequest
-				//
-				req = Wallet.SendRequest.forTx(tx);
-				req.feePerKb = fee;
-				req.changeAddress = Authenticator.getWalletOperation().getChangeAddress();
+			public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { 
+
 			}
 
 			@Override
 			public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener)
 					throws Exception {
 				try{
-					sendResult = Authenticator.getWalletOperation().sendCoins(req);
-					Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {
-					        @Override
-					        public void onSuccess(Transaction result) {
-					            if(listenerUI != null)
-					            	listenerUI.onFinished("");
-					    }
+					Transaction signedTx = Authenticator.getWalletOperation().signStandardTx(tx, keys);
+					if(signedTx == null){
+						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
+					}
+					else{
+						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(signedTx);
+						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
+			                @Override
+			                public void onSuccess(Transaction result) {
+			                	listenerUI.onFinished("Transaction Sent With Success");
+			                }
+
+			                @Override
+			                public void onFailure(Throwable t) {
+			                	listenerUI.onError(null,t);
+			                }
+			            });
+					}
 					
-					    @Override
-					    public void onFailure(Throwable t) {
-					    	if(listenerUI != null)
-				            	listenerUI.onError(null, t);
-					    }
-					});
 				}
 				catch (Exception e){
 					if(listenerUI != null)
@@ -464,9 +474,7 @@ public class OperationsFactory extends BASE{
 			public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
 
 			@Override
-			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
-				
-			}
+			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
 		});
-	}*/
+	}
 }
