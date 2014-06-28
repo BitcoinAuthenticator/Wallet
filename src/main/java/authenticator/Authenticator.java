@@ -1,7 +1,5 @@
 package authenticator;
 
-import hierarchy.BAHierarchy;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -175,33 +173,34 @@ public class Authenticator extends AbstractService{
 	/**
 	 * Does what it says
 	 */
+	@SuppressWarnings("static-access")
 	private void loadActiveAccount()
 	{
-		this.activeAccount = null;
-		try {
-			this.activeAccount = getWalletOperation().getActiveAccount();
-		} catch (Exception e) { e.printStackTrace(); }
-		
+		this.activeAccount = null;		
 		/**
 		 * In case no active account found.
 		 * Its a new wallet
 		 */
-		if(this.activeAccount == null)
+		if(getWalletOperation().getAllAccounts().size() == 0)
 		{
 			try {
 				//Spending account
+				getWalletOperation().generateNewAccount();
 				AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
 				b1.setActiveAccountType(ActiveAccountType.Spending);
 				getWalletOperation().writeActiveAccount(b1.build());
-				this.activeAccount = b1.build();
+				this.activeAccount = b1.build();				
 				
 				// Savings account
-				AuthenticatorConfiguration.ConfigActiveAccount.Builder b2 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
-				b2.setActiveAccountType(ActiveAccountType.Savings);
-				getWalletOperation().writeActiveAccount(b2.build());
-				
+				getWalletOperation().generateNewAccount();
 			} catch (IOException e) { e.printStackTrace(); }
-		}		
+		}	
+		else
+		{
+			try {
+				this.activeAccount = getWalletOperation().getActiveAccount();
+			} catch (Exception e) { e.printStackTrace(); }
+		}
 	}
 	
 	/**

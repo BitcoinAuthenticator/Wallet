@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +69,7 @@ import authenticator.Utils.BAUtils;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
@@ -260,20 +262,14 @@ public class OperationsFactory extends BASE{
 						//Get pub keys and indexes
 						ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>();
 						ArrayList<Integer> indexArr = new ArrayList<Integer>();
-						for(TransactionInput in:tx.getInputs())
-							for (PairedAuthenticator.KeysObject ko: pairingObj.getGeneratedKeysList()){
-								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-								if(inAddress.equals(ko.getAddress())){
-									indexArr.add(ko.getIndexAuth());
-									//BigInteger priv_key = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
-									//byte[] pubkey = ECKey.publicKeyFromPrivate(priv_key, true);//mpPublickeys.get(pairingID).get(a);
-									DeterministicKey pubkey = Authenticator.getWalletOperation().getKeyFromAcoount(pairingObj.getWalletAccountIndex(),
-																													HierarchyAddressTypes.Spending,
-																													ko.getIndexWallet());
-									pubKeysArr.add(pubkey.getPubKey());
-									break;
-								}
-							}
+						for(TransactionInput in:tx.getInputs()){
+							String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+							ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
+							DeterministicKey pubkey = Authenticator.getWalletOperation().getKeyFromAccount(pairingObj.getWalletAccountIndex(),
+																										atAdd.getType(),
+																										atAdd.getAccountIndex());
+							pubKeysArr.add(pubkey.getPubKey());
+						}
 						
 						SignMessage signMsgPayload = new SignMessage()
 										.setInputNumber(tx.getInputs().size())
@@ -326,7 +322,7 @@ public class OperationsFactory extends BASE{
 					 }
 					 
 					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
-					void complete(ArrayList<byte[]> AuthSigs, PairedAuthenticator po)
+					void complete(ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws Exception
 					 {
 							//Prep the keys needed for signing
 							byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
@@ -337,48 +333,42 @@ public class OperationsFactory extends BASE{
 							int i =0;
 							Authenticator.getWalletOperation().connectInputs(tx.getInputs());
 							for(TransactionInput in: tx.getInputs()){
-								for (PairedAuthenticator.KeysObject ko:po.getGeneratedKeysList()){
-									String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-									if(inAddress.equals(ko.getAddress()))
-									{
-										//Authenticator Key
-										HDKeyDerivation HDKey = null;
-										DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
-										DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, ko.getIndexAuth());
-										byte[] childpublickey = childKey.getPubKey();
-										ECKey authKey = new ECKey(null, childpublickey);
-										
-										//Wallet key
-										//BigInteger privatekey = new BigInteger(1, BAUtils.hexStringToByteArray(ko.getPrivKey()));
-										//byte[] walletPublicKey = ECKey.publicKeyFromPrivate(privatekey, true);
-										DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAcoount(po.getWalletAccountIndex(), HierarchyAddressTypes.Spending, ko.getIndexWallet());
-										ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
-										
-										// Create Program for the script
-										List<ECKey> keys = ImmutableList.of(authKey, walletKey);
-										Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
-										byte[] program = scriptpubkey.getProgram();
-										
-										//Create P2SH
-										// IMPORTANT - AuthSigs and the signiture we create here should refer to the same input !!
-										TransactionSignature sig1 = TransactionSignature.decodeFromBitcoin(AuthSigs.get(i), true);
-										TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
-										List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
-										Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
-										TransactionInput input = inputs.get(i);
-										input.setScriptSig(inputScript);
-										
-										//check signature
-										try{
-											in.getScriptSig().correctlySpends(tx, i, scriptpubkey, false);
-										} catch (ScriptException e) {
-								            throw new ScriptException("Failed to sign transaction");
-								        }
-									
-										break;
-									}
-								}
-								i++;
+								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+								ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
+								//Authenticator Key
+								HDKeyDerivation HDKey = null;
+								DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
+								int indexInAuth = atAdd.getAccountIndex(); // the same ass the address index in the wallet
+								DeterministicKey childKey = HDKey.deriveChildKey(mPubKey,indexInAuth);
+								byte[] childpublickey = childKey.getPubKey();
+								ECKey authKey = new ECKey(null, childpublickey);
+								
+								//Wallet key
+								DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAccount(po.getWalletAccountIndex(), atAdd.getType(), atAdd.getAccountIndex());
+								ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
+								
+								// Create Program for the script
+								List<ECKey> keys = ImmutableList.of(authKey, walletKey);
+								Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
+								byte[] program = scriptpubkey.getProgram();
+								
+								//Create P2SH
+								// IMPORTANT - AuthSigs and the signiture we create here should refer to the same input !!
+								TransactionSignature sig1 = TransactionSignature.decodeFromBitcoin(AuthSigs.get(i), true);
+								TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
+								List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
+								Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
+								TransactionInput input = inputs.get(i);
+								input.setScriptSig(inputScript);
+								
+								//check signature
+								try{
+									in.getScriptSig().correctlySpends(tx, i, scriptpubkey, false);
+								} catch (ScriptException e) {
+						            throw new ScriptException("Failed to sign transaction");
+						        }
+							
+								break;
 							}
 					 }
 				});
@@ -430,7 +420,7 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation BROADCAST_NORMAL_TRANSACTION(Transaction tx, Map<String,ECKey> keys){
+	static public ATOperation BROADCAST_NORMAL_TRANSACTION(Transaction tx, Map<String,ATAddress> keys){
 		return new ATOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
@@ -444,7 +434,8 @@ public class OperationsFactory extends BASE{
 			public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener)
 					throws Exception {
 				try{
-					Transaction signedTx = Authenticator.getWalletOperation().signStandardTx(tx, keys);
+					Transaction signedTx = Authenticator.getWalletOperation().signStandardTxWithKeys(tx, keys);
+					
 					if(signedTx == null){
 						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
 					}

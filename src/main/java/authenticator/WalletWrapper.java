@@ -88,56 +88,6 @@ public class WalletWrapper extends BASE{
 		return out.isMine(trackedWallet);
 	}
 	
-	/**
-	 * Get change address for a normal bitcoin Tx
-	 * 
-	 * @return Pay-To-Pubhash address
-	 */
-	/*public Address getChangeAddress(){
-		return trackedWallet.getChangeAddress();
-	}*/
-	
-	//#####################################
-	//
-	//		Balances
-	//
-	//#####################################
-	
-	/**
-	 * Get Bitcoinj conformed balance.<br>
-	 * Uses the <b>Wallet.BalanceType.AVAILABLE</b> flag
-	 * 
-	 * @return
-	 */
-	/*public Coin getConfirmedBalance()
-	{
-		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE);
-		return walletBalance;
-	}*/
-	
-	/**
-	 * Get Bitcoinj conformed balance.<br>
-	 * Equals <b>Wallet.BalanceType.ESTIMATED</b> - <b>Wallet.BalanceType.AVAILABLE</b>
-	 * 
-	 * @return
-	 */
-	/*public Coin getUnconfirmedBalance(){
-		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED).subtract(trackedWallet.getBalance(Wallet.BalanceType.AVAILABLE));
-		return walletBalance;
-	}*/
-	
-	/**
-	 * Get combined estimated balance of the normal bitcoinj wallet and the watched Authenticator addresses
-	 * 
-	 * @return
-	 */
-	/*public Coin getCombinedEstimatedBalance()
-	{
-		Coin walletBalance = trackedWallet.getBalance(Wallet.BalanceType.ESTIMATED);
-		Coin authenticatorBalance = trackedWallet.getWatchedBalance();
-		return walletBalance.add(authenticatorBalance);
-	}*/
-	
 	public Coin getPendingWatchedTransactionsBalacnce(ArrayList<String> addressArr){
 		ArrayList<TransactionOutput> watched = getUnspentOutputsForAddresses(addressArr);
 		Collection<Transaction> allPending = trackedWallet.getPendingTransactions();

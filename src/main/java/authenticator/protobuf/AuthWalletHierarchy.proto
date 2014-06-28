@@ -11,10 +11,11 @@ enum HierarchyCoinTypes{
 }
 
 enum HierarchyAddressTypes{
-	Spending 			= 0; // external
-	Savings				= 1; // internal / change
+	External	 			= 0; // external
+	//Internal				= 1; // internal / change
 }
 
 enum HierarchyPrefixedAccountIndex{
-	General 			= 0; 
+	PrefixSpending 			= 0; 
+	PrefixSavings			= 1;
 }

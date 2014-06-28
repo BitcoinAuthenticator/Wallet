@@ -176,47 +176,30 @@ public final class AuthWalletHierarchy {
   public enum HierarchyAddressTypes
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>Spending = 0;</code>
+     * <code>External = 0;</code>
      *
      * <pre>
      * external
      * </pre>
      */
-    Spending(0, 0),
-    /**
-     * <code>Savings = 1;</code>
-     *
-     * <pre>
-     * internal / change
-     * </pre>
-     */
-    Savings(1, 1),
+    External(0, 0),
     ;
 
     /**
-     * <code>Spending = 0;</code>
+     * <code>External = 0;</code>
      *
      * <pre>
      * external
      * </pre>
      */
-    public static final int Spending_VALUE = 0;
-    /**
-     * <code>Savings = 1;</code>
-     *
-     * <pre>
-     * internal / change
-     * </pre>
-     */
-    public static final int Savings_VALUE = 1;
+    public static final int External_VALUE = 0;
 
 
     public final int getNumber() { return value; }
 
     public static HierarchyAddressTypes valueOf(int value) {
       switch (value) {
-        case 0: return Spending;
-        case 1: return Savings;
+        case 0: return External;
         default: return null;
       }
     }
@@ -274,22 +257,31 @@ public final class AuthWalletHierarchy {
   public enum HierarchyPrefixedAccountIndex
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>General = 0;</code>
+     * <code>PrefixSpending = 0;</code>
      */
-    General(0, 0),
+    PrefixSpending(0, 0),
+    /**
+     * <code>PrefixSavings = 1;</code>
+     */
+    PrefixSavings(1, 1),
     ;
 
     /**
-     * <code>General = 0;</code>
+     * <code>PrefixSpending = 0;</code>
      */
-    public static final int General_VALUE = 0;
+    public static final int PrefixSpending_VALUE = 0;
+    /**
+     * <code>PrefixSavings = 1;</code>
+     */
+    public static final int PrefixSavings_VALUE = 1;
 
 
     public final int getNumber() { return value; }
 
     public static HierarchyPrefixedAccountIndex valueOf(int value) {
       switch (value) {
-        case 0: return General;
+        case 0: return PrefixSpending;
+        case 1: return PrefixSavings;
         default: return null;
       }
     }
@@ -353,10 +345,10 @@ public final class AuthWalletHierarchy {
       "\n\031AuthWalletHierarchy.proto\022\026authenticat" +
       "or.protobuf*\035\n\020HierarchyPurpose\022\t\n\005Bip43" +
       "\020,*%\n\022HierarchyCoinTypes\022\017\n\013CoinBitcoin\020" +
-      "\000*2\n\025HierarchyAddressTypes\022\014\n\010Spending\020\000" +
-      "\022\013\n\007Savings\020\001*,\n\035HierarchyPrefixedAccoun" +
-      "tIndex\022\013\n\007General\020\000B\025B\023AuthWalletHierarc" +
-      "hy"
+      "\000*%\n\025HierarchyAddressTypes\022\014\n\010External\020\000" +
+      "*F\n\035HierarchyPrefixedAccountIndex\022\022\n\016Pre" +
+      "fixSpending\020\000\022\021\n\rPrefixSavings\020\001B\025B\023Auth" +
+      "WalletHierarchy"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

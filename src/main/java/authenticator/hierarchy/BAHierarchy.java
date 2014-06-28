@@ -1,4 +1,4 @@
-package hierarchy;
+package authenticator.hierarchy;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -26,7 +26,11 @@ public class BAHierarchy{
 	
 	DeterministicHierarchy hierarchy;
 	DeterministicKey rootKey;
-	List<ChildNumber> accountsHeightsUsed;
+	/**
+	 * 0 - external chain
+	 * 1 - internal chain
+	 */
+	List<ChildNumber[]> accountsHeightsUsed;
 	
 	@SuppressWarnings("static-access")
 	public BAHierarchy(byte[] seed, HierarchyCoinTypes coinType){
@@ -48,28 +52,44 @@ public class BAHierarchy{
 		return this;
 	}
 		
-	
-	public void buildWalletHierarchyForStartup(List<Integer> accountByNumberOfKeys){
-		accountsHeightsUsed = new ArrayList<ChildNumber>();
+	/**
+	 * 
+	 * 
+	 * @param accountByNumberOfKeys - Integer[0] - external chain<br>
+	 * 								  Integer[1] - internal chain
+	 */
+	public void buildWalletHierarchyForStartup(List<Integer[]> accountByNumberOfKeys){
+		accountsHeightsUsed = new ArrayList<ChildNumber[]>();
 		for(int i=0;i < accountByNumberOfKeys.size(); i++){
-			ChildNumber in = new ChildNumber(accountByNumberOfKeys.get(i),false); // not hardened
-			accountsHeightsUsed.add(in);
+			Integer[] cnt = accountByNumberOfKeys.get(i);
+			ChildNumber Ext = new ChildNumber(cnt[0],false); 
+			ChildNumber Int = new ChildNumber(cnt[1],false);
+			accountsHeightsUsed.add(new ChildNumber[]{Ext,Int});
 		}
 	}
 	
-	public DeterministicKey getNextSpendingKey(int accountIndex, HierarchyAddressTypes type){
+	public DeterministicKey getNextKey(int accountIndex, HierarchyAddressTypes type){
 		// root
 		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
 		// account
 		ChildNumber account = new ChildNumber(accountIndex,true);
  	    p.add(account);
  	    // address type
- 	    ChildNumber addressType = new ChildNumber(HierarchyAddressTypes.Spending_VALUE,false); // TODO - also savings addresses
+ 	    ChildNumber addressType = new ChildNumber(type.getNumber(),false); // TODO - also savings addresses
  	    p.add(addressType);	    
 	    
-	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, accountsHeightsUsed.get(accountIndex));	
+ 	   ChildNumber indx;
+ 	   /**
+ 	    * in case accountsHeightsUsed is empty and accountIndex is 0 (the spending account)
+ 	    */
+ 	    if(accountsHeightsUsed.size() > accountIndex){
+ 	    	indx = accountsHeightsUsed.get(accountIndex)[type == HierarchyAddressTypes.External? 0:1];
+ 	    }
+ 	    else
+ 	    	indx = new ChildNumber(0,false);
+ 	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, indx);	
 	    
-	    accountsHeightsUsed.set(accountIndex,new ChildNumber(accountsHeightsUsed.get(accountIndex).getI() + 1,false) ); 
+	    bumpHeight(accountIndex,type);
 	    
 		return ret;
 	}
@@ -86,11 +106,10 @@ public class BAHierarchy{
 		ChildNumber account = new ChildNumber(accountIndex,true);
  	    p.add(account);
  	    // address type
- 	    ChildNumber addressType = new ChildNumber(HierarchyAddressTypes.Spending_VALUE,false); // TODO - also savings addresses
+ 	    ChildNumber addressType = new ChildNumber(type.getNumber(),false); // TODO - also savings addresses
  	    p.add(addressType);
  	    // address
  	    ChildNumber ind = new ChildNumber(addressKey,false);
-	    accountsHeightsUsed.set(accountIndex,ind ); 
 	    
 	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
 		return ret;
@@ -98,8 +117,30 @@ public class BAHierarchy{
 	
 	public int generateNewAccount(){
 		int ret = accountsHeightsUsed.size();
-		accountsHeightsUsed.add(new ChildNumber(0,false));
+		accountsHeightsUsed.add(new ChildNumber[]{ new ChildNumber(0,false),new ChildNumber(0,false) });
 		return ret;
+	}
+	
+	private void bumpHeight(int accountIndex, HierarchyAddressTypes type){
+		ChildNumber[] updr;
+		if(accountsHeightsUsed.size() > accountIndex){
+			ChildNumber indx = accountsHeightsUsed.get(accountIndex)[type == HierarchyAddressTypes.External? 0:1];
+			
+		    if(type == HierarchyAddressTypes.External)
+		    	updr = new ChildNumber[]{new ChildNumber(indx.getI() +1, false), accountsHeightsUsed.get(accountIndex)[1]};
+		    else
+		    	updr = new ChildNumber[]{accountsHeightsUsed.get(accountIndex)[0], new ChildNumber(indx.getI() +1, false)};
+		    accountsHeightsUsed.set(accountIndex, updr); 
+		}
+		else{
+			// set new 
+			if(type == HierarchyAddressTypes.External)
+				updr = new ChildNumber[]{new ChildNumber(1, false), new ChildNumber(0, false)};
+			else
+				updr = new ChildNumber[]{new ChildNumber(0, false), new ChildNumber(1, false)};
+		    accountsHeightsUsed.add(updr); 
+		}
+		
 	}
 	
 	/**

@@ -1,5 +1,7 @@
 package wallettemplate;
 
+import java.io.IOException;
+
 import javax.annotation.Nullable;
 
 import authenticator.Authenticator;
@@ -28,10 +30,10 @@ public class PairWallet extends BaseUI{
         super.init();
         doneBtn.setDisable(true);
     }
-    private void runPairing(String pairName)
+    private void runPairing(String pairName) throws IOException
     {
-    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName,
-    										Authenticator.getWalletOperation().generateNewAccount()).SetOperationUIUpdate(new OnOperationUIUpdate(){
+    	int accountIdx = Authenticator.getWalletOperation().generateNewAccount().getIndex();
+    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName, accountIdx).SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 			@Override
 			public void onBegin(String str) {
@@ -92,7 +94,7 @@ public class PairWallet extends BaseUI{
     }
     
     @FXML
-    public void run(ActionEvent event) {
+    public void run(ActionEvent event) throws IOException {
     	if(textfield.getText().length() > 0)
     	{
     		// in case any messages are on 

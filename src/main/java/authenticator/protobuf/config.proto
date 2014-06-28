@@ -2,6 +2,8 @@ package authenticator.protobuf;
 
 option java_outer_classname="ProtoConfig";
 
+import "AuthWalletHierarchy.proto";
+
 enum ATGCMMessageType{
 	SignTX 					= 2;
 	UpdatePendingRequestIPs	= 4;
@@ -21,17 +23,18 @@ enum ActiveAccountType {
 	Authenticator 	= 2;
 }
 
+message ATAddress{
+	optional int32 accountIndex			= 1; 
+	optional int32 keyIndex				= 2;
+	required string addressStr			= 3;
+	optional bool isUsed				= 4; 
+	optional HierarchyAddressTypes type	= 5;
+}
+
 //
 //	Pairing Data
 //
 message PairedAuthenticator{
-	message KeysObject{
-		//required string priv_key 		= 1;
-		required int32 	indexWallet 	= 2; // should replace priv_key
-		required string address 		= 3;
-		required int32 	indexAuth 		= 4;
-	}
-	
 	required string 	aes_key 			= 1;
 	required string 	master_public_key 	= 2;
 	required string 	chain_code 			= 3;
@@ -39,7 +42,7 @@ message PairedAuthenticator{
 	required string 	pairingID 			= 5;
 	required bool 		testnet 			= 6;
 	required int32 		keys_n 				= 7;
-	repeated KeysObject generatedKeys 		= 8;
+	//repeated KeysObject generatedKeys 	= 8; // no need to cache them
 	required string 	pairingName 		= 9;
 	required int32		walletAccountIndex	= 10;
 }
@@ -93,23 +96,15 @@ message AuthenticatorConfiguration{
 		repeated PendingRequest pendingRequests 	= 3; 
 	}
 	
-	message ConfigReceiveAddresses {
-		message CachedAddrees{
-			required int32 accountIndex	= 1;
-			required int32 keyIndex		= 2;
-			required string addressStr	= 3;
-			required bool isUsed		= 4;
-		}
-	
-		repeated CachedAddrees walletSpendingAddress = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-		//repeated CachedAddrees walletSavingsAddress  = 2; //TODO
+	message CachedExternalSpending {
+		repeated ATAddress walletCachedExternalSpendingAddress = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
 	}
 	
-	message ConfigAddressBook {
+	//message ConfigAddressBook {
 	
-		optional string address = 1; // This is a placeholder for the address book.
+	//	optional string address = 1; // This is a placeholder for the address book.
 	
-	}
+	//}
 	
 	message ConfigOneNameProfile {
 		required string onename	     			= 1; // The user's OneName ID. Used for getting the avatar on start up.
@@ -118,12 +113,21 @@ message AuthenticatorConfiguration{
 		optional string onenameAvatarFilePath	= 4;
 	}
 	
+	message ATAccount {
+		required int32 index				= 1;
+		required int32 lastExternalIndex	= 2;
+		repeated int32 usedExternalKeys 	= 3;
+		required int32 lastInternalIndex	= 4;
+		repeated int32 usedInternalKeys 	= 5; 
+	}
+	
 	optional ConfigActiveAccount configActiveAccount 				= 1;
 	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
-	optional ConfigReceiveAddresses configReceiveAddresses 			= 3;
-	optional ConfigAddressBook configAddressBook 					= 4;
+	optional CachedExternalSpending cachedExternalSpending 			= 3;
+	//optional ConfigAddressBook configAddressBook 					= 4;
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
 	required bytes hierarchySeed									= 6;
+	repeated ATAccount configAccounts								= 7;
 }
 
 
