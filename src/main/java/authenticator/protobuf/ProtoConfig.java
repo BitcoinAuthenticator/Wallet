@@ -8378,6 +8378,64 @@ public final class ProtoConfig {
        * <code>repeated int32 usedInternalKeys = 5;</code>
        */
       int getUsedInternalKeys(int index);
+
+      // required sint64 confirmedBalance = 6;
+      /**
+       * <code>required sint64 confirmedBalance = 6;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      boolean hasConfirmedBalance();
+      /**
+       * <code>required sint64 confirmedBalance = 6;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      long getConfirmedBalance();
+
+      // required sint64 unConfirmedBalance = 7;
+      /**
+       * <code>required sint64 unConfirmedBalance = 7;</code>
+       */
+      boolean hasUnConfirmedBalance();
+      /**
+       * <code>required sint64 unConfirmedBalance = 7;</code>
+       */
+      long getUnConfirmedBalance();
+
+      // repeated string pendingTx = 8;
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      java.util.List<java.lang.String>
+      getPendingTxList();
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      int getPendingTxCount();
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      java.lang.String getPendingTx(int index);
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      com.google.protobuf.ByteString
+          getPendingTxBytes(int index);
     }
     /**
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ATAccount}
@@ -8487,6 +8545,24 @@ public final class ProtoConfig {
                 input.popLimit(limit);
                 break;
               }
+              case 48: {
+                bitField0_ |= 0x00000008;
+                confirmedBalance_ = input.readSInt64();
+                break;
+              }
+              case 56: {
+                bitField0_ |= 0x00000010;
+                unConfirmedBalance_ = input.readSInt64();
+                break;
+              }
+              case 66: {
+                if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+                  pendingTx_ = new com.google.protobuf.LazyStringArrayList();
+                  mutable_bitField0_ |= 0x00000080;
+                }
+                pendingTx_.add(input.readBytes());
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -8500,6 +8576,9 @@ public final class ProtoConfig {
           }
           if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
             usedInternalKeys_ = java.util.Collections.unmodifiableList(usedInternalKeys_);
+          }
+          if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+            pendingTx_ = new com.google.protobuf.UnmodifiableLazyStringList(pendingTx_);
           }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
@@ -8627,12 +8706,95 @@ public final class ProtoConfig {
         return usedInternalKeys_.get(index);
       }
 
+      // required sint64 confirmedBalance = 6;
+      public static final int CONFIRMEDBALANCE_FIELD_NUMBER = 6;
+      private long confirmedBalance_;
+      /**
+       * <code>required sint64 confirmedBalance = 6;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public boolean hasConfirmedBalance() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required sint64 confirmedBalance = 6;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public long getConfirmedBalance() {
+        return confirmedBalance_;
+      }
+
+      // required sint64 unConfirmedBalance = 7;
+      public static final int UNCONFIRMEDBALANCE_FIELD_NUMBER = 7;
+      private long unConfirmedBalance_;
+      /**
+       * <code>required sint64 unConfirmedBalance = 7;</code>
+       */
+      public boolean hasUnConfirmedBalance() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required sint64 unConfirmedBalance = 7;</code>
+       */
+      public long getUnConfirmedBalance() {
+        return unConfirmedBalance_;
+      }
+
+      // repeated string pendingTx = 8;
+      public static final int PENDINGTX_FIELD_NUMBER = 8;
+      private com.google.protobuf.LazyStringList pendingTx_;
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public java.util.List<java.lang.String>
+          getPendingTxList() {
+        return pendingTx_;
+      }
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public int getPendingTxCount() {
+        return pendingTx_.size();
+      }
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public java.lang.String getPendingTx(int index) {
+        return pendingTx_.get(index);
+      }
+      /**
+       * <code>repeated string pendingTx = 8;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getPendingTxBytes(int index) {
+        return pendingTx_.getByteString(index);
+      }
+
       private void initFields() {
         index_ = 0;
         lastExternalIndex_ = 0;
         usedExternalKeys_ = java.util.Collections.emptyList();
         lastInternalIndex_ = 0;
         usedInternalKeys_ = java.util.Collections.emptyList();
+        confirmedBalance_ = 0L;
+        unConfirmedBalance_ = 0L;
+        pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -8648,6 +8810,14 @@ public final class ProtoConfig {
           return false;
         }
         if (!hasLastInternalIndex()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasConfirmedBalance()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasUnConfirmedBalance()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -8672,6 +8842,15 @@ public final class ProtoConfig {
         }
         for (int i = 0; i < usedInternalKeys_.size(); i++) {
           output.writeInt32(5, usedInternalKeys_.get(i));
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeSInt64(6, confirmedBalance_);
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeSInt64(7, unConfirmedBalance_);
+        }
+        for (int i = 0; i < pendingTx_.size(); i++) {
+          output.writeBytes(8, pendingTx_.getByteString(i));
         }
         getUnknownFields().writeTo(output);
       }
@@ -8711,6 +8890,23 @@ public final class ProtoConfig {
           }
           size += dataSize;
           size += 1 * getUsedInternalKeysList().size();
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeSInt64Size(6, confirmedBalance_);
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeSInt64Size(7, unConfirmedBalance_);
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < pendingTx_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(pendingTx_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getPendingTxList().size();
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -8838,6 +9034,12 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000008);
           usedInternalKeys_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000010);
+          confirmedBalance_ = 0L;
+          bitField0_ = (bitField0_ & ~0x00000020);
+          unConfirmedBalance_ = 0L;
+          bitField0_ = (bitField0_ & ~0x00000040);
+          pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000080);
           return this;
         }
 
@@ -8888,6 +9090,20 @@ public final class ProtoConfig {
             bitField0_ = (bitField0_ & ~0x00000010);
           }
           result.usedInternalKeys_ = usedInternalKeys_;
+          if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.confirmedBalance_ = confirmedBalance_;
+          if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.unConfirmedBalance_ = unConfirmedBalance_;
+          if (((bitField0_ & 0x00000080) == 0x00000080)) {
+            pendingTx_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                pendingTx_);
+            bitField0_ = (bitField0_ & ~0x00000080);
+          }
+          result.pendingTx_ = pendingTx_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -8933,6 +9149,22 @@ public final class ProtoConfig {
             }
             onChanged();
           }
+          if (other.hasConfirmedBalance()) {
+            setConfirmedBalance(other.getConfirmedBalance());
+          }
+          if (other.hasUnConfirmedBalance()) {
+            setUnConfirmedBalance(other.getUnConfirmedBalance());
+          }
+          if (!other.pendingTx_.isEmpty()) {
+            if (pendingTx_.isEmpty()) {
+              pendingTx_ = other.pendingTx_;
+              bitField0_ = (bitField0_ & ~0x00000080);
+            } else {
+              ensurePendingTxIsMutable();
+              pendingTx_.addAll(other.pendingTx_);
+            }
+            onChanged();
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
@@ -8947,6 +9179,14 @@ public final class ProtoConfig {
             return false;
           }
           if (!hasLastInternalIndex()) {
+            
+            return false;
+          }
+          if (!hasConfirmedBalance()) {
+            
+            return false;
+          }
+          if (!hasUnConfirmedBalance()) {
             
             return false;
           }
@@ -9199,6 +9439,204 @@ public final class ProtoConfig {
         public Builder clearUsedInternalKeys() {
           usedInternalKeys_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000010);
+          onChanged();
+          return this;
+        }
+
+        // required sint64 confirmedBalance = 6;
+        private long confirmedBalance_ ;
+        /**
+         * <code>required sint64 confirmedBalance = 6;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public boolean hasConfirmedBalance() {
+          return ((bitField0_ & 0x00000020) == 0x00000020);
+        }
+        /**
+         * <code>required sint64 confirmedBalance = 6;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public long getConfirmedBalance() {
+          return confirmedBalance_;
+        }
+        /**
+         * <code>required sint64 confirmedBalance = 6;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder setConfirmedBalance(long value) {
+          bitField0_ |= 0x00000020;
+          confirmedBalance_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required sint64 confirmedBalance = 6;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder clearConfirmedBalance() {
+          bitField0_ = (bitField0_ & ~0x00000020);
+          confirmedBalance_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // required sint64 unConfirmedBalance = 7;
+        private long unConfirmedBalance_ ;
+        /**
+         * <code>required sint64 unConfirmedBalance = 7;</code>
+         */
+        public boolean hasUnConfirmedBalance() {
+          return ((bitField0_ & 0x00000040) == 0x00000040);
+        }
+        /**
+         * <code>required sint64 unConfirmedBalance = 7;</code>
+         */
+        public long getUnConfirmedBalance() {
+          return unConfirmedBalance_;
+        }
+        /**
+         * <code>required sint64 unConfirmedBalance = 7;</code>
+         */
+        public Builder setUnConfirmedBalance(long value) {
+          bitField0_ |= 0x00000040;
+          unConfirmedBalance_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required sint64 unConfirmedBalance = 7;</code>
+         */
+        public Builder clearUnConfirmedBalance() {
+          bitField0_ = (bitField0_ & ~0x00000040);
+          unConfirmedBalance_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // repeated string pendingTx = 8;
+        private com.google.protobuf.LazyStringList pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensurePendingTxIsMutable() {
+          if (!((bitField0_ & 0x00000080) == 0x00000080)) {
+            pendingTx_ = new com.google.protobuf.LazyStringArrayList(pendingTx_);
+            bitField0_ |= 0x00000080;
+           }
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public java.util.List<java.lang.String>
+            getPendingTxList() {
+          return java.util.Collections.unmodifiableList(pendingTx_);
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public int getPendingTxCount() {
+          return pendingTx_.size();
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public java.lang.String getPendingTx(int index) {
+          return pendingTx_.get(index);
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public com.google.protobuf.ByteString
+            getPendingTxBytes(int index) {
+          return pendingTx_.getByteString(index);
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder setPendingTx(
+            int index, java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePendingTxIsMutable();
+          pendingTx_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder addPendingTx(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePendingTxIsMutable();
+          pendingTx_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder addAllPendingTx(
+            java.lang.Iterable<java.lang.String> values) {
+          ensurePendingTxIsMutable();
+          super.addAll(values, pendingTx_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder clearPendingTx() {
+          pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000080);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingTx = 8;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder addPendingTxBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePendingTxIsMutable();
+          pendingTx_.add(value);
           onChanged();
           return this;
         }
@@ -10686,7 +11124,7 @@ public final class ProtoConfig {
       "ontract\032n\n\010Contract\022%\n\035ShouldSendPayload" +
       "OnConnection\030\001 \001(\010\022;\n3ShouldReceivePaylo" +
       "adAfterSendingPayloadOnConnection\030\002 \001(\010\"",
-      "\371\t\n\032AuthenticatorConfiguration\022c\n\023config" +
+      "\302\n\n\032AuthenticatorConfiguration\022c\n\023config" +
       "ActiveAccount\030\001 \001(\0132F.authenticator.prot" +
       "obuf.AuthenticatorConfiguration.ConfigAc" +
       "tiveAccount\022o\n\031configAuthenticatorWallet" +
@@ -10714,18 +11152,19 @@ public final class ProtoConfig {
       "otobuf.ATAddress\032z\n\024ConfigOneNameProfile" +
       "\022\017\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 " +
       "\001(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onename" +
-      "AvatarFilePath\030\004 \001(\t\032\204\001\n\tATAccount\022\r\n\005in" +
+      "AvatarFilePath\030\004 \001(\t\032\315\001\n\tATAccount\022\r\n\005in" +
       "dex\030\001 \002(\005\022\031\n\021lastExternalIndex\030\002 \002(\005\022\030\n\020",
       "usedExternalKeys\030\003 \003(\005\022\031\n\021lastInternalIn" +
-      "dex\030\004 \002(\005\022\030\n\020usedInternalKeys\030\005 \003(\005*;\n\020A" +
-      "TGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePen" +
-      "dingRequestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007" +
-      "Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcas" +
-      "tAuthenticatorTx\020\002\022\025\n\021BroadcastNormalTx\020" +
-      "\003\022\'\n#updateIpAddressesForPreviousMessage" +
-      "\020\004*A\n\021ActiveAccountType\022\014\n\010Spending\020\000\022\013\n" +
-      "\007Savings\020\001\022\021\n\rAuthenticator\020\002B\rB\013ProtoCo" +
-      "nfig"
+      "dex\030\004 \002(\005\022\030\n\020usedInternalKeys\030\005 \003(\005\022\030\n\020c" +
+      "onfirmedBalance\030\006 \002(\022\022\032\n\022unConfirmedBala" +
+      "nce\030\007 \002(\022\022\021\n\tpendingTx\030\010 \003(\t*;\n\020ATGCMMes" +
+      "sageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingReq" +
+      "uestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing" +
+      "\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAuthen" +
+      "ticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#up" +
+      "dateIpAddressesForPreviousMessage\020\004*A\n\021A" +
+      "ctiveAccountType\022\014\n\010Spending\020\000\022\013\n\007Saving",
+      "s\020\001\022\021\n\rAuthenticator\020\002B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -10791,7 +11230,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_descriptor,
-              new java.lang.String[] { "Index", "LastExternalIndex", "UsedExternalKeys", "LastInternalIndex", "UsedInternalKeys", });
+              new java.lang.String[] { "Index", "LastExternalIndex", "UsedExternalKeys", "LastInternalIndex", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "PendingTx", });
           return null;
         }
       };

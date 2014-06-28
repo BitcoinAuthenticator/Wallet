@@ -119,6 +119,11 @@ message AuthenticatorConfiguration{
 		repeated int32 usedExternalKeys 	= 3;
 		required int32 lastInternalIndex	= 4;
 		repeated int32 usedInternalKeys 	= 5; 
+		//
+		required sint64 confirmedBalance	= 6;
+		required sint64 unConfirmedBalance	= 7;
+		//
+		repeated string pendingTx			= 8;
 	}
 	
 	optional ConfigActiveAccount configActiveAccount 				= 1;

@@ -25,6 +25,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
@@ -265,7 +266,6 @@ public class Controller {
     }
     
     public void onBitcoinSetup() {
-    	bitcoin.wallet().addEventListener(new WalletListener());
     	bitcoin.wallet().freshReceiveAddress();
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
@@ -295,6 +295,13 @@ public class Controller {
 
 		@Override
 		public void onFinishedBuildingWalletHierarchy() { }
+
+		@Override
+		public void onBalanceChanged(int walletID) {
+			refreshBalanceLabel();
+	        setReceiveAddresses();
+	        setTxHistoryContent();
+		}
     }
     
     public class ProgressBarUpdater extends DownloadListener {
@@ -417,63 +424,6 @@ public class Controller {
     			Tooltip.install(btnConnection0, new Tooltip("Not connected"));
     		}
         }
-    }
-    
-    public class WalletListener extends AbstractWalletEventListener {
-        @Override
-        public void onWalletChanged(Wallet wallet) {
-            checkGuiThread();
-            refreshBalanceLabel();
-            setTxHistoryContent();
-            //setAddresses();
-        }
-        
-        public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-        	List<TransactionOutput> outs = tx.getOutputs();
-        	final CountDownLatch latch = new CountDownLatch(1);
-            // asynchronous thread doing the process
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    System.out.println("Doing some process");
-                    for (TransactionOutput out : outs){
-                		if (out.isMine(Main.bitcoin.wallet())){
-                			Script scr = out.getScriptPubKey();
-                			String addr = scr.getToAddress(Main.params).toString();
-                			try {Authenticator.getWalletOperation().markCachedSpendingAddressAsUsed(addr);}
-                			catch (IOException e) {e.printStackTrace();}
-                		}
-                	}
-                    latch.countDown();
-                }
-            }).start();
-            // asynchronous thread waiting for the process to finish
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    System.out.println("Await");
-                    try {latch.await();} 
-                    catch (InterruptedException ex) {}
-                    // queuing the done notification into the javafx thread
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                        	setReceiveAddresses();
-                            System.out.println("Done");
-                        }
-                    });
-                }
-            }).start();
-        	
-        	
-            refreshBalanceLabel();
-        }
-        
-        public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
-        	refreshBalanceLabel();
-        }
-        
-       
     }
     
     //#####################################
@@ -682,34 +632,21 @@ public class Controller {
 	public void refreshBalanceLabel() {
     	Coin unconfirmed = Coin.ZERO;
     	Coin confirmed = Coin.ZERO;
-    	try {
-	    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending)
-	    	{
-		    	
-					unconfirmed = Authenticator.getWalletOperation().getUnconfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE,
-																							HierarchyAddressTypes.External );
-				
-		    	confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE,
-																						HierarchyAddressTypes.External );
-	    	}
-	    	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-	    		unconfirmed = Authenticator.getWalletOperation().getUnconfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE,
-																						HierarchyAddressTypes.External );
-	    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE,
-																						HierarchyAddressTypes.External);
-	    	}
-	    	else{
-	    		unconfirmed = Authenticator.getWalletOperation().getUnconfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex(),
-																						HierarchyAddressTypes.External);
-	    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex(),
-																						HierarchyAddressTypes.External);
-	    	}
-    	} catch (NoSuchAlgorithmException | JSONException
-				| AddressFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending)
+    	{
+	    	
+			unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
+			
+	    	confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
+    	}
+    	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+    		unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
+    	}
+    	else{
+    		unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());
+    	}    	
         //final Coin total = confirmed.add(unconfirmed);
         lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
@@ -867,11 +804,10 @@ public class Controller {
     	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
     			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
     		HierarchyAddressTypes addType = HierarchyAddressTypes.External; // TODO - internal also
-    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE, addType);
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
     	}	
     	else
-    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex(),
-																				HierarchyAddressTypes.External );   	
+    		confirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());   	
     	
     	if(amount.compareTo(confirmed) > 0) return false;
     	
@@ -947,7 +883,7 @@ public class Controller {
     			addresses = Authenticator.getWalletOperation().getAccountAddressesArray(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE, HierarchyAddressTypes.External);
     			// change address
     			try {
-					changeaddr = Authenticator.getWalletOperation().getNewSpendingExternalAddress(true).toString();
+					changeaddr = Authenticator.getWalletOperation().getNewSpendingExternalAddress(true).getAddressStr();
 				} catch (AddressFormatException e) { e.printStackTrace(); }
     		}
     		else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
@@ -957,7 +893,7 @@ public class Controller {
     			try {
 					changeaddr = Authenticator.getWalletOperation()
 							.getNextExternalAddress(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
-							.toString();
+							.getAddressStr();
 				} catch (AddressFormatException e) { e.printStackTrace(); }
     		}
     		else{
@@ -968,7 +904,7 @@ public class Controller {
     			try {
 					changeaddr = Authenticator.getWalletOperation()
 							.getNextExternalAddress(accountID)
-							.toString();
+							.getAddressStr();
 				} catch (AddressFormatException e) { e.printStackTrace(); }
     		}
     		   

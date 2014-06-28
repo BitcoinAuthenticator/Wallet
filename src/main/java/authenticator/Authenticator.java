@@ -302,4 +302,9 @@ public class Authenticator extends AbstractService{
 		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
 			l.onFinishedBuildingWalletHierarchy();
 	}
+	
+	public static void fireOnBalanceChanged(int walletID){
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onBalanceChanged(walletID);
+	}
 }

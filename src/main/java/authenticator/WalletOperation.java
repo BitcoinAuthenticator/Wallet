@@ -2,31 +2,19 @@ package authenticator;
 
 import authenticator.hierarchy.BAHierarchy;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import org.json.JSONException;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import wallettemplate.Main;
 import authenticator.Utils.BAUtils;
-import authenticator.Utils.KeyUtils;
 import authenticator.db.ConfigFile;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
@@ -37,6 +25,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 
+import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
@@ -46,8 +35,8 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
-import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
@@ -59,7 +48,6 @@ import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.ByteString;
 
 
 /**
@@ -83,8 +71,10 @@ public class WalletOperation extends BASE{
 	
 	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
 		super(WalletOperation.class);
-		if(mWalletWrapper == null)
+		if(mWalletWrapper == null){
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
+			mWalletWrapper.addEventListener(new WalletListener());
+		}
 		
 		if(configFile == null){
 			configFile = new ConfigFile();
@@ -120,6 +110,114 @@ public class WalletOperation extends BASE{
 			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountByNumberOfKeys);
 		}
 	}
+	
+	/**
+	 *
+	 * 
+	 * @author alon
+	 *
+	 */
+	public class WalletListener extends AbstractWalletEventListener {
+        
+        @Override
+        public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+        	try {
+				updateBalace(tx, true);
+			} catch (Exception e) { e.printStackTrace(); }
+        }
+        
+        public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+        	try {
+				updateBalace(tx, true);
+			} catch (Exception e) { e.printStackTrace(); }
+        }
+        
+        public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
+        	try {
+				updateBalace(tx, false);
+			} catch (Exception e) { e.printStackTrace(); }
+        }
+        
+        private void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
+        	/**
+        	 * 
+        	 * Check for coins entering
+        	 */
+        	List<TransactionOutput> outs = tx.getOutputs();
+        	boolean isChanged = false;
+        	for (TransactionOutput out : outs){
+    			Script scr = out.getScriptPubKey();
+    			String addrStr = scr.getToAddress(Main.params).toString();
+    			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+    				TransactionConfidence conf = tx.getConfidence();
+    				switch(conf.getConfidenceType()){
+    				case BUILDING:
+    					/**
+    					 * If the transaction is new but we don't know about it, just add it to confirmed.
+    					 * If the transaction is moving from pending to confirmed, make it so.
+    					 */
+    					if(!isNewTx && Authenticator.getWalletOperation().isPendingTx(add.getAccountIndex(), tx.getHashAsString())){ 
+    						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
+    						removePendingTx(add.getAccountIndex(), tx.getHashAsString());
+    						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    					}
+    					else{
+    						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
+    						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    					}
+    					break;
+    				case PENDING:
+    					if(!isNewTx)
+    						; // do nothing
+    					else{
+    						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
+    						addPendingTx(add.getAccountIndex(), tx.getHashAsString());
+    						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    					}
+    					break;
+    				case DEAD:
+    					// how the fuck do i know from where i should subtract ?!?!
+    					break;
+    				}
+    			}
+        	}
+        	
+        	/**
+        	 * 
+        	 * Check for coins entering
+        	 */
+        	if(isNewTx){
+        		List<TransactionInput> ins = tx.getInputs();
+            	for (TransactionInput in : ins){
+            		TransactionOutput out = in.getConnectedOutput();
+            		if(out != null) // could be not connected
+        			{
+            			Script scr = out.getScriptPubKey();
+        				String addrStr = scr.getToAddress(Main.params).toString();
+            			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+            				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+            				TransactionConfidence conf = tx.getConfidence();
+            				switch(conf.getConfidenceType()){
+            				case BUILDING:
+            					//Authenticator.getWalletOperation().subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+            					break;
+            				case PENDING:
+            					subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+            					Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+            					break;
+            				case DEAD:
+            					//Authenticator.getWalletOperation().addToConfirmedBalance(add.getAccountIndex(), out.getValue());
+            					break;
+            				}
+            			}
+        			}            			
+            	}
+        	}
+                		
+        }
+       
+    }
 	
 	//#####################################
 	//
@@ -230,7 +328,7 @@ public class WalletOperation extends BASE{
 		for (TransactionOutput output : to)
             tx.addOutput(output);
 		//Add the change
-		Address change = new Address(this.mWalletWrapper.getNetworkParameters(), changeAdd);
+		Address change = new Address(getNetworkParams(), changeAdd);
 		Coin rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), null, rest, change);
@@ -468,6 +566,8 @@ public class WalletOperation extends BASE{
 						  b.setIndex(accoutnIdx);
 						  b.setLastExternalIndex(0);
 						  b.setLastInternalIndex(0);
+						  b.setConfirmedBalance(0);
+						  b.setUnConfirmedBalance(0);
 	    configFile.writeAccount(b.build());
 		return b.build();
 	}
@@ -714,61 +814,138 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
-	/**
-	 * Returns a pending balance for a particular account.<br>
-	 * Default general wallet account is 0, any other account is considered an Authenticator account.
-	 * 
-	 * @param pairingID
-	 * @return
-	 * @throws AddressFormatException 
-	 * @throws JSONException 
-	 * @throws NoSuchAlgorithmException 
-	 */
-	public Coin getUnconfirmedBalance(int accountID, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
-		if(accountID == HierarchyPrefixedAccountIndex.PrefixSpending_VALUE){
-			try {
-				return getPendingBalanceForAddresses(getExternalSpendingAddressStringPool());
-			} catch (IOException e) { e.printStackTrace();  }
-			return Coin.ZERO;
-		}
-		else{
-			return getPendingBalanceForAddresses(getAccountAddressesArray(accountID, addressType));
-		}
+	public Coin getConfirmedBalance(int accountIdx){
+		long balance = configFile.getConfirmedBalace(accountIdx);
+		return Coin.valueOf(balance);
 	}
 	
 	/**
-	 * Returns the confirmed balance for a particular account.<br>
-	 * Default general wallet account is 0, any other account is considered an Authenticator account.
+	 * Will return updated balance
 	 * 
-	 * @param pairingID
+	 * @param accountIdx
+	 * @param amount
 	 * @return
-	 * @throws AddressFormatException 
-	 * @throws JSONException 
-	 * @throws NoSuchAlgorithmException 
+	 * @throws IOException
 	 */
-	public Coin getConfirmedBalance(int accountID, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException 
-	{
-		if(accountID == HierarchyPrefixedAccountIndex.PrefixSpending_VALUE){
-			try {
-				return getConfirmedBalance(getExternalSpendingAddressStringPool());
-			} catch (IOException e) { e.printStackTrace(); }
-			return Coin.ZERO;
-		}
-		else{
-			return getConfirmedBalance(getAccountAddressesArray(accountID, addressType));
-		}
+	public Coin addToConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+		Coin old = getConfirmedBalance(accountIdx);
+		return setConfirmedBalance(accountIdx, old.add(amount));
 	}
 	
-	private Coin getPendingBalanceForAddresses(ArrayList<String> addressArr)
-	{
-		return mWalletWrapper.getPendingWatchedTransactionsBalacnce(addressArr);
+	/**
+	 * Will return updated balance
+	 * 
+	 * @param accountIdx
+	 * @param amount
+	 * @return
+	 * @throws IOException
+	 */
+	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+		Coin old = getConfirmedBalance(accountIdx);
+		assert(old.compareTo(amount) > 0);
+		return setConfirmedBalance(accountIdx, old.subtract(amount));
 	}
 	
-	private Coin getConfirmedBalance(ArrayList<String> addressArr)
-	{
-		Coin estimated = mWalletWrapper.getEstimatedBalanceOfWatchedAddresses(addressArr);
-		Coin unconfirmed = getPendingBalanceForAddresses(addressArr);
-		return estimated.subtract(unconfirmed);
+	/**
+	 * Will return the updated balance
+	 * 
+	 * @param accountIdx
+	 * @param newBalance
+	 * @return
+	 * @throws IOException
+	 */
+	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws IOException{
+		long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
+		return Coin.valueOf(balance);
+	}
+	
+	public Coin getUnConfirmedBalance(int accountIdx){
+		long balance = configFile.getUnConfirmedBalace(accountIdx);
+		return Coin.valueOf(balance);
+	}
+	
+	/**
+	 * Will return updated balance
+	 * 
+	 * @param accountIdx
+	 * @param amount
+	 * @return
+	 * @throws IOException
+	 */
+	public Coin addToUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+		Coin old = getUnConfirmedBalance(accountIdx);
+		return setUnConfirmedBalance(accountIdx, old.add(amount));
+	}
+	
+	/**
+	 * Will return updated balance
+	 * 
+	 * @param accountIdx
+	 * @param amount
+	 * @return
+	 * @throws IOException
+	 */
+	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+		Coin old = getUnConfirmedBalance(accountIdx);
+		assert(old.compareTo(amount) > 0);
+		return setUnConfirmedBalance(accountIdx, old.subtract(amount));
+	}
+	
+	/**
+	 * Will return the updated balance
+	 * 
+	 * @param accountIdx
+	 * @param newBalance
+	 * @return
+	 * @throws IOException
+	 */
+	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws IOException{
+		long balance = configFile.writeUnConfirmedBalace(accountIdx, newBalance.longValue());
+		return Coin.valueOf(balance);
+	}
+	
+	/**
+	 * Will return the updated confirmed balance
+	 * 
+	 * @param accountId
+	 * @param amount
+	 * @return
+	 * @throws IOException 
+	 */
+	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws IOException{
+		Coin beforeConfirmed = getConfirmedBalance(accountId);
+		Coin beforeUnconf = getUnConfirmedBalance(accountId);
+		assert(beforeUnconf.compareTo(amount) > 0);
+		//
+		Coin afterConfirmed = beforeConfirmed.add(amount);
+		Coin afterUnconfirmed = beforeUnconf.subtract(amount);
+		
+		setConfirmedBalance(accountId,afterConfirmed);
+		setUnConfirmedBalance(accountId,afterUnconfirmed);
+		
+		return afterConfirmed;
+	}
+	
+	/**
+	 * Will return the updated unconfirmed balance
+	 * 
+	 * @param accountId
+	 * @param amount
+	 * @return
+	 * @throws IOException 
+	 */
+	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws IOException{
+		Coin beforeConfirmed = getConfirmedBalance(accountId);
+		Coin beforeUnconf = getUnConfirmedBalance(accountId);
+		assert(beforeConfirmed.compareTo(amount) > 0);
+		//
+		Coin afterConfirmed = beforeConfirmed.subtract(amount);
+		Coin afterUnconfirmed = beforeUnconf.add(amount);
+		
+		setConfirmedBalance(accountId,afterConfirmed);
+		setUnConfirmedBalance(accountId,afterUnconfirmed);
+		
+		return afterUnconfirmed;
 	}
 	
 	
@@ -795,6 +972,31 @@ public class WalletOperation extends BASE{
 		
 		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 			return configFile.getPendingRequests();
+		}
+		
+	//#####################################
+	//
+	//		Pending transactions 
+	//
+	//#####################################
+		public List<String> getPendingTx(int accountIdx){
+			return configFile.getPendingTx(accountIdx);
+		}
+		
+		public void addPendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			configFile.addPendingTx(accountIdx,txID);
+		}
+		
+		public void removePendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			configFile.removePendingTx(accountIdx,txID);
+		}
+		
+		public boolean isPendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			List<String> all = getPendingTx(accountIdx);
+			for(String tx:all)
+				if(tx.equals(txID))
+					return true;
+			return false;
 		}
 		
 	//#####################################

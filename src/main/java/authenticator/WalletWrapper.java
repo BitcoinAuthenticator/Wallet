@@ -207,20 +207,6 @@ public class WalletWrapper extends BASE{
 	
 	//#####################################
 	//
-	//		Keys
-	//
-	//#####################################
-	
-	/*public DeterministicKey currentReceiveKey(){
-		return trackedWallet.currentReceiveKey();
-	}*/
-	
-	/*public DeterministicKey freshReceiveKey(){
-		return trackedWallet.freshReceiveKey();
-	}*/
-	
-	//#####################################
-	//
 	//		Transactions
 	//
 	//#####################################

@@ -212,6 +212,46 @@ public class ConfigFile {
 		writeConfigFile(auth);
 	}
 	
+	public long getConfirmedBalace(int accountIdx){
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigAccounts(accountIdx).getConfirmedBalance();
+	}
+	
+	/**
+	 * updates confirmed balance and returns the updated balance
+	 * 
+	 * @param accountIdx
+	 * @param newBalance
+	 * @return
+	 * @throws IOException
+	 */
+	public long writeConfirmedBalace(int accountIdx, long newBalance) throws IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.getConfigAccountsBuilder(accountIdx).setConfirmedBalance(newBalance);
+		writeConfigFile(auth);
+		return auth.getConfigAccounts(accountIdx).getConfirmedBalance();
+	}
+	
+	public long getUnConfirmedBalace(int accountIdx){
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigAccounts(accountIdx).getUnConfirmedBalance();
+	}
+	
+	/**
+	 * updates unconfirmed balance and returns the updated balance
+	 * 
+	 * @param accountIdx
+	 * @param newBalance
+	 * @return
+	 * @throws IOException
+	 */
+	public long writeUnConfirmedBalace(int accountIdx, long newBalance) throws IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.getConfigAccountsBuilder(accountIdx).setUnConfirmedBalance(newBalance);
+		writeConfigFile(auth);
+		return auth.getConfigAccounts(accountIdx).getUnConfirmedBalance();
+	}
+	
 	public List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigAuthenticatorWallet().getPendingRequestsList();
@@ -260,6 +300,27 @@ public class ConfigFile {
 	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.setHierarchySeed(ByteString.copyFrom(seed));
+		writeConfigFile(auth);
+	}
+	
+	public List<String> getPendingTx(int accountIdx){
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigAccounts(accountIdx).getPendingTxList();
+	}
+	
+	public void addPendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.getConfigAccountsBuilder(accountIdx).addPendingTx(txID);
+		writeConfigFile(auth);
+	}
+	
+	public void removePendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<String> all = getPendingTx(accountIdx);
+		auth.getConfigAccountsBuilder(accountIdx).clearPendingTx();
+		for(int i=0;i < all.size(); i++)
+			if(!all.get(i).equals(txID))
+				auth.getConfigAccountsBuilder(accountIdx).addPendingTx(all.get(i));
 		writeConfigFile(auth);
 	}
 }
