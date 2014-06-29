@@ -811,7 +811,7 @@ public class Controller {
     }
     
     @FXML protected void SendTx(ActionEvent event) throws Exception{
-    	
+    	setActivitySpinner("Sending Tx ..");
     	if(!ValidateTx()){
     		Dialogs.create()
 	        .owner(Main.stage)
@@ -826,7 +826,6 @@ public class Controller {
     	}
     	else{
     		//
-    		setActivitySpinner("Sending Tx ..");
     		// collect Tx outputs
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
         	for(Node n:scrlContent.getChildren())
@@ -1636,7 +1635,7 @@ public class Controller {
 		        leave.setCycleCount(1);
 		        leave.setInterpolator(direction==1? Interpolator.EASE_OUT:Interpolator.EASE_IN);
 		        leave.play();
-		        if(direction == -1)
+		        if(direction == 1)
 		        	isSpinnerVisible = false;
 			}
         });
