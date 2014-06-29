@@ -22,29 +22,30 @@ import authenticator.operations.OnOperationUIUpdate;
  * opens a port for Alice, displays a QR code for the user to scan, and receives the master public key and chaincode.
  */
 public class PairingProtocol {
-	public  DataInputStream in;
+	/*public  DataInputStream in;
 	public  DataOutputStream out;
-	/*public static byte[] chaincode;
+	public static byte[] chaincode;
 	public static byte[] mPubKey;
 	public static byte[] gcmRegId;
 	public static byte[] pairingID;
 	public static SecretKey sharedsecret;*/
-	public  SecretKey sharedsecret;
+	//public  SecretKey sharedsecret;
 	
   /**
-   * Run a complete process of pairing with an authenticator device
-   * args[] - 
-   * 	0 - Pairing name
-   * 	1 - Pair type, by default "blockchain"
-   * 	2 - Wallet Account Index
-   * 
+   * Run a complete process of pairing with an authenticator device.<br>
+   * args[]:
+   * <ol>
+   * <li>Pairing name</li>
+   * <li>Pair type, by default "blockchain"</li>
+   * <li>Wallet Account Index</li>
+   * </ol>
    * 
    * @param {@link java.net.ServerSocket} ss
    * @param args
    * @param {@link authenticator.operations.OnOperationUIUpdate} listener
    * @throws Exception
    */
-  public void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
+  public static void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[1];
@@ -78,8 +79,8 @@ public class PairingProtocol {
     
 	  // Receive payload
 	  postUIStatusUpdate(listener,"Decrypting message ...");
-	  in = new DataInputStream(socket.getInputStream());
-	  out = new DataOutputStream(socket.getOutputStream());
+	  DataInputStream in = new DataInputStream(socket.getInputStream());
+	  DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 	  int keysize = in.readInt();
 	  byte[] cipherKeyBytes = new byte[keysize];
 	  in.read(cipherKeyBytes);
@@ -113,8 +114,7 @@ public class PairingProtocol {
 		  			 "gcmRegId: " +  GCM + "\n" + 
 		  			 "pairing ID: " + pairingID);
 		  //Save to file
-		  ConfigFile configFile = new ConfigFile();
-		  configFile.writePairingData(mPubKey, chaincode, key, GCM, pairingID, args[0], Integer.parseInt(args[2]));
+		  authenticator.Authenticator.getWalletOperation().generateNewPairing(mPubKey, chaincode, key, GCM, pairingID, args[0]);
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");
@@ -123,7 +123,7 @@ public class PairingProtocol {
 
   }
   
-  public  void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
+  public static  void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
   {
 	  if(listener != null)
 		  listener.statusReport(str);

@@ -112,6 +112,7 @@ public class TCPListener extends BASE{
 							//		Inbound
 							//
 							//#################################
+							PendingRequest pendingReq = null;
 							try{
 								if(isConnected){
 									logAsInfo("Processing Pending Operation ...");
@@ -125,7 +126,6 @@ public class TCPListener extends BASE{
 									JSONObject jo = new JSONObject(new String(reqIdPayload));
 									requestID = jo.getString("requestID");
 									//
-									PendingRequest pendingReq = null;
 									for(Object o:Authenticator.getWalletOperation().getPendingRequests()){
 										PendingRequest po = (PendingRequest)o;
 										if(po.getRequestID().equals(requestID))
@@ -174,16 +174,23 @@ public class TCPListener extends BASE{
 												@Override
 												public void statusReport( String report) { }
 
+												@SuppressWarnings("restriction")
 												@Override
 												public void onFinished( String str) { 
-													Dialogs.create()
-												        .owner(Main.stage)
-												        .title("New Info.")
-												        .masthead(null)
-												        .message(str)
-												        .showInformation();
+													Platform.runLater(new Runnable() {
+													      @Override public void run() {
+													    	  Dialogs.create()
+														        .owner(Main.stage)
+														        .title("New Info.")
+														        .masthead(null)
+														        .message(str)
+														        .showInformation();
+													      }
+													    });
+													
 												}
 
+												@SuppressWarnings("restriction")
 												@Override
 												public void onUserCancel(String reason) {
 													Platform.runLater(new Runnable() {
@@ -221,6 +228,7 @@ public class TCPListener extends BASE{
 								}
 							}
 							catch(Exception e){
+								Authenticator.removePendingRequest(pendingReq);
 								logAsInfo("Error Occured while executing Inbound operation:\n"
 										+ e.toString());
 							}
@@ -247,6 +255,7 @@ public class TCPListener extends BASE{
 										logAsInfo("Error Occured while executing Outbound operation:\n"
 												+ e.toString());
 										op.OnExecutionError(e);
+										e.printStackTrace();
 									}
 								}
 							}
@@ -260,7 +269,8 @@ public class TCPListener extends BASE{
 					catch (Exception e1) {
 						
 						//TODO - notify gui
-						logAsInfo("Fatal Error, Authenticator Operation ShutDown Because Of: \n" + e1.toString());
+						logAsInfo("Fatal Error, Authenticator Operation ShutDown Because Of: \n");
+						e1.printStackTrace();
 					}
 					finally
 					{

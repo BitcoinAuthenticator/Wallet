@@ -264,7 +264,11 @@ public class ConfigFile {
 	@SuppressWarnings("static-access")
 	public void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigAuthenticatorWalletBuilder().removePendingRequests(req.getDescriptor().getIndex());
+		List<PendingRequest> all = getPendingRequests();
+		auth.getConfigAuthenticatorWalletBuilder().clearPendingRequests();
+		for(PendingRequest pr:all)
+			if(!pr.getRequestID().equals(req.getRequestID()))
+				auth.getConfigAuthenticatorWalletBuilder().addPendingRequests(pr);
 		writeConfigFile(auth);
 	}
 	

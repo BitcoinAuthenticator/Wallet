@@ -100,11 +100,20 @@ public class Authenticator extends AbstractService{
 	@SuppressWarnings("static-access")
 	public static void initPendingRequests(){
 		List<PendingRequest> pending = new ArrayList<PendingRequest>();
+		String pendingStr = "No pending requests in wallet";
 		try {
 			pending = getWalletOperation().getPendingRequests();
+			if(pending.size() > 0)
+				pendingStr = "";
 		} catch (IOException e) { e.printStackTrace(); }
-		for(PendingRequest pr:pending)
+		for(PendingRequest pr:pending){
 			addPendingRequestToList(pr);
+			pendingStr += "Pending Request: " + getWalletOperation().pendingRequestToString(pr) + "\n";
+		}
+		
+		pendingStr = "\n\n\n\n\n" + pendingStr + "\n\n\n\n\n";
+		
+		System.out.println(pendingStr);
 	}
 	
 	@SuppressWarnings("static-access")

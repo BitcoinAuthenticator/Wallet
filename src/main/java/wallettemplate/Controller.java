@@ -230,7 +230,7 @@ public class Controller {
 		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
 		
 		//Receive address
-		/*AddressBox.valueProperty().addListener(new ChangeListener<String>() {
+		AddressBox.valueProperty().addListener(new ChangeListener<String>() {
     		@Override public void changed(ObservableValue ov, String t, String t1) {
     			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
@@ -263,7 +263,7 @@ public class Controller {
     				}
     			}
     		}    
-    	});*/
+    	});
     }
     
     public void onBitcoinSetup() {
@@ -800,7 +800,7 @@ public class Controller {
     	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
     		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
     	else
-    		confirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());   	
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());   	
     	
     	if(amount.compareTo(confirmed) > 0) return false;
     	
@@ -811,7 +811,7 @@ public class Controller {
     }
     
     @FXML protected void SendTx(ActionEvent event) throws Exception{
-    	setActivitySpinner("Sending Tx ..");
+    	
     	if(!ValidateTx()){
     		Dialogs.create()
 	        .owner(Main.stage)
@@ -826,6 +826,7 @@ public class Controller {
     	}
     	else{
     		//
+    		setActivitySpinner("Sending Tx ..");
     		// collect Tx outputs
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
         	for(Node n:scrlContent.getChildren())
@@ -963,9 +964,11 @@ public class Controller {
 						    	  if(t != null){
 						    		  Throwable rootCause = Throwables.getRootCause(t);
 						    		  desc = rootCause.toString();
+						    		  t.printStackTrace();
 						    	  }
 						    	  if(e != null){
 						    		  desc = e.toString();
+						    		  e.printStackTrace();
 						    	  }
 						    	  //
 						    	  Dialogs.create()
@@ -1643,51 +1646,64 @@ public class Controller {
     }
     
     public void setActivitySpinner(String text){
-    	if(isSpinnerVisible == false)
-    	Platform.runLater(new Runnable(){
-			@Override
-			public void run() {
-				syncProgress.setVisible(false);
-				lblStatus.setText(text);
-		    	readyToGoAnimation(-1,new EventHandler<ActionEvent>(){
-					@Override
-					public void handle(ActionEvent arg0) {
-						// Sync progress bar slides out ...
-				        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
-				        leave.setByX(300.0);
-				        leave.setCycleCount(1);
-				        leave.play();
-					}
-		        });
-		    	isSpinnerVisible = true;
-			}
-        });
+    	if(isSpinnerVisible == false){
+    		try {
+    			Platform.runLater(new Runnable(){
+    				@Override
+    				public void run() {
+    					syncProgress.setVisible(false);
+    					lblStatus.setText(text);
+    			    	readyToGoAnimation(-1,new EventHandler<ActionEvent>(){
+    						@Override
+    						public void handle(ActionEvent arg0) {
+    							// Sync progress bar slides out ...
+    					        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
+    					        leave.setByX(300.0);
+    					        leave.setCycleCount(1);
+    					        leave.play();
+    						}
+    			        });
+    			    	isSpinnerVisible = true;
+    				}
+    	        });
+    			
+    			Thread.sleep(700);
+    		 } catch (InterruptedException e) { }
+    	}
+    	
+    	
     }
     
     public void removeActivitySpinner(){
-    	if(isSpinnerVisible == true)
-    	Platform.runLater(new Runnable(){
-			@Override
-			public void run() {
-				// Sync progress bar slides out ...
-		        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
-		        leave.setByX(-300.0);
-		        leave.setCycleCount(1);
-		        leave.play();
-		        leave.setOnFinished(new EventHandler<ActionEvent>(){
-					@Override
-					public void handle(ActionEvent arg0) {
-						readyToGoAnimation(1, new EventHandler<ActionEvent>(){
-							@Override
-							public void handle(ActionEvent arg0) {
-								syncProgress.setVisible(true);
-								lblStatus.setText("No Activity");
-							}
-						});	
-					}
-		        });
-		        isSpinnerVisible = false;  
-			}
-        });
+    	if(isSpinnerVisible == true){
+	    	Platform.runLater(new Runnable(){
+				@Override
+				public void run() {
+					// Sync progress bar slides out ...
+			        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
+			        leave.setByX(-300.0);
+			        leave.setCycleCount(1);
+			        leave.play();
+			        leave.setOnFinished(new EventHandler<ActionEvent>(){
+						@Override
+						public void handle(ActionEvent arg0) {
+							readyToGoAnimation(1, new EventHandler<ActionEvent>(){
+								@Override
+								public void handle(ActionEvent arg0) {
+									syncProgress.setVisible(true);
+									lblStatus.setText("No Activity");
+								}
+							});	
+						}
+			        });
+			        isSpinnerVisible = false;  
+				}
+	        });
+	    }
+    	
+    	try {
+			Thread.sleep(700);
+		 } catch (InterruptedException e) { }
     }
+    
 }

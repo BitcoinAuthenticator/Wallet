@@ -89,20 +89,17 @@ public class OperationsFactory extends BASE{
 	 * @param pairingName
 	 * @return
 	 */
-	static public ATOperation PAIRING_OPERATION(String pairingName, int walletAccountIndex){
+	static public ATOperation PAIRING_OPERATION(String pairingName){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, "blockchain", Integer.toString(walletAccountIndex)})
+					.SetArguments(new String[]{pairingName, "blockchain"})
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;
 						@Override
-						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception {
-							// TODO Auto-generated method stub
-							
-						}
+						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
 
 						@SuppressWarnings("static-access")
 						@Override
@@ -175,14 +172,14 @@ public class OperationsFactory extends BASE{
 							String reqID = sendGCM();
 							// prepare a pending request object
 							PendingRequest.Builder pr = PendingRequest.newBuilder();
-							pr.setPairingID(pairingID);
-							pr.setRequestID(reqID);
-							pr.setOperationType(ATOperationType.SignAndBroadcastAuthenticatorTx);
-							pr.setPayloadToSendInCaseOfConnection(ByteString.copyFrom(cypherBytes));
-							pr.setRawTx(BAUtils.getStringTransaction(tx));
+												   pr.setPairingID(pairingID);
+												   pr.setRequestID(reqID);
+												   pr.setOperationType(ATOperationType.SignAndBroadcastAuthenticatorTx);
+												   pr.setPayloadToSendInCaseOfConnection(ByteString.copyFrom(cypherBytes));
+												   pr.setRawTx(BAUtils.getStringTransaction(tx));
 							PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
-							cb.setShouldSendPayloadOnConnection(true);
-							cb.setShouldReceivePayloadAfterSendingPayloadOnConnection(true);
+															cb.setShouldSendPayloadOnConnection(true);
+															cb.setShouldReceivePayloadAfterSendingPayloadOnConnection(true);
 							pr.setContract(cb.build());
 							Authenticator.addPendingRequestToFile(pr.build());
 						}
@@ -265,10 +262,12 @@ public class OperationsFactory extends BASE{
 						for(TransactionInput in:tx.getInputs()){
 							String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 							ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
-							DeterministicKey pubkey = Authenticator.getWalletOperation().getKeyFromAccount(pairingObj.getWalletAccountIndex(),
+							ECKey pubkey = Authenticator.getWalletOperation().getECKeyFromAccount(atAdd.getAccountIndex(),
 																										atAdd.getType(),
-																										atAdd.getAccountIndex());
+																										atAdd.getKeyIndex());
+							
 							pubKeysArr.add(pubkey.getPubKey());
+							indexArr.add(atAdd.getKeyIndex());
 						}
 						
 						SignMessage signMsgPayload = new SignMessage()
@@ -327,25 +326,29 @@ public class OperationsFactory extends BASE{
 							//Prep the keys needed for signing
 							byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
 							byte[] chain = BAUtils.hexStringToByteArray(po.getChainCode());
-							List<TransactionInput> inputs = tx.getInputs();
+							
+							// we rebuild the Tx from a raw string so we need to reconnect the inputs
+							Authenticator.getWalletOperation().connectInputs(tx.getInputs());
 							
 							//Loop to create a signature for each input
-							int i =0;
-							Authenticator.getWalletOperation().connectInputs(tx.getInputs());
+							int i = 0;							
 							for(TransactionInput in: tx.getInputs()){
 								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 								ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
 								//Authenticator Key
 								HDKeyDerivation HDKey = null;
 								DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
-								int indexInAuth = atAdd.getAccountIndex(); // the same ass the address index in the wallet
+								int indexInAuth = atAdd.getKeyIndex(); // the same ass the address index in the wallet
 								DeterministicKey childKey = HDKey.deriveChildKey(mPubKey,indexInAuth);
 								byte[] childpublickey = childKey.getPubKey();
 								ECKey authKey = new ECKey(null, childpublickey);
 								
 								//Wallet key
-								DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAccount(po.getWalletAccountIndex(), atAdd.getType(), atAdd.getAccountIndex());
-								ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
+								//DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAccount(po.getWalletAccountIndex(), atAdd.getType(), atAdd.getAccountIndex());
+								//ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
+								ECKey walletKey = Authenticator.getWalletOperation().getECKeyFromAccount(atAdd.getAccountIndex(),
+																									atAdd.getType(),
+																									atAdd.getKeyIndex());
 								
 								// Create Program for the script
 								List<ECKey> keys = ImmutableList.of(authKey, walletKey);
@@ -358,17 +361,23 @@ public class OperationsFactory extends BASE{
 								TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
 								List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
 								Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
-								TransactionInput input = inputs.get(i);
-								input.setScriptSig(inputScript);
+								//TransactionInput input = inputs.get(i);
+								//input.setScriptSig(inputScript);
+								in.setScriptSig(inputScript);
 								
 								//check signature
-								try{
-									in.getScriptSig().correctlySpends(tx, i, scriptpubkey, false);
+								/*try{
+									in.getScriptSig().correctlySpends(tx, i, scriptpubkey, true);
 								} catch (ScriptException e) {
-						            throw new ScriptException("Failed to sign transaction");
-						        }
+									// disconnect input to not get the wallet to crash on startup
+									// Caused by bitcoinj WalletProtobufSerializer.java:585
+									// Exception: UnreadableWalletException
+									Authenticator.getWalletOperation().disconnectInputs(tx.getInputs());
+						            throw e;
+						        }*/
 							
-								break;
+								//break;
+								i++;
 							}
 					 }
 				});
@@ -434,7 +443,7 @@ public class OperationsFactory extends BASE{
 			public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener)
 					throws Exception {
 				try{
-					Transaction signedTx = Authenticator.getWalletOperation().signStandardTxWithKeys(tx, keys);
+					Transaction signedTx = Authenticator.getWalletOperation().signStandardTxWithAddresses(tx, keys);
 					
 					if(signedTx == null){
 						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);

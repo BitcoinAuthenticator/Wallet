@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
+import org.slf4j.Logger;
 
 import wallettemplate.Main;
 import authenticator.Utils.BAUtils;
@@ -68,9 +69,11 @@ public class WalletOperation extends BASE{
 	private static WalletWrapper mWalletWrapper;
 	private static BAHierarchy authenticatorWalletHierarchy;
 	public static ConfigFile configFile;
+	private static Logger staticLogger;
 	
 	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
 		super(WalletOperation.class);
+		staticLogger = this.LOG;
 		if(mWalletWrapper == null){
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
 			mWalletWrapper.addEventListener(new WalletListener());
@@ -171,7 +174,7 @@ public class WalletOperation extends BASE{
     						confirmedTx.add(tx.getHashAsString());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
     					}
-    					else if(!confirmedTx.contains(tx.getHashAsString())){
+    					else if(isNewTx && !confirmedTx.contains(tx.getHashAsString())){
     						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
     						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
@@ -254,7 +257,7 @@ public class WalletOperation extends BASE{
 		PairedAuthenticator po = getPairingObjectForAccountIndex(accountIdx);
 		return generateNextP2SHAddress(po.getPairingID(), addressType);
 	}
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "deprecation" })
 	private ATAddress generateNextP2SHAddress(String pairingID, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		try {
 			//Derive the child public key from the master public key.
@@ -276,7 +279,7 @@ public class WalletOperation extends BASE{
 				walletHDKey = getNextExternalKey(walletAccountIdx, false);
 			/*else
 				walletHDKey = getNextSavingsKey(this.getAccountIndexForPairing(pairingID));*/
-			ECKey walletKey = new ECKey(null, walletHDKey.getPubKey()); 
+			ECKey walletKey = new ECKey(walletHDKey.getPrivKeyBytes(), walletHDKey.getPubKey()); 
 			
 			// generate P2SH
 			ATAddress p2shAdd = getP2SHAddress(authKey, walletKey, walletAccount.getLastExternalIndex(), walletAccountIdx, addressType);
@@ -368,6 +371,7 @@ public class WalletOperation extends BASE{
 		//Add the outputs
 		for (TransactionOutput output : to)
             tx.addOutput(output);
+		
 		//Add the change
 		Address change = new Address(getNetworkParams(), changeAdd);
 		Coin rest = inAmount.subtract(totalOut.add(fee));
@@ -402,7 +406,7 @@ public class WalletOperation extends BASE{
 	}
 	
 	
-	public Transaction signStandardTxWithKeys(Transaction tx, Map<String,ATAddress> keys){
+	public Transaction signStandardTxWithAddresses(Transaction tx, Map<String,ATAddress> keys){
 		Map<String,ECKey> keys2 = new HashMap<String,ECKey> ();
 		for(String k:keys.keySet()){
 			ECKey addECKey = Authenticator.getWalletOperation().getECKeyFromAccount(keys.get(k).getAccountIndex(), 
@@ -410,7 +414,6 @@ public class WalletOperation extends BASE{
 					keys.get(k).getKeyIndex());
 			keys2.put(k, addECKey);
 		}
-		
 		return signStandardTx(tx, keys2);
 	}
 	private Transaction signStandardTx(Transaction tx, Map<String,ECKey> keys){
@@ -599,6 +602,7 @@ public class WalletOperation extends BASE{
 						  b.setConfirmedBalance(0);
 						  b.setUnConfirmedBalance(0);
 	    configFile.writeAccount(b.build());
+	    staticLogger.info("Generated new account at index, " + accoutnIdx);
 		return b.build();
 	}
 	
@@ -655,7 +659,7 @@ public class WalletOperation extends BASE{
 		return ret;
 	}*/
 	
-	private ECKey getECKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey){
+	public ECKey getECKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey){
 		DeterministicKey hdKey = getKeyFromAccount(accountIndex, type, addressKey);
 		return ECKey.fromPrivate(hdKey.getPrivKeyBytes());
 	}
@@ -969,7 +973,12 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName, int accountIndex) throws IOException{
+	public void generateNewPairing(String authMpubkey, String authhaincode, String sharedAES, String GCM, String pairingID, String pairName) throws IOException{
+		int accountID = generateNewAccount().getIndex();
+		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,pairName,accountID);
+	}
+	
+	private void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName, int accountIndex) throws IOException{
 		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, pairName, accountIndex);
 	}
 	
@@ -1129,6 +1138,7 @@ public class WalletOperation extends BASE{
 		}
 		
 		public static void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+			staticLogger.info("Removed pending request: " + req.getRequestID());
 			configFile.removePendingRequest(req);
 		}
 		
@@ -1141,6 +1151,32 @@ public class WalletOperation extends BASE{
 		
 		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 			return configFile.getPendingRequests();
+		}
+		
+		public String pendingRequestToString(PendingRequest op){
+			String type = "";
+			switch(op.getOperationType()){
+				case Pairing:
+						type = "Pairing";
+					break;
+				case Unpair:
+						type = "Unpair";
+					break;
+				case SignAndBroadcastAuthenticatorTx:
+						type = "Sign and broadcast Auth. Tx";
+					break;
+				case BroadcastNormalTx:
+						type = "Broadcast normal Tx";	
+					break;
+				case updateIpAddressesForPreviousMessage:
+						type = "Update Ip address from previous message";
+					break;
+			}
+			
+			PairedAuthenticator po = getPairingObject(op.getPairingID());
+			String pairingName = po.getPairingName();
+			
+			return pairingName + ": " + type + "  ---  " + op.getRequestID();
 		}
 		
 	//#####################################
@@ -1242,6 +1278,11 @@ public class WalletOperation extends BASE{
 					break;
 				}
 			}
+	}
+	
+	public void disconnectInputs(List<TransactionInput> inputs){
+		for(TransactionInput input:inputs)
+			input.disconnect();
 	}
 	
 	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException

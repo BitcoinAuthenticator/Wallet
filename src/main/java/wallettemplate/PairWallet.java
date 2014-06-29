@@ -32,9 +32,9 @@ public class PairWallet extends BaseUI{
     }
     private void runPairing(String pairName) throws IOException
     {
-    	int accountIdx = Authenticator.getWalletOperation().generateNewAccount().getIndex();
-    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName, accountIdx).SetOperationUIUpdate(new OnOperationUIUpdate(){
+    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName).SetOperationUIUpdate(new OnOperationUIUpdate(){
 
+			@SuppressWarnings("restriction")
 			@Override
 			public void onBegin(String str) {
 				Platform.runLater(new Runnable() {
@@ -45,6 +45,7 @@ public class PairWallet extends BaseUI{
 				});
 			}
 
+			@SuppressWarnings("restriction")
 			@Override
 			public void statusReport(String report) {
 				Platform.runLater(new Runnable() {
@@ -56,6 +57,7 @@ public class PairWallet extends BaseUI{
 				
 			}
 
+			@SuppressWarnings("restriction")
 			@Override
 			public void onFinished(String str) {
 				Platform.runLater(new Runnable() {
@@ -71,10 +73,11 @@ public class PairWallet extends BaseUI{
 				});
 			}
 
+			@SuppressWarnings("restriction")
 			@Override
 			public void onError(@Nullable Exception e, @Nullable Throwable t) {
 				Platform.runLater(new Runnable() {
-			        @Override
+					@Override
 			        public void run() {
 			        	textarea.appendText("--------------------------\n" + 
 			        						"Error: + " + e.toString() + "\n" + 
