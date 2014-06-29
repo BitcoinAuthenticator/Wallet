@@ -22,6 +22,15 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.MnemonicCode;
 import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 
+/**
+ * This class handles the key hierarchy for the Authenticator wallet.<br>
+ * The hierarchy is built uppon BIP44, https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki<br>
+ * <b>The Hierarchy:</b><br
+ * m / purpose' / coin_type' / account' / change / address_index<br>
+ * 
+ * @author alon
+ *
+ */
 public class BAHierarchy{
 	
 	DeterministicHierarchy hierarchy;
@@ -55,8 +64,9 @@ public class BAHierarchy{
 	/**
 	 * 
 	 * 
-	 * @param accountByNumberOfKeys - Integer[0] - external chain<br>
-	 * 								  Integer[1] - internal chain
+	 * @param accountByNumberOfKeys:<br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[0]</b> - external chain<br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[1]</b> - internal chain
 	 */
 	public void buildWalletHierarchyForStartup(List<Integer[]> accountByNumberOfKeys){
 		accountsHeightsUsed = new ArrayList<ChildNumber[]>();
@@ -68,6 +78,14 @@ public class BAHierarchy{
 		}
 	}
 	
+	/**
+	 * Will return the next key based on the current last used height for the chain.<br>
+	 * Bumps last used height.
+	 * 
+	 * @param accountIndex
+	 * @param type
+	 * @return
+	 */
 	public DeterministicKey getNextKey(int accountIndex, HierarchyAddressTypes type){
 		// root
 		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
@@ -92,11 +110,6 @@ public class BAHierarchy{
 	    bumpHeight(accountIndex,type);
 	    
 		return ret;
-	}
-	
-	public ECKey getECKeyFromAcoount(int accountIndex, HierarchyAddressTypes type, int addressKey){
-		DeterministicKey hdKey = getKeyFromAcoount(accountIndex,type,addressKey);
-		return ECKey.fromPrivate(hdKey.getPrivKeyBytes());
 	}
 	
 	public DeterministicKey getKeyFromAcoount(int accountIndex, HierarchyAddressTypes type, int addressKey){
