@@ -100,6 +100,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import org.controlsfx.dialog.Dialogs;
@@ -320,17 +321,8 @@ public class Controller {
         @Override
         protected void doneDownload() {
             super.doneDownload();
-            Platform.runLater(Controller.this::readyToGoAnimation);
+            readyToGoAnimation(1, null);
         }
-    }
-
-    public void readyToGoAnimation() {
-        // Sync progress bar slides out ...
-        TranslateTransition leave = new TranslateTransition(Duration.millis(600), SyncPane);
-        leave.setByY(80.0);
-        leave.setCycleCount(1);
-        leave.setInterpolator(Interpolator.EASE_OUT);
-        leave.play();
     }
 
     public ProgressBarUpdater progressBarUpdater() {
@@ -801,11 +793,12 @@ public class Controller {
     	//
     	Coin confirmed = Coin.ZERO;
     	//TODO - split savings and spending
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
-    			Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ){
     		HierarchyAddressTypes addType = HierarchyAddressTypes.External; // TODO - internal also
     		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
     	}	
+    	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
     	else
     		confirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());   	
     	
@@ -832,6 +825,8 @@ public class Controller {
 	        .showError();  
     	}
     	else{
+    		//
+    		setActivitySpinner("Sending Tx ..");
     		// collect Tx outputs
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
         	for(Node n:scrlContent.getChildren())
@@ -947,6 +942,7 @@ public class Controller {
 
 					@Override
 					public void onFinished(String str) {
+							removeActivitySpinner();
 							Platform.runLater(new Runnable() {
 						      @Override public void run() {
 						    	  Dialogs.create()
@@ -961,6 +957,7 @@ public class Controller {
 
 					@Override
 					public void onError(Exception e, Throwable t) {
+						removeActivitySpinner();
 						Platform.runLater(new Runnable() {
 						      @Override public void run() {
 						    	  String desc = "";
@@ -984,6 +981,7 @@ public class Controller {
 
 					@Override
 					public void onUserCancel(String reason) {
+						removeActivitySpinner();
 						Platform.runLater(new Runnable() {
 						      @Override public void run() {
 						    	  Dialogs.create()
@@ -1611,5 +1609,79 @@ public class Controller {
     	refreshBalanceLabel();
     	setReceiveAddresses();
     	setTxHistoryContent();
+    }
+    
+    //#####################################
+  	//
+  	//	Animations
+  	//
+  	//#####################################
+    
+    /**
+     * direction should be 1 to slide out, -1 to slide back in
+     * 
+     * @param direction
+     */
+    public void readyToGoAnimation(int direction, @Nullable EventHandler<ActionEvent> listener) {
+    	Platform.runLater(new Runnable(){
+			@Override
+			public void run() {
+				// Sync progress bar slides out ...
+		        TranslateTransition leave = new TranslateTransition(Duration.millis(600), SyncPane);
+		        if(listener != null)
+		        	leave.setOnFinished(listener);
+		        leave.setByY(direction==1? 80.0:-80.0);
+		        leave.setCycleCount(1);
+		        leave.setInterpolator(direction==1? Interpolator.EASE_OUT:Interpolator.EASE_IN);
+		        leave.play();
+			}
+        });
+        
+    }
+    
+    public void setActivitySpinner(String text){
+    	Platform.runLater(new Runnable(){
+			@Override
+			public void run() {
+				syncProgress.setVisible(false);
+				lblStatus.setText(text);
+		    	readyToGoAnimation(-1,new EventHandler<ActionEvent>(){
+					@Override
+					public void handle(ActionEvent arg0) {
+						// Sync progress bar slides out ...
+				        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
+				        leave.setByX(300.0);
+				        leave.setCycleCount(1);
+				        leave.play();
+					}
+		        });
+			}
+        });
+    }
+    
+    public void removeActivitySpinner(){
+    	Platform.runLater(new Runnable(){
+			@Override
+			public void run() {
+				// Sync progress bar slides out ...
+		        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
+		        leave.setByX(-300.0);
+		        leave.setCycleCount(1);
+		        leave.play();
+		        leave.setOnFinished(new EventHandler<ActionEvent>(){
+					@Override
+					public void handle(ActionEvent arg0) {
+						readyToGoAnimation(1, new EventHandler<ActionEvent>(){
+							@Override
+							public void handle(ActionEvent arg0) {
+								syncProgress.setVisible(true);
+								lblStatus.setText("No Activity");
+							}
+						});	
+					}
+		        });
+		                
+			}
+        });
     }
 }

@@ -118,7 +118,15 @@ public class WalletOperation extends BASE{
 	 *
 	 */
 	public class WalletListener extends AbstractWalletEventListener {
+		/**
+		 * just keep track we don't add the same Tx several times
+		 */
+        List<String> confirmedTx;
         
+        public WalletListener(){
+        	confirmedTx = new ArrayList<String>();
+        }
+		
         @Override
         public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	try {
@@ -160,9 +168,10 @@ public class WalletOperation extends BASE{
     					if(!isNewTx && Authenticator.getWalletOperation().isPendingTx(add.getAccountIndex(), tx.getHashAsString())){ 
     						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
     						removePendingTx(add.getAccountIndex(), tx.getHashAsString());
+    						confirmedTx.add(tx.getHashAsString());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
     					}
-    					else{
+    					else if(!confirmedTx.contains(tx.getHashAsString())){
     						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
     					}
@@ -170,7 +179,7 @@ public class WalletOperation extends BASE{
     				case PENDING:
     					if(!isNewTx)
     						; // do nothing
-    					else{
+    					else if(!Authenticator.getWalletOperation().isPendingTx(add.getAccountIndex(), tx.getHashAsString())){
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
     						addPendingTx(add.getAccountIndex(), tx.getHashAsString());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());

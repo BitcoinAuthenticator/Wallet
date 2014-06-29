@@ -77,21 +77,14 @@ public class Main extends BAApplication {
         	Runtime.getRuntime().exit(0);
     }
 
-    private void init(Stage mainWindow) throws Exception {
+    @SuppressWarnings("restriction")
+	private void init(Stage mainWindow) throws Exception {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             //AquaFx.style();
         }
         
       //Load the config file
         String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + Main.APP_NAME + ".config";
-        /*File f = new File(filePath);
-        config = new ConfigFile();
-        if(f.exists() && !f.isDirectory()) { 
-        	paired = config.getPaired();
-        }
-        else {
-        	config.setPaired(false);
-        }*/
         
         // Load the GUI. The Controller class will be automagically created and wired up.
         mainWindow.initStyle(StageStyle.UNDECORATED);
