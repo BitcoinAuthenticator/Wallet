@@ -3,7 +3,6 @@ package authenticator;
 import authenticator.hierarchy.BAHierarchy;
 
 import java.io.FileNotFoundException;
-
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.json.JSONException;
 
 import wallettemplate.Main;
@@ -174,6 +174,7 @@ public class WalletOperation extends BASE{
     					else if(!confirmedTx.contains(tx.getHashAsString())){
     						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
     				case PENDING:
@@ -183,6 +184,7 @@ public class WalletOperation extends BASE{
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
     						addPendingTx(add.getAccountIndex(), tx.getHashAsString());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
     				case DEAD:
@@ -248,15 +250,15 @@ public class WalletOperation extends BASE{
 	 * @throws NoSuchAlgorithmException 
 	 * @throws AddressFormatException 
 	 */
-	private ATAddress genP2SHAddress(int accountIdx, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+	private ATAddress generateNextP2SHAddress(int accountIdx, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		PairedAuthenticator po = getPairingObjectForAccountIndex(accountIdx);
-		return genP2SHAddress(po.getPairingID(), addressType);
+		return generateNextP2SHAddress(po.getPairingID(), addressType);
 	}
 	@SuppressWarnings("static-access")
-	private ATAddress genP2SHAddress(String pairingID, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+	private ATAddress generateNextP2SHAddress(String pairingID, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		try {
 			//Derive the child public key from the master public key.
-			ArrayList<String> keyandchain = this.getPublicKeyAndChain(pairingID);
+			ArrayList<String> keyandchain = getPublicKeyAndChain(pairingID);
 			byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
 			byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
 			int index = (int) this.getKeyNum(pairingID);
@@ -264,45 +266,63 @@ public class WalletOperation extends BASE{
 	  		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
 	  		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, index);
 	  		byte[] childpublickey = childKey.getPubKey();
-	  		
-	  		//Select network parameters
-	  		NetworkParameters params = Authenticator.getWalletOperation().getNetworkParams();
-			ECKey childPubKey = new ECKey(null, childpublickey);
+			ECKey authKey = new ECKey(null, childpublickey);
 			
 			//Create a new key pair for wallet
 			DeterministicKey walletHDKey = null;
-			int walletAccountIdx = this.getAccountIndexForPairing(pairingID);
+			int walletAccountIdx = getAccountIndexForPairing(pairingID);
 			ATAccount walletAccount = getAccount(walletAccountIdx);
 			if(addressType == HierarchyAddressTypes.External)
-				walletHDKey = getNextExternalKey(walletAccountIdx);
+				walletHDKey = getNextExternalKey(walletAccountIdx, false);
 			/*else
 				walletHDKey = getNextSavingsKey(this.getAccountIndexForPairing(pairingID));*/
-			
 			ECKey walletKey = new ECKey(null, walletHDKey.getPubKey()); 
-			//Create a 2-of-2 multisig output script.
-			List<ECKey> keys = ImmutableList.of(childPubKey, walletKey);
-			byte[] scriptpubkey = Script.createMultiSigOutputScript(2,keys);
-			Script script = ScriptBuilder.createP2SHOutputScript(Utils.sha256hash160(scriptpubkey));
 			
-			//Create the address
-			Address multisigaddr = Address.fromP2SHScript(params, script);
-			//
-			String ret = multisigaddr.toString();
-			mWalletWrapper.addAddressToWatch(ret);
-			this.LOG.info("Generated a new address: " + ret);
-			ATAddress.Builder b = ATAddress.newBuilder();
-							  b.setAccountIndex(walletAccountIdx);
-							  b.setAddressStr(ret);
-							  b.setIsUsed(true);
-							  b.setKeyIndex(walletAccount.getLastExternalIndex());
-							  b.setType(addressType);
-			return b.build();
+			// generate P2SH
+			ATAddress p2shAdd = getP2SHAddress(authKey, walletKey, walletAccount.getLastExternalIndex(), walletAccountIdx, addressType);
+			
+			addAddressToWatch(p2shAdd.getAddressStr());			
+			
+			return p2shAdd;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 		
 	}
+	/**
+	 * 
+	 * 
+	 * @param k1
+	 * @param k2
+	 * @param indxK - <b>is the same for both keys, make sure they are both HD derived</b>
+	 * @param accountIndx
+	 * @param addressType
+	 * @return
+	 */
+	private ATAddress getP2SHAddress(ECKey k1, ECKey k2, int indxK, int accountIndx, HierarchyAddressTypes addressType){
+		//network params
+		NetworkParameters params = getNetworkParams();
+		
+		//Create a 2-of-2 multisig output script.
+		List<ECKey> keys = ImmutableList.of(k1,k2);//childPubKey, walletKey);
+		byte[] scriptpubkey = Script.createMultiSigOutputScript(2,keys);
+		Script script = ScriptBuilder.createP2SHOutputScript(Utils.sha256hash160(scriptpubkey));
+		
+		//Create the address
+		Address multisigaddr = Address.fromP2SHScript(params, script);
+		
+		// generate object
+		String ret = multisigaddr.toString();
+		ATAddress.Builder b = ATAddress.newBuilder();
+						  b.setAccountIndex(accountIndx);//walletAccountIdx);
+						  b.setAddressStr(ret);
+						  b.setIsUsed(true);
+						  b.setKeyIndex(indxK);//walletAccount.getLastExternalIndex());
+						  b.setType(addressType);
+		return b.build();
+	}
+	
 	
 	/**
 	 * Build a raw unsigned Tx
@@ -435,7 +455,7 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException
 	 */
 	public void fillExternalSpendingKeyPool() throws FileNotFoundException, IOException, AddressFormatException{
-		ArrayList<ATAddress> cached = getNotUsedExternalSpendingAddressFromPool();
+		ArrayList<ATAddress> cached = getNotUsedExternalSpendingAddressFromPool(-1);
 		ArrayList<ATAddress> forWriting = new ArrayList<ATAddress>();
 		if ( cached.size() < 10){
 			int num = (10 - cached.size());
@@ -477,7 +497,7 @@ public class WalletOperation extends BASE{
 	 * @throws IOException
 	 */
 	public ATAddress getNewSpendingExternalAddress(boolean shouldWrite) throws AddressFormatException, IOException{
-		DeterministicKey newkey = getNextExternalKey(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE); 				
+		DeterministicKey newkey = getNextExternalKey(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE,true); 				
 		//
 		ATAddress.Builder b = ATAddress.newBuilder();
 						      //b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
@@ -495,24 +515,26 @@ public class WalletOperation extends BASE{
 	/**
 	 * Get filtered unused cached External addresses
 	 * 
-	 * @return ArrayList<String> of addresses
+	 * @param limit - pass -1 for all
+	 * @return
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public ArrayList<String> getNotUsedExternalSpendingAddressStringPool() throws FileNotFoundException, IOException{
-		ArrayList<ATAddress> all = getNotUsedExternalSpendingAddressFromPool();
+	public ArrayList<String> getNotUsedExternalSpendingAddressStringPool(int limit) throws FileNotFoundException, IOException{
+		ArrayList<ATAddress> all = getNotUsedExternalSpendingAddressFromPool(limit);
 		return configFile.getAddressString(all);
 	}
 	
 	/**
 	 * Get filtered unused cached External addresses
 	 * 
+	 * @param limit - pass -1 for all
 	 * @return ArrayList<CachedAddrees> of addresses
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public ArrayList<ATAddress> getNotUsedExternalSpendingAddressFromPool() throws FileNotFoundException, IOException{
-		return configFile.getNotUsedExternalSpendingAddressFromPool();
+	public ArrayList<ATAddress> getNotUsedExternalSpendingAddressFromPool(int limit) throws FileNotFoundException, IOException{
+		return configFile.getNotUsedExternalSpendingAddressFromPool(limit);
 	}
 	
 	/**
@@ -522,7 +544,7 @@ public class WalletOperation extends BASE{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public ArrayList<String> getExternalSpendingAddressStringPool() throws FileNotFoundException, IOException{
+	private ArrayList<String> getExternalSpendingAddressStringPool() throws FileNotFoundException, IOException{
 		List<ATAddress> all = getExternalSpendingAddressFromPool();
 		return configFile.getAddressString(all);
 	}
@@ -534,7 +556,7 @@ public class WalletOperation extends BASE{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public List<ATAddress> getExternalSpendingAddressFromPool() throws FileNotFoundException, IOException{
+	private List<ATAddress> getExternalSpendingAddressFromPool() throws FileNotFoundException, IOException{
 		return configFile.getExternalSpendingAddressFromPool();
 	}
 	
@@ -557,10 +579,6 @@ public class WalletOperation extends BASE{
 		return null;
 	}
 	
-	public void markCachedSpendingAddressAsUsed(String addStr) throws IOException{
-		configFile.markCachedExternalSpendingAddressAsUsed(addStr);
-	}
-    
 	//#####################################
 	//
 	//		 Keys handling
@@ -597,19 +615,35 @@ public class WalletOperation extends BASE{
 	public ATAddress getNextExternalAddress(int accountI) throws Exception{
 		if(accountI == HierarchyPrefixedAccountIndex.PrefixSpending_VALUE ||
 				accountI == HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
-			return getNextExternalPayToPubHashAddress(accountI);
+			return getNextExternalPayToPubHashAddress(accountI,true);
 		else
-			return genP2SHAddress(accountI, HierarchyAddressTypes.External);
+			return generateNextP2SHAddress(accountI, HierarchyAddressTypes.External);
 	}
 	
-	private ATAddress getNextExternalPayToPubHashAddress(int accountI) throws Exception{
-		DeterministicKey hdKey = getNextExternalKey(accountI);
+	/**
+	 * 
+	 * @param accountI
+	 * @param shouldAddToWatchList
+	 * @return
+	 * @throws Exception
+	 */
+	private ATAddress getNextExternalPayToPubHashAddress(int accountI, boolean shouldAddToWatchList) throws Exception{
+		DeterministicKey hdKey = getNextExternalKey(accountI,shouldAddToWatchList);
 		return findAddressInAccounts(hdKey.toAddress(getNetworkParams()).toString()); // thats really stupid !!!
 	}
 	
-	private DeterministicKey getNextExternalKey(int accountI) throws AddressFormatException, IOException{
+	/**
+	 * 
+	 * @param accountI
+	 * @param shouldAddToWatchList
+	 * @return
+	 * @throws AddressFormatException
+	 * @throws IOException
+	 */
+	private DeterministicKey getNextExternalKey(int accountI, boolean shouldAddToWatchList) throws AddressFormatException, IOException{
 		DeterministicKey ret = authenticatorWalletHierarchy.getNextKey(accountI, HierarchyAddressTypes.External);
-		addAddressToWatch( ret.toAddress(getNetworkParams()).toString() );
+		if(shouldAddToWatchList)
+			addAddressToWatch( ret.toAddress(getNetworkParams()).toString() );
 		// update account
 		configFile.bumpByOneAccountsLastIndex(accountI, HierarchyAddressTypes.External);
 		return ret;
@@ -655,7 +689,7 @@ public class WalletOperation extends BASE{
 		List<ATAccount> accounts = getAllAccounts();
 		for(ATAccount acc:accounts){
 			// check external first
-			List<ATAddress> ext = getATAddreessesFromAccount(acc.getIndex(),HierarchyAddressTypes.External);
+			List<ATAddress> ext = getATAddreessesFromAccount(acc.getIndex(),HierarchyAddressTypes.External, -1);
 			for(ATAddress add:ext)
 				if(add.getAddressStr().equals(addressStr))
 					return add;
@@ -670,20 +704,21 @@ public class WalletOperation extends BASE{
 	}
 	
 	/**
-	 * get all addresses from a particular account and his chain
+	 * get addresses from a particular account and his chain
 	 * 
 	 * @param accountIndex
 	 * @param type
+	 * @param limit - pass -1 for all
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 * @throws JSONException
 	 * @throws AddressFormatException
 	 */
-	public List<ATAddress> getATAddreessesFromAccount(int accountIndex, HierarchyAddressTypes type) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+	public List<ATAddress> getATAddreessesFromAccount(int accountIndex, HierarchyAddressTypes type, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		List<ATAddress> ret = new ArrayList<ATAddress>();
 		ATAccount acc = getAccount(accountIndex);
 		if(type == HierarchyAddressTypes.External)
-			for(int i=0;i <= acc.getLastExternalIndex(); i++){
+			for(int i=0;i <= Math.min(limit==-1? acc.getLastExternalIndex():limit, acc.getLastExternalIndex()) ; i++){
 				ret.add(getATAddreessFromAccount(accountIndex, type, i));
 			}
 		
@@ -703,6 +738,7 @@ public class WalletOperation extends BASE{
 	 * @throws JSONException
 	 * @throws AddressFormatException
 	 */
+	@SuppressWarnings("static-access")
 	public ATAddress getATAddreessFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws NoSuchAlgorithmException, JSONException, AddressFormatException{		
 		DeterministicKey hdKey = getKeyFromAccount(accountIndex,type,addressKey);
 		ATAddress.Builder atAdd = ATAddress.newBuilder();
@@ -714,7 +750,25 @@ public class WalletOperation extends BASE{
 								atAdd.setAddressStr(hdKey.toAddress(getNetworkParams()).toString());
 							}
 							else{
-								atAdd.setAddressStr(genP2SHAddress(accountIndex, HierarchyAddressTypes.External).getAddressStr());
+								PairedAuthenticator  po = getPairingObjectForAccountIndex(accountIndex);
+								//Derive the child public key of the auth.
+								ArrayList<String> keyandchain = getPublicKeyAndChain(po.getPairingID());
+								byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
+								byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
+								int index = (int) this.getKeyNum(po.getPairingID());
+								HDKeyDerivation HDKey = null;
+						  		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
+						  		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, index);
+						  		byte[] childpublickey = childKey.getPubKey();
+								ECKey authKey = new ECKey(null, childpublickey);
+								
+								// get wallet key
+								ECKey walletKey = getECKeyFromAccount(accountIndex, type, addressKey);
+								
+								//get address
+								ATAddress add = getP2SHAddress(authKey, walletKey, addressKey, accountIndex, type);
+								
+								atAdd.setAddressStr(add.getAddressStr());
 							}
 		return atAdd.build();
 	}
@@ -736,28 +790,56 @@ public class WalletOperation extends BASE{
 	} 
 	
 	/**
-	 * Returns all addresses from an account in a ArrayList of strings
 	 * 
 	 * @param accountIndex
 	 * @param addressesType
-	 * @return ArrayList of strings
+	 * @param limit - pass -1 for all
+	 * @return
 	 * @throws NoSuchAlgorithmException
 	 * @throws JSONException
 	 * @throws AddressFormatException
 	 */
-	public ArrayList<String> getAccountAddressesArray(int accountIndex, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+	public ArrayList<String> getAccountNotUsedAddress(int accountIndex, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		ArrayList<String> ret = new ArrayList<String>();
 		ATAccount account = getAccount(accountIndex);
 		if(addressesType == HierarchyAddressTypes.External)
-		for(int i=0;i < account.getLastExternalIndex(); i++){
+		for(int i=0;i < Math.min(account.getLastExternalIndex(), limit == -1? account.getLastExternalIndex():limit); i++){
 			if(account.getUsedExternalKeysList().contains(i))
 				continue;
-			
 			ATAddress a = getATAddreessFromAccount(accountIndex,addressesType, i);
 			ret.add(a.getAddressStr());
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Returns all addresses from an account in a ArrayList of strings
+	 * 
+	 * @param accountIndex
+	 * @param addressesType
+	 * @param limit - pass -1 for all
+	 * @return ArrayList of strings
+	 * @throws NoSuchAlgorithmException
+	 * @throws JSONException
+	 * @throws AddressFormatException
+	 */
+	public ArrayList<String> getAccountAddresses(int accountIndex, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+		ArrayList<String> ret = new ArrayList<String>();
+		ATAccount account = getAccount(accountIndex);
+		if(addressesType == HierarchyAddressTypes.External)
+		for(int i=0;i < Math.min(account.getLastExternalIndex(), limit == -1? account.getLastExternalIndex():limit); i++){
+			ATAddress a = getATAddreessFromAccount(accountIndex,addressesType, i);
+			ret.add(a.getAddressStr());
+		}
+		
+		return ret;
+	}
+	
+	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException, NoSuchAlgorithmException, JSONException, AddressFormatException{
+		configFile.markAddressAsUsed(accountIdx, addIndx,type);
+		ATAddress add = getATAddreessFromAccount(accountIdx, type, addIndx);
+		this.LOG.info("Marked " + add.getAddressStr() + " as used.");
 	}
 	
 	//#####################################
@@ -806,9 +888,9 @@ public class WalletOperation extends BASE{
 	 * @throws JSONException
 	 * @throws AddressFormatException
 	 */
-	public ArrayList<String> getPairingAddressesArray(String PairID, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
+	public ArrayList<String> getPairingAddressesArray(String PairID, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException{
 		int accIndex = getAccountIndexForPairing(PairID);
-		return getAccountAddressesArray(accIndex,addressesType);
+		return getAccountAddresses(accIndex,addressesType, limit);
 	}
 	
 	/**Returns the Master Public Key and Chaincode as an ArrayList object */

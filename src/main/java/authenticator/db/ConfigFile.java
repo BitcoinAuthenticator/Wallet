@@ -93,16 +93,12 @@ public class ConfigFile {
 		writeConfigFile(auth);
 	}
 	
-	public void markCachedExternalSpendingAddressAsUsed(String addStr) throws IOException{
+	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		for (ATAddress c : auth.getCachedExternalSpending().getWalletCachedExternalSpendingAddressList()){
-			if(c.getAddressStr().equals(addStr))
-			{
-				// set as used
-				auth.getConfigAccountsBuilder(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE).addUsedExternalKeys(c.getKeyIndex());				
-				break;
-			}
-		}
+		if(type == HierarchyAddressTypes.External)
+			auth.getConfigAccountsBuilder(accountIdx).addUsedExternalKeys(addIndx);
+		else
+			;
 		writeConfigFile(auth);
 	}
 	
@@ -111,12 +107,14 @@ public class ConfigFile {
 		return auth.getCachedExternalSpending().getWalletCachedExternalSpendingAddressList();
 	}
 	
-	public ArrayList<ATAddress> getNotUsedExternalSpendingAddressFromPool() throws FileNotFoundException, IOException{
+	public ArrayList<ATAddress> getNotUsedExternalSpendingAddressFromPool(int limit) throws FileNotFoundException, IOException{
 		ArrayList<ATAddress> keypool = new ArrayList<ATAddress>();
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		for (ATAddress add : auth.getCachedExternalSpending().getWalletCachedExternalSpendingAddressList()){
 			if(!isUsedAddress(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE,HierarchyAddressTypes.External,add.getKeyIndex()))
 				keypool.add(add);
+			if(keypool.size() == limit && limit != -1)
+				break;
 		}
 		return keypool;
 	}	

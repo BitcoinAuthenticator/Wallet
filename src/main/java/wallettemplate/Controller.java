@@ -230,7 +230,7 @@ public class Controller {
 		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
 		
 		//Receive address
-		AddressBox.valueProperty().addListener(new ChangeListener<String>() {
+		/*AddressBox.valueProperty().addListener(new ChangeListener<String>() {
     		@Override public void changed(ObservableValue ov, String t, String t1) {
     			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
@@ -263,7 +263,7 @@ public class Controller {
     				}
     			}
     		}    
-    	});
+    	});*/
     }
     
     public void onBitcoinSetup() {
@@ -875,7 +875,7 @@ public class Controller {
     		String pairID = Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID();
     		if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ){
     			// inputs
-    			addresses = Authenticator.getWalletOperation().getAccountAddressesArray(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE, HierarchyAddressTypes.External);
+    			addresses = Authenticator.getWalletOperation().getAccountAddresses(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE, HierarchyAddressTypes.External, -1);
     			// change address
     			try {
 					changeaddr = Authenticator.getWalletOperation().getNewSpendingExternalAddress(true).getAddressStr();
@@ -883,7 +883,7 @@ public class Controller {
     		}
     		else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
     			// inputs
-    			addresses = Authenticator.getWalletOperation().getAccountAddressesArray(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE, HierarchyAddressTypes.External);
+    			addresses = Authenticator.getWalletOperation().getAccountAddresses(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE, HierarchyAddressTypes.External, -1);
     			// change address
     			try {
 					changeaddr = Authenticator.getWalletOperation()
@@ -894,7 +894,7 @@ public class Controller {
     		else{
     			int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
     			// inputs
-    			addresses = Authenticator.getWalletOperation().getAccountAddressesArray(accountID, HierarchyAddressTypes.External);
+    			addresses = Authenticator.getWalletOperation().getAccountAddresses(accountID, HierarchyAddressTypes.External, -1);
     			// change address
     			try {
 					changeaddr = Authenticator.getWalletOperation()
@@ -1495,7 +1495,7 @@ public class Controller {
     		ArrayList<String> keypool = null;
         	try { Authenticator.getWalletOperation().fillExternalSpendingKeyPool(); } 
         	catch (IOException e) {e.printStackTrace();} catch (AddressFormatException e) { e.printStackTrace(); }
-        	try {keypool = Authenticator.getWalletOperation().getNotUsedExternalSpendingAddressStringPool(); }  
+        	try {keypool = Authenticator.getWalletOperation().getNotUsedExternalSpendingAddressStringPool(10); }  
         	catch (IOException e) {e.printStackTrace();}
         	
         	for(String s:keypool)
@@ -1509,8 +1509,9 @@ public class Controller {
     		ArrayList<String> add = new ArrayList<String> ();
 			try {
 				add = Authenticator.getWalletOperation().
-					    			getAccountAddressesArray(accountIdx,
-					    			HierarchyAddressTypes.External);
+									getAccountNotUsedAddress(accountIdx,
+					    			HierarchyAddressTypes.External,
+					    			10);
 			} catch (NoSuchAlgorithmException | JSONException
 					| AddressFormatException e1) { }
 			
@@ -1622,6 +1623,7 @@ public class Controller {
      * 
      * @param direction
      */
+    private boolean isSpinnerVisible = true;
     public void readyToGoAnimation(int direction, @Nullable EventHandler<ActionEvent> listener) {
     	Platform.runLater(new Runnable(){
 			@Override
@@ -1634,12 +1636,15 @@ public class Controller {
 		        leave.setCycleCount(1);
 		        leave.setInterpolator(direction==1? Interpolator.EASE_OUT:Interpolator.EASE_IN);
 		        leave.play();
+		        if(direction == -1)
+		        	isSpinnerVisible = false;
 			}
         });
         
     }
     
     public void setActivitySpinner(String text){
+    	if(isSpinnerVisible == false)
     	Platform.runLater(new Runnable(){
 			@Override
 			public void run() {
@@ -1655,11 +1660,13 @@ public class Controller {
 				        leave.play();
 					}
 		        });
+		    	isSpinnerVisible = true;
 			}
         });
     }
     
     public void removeActivitySpinner(){
+    	if(isSpinnerVisible == true)
     	Platform.runLater(new Runnable(){
 			@Override
 			public void run() {
@@ -1680,7 +1687,7 @@ public class Controller {
 						});	
 					}
 		        });
-		                
+		        isSpinnerVisible = false;  
 			}
         });
     }
