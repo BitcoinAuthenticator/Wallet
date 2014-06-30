@@ -5,8 +5,6 @@ import java.net.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.crypto.*;
 
@@ -77,7 +75,11 @@ public class PairingProtocol {
 	  Socket socket = dispalyQRAnListenForCommunication(ss, listener);
     
 	  // Receive payload
-	  String payload = receivePairingDataFromAuthenticator(socket, listener, sharedsecret);
+	  DataInputStream in = new DataInputStream(socket.getInputStream());
+	  int keysize = in.readInt();
+	  byte[] cipherKeyBytes = new byte[keysize];
+	  in.read(cipherKeyBytes);
+	  String payload = decipherDataFromAuthenticator(cipherKeyBytes, listener, sharedsecret);
     
 	  // Verify HMAC
 	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, listener);
@@ -114,13 +116,8 @@ public class PairingProtocol {
 	  return socket;
   }
   
-  public String receivePairingDataFromAuthenticator(Socket socket, OnOperationUIUpdate listener, SecretKey sharedsecret) throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException{
+  public String decipherDataFromAuthenticator(byte[] cipherKeyBytes, OnOperationUIUpdate listener, SecretKey sharedsecret) throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException{
 	  postUIStatusUpdate(listener,"Decrypting message ...");
-	  DataInputStream in = new DataInputStream(socket.getInputStream());
-	  DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-	  int keysize = in.readInt();
-	  byte[] cipherKeyBytes = new byte[keysize];
-	  in.read(cipherKeyBytes);
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
 	  String payload = BAUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
