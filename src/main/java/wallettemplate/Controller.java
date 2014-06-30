@@ -14,6 +14,7 @@ import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.CachedExternalSpending;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
@@ -321,7 +322,13 @@ public class Controller {
         @Override
         protected void doneDownload() {
             super.doneDownload();
-            readyToGoAnimation(1, null);
+            Platform.runLater(new Runnable(){
+				@Override
+				public void run() {
+					 readyToGoAnimation(1, null);
+				}
+	        });
+           
         }
     }
 
@@ -612,8 +619,8 @@ public class Controller {
     }
 
     @FXML protected void drag2(MouseEvent event) {
-    	Main.stg.setX(event.getScreenX() - xOffset);
-    	Main.stg.setY(event.getScreenY() - yOffset);
+    	Main.stage.setX(event.getScreenX() - xOffset);
+    	Main.stage.setY(event.getScreenY() - yOffset);
     }
     
     @FXML protected void openOneNameDialog(ActionEvent event){
@@ -714,17 +721,35 @@ public class Controller {
     		    public void handle(MouseEvent mouseEvent) {
                    if(!mouseEvent.isPrimaryButtonDown()){
                 	   final ContextMenu contextMenu = new ContextMenu();
-                	   MenuItem openInBlockchainInfo = new MenuItem("Open In blockchain.info");
-                	   openInBlockchainInfo.setOnAction(new EventHandler<ActionEvent>() {
-                		    @Override
-                		    public void handle(ActionEvent event) {
-                		    	String url = "https://blockchain.info/tx/" + txid; 
-                         	   // open the default web browser for the HTML page
-         	            	   try {
-         							Desktop.getDesktop().browse(java.net.URI.create(url));
-         	            	   } catch (IOException e) { e.printStackTrace(); }
-                		    }
-                		});
+                	   MenuItem openExplore;
+                	   if(Authenticator.getApplicationParams().getBitcoinNetworkType() == NetworkType.MAIN_NET){
+                		   openExplore = new MenuItem("Open In blockchain.info");
+                		   openExplore.setOnAction(new EventHandler<ActionEvent>() {
+                    		    @Override
+                    		    public void handle(ActionEvent event) {
+                    		    	String url = "https://blockchain.info/tx/" + txid; 
+                             	   // open the default web browser for the HTML page
+             	            	   try {
+             							Desktop.getDesktop().browse(java.net.URI.create(url));
+             	            	   } catch (IOException e) { e.printStackTrace(); }
+                    		    }
+                    		});
+                	   }
+                	   else
+                	   {
+                		   openExplore = new MenuItem("Open In blockexplorer.com");
+                		   openExplore.setOnAction(new EventHandler<ActionEvent>() {
+                    		    @Override
+                    		    public void handle(ActionEvent event) {
+                    		    	String url = "http://blockexplorer.com/testnet/tx/" + txid; 
+                             	   // open the default web browser for the HTML page
+             	            	   try {
+             							Desktop.getDesktop().browse(java.net.URI.create(url));
+             	            	   } catch (IOException e) { e.printStackTrace(); }
+                    		    }
+                    		});
+                	   }
+                	   
                 	   MenuItem cancel = new MenuItem("Cancel");
                 	   cancel.setOnAction(new EventHandler<ActionEvent>() {
                		    @Override
@@ -732,7 +757,7 @@ public class Controller {
                		    	contextMenu.hide();
                		    }
                		});
-                	contextMenu.getItems().addAll(openInBlockchainInfo, cancel);
+                	contextMenu.getItems().addAll(openExplore, cancel);
                 	contextMenu.show(Main.stage);
                 	
                    }
@@ -1353,7 +1378,7 @@ public class Controller {
             			public void handle(ActionEvent e) {
             				FileChooser fileChooser = new FileChooser();
             				fileChooser.setTitle("Save Image");
-            				File file = fileChooser.showSaveDialog(Main.stg);
+            				File file = fileChooser.showSaveDialog(Main.stage);
             				if (file != null) {
             					try {
             						ImageIO.write(SwingFXUtils.fromFXImage(qrImage,
@@ -1478,12 +1503,12 @@ public class Controller {
     }
     
     public String uri() throws AddressFormatException {
-		Address addr = new Address(Main.params, AddressBox.getValue().toString());
-        return BitcoinURI.convertToBitcoinURI(addr, null, Main.APP_NAME, null);
+		Address addr = new Address(Authenticator.getWalletOperation().getNetworkParams(), AddressBox.getValue().toString());
+        return BitcoinURI.convertToBitcoinURI(addr, null, Authenticator.getApplicationParams().getAppName(), null);
     }
 
     public String paymentRequestURI() throws AddressFormatException {
-		Address addr = new Address(Main.params, AddressBox.getValue().toString());
+		Address addr = new Address(Authenticator.getWalletOperation().getNetworkParams(), AddressBox.getValue().toString());
 		double amount = (double) Double.parseDouble(txReqAmount.getText())*100000000;
 		long satoshis = (long) amount;
 		Coin reqamount = Coin.valueOf(satoshis);
@@ -1627,83 +1652,64 @@ public class Controller {
      */
     private boolean isSpinnerVisible = true;
     public void readyToGoAnimation(int direction, @Nullable EventHandler<ActionEvent> listener) {
-    	Platform.runLater(new Runnable(){
-			@Override
-			public void run() {
-				// Sync progress bar slides out ...
-		        TranslateTransition leave = new TranslateTransition(Duration.millis(600), SyncPane);
-		        if(listener != null)
-		        	leave.setOnFinished(listener);
-		        leave.setByY(direction==1? 80.0:-80.0);
-		        leave.setCycleCount(1);
-		        leave.setInterpolator(direction==1? Interpolator.EASE_OUT:Interpolator.EASE_IN);
-		        leave.play();
-		        if(direction == 1)
-		        	isSpinnerVisible = false;
-			}
-        });
-        
+    	// Sync progress bar slides out ...
+        TranslateTransition leave = new TranslateTransition(Duration.millis(600), SyncPane);
+        if(listener != null)
+        	leave.setOnFinished(listener);
+        leave.setByY(direction==1? 80.0:-80.0);
+        leave.setCycleCount(1);
+        leave.setInterpolator(direction==1? Interpolator.EASE_OUT:Interpolator.EASE_IN);
+        leave.play();
+        if(direction == 1)
+        	isSpinnerVisible = false;
     }
     
     public void setActivitySpinner(String text){
     	if(isSpinnerVisible == false){
-    		try {
-    			Platform.runLater(new Runnable(){
-    				@Override
-    				public void run() {
-    					syncProgress.setVisible(false);
-    					lblStatus.setText(text);
-    			    	readyToGoAnimation(-1,new EventHandler<ActionEvent>(){
-    						@Override
-    						public void handle(ActionEvent arg0) {
-    							// Sync progress bar slides out ...
-    					        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
-    					        leave.setByX(300.0);
-    					        leave.setCycleCount(1);
-    					        leave.play();
-    						}
-    			        });
-    			    	isSpinnerVisible = true;
-    				}
-    	        });
-    			
-    			Thread.sleep(700);
-    		 } catch (InterruptedException e) { }
+    		syncProgress.setVisible(false);
+			lblStatus.setText(text);
+	    	readyToGoAnimation(-1,new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent arg0) {
+					// Sync progress bar slides out ...
+			        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
+			        leave.setByX(300.0);
+			        leave.setCycleCount(1);
+			        leave.play();
+				}
+	        });
+	    	isSpinnerVisible = true;
     	}
-    	
     	
     }
     
     public void removeActivitySpinner(){
     	if(isSpinnerVisible == true){
-	    	Platform.runLater(new Runnable(){
+	    	/*Platform.runLater(new Runnable(){
 				@Override
 				public void run() {
-					// Sync progress bar slides out ...
-			        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
-			        leave.setByX(-300.0);
-			        leave.setCycleCount(1);
-			        leave.play();
-			        leave.setOnFinished(new EventHandler<ActionEvent>(){
+					
+				}
+	        });*/
+    		// Sync progress bar slides out ...
+	        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
+	        leave.setByX(-300.0);
+	        leave.setCycleCount(1);
+	        leave.play();
+	        leave.setOnFinished(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent arg0) {
+					readyToGoAnimation(1, new EventHandler<ActionEvent>(){
 						@Override
 						public void handle(ActionEvent arg0) {
-							readyToGoAnimation(1, new EventHandler<ActionEvent>(){
-								@Override
-								public void handle(ActionEvent arg0) {
-									syncProgress.setVisible(true);
-									lblStatus.setText("No Activity");
-								}
-							});	
+							syncProgress.setVisible(true);
+							lblStatus.setText("No Activity");
 						}
-			        });
-			        isSpinnerVisible = false;  
+					});	
 				}
 	        });
+	        isSpinnerVisible = false;  
 	    }
-    	
-    	try {
-			Thread.sleep(700);
-		 } catch (InterruptedException e) { }
     }
     
 }

@@ -41,23 +41,16 @@ import org.controlsfx.dialog.Dialogs;
 import static wallettemplate.utils.GuiUtils.*;
 
 public class Main extends BAApplication {
-    public static String APP_NAME = "WalletTemplate";
-
-    public static NetworkParameters params = MainNetParams.get();
     public static WalletAppKit bitcoin;
     public static Main instance;
-    static Stage stg;
     private StackPane uiStack;
     private AnchorPane mainUI;
     public static Controller controller;
     public static Stage stage;
     public static Authenticator auth;
-    public static boolean paired = false;
-    //public static ConfigFile config;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
-    	stg = mainWindow;
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
@@ -82,9 +75,6 @@ public class Main extends BAApplication {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             //AquaFx.style();
         }
-        
-      //Load the config file
-        String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + Main.APP_NAME + ".config";
         
         // Load the GUI. The Controller class will be automagically created and wired up.
         mainWindow.initStyle(StageStyle.UNDECORATED);
@@ -121,6 +111,7 @@ public class Main extends BAApplication {
             bitcoin.useTor();
         }*/
         NetworkParameters np = null;
+        String finalAppName = APP_NAME;
         if(this.ApplicationParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();
         	bitcoin = new WalletAppKit(np, new File("."), APP_NAME);
@@ -134,7 +125,8 @@ public class Main extends BAApplication {
         }
         else if(this.ApplicationParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
-        	bitcoin = new WalletAppKit(np, new File("."), APP_NAME+"_testnet");
+        	finalAppName += "_testnet";
+        	bitcoin = new WalletAppKit(np, new File("."), finalAppName);
         	bitcoin.useTor();
         }
 
@@ -142,7 +134,7 @@ public class Main extends BAApplication {
         // or progress widget to keep the user engaged whilst we initialise, but we don't.
         bitcoin.setDownloadListener(controller.progressBarUpdater())
                .setBlockingStartup(false)
-               .setUserAgent(APP_NAME, "1.0");
+               .setUserAgent(finalAppName, "1.0");
         bitcoin.startAsync();
         bitcoin.awaitRunning();
         // Don't make the user wait for confirmations for now, as the intention is they're sending it their own money!
@@ -155,8 +147,7 @@ public class Main extends BAApplication {
         /**
          * Authenticator Operation Setup
          */
-    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup())
-    							.setApplicationParams(ApplicationParams);
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), ApplicationParams);
     	auth.startAsync();
     	auth.awaitRunning();
     

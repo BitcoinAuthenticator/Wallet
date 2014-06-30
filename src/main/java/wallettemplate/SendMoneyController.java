@@ -1,15 +1,17 @@
 package wallettemplate;
 
+import authenticator.Authenticator;
+
 import com.google.bitcoin.core.*;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import wallettemplate.controls.BitcoinAddressValidator;
-
 import static wallettemplate.utils.GuiUtils.crashAlert;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
@@ -25,7 +27,7 @@ public class SendMoneyController {
 
     // Called by FXMLLoader
     public void initialize() {
-        new BitcoinAddressValidator(Main.params, address, sendBtn);
+        new BitcoinAddressValidator(Authenticator.getWalletOperation().getNetworkParams(), address, sendBtn);
     }
 
     public void cancel(ActionEvent event) {
@@ -34,7 +36,7 @@ public class SendMoneyController {
 
     public void send(ActionEvent event) {
         try {
-            Address destination = new Address(Main.params, address.getText());
+            Address destination = new Address(Authenticator.getWalletOperation().getNetworkParams(), address.getText());
             Wallet.SendRequest req = Wallet.SendRequest.emptyWallet(destination);
             sendResult = Main.bitcoin.wallet().sendCoins(req);
             Futures.addCallback(sendResult.broadcastComplete, new FutureCallback<Transaction>() {

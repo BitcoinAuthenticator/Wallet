@@ -88,6 +88,14 @@ public class BAApplication extends Application{
 		else
 			ApplicationParams.setShouldPrintTCPListenerInfoToConsole(false);
 		
+		//App Name
+		if(ApplicationParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
+			ApplicationParams.setAppName(APP_NAME + "_TestNet");
+			APP_NAME += "_TestNet";
+		}
+		else
+			ApplicationParams.setAppName(APP_NAME);
+		
 		return returnValue;
 	}
 	
@@ -131,16 +139,40 @@ public class BAApplication extends Application{
 			this.shouldPrintTCPListenerInfoToConsole = value;
 			return this;
 		}
+		
+		String APP_NAME = "";
+		public String getAppName(){
+			return APP_NAME;
+		}
+		public void setAppName(String name){
+			APP_NAME = name;
+		}
 	}
 	
 	public enum NetworkType{
-		MAIN_NET (1),
-		TEST_NET (2);
+		TEST_NET (0),
+		MAIN_NET (1);
 		
 		private int value;
-        private NetworkType(int value) {
+        NetworkType(int value) {
                 this.value = value;
         }
         public int getValue() { return this.value; }
+        
+        public static NetworkType fromString(String s){
+        	switch(s)
+        	{
+        	case "1":
+        		return MAIN_NET;
+			case "MAIN_NET":
+        		return MAIN_NET;
+			case "0":
+				return TEST_NET;
+			case "TEST_NET":
+				return TEST_NET;
+			default:
+				return MAIN_NET;
+        	}
+        }
 	}
 }

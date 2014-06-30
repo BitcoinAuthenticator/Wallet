@@ -53,8 +53,10 @@ public class Authenticator extends AbstractService{
 	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
 
 	public Authenticator(){}
-	public Authenticator(Wallet wallet, PeerGroup peerGroup) throws IOException
+	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) throws IOException
 	{
+		if(mApplicationParams == null)
+			mApplicationParams = appParams;
 		if(generalEventsListeners == null)
 			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
 		if(mTCPListener == null)
@@ -194,14 +196,14 @@ public class Authenticator extends AbstractService{
 		{
 			try {
 				//Spending account
-				getWalletOperation().generateNewAccount();
+				getWalletOperation().generateNewAccount(getApplicationParams().getBitcoinNetworkType());
 				AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
 				b1.setActiveAccountType(ActiveAccountType.Spending);
 				getWalletOperation().writeActiveAccount(b1.build());
 				this.activeAccount = b1.build();				
 				
 				// Savings account
-				getWalletOperation().generateNewAccount();
+				getWalletOperation().generateNewAccount(getApplicationParams().getBitcoinNetworkType());
 			} catch (IOException e) { e.printStackTrace(); }
 		}	
 		else

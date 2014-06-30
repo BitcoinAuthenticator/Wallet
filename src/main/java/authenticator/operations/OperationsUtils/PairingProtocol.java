@@ -16,6 +16,7 @@ import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
 import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;
+import authenticator.ui_helpers.BAApplication.NetworkType;
 
 /**
  * This is the wallet side of the Pairing Protocol. It uses UpNp to map a port on the router if there is one,
@@ -37,7 +38,7 @@ public class PairingProtocol {
    * <ol>
    * <li>Pairing name</li>
    * <li>Pair type, by default "blockchain"</li>
-   * <li>NetworkType</li>
+   * <li>NetworkType - 1 for main net, 0 for testnet</li>
    * </ol>
    * 
    * @param {@link java.net.ServerSocket} ss
@@ -114,7 +115,13 @@ public class PairingProtocol {
 		  			 "gcmRegId: " +  GCM + "\n" + 
 		  			 "pairing ID: " + pairingID);
 		  //Save to file
-		  authenticator.Authenticator.getWalletOperation().generateNewPairing(mPubKey, chaincode, key, GCM, pairingID, args[0]);
+		  authenticator.Authenticator.getWalletOperation().generateNewPairing(mPubKey, 
+				  chaincode, 
+				  key, 
+				  GCM, 
+				  pairingID, 
+				  args[0], 
+				  NetworkType.fromString(args[2]));
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");

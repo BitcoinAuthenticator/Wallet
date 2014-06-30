@@ -124,6 +124,8 @@ message AuthenticatorConfiguration{
 		required sint64 unConfirmedBalance	= 7;
 		//
 		repeated string pendingTx			= 8;
+		//
+		required int32 networkType			= 9; // 1 for main net, 0 for testnet
 	}
 	
 	optional ConfigActiveAccount configActiveAccount 				= 1;

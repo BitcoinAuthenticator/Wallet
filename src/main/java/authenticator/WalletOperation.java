@@ -25,6 +25,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
@@ -80,7 +81,7 @@ public class WalletOperation extends BASE{
 		}
 		
 		if(configFile == null){
-			configFile = new ConfigFile();
+			configFile = new ConfigFile(Authenticator.getApplicationParams().getAppName());
 			/**
 			 * Check to see if a config file exists, if not, initialize
 			 */
@@ -158,7 +159,7 @@ public class WalletOperation extends BASE{
         	boolean isChanged = false;
         	for (TransactionOutput out : outs){
     			Script scr = out.getScriptPubKey();
-    			String addrStr = scr.getToAddress(Main.params).toString();
+    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
     				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
     				TransactionConfidence conf = tx.getConfidence();
@@ -208,7 +209,7 @@ public class WalletOperation extends BASE{
             		if(out != null) // could be not connected
         			{
             			Script scr = out.getScriptPubKey();
-        				String addrStr = scr.getToAddress(Main.params).toString();
+        				String addrStr = scr.getToAddress(getNetworkParams()).toString();
             			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
             				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
             				TransactionConfidence conf = tx.getConfidence();
@@ -593,7 +594,7 @@ public class WalletOperation extends BASE{
 	 * @return
 	 * @throws IOException 
 	 */
-	public ATAccount generateNewAccount() throws IOException{
+	public ATAccount generateNewAccount(NetworkType nt) throws IOException{
 		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount();
 		ATAccount.Builder b = ATAccount.newBuilder();
 						  b.setIndex(accoutnIdx);
@@ -601,6 +602,7 @@ public class WalletOperation extends BASE{
 						  b.setLastInternalIndex(0);
 						  b.setConfirmedBalance(0);
 						  b.setUnConfirmedBalance(0);
+						  b.setNetworkType(nt.getValue());
 	    configFile.writeAccount(b.build());
 	    staticLogger.info("Generated new account at index, " + accoutnIdx);
 		return b.build();
@@ -943,7 +945,7 @@ public class WalletOperation extends BASE{
 		}
 		return "";
 	}
-	
+		
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
 	{
 		return configFile.getAllPairingObjectArray();
@@ -973,8 +975,14 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	public void generateNewPairing(String authMpubkey, String authhaincode, String sharedAES, String GCM, String pairingID, String pairName) throws IOException{
-		int accountID = generateNewAccount().getIndex();
+	public void generateNewPairing(String authMpubkey, 
+			String authhaincode, 
+			String sharedAES, 
+			String GCM, 
+			String pairingID, 
+			String pairName,
+			NetworkType nt) throws IOException{
+		int accountID = generateNewAccount(nt).getIndex();
 		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,pairName,accountID);
 	}
 	

@@ -34,8 +34,14 @@ public class ConfigFile {
 	
 	static public String filePath;
 	
-	public ConfigFile() throws IOException{
-		filePath = new java.io.File( "." ).getCanonicalPath() + "/" + Main.APP_NAME + ".config";
+	/**
+	 * 
+	 * 
+	 * @param networkType - 1 for main net, 0 for testnet
+	 * @throws IOException
+	 */
+	public ConfigFile(String appName) throws IOException{
+		filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appName + ".config";
 	}
 	
 	private AuthenticatorConfiguration.Builder getConfigFileBuilder(){

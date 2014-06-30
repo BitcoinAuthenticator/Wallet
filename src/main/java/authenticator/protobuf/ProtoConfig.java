@@ -8436,6 +8436,22 @@ public final class ProtoConfig {
        */
       com.google.protobuf.ByteString
           getPendingTxBytes(int index);
+
+      // required int32 networkType = 9;
+      /**
+       * <code>required int32 networkType = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      boolean hasNetworkType();
+      /**
+       * <code>required int32 networkType = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      int getNetworkType();
     }
     /**
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ATAccount}
@@ -8561,6 +8577,11 @@ public final class ProtoConfig {
                   mutable_bitField0_ |= 0x00000080;
                 }
                 pendingTx_.add(input.readBytes());
+                break;
+              }
+              case 72: {
+                bitField0_ |= 0x00000020;
+                networkType_ = input.readInt32();
                 break;
               }
             }
@@ -8786,6 +8807,28 @@ public final class ProtoConfig {
         return pendingTx_.getByteString(index);
       }
 
+      // required int32 networkType = 9;
+      public static final int NETWORKTYPE_FIELD_NUMBER = 9;
+      private int networkType_;
+      /**
+       * <code>required int32 networkType = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public boolean hasNetworkType() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required int32 networkType = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public int getNetworkType() {
+        return networkType_;
+      }
+
       private void initFields() {
         index_ = 0;
         lastExternalIndex_ = 0;
@@ -8795,6 +8838,7 @@ public final class ProtoConfig {
         confirmedBalance_ = 0L;
         unConfirmedBalance_ = 0L;
         pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        networkType_ = 0;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -8818,6 +8862,10 @@ public final class ProtoConfig {
           return false;
         }
         if (!hasUnConfirmedBalance()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasNetworkType()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -8851,6 +8899,9 @@ public final class ProtoConfig {
         }
         for (int i = 0; i < pendingTx_.size(); i++) {
           output.writeBytes(8, pendingTx_.getByteString(i));
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          output.writeInt32(9, networkType_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -8907,6 +8958,10 @@ public final class ProtoConfig {
           }
           size += dataSize;
           size += 1 * getPendingTxList().size();
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(9, networkType_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -9040,6 +9095,8 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000040);
           pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000080);
+          networkType_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000100);
           return this;
         }
 
@@ -9104,6 +9161,10 @@ public final class ProtoConfig {
             bitField0_ = (bitField0_ & ~0x00000080);
           }
           result.pendingTx_ = pendingTx_;
+          if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+            to_bitField0_ |= 0x00000020;
+          }
+          result.networkType_ = networkType_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -9165,6 +9226,9 @@ public final class ProtoConfig {
             }
             onChanged();
           }
+          if (other.hasNetworkType()) {
+            setNetworkType(other.getNetworkType());
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
@@ -9187,6 +9251,10 @@ public final class ProtoConfig {
             return false;
           }
           if (!hasUnConfirmedBalance()) {
+            
+            return false;
+          }
+          if (!hasNetworkType()) {
             
             return false;
           }
@@ -9637,6 +9705,51 @@ public final class ProtoConfig {
   }
   ensurePendingTxIsMutable();
           pendingTx_.add(value);
+          onChanged();
+          return this;
+        }
+
+        // required int32 networkType = 9;
+        private int networkType_ ;
+        /**
+         * <code>required int32 networkType = 9;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public boolean hasNetworkType() {
+          return ((bitField0_ & 0x00000100) == 0x00000100);
+        }
+        /**
+         * <code>required int32 networkType = 9;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public int getNetworkType() {
+          return networkType_;
+        }
+        /**
+         * <code>required int32 networkType = 9;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder setNetworkType(int value) {
+          bitField0_ |= 0x00000100;
+          networkType_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required int32 networkType = 9;</code>
+         *
+         * <pre>
+         * </pre>
+         */
+        public Builder clearNetworkType() {
+          bitField0_ = (bitField0_ & ~0x00000100);
+          networkType_ = 0;
           onChanged();
           return this;
         }
@@ -11124,7 +11237,7 @@ public final class ProtoConfig {
       "ontract\032n\n\010Contract\022%\n\035ShouldSendPayload" +
       "OnConnection\030\001 \001(\010\022;\n3ShouldReceivePaylo" +
       "adAfterSendingPayloadOnConnection\030\002 \001(\010\"",
-      "\302\n\n\032AuthenticatorConfiguration\022c\n\023config" +
+      "\327\n\n\032AuthenticatorConfiguration\022c\n\023config" +
       "ActiveAccount\030\001 \001(\0132F.authenticator.prot" +
       "obuf.AuthenticatorConfiguration.ConfigAc" +
       "tiveAccount\022o\n\031configAuthenticatorWallet" +
@@ -11152,19 +11265,20 @@ public final class ProtoConfig {
       "otobuf.ATAddress\032z\n\024ConfigOneNameProfile" +
       "\022\017\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 " +
       "\001(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onename" +
-      "AvatarFilePath\030\004 \001(\t\032\315\001\n\tATAccount\022\r\n\005in" +
+      "AvatarFilePath\030\004 \001(\t\032\342\001\n\tATAccount\022\r\n\005in" +
       "dex\030\001 \002(\005\022\031\n\021lastExternalIndex\030\002 \002(\005\022\030\n\020",
       "usedExternalKeys\030\003 \003(\005\022\031\n\021lastInternalIn" +
       "dex\030\004 \002(\005\022\030\n\020usedInternalKeys\030\005 \003(\005\022\030\n\020c" +
       "onfirmedBalance\030\006 \002(\022\022\032\n\022unConfirmedBala" +
-      "nce\030\007 \002(\022\022\021\n\tpendingTx\030\010 \003(\t*;\n\020ATGCMMes" +
-      "sageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingReq" +
-      "uestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing" +
-      "\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAuthen" +
-      "ticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#up" +
-      "dateIpAddressesForPreviousMessage\020\004*A\n\021A" +
-      "ctiveAccountType\022\014\n\010Spending\020\000\022\013\n\007Saving",
-      "s\020\001\022\021\n\rAuthenticator\020\002B\rB\013ProtoConfig"
+      "nce\030\007 \002(\022\022\021\n\tpendingTx\030\010 \003(\t\022\023\n\013networkT" +
+      "ype\030\t \002(\005*;\n\020ATGCMMessageType\022\n\n\006SignTX\020" +
+      "\002\022\033\n\027UpdatePendingRequestIPs\020\004*\217\001\n\017ATOpe" +
+      "rationType\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037S" +
+      "ignAndBroadcastAuthenticatorTx\020\002\022\025\n\021Broa" +
+      "dcastNormalTx\020\003\022\'\n#updateIpAddressesForP" +
+      "reviousMessage\020\004*A\n\021ActiveAccountType\022\014\n",
+      "\010Spending\020\000\022\013\n\007Savings\020\001\022\021\n\rAuthenticato" +
+      "r\020\002B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -11230,7 +11344,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_descriptor,
-              new java.lang.String[] { "Index", "LastExternalIndex", "UsedExternalKeys", "LastInternalIndex", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "PendingTx", });
+              new java.lang.String[] { "Index", "LastExternalIndex", "UsedExternalKeys", "LastInternalIndex", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "PendingTx", "NetworkType", });
           return null;
         }
       };
