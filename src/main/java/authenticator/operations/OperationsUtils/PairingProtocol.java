@@ -2,6 +2,8 @@ package authenticator.operations.OperationsUtils;
 
 import java.io.*;
 import java.net.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,6 +13,7 @@ import javax.crypto.*;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
@@ -46,7 +49,7 @@ public class PairingProtocol {
    * @param {@link authenticator.operations.OnOperationUIUpdate} listener
    * @throws Exception
    */
-  public static void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
+  public void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[1];
@@ -71,14 +74,47 @@ public class PairingProtocol {
 	  
 	  //Display a QR code for the user to scan
 	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[2]));
+	  Socket socket = dispalyQRAnListenForCommunication(ss, listener);
+    
+	  // Receive payload
+	  String payload = receivePairingDataFromAuthenticator(socket, listener, sharedsecret);
+    
+	  // Verify HMAC
+	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, listener);
+	 
+	  if (jsonObject != null){
+		//Parse the received json object
+		  String mPubKey = (String) jsonObject.get("mpubkey");
+		  String chaincode = (String) jsonObject.get("chaincode");
+		  String pairingID = (String) jsonObject.get("pairID");
+		  String GCM = (String) jsonObject.get("gcmID");
+		  //Save to file
+		  authenticator.Authenticator.getWalletOperation().generateNewPairing(mPubKey, 
+				  chaincode, 
+				  key, 
+				  GCM, 
+				  pairingID, 
+				  args[0], 
+				  NetworkType.fromString(args[2]));
+	  }
+	  else {
+		  System.out.println("Message authentication code is invalid");
+		  postUIStatusUpdate(listener,"Message authentication code is invalid");
+	  }
+
+  }
+  
+  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, OnOperationUIUpdate listener) throws IOException{
 	  DisplayQR QR = new DisplayQR();
 	  QR.main(null);    
 	  Socket socket = ss.accept();
 	  QR.CloseWindow();
 	  System.out.println("Connected to Alice");
 	  postUIStatusUpdate(listener,"Connected to Alice");
-    
-	  // Receive payload
+	  return socket;
+  }
+  
+  public String receivePairingDataFromAuthenticator(Socket socket, OnOperationUIUpdate listener, SecretKey sharedsecret) throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException{
 	  postUIStatusUpdate(listener,"Decrypting message ...");
 	  DataInputStream in = new DataInputStream(socket.getInputStream());
 	  DataOutputStream out = new DataOutputStream(socket.getOutputStream());
@@ -88,8 +124,10 @@ public class PairingProtocol {
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
 	  String payload = BAUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
-    
-	  // Verify HMAC
+	  return payload;
+  }
+  
+  public JSONObject parseAndVerifyPayload(String payload, SecretKey sharedsecret, OnOperationUIUpdate listener) throws NoSuchAlgorithmException, InvalidKeyException, ParseException{
 	  byte[] testpayload = BAUtils.hexStringToByteArray(payload.substring(0,payload.length()-64));
 	  byte[] hash = BAUtils.hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
 	  Mac mac = Mac.getInstance("HmacSHA256");
@@ -114,23 +152,15 @@ public class PairingProtocol {
 		  			 "chaincode: " +  chaincode + "\n" +
 		  			 "gcmRegId: " +  GCM + "\n" + 
 		  			 "pairing ID: " + pairingID);
-		  //Save to file
-		  authenticator.Authenticator.getWalletOperation().generateNewPairing(mPubKey, 
-				  chaincode, 
-				  key, 
-				  GCM, 
-				  pairingID, 
-				  args[0], 
-				  NetworkType.fromString(args[2]));
+		  
+		  return  jsonObject;
 	  }
-	  else {
-		  System.out.println("Message authentication code is invalid");
-		  postUIStatusUpdate(listener,"Message authentication code is invalid");
-	  }
-
+	
+	  return null;
+	  
   }
   
-  public static  void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
+  public  void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
   {
 	  if(listener != null)
 		  listener.statusReport(str);

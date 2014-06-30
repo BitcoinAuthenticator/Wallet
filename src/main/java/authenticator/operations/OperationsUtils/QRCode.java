@@ -32,8 +32,6 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
  */
 public class QRCode {
 	
-	static Image orig;
-
 /**
  * 
  * 
@@ -47,14 +45,16 @@ public class QRCode {
  * @throws IOException
  * @throws NotFoundException
  */
+  public QRCode(){}
   public QRCode (String ip, String localip, String wallettype, String key, int networkType) throws WriterException, IOException,
       NotFoundException {
 	  // Build the string to display in the QR.
-	  String qrCodeData = "AESKey=" + key + 
-			  "&PublicIP=" + ip + 
-			  "&LocalIP=" + localip + 
-			  "&WalletType=" + wallettype +
-			  "&NetworkType=" + networkType;
+	  String qrCodeData = generateQRDataString(ip,
+											  localip,
+											  wallettype,
+											  key,
+											  networkType);
+	  
 	  String filePath = new java.io.File( "." ).getCanonicalPath() + "/PairingQRCode.png";
 	  String charset = "UTF-8"; // or "ISO-8859-1"
 	  Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
@@ -65,6 +65,7 @@ public class QRCode {
 	  System.out.println("Data read from QR Code: "
 			  + readQRCode(filePath, charset, hintMap));
 	  //Crop the QR Code so it looks better when displayed to the user.
+	  Image orig = null ;
 	  try {
 		  orig = ImageIO.read(new File(filePath));
 	  } catch (IOException e2) {
@@ -80,20 +81,51 @@ public class QRCode {
 		  e1.printStackTrace();
 	  }
   }
-
-  	/**Method which creates the QR code*/
-  	@SuppressWarnings({ "unchecked", "rawtypes" })
-  	public static void createQRCode(String qrCodeData, String filePath, 
-  			String charset, Map hintMap, int qrCodeheight, int qrCodewidth) throws WriterException, IOException {
-  		BitMatrix matrix = new MultiFormatWriter().encode(
-        new String(qrCodeData.getBytes(charset), charset),
-        BarcodeFormat.QR_CODE, qrCodewidth, qrCodeheight, hintMap);
-  		MatrixToImageWriter.writeToFile(matrix, filePath.substring(filePath.lastIndexOf('.') + 1), new File(filePath));
+  
+  public String generateQRDataString(String ip, String localip, String wallettype, String key, int networkType){
+	  String qrCodeData = "AESKey=" + key + 
+			  "&PublicIP=" + ip + 
+			  "&LocalIP=" + localip + 
+			  "&WalletType=" + wallettype +
+			  "&NetworkType=" + networkType;
+	  return qrCodeData;
   }
 
-  	/**Method to read from the code*/
+  	/**
+  	 * 
+  	 * @param qrCodeData
+  	 * @param filePath
+  	 * @param charset
+  	 * @param hintMap
+  	 * @param qrCodeheight
+  	 * @param qrCodewidth
+  	 * @throws WriterException
+  	 * @throws IOException
+  	 */
+  	@SuppressWarnings({ "unchecked", "rawtypes" })
+  	public  void createQRCode(String qrCodeData, String filePath, 
+		  String charset, 
+		  Map hintMap, 
+		  int qrCodeheight, 
+		  int qrCodewidth) throws WriterException, IOException 
+  	{
+  		BitMatrix matrix = new MultiFormatWriter().encode( new String(qrCodeData.getBytes(charset), charset),
+  														BarcodeFormat.QR_CODE, qrCodewidth, qrCodeheight, hintMap);
+  		MatrixToImageWriter.writeToFile(matrix, filePath.substring(filePath.lastIndexOf('.') + 1), new File(filePath));
+   }
+
+  	/**
+  	 * 
+  	 * @param filePath
+  	 * @param charset
+  	 * @param hintMap
+  	 * @return
+  	 * @throws FileNotFoundException
+  	 * @throws IOException
+  	 * @throws NotFoundException
+  	 */
   	@SuppressWarnings({ "rawtypes", "unchecked" })
-  	public static String readQRCode(String filePath, String charset, Map hintMap) throws FileNotFoundException, 
+  	public String readQRCode(String filePath, String charset, Map hintMap) throws FileNotFoundException, 
   			IOException, NotFoundException {
   		BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(
         new BufferedImageLuminanceSource(ImageIO.read(new FileInputStream(filePath)))));

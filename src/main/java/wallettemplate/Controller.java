@@ -814,10 +814,18 @@ public class Controller {
     		double a = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
     		amount = amount.add(Coin.valueOf((long)a));
     	}
-    	amount = amount.add(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE);
+    	// fee
+    	Coin fee = Coin.ZERO;
+		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+        else 
+        {
+        	double f = (double) Double.parseDouble(txFee.getText())*100000000;
+        	fee = Coin.valueOf((long)f);
+        }
+    	amount = amount.add(fee);
     	//
     	Coin confirmed = Coin.ZERO;
-    	//TODO - split savings and spending
+
     	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ){
     		HierarchyAddressTypes addType = HierarchyAddressTypes.External; // TODO - internal also
     		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
