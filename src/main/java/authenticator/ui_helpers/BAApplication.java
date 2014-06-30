@@ -134,7 +134,13 @@ public class BAApplication extends Application{
 	}
 	
 	public enum NetworkType{
-		MAIN_NET,
-		TEST_NET;
+		MAIN_NET (1),
+		TEST_NET (2);
+		
+		private int value;
+        private NetworkType(int value) {
+                this.value = value;
+        }
+        public int getValue() { return this.value; }
 	}
 }

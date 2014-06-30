@@ -32,7 +32,7 @@ public class PairWallet extends BaseUI{
     }
     private void runPairing(String pairName) throws IOException
     {
-    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName).SetOperationUIUpdate(new OnOperationUIUpdate(){
+    	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName, Authenticator.getApplicationParams().getBitcoinNetworkType()).SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 			@SuppressWarnings("restriction")
 			@Override

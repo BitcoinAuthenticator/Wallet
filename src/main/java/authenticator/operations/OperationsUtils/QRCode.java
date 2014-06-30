@@ -34,10 +34,27 @@ public class QRCode {
 	
 	static Image orig;
 
-  public QRCode (String ip, String localip, String wallettype, String key) throws WriterException, IOException,
+/**
+ * 
+ * 
+ * 
+ * @param ip
+ * @param localip
+ * @param wallettype
+ * @param key
+ * @param networkType - 1 for main net, 0 for testnet
+ * @throws WriterException
+ * @throws IOException
+ * @throws NotFoundException
+ */
+  public QRCode (String ip, String localip, String wallettype, String key, int networkType) throws WriterException, IOException,
       NotFoundException {
 	  // Build the string to display in the QR.
-	  String qrCodeData = "AESKey=" + key + "&PublicIP=" + ip + "&LocalIP=" + localip + "&WalletType=" + wallettype ;
+	  String qrCodeData = "AESKey=" + key + 
+			  "&PublicIP=" + ip + 
+			  "&LocalIP=" + localip + 
+			  "&WalletType=" + wallettype +
+			  "&NetworkType=" + networkType;
 	  String filePath = new java.io.File( "." ).getCanonicalPath() + "/PairingQRCode.png";
 	  String charset = "UTF-8"; // or "ISO-8859-1"
 	  Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();

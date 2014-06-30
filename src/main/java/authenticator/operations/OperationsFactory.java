@@ -74,6 +74,7 @@ import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.ui_helpers.BAApplication.NetworkType;
 
 public class OperationsFactory extends BASE{
 	
@@ -89,12 +90,12 @@ public class OperationsFactory extends BASE{
 	 * @param pairingName
 	 * @return
 	 */
-	static public ATOperation PAIRING_OPERATION(String pairingName){
+	static public ATOperation PAIRING_OPERATION(String pairingName, NetworkType networkType){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, "blockchain"})
+					.SetArguments(new String[]{pairingName, "blockchain", Integer.toString(networkType.getValue()) })
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;

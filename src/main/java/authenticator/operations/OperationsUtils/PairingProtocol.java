@@ -37,7 +37,7 @@ public class PairingProtocol {
    * <ol>
    * <li>Pairing name</li>
    * <li>Pair type, by default "blockchain"</li>
-   * <li>Wallet Account Index</li>
+   * <li>NetworkType</li>
    * </ol>
    * 
    * @param {@link java.net.ServerSocket} ss
@@ -69,7 +69,7 @@ public class PairingProtocol {
       String key = BAUtils.bytesToHex(raw);
 	  
 	  //Display a QR code for the user to scan
-	  QRCode PairingQR = new QRCode(ip, localip, walletType, key);
+	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[2]));
 	  DisplayQR QR = new DisplayQR();
 	  QR.main(null);    
 	  Socket socket = ss.accept();
