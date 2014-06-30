@@ -311,24 +311,45 @@ public class ConfigFile {
 		writeConfigFile(auth);
 	}
 	
-	public List<String> getPendingTx(int accountIdx){
+	public List<String> getPendingOutTx(int accountIdx){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigAccounts(accountIdx).getPendingTxList();
+		return auth.getConfigAccounts(accountIdx).getPendingOutTxList();
 	}
 	
-	public void addPendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+	public void addPendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigAccountsBuilder(accountIdx).addPendingTx(txID);
+		auth.getConfigAccountsBuilder(accountIdx).addPendingOutTx(txID);
 		writeConfigFile(auth);
 	}
 	
-	public void removePendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+	public void removePendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		List<String> all = getPendingTx(accountIdx);
-		auth.getConfigAccountsBuilder(accountIdx).clearPendingTx();
+		List<String> all = getPendingOutTx(accountIdx);
+		auth.getConfigAccountsBuilder(accountIdx).clearPendingOutTx();
 		for(int i=0;i < all.size(); i++)
 			if(!all.get(i).equals(txID))
-				auth.getConfigAccountsBuilder(accountIdx).addPendingTx(all.get(i));
+				auth.getConfigAccountsBuilder(accountIdx).addPendingOutTx(all.get(i));
+		writeConfigFile(auth);
+	}
+	
+	public List<String> getPendingInTx(int accountIdx){
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigAccounts(accountIdx).getPendingInTxList();
+	}
+	
+	public void addPendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.getConfigAccountsBuilder(accountIdx).addPendingInTx(txID);
+		writeConfigFile(auth);
+	}
+	
+	public void removePendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<String> all = getPendingInTx(accountIdx);
+		auth.getConfigAccountsBuilder(accountIdx).clearPendingInTx();
+		for(int i=0;i < all.size(); i++)
+			if(!all.get(i).equals(txID))
+				auth.getConfigAccountsBuilder(accountIdx).addPendingInTx(all.get(i));
 		writeConfigFile(auth);
 	}
 }

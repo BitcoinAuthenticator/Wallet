@@ -169,9 +169,9 @@ public class WalletOperation extends BASE{
     					 * If the transaction is new but we don't know about it, just add it to confirmed.
     					 * If the transaction is moving from pending to confirmed, make it so.
     					 */
-    					if(!isNewTx && Authenticator.getWalletOperation().isPendingTx(add.getAccountIndex(), tx.getHashAsString())){ 
+    					if(!isNewTx && Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
     						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
-    						removePendingTx(add.getAccountIndex(), tx.getHashAsString());
+    						removePendingInTx(add.getAccountIndex(), tx.getHashAsString());
     						confirmedTx.add(tx.getHashAsString());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
     					}
@@ -184,10 +184,13 @@ public class WalletOperation extends BASE{
     				case PENDING:
     					if(!isNewTx)
     						; // do nothing
-    					else if(!Authenticator.getWalletOperation().isPendingTx(add.getAccountIndex(), tx.getHashAsString())){
+    					else if(!Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
-    						addPendingTx(add.getAccountIndex(), tx.getHashAsString());
+    						addPendingInTx(add.getAccountIndex(), tx.getHashAsString());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    						/**
+    						 * address is marked used when it receives funds
+    						 */
     						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
@@ -202,32 +205,37 @@ public class WalletOperation extends BASE{
         	 * 
         	 * Check for coins entering
         	 */
-        	if(isNewTx){
-        		List<TransactionInput> ins = tx.getInputs();
-            	for (TransactionInput in : ins){
-            		TransactionOutput out = in.getConnectedOutput();
-            		if(out != null) // could be not connected
-        			{
-            			Script scr = out.getScriptPubKey();
-        				String addrStr = scr.getToAddress(getNetworkParams()).toString();
-            			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
-            				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-            				TransactionConfidence conf = tx.getConfidence();
-            				switch(conf.getConfidenceType()){
-            				case BUILDING:
-            					//Authenticator.getWalletOperation().subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
-            					break;
-            				case PENDING:
-            					subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+    		List<TransactionInput> ins = tx.getInputs();
+        	for (TransactionInput in : ins){
+        		TransactionOutput out = in.getConnectedOutput();
+        		if(out != null) // could be not connected
+    			{
+        			Script scr = out.getScriptPubKey();
+    				String addrStr = scr.getToAddress(getNetworkParams()).toString();
+        			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+        				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+        				TransactionConfidence conf = tx.getConfidence();
+        				switch(conf.getConfidenceType()){
+        				case BUILDING:
+        					if(!isNewTx && Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
+        						removePendingOutTx(add.getAccountIndex(), tx.getHashAsString());
+        					}
+        					break;
+        				case PENDING:
+        					if(!isNewTx)
+        						;
+        					else if(!Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
+        						addPendingOutTx(add.getAccountIndex(), tx.getHashAsString());
+        						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
             					Authenticator.fireOnBalanceChanged(add.getAccountIndex());
-            					break;
-            				case DEAD:
-            					//Authenticator.getWalletOperation().addToConfirmedBalance(add.getAccountIndex(), out.getValue());
-            					break;
-            				}
-            			}
-        			}            			
-            	}
+        					}
+        					break;
+        				case DEAD:
+        					//Authenticator.getWalletOperation().addToConfirmedBalance(add.getAccountIndex(), out.getValue());
+        					break;
+        				}
+        			}
+    			}            			
         	}
                 		
         }
@@ -1192,20 +1200,40 @@ public class WalletOperation extends BASE{
 	//		Pending transactions 
 	//
 	//#####################################
-		public List<String> getPendingTx(int accountIdx){
-			return configFile.getPendingTx(accountIdx);
+		public List<String> getPendingOutTx(int accountIdx){
+			return configFile.getPendingOutTx(accountIdx);
 		}
 		
-		public void addPendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			configFile.addPendingTx(accountIdx,txID);
+		public void addPendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			configFile.addPendingOutTx(accountIdx,txID);
 		}
 		
-		public void removePendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			configFile.removePendingTx(accountIdx,txID);
+		public void removePendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			configFile.removePendingOutTx(accountIdx,txID);
 		}
 		
-		public boolean isPendingTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			List<String> all = getPendingTx(accountIdx);
+		public boolean isPendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			List<String> all = getPendingOutTx(accountIdx);
+			for(String tx:all)
+				if(tx.equals(txID))
+					return true;
+			return false;
+		}
+		
+		public List<String> getPendingInTx(int accountIdx){
+			return configFile.getPendingInTx(accountIdx);
+		}
+		
+		public void addPendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			configFile.addPendingInTx(accountIdx,txID);
+		}
+		
+		public void removePendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			configFile.removePendingInTx(accountIdx,txID);
+		}
+		
+		public boolean isPendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
+			List<String> all = getPendingInTx(accountIdx);
 			for(String tx:all)
 				if(tx.equals(txID))
 					return true;

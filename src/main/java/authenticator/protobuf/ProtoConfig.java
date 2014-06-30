@@ -8405,48 +8405,68 @@ public final class ProtoConfig {
        */
       long getUnConfirmedBalance();
 
-      // repeated string pendingTx = 8;
+      // repeated string pendingOutTx = 8;
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
       java.util.List<java.lang.String>
-      getPendingTxList();
+      getPendingOutTxList();
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
-      int getPendingTxCount();
+      int getPendingOutTxCount();
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
-      java.lang.String getPendingTx(int index);
+      java.lang.String getPendingOutTx(int index);
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
       com.google.protobuf.ByteString
-          getPendingTxBytes(int index);
+          getPendingOutTxBytes(int index);
 
-      // required int32 networkType = 9;
+      // repeated string pendingInTx = 9;
       /**
-       * <code>required int32 networkType = 9;</code>
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      java.util.List<java.lang.String>
+      getPendingInTxList();
+      /**
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      int getPendingInTxCount();
+      /**
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      java.lang.String getPendingInTx(int index);
+      /**
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      com.google.protobuf.ByteString
+          getPendingInTxBytes(int index);
+
+      // required int32 networkType = 10;
+      /**
+       * <code>required int32 networkType = 10;</code>
        *
        * <pre>
        * </pre>
        */
       boolean hasNetworkType();
       /**
-       * <code>required int32 networkType = 9;</code>
+       * <code>required int32 networkType = 10;</code>
        *
        * <pre>
        * </pre>
@@ -8573,13 +8593,21 @@ public final class ProtoConfig {
               }
               case 66: {
                 if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
-                  pendingTx_ = new com.google.protobuf.LazyStringArrayList();
+                  pendingOutTx_ = new com.google.protobuf.LazyStringArrayList();
                   mutable_bitField0_ |= 0x00000080;
                 }
-                pendingTx_.add(input.readBytes());
+                pendingOutTx_.add(input.readBytes());
                 break;
               }
-              case 72: {
+              case 74: {
+                if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+                  pendingInTx_ = new com.google.protobuf.LazyStringArrayList();
+                  mutable_bitField0_ |= 0x00000100;
+                }
+                pendingInTx_.add(input.readBytes());
+                break;
+              }
+              case 80: {
                 bitField0_ |= 0x00000020;
                 networkType_ = input.readInt32();
                 break;
@@ -8599,7 +8627,10 @@ public final class ProtoConfig {
             usedInternalKeys_ = java.util.Collections.unmodifiableList(usedInternalKeys_);
           }
           if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
-            pendingTx_ = new com.google.protobuf.UnmodifiableLazyStringList(pendingTx_);
+            pendingOutTx_ = new com.google.protobuf.UnmodifiableLazyStringList(pendingOutTx_);
+          }
+          if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+            pendingInTx_ = new com.google.protobuf.UnmodifiableLazyStringList(pendingInTx_);
           }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
@@ -8765,53 +8796,83 @@ public final class ProtoConfig {
         return unConfirmedBalance_;
       }
 
-      // repeated string pendingTx = 8;
-      public static final int PENDINGTX_FIELD_NUMBER = 8;
-      private com.google.protobuf.LazyStringList pendingTx_;
+      // repeated string pendingOutTx = 8;
+      public static final int PENDINGOUTTX_FIELD_NUMBER = 8;
+      private com.google.protobuf.LazyStringList pendingOutTx_;
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
       public java.util.List<java.lang.String>
-          getPendingTxList() {
-        return pendingTx_;
+          getPendingOutTxList() {
+        return pendingOutTx_;
       }
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
-      public int getPendingTxCount() {
-        return pendingTx_.size();
+      public int getPendingOutTxCount() {
+        return pendingOutTx_.size();
       }
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
-      public java.lang.String getPendingTx(int index) {
-        return pendingTx_.get(index);
+      public java.lang.String getPendingOutTx(int index) {
+        return pendingOutTx_.get(index);
       }
       /**
-       * <code>repeated string pendingTx = 8;</code>
+       * <code>repeated string pendingOutTx = 8;</code>
        *
        * <pre>
        * </pre>
        */
       public com.google.protobuf.ByteString
-          getPendingTxBytes(int index) {
-        return pendingTx_.getByteString(index);
+          getPendingOutTxBytes(int index) {
+        return pendingOutTx_.getByteString(index);
       }
 
-      // required int32 networkType = 9;
-      public static final int NETWORKTYPE_FIELD_NUMBER = 9;
+      // repeated string pendingInTx = 9;
+      public static final int PENDINGINTX_FIELD_NUMBER = 9;
+      private com.google.protobuf.LazyStringList pendingInTx_;
+      /**
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      public java.util.List<java.lang.String>
+          getPendingInTxList() {
+        return pendingInTx_;
+      }
+      /**
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      public int getPendingInTxCount() {
+        return pendingInTx_.size();
+      }
+      /**
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      public java.lang.String getPendingInTx(int index) {
+        return pendingInTx_.get(index);
+      }
+      /**
+       * <code>repeated string pendingInTx = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPendingInTxBytes(int index) {
+        return pendingInTx_.getByteString(index);
+      }
+
+      // required int32 networkType = 10;
+      public static final int NETWORKTYPE_FIELD_NUMBER = 10;
       private int networkType_;
       /**
-       * <code>required int32 networkType = 9;</code>
+       * <code>required int32 networkType = 10;</code>
        *
        * <pre>
        * </pre>
@@ -8820,7 +8881,7 @@ public final class ProtoConfig {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>required int32 networkType = 9;</code>
+       * <code>required int32 networkType = 10;</code>
        *
        * <pre>
        * </pre>
@@ -8837,7 +8898,8 @@ public final class ProtoConfig {
         usedInternalKeys_ = java.util.Collections.emptyList();
         confirmedBalance_ = 0L;
         unConfirmedBalance_ = 0L;
-        pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        pendingOutTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        pendingInTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         networkType_ = 0;
       }
       private byte memoizedIsInitialized = -1;
@@ -8897,11 +8959,14 @@ public final class ProtoConfig {
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
           output.writeSInt64(7, unConfirmedBalance_);
         }
-        for (int i = 0; i < pendingTx_.size(); i++) {
-          output.writeBytes(8, pendingTx_.getByteString(i));
+        for (int i = 0; i < pendingOutTx_.size(); i++) {
+          output.writeBytes(8, pendingOutTx_.getByteString(i));
+        }
+        for (int i = 0; i < pendingInTx_.size(); i++) {
+          output.writeBytes(9, pendingInTx_.getByteString(i));
         }
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
-          output.writeInt32(9, networkType_);
+          output.writeInt32(10, networkType_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -8952,16 +9017,25 @@ public final class ProtoConfig {
         }
         {
           int dataSize = 0;
-          for (int i = 0; i < pendingTx_.size(); i++) {
+          for (int i = 0; i < pendingOutTx_.size(); i++) {
             dataSize += com.google.protobuf.CodedOutputStream
-              .computeBytesSizeNoTag(pendingTx_.getByteString(i));
+              .computeBytesSizeNoTag(pendingOutTx_.getByteString(i));
           }
           size += dataSize;
-          size += 1 * getPendingTxList().size();
+          size += 1 * getPendingOutTxList().size();
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < pendingInTx_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(pendingInTx_.getByteString(i));
+          }
+          size += dataSize;
+          size += 1 * getPendingInTxList().size();
         }
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(9, networkType_);
+            .computeInt32Size(10, networkType_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -9093,10 +9167,12 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000020);
           unConfirmedBalance_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000040);
-          pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          pendingOutTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000080);
-          networkType_ = 0;
+          pendingInTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000100);
+          networkType_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000200);
           return this;
         }
 
@@ -9156,12 +9232,18 @@ public final class ProtoConfig {
           }
           result.unConfirmedBalance_ = unConfirmedBalance_;
           if (((bitField0_ & 0x00000080) == 0x00000080)) {
-            pendingTx_ = new com.google.protobuf.UnmodifiableLazyStringList(
-                pendingTx_);
+            pendingOutTx_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                pendingOutTx_);
             bitField0_ = (bitField0_ & ~0x00000080);
           }
-          result.pendingTx_ = pendingTx_;
-          if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          result.pendingOutTx_ = pendingOutTx_;
+          if (((bitField0_ & 0x00000100) == 0x00000100)) {
+            pendingInTx_ = new com.google.protobuf.UnmodifiableLazyStringList(
+                pendingInTx_);
+            bitField0_ = (bitField0_ & ~0x00000100);
+          }
+          result.pendingInTx_ = pendingInTx_;
+          if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
             to_bitField0_ |= 0x00000020;
           }
           result.networkType_ = networkType_;
@@ -9216,13 +9298,23 @@ public final class ProtoConfig {
           if (other.hasUnConfirmedBalance()) {
             setUnConfirmedBalance(other.getUnConfirmedBalance());
           }
-          if (!other.pendingTx_.isEmpty()) {
-            if (pendingTx_.isEmpty()) {
-              pendingTx_ = other.pendingTx_;
+          if (!other.pendingOutTx_.isEmpty()) {
+            if (pendingOutTx_.isEmpty()) {
+              pendingOutTx_ = other.pendingOutTx_;
               bitField0_ = (bitField0_ & ~0x00000080);
             } else {
-              ensurePendingTxIsMutable();
-              pendingTx_.addAll(other.pendingTx_);
+              ensurePendingOutTxIsMutable();
+              pendingOutTx_.addAll(other.pendingOutTx_);
+            }
+            onChanged();
+          }
+          if (!other.pendingInTx_.isEmpty()) {
+            if (pendingInTx_.isEmpty()) {
+              pendingInTx_ = other.pendingInTx_;
+              bitField0_ = (bitField0_ & ~0x00000100);
+            } else {
+              ensurePendingInTxIsMutable();
+              pendingInTx_.addAll(other.pendingInTx_);
             }
             onChanged();
           }
@@ -9589,139 +9681,232 @@ public final class ProtoConfig {
           return this;
         }
 
-        // repeated string pendingTx = 8;
-        private com.google.protobuf.LazyStringList pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        private void ensurePendingTxIsMutable() {
+        // repeated string pendingOutTx = 8;
+        private com.google.protobuf.LazyStringList pendingOutTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensurePendingOutTxIsMutable() {
           if (!((bitField0_ & 0x00000080) == 0x00000080)) {
-            pendingTx_ = new com.google.protobuf.LazyStringArrayList(pendingTx_);
+            pendingOutTx_ = new com.google.protobuf.LazyStringArrayList(pendingOutTx_);
             bitField0_ |= 0x00000080;
            }
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
         public java.util.List<java.lang.String>
-            getPendingTxList() {
-          return java.util.Collections.unmodifiableList(pendingTx_);
+            getPendingOutTxList() {
+          return java.util.Collections.unmodifiableList(pendingOutTx_);
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
-        public int getPendingTxCount() {
-          return pendingTx_.size();
+        public int getPendingOutTxCount() {
+          return pendingOutTx_.size();
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
-        public java.lang.String getPendingTx(int index) {
-          return pendingTx_.get(index);
+        public java.lang.String getPendingOutTx(int index) {
+          return pendingOutTx_.get(index);
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
         public com.google.protobuf.ByteString
-            getPendingTxBytes(int index) {
-          return pendingTx_.getByteString(index);
+            getPendingOutTxBytes(int index) {
+          return pendingOutTx_.getByteString(index);
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
-        public Builder setPendingTx(
+        public Builder setPendingOutTx(
             int index, java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
-  ensurePendingTxIsMutable();
-          pendingTx_.set(index, value);
+  ensurePendingOutTxIsMutable();
+          pendingOutTx_.set(index, value);
           onChanged();
           return this;
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
-        public Builder addPendingTx(
+        public Builder addPendingOutTx(
             java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
-  ensurePendingTxIsMutable();
-          pendingTx_.add(value);
+  ensurePendingOutTxIsMutable();
+          pendingOutTx_.add(value);
           onChanged();
           return this;
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
-        public Builder addAllPendingTx(
+        public Builder addAllPendingOutTx(
             java.lang.Iterable<java.lang.String> values) {
-          ensurePendingTxIsMutable();
-          super.addAll(values, pendingTx_);
+          ensurePendingOutTxIsMutable();
+          super.addAll(values, pendingOutTx_);
           onChanged();
           return this;
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
-        public Builder clearPendingTx() {
-          pendingTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        public Builder clearPendingOutTx() {
+          pendingOutTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000080);
           onChanged();
           return this;
         }
         /**
-         * <code>repeated string pendingTx = 8;</code>
+         * <code>repeated string pendingOutTx = 8;</code>
          *
          * <pre>
          * </pre>
          */
-        public Builder addPendingTxBytes(
+        public Builder addPendingOutTxBytes(
             com.google.protobuf.ByteString value) {
           if (value == null) {
     throw new NullPointerException();
   }
-  ensurePendingTxIsMutable();
-          pendingTx_.add(value);
+  ensurePendingOutTxIsMutable();
+          pendingOutTx_.add(value);
           onChanged();
           return this;
         }
 
-        // required int32 networkType = 9;
+        // repeated string pendingInTx = 9;
+        private com.google.protobuf.LazyStringList pendingInTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensurePendingInTxIsMutable() {
+          if (!((bitField0_ & 0x00000100) == 0x00000100)) {
+            pendingInTx_ = new com.google.protobuf.LazyStringArrayList(pendingInTx_);
+            bitField0_ |= 0x00000100;
+           }
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public java.util.List<java.lang.String>
+            getPendingInTxList() {
+          return java.util.Collections.unmodifiableList(pendingInTx_);
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public int getPendingInTxCount() {
+          return pendingInTx_.size();
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public java.lang.String getPendingInTx(int index) {
+          return pendingInTx_.get(index);
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPendingInTxBytes(int index) {
+          return pendingInTx_.getByteString(index);
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public Builder setPendingInTx(
+            int index, java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePendingInTxIsMutable();
+          pendingInTx_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public Builder addPendingInTx(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePendingInTxIsMutable();
+          pendingInTx_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public Builder addAllPendingInTx(
+            java.lang.Iterable<java.lang.String> values) {
+          ensurePendingInTxIsMutable();
+          super.addAll(values, pendingInTx_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public Builder clearPendingInTx() {
+          pendingInTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000100);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pendingInTx = 9;</code>
+         */
+        public Builder addPendingInTxBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePendingInTxIsMutable();
+          pendingInTx_.add(value);
+          onChanged();
+          return this;
+        }
+
+        // required int32 networkType = 10;
         private int networkType_ ;
         /**
-         * <code>required int32 networkType = 9;</code>
+         * <code>required int32 networkType = 10;</code>
          *
          * <pre>
          * </pre>
          */
         public boolean hasNetworkType() {
-          return ((bitField0_ & 0x00000100) == 0x00000100);
+          return ((bitField0_ & 0x00000200) == 0x00000200);
         }
         /**
-         * <code>required int32 networkType = 9;</code>
+         * <code>required int32 networkType = 10;</code>
          *
          * <pre>
          * </pre>
@@ -9730,25 +9915,25 @@ public final class ProtoConfig {
           return networkType_;
         }
         /**
-         * <code>required int32 networkType = 9;</code>
+         * <code>required int32 networkType = 10;</code>
          *
          * <pre>
          * </pre>
          */
         public Builder setNetworkType(int value) {
-          bitField0_ |= 0x00000100;
+          bitField0_ |= 0x00000200;
           networkType_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>required int32 networkType = 9;</code>
+         * <code>required int32 networkType = 10;</code>
          *
          * <pre>
          * </pre>
          */
         public Builder clearNetworkType() {
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000200);
           networkType_ = 0;
           onChanged();
           return this;
@@ -11237,7 +11422,7 @@ public final class ProtoConfig {
       "ontract\032n\n\010Contract\022%\n\035ShouldSendPayload" +
       "OnConnection\030\001 \001(\010\022;\n3ShouldReceivePaylo" +
       "adAfterSendingPayloadOnConnection\030\002 \001(\010\"",
-      "\327\n\n\032AuthenticatorConfiguration\022c\n\023config" +
+      "\357\n\n\032AuthenticatorConfiguration\022c\n\023config" +
       "ActiveAccount\030\001 \001(\0132F.authenticator.prot" +
       "obuf.AuthenticatorConfiguration.ConfigAc" +
       "tiveAccount\022o\n\031configAuthenticatorWallet" +
@@ -11265,20 +11450,21 @@ public final class ProtoConfig {
       "otobuf.ATAddress\032z\n\024ConfigOneNameProfile" +
       "\022\017\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 " +
       "\001(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onename" +
-      "AvatarFilePath\030\004 \001(\t\032\342\001\n\tATAccount\022\r\n\005in" +
+      "AvatarFilePath\030\004 \001(\t\032\372\001\n\tATAccount\022\r\n\005in" +
       "dex\030\001 \002(\005\022\031\n\021lastExternalIndex\030\002 \002(\005\022\030\n\020",
       "usedExternalKeys\030\003 \003(\005\022\031\n\021lastInternalIn" +
       "dex\030\004 \002(\005\022\030\n\020usedInternalKeys\030\005 \003(\005\022\030\n\020c" +
       "onfirmedBalance\030\006 \002(\022\022\032\n\022unConfirmedBala" +
-      "nce\030\007 \002(\022\022\021\n\tpendingTx\030\010 \003(\t\022\023\n\013networkT" +
-      "ype\030\t \002(\005*;\n\020ATGCMMessageType\022\n\n\006SignTX\020" +
-      "\002\022\033\n\027UpdatePendingRequestIPs\020\004*\217\001\n\017ATOpe" +
-      "rationType\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037S" +
-      "ignAndBroadcastAuthenticatorTx\020\002\022\025\n\021Broa" +
-      "dcastNormalTx\020\003\022\'\n#updateIpAddressesForP" +
-      "reviousMessage\020\004*A\n\021ActiveAccountType\022\014\n",
-      "\010Spending\020\000\022\013\n\007Savings\020\001\022\021\n\rAuthenticato" +
-      "r\020\002B\rB\013ProtoConfig"
+      "nce\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013pendi" +
+      "ngInTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005*;\n\020ATG" +
+      "CMMessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendi" +
+      "ngRequestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pa" +
+      "iring\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastA" +
+      "uthenticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022" +
+      "\'\n#updateIpAddressesForPreviousMessage\020\004",
+      "*A\n\021ActiveAccountType\022\014\n\010Spending\020\000\022\013\n\007S" +
+      "avings\020\001\022\021\n\rAuthenticator\020\002B\rB\013ProtoConf" +
+      "ig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -11344,7 +11530,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_descriptor,
-              new java.lang.String[] { "Index", "LastExternalIndex", "UsedExternalKeys", "LastInternalIndex", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "PendingTx", "NetworkType", });
+              new java.lang.String[] { "Index", "LastExternalIndex", "UsedExternalKeys", "LastInternalIndex", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "PendingOutTx", "PendingInTx", "NetworkType", });
           return null;
         }
       };
