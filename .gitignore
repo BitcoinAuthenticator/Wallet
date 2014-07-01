@@ -4,6 +4,7 @@ local.properties
 *.config
 *.wallet
 *.spvchain
+*.png
 .settings/
 .idea/
 bin/
