@@ -602,7 +602,7 @@ public class Controller {
 	   } catch (Exception e) { e.printStackTrace(); }
 	   
 	   if(img != null && one != null)
-		   setUserProfileAvatarAndName(img,one.getOnename());	   
+		   setUserProfileAvatarAndName(img,one.getOnenameFormatted());	   
    }
    
 	public void setUserProfileAvatarAndName(Image img, String name) {
@@ -1526,14 +1526,14 @@ public class Controller {
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
     	AddressBox.getItems().clear();
+    	ArrayList<String> add =  new ArrayList<String> ();
     	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending){
-    		ArrayList<String> keypool = null;
         	try { Authenticator.getWalletOperation().fillExternalSpendingKeyPool(); } 
         	catch (IOException e) {e.printStackTrace();} catch (AddressFormatException e) { e.printStackTrace(); }
-        	try {keypool = Authenticator.getWalletOperation().getNotUsedExternalSpendingAddressStringPool(10); }  
+        	try {add = Authenticator.getWalletOperation().getNotUsedExternalSpendingAddressStringPool(10); }  
         	catch (IOException e) {e.printStackTrace();}
         	
-        	for(String s:keypool)
+        	for(String s:add)
         		AddressBox.getItems().addAll(s);
     	}
     	else{
@@ -1541,7 +1541,6 @@ public class Controller {
     					HierarchyPrefixedAccountIndex.PrefixSavings_VALUE:
     					Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
     		
-    		ArrayList<String> add = new ArrayList<String> ();
 			try {
 				add = Authenticator.getWalletOperation().
 									getAccountNotUsedAddress(accountIdx,
@@ -1566,6 +1565,7 @@ public class Controller {
 				} catch (Exception e) { e.printStackTrace(); }
     			
     		}
+    		AddressBox.setValue(add.get(0));
     		for (String address : add){
         		AddressBox.getItems().addAll(address);
         	}
