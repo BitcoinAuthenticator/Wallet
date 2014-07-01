@@ -13,7 +13,6 @@ import org.json.simple.parser.ParseException;
 import authenticator.Authenticator;
 import authenticator.Utils.KeyUtils;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
-import authenticator.protobuf.AuthWalletHierarchy.HierarchyPrefixedAccountIndex;
 import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
@@ -92,12 +91,7 @@ public class ConfigFile {
 		return auth.getConfigAuthenticatorWallet().getPaired();
 	}
 	
-	public void writeCachedExternalSpendingAddresses(List<ATAddress> add) throws IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		for(ATAddress c: add)
-			auth.getCachedExternalSpendingBuilder().addWalletCachedExternalSpendingAddress(c);
-		writeConfigFile(auth);
-	}
+	
 	
 	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
@@ -105,6 +99,13 @@ public class ConfigFile {
 			auth.getConfigAccountsBuilder(accountIdx).addUsedExternalKeys(addIndx);
 		else
 			;
+		writeConfigFile(auth);
+	}
+	
+	/*public void writeCachedExternalSpendingAddresses(List<ATAddress> add) throws IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		for(ATAddress c: add)
+			auth.getCachedExternalSpendingBuilder().addWalletCachedExternalSpendingAddress(c);
 		writeConfigFile(auth);
 	}
 	
@@ -124,6 +125,8 @@ public class ConfigFile {
 		}
 		return keypool;
 	}	
+	
+	*/
 	
 	public ArrayList<String> getAddressString(List<ATAddress> cache) throws FileNotFoundException, IOException{
 		ArrayList<String> keypool = new ArrayList<String>();
@@ -165,27 +168,6 @@ public class ConfigFile {
 		auth.getConfigAuthenticatorWalletBuilder().addPairedWallets(newPair.build());
 		writeConfigFile(auth);
 	}
-	
-	/*@SuppressWarnings({ "unchecked", "static-access" })
-	public void addGeneratedAddressForPairing(String pairID, String addr, int indexWallet, int indexAuth) throws FileNotFoundException, IOException, ParseException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		for(PairedAuthenticator o:auth.getConfigAuthenticatorWallet().getPairedWalletsList())
-		{
-			if(o.getPairingID().equals(pairID)){
-				PairedAuthenticator.KeysObject.Builder newKeyObj = PairedAuthenticator.KeysObject.newBuilder();
-				newKeyObj.setAddress(addr);
-				newKeyObj.setIndexAuth(indexAuth);
-				newKeyObj.setIndexWallet(indexWallet);
-				
-				int i = o.getDescriptor().getIndex();
-				auth.getConfigAuthenticatorWalletBuilder().getPairedWalletsBuilder(i).addGeneratedKeys(newKeyObj.build());
-				writeConfigFile(auth);
-				
-				break;
-			}
-		}
-		
-	}*/
 	
 	public List<ATAccount> getAllAccounts(){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();

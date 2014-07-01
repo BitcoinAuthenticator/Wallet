@@ -18,10 +18,11 @@ import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
-import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
 
 /**
@@ -195,15 +196,17 @@ public class Authenticator extends AbstractService{
 		if(getWalletOperation().getAllAccounts().size() == 0)
 		{
 			try {
-				//Spending account
-				getWalletOperation().generateNewAccount(getApplicationParams().getBitcoinNetworkType());
+				/**
+				 * Generate a default account, will be replaced by
+				 */
+				ATAccount b2 = getWalletOperation().generateNewAccount(getApplicationParams().getBitcoinNetworkType(),
+						"Default",
+						WalletAccountType.StandardAccount);
 				AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
-				b1.setActiveAccountType(ActiveAccountType.Spending);
+				b1.setActiveAccount(b2);
 				getWalletOperation().writeActiveAccount(b1.build());
 				this.activeAccount = b1.build();				
 				
-				// Savings account
-				getWalletOperation().generateNewAccount(getApplicationParams().getBitcoinNetworkType());
 			} catch (IOException e) { e.printStackTrace(); }
 		}	
 		else

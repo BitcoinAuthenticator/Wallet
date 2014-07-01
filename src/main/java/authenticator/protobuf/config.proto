@@ -17,10 +17,12 @@ enum ATOperationType {
 	updateIpAddressesForPreviousMessage = 4;
 }
 
-enum ActiveAccountType {
-    Spending	 	= 0;
-    Savings			= 1;
-	Authenticator 	= 2;
+enum WalletAccountType {
+    //Spending	 	= 0;
+    //Savings		= 1;
+    
+    StandardAccount			= 0;
+	AuthenticatorAccount 	= 1;
 }
 
 message ATAddress{
@@ -85,7 +87,7 @@ message PendingRequest{
 message AuthenticatorConfiguration{
 	message ConfigActiveAccount{
 		optional PairedAuthenticator pairedAuthenticator = 1;
-		required ActiveAccountType activeAccountType 	 = 2;
+		required ATAccount activeAccount			 	 = 2;
 	}
 	
 	message ConfigAuthenticatorWallet {
@@ -96,9 +98,9 @@ message AuthenticatorConfiguration{
 		repeated PendingRequest pendingRequests 	= 3; 
 	}
 	
-	message CachedExternalSpending {
-		repeated ATAddress walletCachedExternalSpendingAddress = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-	}
+	//message CachedExternalSpending {
+	//	repeated ATAddress walletCachedExternalSpendingAddress = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
+	//}
 	
 	//message ConfigAddressBook {
 	
@@ -114,24 +116,28 @@ message AuthenticatorConfiguration{
 	}
 	
 	message ATAccount {
-		required int32 index				= 1;
-		required int32 lastExternalIndex	= 2;
-		repeated int32 usedExternalKeys 	= 3;
-		required int32 lastInternalIndex	= 4;
-		repeated int32 usedInternalKeys 	= 5; 
+		required int32 index					= 1;
+		required int32 lastExternalIndex		= 2;
+		repeated int32 usedExternalKeys 		= 3;
+		required int32 lastInternalIndex		= 4;
+		repeated int32 usedInternalKeys 		= 5; 
 		//
-		required sint64 confirmedBalance	= 6;
-		required sint64 unConfirmedBalance	= 7;
+		required sint64 confirmedBalance		= 6;
+		required sint64 unConfirmedBalance		= 7;
 		//
-		repeated string pendingOutTx		= 8; // pending spend Tx
-		repeated string pendingInTx			= 9; // pending receive Tx
+		repeated string pendingOutTx			= 8; // pending spend Tx
+		repeated string pendingInTx				= 9; // pending receive Tx
 		//
-		required int32 networkType			= 10; // 1 for main net, 0 for testnet
+		required int32 networkType				= 10; // 1 for main net, 0 for testnet
+		//
+		required WalletAccountType accountType	= 11;
+		//
+		required string accountName				= 12;
 	}
 	
 	optional ConfigActiveAccount configActiveAccount 				= 1;
 	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
-	optional CachedExternalSpending cachedExternalSpending 			= 3;
+	//optional CachedExternalSpending cachedExternalSpending 			= 3;
 	//optional ConfigAddressBook configAddressBook 					= 4;
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
 	required bytes hierarchySeed									= 6;

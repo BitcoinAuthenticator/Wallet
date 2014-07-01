@@ -8,12 +8,11 @@ import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
-import authenticator.protobuf.AuthWalletHierarchy.HierarchyPrefixedAccountIndex;
 import authenticator.protobuf.ProtoConfig.ATAddress;
-import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.CachedExternalSpending;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
@@ -235,33 +234,13 @@ public class Controller {
     		@Override public void changed(ObservableValue ov, String t, String t1) {
     			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
-    				if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending){
-    					try 
-    					{
-    						ArrayList<String> newAdd = Authenticator.getWalletOperation().addMoreExternalSpendingAddresses();
-    						AddressBox.getItems().remove(Main.controller.AddressBox.getItems().indexOf("                                More"));
-    						for(String s:newAdd)
-    							AddressBox.getItems().addAll(s);
-    						Main.controller.AddressBox.getItems().addAll("                                More");
-    					} 
-        				catch (IOException | AddressFormatException e) {e.printStackTrace();}
-    				}
-    				else
-    				{
-    					String newAdd = null;
-    					try {
-    						if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-    							newAdd = Authenticator.getWalletOperation()
-    									.getNextExternalAddress(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
-    									.getAddressStr();
-    						}
-    						else
-    							newAdd = Authenticator.getWalletOperation()
-    													.getNextExternalAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex())
-						    							.getAddressStr();
-    						AddressBox.getItems().add(0, newAdd);
-    					} catch (Exception e) { e.printStackTrace(); }
-    				}
+    				String newAdd = null;
+					try {
+						newAdd = Authenticator.getWalletOperation()
+								.getNextExternalAddress(Authenticator.getActiveAccount().getActiveAccount().getIndex())
+								.getAddressStr();
+						AddressBox.getItems().add(0, newAdd);
+					} catch (Exception e) { e.printStackTrace(); }
     			}
     		}    
     	});
@@ -543,34 +522,24 @@ public class Controller {
    
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
-	   List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
-	   try {
-		all = Authenticator.getWalletOperation().getAllPairingObjectArray();
-	   } catch (IOException e) { }
+	   List<ATAccount> all = new ArrayList<ATAccount>();
+	   all = Authenticator.getWalletOperation().getAllAccounts();
 	   
 	   AccountBox.getItems().clear();
-	   AccountBox.getItems().add("Spending");
-	   AccountBox.getItems().add("Savings");
+	   for(ATAccount acc:all){
+		   AccountBox.getItems().add(acc.getAccountName());
+	   }
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
 	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
-   			@Override 
-   			public void changed(ObservableValue ov, String t, String t1) {
-   				if(t1 != null && t1.length() > 0){
+  			@Override 
+  			public void changed(ObservableValue ov, String t, String t1) {
+  				if(t1 != null && t1.length() > 0){
 					AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
 					changeAccount(t1);
-   				}
-   			}    
+  				}
+  			}    
 	   });
-	   for(PairedAuthenticator po:all){
-		   AccountBox.getItems().add(po.getPairingName());
-	   }
-	   
-	   if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending)
-		   AccountBox.setValue("Spending");
-	   else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
-		   AccountBox.setValue("Savings");
-	   else
-		   AccountBox.setValue(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingName());
+	   AccountBox.setValue(Authenticator.getActiveAccount().getActiveAccount().getAccountName());
 	
 	   AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);
    }
@@ -629,23 +598,9 @@ public class Controller {
     
     @SuppressWarnings("static-access")
 	public void refreshBalanceLabel() {
-    	Coin unconfirmed = Coin.ZERO;
-    	Coin confirmed = Coin.ZERO;
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending)
-    	{
-	    	
-			unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
-			
-	    	confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
-    	}
-    	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-    		unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
-    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
-    	}
-    	else{
-    		unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());
-    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());
-    	}    	
+    	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getActiveAccount().getIndex());
+    	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getActiveAccount().getIndex());
+  
         //final Coin total = confirmed.add(unconfirmed);
         lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
@@ -824,16 +779,7 @@ public class Controller {
         }
     	amount = amount.add(fee);
     	//
-    	Coin confirmed = Coin.ZERO;
-
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ){
-    		HierarchyAddressTypes addType = HierarchyAddressTypes.External; // TODO - internal also
-    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
-    	}	
-    	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
-    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
-    	else
-    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());   	
+    	 Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getActiveAccount().getIndex()); 	
     	
     	if(amount.compareTo(confirmed) > 0) return false;
     	
@@ -903,38 +849,12 @@ public class Controller {
             }
     		
     		// get input addresses / change address
-    		ArrayList<String> addresses;
-    		String changeaddr = null;
-    		String pairID = Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID();
-    		if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ){
-    			// inputs
-    			addresses = Authenticator.getWalletOperation().getAccountAddresses(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE, HierarchyAddressTypes.External, -1);
-    			// change address
-    			try {
-					changeaddr = Authenticator.getWalletOperation().getNewSpendingExternalAddress(true).getAddressStr();
-				} catch (AddressFormatException e) { e.printStackTrace(); }
-    		}
-    		else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-    			// inputs
-    			addresses = Authenticator.getWalletOperation().getAccountAddresses(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE, HierarchyAddressTypes.External, -1);
-    			// change address
-    			try {
-					changeaddr = Authenticator.getWalletOperation()
-							.getNextExternalAddress(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
-							.getAddressStr();
-				} catch (AddressFormatException e) { e.printStackTrace(); }
-    		}
-    		else{
-    			int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
-    			// inputs
-    			addresses = Authenticator.getWalletOperation().getAccountAddresses(accountID, HierarchyAddressTypes.External, -1);
-    			// change address
-    			try {
-					changeaddr = Authenticator.getWalletOperation()
-							.getNextExternalAddress(accountID)
-							.getAddressStr();
-				} catch (AddressFormatException e) { e.printStackTrace(); }
-    		}
+    		ArrayList<String> addresses = Authenticator.getWalletOperation().getAccountAddresses(Authenticator.getActiveAccount().getActiveAccount().getIndex(),
+					    				HierarchyAddressTypes.External,
+					    				-1);
+    		String changeaddr = Authenticator.getWalletOperation()
+								.getNextExternalAddress(Authenticator.getActiveAccount().getActiveAccount().getIndex())
+								.getAddressStr();
     		   
     		// complete Tx
     		Transaction tx;
@@ -943,8 +863,7 @@ public class Controller {
 				
 				// broadcast
 	    		ATOperation op = null;
-	    		if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
-	    				Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+	    		if(Authenticator.getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
 	    			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
 	    			for(TransactionInput in:tx.getInputs()){
 	    				int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
@@ -960,9 +879,10 @@ public class Controller {
 	    			}
 	    			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(tx,keys);
 	    		}
-	    		else
+	    		else{
+	    			String pairID = Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID();
 	    			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx, pairID, txMsgLabel.getText(),false,null);
-	    		
+	    		}
 	    		// operation listeners
 	    		op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 					@Override
@@ -1526,54 +1446,27 @@ public class Controller {
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
     	AddressBox.getItems().clear();
-    	ArrayList<String> add =  new ArrayList<String> ();
-    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending){
-        	try { Authenticator.getWalletOperation().fillExternalSpendingKeyPool(); } 
-        	catch (IOException e) {e.printStackTrace();} catch (AddressFormatException e) { e.printStackTrace(); }
-        	try {add = Authenticator.getWalletOperation().getNotUsedExternalSpendingAddressStringPool(10); }  
-        	catch (IOException e) {e.printStackTrace();}
-        	
-        	for(String s:add)
-        		AddressBox.getItems().addAll(s);
-    	}
-    	else{
-    		int accountIdx = Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings? 
-    					HierarchyPrefixedAccountIndex.PrefixSavings_VALUE:
-    					Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
-    		
-			try {
-				add = Authenticator.getWalletOperation().
-									getAccountNotUsedAddress(accountIdx,
-					    			HierarchyAddressTypes.External,
-					    			10);
-			} catch (NoSuchAlgorithmException | JSONException
-					| AddressFormatException e1) { }
-			
-    		if(add.size() == 0){
-    			String newAdd = null;
-				try {
-					if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
-						newAdd = Authenticator.getWalletOperation()
-								.getNextExternalAddress(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
-								.getAddressStr();
-					}
-					else
-						newAdd = Authenticator.getWalletOperation()
-												.getNextExternalAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex())
-												.getAddressStr();
-					add.add(newAdd);
-				} catch (Exception e) { e.printStackTrace(); }
-    			
-    		}
-    		AddressBox.setValue(add.get(0));
-    		for (String address : add){
-        		AddressBox.getItems().addAll(address);
-        	}
-    		AddressBox.setValue(add.get(0));
-    		
-    	}
+    	int accountIdx = Authenticator.getActiveAccount().getActiveAccount().getIndex();
+    	ArrayList<String> add;
+		try {
+			add = Authenticator.getWalletOperation(). getAccountNotUsedAddressString(accountIdx,HierarchyAddressTypes.External,10);
+			if(add.size() == 0){
+				String newAdd = Authenticator.getWalletOperation()
+							.getNextExternalAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex())
+							.getAddressStr();
+				
+				add.add(newAdd);	
+	    	}
+			AddressBox.setValue(add.get(0));
+			for (String address : add){
+	    		AddressBox.getItems().addAll(address);
+	    	}
+			AddressBox.setValue(add.get(0));
+	    		    	
+	    	AddressBox.getItems().addAll("                                More");
+		} catch (NoSuchAlgorithmException | JSONException
+				| AddressFormatException e) { e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
     	
-    	AddressBox.getItems().addAll("                                More");
     }    
     
     //#####################################
@@ -1610,7 +1503,7 @@ public class Controller {
    	//#####################################
     
     public void changeAccount(String toValue){
-    	List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+    	/*List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
     	try {
     		all = Authenticator.getWalletOperation().getAllPairingObjectArray();
 		} catch (IOException e) { e.printStackTrace(); }
@@ -1623,22 +1516,22 @@ public class Controller {
     			selectedAuth = po;
     			break;
     		}
-    	}
+    	}*/
     	
-    	// change account
-    	AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
-    	if(selectedAuth != null){
-    		b.setActiveAccountType(ActiveAccountType.Authenticator);
-    		b.setPairedAuthenticator(selectedAuth);
+    	ATAccount acc = Authenticator.getWalletOperation().getAccountByName(toValue);
+    	if(acc != null){
+    		AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
+    		b.setActiveAccount(acc);
+    		if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
+    			PairedAuthenticator p = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(acc.getIndex());
+    			b.setPairedAuthenticator(p);
+    		}
+    		if( Authenticator.setActiveAccount(b.build()))
+        		updateUIForNewActiveAccount();
     	}
-    	else {
-    		if(AccountBox.getValue().toString().equals("Savings"))
-    			b.setActiveAccountType(ActiveAccountType.Savings);
-    		else
-    			b.setActiveAccountType(ActiveAccountType.Spending);
+    	else{
+    		// mmm .... can it be ?
     	}
-    	if( Authenticator.setActiveAccount(b.build()))
-    		updateUIForNewActiveAccount();
     }
     
     public void updateUIForNewActiveAccount(){
