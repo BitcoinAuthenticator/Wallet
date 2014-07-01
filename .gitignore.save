@@ -1,0 +1,11 @@
+
+
+asdflocal.properties
+.classpath
+.project
+.settings/
+.idea/
+bin/
+gen/
+target/
+proguard/
