@@ -51,7 +51,7 @@ public class PairingTest {
 		DeterministicKey m = HDKey.createMasterPrivateKey(seed);
 		DeterministicKey pub = m.derive(0);
 		
-		// AES Key
+		// AES Key - TRUE
 		//Generate 256 bit key.
 		 KeyGenerator kgen = KeyGenerator.getInstance("AES");
 	     kgen.init(256);
@@ -59,7 +59,17 @@ public class PairingTest {
 		SecretKey sharedsecret = kgen.generateKey();
 		byte[] raw = sharedsecret.getEncoded();
 		String key = BAUtils.bytesToHex(raw);
+		
+		// AES Key - False
+		//Generate 256 bit key.
+		 KeyGenerator kgenF = KeyGenerator.getInstance("AES");
+	     kgen.init(256);
+		// AES key
+		SecretKey sharedsecretF = kgen.generateKey();
+		byte[] rawF = sharedsecret.getEncoded();
+		String keyF = BAUtils.bytesToHex(rawF);
 		//
+		
 		
 		JSONObject payloadObj = new JSONObject();
 				   payloadObj.put("mpubkey", BAUtils.bytesToHex(pub.getPubKey()));
@@ -90,7 +100,7 @@ public class PairingTest {
     	
     	/**
     	 * 
-    	 * 
+    	 * Check True
     	 * 
     	 */
     	PairingProtocol pp = new PairingProtocol();    	
@@ -101,10 +111,29 @@ public class PairingTest {
 		String chaincodeRec = (String) jsonPayloadFromAuth.get("chaincode");
 	    String pairingIDRec = (String) jsonPayloadFromAuth.get("pairID");
 	    String GCMRec = (String) jsonPayloadFromAuth.get("gcmID");
-	    assert(mPubKeyRec.equals(BAUtils.bytesToHex(pub.getPubKey())));
-	    assert(chaincodeRec.equals(BAUtils.bytesToHex(pub.getChainCode())));
-	    assert(pairingIDRec.equals(BAUtils.bytesToHex(md.digest(("Some crazy thing").getBytes()))));
-	    assert(GCMRec.equals("some registration id"));
+	    
+	    assertTrue(mPubKeyRec.equals(BAUtils.bytesToHex(pub.getPubKey())));
+	    assertTrue(chaincodeRec.equals(BAUtils.bytesToHex(pub.getChainCode())));
+	    assertTrue(pairingIDRec.equals(BAUtils.bytesToHex(md.digest(("Some crazy thing").getBytes()))));
+	    assertTrue(GCMRec.equals("some registration id"));
+	    
+	    
+	    /**
+    	 * 
+    	 * Check False
+    	 * 
+    	 */
+    	PairingProtocol ppF = new PairingProtocol();    	
+    	try{
+    		ppF.decipherDataFromAuthenticator(payloadEncrypted, null, sharedsecretF);
+    		assertTrue(false);
+    	}
+    	catch(InvalidKeyException | BadPaddingException e){ }
+    	try{
+    		ppF.parseAndVerifyPayload(decipheredDataFromAuth, sharedsecretF, null);
+    		assertTrue(false);
+    	}
+    	catch(InvalidKeyException e){ }
 	}
 
 }

@@ -53,11 +53,11 @@ public class QRTest {
 				"UTF-8",
 				hintMap);
 		
-		assert(qrData.equals(readQRDataFromImage));
+		assertTrue(qrData.equals(readQRDataFromImage));
 		
 		// Dispose of file 
 		File file = new File(new java.io.File( "." ).getCanonicalPath() + "/PairingQRCodeTEST.png");
-		assert(file.delete());
+		assertTrue(file.delete());
 	}
 
 }
