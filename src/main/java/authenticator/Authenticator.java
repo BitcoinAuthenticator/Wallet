@@ -75,6 +75,7 @@ public class Authenticator extends AbstractService{
 		new OperationsFactory(); // to instantiate various things
 		//verifyWalletIsWatchingAuthenticatorAddresses();
 		loadActiveAccount();
+		 
 	}
 	
 	//#####################################

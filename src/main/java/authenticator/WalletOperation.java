@@ -113,6 +113,7 @@ public class WalletOperation extends BASE{
 			
 			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountByNumberOfKeys);
 		}
+		
 	}
 	
 	/**

@@ -50,9 +50,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
@@ -71,6 +73,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -1496,6 +1499,18 @@ public class Controller {
 		        .showWarning();
     }
     
+    @FXML protected void btnAccounts(MouseEvent event) {
+        try {
+        	URL location = getClass().getResource("display_accounts.fxml");
+        	FXMLLoader loader = new FXMLLoader(location);
+        	Stage stage = new Stage();
+            stage.setTitle("Accounts");
+			stage.setScene(new Scene((AnchorPane) loader.load(), 370, 480));
+			 stage.show();
+		} catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    
     //#####################################
    	//
    	//	Change account
@@ -1503,21 +1518,6 @@ public class Controller {
    	//#####################################
     
     public void changeAccount(String toValue){
-    	/*List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
-    	try {
-    		all = Authenticator.getWalletOperation().getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-    	
-    	// find selected paired authenticator
-    	PairedAuthenticator selectedAuth = null;
-    	for(PairedAuthenticator po:all){
-    		if(po.getPairingName().equals(toValue))
-    		{
-    			selectedAuth = po;
-    			break;
-    		}
-    	}*/
-    	
     	ATAccount acc = Authenticator.getWalletOperation().getAccountByName(toValue);
     	if(acc != null){
     		AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();

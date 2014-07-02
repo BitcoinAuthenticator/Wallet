@@ -15,6 +15,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.PeerGroup;
+import com.google.bitcoin.core.PeerGroup.FilterRecalculateMode;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionBroadcaster;
@@ -49,6 +50,7 @@ public class WalletWrapper extends BASE{
 		super(WalletWrapper.class);
 		this.trackedWallet = wallet;
 		this.mPeerGroup = peerGroup;
+		
 	}
 	public  Wallet getTrackedWallet(){ return trackedWallet; }
 	
