@@ -1,15 +1,22 @@
 package wallettemplate;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+
 import org.json.JSONException;
 
+import wallettemplate.controls.DisplayNameCell;
 import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.network.OneName;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -18,13 +25,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.Node;
+import javafx.util.Duration;
 
 public class AccountsController {
 	@FXML public ScrollPane scrlPane;
 	private ScrollPaneContentManager scrlPaneContentManager;
 	
 	public void initialize() {
-		scrlPaneContentManager = new ScrollPaneContentManager().setSpacingBetweenItems(15);
+		scrlPaneContentManager = new ScrollPaneContentManager()
+									.setSpacingBetweenItems(15)
+									.setScrollStyle(scrlPane.getStyle());
 		scrlPane.setContent(scrlPaneContentManager);
 		setupContent();
 	}
@@ -36,7 +46,7 @@ public class AccountsController {
 			scrlPaneContentManager.addItem(ui.getNode());
 		}
 	}
-	
+		
 	
 	private class AccountUI{
 		private ATAccount account;
@@ -46,28 +56,17 @@ public class AccountsController {
 		
 		@SuppressWarnings("restriction")
 		public Node getNode(){
-			HBox mainNode = new HBox();
 			
-			VBox leftBox = new VBox();
-			Label l1 = new Label();
-    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		l1.setTextFill(Paint.valueOf("#6e86a0"));
-    		l1.setFont(Font.font(13));
-    		l1.setText(this.account.getAccountName());
-    		leftBox.getChildren().add(l1);
-    		
-    		VBox rightBox = new VBox();
-			Label l2 = new Label();
-			l2.setStyle("-fx-font-weight: SEMI_BOLD;");
-			l2.setTextFill(Paint.valueOf("#6e86a0"));
-			l2.setFont(Font.font(13));
-			l2.setText(Long.toString(this.account.getConfirmedBalance()));
-			rightBox.getChildren().add(l2);
-    		
-			mainNode.getChildren().add(leftBox);
-			mainNode.getChildren().add(rightBox);
+			DisplayNameCell cell = new DisplayNameCell(this.account)
+			.setListener(new DisplayNameCell.AccountCellEvents() {
+				@Override
+				public void onSettingsClick(DisplayNameCell cell) {
+					
+				}
+			});
 			
-			return (Node) mainNode;
+			return cell;
+			
 		}
 	}
 }

@@ -1501,7 +1501,7 @@ public class Controller {
     
     @FXML protected void btnAccounts(MouseEvent event) {
         try {
-        	URL location = getClass().getResource("display_accounts.fxml");
+        	URL location = getClass().getResource("display_accounts/display_accounts.fxml");
         	FXMLLoader loader = new FXMLLoader(location);
         	Stage stage = new Stage();
             stage.setTitle("Accounts");
