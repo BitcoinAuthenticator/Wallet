@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="370.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.AccountsController">
-<children><ScrollPane fx:id="scrlPane" layoutX="-3.0" layoutY="-2.0" prefHeight="487.0" prefWidth="376.0" style="-fx-background-color: white;">
-  <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="376.0" />
-  </content>
-</ScrollPane>
+<children><HBox alignment="TOP_RIGHT" prefHeight="28.0" prefWidth="370.0" style="-fx-background-color: white;">
+<children><Button fx:id="btnAddAccount" mnemonicParsing="false" onAction="#addAccount" text="+">
+<HBox.margin>
+<Insets bottom="5.0" right="10.0" top="5.0" />
+</HBox.margin></Button>
+</children></HBox><ScrollPane fx:id="scrlPane" layoutY="36.0" prefHeight="449.0" prefWidth="370.0" style="-fx-background-color: white;" />
 </children></AnchorPane>

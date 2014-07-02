@@ -6,6 +6,8 @@ import java.net.URL;
 
 import org.json.JSONException;
 
+import com.google.bitcoin.core.Coin;
+
 import wallettemplate.Main;
 import wallettemplate.Main.OverlayUI;
 import authenticator.network.OneName;
@@ -49,6 +51,8 @@ public class DisplayNameCell extends Region{
         	imgSettingsOpen = new Image(Main.class.getResourceAsStream("display_accounts/closeSettingsWindow.png"));
         if(imgSettingsClose == null)
         	imgSettingsClose = new Image(Main.class.getResourceAsStream("display_accounts/btnSettingsSmall.png"));
+        
+        
     }
 	
 	public void updateUI(){
@@ -59,6 +63,10 @@ public class DisplayNameCell extends Region{
 	
 	public ATAccount getAccount(){
 		return this.account;
+	}
+	
+	public void setAccount (ATAccount account){
+		this.account = account;
 	}
 	
 	public void setSettingsOpen(){
@@ -77,7 +85,7 @@ public class DisplayNameCell extends Region{
 	private void openCellMenu(){
 		// Sync progress bar slides out ...
         TranslateTransition leave = new TranslateTransition(Duration.millis(600), this);
-        leave.setByX(300.0);
+        leave.setByX(-300.0);
         leave.setCycleCount(1);
         leave.play();
     }
@@ -86,7 +94,7 @@ public class DisplayNameCell extends Region{
 	private void closeCellMenu(){
 		// Sync progress bar slides out ...
         TranslateTransition leave = new TranslateTransition(Duration.millis(600), this);
-        leave.setByX(-300.0);
+        leave.setByX(300.0);
         leave.setCycleCount(1);
         leave.play();
     }
@@ -121,11 +129,13 @@ public class DisplayNameCell extends Region{
     }
 	
 	public void setConfirmed(String amount){
-		lblConfirmed.setText(amount);
+		Coin a = Coin.valueOf(Long.parseLong(amount));
+		lblConfirmed.setText(a.toFriendlyString());
 	}
 	
 	public void setUnonfirmed(String amount){
-		lblUnconfirmed.setText(amount);
+		Coin a = Coin.valueOf(Long.parseLong(amount));
+		lblUnconfirmed.setText(a.toFriendlyString());
 	}
 	
 	public void setAccountName(String name){
@@ -146,6 +156,12 @@ public class DisplayNameCell extends Region{
     		this.listener.onDeleteAccountRequest(this);
 	}
 	
+	@FXML protected void changeAccountName(ActionEvent event){
+		if(this.listener != null)
+    		this.listener.onChangeNameRequest(this);
+	}
+	
+	
 	public interface AccountCellEvents{
 		/**
 		 * Will be called when the settings button is pressed
@@ -158,5 +174,11 @@ public class DisplayNameCell extends Region{
 		 * @param cell
 		 */
 		public void onDeleteAccountRequest(DisplayNameCell cell);
+		
+		/**
+		 * Wil be called when user presses on name label
+		 * @param cell
+		 */
+		public void onChangeNameRequest(DisplayNameCell cell);
 	}
 }

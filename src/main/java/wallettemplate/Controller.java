@@ -239,13 +239,24 @@ public class Controller {
     				String newAdd = null;
 					try {
 						newAdd = Authenticator.getWalletOperation()
-								.getNextExternalAddress(Authenticator.getActiveAccount().getActiveAccount().getIndex())
+								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 								.getAddressStr();
 						AddressBox.getItems().add(0, newAdd);
 					} catch (Exception e) { e.printStackTrace(); }
     			}
     		}    
     	});
+		
+		// accounts choice box
+		AccountBox.valueProperty().addListener(new ChangeListener<String>() {
+  			@Override 
+  			public void changed(ObservableValue ov, String t, String t1) {
+  				if(t1 != null && t1.length() > 0){
+					AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
+					changeAccount(t1);
+  				}
+  			}    
+	   });
     }
     
     public void onBitcoinSetup() {
@@ -285,6 +296,23 @@ public class Controller {
 	        setReceiveAddresses();
 	        setTxHistoryContent();
 		}
+
+		@Override
+		public void onNewStandardAccountAdded() {
+			setAccountChoiceBox();
+		}
+
+		@Override
+		public void onAccountDeleted(int accountIndex) {
+			setAccountChoiceBox();
+		}
+
+		@Override
+		public void onAccountBeenModified(int accountIndex) {
+			setAccountChoiceBox();
+			
+		}
+	
     }
     
     public class ProgressBarUpdater extends DownloadListener {
@@ -532,16 +560,8 @@ public class Controller {
 		   AccountBox.getItems().add(acc.getAccountName());
 	   }
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
-	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
-  			@Override 
-  			public void changed(ObservableValue ov, String t, String t1) {
-  				if(t1 != null && t1.length() > 0){
-					AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
-					changeAccount(t1);
-  				}
-  			}    
-	   });
-	   AccountBox.setValue(Authenticator.getActiveAccount().getActiveAccount().getAccountName());
+	   
+	   AccountBox.setValue(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountName());
 	
 	   AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);
    }
@@ -600,8 +620,8 @@ public class Controller {
     
     @SuppressWarnings("static-access")
 	public void refreshBalanceLabel() {
-    	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getActiveAccount().getIndex());
-    	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getActiveAccount().getIndex());
+    	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+    	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
   
         //final Coin total = confirmed.add(unconfirmed);
         lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
@@ -781,7 +801,7 @@ public class Controller {
         }
     	amount = amount.add(fee);
     	//
-    	 Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getActiveAccount().getIndex()); 	
+    	 Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()); 	
     	
     	if(amount.compareTo(confirmed) > 0) return false;
     	
@@ -851,11 +871,11 @@ public class Controller {
             }
     		
     		// get input addresses / change address
-    		ArrayList<String> addresses = Authenticator.getWalletOperation().getAccountAddresses(Authenticator.getActiveAccount().getActiveAccount().getIndex(),
+    		ArrayList<String> addresses = Authenticator.getWalletOperation().getAccountAddresses(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
 					    				HierarchyAddressTypes.External,
 					    				-1);
     		String changeaddr = Authenticator.getWalletOperation()
-								.getNextExternalAddress(Authenticator.getActiveAccount().getActiveAccount().getIndex())
+								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 								.getAddressStr();
     		   
     		// complete Tx
@@ -865,10 +885,10 @@ public class Controller {
 				
 				// broadcast
 	    		ATOperation op = null;
-	    		if(Authenticator.getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
+	    		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
 	    			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
 	    			for(TransactionInput in:tx.getInputs()){
-	    				int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+	    				int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
 	    				
 	    				// get address
 	    				String add = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
@@ -882,7 +902,7 @@ public class Controller {
 	    			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(tx,keys);
 	    		}
 	    		else{
-	    			String pairID = Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID();
+	    			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
 	    			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx, pairID, txMsgLabel.getText(),false,null);
 	    		}
 	    		// operation listeners
@@ -1448,13 +1468,13 @@ public class Controller {
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
     	AddressBox.getItems().clear();
-    	int accountIdx = Authenticator.getActiveAccount().getActiveAccount().getIndex();
+    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
     	ArrayList<String> add;
 		try {
 			add = Authenticator.getWalletOperation(). getAccountNotUsedAddressString(accountIdx,HierarchyAddressTypes.External,10);
 			if(add.size() == 0){
 				String newAdd = Authenticator.getWalletOperation()
-							.getNextExternalAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex())
+							.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 							.getAddressStr();
 				
 				add.add(newAdd);	
@@ -1519,14 +1539,8 @@ public class Controller {
     public void changeAccount(String toValue){
     	ATAccount acc = Authenticator.getWalletOperation().getAccountByName(toValue);
     	if(acc != null){
-    		AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
-    		b.setActiveAccount(acc);
-    		if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
-    			PairedAuthenticator p = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(acc.getIndex());
-    			b.setPairedAuthenticator(p);
-    		}
-    		if( Authenticator.setActiveAccount(b.build()))
-        		updateUIForNewActiveAccount();
+    		if(Authenticator.getWalletOperation().setActiveAccount(acc.getIndex()) != null)
+    			updateUIForNewActiveAccount();
     	}
     	else{
     		// mmm .... can it be ?

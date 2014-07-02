@@ -603,7 +603,7 @@ public class WalletOperation extends BASE{
 	 * @return
 	 * @throws IOException 
 	 */
-	public ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type) throws IOException{
+	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type) throws IOException{
 		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount();
 		ATAccount.Builder b = ATAccount.newBuilder();
 						  b.setIndex(accoutnIdx);
@@ -615,10 +615,17 @@ public class WalletOperation extends BASE{
 						  b.setAccountName(accountName);
 						  b.setAccountType(type);
 						  
-	    configFile.writeAccount(b.build());
+	    configFile.addAccount(b.build());
 	    staticLogger.info("Generated new account at index, " + accoutnIdx);
 		return b.build();
 	}
+	
+	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName) throws IOException{
+		ATAccount ret = generateNewAccount(nt, accountName, WalletAccountType.StandardAccount);
+		Authenticator.fireOnNewStandardAccountAdded();
+		return ret;
+	}
+	
 	
 	/**
 	 * Get the next {@link authenticator.protobuf.ProtoConfig.ATAddress ATAddress} object.<br>
@@ -808,6 +815,21 @@ public class WalletOperation extends BASE{
 		return configFile.getAccount(index);
 	} 
 	
+	/**
+	 * Remove account from config file.<br>
+	 * <b>Will assert at least one account remains after the removal</b>
+	 * 
+	 * @param index
+	 * @throws IOException
+	 */
+	public void removeAccount(int index) throws IOException{
+		PairedAuthenticator po =  getPairingObjectForAccountIndex(index);
+		if(po != null)
+			removePairingObject(po.getPairingID());
+		configFile.removeAccount(index);
+		Authenticator.fireOnAccountDeleted(index);
+	}
+	
 	public ATAccount getAccountByName(String name){
 		List<ATAccount> all = getAllAccounts();
 		for(ATAccount acc: all)
@@ -883,6 +905,15 @@ public class WalletOperation extends BASE{
 		}
 		
 		return ret;
+	}
+	
+	public ATAccount setAccountName(String newName, int index) throws IOException{
+		assert(newName.length() > 0);
+		ATAccount.Builder b = ATAccount.newBuilder(getAccount(index));
+		b.setAccountName(newName);
+		configFile.updateAccount(b.build());
+		Authenticator.fireOnAccountBeenModified(index);
+		return b.build();
 	}
 	
 	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException, NoSuchAlgorithmException, JSONException, AddressFormatException{
@@ -1027,10 +1058,21 @@ public class WalletOperation extends BASE{
 			NetworkType nt) throws IOException{
 		int accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
 		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,pairName,accountID);
+		Authenticator.fireOnNewPairedAuthenticator();
 	}
 	
 	private void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName, int accountIndex) throws IOException{
 		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, pairName, accountIndex);
+	}
+	
+	/**
+	 * 
+	 * @param pairingID
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private void removePairingObject(String pairingID) throws FileNotFoundException, IOException{
+		configFile.removePairingObject(pairingID);
 	}
 	
 	/*public void addGeneratedAddressForPairing(String pairID, String addr, int indexWallet, int indexAuth) throws FileNotFoundException, IOException, ParseException{
@@ -1300,12 +1342,43 @@ public class WalletOperation extends BASE{
 	//		Active account Control
 	//
 	//#####################################
-		
-	public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
-		return configFile.getActiveAccount();
+	
+	/**
+	 * Surrounded with try & catch because we access it a lot.
+	 * 
+	 * @return
+	 */
+	public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() {
+		try {
+			return configFile.getActiveAccount();
+		} catch (IOException e) { e.printStackTrace(); }
+		return null;
 	}
 
-	public void writeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc) throws FileNotFoundException, IOException{
+	/**
+	 * Sets the active account according to account index, returns the active account.<br>
+	 * Will return null in case its not successful
+	 * @param accountIdx
+	 * @return
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public ATAccount setActiveAccount(int accountIdx){
+		ATAccount acc = getAccount(accountIdx);
+		AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
+		b1.setActiveAccount(acc);
+		if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
+			PairedAuthenticator p = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(acc.getIndex());
+			b1.setPairedAuthenticator(p);
+		}
+		try {
+			writeActiveAccount(b1.build());
+			return acc;
+		} catch (IOException e) { e.printStackTrace(); }
+		return null;
+	}
+	
+	private void writeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc) throws FileNotFoundException, IOException{
 		
 		configFile.writeActiveAccount(acc);
 	}

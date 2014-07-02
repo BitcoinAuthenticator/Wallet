@@ -12,6 +12,8 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.network.OneName;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.ui_helpers.BAApplication.NetworkType;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -32,6 +34,8 @@ import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import com.google.bitcoin.core.Transaction;
+
 public class AccountsController {
 	@FXML public ScrollPane scrlPane;
 	private ScrollPaneContentManager scrlPaneContentManager;
@@ -45,6 +49,7 @@ public class AccountsController {
 	}
 	
 	private void setupContent(){
+		scrlPaneContentManager.clearAll();
 		List<ATAccount> all = Authenticator.getWalletOperation().getAllAccounts();
 		for(ATAccount acc:all){
 			AccountUI ui = new AccountUI(acc);
@@ -62,32 +67,126 @@ public class AccountsController {
 		@SuppressWarnings("restriction")
 		public Node getNode(){
 			
-			DisplayNameCell cell = new DisplayNameCell(this.account)
+			DisplayNameCell c = new DisplayNameCell(this.account)
 			.setListener(new DisplayNameCell.AccountCellEvents() {
 				@Override
-				public void onSettingsClick(DisplayNameCell cell) {
-					
-				}
+				public void onSettingsClick(DisplayNameCell cell) { }
 
 				@Override
 				public void onDeleteAccountRequest(DisplayNameCell cell) {
+					/**
+					 * check at least one account remains
+					 */
+					if(Authenticator.getWalletOperation().getAllAccounts().size() < 2){
+						Dialogs.create()
+				        .owner(Controller.accountsAppStage)
+				        .title("Error")
+				        .masthead("Cannot Remove account !")
+				        .message("At least one active account should remain.")
+				        .showError();
+						
+						cell.setSettingsClose();
+						return;
+					}
+					
+					/**
+					 * Check is not the active account
+					 */
+					if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex() == cell.getAccount().getIndex()){
+						Dialogs.create()
+				        .owner(Controller.accountsAppStage)
+				        .title("Error")
+				        .masthead("Cannot Remove account !")
+				        .message("The account for removal is the active wallet's account.\n"
+				        		+ "Change the wallet's active account and try again.")
+				        .showError();
+						
+						cell.setSettingsClose();
+						return;
+					}
+					
+					
 					Optional<String> response = Dialogs.create()
 	            	        .owner(Controller.accountsAppStage)
 	            	        .title("Warning !")
-	            	        .masthead("You are about to delete an account !\nDeleting the account will delete all information about it.\nDo you wish do continue ?\n")
+	            	        .masthead("You are about to delete the \"" + cell.getAccount().getAccountName() + "\" account !\n"
+	            	        		+ "Deleting the account will delete all information about it.\n"
+	            	        		+ "Do you wish do continue ?\n")
 	            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
 	            	        .showTextInput("Enter account name to confirm");
 					
 					if (response.isPresent() && response.get().equals(cell.getAccount().getAccountName())) {
-						System.out.println("deleting");
+						try {
+							Authenticator.getWalletOperation().removeAccount(cell.getAccount().getIndex());
+							setupContent();
+							Dialogs.create()
+					        .owner(Controller.accountsAppStage)
+					        .title("Operation Complete")
+					        .masthead("Account was deleted")
+					        .message("")
+					        .showInformation();
+						} catch (IOException e) { 
+							e.printStackTrace();
+							Dialogs.create()
+					        .owner(Controller.accountsAppStage)
+					        .title("Error !")
+					        .masthead("Error occured while deleting the account.")
+					        .message("")
+					        .showInformation();
+						}
 					}
 					else
 						System.out.println("not deleting");
 				}
+
+				@Override
+				public void onChangeNameRequest(DisplayNameCell cell) {
+					Optional<String> response = null;
+					response = Dialogs.create()
+	            	        .owner(Controller.accountsAppStage)
+	            	        .title("Change Account Name")
+	            	        .masthead("Please enter a new name:")
+	            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+	            	        .showTextInput("Enter new account name");
+					if (response.isPresent()) {
+						try {
+							ATAccount t = Authenticator.getWalletOperation().setAccountName(response.get(), cell.getAccount().getIndex());
+							cell.setAccount(t);
+							cell.updateUI();
+							cell.setSettingsClose();
+						} catch (IOException e) { 
+							e.printStackTrace(); 
+							Dialogs.create()
+					        .owner(Controller.accountsAppStage)
+					        .title("Error !")
+					        .masthead("Error occured while changing account's name.")
+					        .message("")
+					        .showInformation();
+						}
+						
+					}
+					
+				}
 			});
 			
-			return cell;
+			return c;
 			
+		}
+	}
+	
+	@FXML protected void addAccount(ActionEvent event){
+		try {
+			ATAccount newAcc = Authenticator.getWalletOperation().generateNewStandardAccount(NetworkType.MAIN_NET, "XXX");
+			setupContent();
+		
+		} catch (IOException e) {
+			e.printStackTrace();
+			Dialogs.create()
+	        .owner(Controller.accountsAppStage)
+	        .title("Error !")
+	        .masthead("Error occured while creating the account.")
+	        .message("")
+	        .showInformation();
 		}
 	}
 }

@@ -90,43 +90,18 @@ public class ConfigFile {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigAuthenticatorWallet().getPaired();
 	}
-	
-	
-	
+		
 	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		ATAccount acc = getAccount(accountIdx);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
 		if(type == HierarchyAddressTypes.External)
-			auth.getConfigAccountsBuilder(accountIdx).addUsedExternalKeys(addIndx);
+			b.addUsedExternalKeys(addIndx);
 		else
 			;
-		writeConfigFile(auth);
+		//writeConfigFile(auth);
+		this.updateAccount(b.build());
 	}
-	
-	/*public void writeCachedExternalSpendingAddresses(List<ATAddress> add) throws IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		for(ATAddress c: add)
-			auth.getCachedExternalSpendingBuilder().addWalletCachedExternalSpendingAddress(c);
-		writeConfigFile(auth);
-	}
-	
-	public List<ATAddress> getExternalSpendingAddressFromPool(){
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getCachedExternalSpending().getWalletCachedExternalSpendingAddressList();
-	}
-	
-	public ArrayList<ATAddress> getNotUsedExternalSpendingAddressFromPool(int limit) throws FileNotFoundException, IOException{
-		ArrayList<ATAddress> keypool = new ArrayList<ATAddress>();
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		for (ATAddress add : auth.getCachedExternalSpending().getWalletCachedExternalSpendingAddressList()){
-			if(!isUsedAddress(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE,HierarchyAddressTypes.External,add.getKeyIndex()))
-				keypool.add(add);
-			if(keypool.size() == limit && limit != -1)
-				break;
-		}
-		return keypool;
-	}	
-	
-	*/
 	
 	public ArrayList<String> getAddressString(List<ATAddress> cache) throws FileNotFoundException, IOException{
 		ArrayList<String> keypool = new ArrayList<String>();
@@ -138,9 +113,10 @@ public class ConfigFile {
 	
 	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		ATAccount acc = getAccount(accountIndex);
 		if(addressType == HierarchyAddressTypes.External)
-			return auth.getConfigAccounts(accountIndex).getUsedExternalKeysList().contains(keyIndex);
-		return auth.getConfigAccounts(accountIndex).getUsedInternalKeysList().contains(keyIndex);
+			return acc.getUsedExternalKeysList().contains(keyIndex);
+		return acc.getUsedInternalKeysList().contains(keyIndex);
 	}
 	
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException{
@@ -169,6 +145,16 @@ public class ConfigFile {
 		writeConfigFile(auth);
 	}
 	
+	public void removePairingObject(String pairingID) throws FileNotFoundException, IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<PairedAuthenticator> all = getAllPairingObjectArray();
+		auth.clearConfigAuthenticatorWallet();
+		for(PairedAuthenticator po:all)
+			if(!po.getPairingID().equals(pairingID))
+				auth.getConfigAuthenticatorWalletBuilder().addPairedWallets(po);
+		writeConfigFile(auth);
+	}
+	
 	public List<ATAccount> getAllAccounts(){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigAccountsList();
@@ -176,31 +162,71 @@ public class ConfigFile {
 	
 	public ATAccount getAccount(int index){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigAccounts(index);
+		List<ATAccount> all = getAllAccounts();
+		// We search the account like this because its id is not necessarly its id in the array
+		for(ATAccount acc:all)
+			if(acc.getIndex() == index)
+				return acc;
+		return null;
 	}
 	
-	public void writeAccount(ATAccount acc) throws IOException{
+	public void addAccount(ATAccount acc) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.addConfigAccounts(acc);
 		writeConfigFile(auth);
 	}
 	
-	public void bumpByOneAccountsLastIndex(int accountIndex, HierarchyAddressTypes addressType) throws IOException{
+	public void updateAccount(ATAccount account) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<ATAccount> all = getAllAccounts();
+		auth.clearConfigAccounts();
+		for(ATAccount acc:all)
+			if(acc.getIndex() == account.getIndex())
+				auth.addConfigAccounts(account);
+			else
+				auth.addConfigAccounts(acc);
+		
+		writeConfigFile(auth);
+	}
+	
+	/**
+	 * Remove account from config file, make sure at least one remains
+	 * 
+	 * @param index
+	 * @throws IOException
+	 */
+	public void removeAccount(int index) throws IOException{
+		assert (getAllAccounts().size() > 1);
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<ATAccount> all = getAllAccounts();
+		auth.clearConfigAccounts();
+		for(ATAccount acc: all)
+			if(acc.getIndex() != index)
+				auth.addConfigAccounts(acc);
+		writeConfigFile(auth);
+	}
+	
+	public void bumpByOneAccountsLastIndex(int accountIndex, HierarchyAddressTypes addressType) throws IOException{
+		//AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		ATAccount acc = getAccount(accountIndex);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
 		if(addressType == HierarchyAddressTypes.External){
-			int last = auth.getConfigAccounts(accountIndex).getLastExternalIndex();
-			auth.getConfigAccountsBuilder(accountIndex).setLastExternalIndex(last+1);
+			int last = acc.getLastExternalIndex();
+			//auth.getConfigAccountsBuilder(accountIndex).setLastExternalIndex(last+1);
+			b.setLastExternalIndex(last+1);
 		}
 		else{
-			int last = auth.getConfigAccounts(accountIndex).getLastInternalIndex();
-			auth.getConfigAccountsBuilder(accountIndex).setLastInternalIndex(last+1);
+			int last = acc.getLastInternalIndex();
+			//auth.getConfigAccountsBuilder(accountIndex).setLastInternalIndex(last+1);
+			b.setLastInternalIndex(last+1);
 		}		
-		writeConfigFile(auth);
+		//writeConfigFile(auth);
+		this.updateAccount(b.build());
 	}
 	
 	public long getConfirmedBalace(int accountIdx){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigAccounts(accountIdx).getConfirmedBalance();
+		return getAccount(accountIdx).getConfirmedBalance();
 	}
 	
 	/**
@@ -212,15 +238,16 @@ public class ConfigFile {
 	 * @throws IOException
 	 */
 	public long writeConfirmedBalace(int accountIdx, long newBalance) throws IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigAccountsBuilder(accountIdx).setConfirmedBalance(newBalance);
-		writeConfigFile(auth);
-		return auth.getConfigAccounts(accountIdx).getConfirmedBalance();
+		ATAccount acc = getAccount(accountIdx);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
+		b.setConfirmedBalance(newBalance);
+		this.updateAccount(b.build());
+		return b.build().getConfirmedBalance();
 	}
 	
 	public long getUnConfirmedBalace(int accountIdx){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigAccounts(accountIdx).getUnConfirmedBalance();
+		return getAccount(accountIdx).getUnConfirmedBalance();
 	}
 	
 	/**
@@ -232,10 +259,11 @@ public class ConfigFile {
 	 * @throws IOException
 	 */
 	public long writeUnConfirmedBalace(int accountIdx, long newBalance) throws IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigAccountsBuilder(accountIdx).setUnConfirmedBalance(newBalance);
-		writeConfigFile(auth);
-		return auth.getConfigAccounts(accountIdx).getUnConfirmedBalance();
+		ATAccount acc = getAccount(accountIdx);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
+		b.setUnConfirmedBalance(newBalance);
+		this.updateAccount(b.build());
+		return b.build().getUnConfirmedBalance();
 	}
 	
 	public List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
