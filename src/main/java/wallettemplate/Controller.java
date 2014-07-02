@@ -173,7 +173,6 @@ public class Controller {
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
 	 private ScrollPaneContentManager scrlContent;
-	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
 	 private Wallet.SendResult sendResult;
 	 TorListener listener = new TorListener();
@@ -1499,18 +1498,18 @@ public class Controller {
 		        .showWarning();
     }
     
+    public static Stage accountsAppStage;
     @FXML protected void btnAccounts(MouseEvent event) {
         try {
         	URL location = getClass().getResource("display_accounts/display_accounts.fxml");
         	FXMLLoader loader = new FXMLLoader(location);
-        	Stage stage = new Stage();
-            stage.setTitle("Accounts");
-			stage.setScene(new Scene((AnchorPane) loader.load(), 370, 480));
-			 stage.show();
+        	accountsAppStage = new Stage();
+        	accountsAppStage.setTitle("Accounts");
+        	accountsAppStage.setScene(new Scene((AnchorPane) loader.load(), 370, 480));
+        	accountsAppStage.show();
 		} catch (IOException e) { e.printStackTrace(); }
     }
-    
-    
+        
     //#####################################
    	//
    	//	Change account

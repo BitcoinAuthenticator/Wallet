@@ -57,6 +57,10 @@ public class DisplayNameCell extends Region{
 		setAccountName(this.account.getAccountName());
 	}
 	
+	public ATAccount getAccount(){
+		return this.account;
+	}
+	
 	public void setSettingsOpen(){
 		btnSettingsImageView.setImage(imgSettingsOpen);
 		openCellMenu();
@@ -137,8 +141,22 @@ public class DisplayNameCell extends Region{
     		this.listener.onSettingsClick(this);
     }
 	
+	@FXML protected void deleteAccount(ActionEvent event){
+		if(this.listener != null)
+    		this.listener.onDeleteAccountRequest(this);
+	}
 	
 	public interface AccountCellEvents{
-		public void onSettingsClick(DisplayNameCell c);
+		/**
+		 * Will be called when the settings button is pressed
+		 * @param account
+		 */
+		public void onSettingsClick(DisplayNameCell cell);
+		/**
+		 * Will be called when user pressed the delete account button.<br>
+		 * Delegates the delete method to the listener
+		 * @param cell
+		 */
+		public void onDeleteAccountRequest(DisplayNameCell cell);
 	}
 }
