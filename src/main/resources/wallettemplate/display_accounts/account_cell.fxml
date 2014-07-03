@@ -15,7 +15,7 @@
 <children><Label fx:id="lblName" text="xxxx" textFill="#6e86a0">
 <font>
 <Font size="16.0" />
-</font></Label><Label text="Account" textFill="#6e86a0">
+</font></Label><Label text="Account (" textFill="#6e86a0">
 <VBox.margin>
 <Insets left="20.0" top="10.0" />
 </VBox.margin>
@@ -24,7 +24,19 @@
 </font>
 <HBox.margin>
 <Insets left="5.0" />
-</HBox.margin></Label>
+</HBox.margin></Label><Label text="ID " textFill="#6e86a0">
+<font>
+<Font size="16.0" />
+</font>
+</Label><Label fx:id="lblAccountID" text="xxxx" textFill="#6e86a0">
+<font>
+<Font size="16.0" />
+</font>
+</Label><Label text=")" textFill="#6e86a0">
+<font>
+<Font size="16.0" />
+</font>
+</Label>
 </children>
 <VBox.margin>
 <Insets left="10.0" />

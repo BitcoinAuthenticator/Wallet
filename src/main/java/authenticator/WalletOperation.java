@@ -104,6 +104,7 @@ public class WalletOperation extends BASE{
 			List<ATAccount> allAccount = getAllAccounts();
 			for(ATAccount acc:allAccount){
 				Integer[] a = new Integer[]{
+					acc.getIndex(),
 					acc.getLastExternalIndex(),	
 					acc.getLastInternalIndex()
 				};
@@ -111,7 +112,7 @@ public class WalletOperation extends BASE{
 				accountByNumberOfKeys.add(a);
 			}
 			
-			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountByNumberOfKeys);
+			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountByNumberOfKeys, getHierarchyNextAvailableAccountID());
 		}
 		
 	}
@@ -451,149 +452,6 @@ public class WalletOperation extends BASE{
 	
 	//#####################################
 	//
-	// Default spending account pool handling
-	//
-	// WHY ?
-	// All accounts get their keys from the wallet hierarchy.
-	// We cache at least 10 external keys from the spending account for performance.
-	// Access to those keys is not from the wallet hierarchy but from the cache
-	//
-	//#####################################
-	
-	/**
-	 * Make sure we have at least 10 keys ready in the spending (external) account
-	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws AddressFormatException
-	 */
-	/*public void fillExternalSpendingKeyPool() throws FileNotFoundException, IOException, AddressFormatException{
-		ArrayList<ATAddress> cached = getNotUsedExternalSpendingAddressFromPool(-1);
-		ArrayList<ATAddress> forWriting = new ArrayList<ATAddress>();
-		if ( cached.size() < 10){
-			int num = (10 - cached.size());
-			for (int i=0; i<num; i++){
-				ATAddress add = getNewSpendingExternalAddress(false);
-			    forWriting.add(add);
-			}
-		}
-		configFile.writeCachedExternalSpendingAddresses(forWriting);
-	}*/
-	
-	/**
-	 * add additional 5 keys to the external spending account
-	 * 
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws AddressFormatException
-	 */
-	/*public ArrayList<String> addMoreExternalSpendingAddresses() throws FileNotFoundException, IOException, AddressFormatException{
-		ArrayList<ATAddress> forWriting = new ArrayList<ATAddress>();
-		ArrayList<String> ret = new ArrayList<String>();
-		for (int i=0; i<5; i++){
-			
-			ATAddress add = getNewSpendingExternalAddress(false);
-		    forWriting.add(add);
-		    ret.add(add.getAddressStr());
-		}
-		configFile.writeCachedExternalSpendingAddresses(forWriting);
-		return ret;
-	}*/
-	
-	/**
-	 * 
-	 * 
-	 * @param shouldWrite - True to cache the newly created address
-	 * @return
-	 * @throws AddressFormatException
-	 * @throws IOException
-	 */
-	/*public ATAddress getNewSpendingExternalAddress(boolean shouldWrite) throws AddressFormatException, IOException{
-		DeterministicKey newkey = getNextExternalKey(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE,true); 				
-		//
-		ATAddress.Builder b = ATAddress.newBuilder();
-						      //b.setAccountIndex(HierarchyPrefixedAccountIndex.General_VALUE);
-							  b.setAddressStr(newkey.toAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
-							  b.setKeyIndex(newkey.getChildNumber().getI());
-							 // b.setIsUsed(false);
-		if(shouldWrite){
-			List<ATAddress> arr = new ArrayList<ATAddress>();
-			arr.add(b.build());
-			configFile.writeCachedExternalSpendingAddresses(arr);
-		}
-		return b.build();
-	}*/
-		
-	/**
-	 * Get filtered unused cached External addresses
-	 * 
-	 * @param limit - pass -1 for all
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	/*public ArrayList<String> getNotUsedExternalSpendingAddressStringPool(int limit) throws FileNotFoundException, IOException{
-		ArrayList<ATAddress> all = getNotUsedExternalSpendingAddressFromPool(limit);
-		return configFile.getAddressString(all);
-	}*/
-	
-	/**
-	 * Get filtered unused cached External addresses
-	 * 
-	 * @param limit - pass -1 for all
-	 * @return ArrayList<CachedAddrees> of addresses
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	/*public ArrayList<ATAddress> getNotUsedExternalSpendingAddressFromPool(int limit) throws FileNotFoundException, IOException{
-		return configFile.getNotUsedExternalSpendingAddressFromPool(limit);
-	}*/
-	
-	/**
-	 * get all External cached addresses, used and unused.
-	 * 
-	 * @return ArrayList<String> of addresses
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	/*private ArrayList<String> getExternalSpendingAddressStringPool() throws FileNotFoundException, IOException{
-		List<ATAddress> all = getExternalSpendingAddressFromPool();
-		return configFile.getAddressString(all);
-	}*/
-	
-	/**
-	 * Get all cached External addresses
-	 * 
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	/*private List<ATAddress> getExternalSpendingAddressFromPool() throws FileNotFoundException, IOException{
-		return configFile.getExternalSpendingAddressFromPool();
-	}*/
-	
-	/**
-	 * Find the corresponding {@link authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigReceiveAddresses.CachedAddrees CachedAddrees}  
-	 * cached object from an address string
-	 * 
-	 * @param addressStr
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	/*public ATAddress getCachedAddressFromString(String addressStr) throws FileNotFoundException, IOException{
-		List<ATAddress> all = null;
-		all = getExternalSpendingAddressFromPool();
-		for(ATAddress ca:all){
-			if(ca.getAddressStr().equals(addressStr))
-				return ca;
-		}
-		return null;
-	}*/
-	
-	//#####################################
-	//
 	//		 Keys handling
 	//
 	//#####################################
@@ -614,7 +472,7 @@ public class WalletOperation extends BASE{
 						  b.setNetworkType(nt.getValue());
 						  b.setAccountName(accountName);
 						  b.setAccountType(type);
-						  
+		writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
 	    configFile.addAccount(b.build());
 	    staticLogger.info("Generated new account at index, " + accoutnIdx);
 		return b.build();
@@ -799,14 +657,6 @@ public class WalletOperation extends BASE{
 		return atAdd.build();
 	}
 	
-	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
-		return configFile.getHierarchySeed();
-	}
-	
-	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
-		configFile.writeHierarchySeed(seed);
-	}
-	
 	public List<ATAccount> getAllAccounts(){
 		return configFile.getAllAccounts();
 	}
@@ -920,6 +770,22 @@ public class WalletOperation extends BASE{
 		configFile.markAddressAsUsed(accountIdx, addIndx,type);
 		ATAddress add = getATAddreessFromAccount(accountIdx, type, addIndx);
 		this.LOG.info("Marked " + add.getAddressStr() + " as used.");
+	}
+	
+	public int getHierarchyNextAvailableAccountID(){
+		return configFile.getHierarchyNextAvailableAccountID();
+	}
+
+	public void writeHierarchyNextAvailableAccountID(int i) throws IOException{
+		configFile.writeHierarchyNextAvailableAccountID(i);
+	}
+	
+	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
+		return configFile.getHierarchySeed();
+	}
+	
+	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
+		configFile.writeHierarchySeed(seed);
 	}
 	
 	//#####################################

@@ -36,6 +36,7 @@ public class DisplayNameCell extends Region{
 	@FXML private Label lblConfirmed;
 	@FXML private Label lblUnconfirmed;
 	@FXML private Label lblName;
+	@FXML private Label lblAccountID;
 	@FXML private ImageView btnSettingsImageView;
 	
 	@SuppressWarnings("restriction")
@@ -59,6 +60,11 @@ public class DisplayNameCell extends Region{
 		setConfirmed(Long.toString(this.account.getConfirmedBalance()));
 		setUnonfirmed(Long.toString(this.account.getUnConfirmedBalance()));
 		setAccountName(this.account.getAccountName());
+		setAccountID(Integer.toString(this.account.getIndex()));
+	}
+	
+	private void setAccountID(String id){
+		this.lblAccountID.setText(id);
 	}
 	
 	public ATAccount getAccount(){

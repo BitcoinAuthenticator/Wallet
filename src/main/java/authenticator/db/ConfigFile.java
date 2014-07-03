@@ -75,8 +75,9 @@ public class ConfigFile {
 	
 	public void initConfigFile(byte[] seed) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.setHierarchySeed(ByteString.copyFrom(seed));
+		auth.getConfigHierarchyBuilder().setHierarchySeed(ByteString.copyFrom(seed));
 		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
+		auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(0);
 		writeConfigFile(auth);
 	}
 	
@@ -312,12 +313,12 @@ public class ConfigFile {
 	
 	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getHierarchySeed().toByteArray();
+		return auth.getConfigHierarchy().getHierarchySeed().toByteArray();
 	}
 	
 	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.setHierarchySeed(ByteString.copyFrom(seed));
+		auth.getConfigHierarchyBuilder().setHierarchySeed(ByteString.copyFrom(seed));
 		writeConfigFile(auth);
 	}
 	
@@ -360,6 +361,17 @@ public class ConfigFile {
 		for(int i=0;i < all.size(); i++)
 			if(!all.get(i).equals(txID))
 				auth.getConfigAccountsBuilder(accountIdx).addPendingInTx(all.get(i));
+		writeConfigFile(auth);
+	}
+	
+	public int getHierarchyNextAvailableAccountID(){
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigHierarchy().getHierarchyNextAvailableAccountID();
+	}
+
+	public void writeHierarchyNextAvailableAccountID(int i) throws IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(i);
 		writeConfigFile(auth);
 	}
 }

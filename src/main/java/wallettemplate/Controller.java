@@ -1525,7 +1525,7 @@ public class Controller {
         	FXMLLoader loader = new FXMLLoader(location);
         	accountsAppStage = new Stage();
         	accountsAppStage.setTitle("Accounts");
-        	accountsAppStage.setScene(new Scene((AnchorPane) loader.load(), 370, 480));
+        	accountsAppStage.setScene(new Scene((AnchorPane) loader.load(), 375, 480));
         	accountsAppStage.show();
 		} catch (IOException e) { e.printStackTrace(); }
     }

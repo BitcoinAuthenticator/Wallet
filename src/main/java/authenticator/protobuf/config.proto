@@ -98,16 +98,6 @@ message AuthenticatorConfiguration{
 		repeated PendingRequest pendingRequests 	= 3; 
 	}
 	
-	//message CachedExternalSpending {
-	//	repeated ATAddress walletCachedExternalSpendingAddress = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-	//}
-	
-	//message ConfigAddressBook {
-	
-	//	optional string address = 1; // This is a placeholder for the address book.
-	
-	//}
-	
 	message ConfigOneNameProfile {
 		required string onename	     			= 1; // The user's OneName ID. Used for getting the avatar on start up.
 		optional string onenameFormatted	   	= 2;
@@ -133,14 +123,19 @@ message AuthenticatorConfiguration{
 		required WalletAccountType accountType	= 11;
 		//
 		required string accountName				= 12;
+		//
+	}
+	
+	message Hierarchy{
+		required bytes hierarchySeed 				   	= 1;
+		required int32 hierarchyNextAvailableAccountID 	= 2;
 	}
 	
 	optional ConfigActiveAccount configActiveAccount 				= 1;
 	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
-	//optional CachedExternalSpending cachedExternalSpending 			= 3;
 	//optional ConfigAddressBook configAddressBook 					= 4;
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
-	required bytes hierarchySeed									= 6;
+	required Hierarchy ConfigHierarchy								= 6;
 	repeated ATAccount configAccounts								= 7;
 }
 

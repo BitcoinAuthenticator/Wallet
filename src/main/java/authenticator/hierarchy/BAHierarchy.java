@@ -36,10 +36,12 @@ public class BAHierarchy{
 	DeterministicHierarchy hierarchy;
 	DeterministicKey rootKey;
 	/**
-	 * 0 - external chain
-	 * 1 - internal chain
+	 * 0 - account id
+	 * 1 - external chain
+	 * 2 - internal chain
 	 */
 	List<ChildNumber[]> accountsHeightsUsed;
+	int nextAvailableAccount;
 	
 	@SuppressWarnings("static-access")
 	public BAHierarchy(byte[] seed, HierarchyCoinTypes coinType){
@@ -65,16 +67,19 @@ public class BAHierarchy{
 	 * 
 	 * 
 	 * @param accountByNumberOfKeys:<br>
-	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[0]</b> - external chain<br>
-	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[1]</b> - internal chain
+	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[0]</b> - account id<br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[1]</b> - external chain<br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[2]</b> - internal chain
 	 */
-	public void buildWalletHierarchyForStartup(List<Integer[]> accountByNumberOfKeys){
+	public void buildWalletHierarchyForStartup(List<Integer[]> accountByNumberOfKeys, int nextAvailableAccount){
+		this.nextAvailableAccount = nextAvailableAccount;
 		accountsHeightsUsed = new ArrayList<ChildNumber[]>();
 		for(int i=0;i < accountByNumberOfKeys.size(); i++){
 			Integer[] cnt = accountByNumberOfKeys.get(i);
-			ChildNumber Ext = new ChildNumber(cnt[0],false); 
-			ChildNumber Int = new ChildNumber(cnt[1],false);
-			accountsHeightsUsed.add(new ChildNumber[]{Ext,Int});
+			ChildNumber acc = new ChildNumber(cnt[0],false);
+			ChildNumber Ext = new ChildNumber(cnt[1],false); 
+			ChildNumber Int = new ChildNumber(cnt[2],false);
+			accountsHeightsUsed.add(new ChildNumber[]{acc,Ext,Int});
 		}
 	}
 	
@@ -97,14 +102,16 @@ public class BAHierarchy{
  	    p.add(addressType);	    
 	    
  	   ChildNumber indx;
- 	   /**
- 	    * in case accountsHeightsUsed is empty and accountIndex is 0 (the spending account)
- 	    */
- 	    if(accountsHeightsUsed.size() > accountIndex){
- 	    	indx = accountsHeightsUsed.get(accountIndex)[type == HierarchyAddressTypes.External? 0:1];
+ 	   
+ 	    if(getAccountPlace(accountIndex) != -1){
+ 	    	indx = accountsHeightsUsed.get(getAccountPlace(accountIndex))[type == HierarchyAddressTypes.External? 1:2];
  	    }
  	    else
+ 	    	/**
+ 	 	    * in case accountsHeightsUsed doesn't have a register of the account 
+ 	 	    */
  	    	indx = new ChildNumber(0,false);
+ 	    
  	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, indx);	
 	    
 	    bumpHeight(accountIndex,type);
@@ -129,31 +136,37 @@ public class BAHierarchy{
 	}
 	
 	public int generateNewAccount(){
-		int ret = accountsHeightsUsed.size();
-		accountsHeightsUsed.add(new ChildNumber[]{ new ChildNumber(0,false),new ChildNumber(0,false) });
+		int ret = this.nextAvailableAccount;
+		accountsHeightsUsed.add(new ChildNumber[]{  new ChildNumber(this.nextAvailableAccount,false), 
+													new ChildNumber(0,false),
+													new ChildNumber(0,false) });
+		this.nextAvailableAccount ++;
 		return ret;
 	}
 	
 	private void bumpHeight(int accountIndex, HierarchyAddressTypes type){
 		ChildNumber[] updr;
-		if(accountsHeightsUsed.size() > accountIndex){
-			ChildNumber indx = accountsHeightsUsed.get(accountIndex)[type == HierarchyAddressTypes.External? 0:1];
-			
-		    if(type == HierarchyAddressTypes.External)
-		    	updr = new ChildNumber[]{new ChildNumber(indx.getI() +1, false), accountsHeightsUsed.get(accountIndex)[1]};
-		    else
-		    	updr = new ChildNumber[]{accountsHeightsUsed.get(accountIndex)[0], new ChildNumber(indx.getI() +1, false)};
-		    accountsHeightsUsed.set(accountIndex, updr); 
-		}
-		else{
-			// set new 
-			if(type == HierarchyAddressTypes.External)
-				updr = new ChildNumber[]{new ChildNumber(1, false), new ChildNumber(0, false)};
-			else
-				updr = new ChildNumber[]{new ChildNumber(0, false), new ChildNumber(1, false)};
-		    accountsHeightsUsed.add(updr); 
+		int accPlace = getAccountPlace(accountIndex);
+		ChildNumber[] x = accountsHeightsUsed.get(accPlace);
+		ChildNumber indx = x[type == HierarchyAddressTypes.External? 1:2];
+		
+	    if(type == HierarchyAddressTypes.External)
+	    	updr = new ChildNumber[]{x[0], new ChildNumber(indx.getI() +1, false), x[2]};
+	    else
+	    	updr = new ChildNumber[]{x[0], x[1], new ChildNumber(indx.getI() +1, false)};
+	    accountsHeightsUsed.set(accPlace, updr);
+	}
+	
+	private int getAccountPlace(int accountIndex){
+		for(int i=0;i<accountsHeightsUsed.size();i++){
+			ChildNumber[] x = accountsHeightsUsed.get(i);
+			ChildNumber accID = x[0];
+			if(accID.num() == accountIndex){
+				return i;
+			}
 		}
 		
+		return -1;
 	}
 	
 	/**
