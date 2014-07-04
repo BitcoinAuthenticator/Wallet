@@ -23,6 +23,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
@@ -193,4 +194,17 @@ public class AccountsController {
 	@FXML protected void close(ActionEvent event){
 		Controller.accountsAppStage.close();
 	}
+	
+	
+	private double xOffset = 0;
+	private double yOffset = 0;
+	@FXML protected void drag1(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML protected void drag2(MouseEvent event) {
+    	Controller.accountsAppStage.setX(event.getScreenX() - xOffset);
+    	Controller.accountsAppStage.setY(event.getScreenY() - yOffset);
+    }
 }

@@ -11,7 +11,7 @@
 <image>
 <Image url="@accounts_display_bg.png" />
 </image></ImageView>
-<HBox prefHeight="80.0" prefWidth="427.0">
+<HBox prefHeight="80.0" prefWidth="427.0" onMouseDragged="#drag2" onMousePressed="#drag1">
 <children>
 	<HBox alignment="BOTTOM_CENTER" layoutX="7.0" prefHeight="80.0" prefWidth="62.0" style="-fx-background-color: transperent;">
 		<children>
