@@ -82,9 +82,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
+import wallettemplate.utils.TextFieldValidator;
 
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
@@ -1525,7 +1527,11 @@ public class Controller {
         	FXMLLoader loader = new FXMLLoader(location);
         	accountsAppStage = new Stage();
         	accountsAppStage.setTitle("Accounts");
-        	accountsAppStage.setScene(new Scene((AnchorPane) loader.load(), 375, 480));
+        	accountsAppStage.initStyle(StageStyle.UNDECORATED);
+        	Scene scene = new Scene((AnchorPane) loader.load(), 436, 516);
+        	final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+            scene.getStylesheets().add(file);  // Add CSS that we need.
+        	accountsAppStage.setScene(scene);
         	accountsAppStage.show();
 		} catch (IOException e) { e.printStackTrace(); }
     }

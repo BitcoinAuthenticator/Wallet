@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.json.JSONException;
 
-import wallettemplate.controls.DisplayNameCell;
+import wallettemplate.controls.DisplayAccountCell;
 import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.network.OneName;
@@ -67,13 +67,13 @@ public class AccountsController {
 		@SuppressWarnings("restriction")
 		public Node getNode(){
 			
-			DisplayNameCell c = new DisplayNameCell(this.account)
-			.setListener(new DisplayNameCell.AccountCellEvents() {
+			DisplayAccountCell c = new DisplayAccountCell(this.account)
+			.setListener(new DisplayAccountCell.AccountCellEvents() {
 				@Override
-				public void onSettingsClick(DisplayNameCell cell) { }
+				public void onSettingsClick(DisplayAccountCell cell) { }
 
 				@Override
-				public void onDeleteAccountRequest(DisplayNameCell cell) {
+				public void onDeleteAccountRequest(DisplayAccountCell cell) {
 					/**
 					 * check at least one account remains
 					 */
@@ -140,7 +140,7 @@ public class AccountsController {
 				}
 
 				@Override
-				public void onChangeNameRequest(DisplayNameCell cell) {
+				public void onChangeNameRequest(DisplayAccountCell cell) {
 					Optional<String> response = null;
 					response = Dialogs.create()
 	            	        .owner(Controller.accountsAppStage)
@@ -188,5 +188,9 @@ public class AccountsController {
 	        .message("")
 	        .showInformation();
 		}
+	}
+	
+	@FXML protected void close(ActionEvent event){
+		Controller.accountsAppStage.close();
 	}
 }

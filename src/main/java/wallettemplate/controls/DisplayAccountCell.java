@@ -25,7 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import javafx.scene.image.Image;
 
-public class DisplayNameCell extends Region{	
+public class DisplayAccountCell extends Region{	
 	private ATAccount account;
 	private AccountCellEvents listener;
 	
@@ -40,7 +40,7 @@ public class DisplayNameCell extends Region{
 	@FXML private ImageView btnSettingsImageView;
 	
 	@SuppressWarnings("restriction")
-	public DisplayNameCell(ATAccount account) {
+	public DisplayAccountCell(ATAccount account) {
         this.loadFXML();
         this.setSnapToPixel(true);
         
@@ -105,7 +105,7 @@ public class DisplayNameCell extends Region{
         leave.play();
     }
 	
-	public DisplayNameCell setListener(AccountCellEvents listener){
+	public DisplayAccountCell setListener(AccountCellEvents listener){
 		this.listener = listener;
 		return this;
 	}
@@ -173,18 +173,18 @@ public class DisplayNameCell extends Region{
 		 * Will be called when the settings button is pressed
 		 * @param account
 		 */
-		public void onSettingsClick(DisplayNameCell cell);
+		public void onSettingsClick(DisplayAccountCell cell);
 		/**
 		 * Will be called when user pressed the delete account button.<br>
 		 * Delegates the delete method to the listener
 		 * @param cell
 		 */
-		public void onDeleteAccountRequest(DisplayNameCell cell);
+		public void onDeleteAccountRequest(DisplayAccountCell cell);
 		
 		/**
 		 * Wil be called when user presses on name label
 		 * @param cell
 		 */
-		public void onChangeNameRequest(DisplayNameCell cell);
+		public void onChangeNameRequest(DisplayAccountCell cell);
 	}
 }

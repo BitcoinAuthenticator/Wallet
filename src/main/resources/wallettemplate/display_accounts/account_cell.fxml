@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="370.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="374.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 <children><HBox prefHeight="80.0" prefWidth="695.0" style="-fx-background-color: white;">
-<children><HBox prefHeight="80.0" prefWidth="370.0">
+<children><HBox prefHeight="80.0" prefWidth="387.0">
 <children><VBox prefHeight="85.0" prefWidth="465.0" style="-fx-background-color: white;">
 <children><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
 <children><Label fx:id="lblName" text="xxxx" textFill="#6e86a0">
@@ -90,7 +90,7 @@
 <VBox.margin>
 <Insets left="15.0" />
 </VBox.margin></HBox>
-</children></VBox><HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+</children></VBox><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
 <children>
 <Button fx:id="btnSettings" focusTraversable="false" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#btnSettingsClick" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
   <graphic>
