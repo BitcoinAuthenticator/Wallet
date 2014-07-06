@@ -281,12 +281,23 @@ public class Controller {
 
 		@Override
 		public void onNewPairedAuthenticator() {
-			setAccountChoiceBox();
+			Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				  setAccountChoiceBox();
+			  }
+			});
 		}
 
 		@Override
 		public void onNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile) {
-			setupOneName(profile);
+			Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				  setupOneName(profile);
+			  }
+			});
+			
 		}
 
 		@Override
@@ -294,24 +305,45 @@ public class Controller {
 
 		@Override
 		public void onBalanceChanged(int walletID) {
-			refreshBalanceLabel();
-	        setReceiveAddresses();
-	        setTxHistoryContent();
+			Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				refreshBalanceLabel();
+		        setReceiveAddresses();
+		        setTxHistoryContent();
+			  }
+			});
+			
 		}
 
 		@Override
 		public void onNewStandardAccountAdded() {
-			setAccountChoiceBox();
+			Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				  setAccountChoiceBox();
+			  }
+			});
 		}
 
 		@Override
 		public void onAccountDeleted(int accountIndex) {
-			setAccountChoiceBox();
+			Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				  setAccountChoiceBox();
+			  }
+			});
 		}
 
 		@Override
 		public void onAccountBeenModified(int accountIndex) {
-			setAccountChoiceBox();
+			Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				  setAccountChoiceBox();
+			  }
+			});
 			
 		}
 	

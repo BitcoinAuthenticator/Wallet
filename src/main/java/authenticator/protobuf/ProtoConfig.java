@@ -1196,40 +1196,23 @@ public final class ProtoConfig {
      */
     int getKeysN();
 
-    // required string pairingName = 9;
-    /**
-     * <code>required string pairingName = 9;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     * </pre>
-     */
-    boolean hasPairingName();
-    /**
-     * <code>required string pairingName = 9;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     * </pre>
-     */
-    java.lang.String getPairingName();
-    /**
-     * <code>required string pairingName = 9;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getPairingNameBytes();
-
     // required int32 walletAccountIndex = 10;
     /**
      * <code>required int32 walletAccountIndex = 10;</code>
+     *
+     * <pre>
+     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+     *required string 	pairingName 		= 9;
+     * </pre>
      */
     boolean hasWalletAccountIndex();
     /**
      * <code>required int32 walletAccountIndex = 10;</code>
+     *
+     * <pre>
+     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+     *required string 	pairingName 		= 9;
+     * </pre>
      */
     int getWalletAccountIndex();
   }
@@ -1324,13 +1307,8 @@ public final class ProtoConfig {
               keysN_ = input.readInt32();
               break;
             }
-            case 74: {
-              bitField0_ |= 0x00000080;
-              pairingName_ = input.readBytes();
-              break;
-            }
             case 80: {
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000080;
               walletAccountIndex_ = input.readInt32();
               break;
             }
@@ -1621,72 +1599,27 @@ public final class ProtoConfig {
       return keysN_;
     }
 
-    // required string pairingName = 9;
-    public static final int PAIRINGNAME_FIELD_NUMBER = 9;
-    private java.lang.Object pairingName_;
-    /**
-     * <code>required string pairingName = 9;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     * </pre>
-     */
-    public boolean hasPairingName() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>required string pairingName = 9;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     * </pre>
-     */
-    public java.lang.String getPairingName() {
-      java.lang.Object ref = pairingName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          pairingName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string pairingName = 9;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getPairingNameBytes() {
-      java.lang.Object ref = pairingName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        pairingName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     // required int32 walletAccountIndex = 10;
     public static final int WALLETACCOUNTINDEX_FIELD_NUMBER = 10;
     private int walletAccountIndex_;
     /**
      * <code>required int32 walletAccountIndex = 10;</code>
+     *
+     * <pre>
+     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+     *required string 	pairingName 		= 9;
+     * </pre>
      */
     public boolean hasWalletAccountIndex() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
      * <code>required int32 walletAccountIndex = 10;</code>
+     *
+     * <pre>
+     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+     *required string 	pairingName 		= 9;
+     * </pre>
      */
     public int getWalletAccountIndex() {
       return walletAccountIndex_;
@@ -1700,7 +1633,6 @@ public final class ProtoConfig {
       pairingID_ = "";
       testnet_ = false;
       keysN_ = 0;
-      pairingName_ = "";
       walletAccountIndex_ = 0;
     }
     private byte memoizedIsInitialized = -1;
@@ -1733,10 +1665,6 @@ public final class ProtoConfig {
         return false;
       }
       if (!hasKeysN()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPairingName()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1773,9 +1701,6 @@ public final class ProtoConfig {
         output.writeInt32(7, keysN_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeBytes(9, getPairingNameBytes());
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeInt32(10, walletAccountIndex_);
       }
       getUnknownFields().writeTo(output);
@@ -1816,10 +1741,6 @@ public final class ProtoConfig {
           .computeInt32Size(7, keysN_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(9, getPairingNameBytes());
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(10, walletAccountIndex_);
       }
@@ -1958,10 +1879,8 @@ public final class ProtoConfig {
         bitField0_ = (bitField0_ & ~0x00000020);
         keysN_ = 0;
         bitField0_ = (bitField0_ & ~0x00000040);
-        pairingName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000080);
         walletAccountIndex_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -2021,10 +1940,6 @@ public final class ProtoConfig {
         if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
           to_bitField0_ |= 0x00000080;
         }
-        result.pairingName_ = pairingName_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.walletAccountIndex_ = walletAccountIndex_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -2073,11 +1988,6 @@ public final class ProtoConfig {
         if (other.hasKeysN()) {
           setKeysN(other.getKeysN());
         }
-        if (other.hasPairingName()) {
-          bitField0_ |= 0x00000080;
-          pairingName_ = other.pairingName_;
-          onChanged();
-        }
         if (other.hasWalletAccountIndex()) {
           setWalletAccountIndex(other.getWalletAccountIndex());
         }
@@ -2111,10 +2021,6 @@ public final class ProtoConfig {
           return false;
         }
         if (!hasKeysN()) {
-          
-          return false;
-        }
-        if (!hasPairingName()) {
           
           return false;
         }
@@ -2580,132 +2486,54 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string pairingName = 9;
-      private java.lang.Object pairingName_ = "";
-      /**
-       * <code>required string pairingName = 9;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       * </pre>
-       */
-      public boolean hasPairingName() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>required string pairingName = 9;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       * </pre>
-       */
-      public java.lang.String getPairingName() {
-        java.lang.Object ref = pairingName_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          pairingName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string pairingName = 9;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       * </pre>
-       */
-      public com.google.protobuf.ByteString
-          getPairingNameBytes() {
-        java.lang.Object ref = pairingName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          pairingName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string pairingName = 9;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       * </pre>
-       */
-      public Builder setPairingName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000080;
-        pairingName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string pairingName = 9;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       * </pre>
-       */
-      public Builder clearPairingName() {
-        bitField0_ = (bitField0_ & ~0x00000080);
-        pairingName_ = getDefaultInstance().getPairingName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string pairingName = 9;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       * </pre>
-       */
-      public Builder setPairingNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000080;
-        pairingName_ = value;
-        onChanged();
-        return this;
-      }
-
       // required int32 walletAccountIndex = 10;
       private int walletAccountIndex_ ;
       /**
        * <code>required int32 walletAccountIndex = 10;</code>
+       *
+       * <pre>
+       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+       *required string 	pairingName 		= 9;
+       * </pre>
        */
       public boolean hasWalletAccountIndex() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
        * <code>required int32 walletAccountIndex = 10;</code>
+       *
+       * <pre>
+       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+       *required string 	pairingName 		= 9;
+       * </pre>
        */
       public int getWalletAccountIndex() {
         return walletAccountIndex_;
       }
       /**
        * <code>required int32 walletAccountIndex = 10;</code>
+       *
+       * <pre>
+       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+       *required string 	pairingName 		= 9;
+       * </pre>
        */
       public Builder setWalletAccountIndex(int value) {
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000080;
         walletAccountIndex_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required int32 walletAccountIndex = 10;</code>
+       *
+       * <pre>
+       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
+       *required string 	pairingName 		= 9;
+       * </pre>
        */
       public Builder clearWalletAccountIndex() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000080);
         walletAccountIndex_ = 0;
         onChanged();
         return this;
@@ -11513,64 +11341,64 @@ public final class ProtoConfig {
       "\024\n\014accountIndex\030\001 \001(\005\022\020\n\010keyIndex\030\002 \001(\005\022" +
       "\022\n\naddressStr\030\003 \002(\t\022\016\n\006isUsed\030\004 \001(\010\022;\n\004t" +
       "ype\030\005 \001(\0162-.authenticator.protobuf.Hiera" +
-      "rchyAddressTypes\"\307\001\n\023PairedAuthenticator" +
+      "rchyAddressTypes\"\262\001\n\023PairedAuthenticator" +
       "\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_public_key\030\002" +
       " \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n" +
       "\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 \002(\010\022\016\n\006key" +
-      "s_n\030\007 \002(\005\022\023\n\013pairingName\030\t \002(\t\022\032\n\022wallet",
-      "AccountIndex\030\n \002(\005\"\372\002\n\016PendingRequest\022\021\n" +
-      "\tpairingID\030\001 \002(\t\022\021\n\trequestID\030\002 \002(\t\022>\n\ro" +
-      "perationType\030\003 \002(\0162\'.authenticator.proto" +
-      "buf.ATOperationType\022\r\n\005rawTx\030\004 \001(\t\022\027\n\017pa" +
-      "yloadIncoming\030\005 \001(\014\022\'\n\037payloadToSendInCa" +
-      "seOfConnection\030\006 \001(\014\022A\n\010contract\030\007 \002(\0132/" +
-      ".authenticator.protobuf.PendingRequest.C" +
-      "ontract\032n\n\010Contract\022%\n\035ShouldSendPayload" +
-      "OnConnection\030\001 \001(\010\022;\n3ShouldReceivePaylo" +
-      "adAfterSendingPayloadOnConnection\030\002 \001(\010\"",
-      "\213\013\n\032AuthenticatorConfiguration\022c\n\023config" +
-      "ActiveAccount\030\001 \001(\0132F.authenticator.prot" +
-      "obuf.AuthenticatorConfiguration.ConfigAc" +
-      "tiveAccount\022o\n\031configAuthenticatorWallet" +
-      "\030\002 \001(\0132L.authenticator.protobuf.Authenti" +
-      "catorConfiguration.ConfigAuthenticatorWa" +
-      "llet\022e\n\024configOneNameProfile\030\005 \001(\0132G.aut" +
-      "henticator.protobuf.AuthenticatorConfigu" +
-      "ration.ConfigOneNameProfile\022U\n\017ConfigHie" +
-      "rarchy\030\006 \002(\0132<.authenticator.protobuf.Au",
-      "thenticatorConfiguration.Hierarchy\022T\n\016co" +
-      "nfigAccounts\030\007 \003(\0132<.authenticator.proto" +
-      "buf.AuthenticatorConfiguration.ATAccount" +
-      "\032\264\001\n\023ConfigActiveAccount\022H\n\023pairedAuthen" +
-      "ticator\030\001 \001(\0132+.authenticator.protobuf.P" +
-      "airedAuthenticator\022S\n\ractiveAccount\030\002 \002(" +
-      "\0132<.authenticator.protobuf.Authenticator" +
-      "Configuration.ATAccount\032\260\001\n\031ConfigAuthen" +
-      "ticatorWallet\022\016\n\006paired\030\001 \001(\010\022B\n\rpairedW" +
-      "allets\030\002 \003(\0132+.authenticator.protobuf.Pa",
-      "iredAuthenticator\022?\n\017pendingRequests\030\003 \003" +
-      "(\0132&.authenticator.protobuf.PendingReque" +
-      "st\032z\n\024ConfigOneNameProfile\022\017\n\007onename\030\001 " +
-      "\002(\t\022\030\n\020onenameFormatted\030\002 \001(\t\022\030\n\020onename" +
-      "AvatarURL\030\003 \001(\t\022\035\n\025onenameAvatarFilePath" +
-      "\030\004 \001(\t\032\317\002\n\tATAccount\022\r\n\005index\030\001 \002(\005\022\031\n\021l" +
-      "astExternalIndex\030\002 \002(\005\022\030\n\020usedExternalKe" +
-      "ys\030\003 \003(\005\022\031\n\021lastInternalIndex\030\004 \002(\005\022\030\n\020u" +
-      "sedInternalKeys\030\005 \003(\005\022\030\n\020confirmedBalanc" +
-      "e\030\006 \002(\022\022\032\n\022unConfirmedBalance\030\007 \002(\022\022\024\n\014p",
-      "endingOutTx\030\010 \003(\t\022\023\n\013pendingInTx\030\t \003(\t\022\023" +
-      "\n\013networkType\030\n \002(\005\022>\n\013accountType\030\013 \002(\016" +
-      "2).authenticator.protobuf.WalletAccountT" +
-      "ype\022\023\n\013accountName\030\014 \002(\t\032K\n\tHierarchy\022\025\n" +
-      "\rhierarchySeed\030\001 \002(\014\022\'\n\037hierarchyNextAva" +
-      "ilableAccountID\030\002 \002(\005*;\n\020ATGCMMessageTyp" +
-      "e\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs" +
-      "\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006U" +
-      "npair\020\001\022#\n\037SignAndBroadcastAuthenticator" +
-      "Tx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#updateIpA",
-      "ddressesForPreviousMessage\020\004*B\n\021WalletAc" +
-      "countType\022\023\n\017StandardAccount\020\000\022\030\n\024Authen" +
-      "ticatorAccount\020\001B\rB\013ProtoConfig"
+      "s_n\030\007 \002(\005\022\032\n\022walletAccountIndex\030\n \002(\005\"\372\002",
+      "\n\016PendingRequest\022\021\n\tpairingID\030\001 \002(\t\022\021\n\tr" +
+      "equestID\030\002 \002(\t\022>\n\roperationType\030\003 \002(\0162\'." +
+      "authenticator.protobuf.ATOperationType\022\r" +
+      "\n\005rawTx\030\004 \001(\t\022\027\n\017payloadIncoming\030\005 \001(\014\022\'" +
+      "\n\037payloadToSendInCaseOfConnection\030\006 \001(\014\022" +
+      "A\n\010contract\030\007 \002(\0132/.authenticator.protob" +
+      "uf.PendingRequest.Contract\032n\n\010Contract\022%" +
+      "\n\035ShouldSendPayloadOnConnection\030\001 \001(\010\022;\n" +
+      "3ShouldReceivePayloadAfterSendingPayload" +
+      "OnConnection\030\002 \001(\010\"\213\013\n\032AuthenticatorConf",
+      "iguration\022c\n\023configActiveAccount\030\001 \001(\0132F" +
+      ".authenticator.protobuf.AuthenticatorCon" +
+      "figuration.ConfigActiveAccount\022o\n\031config" +
+      "AuthenticatorWallet\030\002 \001(\0132L.authenticato" +
+      "r.protobuf.AuthenticatorConfiguration.Co" +
+      "nfigAuthenticatorWallet\022e\n\024configOneName" +
+      "Profile\030\005 \001(\0132G.authenticator.protobuf.A" +
+      "uthenticatorConfiguration.ConfigOneNameP" +
+      "rofile\022U\n\017ConfigHierarchy\030\006 \002(\0132<.authen" +
+      "ticator.protobuf.AuthenticatorConfigurat",
+      "ion.Hierarchy\022T\n\016configAccounts\030\007 \003(\0132<." +
+      "authenticator.protobuf.AuthenticatorConf" +
+      "iguration.ATAccount\032\264\001\n\023ConfigActiveAcco" +
+      "unt\022H\n\023pairedAuthenticator\030\001 \001(\0132+.authe" +
+      "nticator.protobuf.PairedAuthenticator\022S\n" +
+      "\ractiveAccount\030\002 \002(\0132<.authenticator.pro" +
+      "tobuf.AuthenticatorConfiguration.ATAccou" +
+      "nt\032\260\001\n\031ConfigAuthenticatorWallet\022\016\n\006pair" +
+      "ed\030\001 \001(\010\022B\n\rpairedWallets\030\002 \003(\0132+.authen" +
+      "ticator.protobuf.PairedAuthenticator\022?\n\017",
+      "pendingRequests\030\003 \003(\0132&.authenticator.pr" +
+      "otobuf.PendingRequest\032z\n\024ConfigOneNamePr" +
+      "ofile\022\017\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatt" +
+      "ed\030\002 \001(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025on" +
+      "enameAvatarFilePath\030\004 \001(\t\032\317\002\n\tATAccount\022" +
+      "\r\n\005index\030\001 \002(\005\022\031\n\021lastExternalIndex\030\002 \002(" +
+      "\005\022\030\n\020usedExternalKeys\030\003 \003(\005\022\031\n\021lastInter" +
+      "nalIndex\030\004 \002(\005\022\030\n\020usedInternalKeys\030\005 \003(\005" +
+      "\022\030\n\020confirmedBalance\030\006 \002(\022\022\032\n\022unConfirme" +
+      "dBalance\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013",
+      "pendingInTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005\022>" +
+      "\n\013accountType\030\013 \002(\0162).authenticator.prot" +
+      "obuf.WalletAccountType\022\023\n\013accountName\030\014 " +
+      "\002(\t\032K\n\tHierarchy\022\025\n\rhierarchySeed\030\001 \002(\014\022" +
+      "\'\n\037hierarchyNextAvailableAccountID\030\002 \002(\005" +
+      "*;\n\020ATGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027Upda" +
+      "tePendingRequestIPs\020\004*\217\001\n\017ATOperationTyp" +
+      "e\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBro" +
+      "adcastAuthenticatorTx\020\002\022\025\n\021BroadcastNorm" +
+      "alTx\020\003\022\'\n#updateIpAddressesForPreviousMe",
+      "ssage\020\004*B\n\021WalletAccountType\022\023\n\017Standard" +
+      "Account\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013P" +
+      "rotoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -11588,7 +11416,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_PairedAuthenticator_descriptor,
-              new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "PairingName", "WalletAccountIndex", });
+              new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "WalletAccountIndex", });
           internal_static_authenticator_protobuf_PendingRequest_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable = new

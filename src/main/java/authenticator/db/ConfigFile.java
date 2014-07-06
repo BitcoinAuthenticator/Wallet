@@ -128,7 +128,7 @@ public class ConfigFile {
 	/**This method is used during pairing. It saves the data from the Autheticator to file
 	 * @throws IOException */
 	@SuppressWarnings("unchecked")
-	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName, int accountIndex) throws IOException{
+	public void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
 		// Create new pairing item
 		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
 									newPair.setAesKey(key);
@@ -136,7 +136,7 @@ public class ConfigFile {
 									newPair.setChainCode(chaincode);
 									newPair.setGCM(GCM);
 									newPair.setPairingID(pairingID);
-									newPair.setPairingName(pairName);
+									//newPair.setPairingName(pairName);
 									newPair.setTestnet(false);
 									newPair.setKeysN(0);
 									newPair.setWalletAccountIndex(accountIndex);
@@ -242,7 +242,7 @@ public class ConfigFile {
 		ATAccount acc = getAccount(accountIdx);
 		ATAccount.Builder b = ATAccount.newBuilder(acc);
 		b.setConfirmedBalance(newBalance);
-		this.updateAccount(b.build());
+		updateAccount(b.build());
 		return b.build().getConfirmedBalance();
 	}
 	
@@ -324,44 +324,48 @@ public class ConfigFile {
 	
 	public List<String> getPendingOutTx(int accountIdx){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigAccounts(accountIdx).getPendingOutTxList();
+		return getAccount(accountIdx).getPendingOutTxList();
 	}
 	
 	public void addPendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigAccountsBuilder(accountIdx).addPendingOutTx(txID);
-		writeConfigFile(auth);
+		ATAccount acc = getAccount(accountIdx);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
+		b.addPendingOutTx(txID);
+		updateAccount(b.build());
 	}
 	
 	public void removePendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<String> all = getPendingOutTx(accountIdx);
-		auth.getConfigAccountsBuilder(accountIdx).clearPendingOutTx();
+		ATAccount acc = getAccount(accountIdx);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
+		b.clearPendingOutTx();
 		for(int i=0;i < all.size(); i++)
 			if(!all.get(i).equals(txID))
-				auth.getConfigAccountsBuilder(accountIdx).addPendingOutTx(all.get(i));
-		writeConfigFile(auth);
+				b.addPendingOutTx(all.get(i));
+		updateAccount(b.build());
 	}
 	
 	public List<String> getPendingInTx(int accountIdx){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigAccounts(accountIdx).getPendingInTxList();
+		return getAccount(accountIdx).getPendingInTxList();
 	}
 	
 	public void addPendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigAccountsBuilder(accountIdx).addPendingInTx(txID);
-		writeConfigFile(auth);
+		ATAccount acc = getAccount(accountIdx);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
+		b.addPendingInTx(txID);
+		updateAccount(b.build());
 	}
 	
 	public void removePendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<String> all = getPendingInTx(accountIdx);
-		auth.getConfigAccountsBuilder(accountIdx).clearPendingInTx();
+		ATAccount acc = getAccount(accountIdx);
+		ATAccount.Builder b = ATAccount.newBuilder(acc);
+		b.clearPendingInTx();
 		for(int i=0;i < all.size(); i++)
 			if(!all.get(i).equals(txID))
-				auth.getConfigAccountsBuilder(accountIdx).addPendingInTx(all.get(i));
-		writeConfigFile(auth);
+				b.addPendingInTx(all.get(i));
+		updateAccount(b.build());
 	}
 	
 	public int getHierarchyNextAvailableAccountID(){

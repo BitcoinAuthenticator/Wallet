@@ -263,7 +263,8 @@ public class Main extends BAApplication {
         Runtime.getRuntime().exit(0);*/
     }
 
-    public static void main(String[] args) {
+    @SuppressWarnings("restriction")
+	public static void main(String[] args) {
         launch(args);
     }
 }

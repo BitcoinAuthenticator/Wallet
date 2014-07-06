@@ -352,7 +352,6 @@ public class WalletOperation extends BASE{
 	 * @throws IOException
 	 * @throws NoSuchAlgorithmException
 	 */
-	@SuppressWarnings("static-access")
 	public Transaction mkUnsignedTx(ArrayList<String> candidateInputAddresses, ArrayList<TransactionOutput>to, Coin fee, String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
 		//Get total output
 		Coin totalOut = Coin.ZERO;
@@ -365,9 +364,25 @@ public class WalletOperation extends BASE{
 		
 		//Get unspent watched addresses of this pairing ID
 		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(candidateInputAddresses);
-		Transaction tx = new Transaction(this.mWalletWrapper.getNetworkParams());
+		
 		// Coin selection
 		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee), candidates);
+		
+		return mkUnsignedTxWithSelectedInputs(outSelected, to, fee, changeAdd);
+	}
+	@SuppressWarnings("static-access")
+	public Transaction mkUnsignedTxWithSelectedInputs(ArrayList<TransactionOutput> outSelected, ArrayList<TransactionOutput>to, Coin fee, String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
+		Transaction tx = new Transaction(getNetworkParams());
+		
+		//Get total output
+		Coin totalOut = Coin.ZERO;
+		for (TransactionOutput out:to){
+			totalOut = totalOut.add(out.getValue());
+		}
+		//Check minimum output
+		if(totalOut.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
+			throw new IllegalArgumentException("Tried to send dust with ensureMinRequiredFee set - no way to complete this");
+		
 		// add inputs
 		Coin inAmount = Coin.ZERO;
 		for (TransactionOutput input : outSelected){
@@ -923,12 +938,12 @@ public class WalletOperation extends BASE{
 			String pairName,
 			NetworkType nt) throws IOException{
 		int accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
-		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,pairName,accountID);
+		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnNewPairedAuthenticator();
 	}
 	
-	private void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, String pairName, int accountIndex) throws IOException{
-		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, pairName, accountIndex);
+	private void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
+		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, accountIndex);
 	}
 	
 	/**
@@ -1133,7 +1148,8 @@ public class WalletOperation extends BASE{
 			}
 			
 			PairedAuthenticator po = getPairingObject(op.getPairingID());
-			String pairingName = po.getPairingName();
+			ATAccount acc = getAccount(po.getWalletAccountIndex());
+			String pairingName = acc.getAccountName();
 			
 			return pairingName + ": " + type + "  ---  " + op.getRequestID();
 		}

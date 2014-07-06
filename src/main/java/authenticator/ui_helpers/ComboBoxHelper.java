@@ -9,6 +9,7 @@ import java.util.Map;
 import javafx.scene.control.ComboBox;
 import authenticator.Authenticator;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 
 public class ComboBoxHelper {
 
@@ -24,8 +25,9 @@ public class ComboBoxHelper {
 		cmb.getItems().clear();
 		for(PairedAuthenticator po:arr)
 		{
-			if(!pairNameToId.containsKey(po.getPairingName()))
-				pairNameToId.put(po.getPairingName(), po.getPairingID());
+			ATAccount acc = Authenticator.getWalletOperation().getAccount(po.getWalletAccountIndex());
+			if(!pairNameToId.containsKey(acc.getAccountName()))
+				pairNameToId.put(acc.getAccountName(), po.getPairingID());
 		}
 		cmb.getItems().addAll(pairNameToId.keySet());
 		return pairNameToId;

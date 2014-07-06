@@ -67,6 +67,7 @@ import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.OperationsUtils.PairingProtocol;
+import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
@@ -169,20 +170,11 @@ public class OperationsFactory extends BASE{
 							OnOperationUIUpdate listener) throws Exception {
 						//
 						if (!onlyComplete){
-							byte[] cypherBytes = prepareTX(pairingID);
-							String reqID = sendGCM();
-							// prepare a pending request object
-							PendingRequest.Builder pr = PendingRequest.newBuilder();
-												   pr.setPairingID(pairingID);
-												   pr.setRequestID(reqID);
-												   pr.setOperationType(ATOperationType.SignAndBroadcastAuthenticatorTx);
-												   pr.setPayloadToSendInCaseOfConnection(ByteString.copyFrom(cypherBytes));
-												   pr.setRawTx(BAUtils.getStringTransaction(tx));
-							PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
-															cb.setShouldSendPayloadOnConnection(true);
-															cb.setShouldReceivePayloadAfterSendingPayloadOnConnection(true);
-							pr.setContract(cb.build());
-							Authenticator.addPendingRequestToFile(pr.build());
+							byte[] cypherBytes = SignProtocol.prepareTX(tx, pairingID);
+							String reqID = SignProtocol.sendGCM(pairingID,txMessage );
+							PendingRequest pr = SignProtocol.generatePendingRequest(tx, cypherBytes, pairingID, reqID);
+							
+							Authenticator.addPendingRequestToFile(pr);
 						}
 						else{
 							//Decrypt the response
@@ -222,7 +214,7 @@ public class OperationsFactory extends BASE{
 							if(!isRefused){
 								// Complete Signing and broadcast
 								PairedAuthenticator po = Authenticator.getWalletOperation().getPairingObject(pairingID);
-								complete(AuthSigs,po);
+								SignProtocol.complete(tx,AuthSigs,po);
 								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
 								SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
 								Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
@@ -249,138 +241,6 @@ public class OperationsFactory extends BASE{
 					@Override
 					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
 					
-					//###########
-					// Helpers
-					//###########
-					byte[] prepareTX(String pairingID) throws Exception {
-						//Create the payload
-						PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
-						String formatedTx = BAUtils.getStringTransaction(tx);
-						System.out.println("Raw unSigned Tx - " + formatedTx);
-						//Get pub keys and indexes
-						ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>();
-						ArrayList<Integer> indexArr = new ArrayList<Integer>();
-						for(TransactionInput in:tx.getInputs()){
-							String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-							ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
-							ECKey pubkey = Authenticator.getWalletOperation().getECKeyFromAccount(atAdd.getAccountIndex(),
-																										atAdd.getType(),
-																										atAdd.getKeyIndex());
-							
-							pubKeysArr.add(pubkey.getPubKey());
-							indexArr.add(atAdd.getKeyIndex());
-						}
-						
-						SignMessage signMsgPayload = new SignMessage()
-										.setInputNumber(tx.getInputs().size())
-										.setTxString(formatedTx)
-										.setKeyIndexArray(pubKeysArr, indexArr)
-										.setVersion(1)
-										.setTestnet(false);
-										;
-						byte[] jsonBytes = signMsgPayload.serializeToBytes();
-						
-						Mac mac = Mac.getInstance("HmacSHA256");
-						SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
-						mac.init(secretkey);
-						byte[] macbytes = mac.doFinal(jsonBytes);
-						ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-						outputStream.write(jsonBytes);
-						outputStream.write(macbytes);
-						byte payload[] = outputStream.toByteArray( );
-						
-						//Encrypt the payload
-						Cipher cipher = null;
-						try {cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");} 
-						 catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
-						 catch (NoSuchPaddingException e) {e.printStackTrace();}
-						 try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
-						 catch (InvalidKeyException e) {e.printStackTrace();}
-						 byte[] cipherBytes = null;
-						 try {cipherBytes = cipher.doFinal(payload);} 
-						 catch (IllegalBlockSizeException e) {e.printStackTrace();} 
-						 catch (BadPaddingException e) {e.printStackTrace();}
-						 return cipherBytes;
-					}
-					
-					 String sendGCM() throws JSONException, IOException{
-						Dispacher disp;
-						disp = new Dispacher(null,null);
-						//Send the encrypted payload over to the Authenticator and wait for the response.
-						SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");						
-						PairedAuthenticator  po = Authenticator.getWalletOperation().getPairingObject(pairingID);
-						byte[] gcmID = po.getGCM().getBytes();
-						assert(gcmID != null);
-						Device d = new Device(po.getChainCode().getBytes(),
-								po.getMasterPublicKey().getBytes(),
-								gcmID,
-								pairingID.getBytes(),
-								secretkey);
-						
-						// returns the request ID
-						return disp.dispachMessage(ATGCMMessageType.SignTX, d, new String[]{ txMessage });
-					 }
-					 
-					 @SuppressWarnings({ "static-access", "deprecation", "unused" })
-					void complete(ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws Exception
-					 {
-							//Prep the keys needed for signing
-							byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
-							byte[] chain = BAUtils.hexStringToByteArray(po.getChainCode());
-							
-							// we rebuild the Tx from a raw string so we need to reconnect the inputs
-							Authenticator.getWalletOperation().connectInputs(tx.getInputs());
-							
-							//Loop to create a signature for each input
-							int i = 0;							
-							for(TransactionInput in: tx.getInputs()){
-								String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-								ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
-								//Authenticator Key
-								HDKeyDerivation HDKey = null;
-								DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
-								int indexInAuth = atAdd.getKeyIndex(); // the same ass the address index in the wallet
-								DeterministicKey childKey = HDKey.deriveChildKey(mPubKey,indexInAuth);
-								byte[] childpublickey = childKey.getPubKey();
-								ECKey authKey = new ECKey(null, childpublickey);
-								
-								//Wallet key
-								//DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAccount(po.getWalletAccountIndex(), atAdd.getType(), atAdd.getAccountIndex());
-								//ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
-								ECKey walletKey = Authenticator.getWalletOperation().getECKeyFromAccount(atAdd.getAccountIndex(),
-																									atAdd.getType(),
-																									atAdd.getKeyIndex());
-								
-								// Create Program for the script
-								List<ECKey> keys = ImmutableList.of(authKey, walletKey);
-								Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
-								byte[] program = scriptpubkey.getProgram();
-								
-								//Create P2SH
-								// IMPORTANT - AuthSigs and the signiture we create here should refer to the same input !!
-								TransactionSignature sig1 = TransactionSignature.decodeFromBitcoin(AuthSigs.get(i), true);
-								TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
-								List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
-								Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
-								//TransactionInput input = inputs.get(i);
-								//input.setScriptSig(inputScript);
-								in.setScriptSig(inputScript);
-								
-								//check signature
-								/*try{
-									in.getScriptSig().correctlySpends(tx, i, scriptpubkey, true);
-								} catch (ScriptException e) {
-									// disconnect input to not get the wallet to crash on startup
-									// Caused by bitcoinj WalletProtobufSerializer.java:585
-									// Exception: UnreadableWalletException
-									Authenticator.getWalletOperation().disconnectInputs(tx.getInputs());
-						            throw e;
-						        }*/
-							
-								//break;
-								i++;
-							}
-					 }
 				});
 	}
 	
