@@ -83,6 +83,35 @@
 	-icons-color: white;
 }
 
+.forward-button {
+	-fx-background-color: #95d946;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+	-fx-border-radius: 60;
+	-fx-background-radius: 60;
+}
+
+.finished-button {
+	-fx-background-color: #95d946; 
+	-fx-background-insets: 0, 0, 1, 2; 
+	-fx-text-fill: white;
+	-icons-color: white;
+}
+
+.back-button {
+	-fx-background-color: #808080;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+	-fx-border-radius: 60;
+	-fx-background-radius: 60;
+}
+
+.restore-button {
+	-icons-color: #545454;
+}
+
 #RequestPane .choice-box {
 	-fx-background-color: #ecf0f1;  
     -fx-font-size: 12px;
@@ -134,6 +163,31 @@
 }
 
 #ReceivePane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#Pane2 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#Pane3 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#Pane4 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#Pane7 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#Pane8 .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }

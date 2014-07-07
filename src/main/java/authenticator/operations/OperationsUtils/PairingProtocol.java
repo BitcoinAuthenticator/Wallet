@@ -152,8 +152,8 @@ public class PairingProtocol {
 		  
 		  return  jsonObject;
 	  }
-	  else
-		  throw new InvalidKeyException();
+	
+	  return null;
 	  
   }
   

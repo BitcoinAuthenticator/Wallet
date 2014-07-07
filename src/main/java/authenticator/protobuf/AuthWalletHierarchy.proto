@@ -15,7 +15,7 @@ enum HierarchyAddressTypes{
 	//Internal				= 1; // internal / change
 }
 
-//enum HierarchyPrefixedAccountIndex{
-//	PrefixSpending 			= 0; 
-//	PrefixSavings			= 1;
-//}
+enum HierarchyPrefixedAccountIndex{
+	PrefixSpending 			= 0; 
+	PrefixSavings			= 1;
+}
