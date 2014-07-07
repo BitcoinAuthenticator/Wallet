@@ -21,7 +21,7 @@ import javafx.stage.Stage;
  *
  */
 public class BAApplication extends Application{
-	public  String APP_NAME = "WalletTemplate";
+	public String APP_NAME = "WalletTemplate";
 
 	public BAApplicationParameters ApplicationParams;
     public NetworkParameters networkParams = MainNetParams.get();

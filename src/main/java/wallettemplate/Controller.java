@@ -182,7 +182,6 @@ public class Controller {
 	 public Main.OverlayUI overlayUi;
 	 private Wallet.SendResult sendResult;
 	 TorListener listener = new TorListener();
-	 public static Stage teststage;
 	 
 
 	//#####################################
@@ -212,28 +211,6 @@ public class Controller {
         lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
         createReceivePaneButtons();
         
-        //Startup loader test
-        ivLogo.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        	
-    		public void handle(MouseEvent event) {
-    			Parent root;
-    	        try {
-    	            root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
-    	            teststage = new Stage();
-    	            teststage.setTitle("My New Stage Title");
-    	            teststage.initStyle(StageStyle.UNDECORATED);
-    	            Scene scene = new Scene(root, 607, 400);
-    	            final String file = TextFieldValidator.class.getResource("GUI.css").toString();
-    	            scene.getStylesheets().add(file);  // Add CSS that we need.
-    	            teststage.setScene(scene);
-    	            teststage.show();
-
-    	        } catch (IOException e) {
-    	            e.printStackTrace();
-    	        }
-    			
-    		}
-       });
         
         // Pane Control
         Tooltip.install(lblMinimize, new Tooltip("Minimize Window"));
