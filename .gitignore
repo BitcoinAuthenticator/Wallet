@@ -6,6 +6,7 @@ local.properties
 *.config
 *.spvchain
 *.wallet
+*.orig
 PairingQRCode.png
 bin/
 gen/
