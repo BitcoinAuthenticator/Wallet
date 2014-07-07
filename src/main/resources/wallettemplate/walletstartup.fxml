@@ -134,7 +134,7 @@
           </children>
         </Pane>
         <Pane fx:id="BA4" layoutX="14.0" layoutY="67.0" prefHeight="242.0" prefWidth="560.0" />
-        <Button fx:id="btnFinished" contentDisplay="RIGHT" focusTraversable="true" layoutX="421.0" layoutY="330.0" mnemonicParsing="false" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="40.25" prefWidth="150.0" styleClass="finished-button" text="I will do it later" visible="false" />
+        <Button fx:id="btnFinished" contentDisplay="RIGHT" focusTraversable="true" layoutX="421.0" layoutY="330.0" mnemonicParsing="false" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" onAction="#finished" prefHeight="40.25" prefWidth="150.0" styleClass="finished-button" text="I will do it later" visible="false" />
       </children>
     </Pane>
     <Pane fx:id="Pane5" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">

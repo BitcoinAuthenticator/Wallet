@@ -20,6 +20,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -48,6 +49,7 @@ public class Main extends BAApplication {
     public static Controller controller;
     public static Stage stage;
     public static Authenticator auth;
+    public static Stage startup;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
@@ -75,7 +77,7 @@ public class Main extends BAApplication {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             //AquaFx.style();
         }
-        
+              
         // Load the GUI. The Controller class will be automagically created and wired up.
         mainWindow.initStyle(StageStyle.UNDECORATED);
         URL location = getClass().getResource("gui.fxml");
@@ -89,8 +91,28 @@ public class Main extends BAApplication {
         final String file = TextFieldValidator.class.getResource("GUI.css").toString();
         scene.getStylesheets().add(file);  // Add CSS that we need.
         mainWindow.setScene(scene);
-
-        // Make log output concise.
+        stage = mainWindow;
+        
+        String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + "WalletTemplate" + ".wallet";
+        File f = new File(filePath);
+        if(!f.exists()) { 
+        	Parent root;
+            try {
+                root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
+                startup = new Stage();
+                startup.setTitle("My New Stage Title");
+                startup.initStyle(StageStyle.UNDECORATED);
+                Scene scene1 = new Scene(root, 607, 400);
+                final String file1 = TextFieldValidator.class.getResource("GUI.css").toString();
+                scene1.getStylesheets().add(file1);  // Add CSS that we need.
+                startup.setScene(scene1);
+                startup.show();
+            } catch (IOException e) {e.printStackTrace();}
+        } else {finishLoading();}
+    }
+    
+    public void finishLoading() throws IOException{
+    	// Make log output concise.
         BriefLogFormatter.init();
         // Tell bitcoinj to run event handlers on the JavaFX UI thread. This keeps things simple and means
         // we cannot forget to switch threads when adding event handlers. Unfortunately, the DownloadListener
@@ -141,7 +163,6 @@ public class Main extends BAApplication {
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         System.out.println(bitcoin.wallet());
-        stage = mainWindow;
        
         
         /**
@@ -194,7 +215,7 @@ public class Main extends BAApplication {
         	
         // start UI
     	controller.onBitcoinSetup();
-        mainWindow.show();
+        stage.show();
     }
 
     public class OverlayUI<T> {

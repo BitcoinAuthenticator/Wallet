@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
 
 import org.controlsfx.control.textfield.CustomTextField;
@@ -20,6 +22,7 @@ import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.BAUtils;
 
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.wallet.DeterministicSeed;
 
@@ -97,6 +100,8 @@ public class StartupController {
 	@FXML private Pane BA3;
 	@FXML private Pane BA4;
 	@FXML private Button btnFinished;
+	private DeterministicSeed seed;
+	NetworkParameters params = MainNetParams.get();
 	
 	
 	 public void initialize() {
@@ -137,7 +142,7 @@ public class StartupController {
 		 lblMinimize.setOnMousePressed(new EventHandler<MouseEvent>(){
 			 @Override
 			 public void handle(MouseEvent t) {
-				 Main.controller.teststage.setIconified(true);
+				 Main.startup.setIconified(true);
 			 }
 		 });
 		 Tooltip.install(lblClose, new Tooltip("Close Window"));
@@ -148,9 +153,6 @@ public class StartupController {
 			 }
 		 });
 		 btnContinue2.setStyle("-fx-background-color: #badb93;");
-		 DeterministicSeed seed  = Main.bitcoin.wallet().getKeyChainSeed();
-		 for (String word : seed.toMnemonicCode()){mnemonic = mnemonic + word + " ";}
-		 lblSeed.setText(mnemonic);
 		 final ContextMenu contextMenu = new ContextMenu();
 		 MenuItem item1 = new MenuItem("Copy");
 		 item1.setOnAction(new EventHandler<ActionEvent>() {
@@ -211,8 +213,8 @@ public class StartupController {
 	 }
 
 	 @FXML protected void drag2(MouseEvent event) {
-		 Main.controller.teststage.setX(event.getScreenX() - xOffset);
-		 Main.controller.teststage.setY(event.getScreenY() - yOffset);
+		 Main.startup.setX(event.getScreenX() - xOffset);
+		 Main.startup.setY(event.getScreenY() - yOffset);
 	 }
 	 
 	 @FXML protected void restoreFromSeed(ActionEvent event) {
@@ -222,7 +224,24 @@ public class StartupController {
 		 Pane8.setVisible(true);
 	 }
 	 
-	 @FXML protected void newWallet(ActionEvent event) {
+	 @FXML protected void newWallet(ActionEvent event) throws IOException {
+		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + "WalletTemplate" + ".wallet";
+		 File f = new File(filePath);
+		 String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + "WalletTemplateTemp" + ".wallet";
+		 File temp = new File(filePath2);
+		 if(!f.exists()) { 
+			 //Generate a new Seed
+			 SecureRandom secureRandom = null;
+			 try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
+			 catch (NoSuchAlgorithmException e) {e.printStackTrace();}
+			 byte[] bytes = new byte[16];
+			 secureRandom.nextBytes(bytes);
+			 seed = new DeterministicSeed(bytes, (System.currentTimeMillis() / 1000L));
+			 Wallet wallet = Wallet.fromSeed(params,seed);
+			 wallet.saveToFile(temp,f);
+			 for (String word : seed.toMnemonicCode()){mnemonic = mnemonic + word + " ";}
+			 lblSeed.setText(mnemonic);
+		 }
 		 Animation ani = GuiUtils.fadeOut(Pane1);
 		 GuiUtils.fadeIn(Pane2);
 		 Pane1.setVisible(false);
@@ -252,6 +271,11 @@ public class StartupController {
 			 Pane3.setVisible(false);
 			 Pane4.setVisible(true);
 		 }
+	 }
+	 
+	 @FXML protected void finished(ActionEvent event){
+		 Main.startup.hide();
+		 Main.stage.show();
 	 }
 	 
 	 @FXML protected void openPlayStore(ActionEvent event) throws IOException{
@@ -328,7 +352,7 @@ public class StartupController {
 		 FileChooser fileChooser = new FileChooser();
 		 fileChooser.setTitle("Save Wallet");
 		 fileChooser.setInitialFileName("WalletTemplate.wallet");
-		 File file = fileChooser.showSaveDialog(Main.controller.teststage);
+		 File file = fileChooser.showSaveDialog(Main.startup);
 		 FileChannel source = null;
 		 FileChannel destination = null;
 		 if (file != null) {
@@ -349,7 +373,7 @@ public class StartupController {
 	 }
 	 
 	 @FXML protected void printPaperWallet(ActionEvent event) throws IOException{
-		 PaperWallet.createPaperWallet(mnemonic);
+		 PaperWallet.createPaperWallet(mnemonic, seed);
 	 }
 	 
 	 @FXML protected void openSSS(ActionEvent event){
@@ -360,9 +384,8 @@ public class StartupController {
 	 }
 	 
 	 @FXML protected void split(ActionEvent event) throws IOException{
-		 NetworkParameters params = MainNetParams.get();
 		 BipSSS sss = new BipSSS();
-		 List<Share> shares = sss.shard(BAUtils.hexStringToByteArray(Main.bitcoin.wallet().getKeyChainSeed().toHexString()), 
+		 List<Share> shares = sss.shard(BAUtils.hexStringToByteArray(seed.toHexString()), 
 				 Integer.parseInt(txThreshold.getText().toString()), Integer.parseInt(txPieces.getText().toString()), EncodingFormat.SHORT, params);
 		 final ObservableList list = FXCollections.observableArrayList();
 		 for (Share share: shares){list.add(share.toString());}

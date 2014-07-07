@@ -1,4 +1,4 @@
-package authenticator;
+/*package authenticator;
 
 import static org.junit.Assert.*;
 
@@ -86,4 +86,4 @@ public class SignTransactionTest {
 		
 	}
 
-}
+}*/

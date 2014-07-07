@@ -25,17 +25,16 @@ import com.google.bitcoin.wallet.DeterministicSeed;
 
 public class PaperWallet {
 
-	public static void createPaperWallet(String mnemonic) throws IOException{
+	public static void createPaperWallet(String mnemonic, DeterministicSeed seed) throws IOException{
 		byte[] imageBytes = null;
 		 imageBytes = QRCode
-				        .from(Main.bitcoin.wallet().getKeyChainSeed().toHexString())
+				        .from(seed.toHexString())
 				        .withSize(170, 170)
 				        .to(ImageType.PNG)
 				        .stream()
 				        .toByteArray();
         Image qrSeed = new Image(new ByteArrayInputStream(imageBytes), 153, 153, true, false);
        
-        DeterministicSeed seed = Main.bitcoin.wallet().getKeyChainSeed();
         DeterministicKey mprivkey = HDKeyDerivation.createMasterPrivateKey(seed.getSecretBytes());
         DeterministicKey mpubkey = mprivkey.getPubOnly();
         imageBytes = QRCode
