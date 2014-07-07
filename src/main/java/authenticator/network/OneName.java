@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import authenticator.Authenticator;
+import authenticator.WalletOperation;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import wallettemplate.Main;
 
@@ -39,7 +40,7 @@ public class OneName {
 	}
 
 	/**Downloads the OneName avatar, scales and crops it.*/
-	public void getAvatar(String onename) throws IOException, JSONException {
+	public void getAvatar(Authenticator Auth, WalletOperation wallet,String onename) throws IOException, JSONException {
 		//Get the url for the image from the onename json
 		JSONObject json = readJsonFromUrl("https://onename.io/" + onename + ".json");
 	   	JSONObject avatar = json.getJSONObject("avatar");
@@ -97,8 +98,8 @@ public class OneName {
 	    onb.setOnenameFormatted(formattedname);
 	    onb.setOnenameAvatarURL(imgURL);
 	    onb.setOnenameAvatarFilePath(imgPath);
-	    Authenticator.getWalletOperation().writeOnename(onb.build());
-	    Authenticator.fireonNewUserNamecoinIdentitySelection(onb.build());
+	    wallet.writeOnename(onb.build());
+	    Auth.fireonNewUserNamecoinIdentitySelection(onb.build());
 	}
 	/**For reading the JSON*/
 	private static String readAll(Reader rd) throws IOException {

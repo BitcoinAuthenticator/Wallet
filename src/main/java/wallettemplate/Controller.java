@@ -974,11 +974,16 @@ public class Controller {
 	    				//add key
 	    				keys.put(add, ca);
 	    			}
-	    			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(tx,keys);
+	    			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(Authenticator.getWalletOperation(),tx,keys);
 	    		}
 	    		else{
 	    			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
-	    			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx, pairID, txMsgLabel.getText(),false,null);
+	    			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Authenticator.getWalletOperation(),
+	    					tx, 
+	    					pairID, 
+	    					txMsgLabel.getText(),
+	    					false,
+	    					null);
 	    		}
 	    		
 	    		// operation listeners

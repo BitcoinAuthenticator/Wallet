@@ -19,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 
 import authenticator.Authenticator;
+import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.BAUtils;
@@ -50,18 +51,18 @@ public class SignProtocol {
 	 * @return
 	 * @throws Exception
 	 */
-	static public byte[] prepareTX(Transaction tx, String pairingID) throws Exception {
+	static public byte[] prepareTX(WalletOperation wallet, Transaction tx,  String pairingID) throws Exception {
 		//Create the payload
-		PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
+		//PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
 		String formatedTx = BAUtils.getStringTransaction(tx);
 		System.out.println("Raw unSigned Tx - " + formatedTx);
 		//Get pub keys and indexes
 		ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>();
 		ArrayList<Integer> indexArr = new ArrayList<Integer>();
 		for(TransactionInput in:tx.getInputs()){
-			String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-			ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
-			ECKey pubkey = Authenticator.getWalletOperation().getECKeyFromAccount(atAdd.getAccountIndex(),
+			String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
+			ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
+			ECKey pubkey = wallet.getECKeyFromAccount(atAdd.getAccountIndex(),
 																						atAdd.getType(),
 																						atAdd.getKeyIndex());
 			
@@ -79,7 +80,7 @@ public class SignProtocol {
 		byte[] jsonBytes = signMsgPayload.serializeToBytes();
 		
 		Mac mac = Mac.getInstance("HmacSHA256");
-		SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
+		SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
 		mac.init(secretkey);
 		byte[] macbytes = mac.doFinal(jsonBytes);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -110,20 +111,20 @@ public class SignProtocol {
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "static-access", "deprecation", "unused" })
-	static public void complete(Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws Exception
+	static public void complete(WalletOperation wallet, Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws Exception
 	 {
 			//Prep the keys needed for signing
 			byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
 			byte[] chain = BAUtils.hexStringToByteArray(po.getChainCode());
 			
 			// we rebuild the Tx from a raw string so we need to reconnect the inputs
-			Authenticator.getWalletOperation().connectInputs(tx.getInputs());
+			wallet.connectInputs(tx.getInputs());
 			
 			//Loop to create a signature for each input
 			int i = 0;							
 			for(TransactionInput in: tx.getInputs()){
-				String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-				ATAddress atAdd = Authenticator.getWalletOperation().findAddressInAccounts(inAddress);
+				String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
+				ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 				//Authenticator Key
 				HDKeyDerivation HDKey = null;
 				DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
@@ -133,9 +134,7 @@ public class SignProtocol {
 				ECKey authKey = new ECKey(null, childpublickey);
 				
 				//Wallet key
-				//DeterministicKey walletHDKey = Authenticator.getWalletOperation().getKeyFromAccount(po.getWalletAccountIndex(), atAdd.getType(), atAdd.getAccountIndex());
-				//ECKey walletKey = new ECKey(walletHDKey.getPrivKey(), walletHDKey.getPubKey(), true);
-				ECKey walletKey = Authenticator.getWalletOperation().getECKeyFromAccount(atAdd.getAccountIndex(),
+				ECKey walletKey = wallet.getECKeyFromAccount(atAdd.getAccountIndex(),
 																					atAdd.getType(),
 																					atAdd.getKeyIndex());
 				
@@ -179,12 +178,12 @@ public class SignProtocol {
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	static public String sendGCM(String pairingID, @Nullable String txMessage) throws JSONException, IOException{
+	static public String sendGCM(WalletOperation wallet, String pairingID, @Nullable String txMessage) throws JSONException, IOException{
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
-		SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");						
-		PairedAuthenticator  po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+		SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");						
+		PairedAuthenticator  po = wallet.getPairingObject(pairingID);
 		byte[] gcmID = po.getGCM().getBytes();
 		assert(gcmID != null);
 		Device d = new Device(po.getChainCode().getBytes(),
@@ -194,7 +193,7 @@ public class SignProtocol {
 				secretkey);
 		
 		// returns the request ID
-		return disp.dispachMessage(ATGCMMessageType.SignTX, d, new String[]{ txMessage });
+		return disp.dispachMessage(new Authenticator(),ATGCMMessageType.SignTX, d, new String[]{ txMessage });
 	 }
 	
 	static public PendingRequest generatePendingRequest(Transaction tx, byte[] cypherBytes, String pairingID, String reqID){

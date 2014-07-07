@@ -161,7 +161,8 @@ public class TCPListener extends BASE{
 											byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
 											Transaction tx = new Transaction(Authenticator.getWalletOperation().getNetworkParams(),txBytes);
 											 
-											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx,
+											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Authenticator.getWalletOperation(),
+													tx,
 													pendingReq.getPairingID(), 
 													null,
 													true,
@@ -217,7 +218,7 @@ public class TCPListener extends BASE{
 										}
 										
 										//
-										Authenticator.removePendingRequest(pendingReq);
+										Authenticator.getWalletOperation().removePendingRequest(pendingReq);
 									}
 									else{ // pending request not found
 										logAsInfo("No Pending Request Found");
@@ -228,7 +229,7 @@ public class TCPListener extends BASE{
 								}
 							}
 							catch(Exception e){
-								Authenticator.removePendingRequest(pendingReq);
+								Authenticator.getWalletOperation().removePendingRequest(pendingReq);
 								logAsInfo("Error Occured while executing Inbound operation:\n"
 										+ e.toString());
 							}
@@ -312,7 +313,7 @@ public class TCPListener extends BASE{
 	public void sendUpdatesToPendingRequests(){
 		try {
 			for(PendingRequest o:Authenticator.getWalletOperation().getPendingRequests()){
-				ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(o.getRequestID(), o.getPairingID());
+				ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(Authenticator.getWalletOperation(),o.getRequestID(), o.getPairingID());
 				Authenticator.operationsQueue.add(op);
 			}
 		} catch (IOException e) { e.printStackTrace(); }

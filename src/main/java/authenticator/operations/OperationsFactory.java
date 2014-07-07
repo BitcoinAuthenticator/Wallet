@@ -1,6 +1,5 @@
 package authenticator.operations;
 
-import static wallettemplate.Main.bitcoin;
 import static wallettemplate.utils.GuiUtils.crashAlert;
 
 import java.io.ByteArrayOutputStream;
@@ -20,8 +19,6 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javafx.application.Platform;
 
 import javax.annotation.Nullable;
 import javax.crypto.BadPaddingException;
@@ -63,6 +60,7 @@ import com.google.protobuf.ByteString;
 
 import authenticator.Authenticator;
 import authenticator.BASE;
+import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.BAUtils;
@@ -91,7 +89,8 @@ public class OperationsFactory extends BASE{
 	 * @param pairingName
 	 * @return
 	 */
-	static public ATOperation PAIRING_OPERATION(String pairingName, 
+	static public ATOperation PAIRING_OPERATION(WalletOperation wallet,
+			String pairingName, 
 			NetworkType networkType, 
 			Runnable animation,
 			Runnable animationAfterPairing){
@@ -113,7 +112,7 @@ public class OperationsFactory extends BASE{
 							 ss.setSoTimeout(0);
 							 socket = ss;
 							 PairingProtocol pair = new PairingProtocol();
-							 pair.run(ss,args,listener,animation, animationAfterPairing); 
+							 pair.run(wallet,ss,args,listener,animation, animationAfterPairing); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(timeout);
 						}
@@ -152,7 +151,7 @@ public class OperationsFactory extends BASE{
 	 * @param onlyComplete
 	 * @return
 	 */
-	static public ATOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Transaction tx, 
+	static public ATOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(WalletOperation wallet, Transaction tx, 
 																String pairingID, 
 																@Nullable String txMessage,
 																boolean onlyComplete, 
@@ -173,15 +172,16 @@ public class OperationsFactory extends BASE{
 							OnOperationUIUpdate listener) throws Exception {
 						//
 						if (!onlyComplete){
-							byte[] cypherBytes = SignProtocol.prepareTX(tx, pairingID);
-							String reqID = SignProtocol.sendGCM(pairingID,txMessage );
+							byte[] cypherBytes = SignProtocol.prepareTX(wallet, tx,pairingID);
+							String reqID = SignProtocol.sendGCM(wallet, pairingID,txMessage );
 							PendingRequest pr = SignProtocol.generatePendingRequest(tx, cypherBytes, pairingID, reqID);
 							
-							Authenticator.addPendingRequestToFile(pr);
+							wallet.addPendingRequest(pr);
+							//Authenticator.addPendingRequestToFile(pr);
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(Authenticator.getWalletOperation().getAESKey(pairingID)), "AES");
+							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
 						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
 						    String message = BAUtils.bytesToHex(cipher.doFinal(authenticatorByteResponse));
@@ -216,10 +216,10 @@ public class OperationsFactory extends BASE{
 							}
 							if(!isRefused){
 								// Complete Signing and broadcast
-								PairedAuthenticator po = Authenticator.getWalletOperation().getPairingObject(pairingID);
-								SignProtocol.complete(tx,AuthSigs,po);
+								PairedAuthenticator po = wallet.getPairingObject(pairingID);
+								SignProtocol.complete(wallet, tx,AuthSigs,po);
 								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
-								SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(tx);
+								SendResult result = wallet.pushTxWithWallet(tx);
 								Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 					                @Override
 					                public void onSuccess(Transaction result) {
@@ -257,7 +257,7 @@ public class OperationsFactory extends BASE{
 	 * @param pairingID
 	 * @return
 	 */
-	static public ATOperation UPDATE_PENDING_REQUEST_IPS(String requestID, String pairingID){
+	static public ATOperation UPDATE_PENDING_REQUEST_IPS(WalletOperation wallet, String requestID, String pairingID){
 		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
 					.SetDescription("Update pending requests to Authenticator")
 					.SetBeginMsg("Updating Pending Requests ...")
@@ -269,7 +269,7 @@ public class OperationsFactory extends BASE{
 
 						@Override
 						public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
-							PairedAuthenticator po = Authenticator.getWalletOperation().getPairingObject(pairingID);
+							PairedAuthenticator po = wallet.getPairingObject(pairingID);
 							Dispacher disp;
 							disp = new Dispacher(null,null);
 							byte[] gcmID = po.getGCM().getBytes();
@@ -281,7 +281,7 @@ public class OperationsFactory extends BASE{
 									null);
 							
 							// returns the request ID
-							disp.dispachMessage(ATGCMMessageType.UpdatePendingRequestIPs, d, new String[]{ requestID });
+							disp.dispachMessage(new Authenticator(), ATGCMMessageType.UpdatePendingRequestIPs, d, new String[]{ requestID });
 						}
 
 						@Override
@@ -293,7 +293,7 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation BROADCAST_NORMAL_TRANSACTION(Transaction tx, Map<String,ATAddress> keys){
+	static public ATOperation BROADCAST_NORMAL_TRANSACTION(WalletOperation wallet, Transaction tx, Map<String,ATAddress> keys){
 		return new ATOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
@@ -307,13 +307,13 @@ public class OperationsFactory extends BASE{
 			public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener)
 					throws Exception {
 				try{
-					Transaction signedTx = Authenticator.getWalletOperation().signStandardTxWithAddresses(tx, keys);
+					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);
 					
 					if(signedTx == null){
 						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
 					}
 					else{
-						SendResult result = Authenticator.getWalletOperation().pushTxWithWallet(signedTx);
+						SendResult result = wallet.pushTxWithWallet(signedTx);
 						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 			                @Override
 			                public void onSuccess(Transaction result) {

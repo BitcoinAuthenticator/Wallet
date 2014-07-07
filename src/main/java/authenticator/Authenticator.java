@@ -45,7 +45,7 @@ public class Authenticator extends AbstractService{
 	
 	private static TCPListener mTCPListener;
 	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
-	private static SafeList pendingRequests;
+	//private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
 	// Listeners
@@ -62,14 +62,17 @@ public class Authenticator extends AbstractService{
 			mTCPListener = new TCPListener();
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
-		if(mWalletOperation == null)
+		if(mWalletOperation == null){
 			try {
 				mWalletOperation = new WalletOperation(wallet,peerGroup);
 			} catch (IOException e) { e.printStackTrace(); }
-		if(pendingRequests == null){
-			pendingRequests = new SafeList();
+			
 			initPendingRequests();
 		}
+		/*if(pendingRequests == null){
+			pendingRequests = new SafeList();
+			initPendingRequests();
+		}*/
 		new OperationsFactory(); // to instantiate various things
 		//verifyWalletIsWatchingAuthenticatorAddresses();
 		setFirstAccountTEST();
@@ -108,7 +111,7 @@ public class Authenticator extends AbstractService{
 				pendingStr = "";
 		} catch (IOException e) { e.printStackTrace(); }
 		for(PendingRequest pr:pending){
-			addPendingRequestToList(pr);
+			//addPendingRequestToList(pr);
 			pendingStr += "Pending Request: " + getWalletOperation().pendingRequestToString(pr) + "\n";
 		}
 		
@@ -117,7 +120,7 @@ public class Authenticator extends AbstractService{
 		System.out.println(pendingStr);
 	}
 	
-	@SuppressWarnings("static-access")
+	/*@SuppressWarnings("static-access")
 	public static void addPendingRequestToFile(PendingRequest pr) throws FileNotFoundException, IOException {
 		getWalletOperation().addPendingRequest(pr);
 		pendingRequests.add(pr);
@@ -130,7 +133,7 @@ public class Authenticator extends AbstractService{
 	public static void removePendingRequest(PendingRequest pr) throws FileNotFoundException, IOException {
 		pendingRequests.remove(pr);
 		getWalletOperation().removePendingRequest(pr);
-	}
+	}*/
 	
 	//#####################################
 	//
@@ -243,7 +246,7 @@ public class Authenticator extends AbstractService{
 		assert(mTCPListener != null);
 		assert(mApplicationParams != null);
 		assert(operationsQueue != null);
-		assert(pendingRequests != null);
+		//assert(pendingRequests != null);
 		try { 
 			mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)}); 
 			notifyStarted();

@@ -13,6 +13,7 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import authenticator.WalletOperation;
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
 import authenticator.network.UpNp;
@@ -47,7 +48,12 @@ public class PairingProtocol {
    * @param {@link authenticator.operations.OnOperationUIUpdate} listener
    * @throws Exception
    */
-  public void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener, Runnable displayQRAnimation, Runnable animationAfterPairing) throws Exception {
+  public void run (WalletOperation wallet,
+		  ServerSocket ss,
+		  String[] args, 
+		  OnOperationUIUpdate listener, 
+		  Runnable displayQRAnimation, 
+		  Runnable animationAfterPairing) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[1];
@@ -90,7 +96,7 @@ public class PairingProtocol {
 		  String pairingID = (String) jsonObject.get("pairID");
 		  String GCM = (String) jsonObject.get("gcmID");
 		  //Save to file
-		  authenticator.Authenticator.getWalletOperation().generateNewPairing(mPubKey, 
+		  wallet.generateNewPairing(mPubKey, 
 				  chaincode, 
 				  key, 
 				  GCM, 

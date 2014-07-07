@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.json.JSONException;
 
+import authenticator.Authenticator;
 import authenticator.network.OneName;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +16,7 @@ public class OneNameController {
 	
 	@FXML protected void onename (ActionEvent event) throws IOException, JSONException{
 		OneName on = new OneName();
-		on.getAvatar(txtOneName.getText());
+		on.getAvatar(new Authenticator(), Authenticator.getWalletOperation(),txtOneName.getText());
 		overlayUi.done();
 	}
 }

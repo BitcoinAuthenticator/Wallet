@@ -33,7 +33,7 @@ public class Dispacher {
 		inStream = in;
 	}
 	
-	public String dispachMessage(ATGCMMessageType msgType, Device device, String ... args) throws JSONException, IOException
+	public String dispachMessage(Authenticator Auth, ATGCMMessageType msgType, Device device, String ... args) throws JSONException, IOException
 	{
 		switch (msgType){
 		case SignTX:
@@ -72,7 +72,7 @@ public class Dispacher {
 				plugnplay = new UpNp();
 				MessageBuilder msgGCM = null;
 				try {
-					if (!plugnplay.isPortMapped(Authenticator.LISTENER_PORT))
+					if (!plugnplay.isPortMapped(Auth.LISTENER_PORT))
 						plugnplay.run(null);
 					//assert(plugnplay.isPortMapped(port));
 					msgGCM = new MessageBuilder(ATGCMMessageType.UpdatePendingRequestIPs,

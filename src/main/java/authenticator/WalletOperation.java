@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.json.JSONException;
 import org.slf4j.Logger;
 
@@ -72,6 +74,9 @@ public class WalletOperation extends BASE{
 	public static ConfigFile configFile;
 	private static Logger staticLogger;
 	
+	public WalletOperation(){ 
+		super(WalletOperation.class);
+	}
 	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
 		super(WalletOperation.class);
 		staticLogger = this.LOG;
@@ -367,11 +372,19 @@ public class WalletOperation extends BASE{
 		// Coin selection
 		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee), candidates);
 		
-		return mkUnsignedTxWithSelectedInputs(outSelected, to, fee, changeAdd);
+		return mkUnsignedTxWithSelectedInputs(outSelected, to, fee, changeAdd, null);
 	}
 	@SuppressWarnings("static-access")
-	public Transaction mkUnsignedTxWithSelectedInputs(ArrayList<TransactionOutput> outSelected, ArrayList<TransactionOutput>to, Coin fee, String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
-		Transaction tx = new Transaction(getNetworkParams());
+	public Transaction mkUnsignedTxWithSelectedInputs(ArrayList<TransactionOutput> outSelected, 
+			ArrayList<TransactionOutput>to, 
+			Coin fee, 
+			String changeAdd,
+			@Nullable NetworkParameters np) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException {
+		Transaction tx;
+		if(np == null)
+			tx = new Transaction(getNetworkParams());
+		else
+			tx = new Transaction(np);
 		
 		//Get total output
 		Coin totalOut = Coin.ZERO;

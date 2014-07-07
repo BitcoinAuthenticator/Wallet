@@ -1,20 +1,13 @@
  package authenticator.hierarchy;
  
  import java.io.IOException;
- import java.math.BigInteger;
  import java.security.NoSuchAlgorithmException;
  import java.security.SecureRandom;
  import java.util.ArrayList;
- import java.util.Arrays;
  import java.util.List;
- 
- import authenticator.Authenticator;
  import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
  import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
  import authenticator.protobuf.AuthWalletHierarchy.HierarchyPurpose;
- 
- import com.google.bitcoin.core.ECKey;
- import com.google.bitcoin.core.Wallet;
  import com.google.bitcoin.crypto.ChildNumber;
  import com.google.bitcoin.crypto.DeterministicHierarchy;
  import com.google.bitcoin.crypto.DeterministicKey;

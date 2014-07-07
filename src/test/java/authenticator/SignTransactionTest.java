@@ -55,7 +55,7 @@ public class SignTransactionTest {
 	}
 	
 	private Transaction preparePayToHashTransaction() throws NoSuchAlgorithmException, AddressFormatException, JSONException, IOException{
-		Coin outAmpunt = Coin.valueOf(100000000 - 10000);
+		/*Coin outAmpunt = Coin.valueOf(100000000 - 10000);
 		TransactionOutput out = new TransactionOutput(MainNetParams.get(), 
 				null, 
 				outAmpunt, 
@@ -63,12 +63,13 @@ public class SignTransactionTest {
 		ArrayList<TransactionOutput> outs = new ArrayList<TransactionOutput>(); outs.add(out);
 		ArrayList<TransactionOutput> inputs = getInputs(outAmpunt.add(Coin.valueOf(10000)), 2);
 		
-		Transaction tx = new WalletOperation(new Wallet(MainNetParams.get()),
-				null).mkUnsignedTxWithSelectedInputs(inputs, 
+		Transaction tx = new WalletOperation().mkUnsignedTxWithSelectedInputs(inputs, 
 				outs, 
 				Coin.valueOf(10000),
-				new ECKey().toAddress(MainNetParams.get()).toString());
+				new ECKey().toAddress(MainNetParams.get()).toString(),
+				MainNetParams.get());*/
 		
+		Transaction tx = new Transaction(MainNetParams.get());
 		return tx;
 		
 	}
