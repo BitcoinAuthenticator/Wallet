@@ -91,7 +91,10 @@ public class OperationsFactory extends BASE{
 	 * @param pairingName
 	 * @return
 	 */
-	static public ATOperation PAIRING_OPERATION(String pairingName, NetworkType networkType){
+	static public ATOperation PAIRING_OPERATION(String pairingName, 
+			NetworkType networkType, 
+			Runnable animation,
+			Runnable animationAfterPairing){
 		return new ATOperation(ATOperationType.Pairing)
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
@@ -110,7 +113,7 @@ public class OperationsFactory extends BASE{
 							 ss.setSoTimeout(0);
 							 socket = ss;
 							 PairingProtocol pair = new PairingProtocol();
-							 pair.run(ss,args,listener); 
+							 pair.run(ss,args,listener,animation, animationAfterPairing); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(timeout);
 						}
@@ -134,7 +137,7 @@ public class OperationsFactory extends BASE{
 	}
 
 	/**
-	 * Responsable for the complete process of taking a raw transaction, singing it, make the authenticator sign it and then broadcast
+	 * Responsible for the complete process of taking a raw transaction, singing it, make the authenticator sign it and then broadcast
 	 * <br>
 	 * Because the signing operations can, and will be, not immediate. The operation will prepare the payload for signing and then create
 	 * a pending request + broadcast a GCM sign request to the Authenticator app.<br>

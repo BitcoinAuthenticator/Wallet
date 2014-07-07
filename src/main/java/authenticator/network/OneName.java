@@ -87,7 +87,7 @@ public class OneName {
 	    try {
 	        // retrieve image
 	    	BufferedImage croppedImage = scaledImage.getSubimage(x, y, 73, 73);
-	        File outputfile = new File("oneAvatar.png");
+	        File outputfile = new File("cached_resources/oneAvatar.png");
 	        ImageIO.write(croppedImage, "png", outputfile);
 	        imgPath = outputfile.getAbsolutePath();
 	    } catch (IOException e) {  e.printStackTrace(); }

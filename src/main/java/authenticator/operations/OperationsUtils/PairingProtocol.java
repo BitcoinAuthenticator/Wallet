@@ -47,7 +47,7 @@ public class PairingProtocol {
    * @param {@link authenticator.operations.OnOperationUIUpdate} listener
    * @throws Exception
    */
-  public void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener) throws Exception {
+  public void run (ServerSocket ss,String[] args, OnOperationUIUpdate listener, Runnable displayQRAnimation, Runnable animationAfterPairing) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[1];
@@ -72,7 +72,7 @@ public class PairingProtocol {
 	  
 	  //Display a QR code for the user to scan
 	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[2]));
-	  Socket socket = dispalyQRAnListenForCommunication(ss, listener);
+	  Socket socket = dispalyQRAnListenForCommunication(ss, listener,displayQRAnimation, animationAfterPairing);
     
 	  // Receive payload
 	  DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -106,13 +106,21 @@ public class PairingProtocol {
 
   }
   
-  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, OnOperationUIUpdate listener) throws IOException{
-	  DisplayQR QR = new DisplayQR();
-	  QR.main(null);    
+  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, OnOperationUIUpdate listener, Runnable displayQRAnimation, Runnable animationAfterPairing) throws IOException{
+	  //DisplayQR QR = new DisplayQR();
+	  //QR.displayQR();   
+	  
+	  if(displayQRAnimation != null)
+		  displayQRAnimation.run();
+	  
 	  Socket socket = ss.accept();
-	  QR.CloseWindow();
+	  //QR.CloseWindow();
 	  System.out.println("Connected to Alice");
 	  postUIStatusUpdate(listener,"Connected to Alice");
+	  
+	  if(animationAfterPairing != null)
+		  animationAfterPairing.run();
+	  
 	  return socket;
   }
   
@@ -162,5 +170,5 @@ public class PairingProtocol {
 	  if(listener != null)
 		  listener.statusReport(str);
   }
-
+  
 }

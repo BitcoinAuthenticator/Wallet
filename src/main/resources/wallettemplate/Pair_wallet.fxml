@@ -3,19 +3,30 @@
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="635.0" style="" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.PairWallet">
 <children><VBox prefHeight="346.0" prefWidth="635.0">
-<children><VBox prefHeight="299.0" prefWidth="635.0">
-<children><HBox prefHeight="249.0" prefWidth="600.0">
-<children><TextArea fx:id="textarea" prefHeight="249.0" prefWidth="636.0">
+<children><VBox prefHeight="290.0" prefWidth="635.0">
+<children><HBox prefHeight="100.0" prefWidth="200.0">
+<children><StackPane alignment="TOP_LEFT" prefHeight="97.0" prefWidth="635.0">
+<children><HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" StackPane.alignment="TOP_RIGHT">
+<children>
+<ImageView fx:id="imgViewQR" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true">
+<HBox.margin>
+<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+</HBox.margin></ImageView>
+</children></HBox><HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" StackPane.alignment="TOP_LEFT">
+<children><TextArea fx:id="textarea" prefHeight="239.0" prefWidth="381.0">
 <VBox.margin>
 <Insets left="20.0" right="20.0" top="20.0" />
 </VBox.margin>
 <HBox.margin>
 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
 </HBox.margin></TextArea>
+</children></HBox>
+</children></StackPane>
 </children></HBox><HBox alignment="CENTER_LEFT" prefHeight="39.0" prefWidth="439.0">
 <children><Button fx:id="runBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#run" prefHeight="26.0" prefWidth="169.0" text="Run" textFill="#4016cd">
 <VBox.margin>

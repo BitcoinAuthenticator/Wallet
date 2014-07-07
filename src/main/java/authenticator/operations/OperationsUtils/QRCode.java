@@ -55,7 +55,7 @@ public class QRCode {
 											  key,
 											  networkType);
 	  
-	  String filePath = new java.io.File( "." ).getCanonicalPath() + "/PairingQRCode.png";
+	  String filePath = new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCode.png";
 	  String charset = "UTF-8"; // or "ISO-8859-1"
 	  Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
 	  hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
