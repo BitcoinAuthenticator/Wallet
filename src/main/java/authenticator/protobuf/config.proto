@@ -17,10 +17,12 @@ enum ATOperationType {
 	updateIpAddressesForPreviousMessage = 4;
 }
 
-enum ActiveAccountType {
-    Spending	 	= 0;
-    Savings			= 1;
-	Authenticator 	= 2;
+enum WalletAccountType {
+    //Spending	 	= 0;
+    //Savings		= 1;
+    
+    StandardAccount			= 0;
+	AuthenticatorAccount 	= 1;
 }
 
 message ATAddress{
@@ -52,7 +54,7 @@ message PairedAuthenticator{
 //
 
 message PendingRequest{
-	
+
   	message Contract{
   		optional bool ShouldSendPayloadOnConnection 									= 1;
   		optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection 		 		= 2;
@@ -85,57 +87,54 @@ message PendingRequest{
 message AuthenticatorConfiguration{
 	message ConfigActiveAccount{
 		optional PairedAuthenticator pairedAuthenticator = 1;
-		required ActiveAccountType activeAccountType 	 = 2;
+		required ATAccount activeAccount			 	 = 2;
 	}
-	
+
 	message ConfigAuthenticatorWallet {
-	
+
 	  	optional bool paired = 1;  // Whether or not the wallet is paired. This will be set to repeated when multi-account is finished.
-		
+
 		repeated PairedAuthenticator pairedWallets  = 2; 
 		repeated PendingRequest pendingRequests 	= 3; 
 	}
-	
-	message CachedExternalSpending {
-		repeated ATAddress walletCachedExternalSpendingAddress = 1; // An array of (min 10) hex encoded public keys from the wallet that will be loaded in the receive pane.
-	}
-	
-	//message ConfigAddressBook {
-	
-	//	optional string address = 1; // This is a placeholder for the address book.
-	
-	//}
-	
+
 	message ConfigOneNameProfile {
 		required string onename	     			= 1; // The user's OneName ID. Used for getting the avatar on start up.
 		optional string onenameFormatted	   	= 2;
 		optional string onenameAvatarURL 		= 3;
 		optional string onenameAvatarFilePath	= 4;
 	}
-	
+
 	message ATAccount {
-		required int32 index				= 1;
-		required int32 lastExternalIndex	= 2;
-		repeated int32 usedExternalKeys 	= 3;
-		required int32 lastInternalIndex	= 4;
-		repeated int32 usedInternalKeys 	= 5; 
+		required int32 index					= 1;
+		required int32 lastExternalIndex		= 2;
+		repeated int32 usedExternalKeys 		= 3;
+		required int32 lastInternalIndex		= 4;
+		repeated int32 usedInternalKeys 		= 5; 
 		//
-		required sint64 confirmedBalance	= 6;
-		required sint64 unConfirmedBalance	= 7;
+		required sint64 confirmedBalance		= 6;
+		required sint64 unConfirmedBalance		= 7;
 		//
-		repeated string pendingOutTx		= 8; // pending spend Tx
-		repeated string pendingInTx			= 9; // pending receive Tx
+		repeated string pendingOutTx			= 8; // pending spend Tx
+		repeated string pendingInTx				= 9; // pending receive Tx
 		//
-		required int32 networkType			= 10; // 1 for main net, 0 for testnet
+		required int32 networkType				= 10; // 1 for main net, 0 for testnet
+		//
+		required WalletAccountType accountType	= 11;
+		//
+		required string accountName				= 12;
+		//
 	}
-	
+
+	message Hierarchy{
+		required bytes hierarchySeed 				   	= 1;
+		required int32 hierarchyNextAvailableAccountID 	= 2;
+	}
+
 	optional ConfigActiveAccount configActiveAccount 				= 1;
 	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
-	optional CachedExternalSpending cachedExternalSpending 			= 3;
 	//optional ConfigAddressBook configAddressBook 					= 4;
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
-	required bytes hierarchySeed									= 6;
+	required Hierarchy ConfigHierarchy								= 6;
 	repeated ATAccount configAccounts								= 7;
 }
-
-

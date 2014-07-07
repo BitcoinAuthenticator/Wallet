@@ -10,7 +10,9 @@ import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
@@ -39,6 +41,7 @@ import com.subgraph.orchid.TorInitializationListener;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -143,8 +146,9 @@ public class Controller {
 	 @FXML private ImageView ivSync;
 	 @FXML private ProgressBar syncProgress;
 	 @FXML private Button btnAvatar;
-	 @FXML private Button btnAdd;
-	 @FXML private Button btnSend;
+	 @FXML private Button btnAddTxOutput;
+	 @FXML private Button btnSendTx;
+	 @FXML private Button btnClearSendPane;
 	 @FXML private HBox ReceiveHBox;
 	 @FXML private Label lblConfirmedBalance;
 	 @FXML private Label lblUnconfirmedBalance;
@@ -161,7 +165,7 @@ public class Controller {
 	 @FXML private Button btnTor_color;
 	 @FXML private Label lblStatus;
 	 @FXML private Button btnRequest;
-	 @FXML private Button btnClear;
+	 @FXML private Button btnClearReceivePane;
 	 @FXML public ChoiceBox AccountBox;
 	 @FXML private TextField txReqLabel;
 	 @FXML private TextField txReqAmount;
@@ -812,20 +816,32 @@ public class Controller {
    	//
    	//#####################################
     
-    @FXML protected void btnAddPressed(MouseEvent event) {
-    	btnAdd.setStyle("-fx-background-color: #a1d2e7;");
+    @FXML protected void btnAddTxOutputPressed(MouseEvent event) {
+    	btnAddTxOutput.setStyle("-fx-background-color: #a1d2e7;");
     }
     
-    @FXML protected void btnAddReleased(MouseEvent event) {
-    	btnAdd.setStyle("-fx-background-color: #199bd6;");
+    @FXML protected void btnAddTxOutputReleased(MouseEvent event) {
+    	btnAddTxOutput.setStyle("-fx-background-color: #199bd6;");
     }
     
-    @FXML protected void btnSendPressed(MouseEvent event) {
-    	btnSend.setStyle("-fx-background-color: #a1d2e7;");
+    @FXML protected void btnSendTxPressed(MouseEvent event) {
+    	btnSendTx.setStyle("-fx-background-color: #a1d2e7;");
     }
     
-    @FXML protected void btnSendReleased(MouseEvent event) {
-    	btnSend.setStyle("-fx-background-color: #199bd6;");
+    @FXML protected void btnSendTxReleased(MouseEvent event) {
+    	btnSendTx.setStyle("-fx-background-color: #199bd6;");
+    } 
+    
+    @FXML protected void btnClearSendPanePressed(MouseEvent event) {
+    	btnClearSendPane.setStyle("-fx-background-color: #a1d2e7;");
+    	//
+    	txMsgLabel.clear();
+    	scrlContent.clearAll(); addOutput();
+    	txFee.clear();
+    }
+    
+    @FXML protected void btnClearSendPaneReleased(MouseEvent event) {
+    	btnClearSendPane.setStyle("-fx-background-color: #199bd6;");
     } 
     
     private boolean ValidateTx() throws NoSuchAlgorithmException, JSONException, AddressFormatException
@@ -1041,7 +1057,7 @@ public class Controller {
     		
     }
     
-    @FXML protected void add() {
+    @FXML protected void addTxOutput() {
     	addOutput();
     }
     
@@ -1201,12 +1217,12 @@ public class Controller {
     	btnRequest.setStyle("-fx-background-color: #199bd6;");
     }
     
-    @FXML protected void btnClearPressed(MouseEvent event) {
-    	btnClear.setStyle("-fx-background-color: #a1d2e7;");
+    @FXML protected void btnClearReceivePanePressed(MouseEvent event) {
+    	btnClearReceivePane.setStyle("-fx-background-color: #a1d2e7;");
     }
     
-    @FXML protected void btnClearReleased(MouseEvent event) {
-    	btnClear.setStyle("-fx-background-color: #199bd6;");
+    @FXML protected void btnClearReceivePaneReleased(MouseEvent event) {
+    	btnClearReceivePane.setStyle("-fx-background-color: #199bd6;");
     } 
     
     void createReceivePaneButtons(){
@@ -1503,7 +1519,7 @@ public class Controller {
             	}
             	}
             });
-        	btnClear.setOnAction(new EventHandler<ActionEvent>() {
+        	btnClearReceivePane.setOnAction(new EventHandler<ActionEvent>() {
         		@Override public void handle(ActionEvent e) {
         			txReqLabel.setText("");
         			txReqMemo.setText("");
@@ -1531,7 +1547,7 @@ public class Controller {
     	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
     	ArrayList<String> add;
 		try {
-			add = Authenticator.getWalletOperation(). getAccountNotUsedAddressString(accountIdx,HierarchyAddressTypes.External,10);
+			add = Authenticator.getWalletOperation().getAccountNotUsedAddress(accountIdx,HierarchyAddressTypes.External,10);
 			if(add.size() == 0){
 				String newAdd = Authenticator.getWalletOperation()
 							.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
@@ -1576,6 +1592,22 @@ public class Controller {
 		        .title("Cannot display your OneName account")
 		        .message("Please press on your avatr picture on the overview panel to set your OneName account")
 		        .showWarning();
+    }
+    
+    public static Stage accountsAppStage;
+    @FXML protected void btnAccounts(MouseEvent event) {
+        try {
+        	URL location = getClass().getResource("display_accounts/display_accounts.fxml");
+        	FXMLLoader loader = new FXMLLoader(location);
+        	accountsAppStage = new Stage();
+        	accountsAppStage.setTitle("Accounts");
+        	accountsAppStage.initStyle(StageStyle.UNDECORATED);
+        	Scene scene = new Scene((AnchorPane) loader.load(), 436, 516);
+        	final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+            scene.getStylesheets().add(file);  // Add CSS that we need.
+        	accountsAppStage.setScene(scene);
+        	accountsAppStage.show();
+		} catch (IOException e) { e.printStackTrace(); }
     }
     
     //#####################################

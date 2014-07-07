@@ -24,6 +24,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
@@ -470,27 +471,35 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
-	/**
-	 * Generate a new wallet account and writes it to the config file
-	 * @return
-	 * @throws IOException 
-	 */
-	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type) throws IOException{
-		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount();
-		ATAccount.Builder b = ATAccount.newBuilder();
-						  b.setIndex(accoutnIdx);
-						  b.setLastExternalIndex(0);
-						  b.setLastInternalIndex(0);
-						  b.setConfirmedBalance(0);
-						  b.setUnConfirmedBalance(0);
-						  b.setNetworkType(nt.getValue());
-						  b.setAccountName(accountName);
-						  b.setAccountType(type);
+ 	/**
+ 	 * Generate a new wallet account and writes it to the config file
+ 	 * @return
+ 	 * @throws IOException 
+ 	 */
+ 	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type) throws IOException{
+ 		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount();
+ 		ATAccount.Builder b = ATAccount.newBuilder();
+ 						  b.setIndex(accoutnIdx);
+ 						  b.setLastExternalIndex(0);
+ 						  b.setLastInternalIndex(0);
+ 						  b.setConfirmedBalance(0);
+ 						  b.setUnConfirmedBalance(0);
+ 						  b.setNetworkType(nt.getValue());
+ 						  b.setAccountName(accountName);
+ 						  b.setAccountType(type);
+						  
 		writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
-	    configFile.addAccount(b.build());
-	    staticLogger.info("Generated new account at index, " + accoutnIdx);
-		return b.build();
+ 	    configFile.addAccount(b.build());
+ 	    staticLogger.info("Generated new account at index, " + accoutnIdx);
+ 		return b.build();
+ 	}
+ 	
+ 	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName) throws IOException{
+		ATAccount ret = generateNewAccount(nt, accountName, WalletAccountType.StandardAccount);
+		Authenticator.fireOnNewStandardAccountAdded();
+		return ret;
 	}
+
 	
 	/**
 	 * Get the next {@link authenticator.protobuf.ProtoConfig.ATAddress ATAddress} object.<br>
@@ -1195,14 +1204,45 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 		
-	public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() throws FileNotFoundException, IOException{
-		return configFile.getActiveAccount();
-	}
+		/**
+		 * Surrounded with try & catch because we access it a lot.
+		 * 
+		 * @return
+		 */
+		public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() {
+			try {
+				return configFile.getActiveAccount();
+			} catch (IOException e) { e.printStackTrace(); }
+			return null;
+		}
 
-	public void writeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc) throws FileNotFoundException, IOException{
-		
-		configFile.writeActiveAccount(acc);
-	}
+		/**
+		 * Sets the active account according to account index, returns the active account.<br>
+		 * Will return null in case its not successful
+		 * @param accountIdx
+		 * @return
+		 * @throws IOException 
+		 * @throws FileNotFoundException 
+		 */
+		public ATAccount setActiveAccount(int accountIdx){
+			ATAccount acc = getAccount(accountIdx);
+			AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
+			b1.setActiveAccount(acc);
+			if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
+				PairedAuthenticator p = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(acc.getIndex());
+				b1.setPairedAuthenticator(p);
+			}
+			try {
+				writeActiveAccount(b1.build());
+				return acc;
+			} catch (IOException e) { e.printStackTrace(); }
+			return null;
+		}
+
+		private void writeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc) throws FileNotFoundException, IOException{
+
+			configFile.writeActiveAccount(acc);
+		}
 		
 	//#####################################
   	//

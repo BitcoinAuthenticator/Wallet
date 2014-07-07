@@ -18,8 +18,8 @@ import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
-import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
@@ -48,7 +48,6 @@ public class Authenticator extends AbstractService{
 	private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
-	private static AuthenticatorConfiguration.ConfigActiveAccount activeAccount;
 	// Listeners
 	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
 
@@ -73,7 +72,7 @@ public class Authenticator extends AbstractService{
 		}
 		new OperationsFactory(); // to instantiate various things
 		//verifyWalletIsWatchingAuthenticatorAddresses();
-		loadActiveAccount();
+		setFirstAccountTEST();
 	}
 	
 	//#####################################
@@ -184,10 +183,12 @@ public class Authenticator extends AbstractService{
 	/**
 	 * Does what it says
 	 */
+	/**
+	 * Does what it says
+	 */
 	@SuppressWarnings("static-access")
-	private void loadActiveAccount()
+	private void setFirstAccountTEST()
 	{
-		this.activeAccount = null;		
 		/**
 		 * In case no active account found.
 		 * Its a new wallet
@@ -195,44 +196,16 @@ public class Authenticator extends AbstractService{
 		if(getWalletOperation().getAllAccounts().size() == 0)
 		{
 			try {
-				//Spending account
-				getWalletOperation().generateNewAccount(getApplicationParams().getBitcoinNetworkType());
-				AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
-				b1.setActiveAccountType(ActiveAccountType.Spending);
-				getWalletOperation().writeActiveAccount(b1.build());
-				this.activeAccount = b1.build();				
-				
-				// Savings account
-				getWalletOperation().generateNewAccount(getApplicationParams().getBitcoinNetworkType());
+				/**
+				 * Generate a default account, will be replaced by
+				 */
+				ATAccount b2 = getWalletOperation().generateNewStandardAccount(getApplicationParams().getBitcoinNetworkType(),
+						"Default");
+				getWalletOperation().setActiveAccount(b2.getIndex());
+
 			} catch (IOException e) { e.printStackTrace(); }
 		}	
-		else
-		{
-			try {
-				this.activeAccount = getWalletOperation().getActiveAccount();
-			} catch (Exception e) { e.printStackTrace(); }
-		}
-	}
-	
-	/**
-	 * Will return <b>true</b> if change was successful.<br>
-	 * Will return <b>false</b> if change was not successful.<br>
-	 * 
-	 * @param acc
-	 * @return
-	 */
-	public static boolean setActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc)
-	{
-		try {
-			getWalletOperation().writeActiveAccount(acc);
-			activeAccount = acc;
-			return true;
-		} catch (IOException e) { e.printStackTrace(); return false;}
-	}
-	
-	public static AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount()
-	{
-		return activeAccount;
+
 	}
 	
 	//#####################################
@@ -271,7 +244,6 @@ public class Authenticator extends AbstractService{
 		assert(mApplicationParams != null);
 		assert(operationsQueue != null);
 		assert(pendingRequests != null);
-		assert(activeAccount != null);
 		try { 
 			mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)}); 
 			notifyStarted();
@@ -317,5 +289,26 @@ public class Authenticator extends AbstractService{
 	public static void fireOnBalanceChanged(int walletID){
 		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
 			l.onBalanceChanged(walletID);
+	}
+	
+	public static void fireOnNewStandardAccountAdded(){
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onNewStandardAccountAdded();
+	}
+
+	public static void fireOnAccountDeleted(int accountIndex){
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onAccountDeleted(accountIndex);
+	}
+
+	public static void fireOnAccountBeenModified(int accountIndex){
+		/**
+		 * update in case the active account was updated
+		 */
+		if(getWalletOperation().getActiveAccount().getActiveAccount().getIndex() == accountIndex)
+			getWalletOperation().setActiveAccount(accountIndex); // just to update the active account
+
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onAccountBeenModified(accountIndex);
 	}
 }
