@@ -51,12 +51,9 @@ public class PairingProtocol {
 
 	  assert(args != null);
 	  String walletType = args[1];
-	  final int port = 1234;
 
 	  // Open a port and wait for a connection
 	  UpNp plugnplay = new UpNp();
-	  System.out.println("Listening for Alice on port "+port+"...");
-	  postUIStatusUpdate(listener, "Listening for Alice on port "+port+"...");
 	  String ip = plugnplay.getExternalIP();
 	  String localip = plugnplay.getLocalIP().substring(1);
 	  
@@ -73,7 +70,9 @@ public class PairingProtocol {
 	  //Display a QR code for the user to scan
 	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[2]));
 	  Socket socket = dispalyQRAnListenForCommunication(ss, listener,displayQRAnimation, animationAfterPairing);
-    
+	  if(socket == null)
+		  return;
+	  
 	  // Receive payload
 	  DataInputStream in = new DataInputStream(socket.getInputStream());
 	  int keysize = in.readInt();
@@ -106,22 +105,35 @@ public class PairingProtocol {
 
   }
   
-  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, OnOperationUIUpdate listener, Runnable displayQRAnimation, Runnable animationAfterPairing) throws IOException{
+  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, OnOperationUIUpdate listener, Runnable displayQRAnimation, Runnable animationAfterPairing){
 	  //DisplayQR QR = new DisplayQR();
 	  //QR.displayQR();   
 	  
 	  if(displayQRAnimation != null)
 		  displayQRAnimation.run();
 	  
-	  Socket socket = ss.accept();
-	  //QR.CloseWindow();
-	  System.out.println("Connected to Alice");
-	  postUIStatusUpdate(listener,"Connected to Alice");
+	  System.out.println("Listening for connection (20 sec timeout) ...");
+	  postUIStatusUpdate(listener, "Listening for connection (20 sec timeout) ...");
+	  postUIStatusUpdate(listener, "Scan the QR code to pair the wallet with the Authenticator");
+	  try {
+		ss.setSoTimeout( 20000 );
+		Socket socket = ss.accept();
+		//QR.CloseWindow();
+		System.out.println("Connected to Alice");
+	    postUIStatusUpdate(listener,"Connected to Alice");		 
+		  
+		  return socket;
+	} catch (IOException e) {
+		System.out.println("Connection timedout");
+		postUIStatusUpdate(listener,"Connection timedout");
+	}
+	finally{
+		 if(animationAfterPairing != null)
+			  animationAfterPairing.run();
+    }
 	  
-	  if(animationAfterPairing != null)
-		  animationAfterPairing.run();
+	return null;
 	  
-	  return socket;
   }
   
   public String decipherDataFromAuthenticator(byte[] cipherKeyBytes, OnOperationUIUpdate listener, SecretKey sharedsecret) throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException{

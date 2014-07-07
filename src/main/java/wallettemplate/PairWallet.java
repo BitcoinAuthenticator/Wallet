@@ -45,6 +45,8 @@ public class PairWallet extends BaseUI{
     	Runnable animDisplay = getAnimationForDisplayingQR();
     	Runnable animAfterPairing = getAnimationForAfterPairing();
     	
+    	textarea.appendText("Pairing setup ..\n");
+    	
     	ATOperation op = OperationsFactory.PAIRING_OPERATION(pairName, Authenticator.getApplicationParams().getBitcoinNetworkType(), animDisplay, animAfterPairing).SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 			@SuppressWarnings("restriction")
