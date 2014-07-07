@@ -21,9 +21,9 @@ import javafx.stage.Stage;
  *
  */
 public class BAApplication extends Application{
-	public String APP_NAME = "WalletTemplate";
+	public static String APP_NAME = "WalletTemplate";
 
-	public BAApplicationParameters ApplicationParams;
+	public static BAApplicationParameters ApplicationParams;
     public NetworkParameters networkParams = MainNetParams.get();
     public WalletAppKit bitcoin;
     

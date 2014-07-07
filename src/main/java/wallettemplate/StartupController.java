@@ -29,6 +29,7 @@ import com.google.bitcoin.wallet.DeterministicSeed;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.Animation;
+import javafx.application.Platform;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -149,22 +150,11 @@ public class StartupController {
 		 lblClose.setOnMousePressed(new EventHandler<MouseEvent>(){
 			 @Override
 			 public void handle(MouseEvent t) {
-				 Main.stage.getOnCloseRequest().handle(null);
+				 com.sun.javafx.application.PlatformImpl.tkExit();
+				 Platform.exit();
 			 }
 		 });
 		 btnContinue2.setStyle("-fx-background-color: #badb93;");
-		 final ContextMenu contextMenu = new ContextMenu();
-		 MenuItem item1 = new MenuItem("Copy");
-		 item1.setOnAction(new EventHandler<ActionEvent>() {
-			 public void handle(ActionEvent e) {
-				 Clipboard clipboard = Clipboard.getSystemClipboard();
-				 ClipboardContent content = new ClipboardContent();
-				 content.putString(lblSeed.getText().toString());
-				 clipboard.setContent(content);
-			 }
-		 });
-		 contextMenu.getItems().addAll(item1);
-		 lblSeed.setContextMenu(contextMenu);
 		 lblSeed.setFont(Font.font(null, FontWeight.BOLD, 18));
 		 lblSeed.setPadding(new Insets(0,6,0,6));
 		 txPieces.lengthProperty().addListener(new ChangeListener<Number>(){
@@ -195,7 +185,7 @@ public class StartupController {
 		 });
 		 final ContextMenu contextMenu2 = new ContextMenu();
 		 MenuItem item12 = new MenuItem("Copy");
-		 item1.setOnAction(new EventHandler<ActionEvent>() {
+		 item12.setOnAction(new EventHandler<ActionEvent>() {
 			 public void handle(ActionEvent e) {
 				 Clipboard clipboard = Clipboard.getSystemClipboard();
 				 ClipboardContent content = new ClipboardContent();
@@ -241,6 +231,18 @@ public class StartupController {
 			 wallet.saveToFile(temp,f);
 			 for (String word : seed.toMnemonicCode()){mnemonic = mnemonic + word + " ";}
 			 lblSeed.setText(mnemonic);
+			 final ContextMenu contextMenu = new ContextMenu();
+			 MenuItem item1 = new MenuItem("Copy");
+			 item1.setOnAction(new EventHandler<ActionEvent>() {
+				 public void handle(ActionEvent e) {
+					 Clipboard clipboard = Clipboard.getSystemClipboard();
+					 ClipboardContent content = new ClipboardContent();
+					 content.putString(lblSeed.getText().toString());
+					 clipboard.setContent(content);
+				 }
+			 });
+			 contextMenu.getItems().addAll(item1);
+			 lblSeed.setContextMenu(contextMenu);
 		 }
 		 Animation ani = GuiUtils.fadeOut(Pane1);
 		 GuiUtils.fadeIn(Pane2);
@@ -273,9 +275,10 @@ public class StartupController {
 		 }
 	 }
 	 
-	 @FXML protected void finished(ActionEvent event){
+	 @FXML protected void finished(ActionEvent event) throws IOException{
 		 Main.startup.hide();
 		 Main.stage.show();
+		 Main.finishLoading();
 	 }
 	 
 	 @FXML protected void openPlayStore(ActionEvent event) throws IOException{
