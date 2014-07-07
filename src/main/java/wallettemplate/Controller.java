@@ -8,11 +8,12 @@ import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyPrefixedAccountIndex;
 import authenticator.protobuf.ProtoConfig.ATAddress;
+import authenticator.protobuf.ProtoConfig.ActiveAccountType;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.CachedExternalSpending;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
-import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
@@ -54,6 +55,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -73,7 +75,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -170,14 +171,17 @@ public class Controller {
 	 @FXML private TextArea txReqMemo;
 	 @FXML private ChoiceBox reqCurrencyBox;
 	 @FXML public ScrollPane scrlViewTxHistory;
+	 @FXML private ImageView ivLogo;
 	 private ScrollPaneContentManager scrlViewTxHistoryContentManager;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
 	 public ScrollPane scrlpane;
 	 private ScrollPaneContentManager scrlContent;
+	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
 	 private Wallet.SendResult sendResult;
 	 TorListener listener = new TorListener();
+	 public static Stage teststage;
 	 
 
 	//#####################################
@@ -206,6 +210,29 @@ public class Controller {
         lblConfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
         lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
         createReceivePaneButtons();
+        
+        //Startup loader test
+        ivLogo.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        	
+    		public void handle(MouseEvent event) {
+    			Parent root;
+    	        try {
+    	            root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
+    	            teststage = new Stage();
+    	            teststage.setTitle("My New Stage Title");
+    	            teststage.initStyle(StageStyle.UNDECORATED);
+    	            Scene scene = new Scene(root, 607, 400);
+    	            final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+    	            scene.getStylesheets().add(file);  // Add CSS that we need.
+    	            teststage.setScene(scene);
+    	            teststage.show();
+
+    	        } catch (IOException e) {
+    	            e.printStackTrace();
+    	        }
+    			
+    		}
+       });
         
         // Pane Control
         Tooltip.install(lblMinimize, new Tooltip("Minimize Window"));
@@ -238,27 +265,36 @@ public class Controller {
     		@Override public void changed(ObservableValue ov, String t, String t1) {
     			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
-    				String newAdd = null;
-					try {
-						newAdd = Authenticator.getWalletOperation()
-								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-								.getAddressStr();
-						AddressBox.getItems().add(0, newAdd);
-					} catch (Exception e) { e.printStackTrace(); }
+    				if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending){
+    					try 
+    					{
+    						ArrayList<String> newAdd = Authenticator.getWalletOperation().addMoreExternalSpendingAddresses();
+    						AddressBox.getItems().remove(Main.controller.AddressBox.getItems().indexOf("                                More"));
+    						for(String s:newAdd)
+    							AddressBox.getItems().addAll(s);
+    						Main.controller.AddressBox.getItems().addAll("                                More");
+    					} 
+        				catch (IOException | AddressFormatException e) {e.printStackTrace();}
+    				}
+    				else
+    				{
+    					String newAdd = null;
+    					try {
+    						if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+    							newAdd = Authenticator.getWalletOperation()
+    									.getNextExternalAddress(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
+    									.getAddressStr();
+    						}
+    						else
+    							newAdd = Authenticator.getWalletOperation()
+    													.getNextExternalAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex())
+						    							.getAddressStr();
+    						AddressBox.getItems().add(0, newAdd);
+    					} catch (Exception e) { e.printStackTrace(); }
+    				}
     			}
     		}    
     	});
-		
-		// accounts choice box
-		AccountBox.valueProperty().addListener(new ChangeListener<String>() {
-  			@Override 
-  			public void changed(ObservableValue ov, String t, String t1) {
-  				if(t1 != null && t1.length() > 0){
-					AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
-					changeAccount(t1);
-  				}
-  			}    
-	   });
     }
     
     public void onBitcoinSetup() {
@@ -298,23 +334,6 @@ public class Controller {
 	        setReceiveAddresses();
 	        setTxHistoryContent();
 		}
-
-		@Override
-		public void onNewStandardAccountAdded() {
-			setAccountChoiceBox();
-		}
-
-		@Override
-		public void onAccountDeleted(int accountIndex) {
-			setAccountChoiceBox();
-		}
-
-		@Override
-		public void onAccountBeenModified(int accountIndex) {
-			setAccountChoiceBox();
-			
-		}
-	
     }
     
     public class ProgressBarUpdater extends DownloadListener {
@@ -442,6 +461,7 @@ public class Controller {
   	//
   	//#####################################
     
+    
     @FXML protected void actionOverview(ActionEvent event) {
    	     btnOverview_white.setVisible(true);
   	 	 btnOverview_grey.setVisible(false);
@@ -554,16 +574,34 @@ public class Controller {
    
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
-	   List<ATAccount> all = new ArrayList<ATAccount>();
-	   all = Authenticator.getWalletOperation().getAllAccounts();
+	   List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+	   try {
+		all = Authenticator.getWalletOperation().getAllPairingObjectArray();
+	   } catch (IOException e) { }
 	   
 	   AccountBox.getItems().clear();
-	   for(ATAccount acc:all){
-		   AccountBox.getItems().add(acc.getAccountName());
-	   }
+	   AccountBox.getItems().add("Spending");
+	   AccountBox.getItems().add("Savings");
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
+	   AccountBox.valueProperty().addListener(new ChangeListener<String>() {
+   			@Override 
+   			public void changed(ObservableValue ov, String t, String t1) {
+   				if(t1 != null && t1.length() > 0){
+					AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
+					changeAccount(t1);
+   				}
+   			}    
+	   });
+	   for(PairedAuthenticator po:all){
+		   AccountBox.getItems().add(po.getPairingName());
+	   }
 	   
-	   AccountBox.setValue(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountName());
+	   if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending)
+		   AccountBox.setValue("Spending");
+	   else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
+		   AccountBox.setValue("Savings");
+	   else
+		   AccountBox.setValue(Authenticator.getActiveAccount().getPairedAuthenticator().getPairingName());
 	
 	   AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),AccountBox.getValue().toString(), 0.0D)+45);
    }
@@ -622,9 +660,23 @@ public class Controller {
     
     @SuppressWarnings("static-access")
 	public void refreshBalanceLabel() {
-    	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-  
+    	Coin unconfirmed = Coin.ZERO;
+    	Coin confirmed = Coin.ZERO;
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending)
+    	{
+	    	
+			unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
+			
+	    	confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
+    	}
+    	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+    		unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
+    	}
+    	else{
+    		unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());
+    	}    	
         //final Coin total = confirmed.add(unconfirmed);
         lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
@@ -803,7 +855,16 @@ public class Controller {
         }
     	amount = amount.add(fee);
     	//
-    	 Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()); 	
+    	Coin confirmed = Coin.ZERO;
+
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ){
+    		HierarchyAddressTypes addType = HierarchyAddressTypes.External; // TODO - internal also
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE);
+    	}	
+    	else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings)
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE);
+    	else
+    		confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex());   	
     	
     	if(amount.compareTo(confirmed) > 0) return false;
     	
@@ -873,12 +934,38 @@ public class Controller {
             }
     		
     		// get input addresses / change address
-    		ArrayList<String> addresses = Authenticator.getWalletOperation().getAccountAddresses(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
-					    				HierarchyAddressTypes.External,
-					    				-1);
-    		String changeaddr = Authenticator.getWalletOperation()
-								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-								.getAddressStr();
+    		ArrayList<String> addresses;
+    		String changeaddr = null;
+    		String pairID = Authenticator.getActiveAccount().getPairedAuthenticator().getPairingID();
+    		if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ){
+    			// inputs
+    			addresses = Authenticator.getWalletOperation().getAccountAddresses(HierarchyPrefixedAccountIndex.PrefixSpending_VALUE, HierarchyAddressTypes.External, -1);
+    			// change address
+    			try {
+					changeaddr = Authenticator.getWalletOperation().getNewSpendingExternalAddress(true).getAddressStr();
+				} catch (AddressFormatException e) { e.printStackTrace(); }
+    		}
+    		else if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+    			// inputs
+    			addresses = Authenticator.getWalletOperation().getAccountAddresses(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE, HierarchyAddressTypes.External, -1);
+    			// change address
+    			try {
+					changeaddr = Authenticator.getWalletOperation()
+							.getNextExternalAddress(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
+							.getAddressStr();
+				} catch (AddressFormatException e) { e.printStackTrace(); }
+    		}
+    		else{
+    			int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+    			// inputs
+    			addresses = Authenticator.getWalletOperation().getAccountAddresses(accountID, HierarchyAddressTypes.External, -1);
+    			// change address
+    			try {
+					changeaddr = Authenticator.getWalletOperation()
+							.getNextExternalAddress(accountID)
+							.getAddressStr();
+				} catch (AddressFormatException e) { e.printStackTrace(); }
+    		}
     		   
     		// complete Tx
     		Transaction tx;
@@ -887,10 +974,11 @@ public class Controller {
 				
 				// broadcast
 	    		ATOperation op = null;
-	    		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
+	    		if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending ||
+	    				Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
 	    			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
 	    			for(TransactionInput in:tx.getInputs()){
-	    				int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+	    				int accountID = Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
 	    				
 	    				// get address
 	    				String add = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
@@ -903,10 +991,9 @@ public class Controller {
 	    			}
 	    			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(tx,keys);
 	    		}
-	    		else{
-	    			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
+	    		else
 	    			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(tx, pairID, txMsgLabel.getText(),false,null);
-	    		}
+	    		
 	    		// operation listeners
 	    		op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 					@Override
@@ -1278,7 +1365,6 @@ public class Controller {
                  }
             }
         });
-        //reqCurrencyBox.setValue("BTC");
         //Payment Request Window
         btnRequest.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -1330,6 +1416,7 @@ public class Controller {
             			public void handle(ActionEvent e) {
             				FileChooser fileChooser = new FileChooser();
             				fileChooser.setTitle("Save Image");
+            				fileChooser.setInitialFileName("PaymentRequest.png");
             				File file = fileChooser.showSaveDialog(Main.stage);
             				if (file != null) {
             					try {
@@ -1470,27 +1557,55 @@ public class Controller {
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
     	AddressBox.getItems().clear();
-    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
-    	ArrayList<String> add;
-		try {
-			add = Authenticator.getWalletOperation(). getAccountNotUsedAddressString(accountIdx,HierarchyAddressTypes.External,10);
-			if(add.size() == 0){
-				String newAdd = Authenticator.getWalletOperation()
-							.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-							.getAddressStr();
-				
-				add.add(newAdd);	
-	    	}
-			AddressBox.setValue(add.get(0));
-			for (String address : add){
-	    		AddressBox.getItems().addAll(address);
-	    	}
-			AddressBox.setValue(add.get(0));
-	    		    	
-	    	AddressBox.getItems().addAll("                                More");
-		} catch (NoSuchAlgorithmException | JSONException
-				| AddressFormatException e) { e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
+    	if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Spending){
+    		ArrayList<String> keypool = null;
+        	try { Authenticator.getWalletOperation().fillExternalSpendingKeyPool(); } 
+        	catch (IOException e) {e.printStackTrace();} catch (AddressFormatException e) { e.printStackTrace(); }
+        	try {keypool = Authenticator.getWalletOperation().getNotUsedExternalSpendingAddressStringPool(10); }  
+        	catch (IOException e) {e.printStackTrace();}
+        	
+        	AddressBox.setValue(keypool.get(0));
+        	for(String s:keypool)
+        		AddressBox.getItems().addAll(s);
+    	}
+    	else{
+    		int accountIdx = Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings? 
+    					HierarchyPrefixedAccountIndex.PrefixSavings_VALUE:
+    					Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+    		
+    		ArrayList<String> add = new ArrayList<String> ();
+			try {
+				add = Authenticator.getWalletOperation().
+									getAccountNotUsedAddress(accountIdx,
+					    			HierarchyAddressTypes.External,
+					    			10);
+			} catch (NoSuchAlgorithmException | JSONException
+					| AddressFormatException e1) { }
+			
+    		if(add.size() == 0){
+    			String newAdd = null;
+				try {
+					if(Authenticator.getActiveAccount().getActiveAccountType() == ActiveAccountType.Savings){
+						newAdd = Authenticator.getWalletOperation()
+								.getNextExternalAddress(HierarchyPrefixedAccountIndex.PrefixSavings_VALUE)
+								.getAddressStr();
+					}
+					else
+						newAdd = Authenticator.getWalletOperation()
+												.getNextExternalAddress(Authenticator.getActiveAccount().getPairedAuthenticator().getWalletAccountIndex())
+												.getAddressStr();
+					add.add(newAdd);
+				} catch (Exception e) { e.printStackTrace(); }
+    			
+    		}
+    		for (String address : add){
+        		AddressBox.getItems().addAll(address);
+        	}
+    		AddressBox.setValue(add.get(0));
+    		
+    	}
     	
+    	AddressBox.getItems().addAll("                                More");
     }    
     
     //#####################################
@@ -1520,22 +1635,6 @@ public class Controller {
 		        .showWarning();
     }
     
-    public static Stage accountsAppStage;
-    @FXML protected void btnAccounts(MouseEvent event) {
-        try {
-        	URL location = getClass().getResource("display_accounts/display_accounts.fxml");
-        	FXMLLoader loader = new FXMLLoader(location);
-        	accountsAppStage = new Stage();
-        	accountsAppStage.setTitle("Accounts");
-        	accountsAppStage.initStyle(StageStyle.UNDECORATED);
-        	Scene scene = new Scene((AnchorPane) loader.load(), 436, 516);
-        	final String file = TextFieldValidator.class.getResource("GUI.css").toString();
-            scene.getStylesheets().add(file);  // Add CSS that we need.
-        	accountsAppStage.setScene(scene);
-        	accountsAppStage.show();
-		} catch (IOException e) { e.printStackTrace(); }
-    }
-        
     //#####################################
    	//
    	//	Change account
@@ -1543,14 +1642,35 @@ public class Controller {
    	//#####################################
     
     public void changeAccount(String toValue){
-    	ATAccount acc = Authenticator.getWalletOperation().getAccountByName(toValue);
-    	if(acc != null){
-    		if(Authenticator.getWalletOperation().setActiveAccount(acc.getIndex()) != null)
-    			updateUIForNewActiveAccount();
+    	List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+    	try {
+    		all = Authenticator.getWalletOperation().getAllPairingObjectArray();
+		} catch (IOException e) { e.printStackTrace(); }
+    	
+    	// find selected paired authenticator
+    	PairedAuthenticator selectedAuth = null;
+    	for(PairedAuthenticator po:all){
+    		if(po.getPairingName().equals(toValue))
+    		{
+    			selectedAuth = po;
+    			break;
+    		}
     	}
-    	else{
-    		// mmm .... can it be ?
+    	
+    	// change account
+    	AuthenticatorConfiguration.ConfigActiveAccount.Builder b = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
+    	if(selectedAuth != null){
+    		b.setActiveAccountType(ActiveAccountType.Authenticator);
+    		b.setPairedAuthenticator(selectedAuth);
     	}
+    	else {
+    		if(AccountBox.getValue().toString().equals("Savings"))
+    			b.setActiveAccountType(ActiveAccountType.Savings);
+    		else
+    			b.setActiveAccountType(ActiveAccountType.Spending);
+    	}
+    	if( Authenticator.setActiveAccount(b.build()))
+    		updateUIForNewActiveAccount();
     }
     
     public void updateUIForNewActiveAccount(){

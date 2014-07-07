@@ -1,10 +1,6 @@
 local.properties
-*.classpath
-*.project
-*.config
-*.wallet
-*.spvchain
-*.png
+.classpath
+.project
 .settings/
 .idea/
 bin/

@@ -265,7 +265,7 @@
           <content>
             <GridPane prefHeight="520.0" prefWidth="601.0">
               <children>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Accounts" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" onMousePressed="#btnAccounts">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Accounts" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -499,9 +499,9 @@
     	
     	
     -->
-    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+    <ImageView fx:id="ivLogo" fitHeight="40.0" fitWidth="40.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
       <image>
-        <Image url="@accounts_icons/bitcoin_logo_plain_small.png" />
+        <Image url="@bitcoin_logo_plain_small.png" />
       </image>
     </ImageView>
     <ChoiceBox fx:id="AccountBox" layoutX="65.0" layoutY="22.0" prefHeight="15.0" prefWidth="150.0" styleClass="choice-box-account">

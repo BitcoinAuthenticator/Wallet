@@ -29,25 +29,26 @@ public class PaperWallet {
 		byte[] imageBytes = null;
 		 imageBytes = QRCode
 				        .from(Main.bitcoin.wallet().getKeyChainSeed().toHexString())
-				        .withSize(155, 155)
+				        .withSize(170, 170)
 				        .to(ImageType.PNG)
 				        .stream()
 				        .toByteArray();
-        Image qrSeed = new Image(new ByteArrayInputStream(imageBytes));
+        Image qrSeed = new Image(new ByteArrayInputStream(imageBytes), 153, 153, true, false);
+       
         DeterministicSeed seed = Main.bitcoin.wallet().getKeyChainSeed();
         DeterministicKey mprivkey = HDKeyDerivation.createMasterPrivateKey(seed.getSecretBytes());
         DeterministicKey mpubkey = mprivkey.getPubOnly();
         imageBytes = QRCode
 			        .from(mpubkey.toString())
-			        .withSize(120, 120)
+			        .withSize(160, 160)
 			        .to(ImageType.PNG)
 			        .stream()
 			        .toByteArray();
-        Image qrMPubKey = new Image(new ByteArrayInputStream(imageBytes));
+        Image qrMPubKey = new Image(new ByteArrayInputStream(imageBytes), 122,122, true, false);
       
         String path3 = null;
         URL location = Main.class.getResource("PaperWallet.png");
-        try {path3 = new java.io.File( "." ).getCanonicalPath() + "/saved.png";} 
+        try {path3 = new java.io.File( "." ).getCanonicalPath() + "/paperwallet.png";} 
         catch (IOException e1) {e1.printStackTrace();}
         BufferedImage a = ImageIO.read(location);
         BufferedImage b = SwingFXUtils.fromFXImage(qrSeed, null);
@@ -55,18 +56,18 @@ public class PaperWallet {
         BufferedImage d = new BufferedImage(a.getWidth(), a.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		 
         //Crop the QR code images
-        int x = (int) (qrSeed.getWidth()*.05), y = (int) (qrSeed.getHeight()*.05), w = (int) (qrSeed.getWidth()*.90), h = (int) (qrSeed.getHeight()*.90);
+        int x = (int) (qrSeed.getWidth()*.055), y = (int) (qrSeed.getHeight()*.055), w = (int) (qrSeed.getWidth()*.90), h = (int) (qrSeed.getHeight()*.90);
         BufferedImage b2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         b2.getGraphics().drawImage(b, 0, 0, w, h, x, y, x + w, y + h, null);
-        x = x = (int) (qrSeed.getWidth()*.05); y = (int) (qrSeed.getHeight()*.05); w = (int) (qrMPubKey.getWidth()*.9); h = (int) (qrMPubKey.getHeight()*.9);
+        x = x = (int) (qrSeed.getWidth()*.05); y = (int) (qrSeed.getHeight()*.05); w = (int) (qrMPubKey.getWidth()*.90); h = (int) (qrMPubKey.getHeight()*.9);
         BufferedImage c2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         c2.getGraphics().drawImage(c, 0, 0, w, h, x, y, x + w, y + h, null);
         
         //Add the QR codes to the paper wallet
         Graphics g = d.getGraphics();
         g.drawImage(a, 0, 0, null);
-        g.drawImage(b2, 402, 115, null);
-        g.drawImage(c2, 27, 63, null);
+        g.drawImage(b2, 401, 112, null);
+        g.drawImage(c2, 26, 61, null);
 		
         // Get the graphics instance of the buffered image
         Graphics2D gBuffImg = d.createGraphics();
@@ -81,9 +82,9 @@ public class PaperWallet {
         g.drawImage(d, 0, 0, null);
         gBuffImg.dispose();
 			
-        File outputfile = new File("saved.png");
-        ImageIO.write(d, "png", outputfile);
-			
+        File outputfile = new File("paperwallet.png");
+        ImageIO.write(d, "png", outputfile);        
+        
         //Desktop dt = Desktop.getDesktop();
         //File f = new File(path3);
         //dt.open(f);

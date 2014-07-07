@@ -68,6 +68,7 @@ public class PairWallet extends BaseUI{
 			        	
 			        	cancelBtn.setDisable(true);
 						doneBtn.setDisable(false);
+						Authenticator.fireOnNewPairedAuthenticator();
 			        }
 				});
 			}

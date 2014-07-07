@@ -167,11 +167,6 @@
 -fx-text-fill: -icons-color;
 }
 
-#AppsPane .button {
-	-fx-text-fill: #4b698f;
-	-fx-cursor: hand;
-}
-
 #Pane2 .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
@@ -195,4 +190,9 @@
 #Pane8 .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
+}
+
+#AppsPane .button {
+	-fx-text-fill: #4b698f;
+	-fx-cursor: hand;
 }

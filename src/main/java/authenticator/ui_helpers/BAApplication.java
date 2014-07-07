@@ -9,13 +9,14 @@ import wallettemplate.Main;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.params.TestNet3Params;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
- * The basic BitcoinAuthenticator Javafx application. Covers functionalities like comnad line params and general app instantiations
+ * The basic BitcoinAuthenticator Javafx application. Covers functionalities like command line params and general app instantiations
  * @author alon
  *
  */
