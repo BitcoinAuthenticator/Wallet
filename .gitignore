@@ -3,6 +3,10 @@ local.properties
 .project
 .settings/
 .idea/
+*.config
+*.spvchain
+*.wallet
+PairingQRCode.png
 bin/
 gen/
 target/
