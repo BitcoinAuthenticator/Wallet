@@ -11,20 +11,32 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.dialog.Dialogs;
 
 import wallettemplate.utils.GuiUtils;
+import authenticator.Authenticator;
+import authenticator.BAApplicationParameters;
 import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.BAUtils;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.wallet.DeterministicSeed;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.Service.State;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -88,6 +100,7 @@ public class StartupController {
 	@FXML private PasswordField txPW2;
 	@FXML private Label lblSeed;
 	@FXML private CheckBox ckSeed;
+	@FXML private CheckBox chkTestNet;
 	private double xOffset = 0;
 	private double yOffset = 0;
 	private String mnemonic = "";
@@ -103,7 +116,8 @@ public class StartupController {
 	@FXML private Button btnFinished;
 	private DeterministicSeed seed;
 	NetworkParameters params = MainNetParams.get();
-	
+	Authenticator auth;
+	BAApplicationParameters appParams;
 	
 	 public void initialize() {
 		 Label labelforward = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
@@ -216,9 +230,16 @@ public class StartupController {
 	 }
 	 
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
-		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + "WalletTemplate" + ".wallet";
+		 // app params
+		 appParams = new BAApplicationParameters(chkTestNet.isSelected()? 
+																		ImmutableMap.of("testnet","true"):
+																		ImmutableMap.of(),
+														new ArrayList<String>());
+		 
+		 
+		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
 		 File f = new File(filePath);
-		 String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + "WalletTemplateTemp" + ".wallet";
+		 String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + "Temp" + ".wallet";
 		 File temp = new File(filePath2);
 		 if(!f.exists()) { 
 			 //Generate a new Seed
@@ -227,9 +248,19 @@ public class StartupController {
 			 catch (NoSuchAlgorithmException e) {e.printStackTrace();}
 			 byte[] bytes = new byte[16];
 			 secureRandom.nextBytes(bytes);
-			 seed = new DeterministicSeed(bytes, (System.currentTimeMillis() / 1000L));
+			 seed = new DeterministicSeed(bytes, Utils.currentTimeSeconds());
+			 
+			 // set wallet
 			 Wallet wallet = Wallet.fromSeed(params,seed);
+			 wallet.setKeychainLookaheadSize(0);
 			 wallet.saveToFile(temp,f);
+			 
+			 // set Authenticator wallet
+			 auth = new Authenticator(wallet, appParams);
+			 
+			 // update params in main
+			 Main.returnedParamsFromSetup = appParams;
+			 
 			 for (String word : seed.toMnemonicCode()){mnemonic = mnemonic + word + " ";}
 			 lblSeed.setText(mnemonic);
 			 final ContextMenu contextMenu = new ContextMenu();
@@ -249,6 +280,11 @@ public class StartupController {
 		 GuiUtils.fadeIn(Pane2);
 		 Pane1.setVisible(false);
 		 Pane2.setVisible(true);
+	 }
+	 
+	 private void createNewStandardAccount(String accountName) throws IOException{
+		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
+		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }
 	 
 	 @FXML protected void toPaneOne(ActionEvent event) {
@@ -276,10 +312,19 @@ public class StartupController {
 		 }
 	 }
 	 
-	 @FXML protected void finished(ActionEvent event) throws IOException{
-		 Main.startup.hide();
-		 Main.stage.show();
-		 Main.finishLoading();
+	 @FXML protected void finished(ActionEvent event){
+		 auth.addListener(new Service.Listener() {
+				@Override public void terminated(State from) {
+					auth.disposeOfAuthenticator();
+					Main.startup.hide();
+					Main.stage.show();
+					try {
+						Main.finishLoading();
+					} catch (IOException e) { e.printStackTrace(); }
+		         }
+			}, MoreExecutors.sameThreadExecutor());
+         auth.stopAsync();
+		 
 	 }
 	 
 	 @FXML protected void openPlayStore(ActionEvent event) throws IOException{
@@ -331,31 +376,45 @@ public class StartupController {
 					 "You need to enter a password");
 		 }
 		 else {
-			 ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
-				 public void changed(ObservableValue<? extends Boolean> ov,
-						 Boolean old_val, Boolean new_val) {
-					 if (ckSeed.isSelected()){
-						 btnContinue2.setStyle("-fx-background-color: #95d946;");
+			 try {
+				createNewStandardAccount(txAccount.getText());
+				
+				ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
+					 public void changed(ObservableValue<? extends Boolean> ov,
+							 Boolean old_val, Boolean new_val) {
+						 if (ckSeed.isSelected()){
+							 btnContinue2.setStyle("-fx-background-color: #95d946;");
+						 }
+						 else {
+							 btnContinue2.setStyle("-fx-background-color: #badb93;");
+						 }
 					 }
-					 else {
-						 btnContinue2.setStyle("-fx-background-color: #badb93;");
-					 }
-				 }
-			 });
-			 Animation ani = GuiUtils.fadeOut(Pane2);
-			 GuiUtils.fadeIn(Pane3);
-			 Pane2.setVisible(false);
-			 Pane3.setVisible(true);
-			 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
+				 });
+				 Animation ani = GuiUtils.fadeOut(Pane2);
+				 GuiUtils.fadeIn(Pane3);
+				 Pane2.setVisible(false);
+				 Pane3.setVisible(true);
+				 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
+			} catch (Exception e) { 
+				e.printStackTrace();
+				
+				Dialogs.create()
+		        .owner(Main.startup)
+		        .title("Error")
+		        .masthead("Cannot Create account !")
+		        .message("Please try again")
+		        .showError();
+			}
+			 
 		 }
 	 }
 	 
 	 @FXML protected void saveWallet(ActionEvent event) throws IOException{
-		 String filepath = new java.io.File( "." ).getCanonicalPath() + "/" + "WalletTemplate" + ".wallet";
+		 String filepath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
 		 File wallet = new File(filepath);
 		 FileChooser fileChooser = new FileChooser();
 		 fileChooser.setTitle("Save Wallet");
-		 fileChooser.setInitialFileName("WalletTemplate.wallet");
+		 fileChooser.setInitialFileName(appParams.getAppName() + ".wallet");
 		 File file = fileChooser.showSaveDialog(Main.startup);
 		 FileChannel source = null;
 		 FileChannel destination = null;

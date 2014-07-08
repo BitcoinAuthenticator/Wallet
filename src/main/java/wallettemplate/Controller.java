@@ -2,6 +2,7 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
+import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.network.OneName;
@@ -14,7 +15,6 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
-import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
@@ -631,7 +631,8 @@ public class Controller {
 		    imgFile = new File(one.getOnenameAvatarFilePath());
 			bimg = ImageIO.read(imgFile);
 			img = OneName.createImage(bimg);
-	   } catch (Exception e) { e.printStackTrace(); }
+	   } catch (Exception e) { // do nothing
+	   }
 	   
 	   if(img != null && one != null)
 		   setUserProfileAvatarAndName(img,one.getOnenameFormatted());	   

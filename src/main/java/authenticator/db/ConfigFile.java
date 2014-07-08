@@ -48,8 +48,7 @@ public class ConfigFile {
 		try{ auth.mergeDelimitedFrom(new FileInputStream(filePath)); }
 		catch(Exception e)
 		{ 
-			e.printStackTrace(); 
-			/* file may not exsist because setPaired is the first thing to be called on a new wallet */ 
+			// do nothing
 		}
 		return auth;
 	}
@@ -312,7 +311,7 @@ public class ConfigFile {
 		writeConfigFile(auth);
 	}
 
-	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
+	/*public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigHierarchy().getHierarchySeed().toByteArray();
 	}
@@ -321,7 +320,7 @@ public class ConfigFile {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.getConfigHierarchyBuilder().setHierarchySeed(ByteString.copyFrom(seed));
 		writeConfigFile(auth);
-	}
+	}*/
 
  	public List<String> getPendingOutTx(int accountIdx){
  		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();

@@ -1,5 +1,6 @@
 package authenticator;
 
+import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.hierarchy.BAHierarchy;
 
 import java.io.FileNotFoundException;
@@ -27,7 +28,6 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
-import authenticator.ui_helpers.BAApplication.NetworkType;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
@@ -51,6 +51,7 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
+import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.collect.ImmutableList;
 
 
@@ -77,30 +78,51 @@ public class WalletOperation extends BASE{
 	public WalletOperation(){ 
 		super(WalletOperation.class);
 	}
-	public WalletOperation(Wallet wallet, PeerGroup peerGroup) throws IOException{
+	
+	/**
+	 * Instantiate WalletOperations without bitcoinj wallet.
+	 * 
+	 * @param params
+	 * @throws IOException
+	 */
+	public WalletOperation(BAApplicationParameters params, DeterministicSeed seed) throws IOException{
 		super(WalletOperation.class);
-		staticLogger = this.LOG;
+		init(params, seed);
+	}
+	
+	/**
+	 * Instantiate WalletOperations with bitcoinj wallet
+	 * 
+	 * @param wallet
+	 * @param peerGroup
+	 * @throws IOException
+	 */
+	public WalletOperation(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters params, DeterministicSeed seed) throws IOException{
+		super(WalletOperation.class);
 		if(mWalletWrapper == null){
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
 			mWalletWrapper.addEventListener(new WalletListener());
 		}
 		
+		init(params, seed);
+	}
+	
+	private void init(BAApplicationParameters params, DeterministicSeed seed) throws IOException{
+		staticLogger = this.LOG;
 		if(configFile == null){
-			configFile = new ConfigFile(Authenticator.getApplicationParams().getAppName());
+			configFile = new ConfigFile(params.getAppName());
 			/**
 			 * Check to see if a config file exists, if not, initialize
 			 */
 			if(!configFile.checkConfigFile()){
-				byte[] seed = BAHierarchy.generateMnemonicSeed();
-				configFile.initConfigFile(seed);
-		        //configFile.setPaired(false);
-				//configFile.setOneName("NULL");
+				//byte[] seed = BAHierarchy.generateMnemonicSeed();
+				configFile.initConfigFile(seed.getSecretBytes());
 			}
 		}
 		if(authenticatorWalletHierarchy == null)
 		{
-			byte[] seed = configFile.getHierarchySeed();
-			authenticatorWalletHierarchy = new BAHierarchy(seed,HierarchyCoinTypes.CoinBitcoin);
+			//byte[] seed = configFile.getHierarchySeed();
+			authenticatorWalletHierarchy = new BAHierarchy(seed.getSecretBytes(),HierarchyCoinTypes.CoinBitcoin);
 			/**
 			 * Load num of keys generated in every account to get 
 			 * the next fresh key
@@ -788,13 +810,13 @@ public class WalletOperation extends BASE{
 		configFile.writeHierarchyNextAvailableAccountID(i);
 	}
 	
-	public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
+	/*public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
 		return configFile.getHierarchySeed();
 	}
 	
 	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
 		configFile.writeHierarchySeed(seed);
-	}
+	}*/
 	
 	//#####################################
 	//
@@ -1265,27 +1287,32 @@ public class WalletOperation extends BASE{
     
     public NetworkParameters getNetworkParams()
 	{
+    	assert(mWalletWrapper != null);
 		return mWalletWrapper.getNetworkParams();
 	}
     
     public boolean isWatchingAddress(String address) throws AddressFormatException
 	{
+    	assert(mWalletWrapper != null);
 		return mWalletWrapper.isAuthenticatorAddressWatched(address);
 	}
     
     public boolean isTransactionOutputMine(TransactionOutput out)
 	{
+    	assert(mWalletWrapper != null);
 		return mWalletWrapper.isTransactionOutputMine(out);
 	}
     
     public void addAddressToWatch(String address) throws AddressFormatException
 	{
+    	assert(mWalletWrapper != null);
     	mWalletWrapper.addAddressToWatch(address);
     	this.LOG.info("Added address to watch: " + address);
 	}
     
 	public void connectInputs(List<TransactionInput> inputs)
 	{
+		assert(mWalletWrapper != null);
 		LinkedList<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
 		for(TransactionOutput out:unspentOutputs)
 			for(TransactionInput in:inputs){
@@ -1305,20 +1332,24 @@ public class WalletOperation extends BASE{
 	
 	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException
 	{
+		assert(mWalletWrapper != null);
 		this.LOG.info("Sent Tx: " + req.tx.getHashAsString());
 		return mWalletWrapper.sendCoins(req);
 	}
 	
 	public void addEventListener(WalletEventListener listener)
 	{
+		assert(mWalletWrapper != null);
 		mWalletWrapper.addEventListener(listener);
 	}
 	
 	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
+		assert(mWalletWrapper != null);
 		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
 	}
 	
 	public List<Transaction> getRecentTransactions(){
+		assert(mWalletWrapper != null);
 		return mWalletWrapper.getRecentTransactions();
 	}
  

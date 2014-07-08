@@ -22,7 +22,6 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
-import authenticator.ui_helpers.BAApplication.BAApplicationParameters;
 
 /**
  * <p>The main building block of the BitocinAuthenticator wallet.<br>
@@ -51,20 +50,39 @@ public class Authenticator extends AbstractService{
 	// Listeners
 	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
 
-	public Authenticator(){}
-	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) throws IOException
-	{
-		if(mApplicationParams == null)
-			mApplicationParams = appParams;
-		if(generalEventsListeners == null)
-			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
-		if(mTCPListener == null)
-			mTCPListener = new TCPListener();
-		if(operationsQueue == null)
-			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
+	public Authenticator(){ }
+	
+	/**
+	 * Instantiate without bitcoinj's wallet 
+	 * 
+	 * @param wallet
+	 * @param appParams
+	 */
+	public Authenticator(Wallet wallet, BAApplicationParameters appParams){
+		init(appParams);
 		if(mWalletOperation == null){
 			try {
-				mWalletOperation = new WalletOperation(wallet,peerGroup);
+				mWalletOperation = new WalletOperation(appParams, wallet.getKeyChainSeed());
+			} catch (IOException e) { e.printStackTrace(); }
+			
+			initPendingRequests();
+		}
+	}
+	
+	/**
+	 * Full instantiation
+	 * 
+	 * @param wallet
+	 * @param peerGroup
+	 * @param appParams
+	 * @throws IOException
+	 */
+	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) throws IOException
+	{
+		init(appParams);
+		if(mWalletOperation == null){
+			try {
+				mWalletOperation = new WalletOperation(wallet,peerGroup,appParams, wallet.getKeyChainSeed());
 			} catch (IOException e) { e.printStackTrace(); }
 			
 			initPendingRequests();
@@ -75,7 +93,26 @@ public class Authenticator extends AbstractService{
 		}*/
 		new OperationsFactory(); // to instantiate various things
 		//verifyWalletIsWatchingAuthenticatorAddresses();
-		setFirstAccountTEST();
+		//setFirstAccountTEST();
+	}
+	
+	private void init(BAApplicationParameters appParams){
+		if(mApplicationParams == null)
+			mApplicationParams = appParams;
+		if(generalEventsListeners == null)
+			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
+		if(mTCPListener == null)
+			mTCPListener = new TCPListener();
+		if(operationsQueue == null)
+			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
+	}
+	
+	public static void disposeOfAuthenticator(){
+		mWalletOperation = null;
+		mApplicationParams = null;
+		generalEventsListeners = null;
+		mTCPListener = null;
+		operationsQueue = null;
 	}
 	
 	//#####################################
@@ -148,6 +185,8 @@ public class Authenticator extends AbstractService{
 	 */
 	public static WalletOperation getWalletOperation()
 	{
+		if(mWalletOperation == null)
+			mWalletOperation = new WalletOperation();
 		return mWalletOperation;
 	}
 	
@@ -190,18 +229,13 @@ public class Authenticator extends AbstractService{
 	 * Does what it says
 	 */
 	@SuppressWarnings("static-access")
-	private void setFirstAccountTEST()
+	/*private void setFirstAccountTEST()
 	{
-		/**
-		 * In case no active account found.
-		 * Its a new wallet
-		 */
+		
 		if(getWalletOperation().getAllAccounts().size() == 0)
 		{
 			try {
-				/**
-				 * Generate a default account, will be replaced by
-				 */
+				
 				ATAccount b2 = getWalletOperation().generateNewStandardAccount(getApplicationParams().getBitcoinNetworkType(),
 						"Default");
 				getWalletOperation().setActiveAccount(b2.getIndex());
@@ -209,7 +243,7 @@ public class Authenticator extends AbstractService{
 			} catch (IOException e) { e.printStackTrace(); }
 		}	
 
-	}
+	}*/
 	
 	//#####################################
 	//

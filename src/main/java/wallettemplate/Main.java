@@ -1,6 +1,8 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
+import authenticator.BAApplicationParameters;
+import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.db.ConfigFile;
 import authenticator.ui_helpers.BAApplication;
 
@@ -50,6 +52,7 @@ public class Main extends BAApplication {
     public static Stage stage;
     public static Authenticator auth;
     public static Stage startup;
+    public static BAApplicationParameters returnedParamsFromSetup;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
@@ -57,7 +60,7 @@ public class Main extends BAApplication {
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
         
-        if(super.BAInit(APP_NAME))
+        if(super.BAInit())
 	        try {
 	            init(mainWindow);
 	        } catch (Throwable t) {
@@ -86,14 +89,14 @@ public class Main extends BAApplication {
         controller = loader.getController();
         // Configure the window with a StackPane so we can overlay things on top of the main UI.
         uiStack = new StackPane(mainUI);
-        mainWindow.setTitle(APP_NAME);
+        mainWindow.setTitle(BAApplication.ApplicationParams.getAppName());
         final Scene scene = new Scene(uiStack, 850, 483);
         final String file = TextFieldValidator.class.getResource("GUI.css").toString();
         scene.getStylesheets().add(file);  // Add CSS that we need.
         mainWindow.setScene(scene);
         stage = mainWindow;
         
-        String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + "WalletTemplate" + ".wallet";
+        String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + ".wallet";
         File f = new File(filePath);
         if(!f.exists()) { 
         	Parent root;
@@ -111,7 +114,13 @@ public class Main extends BAApplication {
         } else {finishLoading();}
     }
     
-    public static void finishLoading() throws IOException{
+    @SuppressWarnings("restriction")
+	public static void finishLoading() throws IOException{
+    	/**
+    	 * If we get returned params from startup, use that
+    	 */
+    	BAApplicationParameters params = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
+    	
     	// Make log output concise.
         BriefLogFormatter.init();
         // Tell bitcoinj to run event handlers on the JavaFX UI thread. This keeps things simple and means
@@ -120,23 +129,10 @@ public class Main extends BAApplication {
         // a future version.
         Threading.USER_THREAD = Platform::runLater;
         // Create the app kit. It won't do any heavyweight initialization until after we start it.
-        /*bitcoin = new WalletAppKit(params, new File("."), APP_NAME);
-        if (params == RegTestParams.get()) {
-            bitcoin.connectToLocalHost();   // You should run a regtest mode bitcoind locally.
-        } else if (params == MainNetParams.get()) {
-            // Checkpoints are block headers that ship inside our app: for a new user, we pick the last header
-            // in the checkpoints file and then download the rest from the network. It makes things much faster.
-            // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
-            // last months worth or more (takes a few seconds).
-            bitcoin.setCheckpoints(getClass().getResourceAsStream("checkpoints"));
-            // As an example!
-            bitcoin.useTor();
-        }*/
         NetworkParameters np = null;
-        String finalAppName = APP_NAME;
-        if(BAApplication.ApplicationParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
+        if(params.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();
-        	bitcoin = new WalletAppKit(np, new File("."), APP_NAME);
+        	bitcoin = new WalletAppKit(np, new File("."), params.getAppName());
             // Checkpoints are block headers that ship inside our app: for a new user, we pick the last header
             // in the checkpoints file and then download the rest from the network. It makes things much faster.
             // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
@@ -145,10 +141,9 @@ public class Main extends BAApplication {
             // As an example!
             bitcoin.useTor();
         }
-        else if(BAApplication.ApplicationParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
+        else if(params.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
-        	finalAppName += "_testnet";
-        	bitcoin = new WalletAppKit(np, new File("."), finalAppName);
+        	bitcoin = new WalletAppKit(np, new File("."), params.getAppName());
         	bitcoin.useTor();
         }
 
@@ -156,19 +151,20 @@ public class Main extends BAApplication {
         // or progress widget to keep the user engaged whilst we initialise, but we don't.
         bitcoin.setDownloadListener(controller.progressBarUpdater())
                .setBlockingStartup(false)
-               .setUserAgent(finalAppName, "1.0");
+               .setUserAgent(params.getAppName(), "1.0");
         bitcoin.startAsync();
         bitcoin.awaitRunning();
         // Don't make the user wait for confirmations for now, as the intention is they're sending it their own money!
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
+        bitcoin.wallet().setKeychainLookaheadSize(0);
         System.out.println(bitcoin.wallet());
        
         
         /**
          * Authenticator Operation Setup
          */
-    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), ApplicationParams);
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params);
     	auth.startAsync();
     	auth.awaitRunning();
     

@@ -167,7 +167,7 @@
  	 * This method implements BIP39 to generate a 512 bit seed from 128 bit checksummed entropy. The seed and the
  	 * mnemonic encoded entropy are saved to internal storage.
  	 */
- 	public static byte[] generateMnemonicSeed(){
+ 	/*public static byte[] generateMnemonicSeed(){
  		//Generate 128 bits entropy.
          SecureRandom secureRandom = null;
  		try {
@@ -191,6 +191,6 @@
  		}
  		byte[] seed = MnemonicCode.toSeed(mnemonic, "");	
  		return seed;		
- 	}
+ 	}*/
  
  }

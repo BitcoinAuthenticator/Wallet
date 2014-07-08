@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -27,8 +28,10 @@ import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.wallet.DeterministicSeed;
 
 import authenticator.Utils.BAUtils;
 import authenticator.hierarchy.BAHierarchy;
@@ -46,7 +49,14 @@ public class PairingTest {
 		 */
 		
 		//create HD key
-		byte[] seed = BAHierarchy.generateMnemonicSeed();
+		//Generate a new Seed
+		SecureRandom secureRandom = null;
+		try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
+		catch (NoSuchAlgorithmException e) {e.printStackTrace();}
+		byte[] bytes = new byte[16];
+		secureRandom.nextBytes(bytes);
+		DeterministicSeed Dseed = new DeterministicSeed(bytes, Utils.currentTimeSeconds());
+		byte[] seed = Dseed.getSecretBytes();
 		HDKeyDerivation HDKey = null;
 		DeterministicKey m = HDKey.createMasterPrivateKey(seed);
 		DeterministicKey pub = m.derive(0);
