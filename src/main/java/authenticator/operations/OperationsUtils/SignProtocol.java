@@ -63,8 +63,8 @@ public class SignProtocol {
 			String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 			ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 			ECKey pubkey = wallet.getECKeyFromAccount(atAdd.getAccountIndex(),
-																						atAdd.getType(),
-																						atAdd.getKeyIndex());
+																	atAdd.getType(),
+																	atAdd.getKeyIndex());
 			
 			pubKeysArr.add(pubkey.getPubKey());
 			indexArr.add(atAdd.getKeyIndex());
