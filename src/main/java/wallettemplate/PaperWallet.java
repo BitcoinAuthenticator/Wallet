@@ -13,6 +13,7 @@ import java.net.URL;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
 
@@ -81,7 +82,13 @@ public class PaperWallet {
         g.drawImage(d, 0, 0, null);
         gBuffImg.dispose();
 			
-        File outputfile = new File("paperwallet.png");
+        // save
+        String filepath = new java.io.File( "." ).getCanonicalPath() + "/" + "paperwallet" + ".png";
+		File wallet = new File(filepath);
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Save Paper Wallet");
+		fileChooser.setInitialFileName("paperwallet.png");
+		File outputfile = fileChooser.showSaveDialog(Main.startup);        
         ImageIO.write(d, "png", outputfile);        
         
         //Desktop dt = Desktop.getDesktop();
