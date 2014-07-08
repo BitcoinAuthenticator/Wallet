@@ -90,9 +90,9 @@ public class SignTransactionTest {
 		Mockito.when(wallet.getNetworkParams()).thenReturn(MainNetParams.get());
 		
 		// inputs
-		inPubKey =  ECKey.fromPrivate("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855".getBytes());
+		inPubKey =  ECKey.fromPrivate(BAUtils.hexStringToByteArray("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85501"));
 		inAddress = inPubKey.toAddress(MainNetParams.get());
-		assert(inAddress.toString().equals("1F3sAm6ZtwLAUnj7d38pGFxtP3RVEvtsbV"));
+		assertTrue(inAddress.toString().equals("15SoHG382McMfyUT9We4mJou7eRGEVXQQj"));
 		bAddress = ATAddress.newBuilder();
 			  bAddress.setAccountIndex(1);
 			  bAddress.setAddressStr(inAddress.toString());
@@ -118,13 +118,56 @@ public class SignTransactionTest {
 		
 	}
 	
+	/**
+	 * Comment out this method for changes in the test
+	 * 
+	 */
+	/*private byte[] prepareTx() throws IOException, NoSuchAlgorithmException, InvalidKeyException{
+		ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>(); pubKeysArr.add(inPubKey.getPubKey());
+		ArrayList<Integer> indexArr = new ArrayList<Integer>(); indexArr.add(bAddress.build().getKeyIndex());
+		
+		SignMessage signMsgPayload = new SignMessage()
+			.setInputNumber(tx.getInputs().size())
+			.setTxString(BAUtils.getStringTransaction(tx))
+			.setKeyIndexArray(pubKeysArr, indexArr)
+			.setVersion(1)
+			.setTestnet(false);
+		byte[] jsonBytes = signMsgPayload.serializeToBytes();
+		
+		Mac mac = Mac.getInstance("HmacSHA256");
+		SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+		mac.init(secretkey);
+		byte[] macbytes = mac.doFinal(jsonBytes);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+		outputStream.write(jsonBytes);
+		outputStream.write(macbytes);
+		byte payload[] = outputStream.toByteArray( );
+		
+		//Encrypt the payload
+		Cipher cipher = null;
+		try {cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");} 
+		 catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
+		 catch (NoSuchPaddingException e) {e.printStackTrace();}
+		 try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
+		 catch (InvalidKeyException e) {e.printStackTrace();}
+		 byte[] cipherBytes = null;
+		 try {cipherBytes = cipher.doFinal(payload);} 
+		 catch (IllegalBlockSizeException e) {e.printStackTrace();} 
+		 catch (BadPaddingException e) {e.printStackTrace();}
+		 
+		 String hexResult = BAUtils.bytesToHex(cipherBytes);
+		 System.out.println("prepareTx() Test new result: " + hexResult);
+		 
+		 return cipherBytes;
+	}*/
+	
 	@Test
 	public void prepareTxTest() {
 		byte[] result = null;
 		try {
 			tx = preparePayToHashTransaction();
 			result = SignProtocol.prepareTX(wallet, tx, pairingID);
-			byte[] expected = BAUtils.hexStringToByteArray("93FBE01C0681D4E88405062FA3C8BEC20414591E006336D8731E643CD055AF750C3A0E478C5E8DC186D57F94FD310C454B40DF676A4531E5AC1B6744BE6DA1142AEB042C048123BD8579570D587CBC9574132594D3E335972E66E6039A60109DE96BC3ADBCA3C2DCF5CE174E5DE87885B674FEE05B5CEF2DC5B93861BE94983AB20FE2FF8AEDE8744CE56F7027237246977725E8538E36EF2239D35DE219FA76588CD3A237E7E5D61DC636E46BB6052FE91CC14CA22D348EEBFB3187B9DAF8AE");//prepareTx();
+			byte[] expected = BAUtils.hexStringToByteArray("93FBE01C0681D4E88405062FA3C8BEC20414591E006336D8731E643CD055AF750C3A0E478C5E8DC186D57F94FD310C454B40DF676A4531E5AC1B6744BE6DA1142AEB042C048123BD8579570D587CBC95EB2221BAA25FCE2359F61C73F2F2981C791C09D7A3636E67AAC922E4DF7870D32CCBD8AF4552838D24227243C60D2D358FA0768ECE3C025B81AA273ADB98CF92832FCA49E28AFFF7F22542565F5AA409EB785800C022059DA4E02BB66D923FF07E29B44B75E27860F798723760DC2D3E");//prepareTx();
 			assertTrue(Arrays.areEqual(result, expected));
 		} catch (Exception e) {
 			e.printStackTrace();
