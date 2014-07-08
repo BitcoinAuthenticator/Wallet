@@ -152,6 +152,7 @@ public class StartupController {
 			 public void handle(MouseEvent t) {
 				 com.sun.javafx.application.PlatformImpl.tkExit();
 				 Platform.exit();
+				 
 			 }
 		 });
 		 btnContinue2.setStyle("-fx-background-color: #badb93;");

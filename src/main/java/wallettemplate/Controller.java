@@ -2,6 +2,7 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
+import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.network.OneName;
 import authenticator.operations.ATOperation;
@@ -1303,13 +1304,16 @@ public class Controller {
             public void handle(ActionEvent e) {
             	ATAddress add;
 				try {
-					add = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.valueProperty().getValue().toString());
+					int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+					ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
+					int index = ca.getKeyIndex();
+					ECKey key = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, HierarchyAddressTypes.External, index);
+					String pubkey = BAUtils.bytesToHex(key.getPubKey());
 					final Clipboard clipboard = Clipboard.getSystemClipboard();
 	                final ClipboardContent content = new ClipboardContent();
-	                content.putString(add.getAddressStr());
+	                content.putString(pubkey);
 	                clipboard.setContent(content);
 				} catch (Exception e1) { }
-            	
             }
         });
         ReceiveHBox.getChildren().add(btnCopy);
