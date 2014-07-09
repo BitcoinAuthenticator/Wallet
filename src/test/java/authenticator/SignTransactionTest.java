@@ -163,10 +163,6 @@ public class SignTransactionTest {
 		po.setKeysN(1);
 		
 		Mockito.when(tx.getOutputs()).thenReturn(outputs);
-				
-		// mocking for the sign complete
-		//Mockito.doNothing().when(wallet).connectInputs(tx.getInputs());
-		//Mockito.doReturn(null).when(wallet).connectInputs(tx.getInputs());
 		
 		return tx;
 		
@@ -225,36 +221,6 @@ public class SignTransactionTest {
 			byte[] expected = BAUtils.hexStringToByteArray("93FBE01C0681D4E88405062FA3C8BEC20414591E006336D8731E643CD055AF750C3A0E478C5E8DC186D57F94FD310C454B40DF676A4531E5AC1B6744BE6DA1142AEB042C048123BD8579570D587CBC95EB2221BAA25FCE2359F61C73F2F2981C791C09D7A3636E67AAC922E4DF7870D32CCBD8AF4552838D24227243C60D2D358FA0768ECE3C025B81AA273ADB98CF92832FCA49E28AFFF7F22542565F5AA409EB785800C022059DA4E02BB66D923FF07E29B44B75E27860F798723760DC2D3E");//prepareTx();
 			// check expected output
 			assertTrue(Arrays.areEqual(result, expected));
-			
-			// Authenticator sig 
-			ArrayList<String> pubKeysArr = new ArrayList<String>(); pubKeysArr.add("02c0f40a12cc1d0abf5a74ee4955c0559e48553469f395c13aaefe0c4ef376bade");
-			ArrayList<Integer> indexArr = new ArrayList<Integer>(); indexArr.add(1);
-			ArrayList<byte[]> sigs = new ArrayList<byte[]>();
-			for (int j=0; j<tx.getInputs().size(); j++){
-				//Derive the private key needed to sign the transaction
-				ArrayList<Integer> index = indexArr;
-				ArrayList<String> walpubkeys = pubKeysArr;
-				HDKeyDerivation HDKey = null;
-				DeterministicKey masterKey = HDKey.createMasterPrivateKey(BAUtils.hexStringToByteArray(authenticatorSeed));
-				DeterministicKey childKey = HDKey.deriveChildKey(masterKey,index.get(j));
-				byte[] privKey = childKey.getPrivKeyBytes();
-				byte[] pubKey = childKey.getPubKey();
-				ECKey authenticatorKey = new ECKey(privKey, pubKey);
-				ECKey walletPubKey = new ECKey(null, BAUtils.hexStringToByteArray(walpubkeys.get(j))); 							
-				List<ECKey> keys = ImmutableList.of(authenticatorKey, walletPubKey);
-				//Create the multisig script we will be using for signing. 
-				Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
-				//Create the signature.
-				Mockito.when(tx.calculateSignature(j, authenticatorKey, scriptpubkey, Transaction.SigHash.ALL, false)).thenCallRealMethod();
-				Mockito.when(tx.hashForSignature(j, scriptpubkey.getProgram(), Transaction.SigHash.ALL, false)).thenCallRealMethod();
-				Sha256Hash ha = tx.hashForSignature(j, scriptpubkey.getProgram(), Transaction.SigHash.ALL, false);
-				TransactionSignature sig2 = tx.calculateSignature(j, authenticatorKey, scriptpubkey, Transaction.SigHash.ALL, false);
-				byte[] signature = sig2.encodeToBitcoin();
-				sigs.add(signature);
-			}
-			
-			SignProtocol.complete(wallet, tx, sigs, po.build());
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
