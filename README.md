@@ -1,7 +1,7 @@
 BitcoinAuthenticator - Wallet
 ====================
 
-###IMPORTANT - This project is under developement.
+###IMPORTANT - This project is under development.
 
 ####What Is This ?
 Bitcoin Authenticator is a P2P bitcoin wallet and [android application](https://github.com/cpacia/BitcoinAuthenticator) for creating a 2 factor transaction authentication and authorization. Bitcoin Authenticator is composed of a desktop wallet and an  [android application](https://github.com/cpacia/BitcoinAuthenticator), by pairing the two together they create an P2SH bitcoin address. Any bitcoins that are transferred to that address will require the authentication and digital signature of both the desktop wallet and the android Authenticator app.
@@ -64,3 +64,6 @@ $ mvn clean compile assembly:single
 8. mixing
 9. Integrate with [OneName](https://onename.io)
 10. Discover scheme for the key hierarchy
+
+
+If you have any questions feel free to contact us: ctpacia@gmail.com (Chris Pacia), alonmuroch@gmail.com (Alon Muroch).
