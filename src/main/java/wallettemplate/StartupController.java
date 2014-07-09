@@ -61,6 +61,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
@@ -113,13 +114,16 @@ public class StartupController {
 	@FXML private Pane BA2;
 	@FXML private Pane BA3;
 	@FXML private Pane BA4;
-	@FXML private Button btnFinished;
+	@FXML private Hyperlink hlFinished;
+	@FXML private ImageView imgSSS;
+	@FXML private Button btnSSS;
 	private DeterministicSeed seed;
 	NetworkParameters params = MainNetParams.get();
 	Authenticator auth;
 	BAApplicationParameters appParams;
 	
 	 public void initialize() {
+		 btnSSS.setPadding(new Insets(-4,0,0,0));
 		 Label labelforward = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labelforward.setPadding(new Insets(0,0,0,6));
 		 btnContinue1.setGraphic(labelforward);
@@ -132,9 +136,6 @@ public class StartupController {
 		 Label labelforward3 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labelforward3.setPadding(new Insets(0,0,0,6));
 		 btnContinue3.setGraphic(labelforward3);
-		 Label labelforward4 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "25");
-		 labelforward4.setPadding(new Insets(0,0,0,3));
-		 btnFinished.setGraphic(labelforward4);
 		 Label labelback2 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelback2.setPadding(new Insets(0,6,0,0));
 		 btnBack2.setGraphic(labelback2);
@@ -349,9 +350,9 @@ public class StartupController {
 			 BA3.setVisible(false);
 			 BA4.setVisible(true);
 			 Animation ani2 = GuiUtils.fadeOut(btnContinue3);
-			 GuiUtils.fadeIn(btnFinished);
+			 GuiUtils.fadeIn(hlFinished);
 			 btnContinue3.setVisible(false);
-			 btnFinished.setVisible(true);
+			 hlFinished.setVisible(true);
 		 } 
 	 }
 	 
@@ -501,7 +502,6 @@ public class StartupController {
 		 if (ckSeed.isSelected()){btnContinue2.setStyle("-fx-background-color: #badb93;");}
 		 btnContinue3.setStyle("-fx-background-color: #badb93;");
 		 btnDone.setStyle("-fx-background-color: #badb93; -fx-text-fill: white;");
-		 btnFinished.setStyle("-fx-background-color: #badb93; -fx-text-fill: white;");
 	 }
 	    
 	 @FXML protected void btnContinueReleased(MouseEvent event) {
@@ -509,7 +509,6 @@ public class StartupController {
 		 if (ckSeed.isSelected()){btnContinue2.setStyle("-fx-background-color: #95d946;");}
 		 btnContinue3.setStyle("-fx-background-color: #95d946;");
 		 btnDone.setStyle("-fx-background-color: #95d946; -fx-text-fill: white;");
-		 btnFinished.setStyle("-fx-background-color: #95d946; -fx-text-fill: white;");
 	 } 
 	 
 
