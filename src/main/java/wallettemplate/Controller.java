@@ -245,12 +245,15 @@ public class Controller {
     			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
     				String newAdd = null;
+    				for (int i=0; i<5; i++){
 					try {
 						newAdd = Authenticator.getWalletOperation()
 								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 								.getAddressStr();
-						AddressBox.getItems().add(0, newAdd);
+						AddressBox.getItems().add(newAdd);
 					} catch (Exception e) { e.printStackTrace(); }
+    				}
+    				AddressBox.setValue(AddressBox.getItems().get(0).toString());
     			}
     		}    
     	});
@@ -1547,12 +1550,14 @@ public class Controller {
     	ArrayList<String> add;
 		try {
 			add = Authenticator.getWalletOperation().getAccountNotUsedAddress(accountIdx,HierarchyAddressTypes.External,10);
-			if(add.size() == 0){
+			if(add.size() < 10){
+				for (int i=0; i<(10-add.size()); i++){
 				String newAdd = Authenticator.getWalletOperation()
 							.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 							.getAddressStr();
 				
 				add.add(newAdd);	
+				}
 	    	}
 			AddressBox.setValue(add.get(0));
 			for (String address : add){
