@@ -7452,51 +7452,55 @@ public final class ProtoConfig {
        */
       int getIndex();
 
-      // required int32 lastExternalIndex = 2;
-      /**
-       * <code>required int32 lastExternalIndex = 2;</code>
-       */
-      boolean hasLastExternalIndex();
-      /**
-       * <code>required int32 lastExternalIndex = 2;</code>
-       */
-      int getLastExternalIndex();
-
       // repeated int32 usedExternalKeys = 3;
       /**
        * <code>repeated int32 usedExternalKeys = 3;</code>
+       *
+       * <pre>
+       *required int32 lastExternalIndex		= 2;
+       * </pre>
        */
       java.util.List<java.lang.Integer> getUsedExternalKeysList();
       /**
        * <code>repeated int32 usedExternalKeys = 3;</code>
+       *
+       * <pre>
+       *required int32 lastExternalIndex		= 2;
+       * </pre>
        */
       int getUsedExternalKeysCount();
       /**
        * <code>repeated int32 usedExternalKeys = 3;</code>
+       *
+       * <pre>
+       *required int32 lastExternalIndex		= 2;
+       * </pre>
        */
       int getUsedExternalKeys(int index);
-
-      // required int32 lastInternalIndex = 4;
-      /**
-       * <code>required int32 lastInternalIndex = 4;</code>
-       */
-      boolean hasLastInternalIndex();
-      /**
-       * <code>required int32 lastInternalIndex = 4;</code>
-       */
-      int getLastInternalIndex();
 
       // repeated int32 usedInternalKeys = 5;
       /**
        * <code>repeated int32 usedInternalKeys = 5;</code>
+       *
+       * <pre>
+       *required int32 lastInternalIndex		= 4;
+       * </pre>
        */
       java.util.List<java.lang.Integer> getUsedInternalKeysList();
       /**
        * <code>repeated int32 usedInternalKeys = 5;</code>
+       *
+       * <pre>
+       *required int32 lastInternalIndex		= 4;
+       * </pre>
        */
       int getUsedInternalKeysCount();
       /**
        * <code>repeated int32 usedInternalKeys = 5;</code>
+       *
+       * <pre>
+       *required int32 lastInternalIndex		= 4;
+       * </pre>
        */
       int getUsedInternalKeys(int index);
 
@@ -7706,15 +7710,10 @@ public final class ProtoConfig {
                 index_ = input.readInt32();
                 break;
               }
-              case 16: {
-                bitField0_ |= 0x00000002;
-                lastExternalIndex_ = input.readInt32();
-                break;
-              }
               case 24: {
-                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
                   usedExternalKeys_ = new java.util.ArrayList<java.lang.Integer>();
-                  mutable_bitField0_ |= 0x00000004;
+                  mutable_bitField0_ |= 0x00000002;
                 }
                 usedExternalKeys_.add(input.readInt32());
                 break;
@@ -7722,9 +7721,9 @@ public final class ProtoConfig {
               case 26: {
                 int length = input.readRawVarint32();
                 int limit = input.pushLimit(length);
-                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
+                if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
                   usedExternalKeys_ = new java.util.ArrayList<java.lang.Integer>();
-                  mutable_bitField0_ |= 0x00000004;
+                  mutable_bitField0_ |= 0x00000002;
                 }
                 while (input.getBytesUntilLimit() > 0) {
                   usedExternalKeys_.add(input.readInt32());
@@ -7732,15 +7731,10 @@ public final class ProtoConfig {
                 input.popLimit(limit);
                 break;
               }
-              case 32: {
-                bitField0_ |= 0x00000004;
-                lastInternalIndex_ = input.readInt32();
-                break;
-              }
               case 40: {
-                if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
                   usedInternalKeys_ = new java.util.ArrayList<java.lang.Integer>();
-                  mutable_bitField0_ |= 0x00000010;
+                  mutable_bitField0_ |= 0x00000004;
                 }
                 usedInternalKeys_.add(input.readInt32());
                 break;
@@ -7748,9 +7742,9 @@ public final class ProtoConfig {
               case 42: {
                 int length = input.readRawVarint32();
                 int limit = input.pushLimit(length);
-                if (!((mutable_bitField0_ & 0x00000010) == 0x00000010) && input.getBytesUntilLimit() > 0) {
+                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
                   usedInternalKeys_ = new java.util.ArrayList<java.lang.Integer>();
-                  mutable_bitField0_ |= 0x00000010;
+                  mutable_bitField0_ |= 0x00000004;
                 }
                 while (input.getBytesUntilLimit() > 0) {
                   usedInternalKeys_.add(input.readInt32());
@@ -7759,33 +7753,33 @@ public final class ProtoConfig {
                 break;
               }
               case 48: {
-                bitField0_ |= 0x00000008;
+                bitField0_ |= 0x00000002;
                 confirmedBalance_ = input.readSInt64();
                 break;
               }
               case 56: {
-                bitField0_ |= 0x00000010;
+                bitField0_ |= 0x00000004;
                 unConfirmedBalance_ = input.readSInt64();
                 break;
               }
               case 66: {
-                if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+                if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
                   pendingOutTx_ = new com.google.protobuf.LazyStringArrayList();
-                  mutable_bitField0_ |= 0x00000080;
+                  mutable_bitField0_ |= 0x00000020;
                 }
                 pendingOutTx_.add(input.readBytes());
                 break;
               }
               case 74: {
-                if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+                if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
                   pendingInTx_ = new com.google.protobuf.LazyStringArrayList();
-                  mutable_bitField0_ |= 0x00000100;
+                  mutable_bitField0_ |= 0x00000040;
                 }
                 pendingInTx_.add(input.readBytes());
                 break;
               }
               case 80: {
-                bitField0_ |= 0x00000020;
+                bitField0_ |= 0x00000008;
                 networkType_ = input.readInt32();
                 break;
               }
@@ -7795,13 +7789,13 @@ public final class ProtoConfig {
                 if (value == null) {
                   unknownFields.mergeVarintField(11, rawValue);
                 } else {
-                  bitField0_ |= 0x00000040;
+                  bitField0_ |= 0x00000010;
                   accountType_ = value;
                 }
                 break;
               }
               case 98: {
-                bitField0_ |= 0x00000080;
+                bitField0_ |= 0x00000020;
                 accountName_ = input.readBytes();
                 break;
               }
@@ -7813,16 +7807,16 @@ public final class ProtoConfig {
           throw new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this);
         } finally {
-          if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
             usedExternalKeys_ = java.util.Collections.unmodifiableList(usedExternalKeys_);
           }
-          if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+          if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
             usedInternalKeys_ = java.util.Collections.unmodifiableList(usedInternalKeys_);
           }
-          if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+          if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
             pendingOutTx_ = new com.google.protobuf.UnmodifiableLazyStringList(pendingOutTx_);
           }
-          if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+          if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
             pendingInTx_ = new com.google.protobuf.UnmodifiableLazyStringList(pendingInTx_);
           }
           this.unknownFields = unknownFields.build();
@@ -7873,27 +7867,15 @@ public final class ProtoConfig {
         return index_;
       }
 
-      // required int32 lastExternalIndex = 2;
-      public static final int LASTEXTERNALINDEX_FIELD_NUMBER = 2;
-      private int lastExternalIndex_;
-      /**
-       * <code>required int32 lastExternalIndex = 2;</code>
-       */
-      public boolean hasLastExternalIndex() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required int32 lastExternalIndex = 2;</code>
-       */
-      public int getLastExternalIndex() {
-        return lastExternalIndex_;
-      }
-
       // repeated int32 usedExternalKeys = 3;
       public static final int USEDEXTERNALKEYS_FIELD_NUMBER = 3;
       private java.util.List<java.lang.Integer> usedExternalKeys_;
       /**
        * <code>repeated int32 usedExternalKeys = 3;</code>
+       *
+       * <pre>
+       *required int32 lastExternalIndex		= 2;
+       * </pre>
        */
       public java.util.List<java.lang.Integer>
           getUsedExternalKeysList() {
@@ -7901,31 +7883,23 @@ public final class ProtoConfig {
       }
       /**
        * <code>repeated int32 usedExternalKeys = 3;</code>
+       *
+       * <pre>
+       *required int32 lastExternalIndex		= 2;
+       * </pre>
        */
       public int getUsedExternalKeysCount() {
         return usedExternalKeys_.size();
       }
       /**
        * <code>repeated int32 usedExternalKeys = 3;</code>
+       *
+       * <pre>
+       *required int32 lastExternalIndex		= 2;
+       * </pre>
        */
       public int getUsedExternalKeys(int index) {
         return usedExternalKeys_.get(index);
-      }
-
-      // required int32 lastInternalIndex = 4;
-      public static final int LASTINTERNALINDEX_FIELD_NUMBER = 4;
-      private int lastInternalIndex_;
-      /**
-       * <code>required int32 lastInternalIndex = 4;</code>
-       */
-      public boolean hasLastInternalIndex() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required int32 lastInternalIndex = 4;</code>
-       */
-      public int getLastInternalIndex() {
-        return lastInternalIndex_;
       }
 
       // repeated int32 usedInternalKeys = 5;
@@ -7933,6 +7907,10 @@ public final class ProtoConfig {
       private java.util.List<java.lang.Integer> usedInternalKeys_;
       /**
        * <code>repeated int32 usedInternalKeys = 5;</code>
+       *
+       * <pre>
+       *required int32 lastInternalIndex		= 4;
+       * </pre>
        */
       public java.util.List<java.lang.Integer>
           getUsedInternalKeysList() {
@@ -7940,12 +7918,20 @@ public final class ProtoConfig {
       }
       /**
        * <code>repeated int32 usedInternalKeys = 5;</code>
+       *
+       * <pre>
+       *required int32 lastInternalIndex		= 4;
+       * </pre>
        */
       public int getUsedInternalKeysCount() {
         return usedInternalKeys_.size();
       }
       /**
        * <code>repeated int32 usedInternalKeys = 5;</code>
+       *
+       * <pre>
+       *required int32 lastInternalIndex		= 4;
+       * </pre>
        */
       public int getUsedInternalKeys(int index) {
         return usedInternalKeys_.get(index);
@@ -7961,7 +7947,7 @@ public final class ProtoConfig {
        * </pre>
        */
       public boolean hasConfirmedBalance() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required sint64 confirmedBalance = 6;</code>
@@ -7980,7 +7966,7 @@ public final class ProtoConfig {
        * <code>required sint64 unConfirmedBalance = 7;</code>
        */
       public boolean hasUnConfirmedBalance() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required sint64 unConfirmedBalance = 7;</code>
@@ -8087,7 +8073,7 @@ public final class ProtoConfig {
        * </pre>
        */
       public boolean hasNetworkType() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
        * <code>required int32 networkType = 10;</code>
@@ -8109,7 +8095,7 @@ public final class ProtoConfig {
        * </pre>
        */
       public boolean hasAccountType() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>required .authenticator.protobuf.WalletAccountType accountType = 11;</code>
@@ -8131,7 +8117,7 @@ public final class ProtoConfig {
        * </pre>
        */
       public boolean hasAccountName() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
        * <code>required string accountName = 12;</code>
@@ -8175,9 +8161,7 @@ public final class ProtoConfig {
 
       private void initFields() {
         index_ = 0;
-        lastExternalIndex_ = 0;
         usedExternalKeys_ = java.util.Collections.emptyList();
-        lastInternalIndex_ = 0;
         usedInternalKeys_ = java.util.Collections.emptyList();
         confirmedBalance_ = 0L;
         unConfirmedBalance_ = 0L;
@@ -8193,14 +8177,6 @@ public final class ProtoConfig {
         if (isInitialized != -1) return isInitialized == 1;
 
         if (!hasIndex()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-        if (!hasLastExternalIndex()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-        if (!hasLastInternalIndex()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -8234,22 +8210,16 @@ public final class ProtoConfig {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           output.writeInt32(1, index_);
         }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeInt32(2, lastExternalIndex_);
-        }
         for (int i = 0; i < usedExternalKeys_.size(); i++) {
           output.writeInt32(3, usedExternalKeys_.get(i));
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          output.writeInt32(4, lastInternalIndex_);
         }
         for (int i = 0; i < usedInternalKeys_.size(); i++) {
           output.writeInt32(5, usedInternalKeys_.get(i));
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeSInt64(6, confirmedBalance_);
         }
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeSInt64(7, unConfirmedBalance_);
         }
         for (int i = 0; i < pendingOutTx_.size(); i++) {
@@ -8258,13 +8228,13 @@ public final class ProtoConfig {
         for (int i = 0; i < pendingInTx_.size(); i++) {
           output.writeBytes(9, pendingInTx_.getByteString(i));
         }
-        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
           output.writeInt32(10, networkType_);
         }
-        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
           output.writeEnum(11, accountType_.getNumber());
         }
-        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
           output.writeBytes(12, getAccountNameBytes());
         }
         getUnknownFields().writeTo(output);
@@ -8280,10 +8250,6 @@ public final class ProtoConfig {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(1, index_);
         }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(2, lastExternalIndex_);
-        }
         {
           int dataSize = 0;
           for (int i = 0; i < usedExternalKeys_.size(); i++) {
@@ -8292,10 +8258,6 @@ public final class ProtoConfig {
           }
           size += dataSize;
           size += 1 * getUsedExternalKeysList().size();
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(4, lastInternalIndex_);
         }
         {
           int dataSize = 0;
@@ -8306,11 +8268,11 @@ public final class ProtoConfig {
           size += dataSize;
           size += 1 * getUsedInternalKeysList().size();
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
             .computeSInt64Size(6, confirmedBalance_);
         }
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
             .computeSInt64Size(7, unConfirmedBalance_);
         }
@@ -8332,15 +8294,15 @@ public final class ProtoConfig {
           size += dataSize;
           size += 1 * getPendingInTxList().size();
         }
-        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(10, networkType_);
         }
-        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(11, accountType_.getNumber());
         }
-        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBytesSize(12, getAccountNameBytes());
         }
@@ -8462,28 +8424,24 @@ public final class ProtoConfig {
           super.clear();
           index_ = 0;
           bitField0_ = (bitField0_ & ~0x00000001);
-          lastExternalIndex_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000002);
           usedExternalKeys_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
-          lastInternalIndex_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000002);
           usedInternalKeys_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000004);
           confirmedBalance_ = 0L;
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000008);
           unConfirmedBalance_ = 0L;
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000010);
           pendingOutTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000020);
           pendingInTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000040);
           networkType_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000200);
+          bitField0_ = (bitField0_ & ~0x00000080);
           accountType_ = authenticator.protobuf.ProtoConfig.WalletAccountType.StandardAccount;
-          bitField0_ = (bitField0_ & ~0x00000400);
+          bitField0_ = (bitField0_ & ~0x00000100);
           accountName_ = "";
-          bitField0_ = (bitField0_ & ~0x00000800);
+          bitField0_ = (bitField0_ & ~0x00000200);
           return this;
         }
 
@@ -8516,54 +8474,46 @@ public final class ProtoConfig {
             to_bitField0_ |= 0x00000001;
           }
           result.index_ = index_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.lastExternalIndex_ = lastExternalIndex_;
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
             usedExternalKeys_ = java.util.Collections.unmodifiableList(usedExternalKeys_);
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000002);
           }
           result.usedExternalKeys_ = usedExternalKeys_;
-          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-            to_bitField0_ |= 0x00000004;
-          }
-          result.lastInternalIndex_ = lastInternalIndex_;
-          if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
             usedInternalKeys_ = java.util.Collections.unmodifiableList(usedInternalKeys_);
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000004);
           }
           result.usedInternalKeys_ = usedInternalKeys_;
-          if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-            to_bitField0_ |= 0x00000008;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000002;
           }
           result.confirmedBalance_ = confirmedBalance_;
-          if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-            to_bitField0_ |= 0x00000010;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000004;
           }
           result.unConfirmedBalance_ = unConfirmedBalance_;
-          if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          if (((bitField0_ & 0x00000020) == 0x00000020)) {
             pendingOutTx_ = new com.google.protobuf.UnmodifiableLazyStringList(
                 pendingOutTx_);
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000020);
           }
           result.pendingOutTx_ = pendingOutTx_;
-          if (((bitField0_ & 0x00000100) == 0x00000100)) {
+          if (((bitField0_ & 0x00000040) == 0x00000040)) {
             pendingInTx_ = new com.google.protobuf.UnmodifiableLazyStringList(
                 pendingInTx_);
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000040);
           }
           result.pendingInTx_ = pendingInTx_;
-          if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-            to_bitField0_ |= 0x00000020;
+          if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+            to_bitField0_ |= 0x00000008;
           }
           result.networkType_ = networkType_;
-          if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-            to_bitField0_ |= 0x00000040;
+          if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+            to_bitField0_ |= 0x00000010;
           }
           result.accountType_ = accountType_;
-          if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-            to_bitField0_ |= 0x00000080;
+          if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+            to_bitField0_ |= 0x00000020;
           }
           result.accountName_ = accountName_;
           result.bitField0_ = to_bitField0_;
@@ -8585,26 +8535,20 @@ public final class ProtoConfig {
           if (other.hasIndex()) {
             setIndex(other.getIndex());
           }
-          if (other.hasLastExternalIndex()) {
-            setLastExternalIndex(other.getLastExternalIndex());
-          }
           if (!other.usedExternalKeys_.isEmpty()) {
             if (usedExternalKeys_.isEmpty()) {
               usedExternalKeys_ = other.usedExternalKeys_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000002);
             } else {
               ensureUsedExternalKeysIsMutable();
               usedExternalKeys_.addAll(other.usedExternalKeys_);
             }
             onChanged();
           }
-          if (other.hasLastInternalIndex()) {
-            setLastInternalIndex(other.getLastInternalIndex());
-          }
           if (!other.usedInternalKeys_.isEmpty()) {
             if (usedInternalKeys_.isEmpty()) {
               usedInternalKeys_ = other.usedInternalKeys_;
-              bitField0_ = (bitField0_ & ~0x00000010);
+              bitField0_ = (bitField0_ & ~0x00000004);
             } else {
               ensureUsedInternalKeysIsMutable();
               usedInternalKeys_.addAll(other.usedInternalKeys_);
@@ -8620,7 +8564,7 @@ public final class ProtoConfig {
           if (!other.pendingOutTx_.isEmpty()) {
             if (pendingOutTx_.isEmpty()) {
               pendingOutTx_ = other.pendingOutTx_;
-              bitField0_ = (bitField0_ & ~0x00000080);
+              bitField0_ = (bitField0_ & ~0x00000020);
             } else {
               ensurePendingOutTxIsMutable();
               pendingOutTx_.addAll(other.pendingOutTx_);
@@ -8630,7 +8574,7 @@ public final class ProtoConfig {
           if (!other.pendingInTx_.isEmpty()) {
             if (pendingInTx_.isEmpty()) {
               pendingInTx_ = other.pendingInTx_;
-              bitField0_ = (bitField0_ & ~0x00000100);
+              bitField0_ = (bitField0_ & ~0x00000040);
             } else {
               ensurePendingInTxIsMutable();
               pendingInTx_.addAll(other.pendingInTx_);
@@ -8644,7 +8588,7 @@ public final class ProtoConfig {
             setAccountType(other.getAccountType());
           }
           if (other.hasAccountName()) {
-            bitField0_ |= 0x00000800;
+            bitField0_ |= 0x00000200;
             accountName_ = other.accountName_;
             onChanged();
           }
@@ -8654,14 +8598,6 @@ public final class ProtoConfig {
 
         public final boolean isInitialized() {
           if (!hasIndex()) {
-            
-            return false;
-          }
-          if (!hasLastExternalIndex()) {
-            
-            return false;
-          }
-          if (!hasLastInternalIndex()) {
             
             return false;
           }
@@ -8740,49 +8676,20 @@ public final class ProtoConfig {
           return this;
         }
 
-        // required int32 lastExternalIndex = 2;
-        private int lastExternalIndex_ ;
-        /**
-         * <code>required int32 lastExternalIndex = 2;</code>
-         */
-        public boolean hasLastExternalIndex() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>required int32 lastExternalIndex = 2;</code>
-         */
-        public int getLastExternalIndex() {
-          return lastExternalIndex_;
-        }
-        /**
-         * <code>required int32 lastExternalIndex = 2;</code>
-         */
-        public Builder setLastExternalIndex(int value) {
-          bitField0_ |= 0x00000002;
-          lastExternalIndex_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>required int32 lastExternalIndex = 2;</code>
-         */
-        public Builder clearLastExternalIndex() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          lastExternalIndex_ = 0;
-          onChanged();
-          return this;
-        }
-
         // repeated int32 usedExternalKeys = 3;
         private java.util.List<java.lang.Integer> usedExternalKeys_ = java.util.Collections.emptyList();
         private void ensureUsedExternalKeysIsMutable() {
-          if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          if (!((bitField0_ & 0x00000002) == 0x00000002)) {
             usedExternalKeys_ = new java.util.ArrayList<java.lang.Integer>(usedExternalKeys_);
-            bitField0_ |= 0x00000004;
+            bitField0_ |= 0x00000002;
            }
         }
         /**
          * <code>repeated int32 usedExternalKeys = 3;</code>
+         *
+         * <pre>
+         *required int32 lastExternalIndex		= 2;
+         * </pre>
          */
         public java.util.List<java.lang.Integer>
             getUsedExternalKeysList() {
@@ -8790,18 +8697,30 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedExternalKeys = 3;</code>
+         *
+         * <pre>
+         *required int32 lastExternalIndex		= 2;
+         * </pre>
          */
         public int getUsedExternalKeysCount() {
           return usedExternalKeys_.size();
         }
         /**
          * <code>repeated int32 usedExternalKeys = 3;</code>
+         *
+         * <pre>
+         *required int32 lastExternalIndex		= 2;
+         * </pre>
          */
         public int getUsedExternalKeys(int index) {
           return usedExternalKeys_.get(index);
         }
         /**
          * <code>repeated int32 usedExternalKeys = 3;</code>
+         *
+         * <pre>
+         *required int32 lastExternalIndex		= 2;
+         * </pre>
          */
         public Builder setUsedExternalKeys(
             int index, int value) {
@@ -8812,6 +8731,10 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedExternalKeys = 3;</code>
+         *
+         * <pre>
+         *required int32 lastExternalIndex		= 2;
+         * </pre>
          */
         public Builder addUsedExternalKeys(int value) {
           ensureUsedExternalKeysIsMutable();
@@ -8821,6 +8744,10 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedExternalKeys = 3;</code>
+         *
+         * <pre>
+         *required int32 lastExternalIndex		= 2;
+         * </pre>
          */
         public Builder addAllUsedExternalKeys(
             java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -8831,43 +8758,14 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedExternalKeys = 3;</code>
+         *
+         * <pre>
+         *required int32 lastExternalIndex		= 2;
+         * </pre>
          */
         public Builder clearUsedExternalKeys() {
           usedExternalKeys_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
-          onChanged();
-          return this;
-        }
-
-        // required int32 lastInternalIndex = 4;
-        private int lastInternalIndex_ ;
-        /**
-         * <code>required int32 lastInternalIndex = 4;</code>
-         */
-        public boolean hasLastInternalIndex() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-        /**
-         * <code>required int32 lastInternalIndex = 4;</code>
-         */
-        public int getLastInternalIndex() {
-          return lastInternalIndex_;
-        }
-        /**
-         * <code>required int32 lastInternalIndex = 4;</code>
-         */
-        public Builder setLastInternalIndex(int value) {
-          bitField0_ |= 0x00000008;
-          lastInternalIndex_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>required int32 lastInternalIndex = 4;</code>
-         */
-        public Builder clearLastInternalIndex() {
-          bitField0_ = (bitField0_ & ~0x00000008);
-          lastInternalIndex_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
           return this;
         }
@@ -8875,13 +8773,17 @@ public final class ProtoConfig {
         // repeated int32 usedInternalKeys = 5;
         private java.util.List<java.lang.Integer> usedInternalKeys_ = java.util.Collections.emptyList();
         private void ensureUsedInternalKeysIsMutable() {
-          if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+          if (!((bitField0_ & 0x00000004) == 0x00000004)) {
             usedInternalKeys_ = new java.util.ArrayList<java.lang.Integer>(usedInternalKeys_);
-            bitField0_ |= 0x00000010;
+            bitField0_ |= 0x00000004;
            }
         }
         /**
          * <code>repeated int32 usedInternalKeys = 5;</code>
+         *
+         * <pre>
+         *required int32 lastInternalIndex		= 4;
+         * </pre>
          */
         public java.util.List<java.lang.Integer>
             getUsedInternalKeysList() {
@@ -8889,18 +8791,30 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedInternalKeys = 5;</code>
+         *
+         * <pre>
+         *required int32 lastInternalIndex		= 4;
+         * </pre>
          */
         public int getUsedInternalKeysCount() {
           return usedInternalKeys_.size();
         }
         /**
          * <code>repeated int32 usedInternalKeys = 5;</code>
+         *
+         * <pre>
+         *required int32 lastInternalIndex		= 4;
+         * </pre>
          */
         public int getUsedInternalKeys(int index) {
           return usedInternalKeys_.get(index);
         }
         /**
          * <code>repeated int32 usedInternalKeys = 5;</code>
+         *
+         * <pre>
+         *required int32 lastInternalIndex		= 4;
+         * </pre>
          */
         public Builder setUsedInternalKeys(
             int index, int value) {
@@ -8911,6 +8825,10 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedInternalKeys = 5;</code>
+         *
+         * <pre>
+         *required int32 lastInternalIndex		= 4;
+         * </pre>
          */
         public Builder addUsedInternalKeys(int value) {
           ensureUsedInternalKeysIsMutable();
@@ -8920,6 +8838,10 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedInternalKeys = 5;</code>
+         *
+         * <pre>
+         *required int32 lastInternalIndex		= 4;
+         * </pre>
          */
         public Builder addAllUsedInternalKeys(
             java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -8930,10 +8852,14 @@ public final class ProtoConfig {
         }
         /**
          * <code>repeated int32 usedInternalKeys = 5;</code>
+         *
+         * <pre>
+         *required int32 lastInternalIndex		= 4;
+         * </pre>
          */
         public Builder clearUsedInternalKeys() {
           usedInternalKeys_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000004);
           onChanged();
           return this;
         }
@@ -8947,7 +8873,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public boolean hasConfirmedBalance() {
-          return ((bitField0_ & 0x00000020) == 0x00000020);
+          return ((bitField0_ & 0x00000008) == 0x00000008);
         }
         /**
          * <code>required sint64 confirmedBalance = 6;</code>
@@ -8965,7 +8891,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public Builder setConfirmedBalance(long value) {
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000008;
           confirmedBalance_ = value;
           onChanged();
           return this;
@@ -8977,7 +8903,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public Builder clearConfirmedBalance() {
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000008);
           confirmedBalance_ = 0L;
           onChanged();
           return this;
@@ -8989,7 +8915,7 @@ public final class ProtoConfig {
          * <code>required sint64 unConfirmedBalance = 7;</code>
          */
         public boolean hasUnConfirmedBalance() {
-          return ((bitField0_ & 0x00000040) == 0x00000040);
+          return ((bitField0_ & 0x00000010) == 0x00000010);
         }
         /**
          * <code>required sint64 unConfirmedBalance = 7;</code>
@@ -9001,7 +8927,7 @@ public final class ProtoConfig {
          * <code>required sint64 unConfirmedBalance = 7;</code>
          */
         public Builder setUnConfirmedBalance(long value) {
-          bitField0_ |= 0x00000040;
+          bitField0_ |= 0x00000010;
           unConfirmedBalance_ = value;
           onChanged();
           return this;
@@ -9010,7 +8936,7 @@ public final class ProtoConfig {
          * <code>required sint64 unConfirmedBalance = 7;</code>
          */
         public Builder clearUnConfirmedBalance() {
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000010);
           unConfirmedBalance_ = 0L;
           onChanged();
           return this;
@@ -9019,9 +8945,9 @@ public final class ProtoConfig {
         // repeated string pendingOutTx = 8;
         private com.google.protobuf.LazyStringList pendingOutTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         private void ensurePendingOutTxIsMutable() {
-          if (!((bitField0_ & 0x00000080) == 0x00000080)) {
+          if (!((bitField0_ & 0x00000020) == 0x00000020)) {
             pendingOutTx_ = new com.google.protobuf.LazyStringArrayList(pendingOutTx_);
-            bitField0_ |= 0x00000080;
+            bitField0_ |= 0x00000020;
            }
         }
         /**
@@ -9115,7 +9041,7 @@ public final class ProtoConfig {
          */
         public Builder clearPendingOutTx() {
           pendingOutTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000020);
           onChanged();
           return this;
         }
@@ -9139,9 +9065,9 @@ public final class ProtoConfig {
         // repeated string pendingInTx = 9;
         private com.google.protobuf.LazyStringList pendingInTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         private void ensurePendingInTxIsMutable() {
-          if (!((bitField0_ & 0x00000100) == 0x00000100)) {
+          if (!((bitField0_ & 0x00000040) == 0x00000040)) {
             pendingInTx_ = new com.google.protobuf.LazyStringArrayList(pendingInTx_);
-            bitField0_ |= 0x00000100;
+            bitField0_ |= 0x00000040;
            }
         }
         /**
@@ -9243,7 +9169,7 @@ public final class ProtoConfig {
          */
         public Builder clearPendingInTx() {
           pendingInTx_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000040);
           onChanged();
           return this;
         }
@@ -9274,7 +9200,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public boolean hasNetworkType() {
-          return ((bitField0_ & 0x00000200) == 0x00000200);
+          return ((bitField0_ & 0x00000080) == 0x00000080);
         }
         /**
          * <code>required int32 networkType = 10;</code>
@@ -9292,7 +9218,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public Builder setNetworkType(int value) {
-          bitField0_ |= 0x00000200;
+          bitField0_ |= 0x00000080;
           networkType_ = value;
           onChanged();
           return this;
@@ -9304,7 +9230,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public Builder clearNetworkType() {
-          bitField0_ = (bitField0_ & ~0x00000200);
+          bitField0_ = (bitField0_ & ~0x00000080);
           networkType_ = 0;
           onChanged();
           return this;
@@ -9319,7 +9245,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public boolean hasAccountType() {
-          return ((bitField0_ & 0x00000400) == 0x00000400);
+          return ((bitField0_ & 0x00000100) == 0x00000100);
         }
         /**
          * <code>required .authenticator.protobuf.WalletAccountType accountType = 11;</code>
@@ -9340,7 +9266,7 @@ public final class ProtoConfig {
           if (value == null) {
             throw new NullPointerException();
           }
-          bitField0_ |= 0x00000400;
+          bitField0_ |= 0x00000100;
           accountType_ = value;
           onChanged();
           return this;
@@ -9352,7 +9278,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public Builder clearAccountType() {
-          bitField0_ = (bitField0_ & ~0x00000400);
+          bitField0_ = (bitField0_ & ~0x00000100);
           accountType_ = authenticator.protobuf.ProtoConfig.WalletAccountType.StandardAccount;
           onChanged();
           return this;
@@ -9367,7 +9293,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public boolean hasAccountName() {
-          return ((bitField0_ & 0x00000800) == 0x00000800);
+          return ((bitField0_ & 0x00000200) == 0x00000200);
         }
         /**
          * <code>required string accountName = 12;</code>
@@ -9416,7 +9342,7 @@ public final class ProtoConfig {
           if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000800;
+  bitField0_ |= 0x00000200;
           accountName_ = value;
           onChanged();
           return this;
@@ -9428,7 +9354,7 @@ public final class ProtoConfig {
          * </pre>
          */
         public Builder clearAccountName() {
-          bitField0_ = (bitField0_ & ~0x00000800);
+          bitField0_ = (bitField0_ & ~0x00000200);
           accountName_ = getDefaultInstance().getAccountName();
           onChanged();
           return this;
@@ -9444,7 +9370,7 @@ public final class ProtoConfig {
           if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000800;
+  bitField0_ |= 0x00000200;
           accountName_ = value;
           onChanged();
           return this;
@@ -11355,7 +11281,7 @@ public final class ProtoConfig {
       "uf.PendingRequest.Contract\032n\n\010Contract\022%" +
       "\n\035ShouldSendPayloadOnConnection\030\001 \001(\010\022;\n" +
       "3ShouldReceivePayloadAfterSendingPayload" +
-      "OnConnection\030\002 \001(\010\"\213\013\n\032AuthenticatorConf",
+      "OnConnection\030\002 \001(\010\"\325\n\n\032AuthenticatorConf",
       "iguration\022c\n\023configActiveAccount\030\001 \001(\0132F" +
       ".authenticator.protobuf.AuthenticatorCon" +
       "figuration.ConfigActiveAccount\022o\n\031config" +
@@ -11380,25 +11306,23 @@ public final class ProtoConfig {
       "otobuf.PendingRequest\032z\n\024ConfigOneNamePr" +
       "ofile\022\017\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatt" +
       "ed\030\002 \001(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025on" +
-      "enameAvatarFilePath\030\004 \001(\t\032\317\002\n\tATAccount\022" +
-      "\r\n\005index\030\001 \002(\005\022\031\n\021lastExternalIndex\030\002 \002(" +
-      "\005\022\030\n\020usedExternalKeys\030\003 \003(\005\022\031\n\021lastInter" +
-      "nalIndex\030\004 \002(\005\022\030\n\020usedInternalKeys\030\005 \003(\005" +
-      "\022\030\n\020confirmedBalance\030\006 \002(\022\022\032\n\022unConfirme" +
-      "dBalance\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013",
-      "pendingInTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005\022>" +
-      "\n\013accountType\030\013 \002(\0162).authenticator.prot" +
-      "obuf.WalletAccountType\022\023\n\013accountName\030\014 " +
-      "\002(\t\032K\n\tHierarchy\022\025\n\rhierarchySeed\030\001 \002(\014\022" +
-      "\'\n\037hierarchyNextAvailableAccountID\030\002 \002(\005" +
-      "*;\n\020ATGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027Upda" +
-      "tePendingRequestIPs\020\004*\217\001\n\017ATOperationTyp" +
-      "e\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBro" +
-      "adcastAuthenticatorTx\020\002\022\025\n\021BroadcastNorm" +
-      "alTx\020\003\022\'\n#updateIpAddressesForPreviousMe",
-      "ssage\020\004*B\n\021WalletAccountType\022\023\n\017Standard" +
-      "Account\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013P" +
-      "rotoConfig"
+      "enameAvatarFilePath\030\004 \001(\t\032\231\002\n\tATAccount\022" +
+      "\r\n\005index\030\001 \002(\005\022\030\n\020usedExternalKeys\030\003 \003(\005" +
+      "\022\030\n\020usedInternalKeys\030\005 \003(\005\022\030\n\020confirmedB" +
+      "alance\030\006 \002(\022\022\032\n\022unConfirmedBalance\030\007 \002(\022" +
+      "\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013pendingInTx\030\t " +
+      "\003(\t\022\023\n\013networkType\030\n \002(\005\022>\n\013accountType\030",
+      "\013 \002(\0162).authenticator.protobuf.WalletAcc" +
+      "ountType\022\023\n\013accountName\030\014 \002(\t\032K\n\tHierarc" +
+      "hy\022\025\n\rhierarchySeed\030\001 \002(\014\022\'\n\037hierarchyNe" +
+      "xtAvailableAccountID\030\002 \002(\005*;\n\020ATGCMMessa" +
+      "geType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingReque" +
+      "stIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000" +
+      "\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAuthenti" +
+      "catorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#upda" +
+      "teIpAddressesForPreviousMessage\020\004*B\n\021Wal" +
+      "letAccountType\022\023\n\017StandardAccount\020\000\022\030\n\024A",
+      "uthenticatorAccount\020\001B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -11458,7 +11382,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_ATAccount_descriptor,
-              new java.lang.String[] { "Index", "LastExternalIndex", "UsedExternalKeys", "LastInternalIndex", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "PendingOutTx", "PendingInTx", "NetworkType", "AccountType", "AccountName", });
+              new java.lang.String[] { "Index", "UsedExternalKeys", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "PendingOutTx", "PendingInTx", "NetworkType", "AccountType", "AccountName", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(4);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_fieldAccessorTable = new

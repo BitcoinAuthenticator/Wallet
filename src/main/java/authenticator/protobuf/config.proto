@@ -107,9 +107,9 @@ message AuthenticatorConfiguration{
 
 	message ATAccount {
 		required int32 index					= 1;
-		required int32 lastExternalIndex		= 2;
+		//required int32 lastExternalIndex		= 2;
 		repeated int32 usedExternalKeys 		= 3;
-		required int32 lastInternalIndex		= 4;
+		//required int32 lastInternalIndex		= 4;
 		repeated int32 usedInternalKeys 		= 5; 
 		//
 		required sint64 confirmedBalance		= 6;

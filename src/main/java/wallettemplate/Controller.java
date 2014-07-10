@@ -240,23 +240,25 @@ public class Controller {
 		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
 		
 		//Receive address
-		AddressBox.valueProperty().addListener(new ChangeListener<String>() {
+		/*AddressBox.valueProperty().addListener(new ChangeListener<String>() {
     		@Override public void changed(ObservableValue ov, String t, String t1) {
     			if(t1 != null && t1.length() > 0)
     			if (t1.substring(0,1).equals(" ")){
     				String newAdd = null;
-    				for (int i=0; i<5; i++){
+    				AddressBox.getItems().clear();
+    				for (int i=0; i<10; i++){
 					try {
 						newAdd = Authenticator.getWalletOperation()
 								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 								.getAddressStr();
-						AddressBox.getItems().add(newAdd);
+						AddressBox.getItems().add(0,newAdd);
 					} catch (Exception e) { e.printStackTrace(); }
     				}
     				AddressBox.setValue(AddressBox.getItems().get(0).toString());
+    				AddressBox.getItems().addAll("                                More");
     			}
     		}    
-    	});
+    	});*/
 
 		// accounts choice box
 		AccountBox.valueProperty().addListener(new ChangeListener<String>() {
@@ -940,9 +942,10 @@ public class Controller {
             }
     		
     		// get input addresses / change address
-    		ArrayList<String> addresses = Authenticator.getWalletOperation().getAccountAddresses(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
-					    				HierarchyAddressTypes.External,
-					    				-1);
+    		ArrayList<String> addresses = Authenticator.
+						    				getWalletOperation().
+						    				getAccountUsedAddressesString(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
+											    				HierarchyAddressTypes.External);
     		String changeaddr = Authenticator.getWalletOperation()
 								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 								.getAddressStr();
@@ -1051,7 +1054,15 @@ public class Controller {
 
 				});
 				Authenticator.operationsQueue.add(op);
-			} catch (NoSuchAlgorithmException | AddressFormatException e1) { e1.printStackTrace(); }
+			} catch (NoSuchAlgorithmException | AddressFormatException | IllegalArgumentException e1) { 
+				e1.printStackTrace(); 
+				Dialogs.create()
+		        .owner(Main.stage)
+		        .title("Error")
+		        .masthead("Something went wrong")
+		        .message(e1.getMessage())
+		        .showError(); 
+			}
     	}
     		
     }
@@ -1325,16 +1336,41 @@ public class Controller {
             public void handle(ActionEvent e) {
             	ATAddress add;
 				try {
-					int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
-					ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
-					int index = ca.getKeyIndex();
-					ECKey key = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, HierarchyAddressTypes.External, index);
-					String pubkey = BAUtils.bytesToHex(key.getPubKey());
+					/**
+					 * Standard Pay-To-PubHash address
+					 */
+					String outPut = "";
+					if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount ){
+						int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
+						int index = ca.getKeyIndex();
+						ECKey key = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, HierarchyAddressTypes.External, index, false);
+						outPut = BAUtils.bytesToHex(key.getPubKey());
+					}
+					else
+					{
+						/**
+						 * P2SH Address
+						 */
+						PairedAuthenticator po = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator();
+						int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
+						int keyIndex = ca.getKeyIndex();
+						ECKey authKey = Authenticator.getWalletOperation().getPairedAuthenticatorKey(po, keyIndex);
+						ECKey walletKey = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, 
+								HierarchyAddressTypes.External, 
+								keyIndex, 
+								true); // true cause its a P2SH address
+						
+						outPut = "Authenticator Pubkey: " + BAUtils.bytesToHex(authKey.getPubKey()) + "\n" + 
+								 "Wallet Pubkey: " + BAUtils.bytesToHex(walletKey.getPubKey());
+					}
 					final Clipboard clipboard = Clipboard.getSystemClipboard();
 	                final ClipboardContent content = new ClipboardContent();
-	                content.putString(pubkey);
+	                content.putString(outPut);
 	                clipboard.setContent(content);
-				} catch (Exception e1) { }
+					
+				} catch (Exception e1) { e1.printStackTrace(); }
             }
         });
         ReceiveHBox.getChildren().add(btnCopy);
@@ -1547,25 +1583,25 @@ public class Controller {
 	private void setReceiveAddresses(){
     	AddressBox.getItems().clear();
     	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
-    	ArrayList<String> add;
+    	ArrayList<String> add = new ArrayList<String>();
 		try {
-			add = Authenticator.getWalletOperation().getAccountNotUsedAddress(accountIdx,HierarchyAddressTypes.External,10);
-			if(add.size() < 10){
-				for (int i=0; i<(10-add.size()); i++){
-				String newAdd = Authenticator.getWalletOperation()
-							.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-							.getAddressStr();
-				
-				add.add(newAdd);	
+			//add = Authenticator.getWalletOperation().getAccountNotUsedAddress(accountIdx,HierarchyAddressTypes.External,10);
+			//if(add.size() < 10){
+				for (int i=0; i<10; i++){
+					String newAdd = Authenticator.getWalletOperation()
+								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
+								.getAddressStr();
+					
+					add.add(newAdd);	
 				}
-	    	}
-			AddressBox.setValue(add.get(0));
+	    	//}
+				
 			for (String address : add){
-	    		AddressBox.getItems().addAll(address);
+	    		AddressBox.getItems().add(address);
 	    	}
 			AddressBox.setValue(add.get(0));
 	    		    	
-	    	AddressBox.getItems().addAll("                                More");
+	    	//AddressBox.getItems().addAll("                                More");
 		} catch (NoSuchAlgorithmException | JSONException
 				| AddressFormatException e) { e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
     	

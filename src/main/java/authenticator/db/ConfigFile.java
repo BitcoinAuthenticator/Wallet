@@ -207,7 +207,7 @@ public class ConfigFile {
 		writeConfigFile(auth);
 	}
 
-	public void bumpByOneAccountsLastIndex(int accountIndex, HierarchyAddressTypes addressType) throws IOException{
+	/*public void bumpByOneAccountsLastIndex(int accountIndex, HierarchyAddressTypes addressType) throws IOException{
 		//AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		ATAccount acc = getAccount(accountIndex);
 		ATAccount.Builder b = ATAccount.newBuilder(acc);
@@ -223,7 +223,7 @@ public class ConfigFile {
 		}		
 		//writeConfigFile(auth);
 		this.updateAccount(b.build());
-	}
+	}*/
 
 	public long getConfirmedBalace(int accountIdx){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();

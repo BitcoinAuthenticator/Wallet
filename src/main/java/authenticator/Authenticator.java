@@ -108,6 +108,7 @@ public class Authenticator extends AbstractService{
 	}
 	
 	public static void disposeOfAuthenticator(){
+		mWalletOperation.dispose();
 		mWalletOperation = null;
 		mApplicationParams = null;
 		generalEventsListeners = null;

@@ -64,7 +64,8 @@ public class SignProtocol {
 			ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 			ECKey pubkey = wallet.getECKeyFromAccount(atAdd.getAccountIndex(),
 																	atAdd.getType(),
-																	atAdd.getKeyIndex());
+																	atAdd.getKeyIndex(),
+																	true);
 			
 			pubKeysArr.add(pubkey.getPubKey());
 			indexArr.add(atAdd.getKeyIndex());
@@ -126,17 +127,19 @@ public class SignProtocol {
 				String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 				ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 				//Authenticator Key
-				HDKeyDerivation HDKey = null;
+				/*HDKeyDerivation HDKey = null;
 				DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
 				int indexInAuth = atAdd.getKeyIndex(); // the same ass the address index in the wallet
 				DeterministicKey childKey = HDKey.deriveChildKey(mPubKey,indexInAuth);
 				byte[] childpublickey = childKey.getPubKey();
-				ECKey authKey = new ECKey(null, childpublickey);
+				ECKey authKey = new ECKey(null, childpublickey);*/
+				ECKey authKey = wallet.getPairedAuthenticatorKey(po, atAdd.getKeyIndex());
 				
 				//Wallet key
 				ECKey walletKey = wallet.getECKeyFromAccount(atAdd.getAccountIndex(),
 																					atAdd.getType(),
-																					atAdd.getKeyIndex());
+																					atAdd.getKeyIndex(),
+																					true);
 				
 				// Create Program for the script
 				List<ECKey> keys = ImmutableList.of(authKey, walletKey);

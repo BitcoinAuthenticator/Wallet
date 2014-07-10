@@ -1,5 +1,5 @@
 
-package authenticator.ui_helpers;
+package authenticator.helpers;
 
 import java.util.List;
 import java.util.Map;

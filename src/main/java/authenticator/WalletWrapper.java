@@ -91,7 +91,7 @@ public class WalletWrapper extends BASE{
 	}
 	
 	public Coin getPendingWatchedTransactionsBalacnce(ArrayList<String> addressArr){
-		ArrayList<TransactionOutput> watched = getUnspentOutputsForAddresses(addressArr);
+		//ArrayList<TransactionOutput> watched = getUnspentOutputsForAddresses(addressArr);
 		Collection<Transaction> allPending = trackedWallet.getPendingTransactions();
 		Coin ret = Coin.ZERO;
 		for (Iterator<Transaction> iterator = allPending.iterator(); iterator.hasNext();){

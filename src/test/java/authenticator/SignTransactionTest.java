@@ -62,16 +62,6 @@ public class SignTransactionTest {
 	PairedAuthenticator.Builder po;
 	WalletOperation wallet;
 	
-	// outputs
-	/*ECKey outKey1;
-	ECKey outKey2;
-	Address outAddress;*/
-	
-	// inputs 
-	/*ECKey inKey;
-	Address inAddress;
-	ATAddress.Builder bAddress;*/
-	
 	private Address getP2SHAddress(DeterministicKey authMKey, int childIndex){
 		//network params
 		NetworkParameters params = MainNetParams.get();
@@ -121,7 +111,8 @@ public class SignTransactionTest {
 		Mockito.when(wallet.findAddressInAccounts(inAddress.toString())).thenReturn(bAddress.build()); 
 		Mockito.when(wallet.getECKeyFromAccount(bAddress.getAccountIndex(),
 			bAddress.getType(),
-			bAddress.getKeyIndex())).thenReturn(inKey);
+			bAddress.getKeyIndex(),
+			true)).thenReturn(inKey);
 		
 		return inMock;
 	}
@@ -212,7 +203,7 @@ public class SignTransactionTest {
 		 return cipherBytes;
 	}*/
 	
-	/*@Test
+	@Test
 	public void prepareTxTest() {
 		byte[] result = null;
 		try {
@@ -225,6 +216,6 @@ public class SignTransactionTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-	}*/
+	}
 
 }
