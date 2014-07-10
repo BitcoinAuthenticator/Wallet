@@ -211,6 +211,7 @@ public class Controller {
         lblConfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
         lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
         createReceivePaneButtons();
+        createSendButtons();
         
         
         // Pane Control
@@ -810,6 +811,17 @@ public class Controller {
    	//
    	//#####################################
     
+    public void createSendButtons(){
+    	Label labelSend = AwesomeDude.createIconLabel(AwesomeIcon.SEND, "16");
+		labelSend.setPadding(new Insets(0,0,0,3));
+		btnSendTx.setGraphic(labelSend);
+		btnSendTx.setFont(Font.font(null, FontWeight.NORMAL, 14));
+		Label labelClear = AwesomeDude.createIconLabel(AwesomeIcon.TRASH_ALT, "18");
+		labelClear.setPadding(new Insets(0,0,0,3));
+		btnClearSendPane.setGraphic(labelClear);
+		btnClearSendPane.setFont(Font.font(null, FontWeight.NORMAL, 14));
+    }
+    
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {
     	btnAddTxOutput.setStyle("-fx-background-color: #a1d2e7;");
     }
@@ -827,15 +839,14 @@ public class Controller {
     } 
     
     @FXML protected void btnClearSendPanePressed(MouseEvent event) {
-    	btnClearSendPane.setStyle("-fx-background-color: #a1d2e7;");
-    	//
+    	btnClearSendPane.setStyle("-fx-background-color: #d9dee1;");
     	txMsgLabel.clear();
     	scrlContent.clearAll(); addOutput();
     	txFee.clear();
     }
     
     @FXML protected void btnClearSendPaneReleased(MouseEvent event) {
-    	btnClearSendPane.setStyle("-fx-background-color: #199bd6;");
+    	btnClearSendPane.setStyle("-fx-background-color: #D8D8D8;");
     } 
     
     private boolean ValidateTx() throws NoSuchAlgorithmException, JSONException, AddressFormatException
@@ -1217,14 +1228,22 @@ public class Controller {
     }
     
     @FXML protected void btnClearReceivePanePressed(MouseEvent event) {
-    	btnClearReceivePane.setStyle("-fx-background-color: #a1d2e7;");
+    	btnClearReceivePane.setStyle("-fx-background-color: #d9dee1;");
     }
     
     @FXML protected void btnClearReceivePaneReleased(MouseEvent event) {
-    	btnClearReceivePane.setStyle("-fx-background-color: #199bd6;");
+    	btnClearReceivePane.setStyle("-fx-background-color: #D8D8D8;");
     } 
     
     void createReceivePaneButtons(){
+    	Label labelReq = AwesomeDude.createIconLabel(AwesomeIcon.REPLY, "16");
+    	labelReq.setPadding(new Insets(0,0,0,3));
+    	btnRequest.setGraphic(labelReq);
+    	btnRequest.setFont(Font.font(null, FontWeight.NORMAL, 14));
+    	Label labelClear = AwesomeDude.createIconLabel(AwesomeIcon.TRASH_ALT, "18");
+    	labelClear.setPadding(new Insets(0,0,0,3));
+    	btnClearReceivePane.setGraphic(labelClear);
+    	btnClearReceivePane.setFont(Font.font(null, FontWeight.NORMAL, 14));  
     	Button btnCopy = new Button();
         ReceiveHBox.setMargin(btnCopy, new Insets(14,0,0,4));
         btnCopy.setFont(new Font("Arial", 18));
