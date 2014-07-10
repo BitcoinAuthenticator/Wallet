@@ -14,6 +14,7 @@ import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.utils.BriefLogFormatter;
 import com.google.bitcoin.utils.Threading;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
@@ -36,6 +37,7 @@ import wallettemplate.utils.TextFieldValidator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
@@ -96,9 +98,11 @@ public class Main extends BAApplication {
         mainWindow.setScene(scene);
         stage = mainWindow;
         
-        String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + ".wallet";
-        File f = new File(filePath);
-        if(!f.exists()) { 
+        String filePath1 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + ".wallet";
+        File f1 = new File(filePath1);
+        String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + "_TestNet.wallet";
+        File f2 = new File(filePath2);
+        if(!f1.exists() && !f2.exists()) { 
         	Parent root;
             try {
                 root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
@@ -119,7 +123,13 @@ public class Main extends BAApplication {
     	/**
     	 * If we get returned params from startup, use that
     	 */
-    	BAApplicationParameters params = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
+    	BAApplicationParameters params = null;
+    	String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + "_TestNet.wallet";
+        File f2 = new File(filePath2);
+    	if (returnedParamsFromSetup!=null){params = returnedParamsFromSetup;}
+    	else if (f2.exists()){params = new BAApplicationParameters(ImmutableMap.of("testnet","true"),new ArrayList<String>());}
+    	else {params = new BAApplicationParameters(ImmutableMap.of(),new ArrayList<String>());}
+    	
     	
     	// Make log output concise.
         BriefLogFormatter.init();

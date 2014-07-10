@@ -212,7 +212,7 @@ public class SignTransactionTest {
 		 return cipherBytes;
 	}*/
 	
-	@Test
+	/*@Test
 	public void prepareTxTest() {
 		byte[] result = null;
 		try {
@@ -225,6 +225,6 @@ public class SignTransactionTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-	}
+	}*/
 
 }

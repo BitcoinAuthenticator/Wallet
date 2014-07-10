@@ -32,7 +32,7 @@
             </ImageView>
           </graphic>
         </Button>
-        <CheckBox fx:id="chkTestNet" allowIndeterminate="false" indeterminate="false" layoutX="14.0" layoutY="372.0" mnemonicParsing="false" selected="true" text="Use Testnet" />
+        <CheckBox fx:id="chkTestNet" allowIndeterminate="false" indeterminate="false" layoutX="14.0" layoutY="372.0" mnemonicParsing="false" selected="false" text="Use Testnet" />
       </children>
     </Pane>
     <Pane fx:id="Pane2" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
@@ -66,10 +66,10 @@
         </Button>
         <Button fx:id="btnSSS" contentDisplay="TOP" layoutX="416.0" layoutY="167.0" mnemonicParsing="false" onAction="#openSSS" prefHeight="143.1328125" prefWidth="146.0" text="Shamir's Secret Sharing" textAlignment="CENTER" wrapText="true">
           <font>
-            <Font size="12.0" />
+            <Font size="11.0" />
           </font>
           <graphic>
-            <ImageView fitHeight="103.5834248489804" fitWidth="113.0000991821289" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imgSSS" fitHeight="103.5834248489804" fitWidth="113.0000991821289" pickOnBounds="true" preserveRatio="true">
               <Image url="@btnSSS.png" />
             </ImageView>
           </graphic>
@@ -130,11 +130,11 @@
               </image>
             </ImageView>
             <Label font="$x1" layoutX="262.0" layoutY="28.0" prefWidth="234.0" text="How It Works" />
-            <Label alignment="TOP_LEFT" layoutX="262.0" layoutY="56.0" prefHeight="158.18817138671875" prefWidth="274.0" text="When paired with Bitcoin Authenticator, your wallet will generate multi-signature addresses which require two keys sign a transaction. One set of keys will be kept in this wallet. The other on your Android mobile device. When you make a transaction from this wallet, your mobile device will prompt you for authorization. If one of your devices is compromised, your bitcoins are still safe." wrapText="true" />
+            <Label alignment="TOP_LEFT" layoutX="262.0" layoutY="56.0" prefHeight="197.0" prefWidth="274.0" text="When paired with Bitcoin Authenticator, your wallet will generate multi-signature addresses which require two keys sign a transaction. One set of keys will be kept in this wallet. The other on your Android mobile device. When you make a transaction from this wallet, your mobile device will prompt you for authorization. If one of your devices is compromised, your bitcoins are still safe." wrapText="true" />
           </children>
         </Pane>
-        <Pane fx:id="BA4" layoutX="14.0" layoutY="67.0" prefHeight="242.0" prefWidth="560.0" />
-        <Button fx:id="btnFinished" contentDisplay="RIGHT" focusTraversable="true" layoutX="421.0" layoutY="330.0" mnemonicParsing="false" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" onAction="#finished" prefHeight="40.25" prefWidth="150.0" styleClass="finished-button" text="I will do it later" visible="false" />
+        <Pane fx:id="BA4" layoutX="14.0" layoutY="67.0" prefHeight="246.0" prefWidth="560.0" visible="false" />
+        <Hyperlink fx:id="hlFinished" layoutX="471.0" layoutY="339.0" onAction="#finished" text="I will do it later" visible="false" />
       </children>
     </Pane>
     <Pane fx:id="Pane5" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
@@ -159,7 +159,7 @@
             <Font size="18.0" />
           </font>
         </Label>
-        <Label layoutX="28.0" layoutY="63.0" prefHeight="78.1328125" prefWidth="541.0" text="This dialog allows you split your wallet's seed into cryptographically-secure pieces for storing in separate locations. You can set a &quot;threshold&quot; for the number of pieces needed to reconstruct the seed. For example, with four pieces and and threshold of three, any three of the four pieces can be used to reconstruct the seed." wrapText="true" />
+        <Label layoutX="28.0" layoutY="61.0" prefHeight="87.0" prefWidth="541.0" text="This dialog allows you split your wallet's seed into cryptographically-secure pieces for storing in separate locations. You can set a &quot;threshold&quot; for the number of pieces needed to reconstruct the seed. For example, with four pieces and and threshold of three, any three of the four pieces can be used to reconstruct the seed." wrapText="true" />
         <Button fx:id="btnSplit" layoutX="485.0" layoutY="148.0" mnemonicParsing="false" onAction="#split" prefHeight="30.0" prefWidth="84.0" text="Split" />
         <ListView fx:id="lvSSS" layoutX="29.0" layoutY="186.0" prefHeight="126.0" prefWidth="539.9998779296875" />
         <Button fx:id="btnBack3" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnToPaneThree" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
