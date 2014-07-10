@@ -674,6 +674,18 @@ public class Controller {
 	public void setTxHistoryContent(){
     	scrlViewTxHistoryContentManager.clearAll();
     	List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
+    	if (txAll.size()==0){
+    		HBox mainNode = new HBox();
+    		Label l = new Label("                    No transaction history   ");
+    		l.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		l.setTextFill(Paint.valueOf("#6e86a0"));
+    		l.setFont(Font.font(13));
+    		mainNode.getChildren().add(l);
+    		Image inout = new Image(Main.class.getResourceAsStream("in-out.png"));
+    		ImageView arrows = new ImageView(inout);
+    		mainNode.getChildren().add(arrows);
+    		scrlViewTxHistoryContentManager.addItem(mainNode);	
+    	}
     	int size = txAll.size();
     	int n;
     	if (size < 10) {n=size;}
