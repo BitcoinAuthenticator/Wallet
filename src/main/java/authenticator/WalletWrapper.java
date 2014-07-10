@@ -90,47 +90,7 @@ public class WalletWrapper extends BASE{
 		return out.isMine(trackedWallet);
 	}
 	
-	public Coin getPendingWatchedTransactionsBalacnce(ArrayList<String> addressArr){
-		//ArrayList<TransactionOutput> watched = getUnspentOutputsForAddresses(addressArr);
-		Collection<Transaction> allPending = trackedWallet.getPendingTransactions();
-		Coin ret = Coin.ZERO;
-		for (Iterator<Transaction> iterator = allPending.iterator(); iterator.hasNext();){
-			Transaction tx  = iterator.next();
-			for (TransactionOutput output : tx.getOutputs()){
-				// check pendgin tx output is addressArr list
-				String add = output.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
-                if (!addressArr.contains(add)) continue;
-                // add amount
-                ret = ret.add(output.getValue());
-			}			
-		}
-			
-		return ret;
-	}
 	
-	/**
-	 * Will Check with wallet's watched addresses for a total balance. A use case will be to pass all the addresses of a single 
-	 * authenticator pairing to get the total unspent balance.
-	 * 
-	 * @param addressArr
-	 * @return balance of specific addresses as a BigInteger{@link java.math.BigInteger}
-	 * @throws ScriptException
-	 * @throws UnsupportedEncodingException
-	 */
-	public Coin getEstimatedBalanceOfWatchedAddresses(ArrayList<String> addressArr)
-	{
-		Coin retBalance = Coin.ZERO;
-		LinkedList<TransactionOutput> allWatchedAddresses = trackedWallet.getWatchedOutputs(false);
-		for(TransactionOutput Txout: allWatchedAddresses)
-			for(String lookedAddr: addressArr){
-				String TxOutAddress = Txout.getScriptPubKey().getToAddress(trackedWallet.getNetworkParameters()).toString();
-				if(TxOutAddress.equals(lookedAddr)){
-					retBalance = retBalance.add(Txout.getValue());
-					break;
-				}
-			}		
-		return retBalance;
-	}
 	
 	//#####################################
 	//
@@ -140,7 +100,7 @@ public class WalletWrapper extends BASE{
 	
 	public LinkedList<TransactionOutput> getWatchedOutputs(){
 		return trackedWallet.getWatchedOutputs(false);
-	}
+	} 
 	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
@@ -153,29 +113,6 @@ public class WalletWrapper extends BASE{
 					ret.add(Txout);
 				}
 			}
-		return ret;
-	}
-
-	public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
-	{
-		LinkedList<TransactionOutput> outs = new LinkedList<TransactionOutput> (candidates);
-		DefaultCoinSelector selector = new DefaultCoinSelector();
-		CoinSelection cs = selector.select(value, outs);
-		Collection<TransactionOutput> gathered = cs.gathered;
-		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>(gathered);
-		
-		
-		/*//TODO some kind of coin selection
-		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
-		Coin amount = Coin.ZERO;
-		for(TransactionOutput out: candidates)
-		{
-			if(amount.compareTo(value) < 0 ){
-				amount = amount.add(out.getValue());
-			}
-			else break;
-			ret.add(out);
-		}*/
 		return ret;
 	}
 		

@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +60,8 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
+import com.google.bitcoin.wallet.CoinSelection;
+import com.google.bitcoin.wallet.DefaultCoinSelector;
 import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.collect.ImmutableList;
 
@@ -198,7 +201,7 @@ public class WalletOperation extends BASE{
         	 * Check for coins entering
         	 */
         	List<TransactionOutput> outs = tx.getOutputs();
-        	boolean isChanged = false;
+        	List<Integer> accountsEffected = new ArrayList<Integer>();
         	for (TransactionOutput out : outs){
     			Script scr = out.getScriptPubKey();
     			String addrStr = scr.getToAddress(getNetworkParams()).toString();
@@ -220,7 +223,7 @@ public class WalletOperation extends BASE{
     					else if(isNewTx && !confirmedTx.contains(tx.getHashAsString())){
     						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
-    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
+    						//markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
     				case PENDING:
@@ -228,12 +231,12 @@ public class WalletOperation extends BASE{
     						; // do nothing
     					else if(!Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
-    						addPendingInTx(add.getAccountIndex(), tx.getHashAsString());
+    						if(!accountsEffected.contains(add.getAccountIndex())) accountsEffected.add(add.getAccountIndex());
     						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
     						/**
     						 * address is marked used when it receives funds
     						 */
-    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
+    						//markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
     				case DEAD:
@@ -244,10 +247,17 @@ public class WalletOperation extends BASE{
         	}
         	
         	/**
-        	 * 
-        	 * Check for coins entering
+        	 * In case there are several outputs from the same account
+        	 */
+        	if(accountsEffected.size() > 0)
+        		for(Integer acIndx:accountsEffected)
+        			addPendingInTx(acIndx, tx.getHashAsString());
+        	
+        	/**
+        	 * Check for coins spending
         	 */
     		List<TransactionInput> ins = tx.getInputs();
+    		accountsEffected = new ArrayList<Integer>();
         	for (TransactionInput in : ins){
         		TransactionOutput out = in.getConnectedOutput();
         		if(out != null) // could be not connected
@@ -261,14 +271,16 @@ public class WalletOperation extends BASE{
         				case BUILDING:
         					if(!isNewTx && Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
         						removePendingOutTx(add.getAccountIndex(), tx.getHashAsString());
+        						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
         					}
         					break;
         				case PENDING:
         					if(!isNewTx)
         						;
         					else if(!Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
-        						addPendingOutTx(add.getAccountIndex(), tx.getHashAsString());
+        						if(!accountsEffected.contains(add.getAccountIndex())) accountsEffected.add(add.getAccountIndex());
         						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+        						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
             					Authenticator.fireOnBalanceChanged(add.getAccountIndex());
         					}
         					break;
@@ -278,8 +290,14 @@ public class WalletOperation extends BASE{
         				}
         			}
     			}            			
-        	}
-                		
+        	}     
+        	
+        	/**
+        	 * In case there are several inputs from the same account
+        	 */
+        	if(accountsEffected.size() > 0)
+        		for(Integer acIndx:accountsEffected)
+        			addPendingOutTx(acIndx, tx.getHashAsString());
         }
        
     }
@@ -376,40 +394,6 @@ public class WalletOperation extends BASE{
 		return b.build();
 	}
 	
-	
-	/**
-	 * Build a raw unsigned Tx
-	 * 
-	 * 
-	 * @param candidateInputAddresses
-	 * @param to
-	 * @param fee
-	 * @param changeAdd
-	 * @return
-	 * @throws AddressFormatException
-	 * @throws JSONException
-	 * @throws IOException
-	 * @throws NoSuchAlgorithmException
-	 * @throws IllegalArgumentException
-	 */
-	public Transaction mkUnsignedTx(ArrayList<String> candidateInputAddresses, ArrayList<TransactionOutput>to, Coin fee, String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException, IllegalArgumentException {
-		//Get total output
-		Coin totalOut = Coin.ZERO;
-		for (TransactionOutput out:to){
-			totalOut = totalOut.add(out.getValue());
-		}
-		//Check minimum output
-		if(totalOut.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
-			throw new IllegalArgumentException("Tried to send dust with ensureMinRequiredFee set - no way to complete this");
-		
-		//Get unspent watched addresses of this pairing ID
-		ArrayList<TransactionOutput> candidates = this.mWalletWrapper.getUnspentOutputsForAddresses(candidateInputAddresses);
-		
-		// Coin selection
-		ArrayList<TransactionOutput> outSelected = this.mWalletWrapper.selectOutputs(totalOut.add(fee), candidates);
-		
-		return mkUnsignedTxWithSelectedInputs(outSelected, to, fee, changeAdd, null);
-	}
 	@SuppressWarnings("static-access")
 	public Transaction mkUnsignedTxWithSelectedInputs(ArrayList<TransactionOutput> outSelected, 
 			ArrayList<TransactionOutput>to, 
@@ -1462,7 +1446,33 @@ public class WalletOperation extends BASE{
 		assert(mWalletWrapper != null);
 		return mWalletWrapper.getRecentTransactions();
 	}
+	
+	public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
+	{
+		LinkedList<TransactionOutput> outs = new LinkedList<TransactionOutput> (candidates);
+		DefaultCoinSelector selector = new DefaultCoinSelector();
+		CoinSelection cs = selector.select(value, outs);
+		Collection<TransactionOutput> gathered = cs.gathered;
+		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>(gathered);
+	
+		return ret;
+	}
+	
+	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
+		LinkedList<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
+		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
+		for(TransactionOutput unspentOut:all){
+			ATAddress add = findAddressInAccounts(unspentOut.getScriptPubKey().getToAddress(getNetworkParams()).toString());
+			if(add.getAccountIndex() == accountIndex)
+				ret.add(unspentOut);
+		}
+		return ret;
+	}
  
+	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
+	{
+		return mWalletWrapper.getUnspentOutputsForAddresses(addressArr);
+	}
 }
 
 

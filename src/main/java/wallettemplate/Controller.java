@@ -941,11 +941,10 @@ public class Controller {
             	fee = Coin.valueOf((long)f);
             }
     		
-    		// get input addresses / change address
-    		ArrayList<String> addresses = Authenticator.
-						    				getWalletOperation().
-						    				getAccountUsedAddressesString(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
-											    				HierarchyAddressTypes.External);
+    		// get input outputs / change address
+    		ArrayList<TransactionOutput> outputs = Authenticator.
+    				getWalletOperation().
+    				getUnspentOutputsForAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
     		String changeaddr = Authenticator.getWalletOperation()
 								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
 								.getAddressStr();
@@ -953,7 +952,11 @@ public class Controller {
     		// complete Tx
     		Transaction tx;
 			try {
-				tx = Authenticator.getWalletOperation().mkUnsignedTx(addresses, to,fee,changeaddr);
+				tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
+						to,
+						fee,
+						changeaddr,
+						Authenticator.getWalletOperation().getNetworkParams());
 				
 				// broadcast
 	    		ATOperation op = null;
