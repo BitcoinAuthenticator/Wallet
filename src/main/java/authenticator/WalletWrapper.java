@@ -24,6 +24,8 @@ import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.script.Script;
+import com.google.bitcoin.wallet.CoinSelection;
+import com.google.bitcoin.wallet.DefaultCoinSelector;
 
 /**
  * <p>A wrapper class to handle all operations regarding the bitcoinj wallet.</p>
@@ -156,7 +158,14 @@ public class WalletWrapper extends BASE{
 
 	public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
 	{
-		//TODO some kind of coin selection
+		LinkedList<TransactionOutput> outs = new LinkedList<TransactionOutput> (candidates);
+		DefaultCoinSelector selector = new DefaultCoinSelector();
+		CoinSelection cs = selector.select(value, outs);
+		Collection<TransactionOutput> gathered = cs.gathered;
+		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>(gathered);
+		
+		
+		/*//TODO some kind of coin selection
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
 		Coin amount = Coin.ZERO;
 		for(TransactionOutput out: candidates)
@@ -166,7 +175,7 @@ public class WalletWrapper extends BASE{
 			}
 			else break;
 			ret.add(out);
-		}
+		}*/
 		return ret;
 	}
 		
