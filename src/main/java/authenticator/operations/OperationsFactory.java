@@ -155,8 +155,13 @@ public class OperationsFactory extends BASE{
 																String pairingID, 
 																@Nullable String txMessage,
 																boolean onlyComplete, 
-																@Nullable byte[] authenticatorByteResponse){
-		return new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
+																@Nullable byte[] authenticatorByteResponse,
+																/**
+																 * will be used to remove the pending request
+																 * if necessary
+																 */
+																@Nullable PendingRequest pendigReq){
+		ATOperation op = new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
 					//int timeout = 5;
@@ -202,22 +207,36 @@ public class OperationsFactory extends BASE{
 							//Break apart the signature array sent over from the authenticator
 							//String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = null;
-							boolean isRefused = false;
+							SignProtocol.AuthenticatorAnswerType answerType = SignProtocol.AuthenticatorAnswerType.DoNothing;
 							try{
+								/**
+								 * try and parse an authorize answer
+								 */
 								AuthSigs = SignMessage.deserializeToBytes(testsig);
+								answerType = SignProtocol.AuthenticatorAnswerType.Authorized;
 							}
 							catch (Exception e){
-								JSONObject obj = SignMessage.deserializeRefuseMessageToBoolean(testsig);
-								int result = Integer.parseInt(obj.get("result").toString());
-								if(result == 0){
-									isRefused = true;
-									listener.onUserCancel(obj.get("reason").toString());
+								/**
+								 * try and parse a not authorized answer
+								 */
+								try{
+									JSONObject obj = SignMessage.deserializeRefuseMessageToBoolean(testsig);
+									int result = Integer.parseInt(obj.get("result").toString());
+									if(result == 0){
+										answerType = SignProtocol.AuthenticatorAnswerType.NotAuthorized;
+										listener.onUserCancel(obj.get("reason").toString());
+										wallet.removePendingRequest(pendigReq);
+									}
 								}
+								catch (Exception e1){ }
 							}
-							if(!isRefused){
+							if(answerType == SignProtocol.AuthenticatorAnswerType.Authorized){
 								// Complete Signing and broadcast
 								PairedAuthenticator po = wallet.getPairingObject(pairingID);
-								SignProtocol.complete(wallet, tx,AuthSigs,po);
+								SignProtocol.complete(wallet, 
+										tx,
+										AuthSigs,
+										po);
 								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
 								/**
 								 * Condition sending by is Test Mode
@@ -237,8 +256,14 @@ public class OperationsFactory extends BASE{
 						            });
 								}
 								else{
+									wallet.disconnectInputs(tx.getInputs());
 									listenerUI.onFinished("Transaction Sent With Success");
 								}
+								
+								wallet.removePendingRequest(pendigReq);
+							}
+							else if(answerType == SignProtocol.AuthenticatorAnswerType.DoNothing){
+								// well ... do nothing
 							}
 
 						}
@@ -253,6 +278,8 @@ public class OperationsFactory extends BASE{
 					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
 					
 				});
+		
+		return op;
 	}
 	
 	/**
@@ -338,8 +365,10 @@ public class OperationsFactory extends BASE{
 				                }
 				            });
 						}
-						else
+						else{
+							wallet.disconnectInputs(tx.getInputs());
 							listenerUI.onFinished("Transaction Sent With Success");
+						}
 						
 					}
 					

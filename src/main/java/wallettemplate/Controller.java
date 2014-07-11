@@ -1036,6 +1036,7 @@ public class Controller {
 	    					pairID, 
 	    					txMsgLabel.getText(),
 	    					false,
+	    					null,
 	    					null);
 	    		}
 	    		
@@ -1052,6 +1053,8 @@ public class Controller {
 					@Override
 					public void onFinished(String str) {
 							removeActivitySpinner();
+							
+							if(str != null)
 							Platform.runLater(new Runnable() {
 						      @Override public void run() {
 						    	  Dialogs.create()
@@ -1093,6 +1096,8 @@ public class Controller {
 					@Override
 					public void onUserCancel(String reason) {
 						removeActivitySpinner();
+						
+						if(reason != null)
 						Platform.runLater(new Runnable() {
 						      @Override public void run() {
 						    	  Dialogs.create()

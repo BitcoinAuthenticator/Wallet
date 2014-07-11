@@ -58,6 +58,7 @@ message PendingRequest{
   	message Contract{
   		optional bool ShouldSendPayloadOnConnection 									= 1;
   		optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection 		 		= 2;
+  		optional bool ShouldLetPendingRequestHandleRemoval								= 3;
   	}
 
 	required string pairingID 									= 1;

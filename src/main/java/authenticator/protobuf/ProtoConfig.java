@@ -2803,6 +2803,16 @@ public final class ProtoConfig {
        * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
        */
       boolean getShouldReceivePayloadAfterSendingPayloadOnConnection();
+
+      // optional bool ShouldLetPendingRequestHandleRemoval = 3;
+      /**
+       * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+       */
+      boolean hasShouldLetPendingRequestHandleRemoval();
+      /**
+       * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+       */
+      boolean getShouldLetPendingRequestHandleRemoval();
     }
     /**
      * Protobuf type {@code authenticator.protobuf.PendingRequest.Contract}
@@ -2863,6 +2873,11 @@ public final class ProtoConfig {
               case 16: {
                 bitField0_ |= 0x00000002;
                 shouldReceivePayloadAfterSendingPayloadOnConnection_ = input.readBool();
+                break;
+              }
+              case 24: {
+                bitField0_ |= 0x00000004;
+                shouldLetPendingRequestHandleRemoval_ = input.readBool();
                 break;
               }
             }
@@ -2937,9 +2952,26 @@ public final class ProtoConfig {
         return shouldReceivePayloadAfterSendingPayloadOnConnection_;
       }
 
+      // optional bool ShouldLetPendingRequestHandleRemoval = 3;
+      public static final int SHOULDLETPENDINGREQUESTHANDLEREMOVAL_FIELD_NUMBER = 3;
+      private boolean shouldLetPendingRequestHandleRemoval_;
+      /**
+       * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+       */
+      public boolean hasShouldLetPendingRequestHandleRemoval() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+       */
+      public boolean getShouldLetPendingRequestHandleRemoval() {
+        return shouldLetPendingRequestHandleRemoval_;
+      }
+
       private void initFields() {
         shouldSendPayloadOnConnection_ = false;
         shouldReceivePayloadAfterSendingPayloadOnConnection_ = false;
+        shouldLetPendingRequestHandleRemoval_ = false;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -2959,6 +2991,9 @@ public final class ProtoConfig {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeBool(2, shouldReceivePayloadAfterSendingPayloadOnConnection_);
         }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBool(3, shouldLetPendingRequestHandleRemoval_);
+        }
         getUnknownFields().writeTo(output);
       }
 
@@ -2975,6 +3010,10 @@ public final class ProtoConfig {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBoolSize(2, shouldReceivePayloadAfterSendingPayloadOnConnection_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(3, shouldLetPendingRequestHandleRemoval_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -3096,6 +3135,8 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000001);
           shouldReceivePayloadAfterSendingPayloadOnConnection_ = false;
           bitField0_ = (bitField0_ & ~0x00000002);
+          shouldLetPendingRequestHandleRemoval_ = false;
+          bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
 
@@ -3132,6 +3173,10 @@ public final class ProtoConfig {
             to_bitField0_ |= 0x00000002;
           }
           result.shouldReceivePayloadAfterSendingPayloadOnConnection_ = shouldReceivePayloadAfterSendingPayloadOnConnection_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.shouldLetPendingRequestHandleRemoval_ = shouldLetPendingRequestHandleRemoval_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -3153,6 +3198,9 @@ public final class ProtoConfig {
           }
           if (other.hasShouldReceivePayloadAfterSendingPayloadOnConnection()) {
             setShouldReceivePayloadAfterSendingPayloadOnConnection(other.getShouldReceivePayloadAfterSendingPayloadOnConnection());
+          }
+          if (other.hasShouldLetPendingRequestHandleRemoval()) {
+            setShouldLetPendingRequestHandleRemoval(other.getShouldLetPendingRequestHandleRemoval());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -3243,6 +3291,39 @@ public final class ProtoConfig {
         public Builder clearShouldReceivePayloadAfterSendingPayloadOnConnection() {
           bitField0_ = (bitField0_ & ~0x00000002);
           shouldReceivePayloadAfterSendingPayloadOnConnection_ = false;
+          onChanged();
+          return this;
+        }
+
+        // optional bool ShouldLetPendingRequestHandleRemoval = 3;
+        private boolean shouldLetPendingRequestHandleRemoval_ ;
+        /**
+         * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+         */
+        public boolean hasShouldLetPendingRequestHandleRemoval() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+         */
+        public boolean getShouldLetPendingRequestHandleRemoval() {
+          return shouldLetPendingRequestHandleRemoval_;
+        }
+        /**
+         * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+         */
+        public Builder setShouldLetPendingRequestHandleRemoval(boolean value) {
+          bitField0_ |= 0x00000004;
+          shouldLetPendingRequestHandleRemoval_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
+         */
+        public Builder clearShouldLetPendingRequestHandleRemoval() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          shouldLetPendingRequestHandleRemoval_ = false;
           onChanged();
           return this;
         }
@@ -11271,58 +11352,60 @@ public final class ProtoConfig {
       "\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_public_key\030\002" +
       " \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n" +
       "\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 \002(\010\022\016\n\006key" +
-      "s_n\030\007 \002(\005\022\032\n\022walletAccountIndex\030\n \002(\005\"\372\002",
+      "s_n\030\007 \002(\005\022\032\n\022walletAccountIndex\030\n \002(\005\"\251\003",
       "\n\016PendingRequest\022\021\n\tpairingID\030\001 \002(\t\022\021\n\tr" +
       "equestID\030\002 \002(\t\022>\n\roperationType\030\003 \002(\0162\'." +
       "authenticator.protobuf.ATOperationType\022\r" +
       "\n\005rawTx\030\004 \001(\t\022\027\n\017payloadIncoming\030\005 \001(\014\022\'" +
       "\n\037payloadToSendInCaseOfConnection\030\006 \001(\014\022" +
       "A\n\010contract\030\007 \002(\0132/.authenticator.protob" +
-      "uf.PendingRequest.Contract\032n\n\010Contract\022%" +
-      "\n\035ShouldSendPayloadOnConnection\030\001 \001(\010\022;\n" +
-      "3ShouldReceivePayloadAfterSendingPayload" +
-      "OnConnection\030\002 \001(\010\"\325\n\n\032AuthenticatorConf",
-      "iguration\022c\n\023configActiveAccount\030\001 \001(\0132F" +
+      "uf.PendingRequest.Contract\032\234\001\n\010Contract\022" +
+      "%\n\035ShouldSendPayloadOnConnection\030\001 \001(\010\022;" +
+      "\n3ShouldReceivePayloadAfterSendingPayloa" +
+      "dOnConnection\030\002 \001(\010\022,\n$ShouldLetPendingR",
+      "equestHandleRemoval\030\003 \001(\010\"\325\n\n\032Authentica" +
+      "torConfiguration\022c\n\023configActiveAccount\030" +
+      "\001 \001(\0132F.authenticator.protobuf.Authentic" +
+      "atorConfiguration.ConfigActiveAccount\022o\n" +
+      "\031configAuthenticatorWallet\030\002 \001(\0132L.authe" +
+      "nticator.protobuf.AuthenticatorConfigura" +
+      "tion.ConfigAuthenticatorWallet\022e\n\024config" +
+      "OneNameProfile\030\005 \001(\0132G.authenticator.pro" +
+      "tobuf.AuthenticatorConfiguration.ConfigO" +
+      "neNameProfile\022U\n\017ConfigHierarchy\030\006 \002(\0132<",
       ".authenticator.protobuf.AuthenticatorCon" +
-      "figuration.ConfigActiveAccount\022o\n\031config" +
-      "AuthenticatorWallet\030\002 \001(\0132L.authenticato" +
-      "r.protobuf.AuthenticatorConfiguration.Co" +
-      "nfigAuthenticatorWallet\022e\n\024configOneName" +
-      "Profile\030\005 \001(\0132G.authenticator.protobuf.A" +
-      "uthenticatorConfiguration.ConfigOneNameP" +
-      "rofile\022U\n\017ConfigHierarchy\030\006 \002(\0132<.authen" +
-      "ticator.protobuf.AuthenticatorConfigurat",
-      "ion.Hierarchy\022T\n\016configAccounts\030\007 \003(\0132<." +
-      "authenticator.protobuf.AuthenticatorConf" +
-      "iguration.ATAccount\032\264\001\n\023ConfigActiveAcco" +
-      "unt\022H\n\023pairedAuthenticator\030\001 \001(\0132+.authe" +
-      "nticator.protobuf.PairedAuthenticator\022S\n" +
-      "\ractiveAccount\030\002 \002(\0132<.authenticator.pro" +
-      "tobuf.AuthenticatorConfiguration.ATAccou" +
-      "nt\032\260\001\n\031ConfigAuthenticatorWallet\022\016\n\006pair" +
-      "ed\030\001 \001(\010\022B\n\rpairedWallets\030\002 \003(\0132+.authen" +
-      "ticator.protobuf.PairedAuthenticator\022?\n\017",
-      "pendingRequests\030\003 \003(\0132&.authenticator.pr" +
-      "otobuf.PendingRequest\032z\n\024ConfigOneNamePr" +
-      "ofile\022\017\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatt" +
-      "ed\030\002 \001(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025on" +
-      "enameAvatarFilePath\030\004 \001(\t\032\231\002\n\tATAccount\022" +
-      "\r\n\005index\030\001 \002(\005\022\030\n\020usedExternalKeys\030\003 \003(\005" +
-      "\022\030\n\020usedInternalKeys\030\005 \003(\005\022\030\n\020confirmedB" +
-      "alance\030\006 \002(\022\022\032\n\022unConfirmedBalance\030\007 \002(\022" +
-      "\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013pendingInTx\030\t " +
-      "\003(\t\022\023\n\013networkType\030\n \002(\005\022>\n\013accountType\030",
-      "\013 \002(\0162).authenticator.protobuf.WalletAcc" +
-      "ountType\022\023\n\013accountName\030\014 \002(\t\032K\n\tHierarc" +
-      "hy\022\025\n\rhierarchySeed\030\001 \002(\014\022\'\n\037hierarchyNe" +
-      "xtAvailableAccountID\030\002 \002(\005*;\n\020ATGCMMessa" +
-      "geType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingReque" +
-      "stIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000" +
-      "\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAuthenti" +
-      "catorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#upda" +
-      "teIpAddressesForPreviousMessage\020\004*B\n\021Wal" +
-      "letAccountType\022\023\n\017StandardAccount\020\000\022\030\n\024A",
-      "uthenticatorAccount\020\001B\rB\013ProtoConfig"
+      "figuration.Hierarchy\022T\n\016configAccounts\030\007" +
+      " \003(\0132<.authenticator.protobuf.Authentica" +
+      "torConfiguration.ATAccount\032\264\001\n\023ConfigAct" +
+      "iveAccount\022H\n\023pairedAuthenticator\030\001 \001(\0132" +
+      "+.authenticator.protobuf.PairedAuthentic" +
+      "ator\022S\n\ractiveAccount\030\002 \002(\0132<.authentica" +
+      "tor.protobuf.AuthenticatorConfiguration." +
+      "ATAccount\032\260\001\n\031ConfigAuthenticatorWallet\022" +
+      "\016\n\006paired\030\001 \001(\010\022B\n\rpairedWallets\030\002 \003(\0132+",
+      ".authenticator.protobuf.PairedAuthentica" +
+      "tor\022?\n\017pendingRequests\030\003 \003(\0132&.authentic" +
+      "ator.protobuf.PendingRequest\032z\n\024ConfigOn" +
+      "eNameProfile\022\017\n\007onename\030\001 \002(\t\022\030\n\020onename" +
+      "Formatted\030\002 \001(\t\022\030\n\020onenameAvatarURL\030\003 \001(" +
+      "\t\022\035\n\025onenameAvatarFilePath\030\004 \001(\t\032\231\002\n\tATA" +
+      "ccount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExternalKey" +
+      "s\030\003 \003(\005\022\030\n\020usedInternalKeys\030\005 \003(\005\022\030\n\020con" +
+      "firmedBalance\030\006 \002(\022\022\032\n\022unConfirmedBalanc" +
+      "e\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013pending",
+      "InTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005\022>\n\013accou" +
+      "ntType\030\013 \002(\0162).authenticator.protobuf.Wa" +
+      "lletAccountType\022\023\n\013accountName\030\014 \002(\t\032K\n\t" +
+      "Hierarchy\022\025\n\rhierarchySeed\030\001 \002(\014\022\'\n\037hier" +
+      "archyNextAvailableAccountID\030\002 \002(\005*;\n\020ATG" +
+      "CMMessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendi" +
+      "ngRequestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pa" +
+      "iring\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastA" +
+      "uthenticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022" +
+      "\'\n#updateIpAddressesForPreviousMessage\020\004",
+      "*B\n\021WalletAccountType\022\023\n\017StandardAccount" +
+      "\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013ProtoCon" +
+      "fig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -11352,7 +11435,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor,
-              new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", });
+              new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", "ShouldLetPendingRequestHandleRemoval", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new

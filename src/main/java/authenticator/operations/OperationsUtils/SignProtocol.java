@@ -23,6 +23,7 @@ import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.BAUtils;
+import authenticator.helpers.exceptions.UnableToCompleteTxSigningException;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
@@ -109,11 +110,12 @@ public class SignProtocol {
 	 * @param tx
 	 * @param AuthSigs
 	 * @param po
-	 * @throws Exception
+	 * @throws UnableToCompleteTxSigningException 
 	 */
 	@SuppressWarnings({ "static-access", "deprecation", "unused" })
-	static public void complete(WalletOperation wallet, Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws Exception
+	static public void complete(WalletOperation wallet, Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws UnableToCompleteTxSigningException
 	 {
+		try{
 			//Prep the keys needed for signing
 			byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
 			byte[] chain = BAUtils.hexStringToByteArray(po.getChainCode());
@@ -127,12 +129,6 @@ public class SignProtocol {
 				String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 				ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 				//Authenticator Key
-				/*HDKeyDerivation HDKey = null;
-				DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
-				int indexInAuth = atAdd.getKeyIndex(); // the same ass the address index in the wallet
-				DeterministicKey childKey = HDKey.deriveChildKey(mPubKey,indexInAuth);
-				byte[] childpublickey = childKey.getPubKey();
-				ECKey authKey = new ECKey(null, childpublickey);*/
 				ECKey authKey = wallet.getPairedAuthenticatorKey(po, atAdd.getKeyIndex());
 				
 				//Wallet key
@@ -170,6 +166,11 @@ public class SignProtocol {
 				//break;
 				i++;
 			}
+		}
+		catch (Exception e){
+			wallet.disconnectInputs(tx.getInputs());
+			throw new UnableToCompleteTxSigningException("Unable to finish transaction signing");
+		}
 	 }
 
 	/**
@@ -209,8 +210,19 @@ public class SignProtocol {
 		   PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
 					cb.setShouldSendPayloadOnConnection(true);
 					cb.setShouldReceivePayloadAfterSendingPayloadOnConnection(true);
+					cb.setShouldLetPendingRequestHandleRemoval(true);
 		   pr.setContract(cb.build());
 		   
 		   return pr.build();
+	}
+	
+	
+	public enum AuthenticatorAnswerType{
+		Authorized,
+		NotAuthorized,
+		/**
+		 * Possible when the user only watches the transaction but doesn't approve or disapproves
+		 */
+		DoNothing
 	}
 }

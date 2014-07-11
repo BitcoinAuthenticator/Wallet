@@ -65,7 +65,8 @@ public class TCPListener extends BASE{
 	{
 		shouldStopListener = false;   
 	    this.listenerThread = new Thread(){
-	    	@Override
+	    	@SuppressWarnings("static-access")
+			@Override
 		    public void run() {
 	    		if(plugnplay != null)
 	    		{
@@ -135,7 +136,7 @@ public class TCPListener extends BASE{
 										}
 									}
 									//
-									if(pendingReq != null){ // find pending request
+									if(pendingReq != null){ 
 										// Should we send something on connection ? 
 										if(pendingReq.getContract().getShouldSendPayloadOnConnection()){
 											byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().toByteArray();
@@ -143,6 +144,7 @@ public class TCPListener extends BASE{
 											outStream.write(p);
 											logAsInfo("Sent transaction");
 										}
+										
 										// Should we receive something ?
 										if(pendingReq.getContract().getShouldReceivePayloadAfterSendingPayloadOnConnection()){
 											keysize = inStream.readInt();
@@ -152,9 +154,11 @@ public class TCPListener extends BASE{
 											b.setPayloadIncoming(ByteString.copyFrom(in));
 											pendingReq = b.build();
 										}
+										
 										//cleanup
 										inStream.close();
 										outStream.close();
+										
 										// Complete Operation ?
 										switch(pendingReq.getOperationType()){
 										case SignAndBroadcastAuthenticatorTx:
@@ -166,7 +170,8 @@ public class TCPListener extends BASE{
 													pendingReq.getPairingID(), 
 													null,
 													true,
-													pendingReq.getPayloadIncoming().toByteArray());
+													pendingReq.getPayloadIncoming().toByteArray(),
+													pendingReq);
 											op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 												@Override
@@ -178,6 +183,7 @@ public class TCPListener extends BASE{
 												@SuppressWarnings("restriction")
 												@Override
 												public void onFinished( String str) { 
+													if(str != null)
 													Platform.runLater(new Runnable() {
 													      @Override public void run() {
 													    	  Dialogs.create()
@@ -194,6 +200,7 @@ public class TCPListener extends BASE{
 												@SuppressWarnings("restriction")
 												@Override
 												public void onUserCancel(String reason) {
+													if(reason != null)
 													Platform.runLater(new Runnable() {
 													      @Override public void run() {
 													    	  Dialogs.create()
@@ -217,8 +224,8 @@ public class TCPListener extends BASE{
 											break;
 										}
 										
-										//
-										Authenticator.getWalletOperation().removePendingRequest(pendingReq);
+										if(!pendingReq.getContract().getShouldLetPendingRequestHandleRemoval())
+											Authenticator.getWalletOperation().removePendingRequest(pendingReq);
 									}
 									else{ // pending request not found
 										logAsInfo("No Pending Request Found");
