@@ -3,6 +3,11 @@
 	-fx-background-color:transparent;
 }
 
+.text-area:focused {
+	-fx-background-color:transparent;
+}
+
+
 .scroll-pane {
 	-fx-border-radius: 0.2em;
 	-fx-background-radius:0.2em;
@@ -83,6 +88,13 @@
 	-icons-color: white;
 }
 
+.clear-button {
+	-fx-background-color: #D8D8D8;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+}
+
 .forward-button {
 	-fx-background-color: #95d946;
 	-fx-background-insets: 0, 0, 1, 2;
@@ -113,6 +125,11 @@
 }
 
 #RequestPane .choice-box {
+	-fx-background-color: #ecf0f1;  
+    -fx-font-size: 12px;
+}
+
+#SendPane .choice-box {
 	-fx-background-color: #ecf0f1;  
     -fx-font-size: 12px;
 }
@@ -163,6 +180,11 @@
 }
 
 #ReceivePane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#SendPane .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }

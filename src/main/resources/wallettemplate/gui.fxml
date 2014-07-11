@@ -19,7 +19,6 @@
         <Image url="@background.png" />
       </image>
     </ImageView>
-    
     <!-- 
     
     
@@ -106,21 +105,21 @@
     -->
     <Pane fx:id="ReceivePane" layoutX="196.0" layoutY="74.0" prefHeight="338.0" prefWidth="629.0" visible="false">
       <children>
-      <Pane fx:id="RequestPane" layoutX="0.0" layoutY="90.0" prefHeight="250.0" prefWidth="600.0">
-	        <Separator layoutX="46.0" layoutY="7.0" minHeight="2.1999969482421875" prefHeight="2.1999969482421875" prefWidth="537.0" />
-	        <TextField fx:id="txReqLabel" layoutX="67.0" layoutY="27.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
-	        <TextField fx:id="txReqAmount" layoutX="67.0" layoutY="65.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
-	        <ChoiceBox layoutX="283.0" layoutY="67.0" prefHeight="25.0" value="BTC">
-	          <items>
-	            <FXCollections fx:factory="observableArrayList">
-	              <String fx:value="BTC" />
-	              <String fx:value="USD" />
-	            </FXCollections>
-	          </items>
-	        </ChoiceBox>
-	        <TextArea fx:id="txReqMemo" layoutX="67.0" layoutY="106.0" prefHeight="71.0" prefWidth="475.0" wrapText="true" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent;" />
-	        <Button fx:id="btnRequest" layoutX="67.0" layoutY="194.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="155.0" text="Request Payment" onMousePressed="#btnRequestPressed" onMouseReleased="#btnRequestReleased" styleClass="custom-button"/>
-	        <Button fx:id="btnClearReceivePane" layoutX="251.0" layoutY="194.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="109.5" text="Clear" onMousePressed="#btnClearReceivePanePressed" onMouseReleased="#btnClearReceivePaneReleased" styleClass="custom-button"/>
+        <Pane fx:id="RequestPane" layoutX="0.0" layoutY="90.0" prefHeight="250.0" prefWidth="600.0">
+          <Separator layoutX="46.0" layoutY="7.0" minHeight="2.1999969482421875" prefHeight="2.1999969482421875" prefWidth="537.0" />
+          <TextField fx:id="txReqLabel" layoutX="67.0" layoutY="27.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+          <TextField fx:id="txReqAmount" layoutX="67.0" layoutY="65.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+          <ChoiceBox layoutX="283.0" layoutY="67.0" prefHeight="25.0" prefWidth="52.0" value="BTC">
+            <items>
+              <FXCollections fx:factory="observableArrayList">
+                <String fx:value="BTC" />
+                <String fx:value="USD" />
+              </FXCollections>
+            </items>
+          </ChoiceBox>
+          <TextArea fx:id="txReqMemo" layoutX="67.0" layoutY="106.0" prefHeight="71.0" prefWidth="475.0" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent;" wrapText="true" />
+          <Button fx:id="btnRequest" layoutX="67.0" layoutY="194.0" mnemonicParsing="false" onMousePressed="#btnRequestPressed" onMouseReleased="#btnRequestReleased" prefHeight="32.0" prefWidth="175.0" styleClass="custom-button" text="Request Payment" contentDisplay="RIGHT" textAlignment="CENTER"/>
+          <Button fx:id="btnClearReceivePane" layoutX="247.0" layoutY="194.0" mnemonicParsing="false" onMousePressed="#btnClearReceivePanePressed" onMouseReleased="#btnClearReceivePaneReleased" prefHeight="32.0" prefWidth="109.5" styleClass="clear-button" text="Clear" contentDisplay="RIGHT" textAlignment="CENTER"/>
         </Pane>
         <HBox fx:id="ReceiveHBox" layoutX="0.0" layoutY="14.0" prefHeight="64.0" prefWidth="629.0">
           <children>
@@ -185,10 +184,10 @@
                 <Insets top="5.0" />
               </VBox.margin>
             </ScrollPane>
-            <HBox alignment="CENTER" fillHeight="true" prefHeight="50.0" prefWidth="600.0" spacing="50.0" VBox.vgrow="NEVER">
+            <HBox alignment="CENTER_LEFT" fillHeight="true" prefHeight="50.0" prefWidth="600.0" spacing="5.0" VBox.vgrow="NEVER">
               <children>
-                <Button fx:id="btnSendTx" defaultButton="true" mnemonicParsing="false" onAction="#SendTx" onMousePressed="#btnSendTxPressed" onMouseReleased="#btnSendTxReleased" prefHeight="32.0" prefWidth="138.0" styleClass="custom-button" text="Send" textFill="WHITE" />
-              	<Button fx:id="btnClearSendPane" layoutX="251.0" layoutY="194.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="109.5" text="Clear" onMousePressed="#btnClearSendPanePressed" onMouseReleased="#btnClearSendPaneReleased" styleClass="custom-button"/>
+                <Button fx:id="btnSendTx" contentDisplay="RIGHT" defaultButton="true" mnemonicParsing="false" onAction="#SendTx" onMousePressed="#btnSendTxPressed" onMouseReleased="#btnSendTxReleased" prefHeight="32.0" prefWidth="138.0" styleClass="custom-button" text="Send" textAlignment="CENTER" textFill="WHITE" />
+                <Button fx:id="btnClearSendPane" contentDisplay="RIGHT" mnemonicParsing="false" onMousePressed="#btnClearSendPanePressed" onMouseReleased="#btnClearSendPaneReleased" prefHeight="32.0" prefWidth="109.5" styleClass="clear-button" text="Clear" textAlignment="CENTER" />
               </children>
               <VBox.margin>
                 <Insets top="10.0" />
@@ -212,7 +211,7 @@
             <Image url="@ovrImage.png" />
           </image>
         </ImageView>
-        <ScrollPane fx:id="scrlViewTxHistory" layoutX="280.0" layoutY="130.0" prefHeight="180.0" prefWidth="340.0"/>
+        <ScrollPane fx:id="scrlViewTxHistory" layoutX="280.0" layoutY="130.0" prefHeight="180.0" prefWidth="340.0" />
         <ImageView fx:id="ivAvatar" fitHeight="73.0" fitWidth="73.0" layoutX="35.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
           <image>
             <Image url="@DefaultAvatar.png" />
@@ -229,7 +228,7 @@
         </Button>
         <HBox layoutX="126.0" layoutY="33.0" prefHeight="51.0" prefWidth="337.0">
           <children>
-            <Label fx:id="lblName" prefHeight="25.0" prefWidth="290.99990000000253" text="Welcome back, Zach Galifianakis" textFill="#4b698f">
+            <Label fx:id="lblName" prefHeight="25.0" prefWidth="286.9999000000025" text="Welcome back, Zach Galifianakis" textFill="#4b698f">
               <font>
                 <Font size="15.0" />
               </font>
@@ -266,7 +265,7 @@
           <content>
             <GridPane prefHeight="520.0" prefWidth="601.0">
               <children>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Accounts" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" onMousePressed="#btnAccounts">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnAccounts" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Accounts" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -284,7 +283,7 @@
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" prefWidth="113.0" style="-fx-background-color:transparent;" text="Bitcoin Authenticator" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER"  onMousePressed="#btnAppAuthenticator">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnAppAuthenticator" prefWidth="113.0" style="-fx-background-color:transparent;" text="Bitcoin Authenticator" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -332,7 +331,7 @@
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="OneName" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" onMousePressed="#btnOneName">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnOneName" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="OneName" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -385,11 +384,7 @@
     -->
     <Pane fx:id="SyncPane" layoutX="18.0" layoutY="431.0" prefHeight="38.0" prefWidth="564.0" visible="true">
       <children>
-        <Label fx:id="lblStatus" prefHeight="25.0" prefWidth="250" layoutX="20" layoutY="6.0" style="-fx-font-weight: SEMI_BOLD;" text="        Initializing Tor" textFill="#6e86a0">
-          <font> 
-            <Font size="14.0" />
-          </font>
-        </Label>
+        <Label fx:id="lblStatus" font="$x2" layoutX="20.0" layoutY="6.0" prefHeight="25.0" prefWidth="250.0" style="-fx-font-weight: SEMI_BOLD;" text="        Initializing Tor" textFill="#6e86a0" />
         <ImageView fx:id="ivSync" fitHeight="24.0" fitWidth="24.0" layoutX="540.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
           <image>
             <Image url="@ivSync.png" />
@@ -399,38 +394,38 @@
       </children>
     </Pane>
     <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0">
-    <!-- 
+      <!-- 
     
     
     	Control panel for : minimize, close 
     	
     	
     -->
-    <HBox fx:id="PaneControlHBox" layoutX="780.0" layoutY="15.0" prefHeight="30.0" prefWidth="50.0" >
-	    <children>
-	    	<Label fx:id="lblMinimize" prefHeight="10.0" prefWidth="10">
-		    	<HBox.margin>
-	              <Insets right="20.0" />
-	            </HBox.margin>
-	            <graphic>
-			        <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-			          <image>
-			            <Image url="@minimize.png" />
-			          </image>
-			        </ImageView>
-     			 </graphic>
-			</Label>
-	        <Label fx:id="lblClose" prefHeight="10.0" prefWidth="10">
-	        <graphic>
-			    <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-	          		<image>
-	            		<Image url="@close.png" />
-	          		</image>
-	        	</ImageView>
-   			 </graphic>
-	        </Label>
-	    </children>
-    </HBox>
+      <HBox fx:id="PaneControlHBox" layoutX="780.0" layoutY="15.0" prefHeight="30.0" prefWidth="50.0">
+        <children>
+          <Label fx:id="lblMinimize" prefHeight="10.0" prefWidth="10.0">
+            <graphic>
+              <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@minimize.png" />
+                </image>
+              </ImageView>
+            </graphic>
+            <HBox.margin>
+              <Insets right="20.0" />
+            </HBox.margin>
+          </Label>
+          <Label fx:id="lblClose" prefHeight="10.0" prefWidth="10.0">
+            <graphic>
+              <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@close.png" />
+                </image>
+              </ImageView>
+            </graphic>
+          </Label>
+        </children>
+      </HBox>
     </Pane>
     <!-- 
     
