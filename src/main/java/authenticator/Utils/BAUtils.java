@@ -1,15 +1,48 @@
 package authenticator.Utils;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Formatter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.crypto.DeterministicKey;
 
 public class BAUtils {
+	
+	/**For reading the JSON*/
+	private static String readAll(Reader rd) throws IOException {
+	    StringBuilder sb = new StringBuilder();
+	    int cp;
+	    while ((cp = rd.read()) != -1) {
+	      sb.append((char) cp);
+	    }
+	    return sb.toString();
+	  }
+
+	/**Reads JSON object from a URL*/
+	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException { 
+	    URL urladdr = new URL(url);
+        URLConnection conn = urladdr.openConnection();
+        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        BufferedReader rd = null;
+	    try {
+	      rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	      String jsonText = readAll(rd);
+	      JSONObject json = new JSONObject(jsonText);
+	      return json;
+	    } finally {
+	      rd.close();
+	    }
+	  }
 
 	static public String getAbsolutePathForFile(String fileName) throws IOException
 	{

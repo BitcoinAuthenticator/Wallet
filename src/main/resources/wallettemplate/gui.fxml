@@ -109,7 +109,7 @@
           <Separator layoutX="46.0" layoutY="7.0" minHeight="2.1999969482421875" prefHeight="2.1999969482421875" prefWidth="537.0" />
           <TextField fx:id="txReqLabel" layoutX="67.0" layoutY="27.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
           <TextField fx:id="txReqAmount" layoutX="67.0" layoutY="65.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
-          <ChoiceBox layoutX="283.0" layoutY="67.0" prefHeight="25.0" value="BTC">
+          <ChoiceBox layoutX="283.0" layoutY="67.0" prefHeight="25.0" prefWidth="52.0" value="BTC">
             <items>
               <FXCollections fx:factory="observableArrayList">
                 <String fx:value="BTC" />
@@ -228,7 +228,7 @@
         </Button>
         <HBox layoutX="126.0" layoutY="33.0" prefHeight="51.0" prefWidth="337.0">
           <children>
-            <Label fx:id="lblName" prefHeight="25.0" prefWidth="290.9999000000025" text="Welcome back, Zach Galifianakis" textFill="#4b698f">
+            <Label fx:id="lblName" prefHeight="25.0" prefWidth="286.9999000000025" text="Welcome back, Zach Galifianakis" textFill="#4b698f">
               <font>
                 <Font size="15.0" />
               </font>

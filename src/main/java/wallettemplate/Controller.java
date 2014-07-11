@@ -277,7 +277,8 @@ public class Controller {
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);
     	setupOneName(Authenticator.getWalletOperation().getOnename());
-        refreshBalanceLabel();
+        try {refreshBalanceLabel();} 
+        catch (JSONException | IOException e) {e.printStackTrace();}
         setReceiveAddresses();
         setTxHistoryContent();
         
@@ -319,7 +320,8 @@ public class Controller {
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
-				refreshBalanceLabel();
+				try {refreshBalanceLabel();} 
+				catch (JSONException | IOException e) {e.printStackTrace();}
 		        setReceiveAddresses();
 		        setTxHistoryContent();
 			  }
@@ -665,13 +667,22 @@ public class Controller {
     }
     
     @SuppressWarnings("static-access")
-	public void refreshBalanceLabel() {
+	public void refreshBalanceLabel() throws JSONException, IOException {
     	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
     	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
   
         //final Coin total = confirmed.add(unconfirmed);
         lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
+        String currency = "USD";
+        JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + currency + "/");
+		double last = json.getDouble("last");
+		double conf = Double.parseDouble(confirmed.toFriendlyString())*last;
+		Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " " + currency));
+		double unconf = Double.parseDouble(unconfirmed.toFriendlyString())*last;
+		Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " " + currency));
+		
+        
     }
     
     @SuppressWarnings("unused")
@@ -820,6 +831,19 @@ public class Controller {
 		labelClear.setPadding(new Insets(0,0,0,3));
 		btnClearSendPane.setGraphic(labelClear);
 		btnClearSendPane.setFont(Font.font(null, FontWeight.NORMAL, 14));
+		txFee.lengthProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
+                  if(newValue.intValue() > oldValue.intValue()){
+                      char ch = txFee.getText().charAt(oldValue.intValue());  
+                      //Check if the new character is the number or other's
+                      if(!(ch >= '0' && ch <= '9') && ch != '.'){       
+                           //if it's not number then just setText to previous one
+                           txFee.setText(txFee.getText().substring(0,txFee.getText().length()-1)); 
+                      }
+                 }
+            }
+        });
     }
     
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {
@@ -849,7 +873,7 @@ public class Controller {
     	btnClearSendPane.setStyle("-fx-background-color: #D8D8D8;");
     } 
     
-    private boolean ValidateTx() throws NoSuchAlgorithmException, JSONException, AddressFormatException
+    private boolean ValidateTx() throws NoSuchAlgorithmException, JSONException, AddressFormatException, IOException
     {
     	//Check tx message
     	if(txMsgLabel.getText().length() < 3)
@@ -868,7 +892,16 @@ public class Controller {
     	for(Node n:scrlContent.getChildren())
     	{
     		NewAddress na = (NewAddress)n;
-    		double a = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+    		double a;
+			if (na.cbCurrency.getValue().toString().equals("BTC")){
+				a = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+			}
+			else {
+				JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
+				double last = json.getDouble("last");
+				a = (double) (Double.parseDouble(na.txfAmount.getText())/last)*100000000;
+			}
+			long satoshis = (long) a;
     		amount = amount.add(Coin.valueOf((long)a));
     	}
     	// fee
@@ -882,8 +915,9 @@ public class Controller {
     	amount = amount.add(fee);
     	//
     	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());   	
-    	
-    	if(amount.compareTo(confirmed) > 0) return false;
+    	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+    	Coin balance = confirmed.add(unconfirmed);
+    	if(amount.compareTo(balance) > 0) return false;
     	
     	//Check min dust amount 
     	if(amount.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) return false;
@@ -916,7 +950,15 @@ public class Controller {
         		Address add;
 				try {
 					add = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText());
-					double amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+					double amount;
+					if (na.cbCurrency.getValue().toString().equals("BTC")){
+						amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+					}
+					else {
+						JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
+						double last = json.getDouble("last");
+						amount = (double) (Double.parseDouble(na.txfAmount.getText())/last)*100000000;
+					}
 					long satoshis = (long) amount;
 					if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 						TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
@@ -1100,6 +1142,7 @@ public class Controller {
     public class NewAddress extends HBox {
     	TextField txfAddress;
     	TextField txfAmount;
+    	ChoiceBox cbCurrency;
     	Label lblScanQR;
     	Label lblContacts;
     	Label amountInSatoshi;
@@ -1130,7 +1173,6 @@ public class Controller {
     		VBox cancel = new VBox();
     		//Cancel
     		cancelLabel = new Label();
-    		//cancelLabel.setText("<X>");
     		cancelLabel.setPadding(new Insets(0,5,0,0));
     		cancelLabel.setFont(new Font("Arial", 18));
     		AwesomeDude.setIcon(cancelLabel, AwesomeIcon.TIMES_CIRCLE);
@@ -1171,7 +1213,7 @@ public class Controller {
 
     		HBox b = new HBox();
     		txfAmount = new TextField();
-    		txfAmount.setPromptText("Amount (BTC)");
+    		txfAmount.setPromptText("Amount");
     		txfAmount.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1;");
     		txfAmount.lengthProperty().addListener(new ChangeListener<Number>(){
                 @Override
@@ -1186,11 +1228,15 @@ public class Controller {
                      }
                 }
     		});
-    		b.setMargin(txfAmount, new Insets(4,200,0,0));
+    		cbCurrency = new ChoiceBox();
+    		cbCurrency.getItems().add("BTC");
+    		cbCurrency.getItems().add("USD");
+    		cbCurrency.setValue("BTC");
+    		cbCurrency.setPrefSize(55, 18);
+    		b.setMargin(txfAmount, new Insets(4,6,0,0));
+    		b.setMargin(cbCurrency, new Insets(6,0,0,0));
     		b.getChildren().add(txfAmount);
-    		amountInSatoshi = new Label();
-    		//amountInSatoshi.setText("bits");
-    		b.getChildren().add(amountInSatoshi);
+    		b.getChildren().add(cbCurrency);
     		main.getChildren().add(b);
     		this.getChildren().add(main);
     	}
@@ -1651,7 +1697,8 @@ public class Controller {
     }
     
     public void updateUIForNewActiveAccount(){
-    	refreshBalanceLabel();
+    	try {refreshBalanceLabel();}
+    	catch (JSONException | IOException e) {e.printStackTrace();}
     	setReceiveAddresses();
     	setTxHistoryContent();
     }

@@ -3,6 +3,11 @@
 	-fx-background-color:transparent;
 }
 
+.text-area:focused {
+	-fx-background-color:transparent;
+}
+
+
 .scroll-pane {
 	-fx-border-radius: 0.2em;
 	-fx-background-radius:0.2em;
@@ -120,6 +125,11 @@
 }
 
 #RequestPane .choice-box {
+	-fx-background-color: #ecf0f1;  
+    -fx-font-size: 12px;
+}
+
+#SendPane .choice-box {
 	-fx-background-color: #ecf0f1;  
     -fx-font-size: 12px;
 }
