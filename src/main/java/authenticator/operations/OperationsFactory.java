@@ -219,18 +219,26 @@ public class OperationsFactory extends BASE{
 								PairedAuthenticator po = wallet.getPairingObject(pairingID);
 								SignProtocol.complete(wallet, tx,AuthSigs,po);
 								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
-								SendResult result = wallet.pushTxWithWallet(tx);
-								Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
-					                @Override
-					                public void onSuccess(Transaction result) {
-					                	listenerUI.onFinished("Transaction Sent With Success");
-					                }
+								/**
+								 * Condition sending by is Test Mode
+								 */
+								if(wallet.getApplicationParams().getIsTestMode() == false){
+									SendResult result = wallet.pushTxWithWallet(tx);
+									Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
+						                @Override
+						                public void onSuccess(Transaction result) {
+						                	listenerUI.onFinished("Transaction Sent With Success");
+						                }
 
-					                @Override
-					                public void onFailure(Throwable t) {
-					                	listenerUI.onError(null,t);
-					                }
-					            });
+						                @Override
+						                public void onFailure(Throwable t) {
+						                	listenerUI.onError(null,t);
+						                }
+						            });
+								}
+								else{
+									listenerUI.onFinished("Transaction Sent With Success");
+								}
 							}
 
 						}
@@ -313,18 +321,26 @@ public class OperationsFactory extends BASE{
 						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
 					}
 					else{
-						SendResult result = wallet.pushTxWithWallet(signedTx);
-						Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
-			                @Override
-			                public void onSuccess(Transaction result) {
-			                	listenerUI.onFinished("Transaction Sent With Success");
-			                }
+						/**
+						 * Condition sending by is Test Mode
+						 */
+						if(wallet.getApplicationParams().getIsTestMode() == false){
+							SendResult result = wallet.pushTxWithWallet(signedTx);
+							Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
+				                @Override
+				                public void onSuccess(Transaction result) {
+				                	listenerUI.onFinished("Transaction Sent With Success");
+				                }
 
-			                @Override
-			                public void onFailure(Throwable t) {
-			                	listenerUI.onError(null,t);
-			                }
-			            });
+				                @Override
+				                public void onFailure(Throwable t) {
+				                	listenerUI.onError(null,t);
+				                }
+				            });
+						}
+						else
+							listenerUI.onFinished("Transaction Sent With Success");
+						
 					}
 					
 				}

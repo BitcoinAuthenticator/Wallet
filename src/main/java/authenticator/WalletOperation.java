@@ -85,6 +85,7 @@ public class WalletOperation extends BASE{
 	private static BAHierarchy authenticatorWalletHierarchy;
 	public static ConfigFile configFile;
 	private static Logger staticLogger;
+	private BAApplicationParameters AppParams;
 	
 	public WalletOperation(){ 
 		super(WalletOperation.class);
@@ -127,6 +128,7 @@ public class WalletOperation extends BASE{
 	
 	private void init(BAApplicationParameters params, DeterministicSeed seed) throws IOException{
 		staticLogger = this.LOG;
+		AppParams = params;
 		if(configFile == null){
 			configFile = new ConfigFile(params.getAppName());
 			/**
@@ -157,6 +159,10 @@ public class WalletOperation extends BASE{
 			
 			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers, getHierarchyNextAvailableAccountID());
 		}
+	}
+	
+	public BAApplicationParameters getApplicationParams(){
+		return AppParams;
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class BAApplicationParameters{
 	NetworkType bitcoinNetworkType;
+	boolean isTestMode = false;
 	public boolean shouldLaunchProgram = false;
 	boolean shouldPrintTCPListenerInfoToConsole;
 	String APP_NAME = "AuthenticatorWallet";
@@ -32,6 +33,14 @@ public class BAApplicationParameters{
 			PrintHelp();
 			returnValue = false;
 		}
+		
+		// test mode 
+		if(params.containsKey("testermode")){
+			boolean value = Boolean.parseBoolean(params.get("testermode"));
+			setIsTestMode(value);
+		}
+		else
+			setIsTestMode(false);
 		
 		// Network Type
 		if(params.containsKey("testnet")){
@@ -69,6 +78,7 @@ public class BAApplicationParameters{
 				{"--help","Print Help"},
 				{"--testnet","If =true will use testnet parameters, else mainnet parameters"},
 				{"--debuglistener","If =true will print tcp listener info. False by default"},
+				{"--testermode","Testing mode, if true will not send bitcoins. False by default"},
 		};
 		
 		for (String[] kv : help) {
@@ -90,6 +100,11 @@ public class BAApplicationParameters{
 		return this;
 	}
 	
+	public boolean getIsTestMode(){ return isTestMode; }
+	public BAApplicationParameters setIsTestMode(boolean value) {
+		this.isTestMode = value;
+		return this;
+	}
 	
 	public boolean getShouldPrintTCPListenerInfoToConsole(){ return shouldPrintTCPListenerInfoToConsole; }
 	public BAApplicationParameters setShouldPrintTCPListenerInfoToConsole(boolean value) {
