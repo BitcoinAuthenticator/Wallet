@@ -16,6 +16,13 @@ public class MessageBuilder extends JSONObject{
 	{
 		JSONObject reqPayload;
 		switch (type){
+			/**
+			 * arg - <br>
+			 * 0 - PairingID<br>
+			 * 1 - ExternalIP <br>
+			 * 2 - LocalIP <br>
+			 * 3 - CustomMsg <br>
+			 */
 			case SignTX:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
 				this.put("PairingID", arg[0]); 

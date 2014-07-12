@@ -48,8 +48,10 @@ public class Dispacher {
 						plugnplay.run(null);
 					//assert(plugnplay.isPortMapped(port));
 					msgGCM = new MessageBuilder(ATGCMMessageType.SignTX,
-							new String[]{new String(device.pairingID),plugnplay.getExternalIP(),
-							   plugnplay.getLocalIP().substring(1), args[0]});
+							new String[]{new String(device.pairingID),
+										plugnplay.getExternalIP(),
+										plugnplay.getLocalIP().substring(1), 
+										args[0]});
 					ArrayList<String> devicesList = new ArrayList<String>();
 					devicesList.add(new String(device.gcmRegId));
 					GCMSender sender = new GCMSender();

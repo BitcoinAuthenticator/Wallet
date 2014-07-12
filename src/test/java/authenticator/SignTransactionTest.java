@@ -20,15 +20,18 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.spongycastle.util.Arrays;
 
+import authenticator.GCM.dispacher.MessageBuilder;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
+import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 
 import com.google.bitcoin.core.Address;
@@ -213,6 +216,31 @@ public class SignTransactionTest {
 			// check expected output
 			assertTrue(Arrays.areEqual(result, expected));
 		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void payloadTest(){
+		try{
+			MessageBuilder b = new MessageBuilder(ATGCMMessageType.SignTX,
+												new String[]{"pairing id",
+												"external ip",
+											    "local ip", 
+											    "custom msg"});
+			String result = b.toString();
+			JSONObject objResult = new JSONObject(result);
+			assertTrue(objResult.getString("PairingID").equals("pairing id"));
+			
+			assertTrue(objResult.getInt("RequestType") == ATGCMMessageType.SignTX_VALUE);
+			JSONObject payload = new JSONObject(objResult.getString("ReqPayload"));
+			assertTrue(payload.getString("ExternalIP").equals("external ip"));
+			assertTrue(payload.getString("LocalIP").equals("local ip"));
+			
+			assertTrue(objResult.getString("CustomMsg").equals("custom msg"));
+		}
+		catch (JSONException e){
 			e.printStackTrace();
 			assertTrue(false);
 		}
