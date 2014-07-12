@@ -33,7 +33,6 @@ public class MessageBuilder extends JSONObject{
 			 * 1 - ExternalIP <br>
 			 * 2 - LocalIP <br>
 			 * 3 - CustomMsg <br>
-			 * 4 - RequestID
 			 */
 			case UpdatePendingRequestIPs:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
@@ -44,7 +43,6 @@ public class MessageBuilder extends JSONObject{
 				reqPayload.put("LocalIP", arg[2]);
 				this.put("ReqPayload", reqPayload);
 				this.put("CustomMsg", arg[3]); // TODO localize
-				this.put("RequestID", arg[4]);
 				break;
 		}
 	}

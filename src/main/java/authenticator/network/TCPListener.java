@@ -19,11 +19,15 @@ import com.google.protobuf.ByteString;
 import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;
+import authenticator.WalletOperation;
 import authenticator.Utils.BAUtils;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
 /**
  * <b>The heart of the wallet operation.</b><br>
@@ -50,14 +54,17 @@ public class TCPListener extends BASE{
 	private static UpNp plugnplay;
 	private ServerSocket ss = null;
 	
+	WalletOperation wallet;
+	
 	/**
 	 * Flags
 	 */
 	private boolean shouldStopListener;
 	private boolean isRunning;
 	
-	public TCPListener(){
+	public TCPListener(WalletOperation wallet){
 		super(TCPListener.class);
+		this.wallet = wallet;
 		isRunning = false;
 	}
 	
@@ -97,7 +104,7 @@ public class TCPListener extends BASE{
 					try{
 						boolean isConnected;
 						isRunning = true;
-						sendUpdatesToPendingRequests();
+						sendUpdatedIPsToPairedAuthenticators();
 						while(true)
 			    	    {
 							isConnected = false;
@@ -127,7 +134,7 @@ public class TCPListener extends BASE{
 									JSONObject jo = new JSONObject(new String(reqIdPayload));
 									requestID = jo.getString("requestID");
 									//
-									for(Object o:Authenticator.getWalletOperation().getPendingRequests()){
+									for(Object o:wallet.getPendingRequests()){
 										PendingRequest po = (PendingRequest)o;
 										if(po.getRequestID().equals(requestID))
 										{
@@ -163,9 +170,9 @@ public class TCPListener extends BASE{
 										switch(pendingReq.getOperationType()){
 										case SignAndBroadcastAuthenticatorTx:
 											byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
-											Transaction tx = new Transaction(Authenticator.getWalletOperation().getNetworkParams(),txBytes);
+											Transaction tx = new Transaction(wallet.getNetworkParams(),txBytes);
 											 
-											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Authenticator.getWalletOperation(),
+											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
 													tx,
 													pendingReq.getPairingID(), 
 													null,
@@ -225,7 +232,7 @@ public class TCPListener extends BASE{
 										}
 										
 										if(!pendingReq.getContract().getShouldLetPendingRequestHandleRemoval())
-											Authenticator.getWalletOperation().removePendingRequest(pendingReq);
+											wallet.removePendingRequest(pendingReq);
 									}
 									else{ // pending request not found
 										logAsInfo("No Pending Request Found");
@@ -236,7 +243,7 @@ public class TCPListener extends BASE{
 								}
 							}
 							catch(Exception e){
-								Authenticator.getWalletOperation().removePendingRequest(pendingReq);
+								wallet.removePendingRequest(pendingReq);
 								logAsInfo("Error Occured while executing Inbound operation:\n"
 										+ e.toString());
 							}
@@ -317,12 +324,13 @@ public class TCPListener extends BASE{
     }
 	
 	//##
-	public void sendUpdatesToPendingRequests(){
-		try {
-			for(PendingRequest o:Authenticator.getWalletOperation().getPendingRequests()){
-				ATOperation op = OperationsFactory.UPDATE_PENDING_REQUEST_IPS(Authenticator.getWalletOperation(),o.getRequestID(), o.getPairingID());
+	public void sendUpdatedIPsToPairedAuthenticators(){
+		for(ATAccount acc:wallet.getAllAccounts())
+			if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
+				PairedAuthenticator  po = wallet.getPairingObjectForAccountIndex(acc.getIndex());
+				ATOperation op = OperationsFactory.UPDATE_PAIRED_AUTHENTICATORS_IPS(wallet,
+																			po.getPairingID());
 				Authenticator.operationsQueue.add(op);
 			}
-		} catch (IOException e) { e.printStackTrace(); }
 	}
 }

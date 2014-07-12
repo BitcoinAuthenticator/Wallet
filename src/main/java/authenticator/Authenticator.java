@@ -67,6 +67,8 @@ public class Authenticator extends AbstractService{
 			
 			initPendingRequests();
 		}
+		
+		init2();
 	}
 	
 	/**
@@ -87,13 +89,8 @@ public class Authenticator extends AbstractService{
 			
 			initPendingRequests();
 		}
-		/*if(pendingRequests == null){
-			pendingRequests = new SafeList();
-			initPendingRequests();
-		}*/
-		new OperationsFactory(); // to instantiate various things
-		//verifyWalletIsWatchingAuthenticatorAddresses();
-		//setFirstAccountTEST();
+		
+		init2();
 	}
 	
 	private void init(BAApplicationParameters appParams){
@@ -101,10 +98,16 @@ public class Authenticator extends AbstractService{
 			mApplicationParams = appParams;
 		if(generalEventsListeners == null)
 			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
-		if(mTCPListener == null)
-			mTCPListener = new TCPListener();
+		
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
+		
+		new OperationsFactory(); // to instantiate various things
+	}
+	
+	public void init2(){
+		if(mTCPListener == null)
+			mTCPListener = new TCPListener(getWalletOperation());
 	}
 	
 	public static void disposeOfAuthenticator(){
@@ -115,7 +118,7 @@ public class Authenticator extends AbstractService{
 		mTCPListener = null;
 		operationsQueue = null;
 	}
-	
+		
 	//#####################################
 	//
 	//		Operations Queue Control

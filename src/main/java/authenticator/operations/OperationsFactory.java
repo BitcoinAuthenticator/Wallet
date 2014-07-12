@@ -284,20 +284,22 @@ public class OperationsFactory extends BASE{
 	
 	/**
 	 * If a pending request to the Authenticator app was made, change in the wallet IP will break any attempt to finalize the operation.<br>
-	 * To resolve the problem, everytime the wallet is launched, it will search for pending requests {@link authenticator.network.TCPListener#sendUpdatesToPendingRequests() here}
-	 * and send a GCM notification to remind the Authenticator's user of the pending request and update the IPs at the same time.
+	 * To resolve the problem, every time the wallet is launched, it will send a GCM notification to the Authenticator to:<br>
+	 * <ol>
+	 * <li> If there are any pending requests, remind the user</li>
+	 * <li> Update the current wallet IPs</li>
+	 * <ol>
 	 * 
 	 * 
 	 * @param requestID
 	 * @param pairingID
 	 * @return
 	 */
-	static public ATOperation UPDATE_PENDING_REQUEST_IPS(WalletOperation wallet, String requestID, String pairingID){
+	static public ATOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
 		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
-					.SetDescription("Update pending requests to Authenticator")
-					.SetBeginMsg("Updating Pending Requests ...")
-					.SetFinishedMsg("Finished Pending Requests")
-					.SetArguments(new String[]{requestID})
+					.SetDescription("Update Authenticator's wallet IPs")
+					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
+					.SetFinishedMsg("Finished IPs updates")
 					.SetOperationAction(new OperationActions(){
 						@Override
 						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
@@ -316,7 +318,7 @@ public class OperationsFactory extends BASE{
 									null);
 							
 							// returns the request ID
-							disp.dispachMessage(new Authenticator(), ATGCMMessageType.UpdatePendingRequestIPs, d, new String[]{ requestID });
+							disp.dispachMessage(new Authenticator(), ATGCMMessageType.UpdatePendingRequestIPs, d);
 						}
 
 						@Override

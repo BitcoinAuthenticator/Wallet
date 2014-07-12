@@ -79,8 +79,7 @@ public class Dispacher {
 							new String[]{new String(device.pairingID),
 											plugnplay.getExternalIP(),
 										    plugnplay.getLocalIP().substring(1), 
-										    "",
-										    args[0]});
+										    ""});
 					ArrayList<String> devicesList = new ArrayList<String>();
 					devicesList.add(new String(device.gcmRegId));
 					GCMSender sender = new GCMSender();
