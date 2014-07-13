@@ -100,10 +100,9 @@ public class Main extends BAApplication {
         
         String filePath1 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + ".wallet";
         File f1 = new File(filePath1);
-        //String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + "_TestNet.wallet";
-       // File f2 = new File(filePath2);
-        if(!f1.exists()) //&& !f2.exists()) { 
-        {
+        String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + "_TestNet.wallet";
+        File f2 = new File(filePath2);
+        if(!f1.exists() && !f2.exists()) { 
         	Parent root;
             try {
                 root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
@@ -124,13 +123,13 @@ public class Main extends BAApplication {
     	/**
     	 * If we get returned params from startup, use that
     	 */
-    	/*BAApplicationParameters params = null;
+    	BAApplicationParameters params = null;
     	String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + "_TestNet.wallet";
         File f2 = new File(filePath2);
     	if (returnedParamsFromSetup!=null){params = returnedParamsFromSetup;}
     	else if (f2.exists()){params = new BAApplicationParameters(ImmutableMap.of("testnet","true"),new ArrayList<String>());}
-    	else {params = new BAApplicationParameters(ImmutableMap.of(),new ArrayList<String>());}*/
-    	BAApplicationParameters params = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
+    	else {params = new BAApplicationParameters(ImmutableMap.of(),new ArrayList<String>());}
+    	//BAApplicationParameters params = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
     	
     	
     	// Make log output concise.

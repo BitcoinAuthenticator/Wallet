@@ -5,6 +5,8 @@ import authenticator.AuthenticatorGeneralEventsListener;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
+import authenticator.helpers.exceptions.AddressWasNotFoundException;
+import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.network.OneName;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
@@ -28,6 +30,7 @@ import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -62,6 +65,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
@@ -94,7 +98,9 @@ import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -183,6 +189,7 @@ public class Controller {
 	 public Main.OverlayUI overlayUi;
 	 private Wallet.SendResult sendResult;
 	 TorListener listener = new TorListener();
+	 Transaction tx = null;
 	 
 
 	//#####################################
@@ -877,17 +884,15 @@ public class Controller {
     
     private boolean ValidateTx() throws NoSuchAlgorithmException, JSONException, AddressFormatException, IOException
     {
-    	//Check tx message
-    	if(txMsgLabel.getText().length() < 3)
-    		return false;
     	//Check Outputs
     	if(scrlContent.getCount() == 0)
     		return false;
     	for(Node n:scrlContent.getChildren())
     	{
     		NewAddress na = (NewAddress)n;
-    		if(!na.validate())
-    			return false;
+    		try {Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText().toString());}
+    		catch (AddressFormatException e) {return false;}
+    		
     	}
     	//check sufficient funds
     	Coin amount = Coin.ZERO;
@@ -928,7 +933,6 @@ public class Controller {
     }
     
     @FXML protected void SendTx(ActionEvent event) throws Exception{
-    	
     	if(!ValidateTx()){
     		Dialogs.create()
 	        .owner(Main.stage)
@@ -937,21 +941,24 @@ public class Controller {
 	        .message("Make Sure:\n" +
 					"  1) You entered correct values in all fields\n"+
 					"  2) You have sufficient funds to cover your outputs\n"+
-					"  3) Outputs amount to at least the dust value(" + Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.toString() + ")\n" +
-					"  4) A Tx message, at least 3 characters long\n")
+					"  3) Outputs amount to at least the dust value(" + Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.toString() + ")\n")
 	        .showError();  
     	}
     	else{
     		//
     		setActivitySpinner("Sending Tx ..");
     		// collect Tx outputs
+    		ArrayList<String> OutputAddresses = new ArrayList<String>();
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
+    		Coin outAmount = Coin.valueOf(0);
+    		Coin leavingWallet = Coin.valueOf(0);
         	for(Node n:scrlContent.getChildren())
         	{
         		NewAddress na = (NewAddress)n;
         		Address add;
 				try {
 					add = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText());
+					OutputAddresses.add(add.toString());
 					double amount;
 					if (na.cbCurrency.getValue().toString().equals("BTC")){
 						amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
@@ -963,6 +970,7 @@ public class Controller {
 					}
 					long satoshis = (long) amount;
 					if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+						outAmount = outAmount.add(Coin.valueOf(satoshis));
 						TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
 											        				null, 
 											        				Coin.valueOf(satoshis), 
@@ -981,8 +989,7 @@ public class Controller {
 						        .showConfirm();   
 					      }
 					    });
-				}
-        		
+				}        		
         	}
         	
         	//	get fee
@@ -1003,130 +1010,173 @@ public class Controller {
 								.getAddressStr();
     		   
     		// complete Tx
-    		Transaction tx;
-			try {
-				tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
+			tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
 						to,
 						fee,
 						changeaddr,
 						Authenticator.getWalletOperation().getNetworkParams());
-				
-				// broadcast
-	    		ATOperation op = null;
-	    		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
-	    			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
-	    			for(TransactionInput in:tx.getInputs()){
-	    				int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
-	    				
-	    				// get address
-	    				String add = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-	    				
-	    				// find key
-	    				ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(add);
-	    				
-	    				//add key
-	    				keys.put(add, ca);
-	    			}
-	    			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(Authenticator.getWalletOperation(),tx,keys);
-	    		}
-	    		else{
-	    			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
-	    			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Authenticator.getWalletOperation(),
-	    					tx, 
-	    					pairID, 
-	    					txMsgLabel.getText(),
-	    					false,
-	    					null,
-	    					null);
-	    		}
-	    		
-	    		// operation listeners
-	    		op.SetOperationUIUpdate(new OnOperationUIUpdate(){
-					@Override
-					public void onBegin(String str) { }
-
-					@Override
-					public void statusReport(String report) {
-
-					}
-
-					@Override
-					public void onFinished(String str) {
-							removeActivitySpinner();
-							
-							if(str != null)
-							Platform.runLater(new Runnable() {
-						      @Override public void run() {
-						    	  Dialogs.create()
-							        .owner(Main.stage)
-							        .title("Success !")
-							        .masthead("Broadcasting Completed")
-							        .message("If this is a multisig P2SH transaction, we are waiting for the Authenticator to sign")
-							        .showInformation();  
-						      }
-						    });
-					}
-
-					@Override
-					public void onError(Exception e, Throwable t) {
-						removeActivitySpinner();
-						Platform.runLater(new Runnable() {
-						      @Override public void run() {
-						    	  String desc = "";
-						    	  if(t != null){
-						    		  Throwable rootCause = Throwables.getRootCause(t);
-						    		  desc = rootCause.toString();
-						    		  t.printStackTrace();
-						    	  }
-						    	  if(e != null){
-						    		  desc = e.toString();
-						    		  e.printStackTrace();
-						    	  }
-						    	  //
-						    	  Dialogs.create()
-							        .owner(Main.stage)
-							        .title("Error")
-							        .masthead("Error broadcasting Tx")
-							        .message(desc)
-							        .showError();   
-						      }
-						    });
-					}
-
-					@Override
-					public void onUserCancel(String reason) {
-						removeActivitySpinner();
-						
-						if(reason != null)
-						Platform.runLater(new Runnable() {
-						      @Override public void run() {
-						    	  Dialogs.create()
-							        .owner(Main.stage)
-							        .title("Error")
-							        .masthead("Authenticator Refused The Transaction")
-							        .message(reason)
-							        .showError();   
-						      }
-						    });
-					}
-
-					@Override
-					public void onUserOk(String msg) { }
-
-				});
-				Authenticator.operationsQueue.add(op);
-			} catch (NoSuchAlgorithmException | AddressFormatException | IllegalArgumentException e1) { 
-				e1.printStackTrace(); 
-				Dialogs.create()
-		        .owner(Main.stage)
-		        .title("Error")
-		        .masthead("Something went wrong")
-		        .message(e1.getMessage())
-		        .showError(); 
+		
+			Pane pane = new Pane();
+			pane.setMaxSize(500, 360);
+			pane.setStyle("-fx-background-color: white;");
+			pane.setEffect(new DropShadow());
+			VBox v = new VBox();
+			Label lblOverview = new Label("Transaction Overview");
+			ListView lvTx= new ListView();
+			lvTx.setPrefSize(460, 280);
+			lvTx.setPadding(new Insets(10,0,0,0));
+			lvTx.getItems().add("Inputs:");
+			Coin inAmount = Coin.valueOf(0);
+			for (TransactionInput in: tx.getInputs()){
+				lvTx.getItems().add(in.getOutpoint().toString());
+				inAmount = inAmount.add(in.getValue());
 			}
+			lvTx.getItems().add(" ");
+			lvTx.getItems().add("Outputs:");
+			int a = 0;
+			for (String addr : OutputAddresses){
+				lvTx.getItems().add(addr + " " + to.get(a).getValue().toFriendlyString() + " BTC");
+				a++;
+			}
+			lvTx.getItems().add(" ");
+			lvTx.getItems().add("Change: ");
+			lvTx.getItems().add(changeaddr + " " + ((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString() + " BTC");
+			lvTx.getItems().add(" ");
+			lvTx.getItems().add("Fee: " + fee.toFriendlyString() + " BTC");
+			v.setPadding(new Insets(10,0,0,20));
+			Button btnClear = new Button("Cancel");
+			Button btnConfirm = new Button("Send Transaction");
+			btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
+	            @Override
+	            public void handle(MouseEvent t) {
+	            	try {broadcast(tx);} 
+	            	catch (NoSuchAlgorithmException
+							| AddressWasNotFoundException | JSONException
+							| AddressFormatException
+							| KeyIndexOutOfRangeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            }
+	        });
+			HBox h = new HBox();
+			h.getChildren().add(btnClear);
+			h.getChildren().add(btnConfirm);
+			v.getChildren().add(lblOverview);
+			v.getChildren().add(lvTx);
+			v.getChildren().add(h);
+			pane.getChildren().add(v);
+			final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
     	}
-    		
     }
+    	
+    public void broadcast (Transaction tx) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+    	// broadcast
+		ATOperation op = null;
+		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
+			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
+			for(TransactionInput in:tx.getInputs()){
+				int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+				
+				// get address
+				String add = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+				
+				// find key
+				ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(add);
+				
+				//add key
+				keys.put(add, ca);
+			}
+			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(Authenticator.getWalletOperation(),tx,keys);
+		}
+		else{
+			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
+			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Authenticator.getWalletOperation(),
+					tx, 
+					pairID, 
+					txMsgLabel.getText(),
+					false,
+					null,
+					null);
+		}
+		
+		// operation listeners
+		op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+			@Override
+			public void onBegin(String str) { }
+
+			@Override
+			public void statusReport(String report) {
+
+			}
+
+			@Override
+			public void onFinished(String str) {
+					removeActivitySpinner();
+					
+					if(str != null)
+					Platform.runLater(new Runnable() {
+				      @Override public void run() {
+				    	  Dialogs.create()
+					        .owner(Main.stage)
+					        .title("Success !")
+					        .masthead("Broadcasting Completed")
+					        .message("If this is a multisig P2SH transaction, we are waiting for the Authenticator to sign")
+					        .showInformation();  
+				      }
+				    });
+			}
+
+			@Override
+			public void onError(Exception e, Throwable t) {
+				removeActivitySpinner();
+				Platform.runLater(new Runnable() {
+				      @Override public void run() {
+				    	  String desc = "";
+				    	  if(t != null){
+				    		  Throwable rootCause = Throwables.getRootCause(t);
+				    		  desc = rootCause.toString();
+				    		  t.printStackTrace();
+				    	  }
+				    	  if(e != null){
+				    		  desc = e.toString();
+				    		  e.printStackTrace();
+				    	  }
+				    	  //
+				    	  Dialogs.create()
+					        .owner(Main.stage)
+					        .title("Error")
+					        .masthead("Error broadcasting Tx")
+					        .message(desc)
+					        .showError();   
+				      }
+				    });
+			}
+
+			@Override
+			public void onUserCancel(String reason) {
+				removeActivitySpinner();
+				
+				if(reason != null)
+				Platform.runLater(new Runnable() {
+				      @Override public void run() {
+				    	  Dialogs.create()
+					        .owner(Main.stage)
+					        .title("Error")
+					        .masthead("Authenticator Refused The Transaction")
+					        .message(reason)
+					        .showError();   
+				      }
+				    });
+			}
+
+			@Override
+			public void onUserOk(String msg) { }
+
+		});
+		Authenticator.operationsQueue.add(op);
+    }	
+    
     
     @FXML protected void addTxOutput() {
     	addOutput();
