@@ -67,6 +67,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -97,6 +98,7 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.TextFieldValidator;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -979,6 +981,8 @@ public class Controller {
 											        				Coin.valueOf(satoshis), 
 											        				add);
 						to.add(out);
+						try {ATAddress atadd = Authenticator.getWalletOperation().findAddressInAccounts(add.toString());}
+						catch (AddressWasNotFoundException e) {leavingWallet = leavingWallet.add(Coin.valueOf(satoshis));}
 					}
 					
 				} catch (AddressFormatException e) { 
@@ -1018,61 +1022,94 @@ public class Controller {
 						fee,
 						changeaddr,
 						Authenticator.getWalletOperation().getNetworkParams());
-		
+			//Display Transaction Overview
 			Pane pane = new Pane();
-			pane.setMaxSize(550, 360);
+			pane.setMaxSize(600, 360);
 			pane.setStyle("-fx-background-color: white;");
 			pane.setEffect(new DropShadow());
 			VBox v = new VBox();
 			Label lblOverview = new Label("Transaction Overview");
+			lblOverview.setPadding(new Insets(0,0,10,0));
+			lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
 			ListView lvTx= new ListView();
-			lvTx.setPrefSize(510, 280);
-			lvTx.setPadding(new Insets(10,0,0,0));
+			lvTx.setPrefSize(560, 270);
 			ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
-			Text inputtext = new Text("Inputs:         ");
+			Text inputtext = new Text("Inputs:                     ");
 			inputtext.setStyle("-fx-font-weight:bold;");
 			Coin inAmount = Coin.valueOf(0);
-			Text inputtext2 = new Text("");
-			for (TransactionInput in: tx.getInputs()){
-				inputtext2.setText(inputtext2.getText() + in.getOutpoint().toString() + " \n                ");
-				inAmount = inAmount.add(in.getValue());
-			}
 			TextFlow inputflow = new TextFlow();
-			inputflow.getChildren().addAll(inputtext, inputtext2);
+			inputflow.getChildren().addAll(inputtext);
+			ArrayList<Text> intext = new ArrayList<Text>();
+			for (int b=0; b<tx.getInputs().size(); b++){
+				Text inputtext2 = new Text("");
+				Text inputtext3 = new Text("");
+				inputtext3.setFill(Paint.valueOf("#98d947"));
+				inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
+				intext.add(inputtext2);
+				inAmount = inAmount.add(tx.getInputs().get(b).getValue());
+				inputtext3.setText(tx.getInput(b).getValue().toFriendlyString() + " BTC");
+				if (b<tx.getInputs().size()-1){
+					inputtext3.setText(inputtext3.getText() + "\n                                     ");
+				}
+				intext.add(inputtext3);
+			}
+			for (Text t : intext){inputflow.getChildren().addAll(t);}
 			textformatted.add(inputflow);
 			TextFlow spaceflow = new TextFlow();
 			Text space = new Text(" ");
 			spaceflow.getChildren().addAll(space);
 			textformatted.add(spaceflow);
-			Text outputtext = new Text("Outputs:        ");
+			Text outputtext = new Text("Outputs:                  ");
 			outputtext.setStyle("-fx-font-weight:bold;");
-			Text outputtext2 = new Text("");
-			int a = 0;
-			for (String addr : OutputAddresses){
-				outputtext2.setText(outputtext2.getText() + addr + " " + to.get(a).getValue().toFriendlyString() + " BTC\n                     ");
-				a++;
-			}
 			TextFlow outputflow = new TextFlow();
-			outputflow.getChildren().addAll(outputtext, outputtext2);
+			outputflow.getChildren().addAll(outputtext);
+			ArrayList<Text> outtext = new ArrayList<Text>();
+			for (int a=0; a<OutputAddresses.size(); a++){
+				Text outputtext2 = new Text("");
+				Text outputtext3 = new Text("");
+				outputtext3.setFill(Paint.valueOf("#f06e6e"));
+				outputtext2.setText(OutputAddresses.get(a) + " ");
+				outtext.add(outputtext2);
+				outputtext3.setText(to.get(a).getValue().toFriendlyString() + " BTC");
+				if (a<OutputAddresses.size()-1){
+					outputtext3.setText(outputtext3.getText() + "\n                                     ");
+				}
+				outtext.add(outputtext3);
+			}
+			for (Text t : outtext){outputflow.getChildren().addAll(t);}
 			textformatted.add(outputflow);
 			textformatted.add(spaceflow);
-			Text changetext = new Text("Change:        ");
+			Text changetext = new Text("Change:                   ");
 			changetext.setStyle("-fx-font-weight:bold;");
-			Text changetext2 = new Text(changeaddr + " " + ((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString() + " BTC");
+			Text changetext2 = new Text(changeaddr + " ");
+			Text changetext3 = new Text(((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString() + " BTC");
+			changetext3.setFill(Paint.valueOf("#98d947"));
 			TextFlow changeflow = new TextFlow();
-			changeflow.getChildren().addAll(changetext, changetext2);
+			changeflow.getChildren().addAll(changetext, changetext2,changetext3);
 			textformatted.add(changeflow);
 			textformatted.add(spaceflow);
-			Text feetext = new Text("Fee:           ");
+			Text feetext = new Text("Fee:                         ");
 			feetext.setStyle("-fx-font-weight:bold;");
 			Text feetext2 = new Text(fee.toFriendlyString() + " BTC");
+			feetext2.setFill(Paint.valueOf("#f06e6e"));
 			TextFlow feeflow = new TextFlow();
 			feeflow.getChildren().addAll(feetext, feetext2);
 			textformatted.add(feeflow);
+			textformatted.add(spaceflow);
+			Text leavingtext = new Text("Leaving Wallet:       ");
+			leavingtext.setStyle("-fx-font-weight:bold;");
+			Text leavingtext2 = new Text("-" + leavingWallet.add(fee).toFriendlyString() + " BTC");
+			leavingtext2.setFill(Paint.valueOf("#f06e6e"));
+			TextFlow leavingflow = new TextFlow();
+			leavingflow.getChildren().addAll(leavingtext, leavingtext2);
+			textformatted.add(leavingflow);
 			lvTx.setItems(textformatted);
 			v.setPadding(new Insets(10,0,0,20));
-			Button btnClear = new Button("Cancel");
+			Button btnCancel = new Button("Cancel");
 			Button btnConfirm = new Button("Send Transaction");
+			PasswordField password = new PasswordField();
+			password.setPromptText("Enter Password");
+			password.setPrefWidth(225);
 			btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
 	            @Override
 	            public void handle(MouseEvent t) {
@@ -1087,13 +1124,22 @@ public class Controller {
 	            }
 	        });
 			HBox h = new HBox();
-			h.getChildren().add(btnClear);
+			h.setPadding(new Insets(10,0,0,0));
+			h.setMargin(btnCancel, new Insets(0,0,0,136));
+			h.getChildren().add(password);
+			h.getChildren().add(btnCancel);
 			h.getChildren().add(btnConfirm);
 			v.getChildren().add(lblOverview);
 			v.getChildren().add(lvTx);
 			v.getChildren().add(h);
 			pane.getChildren().add(v);
 			final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+			btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    			@Override
+    				public void handle(MouseEvent event) {
+    				overlay.done();
+    			}
+    		});
     	}
     }
     	

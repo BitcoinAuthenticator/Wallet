@@ -1,6 +1,6 @@
 package authenticator;
 
-import static org.junit.Assert.*;
+/*import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -205,7 +205,7 @@ public class SignTransactionTest {
 		 
 		 return cipherBytes;
 	}*/
-	
+	/*
 	@Test
 	public void prepareTxTest() {
 		byte[] result = null;
@@ -246,4 +246,4 @@ public class SignTransactionTest {
 		}
 	}
 
-}
+}*/
