@@ -755,8 +755,8 @@ public class Controller {
     		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
     		l3.setPadding(new Insets(0,5,0,0));
     		//check is it receiving or sending
-    		Coin enter = txAll.get(i).getValueSentToMe(Main.bitcoin.wallet());
-    		Coin exit = txAll.get(i).getValueSentFromMe(Main.bitcoin.wallet());
+    		Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(txAll.get(i));//txAll.get(i).getValueSentToMe(Main.bitcoin.wallet());
+    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(txAll.get(i));//txAll.get(i).getValueSentFromMe(Main.bitcoin.wallet());
     		Image in = new Image(Main.class.getResourceAsStream("in.png"));
     		Image out = new Image(Main.class.getResourceAsStream("out.png"));
     		ImageView arrow = null;
@@ -919,7 +919,7 @@ public class Controller {
     		ArrayList<String> OutputAddresses = new ArrayList<String>();
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
     		Coin outAmount = Coin.valueOf(0);
-    		Coin leavingWallet = Coin.valueOf(0);
+    		//Coin leavingWallet = Coin.valueOf(0);
         	for(Node n:scrlContent.getChildren())
         	{
         		NewAddress na = (NewAddress)n;
@@ -944,11 +944,12 @@ public class Controller {
 											        				Coin.valueOf(satoshis), 
 											        				add);
 						to.add(out);
-						try {ATAddress atadd = Authenticator.getWalletOperation().findAddressInAccounts(add.toString());}
-						catch (AddressWasNotFoundException e) {leavingWallet = leavingWallet.add(Coin.valueOf(satoshis));}
+						//try {ATAddress atadd = Authenticator.getWalletOperation().findAddressInAccounts(add.toString());}
+						//catch (AddressWasNotFoundException e) {leavingWallet = leavingWallet.add(Coin.valueOf(satoshis));}
 					}
 					
 				} catch (AddressFormatException e) { 
+					e.printStackTrace();
 					Platform.runLater(new Runnable() {
 					      @Override public void run() {
 					    	  Dialogs.create()
@@ -987,7 +988,12 @@ public class Controller {
 						Authenticator.getWalletOperation().getNetworkParams());
 			
 			//
-			displayTxOverview(OutputAddresses, to, changeaddr, outAmount, fee, leavingWallet);
+			displayTxOverview(OutputAddresses, 
+					to,
+					changeaddr, 
+					outAmount, 
+					fee, 
+					Authenticator.getWalletOperation().getTxValueSentFromMe(tx));
     	}
     }
     
@@ -1073,7 +1079,7 @@ public class Controller {
 		textformatted.add(spaceflow);
 		Text leavingtext = new Text("Leaving Wallet:       ");
 		leavingtext.setStyle("-fx-font-weight:bold;");
-		Text leavingtext2 = new Text("-" + leavingWallet.add(fee).toFriendlyString() + " BTC");
+		Text leavingtext2 = new Text("-" + leavingWallet.toFriendlyString() + " BTC");
 		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow leavingflow = new TextFlow();
 		leavingflow.getChildren().addAll(leavingtext, leavingtext2);

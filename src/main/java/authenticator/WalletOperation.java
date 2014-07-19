@@ -1481,6 +1481,14 @@ public class WalletOperation extends BASE{
 	{
 		return mWalletWrapper.getUnspentOutputsForAddresses(addressArr);
 	}
+	
+	public Coin getTxValueSentToMe(Transaction tx){
+		return mWalletWrapper.getTxValueSentToMe(tx);
+	}
+	
+	public Coin getTxValueSentFromMe(Transaction tx){
+		return mWalletWrapper.getTxValueSentFromMe(tx);
+	}
 }
 
 

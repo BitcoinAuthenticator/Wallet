@@ -164,6 +164,14 @@ public class WalletWrapper extends BASE{
 		return ret;
 	}
 	
+	public Coin getTxValueSentToMe(Transaction tx){
+		return tx.getValueSentToMe(trackedWallet);
+	}
+	
+	public Coin getTxValueSentFromMe(Transaction tx){
+		return tx.getValueSentFromMe(trackedWallet);
+	}
+	
 	//#####################################
 	//
 	//		other
