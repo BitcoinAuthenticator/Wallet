@@ -903,7 +903,6 @@ public class Controller {
     }
     
     @FXML protected void SendTx(ActionEvent event) throws Exception{
-    	setActivitySpinner("Sending Tx ..");
     	if(!ValidateTx()){
     		Dialogs.create()
 	        .owner(Main.stage)
@@ -1089,13 +1088,20 @@ public class Controller {
 		btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	try {broadcast(tx);} 
+            	try {
+            		btnConfirm.setText("Broadcasting ..");
+            		btnConfirm.setDisable(true);
+            		broadcast(tx);
+            	} 
             	catch (NoSuchAlgorithmException
 						| AddressWasNotFoundException | JSONException
 						| AddressFormatException
 						| KeyIndexOutOfRangeException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					
+					btnConfirm.setText("Send Transaction");
+            		btnConfirm.setDisable(false);
 				}
             }
         });

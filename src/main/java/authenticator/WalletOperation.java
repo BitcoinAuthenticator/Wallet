@@ -1106,7 +1106,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getConfirmedBalance(accountIdx);
-		assert(old.compareTo(amount) > 0);
+		assert(old.compareTo(amount) >= 0);
 		return setConfirmedBalance(accountIdx, old.subtract(amount));
 	}
 	
@@ -1151,7 +1151,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getUnConfirmedBalance(accountIdx);
-		assert(old.compareTo(amount) > 0);
+		assert(old.compareTo(amount) >= 0);
 		return setUnConfirmedBalance(accountIdx, old.subtract(amount));
 	}
 	
@@ -1179,7 +1179,7 @@ public class WalletOperation extends BASE{
 	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws IOException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
-		assert(beforeUnconf.compareTo(amount) > 0);
+		assert(beforeUnconf.compareTo(amount) >= 0);
 		//
 		Coin afterConfirmed = beforeConfirmed.add(amount);
 		Coin afterUnconfirmed = beforeUnconf.subtract(amount);
@@ -1201,7 +1201,7 @@ public class WalletOperation extends BASE{
 	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws IOException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
-		assert(beforeConfirmed.compareTo(amount) > 0);
+		assert(beforeConfirmed.compareTo(amount) >= 0);
 		//
 		Coin afterConfirmed = beforeConfirmed.subtract(amount);
 		Coin afterUnconfirmed = beforeUnconf.add(amount);
@@ -1406,8 +1406,10 @@ public class WalletOperation extends BASE{
     public void addAddressToWatch(String address) throws AddressFormatException
 	{
     	assert(mWalletWrapper != null);
-    	mWalletWrapper.addAddressToWatch(address);
-    	this.LOG.info("Added address to watch: " + address);
+    	if(!mWalletWrapper.isAuthenticatorAddressWatched(address)){
+    		mWalletWrapper.addAddressToWatch(address);
+        	this.LOG.info("Added address to watch: " + address);
+    	}
 	}
     
 	public void connectInputs(List<TransactionInput> inputs)

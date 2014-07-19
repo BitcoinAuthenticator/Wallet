@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Wallet;
 import com.google.common.util.concurrent.AbstractService;

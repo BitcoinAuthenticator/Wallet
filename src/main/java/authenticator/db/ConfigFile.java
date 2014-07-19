@@ -162,7 +162,6 @@ public class ConfigFile {
 	}
 
 	public ATAccount getAccount(int index){
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<ATAccount> all = getAllAccounts();
 		// We search the account like this because its id is not necessarly its id in the array
 		for(ATAccount acc:all)
@@ -247,7 +246,6 @@ public class ConfigFile {
 	}
 
 	public long getUnConfirmedBalace(int accountIdx){
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return getAccount(accountIdx).getUnConfirmedBalance();
 	}
 
