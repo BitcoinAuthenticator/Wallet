@@ -94,6 +94,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import wallettemplate.ControllerHelpers.SendTxHelper;
+import wallettemplate.ControllerHelpers.SendTxHelper.NewAddress;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.TextFieldValidator;
@@ -889,33 +891,6 @@ public class Controller {
     
     private boolean ValidateTx() throws NoSuchAlgorithmException, JSONException, AddressFormatException, IOException
     {
-    	//Check Outputs
-    	if(scrlContent.getCount() == 0)
-    		return false;
-    	for(Node n:scrlContent.getChildren())
-    	{
-    		NewAddress na = (NewAddress)n;
-    		try {Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText().toString());}
-    		catch (AddressFormatException e) {return false;}
-    		
-    	}
-    	//check sufficient funds
-    	Coin amount = Coin.ZERO;
-    	for(Node n:scrlContent.getChildren())
-    	{
-    		NewAddress na = (NewAddress)n;
-    		double a;
-			if (na.cbCurrency.getValue().toString().equals("BTC")){
-				a = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
-			}
-			else {
-				JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
-				double last = json.getDouble("last");
-				a = (double) (Double.parseDouble(na.txfAmount.getText())/last)*100000000;
-			}
-			long satoshis = (long) a;
-    		amount = amount.add(Coin.valueOf((long)a));
-    	}
     	// fee
     	Coin fee = Coin.ZERO;
 		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
@@ -924,20 +899,11 @@ public class Controller {
         	double f = (double) Double.parseDouble(txFee.getText())*100000000;
         	fee = Coin.valueOf((long)f);
         }
-    	amount = amount.add(fee);
-    	//
-    	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());   	
-    	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    	Coin balance = confirmed.add(unconfirmed);
-    	if(amount.compareTo(balance) > 0) return false;
-    	
-    	//Check min dust amount 
-    	if(amount.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0) return false;
-    	
-    	return true;
+    	return SendTxHelper.ValidateTx(scrlContent, fee);
     }
     
     @FXML protected void SendTx(ActionEvent event) throws Exception{
+    	setActivitySpinner("Sending Tx ..");
     	if(!ValidateTx()){
     		Dialogs.create()
 	        .owner(Main.stage)
@@ -950,8 +916,6 @@ public class Controller {
 	        .showError();  
     	}
     	else{
-    		//
-    		setActivitySpinner("Sending Tx ..");
     		// collect Tx outputs
     		ArrayList<String> OutputAddresses = new ArrayList<String>();
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
@@ -1022,159 +986,140 @@ public class Controller {
 						fee,
 						changeaddr,
 						Authenticator.getWalletOperation().getNetworkParams());
-			//Display Transaction Overview
-			Pane pane = new Pane();
-			pane.setMaxSize(600, 360);
-			pane.setStyle("-fx-background-color: white;");
-			pane.setEffect(new DropShadow());
-			VBox v = new VBox();
-			Label lblOverview = new Label("Transaction Overview");
-			lblOverview.setPadding(new Insets(0,0,10,0));
-			lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
-			ListView lvTx= new ListView();
-			lvTx.setPrefSize(560, 270);
-			ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
-			Text inputtext = new Text("Inputs:                     ");
-			inputtext.setStyle("-fx-font-weight:bold;");
-			Coin inAmount = Coin.valueOf(0);
-			TextFlow inputflow = new TextFlow();
-			inputflow.getChildren().addAll(inputtext);
-			ArrayList<Text> intext = new ArrayList<Text>();
-			for (int b=0; b<tx.getInputs().size(); b++){
-				Text inputtext2 = new Text("");
-				Text inputtext3 = new Text("");
-				inputtext3.setFill(Paint.valueOf("#98d947"));
-				inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
-				intext.add(inputtext2);
-				inAmount = inAmount.add(tx.getInputs().get(b).getValue());
-				inputtext3.setText(tx.getInput(b).getValue().toFriendlyString() + " BTC");
-				if (b<tx.getInputs().size()-1){
-					inputtext3.setText(inputtext3.getText() + "\n                                     ");
-				}
-				intext.add(inputtext3);
-			}
-			for (Text t : intext){inputflow.getChildren().addAll(t);}
-			textformatted.add(inputflow);
-			TextFlow spaceflow = new TextFlow();
-			Text space = new Text(" ");
-			spaceflow.getChildren().addAll(space);
-			textformatted.add(spaceflow);
-			Text outputtext = new Text("Outputs:                  ");
-			outputtext.setStyle("-fx-font-weight:bold;");
-			TextFlow outputflow = new TextFlow();
-			outputflow.getChildren().addAll(outputtext);
-			ArrayList<Text> outtext = new ArrayList<Text>();
-			for (int a=0; a<OutputAddresses.size(); a++){
-				Text outputtext2 = new Text("");
-				Text outputtext3 = new Text("");
-				outputtext3.setFill(Paint.valueOf("#f06e6e"));
-				outputtext2.setText(OutputAddresses.get(a) + " ");
-				outtext.add(outputtext2);
-				outputtext3.setText(to.get(a).getValue().toFriendlyString() + " BTC");
-				if (a<OutputAddresses.size()-1){
-					outputtext3.setText(outputtext3.getText() + "\n                                     ");
-				}
-				outtext.add(outputtext3);
-			}
-			for (Text t : outtext){outputflow.getChildren().addAll(t);}
-			textformatted.add(outputflow);
-			textformatted.add(spaceflow);
-			Text changetext = new Text("Change:                   ");
-			changetext.setStyle("-fx-font-weight:bold;");
-			Text changetext2 = new Text(changeaddr + " ");
-			Text changetext3 = new Text(((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString() + " BTC");
-			changetext3.setFill(Paint.valueOf("#98d947"));
-			TextFlow changeflow = new TextFlow();
-			changeflow.getChildren().addAll(changetext, changetext2,changetext3);
-			textformatted.add(changeflow);
-			textformatted.add(spaceflow);
-			Text feetext = new Text("Fee:                         ");
-			feetext.setStyle("-fx-font-weight:bold;");
-			Text feetext2 = new Text(fee.toFriendlyString() + " BTC");
-			feetext2.setFill(Paint.valueOf("#f06e6e"));
-			TextFlow feeflow = new TextFlow();
-			feeflow.getChildren().addAll(feetext, feetext2);
-			textformatted.add(feeflow);
-			textformatted.add(spaceflow);
-			Text leavingtext = new Text("Leaving Wallet:       ");
-			leavingtext.setStyle("-fx-font-weight:bold;");
-			Text leavingtext2 = new Text("-" + leavingWallet.add(fee).toFriendlyString() + " BTC");
-			leavingtext2.setFill(Paint.valueOf("#f06e6e"));
-			TextFlow leavingflow = new TextFlow();
-			leavingflow.getChildren().addAll(leavingtext, leavingtext2);
-			textformatted.add(leavingflow);
-			lvTx.setItems(textformatted);
-			v.setPadding(new Insets(10,0,0,20));
-			Button btnCancel = new Button("Cancel");
-			Button btnConfirm = new Button("Send Transaction");
-			PasswordField password = new PasswordField();
-			password.setPromptText("Enter Password");
-			password.setPrefWidth(225);
-			btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
-	            @Override
-	            public void handle(MouseEvent t) {
-	            	try {broadcast(tx);} 
-	            	catch (NoSuchAlgorithmException
-							| AddressWasNotFoundException | JSONException
-							| AddressFormatException
-							| KeyIndexOutOfRangeException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            }
-	        });
-			HBox h = new HBox();
-			h.setPadding(new Insets(10,0,0,0));
-			h.setMargin(btnCancel, new Insets(0,0,0,136));
-			h.getChildren().add(password);
-			h.getChildren().add(btnCancel);
-			h.getChildren().add(btnConfirm);
-			v.getChildren().add(lblOverview);
-			v.getChildren().add(lvTx);
-			v.getChildren().add(h);
-			pane.getChildren().add(v);
-			final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
-			btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-    			@Override
-    				public void handle(MouseEvent event) {
-    				overlay.done();
-    			}
-    		});
+			
+			//
+			displayTxOverview(OutputAddresses, to, changeaddr, outAmount, fee, leavingWallet);
     	}
+    }
+    
+    private void displayTxOverview(ArrayList<String> OutputAddresses, 
+    		ArrayList<TransactionOutput> to, 
+    		String changeaddr,
+    		Coin outAmount,
+    		Coin fee,
+    		Coin leavingWallet){
+    	//Display Transaction Overview
+		Pane pane = new Pane();
+		pane.setMaxSize(600, 360);
+		pane.setStyle("-fx-background-color: white;");
+		pane.setEffect(new DropShadow());
+		VBox v = new VBox();
+		Label lblOverview = new Label("Transaction Overview");
+		lblOverview.setPadding(new Insets(0,0,10,0));
+		lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
+		ListView lvTx= new ListView();
+		lvTx.setPrefSize(560, 270);
+		ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
+		Text inputtext = new Text("Inputs:                     ");
+		inputtext.setStyle("-fx-font-weight:bold;");
+		Coin inAmount = Coin.valueOf(0);
+		TextFlow inputflow = new TextFlow();
+		inputflow.getChildren().addAll(inputtext);
+		ArrayList<Text> intext = new ArrayList<Text>();
+		for (int b=0; b<tx.getInputs().size(); b++){
+			Text inputtext2 = new Text("");
+			Text inputtext3 = new Text("");
+			inputtext3.setFill(Paint.valueOf("#98d947"));
+			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
+			intext.add(inputtext2);
+			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
+			inputtext3.setText(tx.getInput(b).getValue().toFriendlyString() + " BTC");
+			if (b<tx.getInputs().size()-1){
+				inputtext3.setText(inputtext3.getText() + "\n                                     ");
+			}
+			intext.add(inputtext3);
+		}
+		for (Text t : intext){inputflow.getChildren().addAll(t);}
+		textformatted.add(inputflow);
+		TextFlow spaceflow = new TextFlow();
+		Text space = new Text(" ");
+		spaceflow.getChildren().addAll(space);
+		textformatted.add(spaceflow);
+		Text outputtext = new Text("Outputs:                  ");
+		outputtext.setStyle("-fx-font-weight:bold;");
+		TextFlow outputflow = new TextFlow();
+		outputflow.getChildren().addAll(outputtext);
+		ArrayList<Text> outtext = new ArrayList<Text>();
+		for (int a=0; a < OutputAddresses.size(); a++){
+			Text outputtext2 = new Text("");
+			Text outputtext3 = new Text("");
+			outputtext3.setFill(Paint.valueOf("#f06e6e"));
+			outputtext2.setText(OutputAddresses.get(a) + " ");
+			outtext.add(outputtext2);
+			outputtext3.setText(to.get(a).getValue().toFriendlyString() + " BTC");
+			if (a<OutputAddresses.size()-1){
+				outputtext3.setText(outputtext3.getText() + "\n                                     ");
+			}
+			outtext.add(outputtext3);
+		}
+		for (Text t : outtext){outputflow.getChildren().addAll(t);}
+		textformatted.add(outputflow);
+		textformatted.add(spaceflow);
+		Text changetext = new Text("Change:                   ");
+		changetext.setStyle("-fx-font-weight:bold;");
+		Text changetext2 = new Text(changeaddr + " ");
+		Text changetext3 = new Text(((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString() + " BTC");
+		changetext3.setFill(Paint.valueOf("#98d947"));
+		TextFlow changeflow = new TextFlow();
+		changeflow.getChildren().addAll(changetext, changetext2,changetext3);
+		textformatted.add(changeflow);
+		textformatted.add(spaceflow);
+		Text feetext = new Text("Fee:                         ");
+		feetext.setStyle("-fx-font-weight:bold;");
+		Text feetext2 = new Text(fee.toFriendlyString() + " BTC");
+		feetext2.setFill(Paint.valueOf("#f06e6e"));
+		TextFlow feeflow = new TextFlow();
+		feeflow.getChildren().addAll(feetext, feetext2);
+		textformatted.add(feeflow);
+		textformatted.add(spaceflow);
+		Text leavingtext = new Text("Leaving Wallet:       ");
+		leavingtext.setStyle("-fx-font-weight:bold;");
+		Text leavingtext2 = new Text("-" + leavingWallet.add(fee).toFriendlyString() + " BTC");
+		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
+		TextFlow leavingflow = new TextFlow();
+		leavingflow.getChildren().addAll(leavingtext, leavingtext2);
+		textformatted.add(leavingflow);
+		lvTx.setItems(textformatted);
+		v.setPadding(new Insets(10,0,0,20));
+		Button btnCancel = new Button("Cancel");
+		Button btnConfirm = new Button("Send Transaction");
+		PasswordField password = new PasswordField();
+		password.setPromptText("Enter Password");
+		password.setPrefWidth(225);
+		btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	try {broadcast(tx);} 
+            	catch (NoSuchAlgorithmException
+						| AddressWasNotFoundException | JSONException
+						| AddressFormatException
+						| KeyIndexOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
+		HBox h = new HBox();
+		h.setPadding(new Insets(10,0,0,0));
+		h.setMargin(btnCancel, new Insets(0,0,0,136));
+		h.getChildren().add(password);
+		h.getChildren().add(btnCancel);
+		h.getChildren().add(btnConfirm);
+		v.getChildren().add(lblOverview);
+		v.getChildren().add(lvTx);
+		v.getChildren().add(h);
+		pane.getChildren().add(v);
+		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+		btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+				public void handle(MouseEvent event) {
+				overlay.done();
+			}
+		});
     }
     	
     public void broadcast (Transaction tx) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
-    	// broadcast
-		ATOperation op = null;
-		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
-			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
-			for(TransactionInput in:tx.getInputs()){
-				int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
-				
-				// get address
-				String add = in.getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-				
-				// find key
-				ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(add);
-				
-				//add key
-				keys.put(add, ca);
-			}
-			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(Authenticator.getWalletOperation(),tx,keys);
-		}
-		else{
-			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
-			op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(Authenticator.getWalletOperation(),
-					tx, 
-					pairID, 
-					txMsgLabel.getText(),
-					false,
-					null,
-					null);
-		}
-		
-		// operation listeners
-		op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+    	SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), new OnOperationUIUpdate(){
 			@Override
 			public void onBegin(String str) { }
 
@@ -1247,7 +1192,6 @@ public class Controller {
 			public void onUserOk(String msg) { }
 
 		});
-		Authenticator.operationsQueue.add(op);
     }	
     
     
@@ -1261,7 +1205,7 @@ public class Controller {
         Method removeOutput;
 		try {
 			removeOutput = Controller.class.getMethod("removeOutput", parameterTypes);
-			NewAddress na = new NewAddress(scrlContent.getCount()).setCancelOnMouseClick(this,removeOutput);
+			NewAddress na = new SendTxHelper.NewAddress(scrlContent.getCount()).setCancelOnMouseClick(this,removeOutput);
 			scrlContent.addItem(na);
 			scrlpane.setContent(scrlContent);
 		} catch (NoSuchMethodException | SecurityException e) {
@@ -1279,126 +1223,6 @@ public class Controller {
     		na.index--;
     	}
     	scrlpane.setContent(scrlContent);
-    }
-    
-    public class NewAddress extends HBox {
-    	TextField txfAddress;
-    	TextField txfAmount;
-    	ChoiceBox cbCurrency;
-    	Label lblScanQR;
-    	Label lblContacts;
-    	Label amountInSatoshi;
-    	Label cancelLabel;
-    	int index;
-    	Method onCancel;
-    	public NewAddress setCancelOnMouseClick(Object object, Method method){
-    		cancelLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					Object[] parameters = new Object[1];
-			        parameters[0] = index;
-			        try {
-						method.invoke(object, parameters);
-					} catch (IllegalAccessException | IllegalArgumentException
-							| InvocationTargetException e) {
-						e.printStackTrace();
-					}
-				}
-            });
-    		return this;
-    	}
-    	
-    	public NewAddress(int index)
-    	{
-    		this.index = index;
-    		VBox main = new VBox();
-    		VBox cancel = new VBox();
-    		//Cancel
-    		cancelLabel = new Label();
-    		cancelLabel.setPadding(new Insets(0,5,0,0));
-    		cancelLabel.setFont(new Font("Arial", 18));
-    		AwesomeDude.setIcon(cancelLabel, AwesomeIcon.TIMES_CIRCLE);
-            Tooltip.install(cancelLabel, new Tooltip("Remove Output"));
-            cancel.setAlignment(Pos.TOP_CENTER);
-            cancel.setMargin(cancelLabel, new Insets(2,0,0,0));
-            cancel.getChildren().add(cancelLabel);
-            this.getChildren().add(cancel);
-    		
-    		//Text Fields
-            HBox a = new HBox();
-    		txfAddress = new TextField();
-    		txfAddress.setPromptText("Recipient Address or +OneName");
-    		txfAddress.setPrefWidth(400);
-    		txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1;");
-    		a.getChildren().add(txfAddress);
-    		lblScanQR = new Label();
-    		lblScanQR.setFont(new Font("Arial", 18));
-    		lblScanQR.setPrefSize(25, 25);
-    		Tooltip.install(lblScanQR, new Tooltip("Scan QR code"));
-    		a.setMargin(lblScanQR, new Insets(1,0,0,8));
-    		AwesomeDude.setIcon(lblScanQR, AwesomeIcon.QRCODE);
-    		a.getChildren().add(lblScanQR);
-    		lblScanQR.setOnMouseClicked(new EventHandler<MouseEvent>() {
-    		    @Override
-    		    public void handle(MouseEvent mouseEvent) {
-                   
-    		    }
-    		});
-    		lblContacts = new Label();
-    		lblContacts.setFont(new Font("Arial", 18));
-    		lblContacts.setPrefSize(25, 25);
-    		Tooltip.install(lblContacts, new Tooltip("Select from address book"));
-    		a.setMargin(lblContacts, new Insets(1,0,0,0));
-    		AwesomeDude.setIcon(lblContacts, AwesomeIcon.USERS);
-    		a.getChildren().add(lblContacts);
-    		main.getChildren().add(a);
-
-    		HBox b = new HBox();
-    		txfAmount = new TextField();
-    		txfAmount.setPromptText("Amount");
-    		txfAmount.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1;");
-    		txfAmount.lengthProperty().addListener(new ChangeListener<Number>(){
-                @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
-                      if(newValue.intValue() > oldValue.intValue()){
-                          char ch = txfAmount.getText().charAt(oldValue.intValue());  
-                          //Check if the new character is the number or other's
-                          if(!(ch >= '0' && ch <= '9') && ch != '.'){       
-                               //if it's not number then just setText to previous one
-                               txfAmount.setText(txfAmount.getText().substring(0,txfAmount.getText().length()-1)); 
-                          }
-                     }
-                }
-    		});
-    		cbCurrency = new ChoiceBox();
-    		cbCurrency.getItems().add("BTC");
-    		cbCurrency.getItems().add("USD");
-    		cbCurrency.setValue("BTC");
-    		cbCurrency.setPrefSize(55, 18);
-    		b.setMargin(txfAmount, new Insets(4,6,0,0));
-    		b.setMargin(cbCurrency, new Insets(6,0,0,0));
-    		b.getChildren().add(txfAmount);
-    		b.getChildren().add(cbCurrency);
-    		main.getChildren().add(b);
-    		this.getChildren().add(main);
-    	}
-    	
-    	public boolean validate()
-        {
-        	if(txfAddress.getText().length() == 0)
-        		return false;
-        	if(txfAmount.getText().length() == 0)
-        		return false;
-        	if(txfAmount.getText().matches("[a-zA-Z]+"))
-        		return false;
-        	// check dust amount 
-        	double fee = (double) Double.parseDouble(txfAmount.getText())*100000000;
-        	Coin am = Coin.valueOf((long)fee);
-        	if(am.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
-        		return false;
-        	
-        	return true;
-        }
     }
     
     //#####################################
