@@ -1,6 +1,6 @@
 package authenticator;
 
-/*import static org.junit.Assert.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -50,7 +50,7 @@ public class PairingTest {
 		
 		//create HD key
 		//Generate a new Seed*/
-		/*SecureRandom secureRandom = null;
+		SecureRandom secureRandom = null;
 		try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
 		catch (NoSuchAlgorithmException e) {e.printStackTrace();}
 		byte[] bytes = new byte[16];
@@ -103,7 +103,7 @@ public class PairingTest {
     	 * 
     	 * 
     	 */
-    	/*PairingProtocol pp = new PairingProtocol();    	
+    	PairingProtocol pp = new PairingProtocol();    	
     	String decipheredDataFromAuth = pp.decipherDataFromAuthenticator(payloadEncrypted, null, sharedsecret);
     	JSONObject jsonPayloadFromAuth = pp.parseAndVerifyPayload(decipheredDataFromAuth, sharedsecret, null);
     	// check 
@@ -117,4 +117,4 @@ public class PairingTest {
 	    assert(GCMRec.equals("some registration id"));
 	}
 
-}*/
+}
