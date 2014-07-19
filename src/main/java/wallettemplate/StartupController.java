@@ -22,6 +22,7 @@ import org.controlsfx.dialog.Dialogs;
 import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
+import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
@@ -120,9 +121,21 @@ public class StartupController {
 	private DeterministicSeed seed;
 	NetworkParameters params = MainNetParams.get();
 	Authenticator auth;
-	BAApplicationParameters appParams;
+	/**
+	 * Will be set before the Stage is launched so we could define the wallet files.
+	 */
+	static public BAApplicationParameters appParams;
 	
 	 public void initialize() {
+		 assert(appParams != null);
+		 
+		 // set testnet checkbox
+		 if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET)
+			 chkTestNet.setSelected(false);
+		 else
+			 chkTestNet.setSelected(true);
+		 chkTestNet.setDisable(true);
+		 
 		 btnSSS.setPadding(new Insets(-4,0,0,0));
 		 Label labelforward = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labelforward.setPadding(new Insets(0,0,0,6));

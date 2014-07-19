@@ -32,7 +32,7 @@
             </ImageView>
           </graphic>
         </Button>
-        <CheckBox fx:id="chkTestNet" allowIndeterminate="false" indeterminate="false" layoutX="14.0" layoutY="372.0" mnemonicParsing="false" selected="false" text="Use Testnet" />
+        <CheckBox fx:id="chkTestNet" allowIndeterminate="false" indeterminate="false" layoutX="14.0" layoutY="372.0" mnemonicParsing="false" selected="false" text="Use Testnet (Pass --testnet=true/false in program parameters to change)" />
       </children>
     </Pane>
     <Pane fx:id="Pane2" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">

@@ -15,23 +15,10 @@ Bitcoin Authenticator is a P2P bitcoin wallet and [android application](https://
 1. Install Java 8
 2. [Eclipse Luna, Support for java 8](http://www.eclipse.org/home/index.php) (Obviously, only if you work with eclipse)
 
-
-
-#### Importing Into Eclipse 
-1. Get a copy of the project 
-   ```
-   git clone https://github.com/negedzuregal/BitcoinAuthWallet.git
-   ```
-2. In Eclipse:
-  ```
-  File -> Import -> existing maven project
-   ``` 
-3. Import pom.xml
-
 #### Building
 
 #####With Maven
-1. Clone the project:
+1. Clone the project:<br>
  ```
  $ git clone https://github.com/negedzuregal/BitcoinAuthWallet.git
  ```
@@ -39,7 +26,7 @@ Bitcoin Authenticator is a P2P bitcoin wallet and [android application](https://
  ```
  $ cd BitcoinAuthWallet
  ```
-3. build: 
+3. build: <br>
  ```
 $mvn clean package
  ```
@@ -54,6 +41,16 @@ $ protoc <Proto File>.proto --java_out=../../
  ```
 $ mvn clean compile assembly:single
  ```
+
+#### Importing Into Eclipse 
+1. In Eclipse:
+  ```
+  File -> Import -> existing maven project
+   ``` 
+3. Run with JVM assertion flag:<br>
+```
+Run -> Run Configurations -> arguments -> add -ea in VM Arguments
+```
 
 #### TODO
 1. Testing Testing Testing !

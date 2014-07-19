@@ -100,11 +100,10 @@ public class Main extends BAApplication {
         
         String filePath1 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + ".wallet";
         File f1 = new File(filePath1);
-        String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + "_TestNet.wallet";
-        File f2 = new File(filePath2);
-        if(!f1.exists() && !f2.exists()) { 
+        if(!f1.exists()) { 
         	Parent root;
             try {
+            	StartupController.appParams = ApplicationParams;
                 root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
                 startup = new Stage();
                 startup.setTitle("My New Stage Title");
@@ -123,14 +122,7 @@ public class Main extends BAApplication {
     	/**
     	 * If we get returned params from startup, use that
     	 */
-    	BAApplicationParameters params = null;
-    	String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + "_TestNet.wallet";
-        File f2 = new File(filePath2);
-    	if (returnedParamsFromSetup!=null){params = returnedParamsFromSetup;}
-    	else if (f2.exists()){params = new BAApplicationParameters(ImmutableMap.of("testnet","true"),new ArrayList<String>());}
-    	else {params = new BAApplicationParameters(ImmutableMap.of(),new ArrayList<String>());}
-    	//BAApplicationParameters params = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
-    	
+    	BAApplicationParameters params = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
     	
     	// Make log output concise.
         BriefLogFormatter.init();
