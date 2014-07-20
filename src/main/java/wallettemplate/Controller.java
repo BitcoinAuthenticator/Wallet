@@ -919,7 +919,6 @@ public class Controller {
     		ArrayList<String> OutputAddresses = new ArrayList<String>();
     		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
     		Coin outAmount = Coin.valueOf(0);
-    		//Coin leavingWallet = Coin.valueOf(0);
         	for(Node n:scrlContent.getChildren())
         	{
         		NewAddress na = (NewAddress)n;
@@ -944,9 +943,9 @@ public class Controller {
 											        				Coin.valueOf(satoshis), 
 											        				add);
 						to.add(out);
-						//try {ATAddress atadd = Authenticator.getWalletOperation().findAddressInAccounts(add.toString());}
-						//catch (AddressWasNotFoundException e) {leavingWallet = leavingWallet.add(Coin.valueOf(satoshis));}
 					}
+					else 
+						;//TODO
 					
 				} catch (AddressFormatException e) { 
 					e.printStackTrace();
@@ -987,13 +986,15 @@ public class Controller {
 						changeaddr,
 						Authenticator.getWalletOperation().getNetworkParams());
 			
+			Coin changeValue = Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(outAmount);
+			
 			//
 			displayTxOverview(OutputAddresses, 
 					to,
 					changeaddr, 
 					outAmount, 
 					fee, 
-					Authenticator.getWalletOperation().getTxValueSentFromMe(tx));
+					Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(changeValue));
     	}
     }
     
@@ -1079,7 +1080,7 @@ public class Controller {
 		textformatted.add(spaceflow);
 		Text leavingtext = new Text("Leaving Wallet:       ");
 		leavingtext.setStyle("-fx-font-weight:bold;");
-		Text leavingtext2 = new Text("-" + leavingWallet.toFriendlyString() + " BTC");
+		Text leavingtext2 = new Text("-" + leavingWallet.add(fee).toFriendlyString() + " BTC");
 		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow leavingflow = new TextFlow();
 		leavingflow.getChildren().addAll(leavingtext, leavingtext2);

@@ -53,6 +53,7 @@ import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletEventListener;
+import com.google.bitcoin.core.Wallet.ExceededMaxTransactionSize;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -455,16 +456,11 @@ public class WalletOperation extends BASE{
 					". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
 					", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}
-		
-		
-		
+        
 		// Check size.
         int size = tx.bitcoinSerialize().length;
-        if (size > Transaction.MAX_STANDARD_TX_SIZE) {
-            throw new IllegalArgumentException(
-                    String.format("Transaction could not be created without exceeding max size: %d vs %d", size,
-                        Transaction.MAX_STANDARD_TX_SIZE));
-        }
+        if (size > Transaction.MAX_STANDARD_TX_SIZE)
+            throw new ExceededMaxTransactionSize();
 		
 		return tx;
 	}
