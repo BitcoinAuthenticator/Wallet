@@ -275,7 +275,12 @@ public class OperationsFactory extends BASE{
 					public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
 
 					@Override
-					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
+					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { 
+						try {
+							wallet.removePendingRequest(pendigReq);
+						} catch (IOException e1) { e1.printStackTrace();
+						}
+					}
 					
 				});
 		

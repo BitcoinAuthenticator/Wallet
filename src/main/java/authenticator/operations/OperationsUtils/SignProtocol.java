@@ -169,6 +169,7 @@ public class SignProtocol {
 		}
 		catch (Exception e){
 			wallet.disconnectInputs(tx.getInputs());
+			e.printStackTrace();
 			throw new UnableToCompleteTxSigningException("Unable to finish transaction signing");
 		}
 	 }

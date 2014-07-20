@@ -985,16 +985,14 @@ public class Controller {
 						fee,
 						changeaddr,
 						Authenticator.getWalletOperation().getNetworkParams());
-			
-			Coin changeValue = Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(outAmount);
-			
+						
 			//
 			displayTxOverview(OutputAddresses, 
 					to,
 					changeaddr, 
 					outAmount, 
 					fee, 
-					Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(changeValue));
+					Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(Authenticator.getWalletOperation().getTxValueSentToMe(tx)));
     	}
     }
     
@@ -1080,7 +1078,7 @@ public class Controller {
 		textformatted.add(spaceflow);
 		Text leavingtext = new Text("Leaving Wallet:       ");
 		leavingtext.setStyle("-fx-font-weight:bold;");
-		Text leavingtext2 = new Text("-" + leavingWallet.add(fee).toFriendlyString() + " BTC");
+		Text leavingtext2 = new Text("-" + leavingWallet.toFriendlyString() + " BTC");
 		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow leavingflow = new TextFlow();
 		leavingflow.getChildren().addAll(leavingtext, leavingtext2);
