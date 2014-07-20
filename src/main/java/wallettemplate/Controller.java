@@ -98,6 +98,7 @@ import wallettemplate.ControllerHelpers.SendTxHelper;
 import wallettemplate.ControllerHelpers.SendTxHelper.NewAddress;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
+import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 
 import java.awt.Color;
@@ -1089,13 +1090,33 @@ public class Controller {
 		Button btnConfirm = new Button("Send Transaction");
 		PasswordField password = new PasswordField();
 		password.setPromptText("Enter Password");
-		password.setPrefWidth(225);
+		password.setPrefWidth(355);
+		VBox successVbox = new VBox();
+		Image rocket = new Image(Main.class.getResource("rocket.png").toString());
+		ImageView img = new ImageView(rocket);
+		Label txid = new Label();
+		Label lblTxid = new Label("Transaction ID:");
+		Button btnContinue = new Button("Continue");
+		txid.setText(tx.getHashAsString());
+		successVbox.getChildren().add(img);
+		successVbox.getChildren().add(lblTxid);
+		successVbox.getChildren().add(txid);
+		successVbox.getChildren().add(btnContinue);
+		successVbox.setVisible(false);
+		successVbox.setAlignment(Pos.CENTER);
+		successVbox.setPrefWidth(600);
+		successVbox.setPadding(new Insets(15,0,0,0));
+		successVbox.setMargin(lblTxid, new Insets(15,0,0,0));
+		successVbox.setMargin(btnContinue, new Insets(15,0,0,0));
+		pane.getChildren().add(successVbox);
 		btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
             	try {
-            		btnConfirm.setText("Broadcasting ..");
-            		btnConfirm.setDisable(true);
+            		Animation ani = GuiUtils.fadeOut(v);
+       			 	GuiUtils.fadeIn(successVbox);
+       			 	v.setVisible(false);
+       			 	successVbox.setVisible(true);
             		broadcast(tx);
             	} 
             	catch (NoSuchAlgorithmException
@@ -1104,15 +1125,12 @@ public class Controller {
 						| KeyIndexOutOfRangeException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					
-					btnConfirm.setText("Send Transaction");
-            		btnConfirm.setDisable(false);
 				}
             }
         });
 		HBox h = new HBox();
 		h.setPadding(new Insets(10,0,0,0));
-		h.setMargin(btnCancel, new Insets(0,0,0,136));
+		h.setMargin(btnCancel, new Insets(0,0,0,10));
 		h.getChildren().add(password);
 		h.getChildren().add(btnCancel);
 		h.getChildren().add(btnConfirm);
@@ -1121,6 +1139,16 @@ public class Controller {
 		v.getChildren().add(h);
 		pane.getChildren().add(v);
 		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+		btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	overlay.done();
+            	btnClearSendPane.setStyle("-fx-background-color: #d9dee1;");
+            	txMsgLabel.clear();
+            	scrlContent.clearAll(); addOutput();
+            	txFee.clear();
+            }
+        });
 		btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 				public void handle(MouseEvent event) {
