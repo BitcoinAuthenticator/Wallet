@@ -350,7 +350,7 @@ public class OperationsFactory extends BASE{
 					throws Exception {
 				try{
 					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);
-					
+					System.out.println("asdfasdfdasfasdfasdfasdfasdfasdf");
 					if(signedTx == null){
 						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
 					}
