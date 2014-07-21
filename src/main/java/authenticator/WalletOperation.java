@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javafx.scene.image.Image;
+
 import javax.annotation.Nullable;
 
 import org.json.JSONException;
@@ -65,6 +67,9 @@ import com.google.bitcoin.wallet.CoinSelection;
 import com.google.bitcoin.wallet.DefaultCoinSelector;
 import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.collect.ImmutableList;
+
+import eu.hansolo.enzo.notification.Notification;
+import eu.hansolo.enzo.notification.Notification.Notifier;
 
 
 /**
@@ -191,6 +196,12 @@ public class WalletOperation extends BASE{
         }
         
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+        	Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+        	// Create a custom Notification without icon
+        	Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received :" + tx.getValueSentToMe(wallet).toFriendlyString() + " BTC", logo);
+
+        	// Show the custom notification
+        	Notifier.INSTANCE.notify(info);
         	try {
 				updateBalace(tx, true);
 			} catch (Exception e) { e.printStackTrace(); }

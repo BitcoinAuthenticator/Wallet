@@ -1030,7 +1030,7 @@ public class Controller {
 			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
 			inputtext3.setText(tx.getInput(b).getValue().toFriendlyString() + " BTC");
 			if (b<tx.getInputs().size()-1){
-				inputtext3.setText(inputtext3.getText() + "\n                                     ");
+				inputtext3.setText(inputtext3.getText() + "\n                                    ");
 			}
 			intext.add(inputtext3);
 		}
