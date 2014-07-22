@@ -868,7 +868,7 @@ public class Controller {
     }
     
     @FXML protected void btnAddTxOutputReleased(MouseEvent event) {
-    	btnAddTxOutput.setStyle("-fx-background-color: #199bd6;");
+    	btnAddTxOutput.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
     }
     
     @FXML protected void btnSendTxPressed(MouseEvent event) {
@@ -876,7 +876,7 @@ public class Controller {
     }
     
     @FXML protected void btnSendTxReleased(MouseEvent event) {
-    	btnSendTx.setStyle("-fx-background-color: #199bd6;");
+    	btnSendTx.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
     } 
     
     @FXML protected void btnClearSendPanePressed(MouseEvent event) {
@@ -1112,20 +1112,27 @@ public class Controller {
 		btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	try {
-            		Animation ani = GuiUtils.fadeOut(v);
-       			 	GuiUtils.fadeIn(successVbox);
-       			 	v.setVisible(false);
-       			 	successVbox.setVisible(true);
-            		broadcast(tx);
-            	} 
-            	catch (NoSuchAlgorithmException
-						| AddressWasNotFoundException | JSONException
-						| AddressFormatException
-						| KeyIndexOutOfRangeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+            	if (password.equals("")){
+            		informationalAlert("Unfortunately, you messed up.",
+       					 "You need to enter your password to decrypt your wallet.");
+            	}
+            	else {
+            		Main.bitcoin.wallet().decrypt(password.getText());
+            		try {
+            			Animation ani = GuiUtils.fadeOut(v);
+            			GuiUtils.fadeIn(successVbox);
+            			v.setVisible(false);
+            			successVbox.setVisible(true);
+            			broadcast(tx);
+            		} 
+            		catch (NoSuchAlgorithmException
+            				| AddressWasNotFoundException | JSONException
+            				| AddressFormatException
+            				| KeyIndexOutOfRangeException e) {
+            			// TODO Auto-generated catch block
+            			e.printStackTrace();
+            		}
+            	}
             }
         });
 		HBox h = new HBox();
@@ -1142,6 +1149,7 @@ public class Controller {
 		btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
+            	Main.bitcoin.wallet().encrypt(password.getText());
             	overlay.done();
             	btnClearSendPane.setStyle("-fx-background-color: #d9dee1;");
             	txMsgLabel.clear();
@@ -1275,7 +1283,7 @@ public class Controller {
     }
     
     @FXML protected void btnRequestReleased(MouseEvent event) {
-    	btnRequest.setStyle("-fx-background-color: #199bd6;");
+    	btnRequest.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
     }
     
     @FXML protected void btnClearReceivePanePressed(MouseEvent event) {
@@ -1311,7 +1319,7 @@ public class Controller {
         btnCopy.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnCopy.setStyle("-fx-background-color: #199bd6;");
+            	btnCopy.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
             }
         });
         btnCopy.setOnAction(new EventHandler<ActionEvent>() {
@@ -1338,7 +1346,7 @@ public class Controller {
         btnQR.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnQR.setStyle("-fx-background-color: #199bd6;");
+            	btnQR.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
             }
         });
         btnQR.setOnAction(new EventHandler<ActionEvent>() {
@@ -1387,7 +1395,7 @@ public class Controller {
         btnKey.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnKey.setStyle("-fx-background-color: #199bd6;");
+            	btnKey.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
             }
         });
         btnKey.setOnAction(new EventHandler<ActionEvent>() {
@@ -1491,7 +1499,7 @@ public class Controller {
             		btnCopyURI.setOnMouseReleased(new EventHandler<MouseEvent>(){
             			@Override
             			public void handle(MouseEvent t) {
-            				btnCopyURI.setStyle("-fx-background-color: #199bd6;");
+            				btnCopyURI.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
             			}
             		});
             		Button btnSaveImg = new Button("Save Image");
@@ -1522,7 +1530,7 @@ public class Controller {
             		btnSaveImg.setOnMouseReleased(new EventHandler<MouseEvent>(){
             			@Override
             			public void handle(MouseEvent t) {
-            				btnSaveImg.setStyle("-fx-background-color: #199bd6;");
+            				btnSaveImg.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
             			}
             		});
             		Button btnReqClose = new Button("Close");
@@ -1536,7 +1544,7 @@ public class Controller {
             		btnReqClose.setOnMouseReleased(new EventHandler<MouseEvent>(){
             			@Override
             			public void handle(MouseEvent t) {
-            				btnReqClose.setStyle("-fx-background-color: #199bd6;");
+            				btnReqClose.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
             			}
             		});
             		txReqMemo.setFocusTraversable(false);

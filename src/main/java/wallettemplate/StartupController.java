@@ -332,6 +332,7 @@ public class StartupController {
 					auth.disposeOfAuthenticator();
 					Main.startup.hide();
 					Main.stage.show();
+					Main.bitcoin.wallet().encrypt(txPW2.getText());
 					try {
 						Main.finishLoading();
 					} catch (IOException e) { e.printStackTrace(); }
