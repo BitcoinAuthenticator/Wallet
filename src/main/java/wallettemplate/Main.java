@@ -186,29 +186,26 @@ public class Main extends BAApplication {
             	        .showConfirm();
     			}
     			
-        	// Or no conditioning needed or user pressed Ok
-        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-        		bitcoin.addListener(new Service.Listener() {
-					@Override public void terminated(State from) {
-						if(!auth.isRunning())
-							Runtime.getRuntime().exit(0);
-			         }
-				}, MoreExecutors.sameThreadExecutor());
-				bitcoin.stopAsync();
-            
-                auth.addListener(new Service.Listener() {
-					@Override public void terminated(State from) {
-						if(!bitcoin.isRunning())
-							Runtime.getRuntime().exit(0);
-			         }
-				}, MoreExecutors.sameThreadExecutor());
-                auth.stopAsync();
-                
-                // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
-                //Runtime.getRuntime().exit(0);
-        	}
-        	else if(response != null && response == Dialog.Actions.NO)
-        		e.consume();
+	        	// Or no conditioning needed or user pressed Ok
+	        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
+	        		bitcoin.addListener(new Service.Listener() {
+						@Override public void terminated(State from) {
+							if(!auth.isRunning())
+								Runtime.getRuntime().exit(0);
+				         }
+					}, MoreExecutors.sameThreadExecutor());
+					bitcoin.stopAsync();
+	            
+	                auth.addListener(new Service.Listener() {
+						@Override public void terminated(State from) {
+							if(!bitcoin.isRunning())
+								Runtime.getRuntime().exit(0);
+				         }
+					}, MoreExecutors.sameThreadExecutor());
+	                auth.stopAsync();
+	              
+	        	}
+	        	
     		}
     	});
         	

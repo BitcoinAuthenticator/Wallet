@@ -182,7 +182,6 @@ public class OperationsFactory extends BASE{
 							PendingRequest pr = SignProtocol.generatePendingRequest(tx, cypherBytes, pairingID, reqID);
 							
 							wallet.addPendingRequest(pr);
-							//Authenticator.addPendingRequestToFile(pr);
 						}
 						else{
 							//Decrypt the response
@@ -224,7 +223,11 @@ public class OperationsFactory extends BASE{
 									int result = Integer.parseInt(obj.get("result").toString());
 									if(result == 0){
 										answerType = SignProtocol.AuthenticatorAnswerType.NotAuthorized;
-										listener.onUserCancel(obj.get("reason").toString());
+										Authenticator.fireOnAuthenticatorSigningResponse(tx, 
+												pairingID, 
+												pendigReq, 
+												SignProtocol.AuthenticatorAnswerType.NotAuthorized, 
+												obj.get("reason").toString());
 										wallet.removePendingRequest(pendigReq);
 									}
 								}
@@ -246,7 +249,11 @@ public class OperationsFactory extends BASE{
 									Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 						                @Override
 						                public void onSuccess(Transaction result) {
-						                	listenerUI.onFinished("Transaction Sent With Success");
+						                	Authenticator.fireOnAuthenticatorSigningResponse(tx, 
+													pairingID, 
+													pendigReq, 
+													SignProtocol.AuthenticatorAnswerType.Authorized, 
+													null);
 						                }
 
 						                @Override
@@ -257,7 +264,11 @@ public class OperationsFactory extends BASE{
 								}
 								else{
 									wallet.disconnectInputs(tx.getInputs());
-									listenerUI.onFinished("Transaction Sent With Success");
+									Authenticator.fireOnAuthenticatorSigningResponse(tx, 
+											pairingID, 
+											pendigReq, 
+											SignProtocol.AuthenticatorAnswerType.Authorized, 
+											null);
 								}
 								
 								wallet.removePendingRequest(pendigReq);
@@ -362,7 +373,9 @@ public class OperationsFactory extends BASE{
 							Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 				                @Override
 				                public void onSuccess(Transaction result) {
-				                	listenerUI.onFinished("Transaction Sent With Success");
+				                	/**
+				                	 * No need for UI notification here, will be handled by AuthenticatorGeneralEvents#OnBalanceChanged
+				                	 */
 				                }
 
 				                @Override
@@ -373,7 +386,9 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							wallet.disconnectInputs(tx.getInputs());
-							listenerUI.onFinished("Transaction Sent With Success");
+							/**
+		                	 * No need for UI notification here, will be handled by AuthenticatorGeneralEvents#OnBalanceChanged
+		                	 */
 						}
 						
 					}

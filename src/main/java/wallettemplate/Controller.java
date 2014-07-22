@@ -2,6 +2,7 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
+import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
@@ -11,11 +12,13 @@ import authenticator.network.OneName;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
+import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
 import com.google.bitcoin.core.AbstractPeerEventListener;
@@ -33,6 +36,7 @@ import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.uri.BitcoinURI;
@@ -44,6 +48,8 @@ import com.subgraph.orchid.TorInitializationListener;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
+import eu.hansolo.enzo.notification.Notification;
+import eu.hansolo.enzo.notification.Notification.Notifier;
 import javafx.animation.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
@@ -195,9 +201,7 @@ public class Controller {
 	 private ScrollPaneContentManager scrlContent;
 	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
-	 private Wallet.SendResult sendResult;
 	 TorListener listener = new TorListener();
-	 Transaction tx = null;
 	 
 
 	//#####################################
@@ -306,7 +310,6 @@ public class Controller {
     }
     
     public class AuthenticatorGeneralEvents implements AuthenticatorGeneralEventsListener{
-
 		
 		@Override
 		public void onNewPairedAuthenticator() {
@@ -328,12 +331,49 @@ public class Controller {
 			});
 			
 		}
-
+		
 		@Override
-		public void onFinishedBuildingWalletHierarchy() { }
-
-		@Override
-		public void onBalanceChanged(int walletID) {
+		public void onBalanceChanged(int walletID, Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+			/**
+			 * Will pop a notification when received coins are pending and built
+			 */
+			if(howBalanceChanged == HowBalanceChanged.ReceivedCoins){
+				Platform.runLater(new Runnable() { 
+					  @Override
+					  public void run() {
+							Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+							// Create a custom Notification without icon
+							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received :" + 
+									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
+									" BTC\n" + 
+									"Status: " + (confidence == ConfidenceType.PENDING? "Pending":"Confirmed"), logo);
+							
+							// Show the custom notification
+							Notifier.INSTANCE.notify(info);
+					  }
+					});
+			}
+			
+			/**
+			 * Will pop a notification when sent coins are confirmed
+			 */
+			if(howBalanceChanged == HowBalanceChanged.SentCoins && confidence == ConfidenceType.BUILDING){
+				Platform.runLater(new Runnable() { 
+					  @Override
+					  public void run() {
+							Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+							// Create a custom Notification without icon
+							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Sent :" + 
+									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
+									" BTC\n" + 
+									"Status: " + "Confirmed", logo);
+							
+							// Show the custom notification
+							Notifier.INSTANCE.notify(info);
+					  }
+					});
+			}
+			
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
@@ -375,6 +415,27 @@ public class Controller {
 			  }
 			});
 			
+		}
+
+		@Override
+		public void onAuthenticatorSigningResponse(Transaction tx,
+				String pairingID, PendingRequest pendingReq,
+				AuthenticatorAnswerType answerType,
+				String str) {
+			
+			String notifStr = "";
+			if(answerType == AuthenticatorAnswerType.Authorized)
+				notifStr = "Authenticator Authorized a Transaction:\n";
+			else if(answerType == AuthenticatorAnswerType.NotAuthorized)
+				notifStr = "Authenticator Refused To Sign a Transaction:\n";
+			else
+				return;
+			
+			Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+	    	// Create a custom Notification without icon
+	    	Notification info = new Notification("Bitcoin Authenticator Wallet", notifStr , logo);
+	    	// Show the custom notification
+	    	Notifier.INSTANCE.notify(info);
 		}
     }
     
@@ -981,14 +1042,15 @@ public class Controller {
 								.getAddressStr();
     		   
     		// complete Tx
-			tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
+    		Transaction tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
 						to,
 						fee,
 						changeaddr,
 						Authenticator.getWalletOperation().getNetworkParams());
 						
 			//
-			displayTxOverview(OutputAddresses, 
+			displayTxOverview(tx,
+					OutputAddresses, 
 					to,
 					changeaddr, 
 					outAmount, 
@@ -997,7 +1059,8 @@ public class Controller {
     	}
     }
     
-    private void displayTxOverview(ArrayList<String> OutputAddresses, 
+    private void displayTxOverview(Transaction tx, 
+    		ArrayList<String> OutputAddresses, 
     		ArrayList<TransactionOutput> to, 
     		String changeaddr,
     		Coin outAmount,
@@ -1169,7 +1232,10 @@ public class Controller {
 
 			@Override
 			public void onFinished(String str) {
-					removeActivitySpinner();
+				/**
+				 * will notify user in AuthenticatorGeneralEvents#onBalanceChange
+				 */
+					/*removeActivitySpinner();
 					
 					if(str != null)
 					Platform.runLater(new Runnable() {
@@ -1181,7 +1247,7 @@ public class Controller {
 					        .message("If this is a multisig P2SH transaction, we are waiting for the Authenticator to sign")
 					        .showInformation();  
 				      }
-				    });
+				    });*/
 			}
 
 			@Override
@@ -1209,27 +1275,6 @@ public class Controller {
 				      }
 				    });
 			}
-
-			@Override
-			public void onUserCancel(String reason) {
-				removeActivitySpinner();
-				
-				if(reason != null)
-				Platform.runLater(new Runnable() {
-				      @Override public void run() {
-				    	  Dialogs.create()
-					        .owner(Main.stage)
-					        .title("Error")
-					        .masthead("Authenticator Refused The Transaction")
-					        .message(reason)
-					        .showError();   
-				      }
-				    });
-			}
-
-			@Override
-			public void onUserOk(String msg) { }
-
 		});
     }	
     

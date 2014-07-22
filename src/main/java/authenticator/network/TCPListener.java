@@ -8,14 +8,18 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 
 import org.controlsfx.dialog.Dialogs;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.protobuf.ByteString;
 
+import eu.hansolo.enzo.notification.Notification;
+import eu.hansolo.enzo.notification.Notification.Notifier;
 import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;
@@ -203,25 +207,6 @@ public class TCPListener extends BASE{
 													    });
 													
 												}
-
-												@SuppressWarnings("restriction")
-												@Override
-												public void onUserCancel(String reason) {
-													if(reason != null)
-													Platform.runLater(new Runnable() {
-													      @Override public void run() {
-													    	  Dialogs.create()
-														        .owner(Main.stage)
-														        .title("Error")
-														        .masthead("Authenticator Refused The Transaction")
-														        .message(reason)
-														        .showError();   
-													      }
-													    });
-												}
-
-												@Override
-												public void onUserOk(String msg) { }
 
 												@Override
 												public void onError( Exception e, Throwable t) { }

@@ -1,5 +1,6 @@
 package authenticator;
 
+import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
@@ -27,7 +28,6 @@ import javax.annotation.Nullable;
 import org.json.JSONException;
 import org.slf4j.Logger;
 
-import wallettemplate.Main;
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
@@ -50,6 +50,7 @@ import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
@@ -57,7 +58,6 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.core.Wallet.ExceededMaxTransactionSize;
 import com.google.bitcoin.core.Wallet.SendResult;
-import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
@@ -67,9 +67,6 @@ import com.google.bitcoin.wallet.CoinSelection;
 import com.google.bitcoin.wallet.DefaultCoinSelector;
 import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.collect.ImmutableList;
-
-import eu.hansolo.enzo.notification.Notification;
-import eu.hansolo.enzo.notification.Notification.Notifier;
 
 
 /**
@@ -196,12 +193,6 @@ public class WalletOperation extends BASE{
         }
         
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-        	Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
-        	// Create a custom Notification without icon
-        	Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received :" + tx.getValueSentToMe(wallet).toFriendlyString() + " BTC", logo);
-
-        	// Show the custom notification
-        	Notifier.INSTANCE.notify(info);
         	try {
 				updateBalace(tx, true);
 			} catch (Exception e) { e.printStackTrace(); }
@@ -236,11 +227,11 @@ public class WalletOperation extends BASE{
     						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
     						removePendingInTx(add.getAccountIndex(), tx.getHashAsString());
     						confirmedTx.add(tx.getHashAsString());
-    						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
     					}
     					else if(isNewTx && !confirmedTx.contains(tx.getHashAsString())){
     						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
-    						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
     						//markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
@@ -250,7 +241,7 @@ public class WalletOperation extends BASE{
     					else if(!Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
     						if(!accountsEffected.contains(add.getAccountIndex())) accountsEffected.add(add.getAccountIndex());
-    						Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+    						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.PENDING);
     						/**
     						 * address is marked used when it receives funds
     						 */
@@ -290,6 +281,8 @@ public class WalletOperation extends BASE{
         					if(!isNewTx && Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
         						removePendingOutTx(add.getAccountIndex(), tx.getHashAsString());
         						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
+        						//
+        						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
         					}
         					break;
         				case PENDING:
@@ -299,7 +292,7 @@ public class WalletOperation extends BASE{
         						if(!accountsEffected.contains(add.getAccountIndex())) accountsEffected.add(add.getAccountIndex());
         						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
         						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
-            					Authenticator.fireOnBalanceChanged(add.getAccountIndex());
+            					Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.SentCoins, ConfidenceType.PENDING);
         					}
         					break;
         				case DEAD:

@@ -10,14 +10,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.PeerGroup;
+import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.Wallet;
 import com.google.common.util.concurrent.AbstractService;
 
+import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
 import authenticator.db.ConfigFile;
 import authenticator.network.TCPListener;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OperationsFactory;
+import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
@@ -162,21 +166,6 @@ public class Authenticator extends AbstractService{
 		System.out.println(pendingStr);
 	}
 	
-	/*@SuppressWarnings("static-access")
-	public static void addPendingRequestToFile(PendingRequest pr) throws FileNotFoundException, IOException {
-		getWalletOperation().addPendingRequest(pr);
-		pendingRequests.add(pr);
-	}
-	
-	public static void addPendingRequestToList(PendingRequest pr) {
-		pendingRequests.add(pr);
-	}
-	
-	public static void removePendingRequest(PendingRequest pr) throws FileNotFoundException, IOException {
-		pendingRequests.remove(pr);
-		getWalletOperation().removePendingRequest(pr);
-	}*/
-	
 	//#####################################
 	//
 	//		Getters & Setter
@@ -194,61 +183,6 @@ public class Authenticator extends AbstractService{
 			mWalletOperation = new WalletOperation();
 		return mWalletOperation;
 	}
-	
-	//#####################################
-	//
-	//			General
-	//
-	//#####################################
-	
-	/**
-	 * An init function to verify all P2SH addresses generated between the wallet and the various Authenticators are watched by the bitcoinj engine
-	 * 
-	 */
-	/*private void verifyWalletIsWatchingAuthenticatorAddresses()
-	{
-		@SuppressWarnings("static-access")
-		List<PairedAuthenticator> all = null;
-		try {
-			all = this.getWalletOperation().getAllPairingObjectArray();
-		} catch (Exception e1) { e1.printStackTrace(); }
-		if(all != null)
-		for(PairedAuthenticator po: all)
-		for(PairedAuthenticator.KeysObject ko: po.getGeneratedKeysList())
-		{
-			try {
-				@SuppressWarnings("static-access")
-				boolean isWatched = this.getWalletOperation().isWatchingAddress(ko.getAddress());
-				if(!isWatched)
-					getWalletOperation().addAddressToWatch(ko.getAddress());
-			} catch (AddressFormatException e) {
-				e.printStackTrace();
-			}
-		}
-	}*/
-	
-	/**
-	 * Does what it says
-	 */
-	/**
-	 * Does what it says
-	 */
-	@SuppressWarnings("static-access")
-	/*private void setFirstAccountTEST()
-	{
-		
-		if(getWalletOperation().getAllAccounts().size() == 0)
-		{
-			try {
-				
-				ATAccount b2 = getWalletOperation().generateNewStandardAccount(getApplicationParams().getBitcoinNetworkType(),
-						"Default");
-				getWalletOperation().setActiveAccount(b2.getIndex());
-
-			} catch (IOException e) { e.printStackTrace(); }
-		}	
-
-	}*/
 	
 	//#####################################
 	//
@@ -323,14 +257,9 @@ public class Authenticator extends AbstractService{
 			l.onNewUserNamecoinIdentitySelection(profile);
 	}
 	
-	public static void fireOnFinishedDiscoveringWalletHierarchy(){
+	public static void fireOnBalanceChanged(int walletID, Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){
 		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
-			l.onFinishedBuildingWalletHierarchy();
-	}
-	
-	public static void fireOnBalanceChanged(int walletID){
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
-			l.onBalanceChanged(walletID);
+			l.onBalanceChanged(walletID, tx, howBalanceChanged, confidence);
 	}
 	
 	public static void fireOnNewStandardAccountAdded(){
@@ -352,5 +281,14 @@ public class Authenticator extends AbstractService{
 
 		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
 			l.onAccountBeenModified(accountIndex);
+	}
+	
+	public static void fireOnAuthenticatorSigningResponse(Transaction tx, 
+			String pairingID, 
+			PendingRequest pendingReq, 
+			SignProtocol.AuthenticatorAnswerType answerType,
+			String str){
+		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+			l.onAuthenticatorSigningResponse(tx, pairingID, pendingReq, answerType, str);
 	}
 }
