@@ -402,6 +402,20 @@ public class WalletOperation extends BASE{
 	}
 	
 	@SuppressWarnings("static-access")
+	/**
+	 * 
+	 * @param outSelected
+	 * @param to
+	 * @param fee
+	 * @param changeAdd
+	 * @param np
+	 * @return
+	 * @throws AddressFormatException
+	 * @throws JSONException
+	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
+	 * @throws IllegalArgumentException
+	 */
 	public Transaction mkUnsignedTxWithSelectedInputs(ArrayList<TransactionOutput> outSelected, 
 			ArrayList<TransactionOutput>to, 
 			Coin fee, 
