@@ -353,7 +353,7 @@ public class Controller {
 		}
 		
 		@Override
-		public void onBalanceChanged(int walletID, Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+		public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
 			/**
 			 * Will pop a notification when received coins are pending and built
 			 */

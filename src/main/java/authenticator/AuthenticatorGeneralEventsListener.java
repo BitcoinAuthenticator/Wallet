@@ -44,7 +44,7 @@ public interface AuthenticatorGeneralEventsListener {
 	 * @param howBalanceChanged
 	 * @param confidence
 	 */
-	public void onBalanceChanged(int walletID, Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence);
+	public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence);
 	public enum HowBalanceChanged{
 		ReceivedCoins,
 		SentCoins;

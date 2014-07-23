@@ -210,7 +210,11 @@ public class WalletOperation extends BASE{
         	 * Check for coins entering
         	 */
         	List<TransactionOutput> outs = tx.getOutputs();
-        	List<Integer> accountsEffected = new ArrayList<Integer>();
+        	// accountsEffectedPending is for collecting all effected account in pending confidence.
+        	List<Integer> accountsEffectedPending = new ArrayList<Integer>();
+        	// accountsEffectedBuilding is for collecting all effected account in pending confidence. 
+        	List<Integer> accountsEffectedBuilding = new ArrayList<Integer>();
+        	boolean didFireOnReceivedCoins = false;
         	for (TransactionOutput out : outs){
     			Script scr = out.getScriptPubKey();
     			String addrStr = scr.getToAddress(getNetworkParams()).toString();
@@ -220,32 +224,45 @@ public class WalletOperation extends BASE{
     				switch(conf.getConfidenceType()){
     				case BUILDING:
     					/**
+    					 * CONDITIONING:
     					 * If the transaction is new but we don't know about it, just add it to confirmed.
     					 * If the transaction is moving from pending to confirmed, make it so.
     					 */
     					if(!isNewTx && Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
+    						if(!accountsEffectedBuilding.contains(add.getAccountIndex())) accountsEffectedBuilding.add(add.getAccountIndex());
     						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
-    						removePendingInTx(add.getAccountIndex(), tx.getHashAsString());
     						confirmedTx.add(tx.getHashAsString());
-    						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
+    						if(!didFireOnReceivedCoins){
+    							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
+    							didFireOnReceivedCoins = true;
+    						}
     					}
+    					/**
+    					 * IMPORTANT:
+    					 * Doesn't add the tx to confirmedTx because we didn't know about it before so
+    					 * we want to iterate all the outputs
+    					 */
     					else if(isNewTx && !confirmedTx.contains(tx.getHashAsString())){
     						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
-    						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
-    						//markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
+    						if(!didFireOnReceivedCoins){
+	    						Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
+	    						didFireOnReceivedCoins = true;
+    						}
+    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
     				case PENDING:
     					if(!isNewTx)
     						; // do nothing
     					else if(!Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
+    						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
-    						if(!accountsEffected.contains(add.getAccountIndex())) accountsEffected.add(add.getAccountIndex());
-    						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.PENDING);
-    						/**
-    						 * address is marked used when it receives funds
-    						 */
-    						//markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
+    						if(!didFireOnReceivedCoins){
+	    						Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.PENDING);
+	    						didFireOnReceivedCoins = true;
+    						}
+    						
+    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     					}
     					break;
     				case DEAD:
@@ -255,18 +272,22 @@ public class WalletOperation extends BASE{
     			}
         	}
         	
-        	/**
-        	 * In case there are several outputs from the same account
-        	 */
-        	if(accountsEffected.size() > 0)
-        		for(Integer acIndx:accountsEffected)
-        			addPendingInTx(acIndx, tx.getHashAsString());
+        	// In case there are several outputs from the same account (PENDING)
+        	if(accountsEffectedPending.size() > 0)
+        		for(Integer acIndx:accountsEffectedPending)
+        			addPendingInTx(acIndx, tx.getHashAsString());      
+        	
+        	// In case there are several outputs from the same account (BUILDING)
+        	if(accountsEffectedBuilding.size() > 0)
+        		for(Integer acIndx:accountsEffectedBuilding)
+        			removePendingInTx(acIndx, tx.getHashAsString());
         	
         	/**
         	 * Check for coins spending
         	 */
     		List<TransactionInput> ins = tx.getInputs();
-    		accountsEffected = new ArrayList<Integer>();
+    		accountsEffectedPending = new ArrayList<Integer>();
+    		boolean didFireOnSendCoins = false;
         	for (TransactionInput in : ins){
         		TransactionOutput out = in.getConnectedOutput();
         		if(out != null) // could be not connected
@@ -278,21 +299,35 @@ public class WalletOperation extends BASE{
         				TransactionConfidence conf = tx.getConfidence();
         				switch(conf.getConfidenceType()){
         				case BUILDING:
+        					/**
+        					 * IMPORTANT:
+        					 * We can only get here for Tx we know because we sent them.
+        					 */
         					if(!isNewTx && Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
         						removePendingOutTx(add.getAccountIndex(), tx.getHashAsString());
-        						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
-        						//
-        						Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
+        						if(!didFireOnSendCoins){
+        							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
+        							didFireOnSendCoins = true;
+        						}
         					}
         					break;
         				case PENDING:
         					if(!isNewTx)
         						;
+        					/**
+        					 * IMPORTANT:
+	    					 * We add the transaction to isPendingOutTx list so after that it cannot enter here anymore.
+        					 */
         					else if(!Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
-        						if(!accountsEffected.contains(add.getAccountIndex())) accountsEffected.add(add.getAccountIndex());
+        						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
+        						
+        						// We only enter here once so transfer all the funds going out
         						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
-        						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
-            					Authenticator.fireOnBalanceChanged(add.getAccountIndex(), tx, HowBalanceChanged.SentCoins, ConfidenceType.PENDING);
+        						
+        						if(!didFireOnSendCoins){
+	            					Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.PENDING);
+	            					didFireOnSendCoins = true;
+        						}
         					}
         					break;
         				case DEAD:
@@ -303,11 +338,9 @@ public class WalletOperation extends BASE{
     			}            			
         	}     
         	
-        	/**
-        	 * In case there are several inputs from the same account
-        	 */
-        	if(accountsEffected.size() > 0)
-        		for(Integer acIndx:accountsEffected)
+        	// In case there are several inputs from the same account(PENDING)
+        	if(accountsEffectedPending.size() > 0)
+        		for(Integer acIndx:accountsEffectedPending)
         			addPendingOutTx(acIndx, tx.getHashAsString());
         }
        

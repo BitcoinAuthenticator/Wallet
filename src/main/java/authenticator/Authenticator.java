@@ -252,9 +252,9 @@ public class Authenticator extends AbstractService{
 			l.onNewUserNamecoinIdentitySelection(profile);
 	}
 	
-	public static void fireOnBalanceChanged(int walletID, Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){
+	public static void fireOnBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){
 		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
-			l.onBalanceChanged(walletID, tx, howBalanceChanged, confidence);
+			l.onBalanceChanged(tx, howBalanceChanged, confidence);
 	}
 	
 	public static void fireOnNewStandardAccountAdded(){
