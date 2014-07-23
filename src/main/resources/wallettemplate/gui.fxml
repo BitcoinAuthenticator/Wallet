@@ -119,7 +119,7 @@
           </ChoiceBox>
           <TextArea fx:id="txReqMemo" layoutX="67.0" layoutY="106.0" prefHeight="71.0" prefWidth="475.0" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent;" wrapText="true" />
           <Button fx:id="btnRequest" layoutX="67.0" layoutY="194.0" mnemonicParsing="false" onMousePressed="#btnRequestPressed" onMouseReleased="#btnRequestReleased" prefHeight="32.0" prefWidth="175.0" styleClass="custom-button" text="Request Payment" contentDisplay="RIGHT" textAlignment="CENTER"/>
-          <Button fx:id="btnClearReceivePane" layoutX="247.0" layoutY="194.0" mnemonicParsing="false" onMousePressed="#btnClearReceivePanePressed" onMouseReleased="#btnClearReceivePaneReleased" prefHeight="32.0" prefWidth="109.5" styleClass="clear-button" text="Clear" contentDisplay="RIGHT" textAlignment="CENTER"/>
+          <Button fx:id="btnClearReceivePane" layoutX="247.0" layoutY="194.0" mnemonicParsing="false" onMousePressed="#btnClearReceivePanePressed" onMouseReleased="#btnClearReceivePaneReleased" prefHeight="32.0" prefWidth="80.5" styleClass="clear-button" text="Clear" contentDisplay="RIGHT" textAlignment="CENTER"/>
         </Pane>
         <HBox fx:id="ReceiveHBox" layoutX="0.0" layoutY="14.0" prefHeight="64.0" prefWidth="629.0">
           <children>
@@ -187,7 +187,7 @@
             <HBox alignment="CENTER_LEFT" fillHeight="true" prefHeight="50.0" prefWidth="600.0" spacing="5.0" VBox.vgrow="NEVER">
               <children>
                 <Button fx:id="btnSendTx" contentDisplay="RIGHT" defaultButton="true" mnemonicParsing="false" onAction="#SendTx" onMousePressed="#btnSendTxPressed" onMouseReleased="#btnSendTxReleased" prefHeight="32.0" prefWidth="138.0" styleClass="custom-button" text="Send" textAlignment="CENTER" textFill="WHITE" />
-                <Button fx:id="btnClearSendPane" contentDisplay="RIGHT" mnemonicParsing="false" onMousePressed="#btnClearSendPanePressed" onMouseReleased="#btnClearSendPaneReleased" prefHeight="32.0" prefWidth="109.5" styleClass="clear-button" text="Clear" textAlignment="CENTER" />
+                <Button fx:id="btnClearSendPane" contentDisplay="RIGHT" mnemonicParsing="false" onMousePressed="#btnClearSendPanePressed" onMouseReleased="#btnClearSendPaneReleased" prefHeight="32.0" prefWidth="80.5" styleClass="clear-button" text="Clear" textAlignment="CENTER" />
               </children>
               <VBox.margin>
                 <Insets top="10.0" />

@@ -82,14 +82,18 @@
   }
     
 .custom-button {
-	-fx-background-color: #199bd6;
-	-fx-background-insets: 0, 0, 1, 2;
 	-fx-text-fill:white;
+    -fx-background-color:
+	linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%),
+    linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);
+    -fx-background-insets: 0,0,1,2;
 	-icons-color: white;
 }
 
 .clear-button {
-	-fx-background-color: #D8D8D8;
+	-fx-background-color: #D8D8D8,
+	linear-gradient(#f2f2f2 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%),
+    linear-gradient(#e0e0e0 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%);
 	-fx-background-insets: 0, 0, 1, 2;
 	-fx-text-fill:white;
 	-icons-color: white;
