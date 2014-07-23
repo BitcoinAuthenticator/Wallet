@@ -233,15 +233,6 @@
                 <Font size="15.0" />
               </font>
             </Label>
-            <Button fx:id="btnLocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
-              <graphic>
-                <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
-                  <image>
-                    <Image url="@btnLocked.png" />
-                  </image>
-                </ImageView>
-              </graphic>
-            </Button>
           </children>
         </HBox>
         <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="105.0" style="-fx-text-fill: #98d947;" text="0.000000 BTC">
@@ -488,6 +479,24 @@
         </ImageView>
       </graphic>
     </Button>
+    <Button fx:id="btnUnlocked" onAction="#lockWallet" layoutX="742.0" layoutY="432.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@btnLocked.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>  
+    <Button fx:id="btnLocked" onAction="#unlockWallet" layoutX="742.0" layoutY="432.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@btnUnlocked.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>  
     <!-- 
     
     

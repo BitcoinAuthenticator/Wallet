@@ -106,7 +106,7 @@ public class Main extends BAApplication {
             	StartupController.appParams = ApplicationParams;
                 root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
                 startup = new Stage();
-                startup.setTitle("My New Stage Title");
+                startup.setTitle("Setup");
                 startup.initStyle(StageStyle.UNDECORATED);
                 Scene scene1 = new Scene(root, 607, 400);
                 final String file1 = TextFieldValidator.class.getResource("GUI.css").toString();

@@ -121,10 +121,11 @@ public class SendTxHelper {
 					false,
 					null,
 					null);
-			// operation listeners
-			op.SetOperationUIUpdate(opUpdateListener);
-			Authenticator.operationsQueue.add(op);
 		}
+		
+		// operation listeners
+		op.SetOperationUIUpdate(opUpdateListener);
+		Authenticator.operationsQueue.add(op);
     }	
 	
 	/**

@@ -121,6 +121,8 @@ public class StartupController {
 	private DeterministicSeed seed;
 	NetworkParameters params = MainNetParams.get();
 	Authenticator auth;
+	Wallet wallet;
+	
 	/**
 	 * Will be set before the Stage is launched so we could define the wallet files.
 	 */
@@ -265,7 +267,7 @@ public class StartupController {
 			 seed = new DeterministicSeed(bytes, Utils.currentTimeSeconds());
 			 
 			 // set wallet
-			 Wallet wallet = Wallet.fromSeed(params,seed);
+			 wallet = Wallet.fromSeed(params,seed);
 			 wallet.setKeychainLookaheadSize(0);
 			 wallet.saveToFile(temp,f);
 			 
@@ -332,7 +334,7 @@ public class StartupController {
 					auth.disposeOfAuthenticator();
 					Main.startup.hide();
 					Main.stage.show();
-					Main.bitcoin.wallet().encrypt(txPW2.getText());
+					wallet.encrypt(txPW2.getText());
 					try {
 						Main.finishLoading();
 					} catch (IOException e) { e.printStackTrace(); }

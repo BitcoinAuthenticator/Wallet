@@ -347,45 +347,7 @@ public class OperationsFactory extends BASE{
 	}
 
 	static public ATOperation BROADCAST_NORMAL_TRANSACTION(WalletOperation wallet, Transaction tx, Map<String,ATAddress> keys){
-		
-		try{
-			Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);
-			if(signedTx == null){
-				//listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
-			}
-			else{
-				/**
-				 * Condition sending by is Test Mode
-				 */
-				if(wallet.getApplicationParams().getIsTestMode() == false){
-					SendResult result = wallet.pushTxWithWallet(signedTx);
-					Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
-		                @Override
-		                public void onSuccess(Transaction result) {
-		                	//listenerUI.onFinished("Transaction Sent With Success");
-		                }
-
-		                @Override
-		                public void onFailure(Throwable t) {
-		                	//listenerUI.onError(null,t);
-		                }
-		            });
-				}
-				else{
-					wallet.disconnectInputs(tx.getInputs());
-					//listenerUI.onFinished("Transaction Sent With Success");
-				}
-				
-			}
-			
-		}
-		catch (Exception e){
-			//if(listenerUI != null)
-				//listenerUI.onError(e, null);
-		}
-		return null;	
-	
-		/*return new ATOperation(ATOperationType.BroadcastNormalTx)
+		return new ATOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
 		.SetOperationAction(new OperationActions(){
@@ -406,7 +368,7 @@ public class OperationsFactory extends BASE{
 						/**
 						 * Condition sending by is Test Mode
 						 */
-						/*if(wallet.getApplicationParams().getIsTestMode() == false){
+						if(wallet.getApplicationParams().getIsTestMode() == false){
 							SendResult result = wallet.pushTxWithWallet(signedTx);
 							Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
 				                @Override
@@ -444,6 +406,5 @@ public class OperationsFactory extends BASE{
 			@Override
 			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
 		});
-	}*/
 	}
 }

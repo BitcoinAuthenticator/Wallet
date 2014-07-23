@@ -158,6 +158,8 @@ public class Controller {
 	 @FXML private Button btnTransactions_grey;
 	 @FXML private Button btnApps_white;
 	 @FXML private Button btnApps_grey;
+	 @FXML private Button btnLocked;
+	 @FXML private Button btnUnlocked;
 	 @FXML private ImageView ivOverview;
 	 @FXML private Pane OverviewPane;
 	 @FXML private Pane SendPane;
@@ -290,6 +292,10 @@ public class Controller {
   				}
   			}    
 	   });
+		
+		// wallet lock/ unlock
+		Tooltip.install(btnUnlocked, new Tooltip("Click to Unlock wallet"));
+		Tooltip.install(btnLocked, new Tooltip("Click to Lock wallet"));
     }
     
     public void onBitcoinSetup() {
@@ -675,6 +681,16 @@ public class Controller {
  	     AppsPane.setVisible(true);
     }
    
+   @FXML protected void lockWallet(ActionEvent event){
+	   btnLocked.setVisible(true);
+	   btnUnlocked.setVisible(false);
+   }
+   
+   @FXML protected void unlockWallet(ActionEvent event){
+	   btnLocked.setVisible(false);
+	   btnUnlocked.setVisible(true);
+   }
+   
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
 	   List<ATAccount> all = new ArrayList<ATAccount>();
@@ -696,14 +712,6 @@ public class Controller {
  	//	Overview Pane
  	//
  	//#####################################
-   
-   @FXML protected void lockWallet(ActionEvent event){
-	   
-   }
-   
-   @FXML protected void unlockWallet(ActionEvent event){
-	   
-   }
    
    public void setupOneName(AuthenticatorConfiguration.ConfigOneNameProfile one){
 	   
@@ -1267,19 +1275,6 @@ public class Controller {
 				/**
 				 * will notify user in AuthenticatorGeneralEvents#onBalanceChange
 				 */
-					/*removeActivitySpinner();
-					
-					if(str != null)
-					Platform.runLater(new Runnable() {
-				      @Override public void run() {
-				    	  Dialogs.create()
-					        .owner(Main.stage)
-					        .title("Success !")
-					        .masthead("Broadcasting Completed")
-					        .message("If this is a multisig P2SH transaction, we are waiting for the Authenticator to sign")
-					        .showInformation();  
-				      }
-				    });*/
 			}
 
 			@Override
@@ -1717,30 +1712,29 @@ public class Controller {
     	
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
-    	AddressBox.getItems().clear();
-    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
-    	ArrayList<String> add = new ArrayList<String>();
-		try {
-			//add = Authenticator.getWalletOperation().getAccountNotUsedAddress(accountIdx,HierarchyAddressTypes.External,10);
-			//if(add.size() < 10){
-				for (int i=0; i<10; i++){
-					String newAdd = Authenticator.getWalletOperation()
-								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-								.getAddressStr();
-					
-					add.add(newAdd);	
-				}
-	    	//}
-				
-			for (String address : add){
-	    		AddressBox.getItems().add(address);
-	    	}
-			AddressBox.setValue(add.get(0));
-	    		    	
-	    	//AddressBox.getItems().addAll("                                More");
-		} catch (NoSuchAlgorithmException | JSONException
-				| AddressFormatException e) { e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
-    	
+    	Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				 AddressBox.getItems().clear();
+		    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
+		    	ArrayList<String> add = new ArrayList<String>();
+				try {
+					for (int i=0; i<10; i++){
+						String newAdd = Authenticator.getWalletOperation()
+									.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
+									.getAddressStr();
+						
+						add.add(newAdd);	
+					}
+						
+					for (String address : add){
+			    		AddressBox.getItems().add(address);
+			    	}
+					AddressBox.setValue(add.get(0));
+				} catch (NoSuchAlgorithmException | JSONException
+						| AddressFormatException e) { e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
+			  }
+		});
     }       
     
     //#####################################
