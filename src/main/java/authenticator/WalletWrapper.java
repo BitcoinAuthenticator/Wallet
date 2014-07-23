@@ -182,4 +182,22 @@ public class WalletWrapper extends BASE{
 	{
 		return trackedWallet.getNetworkParameters();
 	}
+	
+	//#####################################
+	//
+	//		wallet encryption/ decryption
+	//
+	//#####################################
+	
+	public void decryptWallet(String password){
+		trackedWallet.decrypt(password);
+	}
+	
+	public void encryptWallet(String password){
+		trackedWallet.encrypt(password);
+	}
+	
+	public boolean isWalletEncrypted(){
+		return trackedWallet.isEncrypted();
+	}
 }

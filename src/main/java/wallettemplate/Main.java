@@ -7,6 +7,7 @@ import authenticator.db.ConfigFile;
 import authenticator.helpers.BAApplication;
 
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.TestNet3Params;
@@ -38,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
@@ -152,6 +154,7 @@ public class Main extends BAApplication {
 
         // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen
         // or progress widget to keep the user engaged whilst we initialise, but we don't.
+        bitcoin.setAutoSave(true);
         bitcoin.setDownloadListener(controller.progressBarUpdater())
                .setBlockingStartup(false)
                .setUserAgent(params.getAppName(), "1.0");
@@ -161,8 +164,42 @@ public class Main extends BAApplication {
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         bitcoin.wallet().setKeychainLookaheadSize(0);
+        
         System.out.println(bitcoin.wallet());
+        
+        controller.onBitcoinSetup();
        
+        /**
+         * Unlock wallet for seed
+         */
+        boolean isOk = true;
+        if(bitcoin.wallet().isEncrypted()){
+        	isOk = false;
+        	Optional<String> response = Dialogs.create()
+        	        .owner(stage)
+        	        .title("Decrypt Wallet")
+        	        .message("Please Insert your wallet's password")
+        	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+        	        .showTextInput("Password");
+        	if (response.isPresent())
+        		try{
+        			bitcoin.wallet().decrypt(response.get());
+        			isOk = true;
+        		}
+        		catch(KeyCrypterException e){
+        			isOk = false;
+        			Dialogs.create()
+	        	        .owner(stage)
+	        	        .title("Cannot Proccede")
+	        	        .message("You have not entered the right wallet password")
+	        	        .actions(Dialog.Actions.OK)
+	        	        .showWarning();
+        		}
+        }
+        if(isOk == false){
+        	handleStopRequest();
+        	return;
+        }
         
         /**
          * Authenticator Operation Setup
@@ -170,6 +207,7 @@ public class Main extends BAApplication {
     	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params);
     	auth.startAsync();
     	auth.awaitRunning();
+    	controller.onAuthenticatorSetup();
     
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     		@SuppressWarnings("static-access")
@@ -188,30 +226,42 @@ public class Main extends BAApplication {
     			
 	        	// Or no conditioning needed or user pressed Ok
 	        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-	        		bitcoin.addListener(new Service.Listener() {
-						@Override public void terminated(State from) {
-							if(!auth.isRunning())
-								Runtime.getRuntime().exit(0);
-				         }
-					}, MoreExecutors.sameThreadExecutor());
-					bitcoin.stopAsync();
-	            
-	                auth.addListener(new Service.Listener() {
-						@Override public void terminated(State from) {
-							if(!bitcoin.isRunning())
-								Runtime.getRuntime().exit(0);
-				         }
-					}, MoreExecutors.sameThreadExecutor());
-	                auth.stopAsync();
-	              
+	        		handleStopRequest();
 	        	}
 	        	
     		}
     	});
         	
         // start UI
-    	controller.onBitcoinSetup();
         stage.show();
+    }
+    
+    @SuppressWarnings("restriction")
+	public static void handleStopRequest(){    	
+    	bitcoin.addListener(new Service.Listener() {
+			@Override public void terminated(State from) {
+				if(auth == null || !auth.isRunning())
+					Runtime.getRuntime().exit(0);
+	         }
+		}, MoreExecutors.sameThreadExecutor());
+		bitcoin.stopAsync();
+    
+		if(auth != null){
+			auth.addListener(new Service.Listener() {
+				@Override public void terminated(State from) {
+					if(!bitcoin.isRunning())
+						Runtime.getRuntime().exit(0);
+		         }
+			}, MoreExecutors.sameThreadExecutor());
+	        auth.stopAsync();
+		}
+        
+		stage.hide();
+    	Dialogs.create()
+	        .owner(stage)
+	        .title("Authenticator Wallet is Shutting Down")
+	        .message("Do not close this window, will close automatically")
+	        .showInformation();
     }
 
     public class OverlayUI<T> {
@@ -274,10 +324,7 @@ public class Main extends BAApplication {
 
     @Override
     public void stop() throws Exception {
-        /*bitcoin.stopAsync();
-        bitcoin.awaitTerminated();
-        // Forcibly terminate the JVM because Orchid likes to spew non-daemon threads everywhere.
-        Runtime.getRuntime().exit(0);*/
+      
     }
 
     @SuppressWarnings("restriction")

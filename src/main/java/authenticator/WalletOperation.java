@@ -1503,6 +1503,18 @@ public class WalletOperation extends BASE{
 	public Coin getTxValueSentFromMe(Transaction tx){
 		return mWalletWrapper.getTxValueSentFromMe(tx);
 	}
+	
+	public void decryptWallet(String password){
+		mWalletWrapper.decryptWallet(password);
+	}
+	
+	public void encryptWallet(String password){
+		mWalletWrapper.encryptWallet(password);
+	}
+	
+	public boolean isWalletEncrypted(){
+		return mWalletWrapper.isWalletEncrypted();
+	}
 }
 
 

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
@@ -269,7 +270,7 @@ public class StartupController {
 			 // set wallet
 			 wallet = Wallet.fromSeed(params,seed);
 			 wallet.setKeychainLookaheadSize(0);
-			 wallet.saveToFile(temp,f);
+			 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
 			 
 			 // set Authenticator wallet
 			 auth = new Authenticator(wallet, appParams);

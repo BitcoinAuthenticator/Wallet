@@ -56,6 +56,7 @@ public class TCPListener extends BASE{
 	public static Socket socket;
 	private static Thread listenerThread;
 	private static UpNp plugnplay;
+	private String[] args;
 	private ServerSocket ss = null;
 	
 	WalletOperation wallet;
@@ -64,15 +65,14 @@ public class TCPListener extends BASE{
 	 * Flags
 	 */
 	private boolean shouldStopListener;
-	private boolean isRunning;
 	
-	public TCPListener(WalletOperation wallet){
+	public TCPListener(WalletOperation wallet, String[] args){
 		super(TCPListener.class);
 		this.wallet = wallet;
-		isRunning = false;
+		this.args = args;
 	}
 	
-	public void run(final String[] args) throws Exception
+	public void runListener(final String[] args) throws Exception
 	{
 		shouldStopListener = false;   
 	    this.listenerThread = new Thread(){
@@ -107,7 +107,6 @@ public class TCPListener extends BASE{
 				if(canStartLoop)
 					try{
 						boolean isConnected;
-						isRunning = true;
 						sendUpdatedIPsToPairedAuthenticators();
 						while(true)
 			    	    {
@@ -274,32 +273,47 @@ public class TCPListener extends BASE{
 					}
 					finally
 					{
-						isRunning = false;
 						try { ss.close(); }  catch (IOException e) { }
 						try { plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
 						logAsInfo("Listener Stopped");
-						synchronized(this) {notify();}
+						notifyStopped();
 					}
 	    	    //TODO - return to main
 	    	    //Main.inputCommand();
 	    	}
 	    };
-	    this.listenerThread.start();
+	    listenerThread.start();
 	}
 	
-	@SuppressWarnings("static-access")
-	public void stop() throws InterruptedException{
+	/*public void stop() throws InterruptedException{
 		shouldStopListener = true;
 		logAsInfo("Stopping Listener ... ");
 		synchronized(this.listenerThread){
 			this.listenerThread.wait();
 			return;
 		}
-	}
+	}*/
 	
-	public boolean isRuning()
+	/*public boolean isRuning()
 	{
 		return isRunning ;
+	}*/
+	
+	protected void doStart() {
+		try {
+			runListener(args);
+			notifyStarted();
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.notifyFailed(new Throwable("Failed to run TCPListener"));
+		}
+		
+	}
+
+	@Override
+	protected void doStop() {
+		shouldStopListener = true;
+		logAsInfo("Stopping Listener ... ");
 	}
 	
 	public void logAsInfo(String str)

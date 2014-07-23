@@ -38,6 +38,7 @@ import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.common.base.Throwables;
@@ -125,11 +126,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
+import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -298,21 +301,32 @@ public class Controller {
 		Tooltip.install(btnLocked, new Tooltip("Click to Lock wallet"));
     }
     
+    /**
+     * will be called after the awaitRunning event is called from the WalletAppKit
+     */
     public void onBitcoinSetup() {
     	bitcoin.wallet().freshReceiveAddress();
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
-    	tor.addInitializationListener(listener);
-    	setupOneName(Authenticator.getWalletOperation().getOnename());
-        try {refreshBalanceLabel();} 
-        catch (JSONException | IOException e) {e.printStackTrace();}
-        setReceiveAddresses();
-        setTxHistoryContent();
-        
-        Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
-        
-        // Account choicebox
-        setAccountChoiceBox();
+    	tor.addInitializationListener(listener);        
+    }
+    
+    /**
+     * will be called after the awaitRunning event is called from the authenticator
+     */
+    public void onAuthenticatorSetup() {
+    	 setReceiveAddresses();
+         setTxHistoryContent();
+         setLockIcons();
+         
+         setupOneName(Authenticator.getWalletOperation().getOnename());
+         try {refreshBalanceLabel();} 
+         catch (JSONException | IOException e) {e.printStackTrace();}
+         
+         Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
+         
+         // Account choicebox
+         setAccountChoiceBox();
     }
     
     public class AuthenticatorGeneralEvents implements AuthenticatorGeneralEventsListener{
@@ -681,14 +695,59 @@ public class Controller {
  	     AppsPane.setVisible(true);
     }
    
-   @FXML protected void lockWallet(ActionEvent event){
-	   btnLocked.setVisible(true);
-	   btnUnlocked.setVisible(false);
+   private void setLockIcons(){
+	   if(!Authenticator.getWalletOperation().isWalletEncrypted()){
+		   btnLocked.setVisible(false);
+		   btnUnlocked.setVisible(true);
+		}
+	   else{
+		   btnLocked.setVisible(true);
+		   btnUnlocked.setVisible(false);
+	   }
    }
    
+   /**
+    * called when user presses the unlocked icon
+    * @param event
+    */
+   @FXML protected void lockWallet(ActionEvent event){
+	   Optional<String> response = Dialogs.create()
+   	        .owner(stage)
+   	        .title("Encrypt Wallet")
+   	        .message("Please Insert a wallet password")
+   	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+   	        .showTextInput("Password");
+   		if (response.isPresent()){
+   			Authenticator.getWalletOperation().encryptWallet(response.get());
+   			setLockIcons();
+   		}
+   }
+   
+   /**
+    * called when user presses the locked icon 
+    * @param event
+    */
    @FXML protected void unlockWallet(ActionEvent event){
-	   btnLocked.setVisible(false);
-	   btnUnlocked.setVisible(true);
+	   Optional<String> response = Dialogs.create()
+   	        .owner(stage)
+   	        .title("Decrypt Wallet")
+   	        .message("Please Insert your wallet's password")
+   	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+   	        .showTextInput("Password");
+	   	if (response.isPresent())
+	   		try{
+	   			Authenticator.getWalletOperation().decryptWallet(response.get());
+	   			setLockIcons();
+	   		}
+	   		catch(KeyCrypterException e){
+	   			Dialogs.create()
+	       	        .owner(stage)
+	       	        .title("Error !")
+	       	        .message("You have not entered the right wallet password")
+	       	        .actions(Dialog.Actions.OK)
+	       	        .showWarning();
+	   		}
+		   
    }
    
    @SuppressWarnings("unchecked")
@@ -1208,27 +1267,38 @@ public class Controller {
 		btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	if (password.equals("")){
-            		informationalAlert("Unfortunately, you messed up.",
-       					 "You need to enter your password to decrypt your wallet.");
+            	if(Authenticator.getWalletOperation().isWalletEncrypted()){
+            		if (password.getText().equals("")){
+                		informationalAlert("Unfortunately, you messed up.",
+           					 "You need to enter your password to decrypt your wallet.");
+                		return;
+                	}
+                	else {
+                		//Main.bitcoin.wallet().decrypt(password.getText());
+                		try{
+                			Authenticator.getWalletOperation().decryptWallet(password.getText());
+                		}
+                		catch(KeyCrypterException  e){
+                			informationalAlert("Unfortunately, you messed up.",
+                  					 "Wrong wallet password");
+                			return;
+                		}
+                	}
             	}
-            	else {
-            		//Main.bitcoin.wallet().decrypt(password.getText());
-            		try {
-            			Animation ani = GuiUtils.fadeOut(v);
-            			GuiUtils.fadeIn(successVbox);
-            			v.setVisible(false);
-            			successVbox.setVisible(true);
-            			broadcast(tx);
-            		} 
-            		catch (NoSuchAlgorithmException
-            				| AddressWasNotFoundException | JSONException
-            				| AddressFormatException
-            				| KeyIndexOutOfRangeException e) {
-            			// TODO Auto-generated catch block
-            			e.printStackTrace();
-            		}
-            	}
+            	try {
+        			Animation ani = GuiUtils.fadeOut(v);
+        			GuiUtils.fadeIn(successVbox);
+        			v.setVisible(false);
+        			successVbox.setVisible(true);
+        			broadcast(tx);
+        		} 
+        		catch (NoSuchAlgorithmException
+        				| AddressWasNotFoundException | JSONException
+        				| AddressFormatException
+        				| KeyIndexOutOfRangeException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}
             }
         });
 		HBox h = new HBox();
@@ -1246,6 +1316,8 @@ public class Controller {
             @Override
             public void handle(MouseEvent t) {
             	//Main.bitcoin.wallet().encrypt(password.getText());
+            	if(!Authenticator.getWalletOperation().isWalletEncrypted() && password.getText().length() > 0)
+            		Authenticator.getWalletOperation().encryptWallet(password.getText());
             	overlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();

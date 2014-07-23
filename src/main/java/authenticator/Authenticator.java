@@ -112,7 +112,7 @@ public class Authenticator extends AbstractService{
 	
 	public void init2(){
 		if(mTCPListener == null)
-			mTCPListener = new TCPListener(getWalletOperation());
+			mTCPListener = new TCPListener(getWalletOperation(), new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	
 	public static void disposeOfAuthenticator(){
@@ -219,9 +219,8 @@ public class Authenticator extends AbstractService{
 		assert(mTCPListener != null);
 		assert(mApplicationParams != null);
 		assert(operationsQueue != null);
-		//assert(pendingRequests != null);
 		try { 
-			mTCPListener.run(new String[]{Integer.toString(LISTENER_PORT)}); 
+			mTCPListener.startAsync();
 			notifyStarted();
 		} 
 		catch (Exception e) { e.printStackTrace(); }
@@ -229,14 +228,10 @@ public class Authenticator extends AbstractService{
 
 	@Override
 	protected void doStop() {
-		try 
-		{
-			mTCPListener.stop(); 
-			notifyStopped();
-		} catch (InterruptedException e) { e.printStackTrace(); }
+		mTCPListener.stopAsync();
+		mTCPListener.awaitTerminated();
 	}
-	
-	
+
 	//#####################################
 	//
 	//		General Events Listener
