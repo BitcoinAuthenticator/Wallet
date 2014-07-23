@@ -99,6 +99,27 @@
     <!-- 
     
     
+    	Transaction Pane
+    
+    
+     -->
+    <Pane fx:id="TxPane" layoutX="201.0" layoutY="77.0" prefHeight="337.0" prefWidth="619.0" visible="false">
+      <children>
+        <TableView fx:id="txTable" layoutX="0.0" layoutY="0.0" prefHeight="337.0" prefWidth="619.0" tableMenuButtonVisible="false">
+          <columns>
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="39.0" text="" />
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="62.0" text="" />
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="76.0" text="Date" />
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="174.0" text="To/From" />
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="177.0" text="Description" />
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="89.0" text="Amount" />
+          </columns>
+        </TableView>
+      </children>
+    </Pane>
+    <!-- 
+    
+    
     	ReceivePane 
     	
     	

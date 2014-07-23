@@ -1815,6 +1815,11 @@ public class Controller {
    	//
    	//#####################################
     
+    public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+    	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterHistoryByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+    	
+    }
+    
     //#####################################
    	//
    	//	Apps Pane

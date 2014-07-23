@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javafx.scene.image.Image;
 
@@ -28,6 +29,7 @@ import javax.annotation.Nullable;
 import org.json.JSONException;
 import org.slf4j.Logger;
 
+import wallettemplate.Main;
 import authenticator.Utils.BAUtils;
 import authenticator.db.ConfigFile;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
@@ -1257,6 +1259,34 @@ public class WalletOperation extends BASE{
 		setUnConfirmedBalance(accountId,afterUnconfirmed);
 		
 		return afterUnconfirmed;
+	}
+	
+	public ArrayList<Transaction> filterHistoryByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();
+		ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
+		Set<Transaction> fullTxSet = Main.bitcoin.wallet().getTransactions(false);
+    	for (Transaction tx : fullTxSet){
+    		for (int a=0; a<tx.getInputs().size(); a++){
+    			String address = tx.getInput(a).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+    			for (String addr : usedExternalAddressList){
+    				if (addr.equals(address)){
+    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+    				}
+    			}
+    			//We need to do the same thing here for internal addresses
+    			
+    		}
+    		for (int b=0; b<tx.getOutputs().size(); b++){
+    			String address = tx.getOutput(b).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+    			for (String addr : usedExternalAddressList){
+    				if (addr.equals(address)){
+    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+    				}
+    			}
+    			//Same thing here, we need to check internal addresses as well.
+    		}
+    	}	
+		return filteredHistory;
 	}
 	
 	
