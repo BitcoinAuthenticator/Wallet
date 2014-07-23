@@ -91,7 +91,9 @@
 }
 
 .clear-button {
-	-fx-background-color: #D8D8D8;
+	-fx-background-color: #D8D8D8,
+	linear-gradient(#f2f2f2 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%),
+    linear-gradient(#e0e0e0 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%);
 	-fx-background-insets: 0, 0, 1, 2;
 	-fx-text-fill:white;
 	-icons-color: white;

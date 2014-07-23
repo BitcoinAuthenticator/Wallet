@@ -198,7 +198,7 @@ public class WalletOperation extends BASE{
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
         	// Create a custom Notification without icon
-        	Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received :" + tx.getValueSentToMe(wallet).toFriendlyString() + " BTC", logo);
+        	Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received: " + tx.getValueSentToMe(wallet).toFriendlyString() + " BTC", logo);
 
         	// Show the custom notification
         	Notifier.INSTANCE.notify(info);
