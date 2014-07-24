@@ -6,6 +6,7 @@ import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
+import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.network.OneName;

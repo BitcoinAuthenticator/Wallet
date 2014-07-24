@@ -6,6 +6,7 @@ import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.db.ConfigFile;
 import authenticator.helpers.BAApplication;
 
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.kits.WalletAppKit;
@@ -38,12 +39,14 @@ import wallettemplate.utils.TextFieldValidator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
+import org.json.JSONException;
 
 import static wallettemplate.utils.GuiUtils.*;
 
@@ -238,10 +241,37 @@ public class Main extends BAApplication {
     
     @SuppressWarnings("restriction")
 	public static void handleStopRequest(){    	
+    	// Pop a "Shutting Down" window
+    	Stage stageNotif = new Stage();
+        Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				  stage.hide();
+				  Parent root;
+			        try {
+			            root = FXMLLoader.load(Main.class.getResource("ShutDownWarning.fxml"));
+			            stageNotif.setTitle("Important !");
+			            stageNotif.setScene(new Scene(root, 576, 110));
+			            stageNotif.show();
+			        } catch (IOException e) {
+			            e.printStackTrace();
+			        }
+			  }
+		});
+    	
+    	
     	bitcoin.addListener(new Service.Listener() {
 			@Override public void terminated(State from) {
-				if(auth == null || !auth.isRunning())
+				System.out.println("Bitcoin Wallet terminated");
+				if(auth == null || auth.state() == State.TERMINATED){
+					Platform.runLater(new Runnable() { 
+						  @Override
+						  public void run() {
+							  stageNotif.close();
+						  }
+					 });
 					Runtime.getRuntime().exit(0);
+				}
 	         }
 		}, MoreExecutors.sameThreadExecutor());
 		bitcoin.stopAsync();
@@ -249,19 +279,21 @@ public class Main extends BAApplication {
 		if(auth != null){
 			auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
-					if(!bitcoin.isRunning())
+					System.out.println("Authenticator terminated");
+					if(bitcoin.state() == State.TERMINATED){
+						 Platform.runLater(new Runnable() { 
+							  @Override
+							  public void run() {
+								  stageNotif.close();
+							  }
+						 });
 						Runtime.getRuntime().exit(0);
+					}
 		         }
 			}, MoreExecutors.sameThreadExecutor());
 	        auth.stopAsync();
 		}
         
-		stage.hide();
-    	Dialogs.create()
-	        .owner(stage)
-	        .title("Authenticator Wallet is Shutting Down")
-	        .message("Do not close this window, will close automatically")
-	        .showInformation();
     }
 
     public class OverlayUI<T> {

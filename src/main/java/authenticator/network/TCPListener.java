@@ -275,7 +275,7 @@ public class TCPListener extends BASE{
 					{
 						try { ss.close(); }  catch (IOException e) { }
 						try { plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
-						logAsInfo("Listener Stopped");
+						LOG.info("Listener Stopped");
 						notifyStopped();
 					}
 	    	    //TODO - return to main
@@ -313,13 +313,13 @@ public class TCPListener extends BASE{
 	@Override
 	protected void doStop() {
 		shouldStopListener = true;
-		logAsInfo("Stopping Listener ... ");
+		LOG.info("Stopping Listener ... ");
 	}
 	
 	public void logAsInfo(String str)
     {
 		if(Authenticator.getApplicationParams().getShouldPrintTCPListenerInfoToConsole())
-			this.LOG.info(str);
+			LOG.info(str);
     }
 	
 	//##

@@ -14,6 +14,9 @@ import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.Wallet;
 import com.google.common.util.concurrent.AbstractService;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.Service.State;
 
 import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
@@ -44,7 +47,7 @@ import authenticator.protobuf.ProtoConfig.PendingRequest;
  * @author alon
  *
  */
-public class Authenticator extends AbstractService{
+public class Authenticator extends BASE{
 	final static public int LISTENER_PORT = 1234;
 	
 	private static TCPListener mTCPListener;
@@ -55,7 +58,9 @@ public class Authenticator extends AbstractService{
 	// Listeners
 	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
 
-	public Authenticator(){ }
+	public Authenticator(){ 
+		super(Authenticator.class);
+	}
 	
 	/**
 	 * Instantiate without bitcoinj's wallet 
@@ -64,6 +69,7 @@ public class Authenticator extends AbstractService{
 	 * @param appParams
 	 */
 	public Authenticator(Wallet wallet, BAApplicationParameters appParams){
+		super(Authenticator.class);
 		init(appParams);
 		if(mWalletOperation == null){
 			try {
@@ -86,6 +92,7 @@ public class Authenticator extends AbstractService{
 	 */
 	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) throws IOException
 	{
+		super(Authenticator.class);
 		init(appParams);
 		if(mWalletOperation == null){
 			try {
@@ -229,7 +236,12 @@ public class Authenticator extends AbstractService{
 	@Override
 	protected void doStop() {
 		mTCPListener.stopAsync();
-		mTCPListener.awaitTerminated();
+		mTCPListener.addListener(new Service.Listener() {
+			@Override public void terminated(State from) {
+				LOG.info("Authenticator Stopped");
+				notifyStopped();
+	         }
+		}, MoreExecutors.sameThreadExecutor());		
 	}
 
 	//#####################################
