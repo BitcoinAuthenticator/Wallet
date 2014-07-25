@@ -1184,7 +1184,7 @@ public class Controller {
 			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
 			intext.add(inputtext2);
 			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
-			inputtext3.setText(tx.getInput(b).getValue().toFriendlyString() + " BTC");
+			inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());
 			if (b<tx.getInputs().size()-1){
 				inputtext3.setText(inputtext3.getText() + "\n                                    ");
 			}
@@ -1207,7 +1207,7 @@ public class Controller {
 			outputtext3.setFill(Paint.valueOf("#f06e6e"));
 			outputtext2.setText(OutputAddresses.get(a) + " ");
 			outtext.add(outputtext2);
-			outputtext3.setText(to.get(a).getValue().toFriendlyString() + " BTC");
+			outputtext3.setText(to.get(a).getValue().toFriendlyString());
 			if (a<OutputAddresses.size()-1){
 				outputtext3.setText(outputtext3.getText() + "\n                                     ");
 			}
@@ -1219,7 +1219,7 @@ public class Controller {
 		Text changetext = new Text("Change:                   ");
 		changetext.setStyle("-fx-font-weight:bold;");
 		Text changetext2 = new Text(changeaddr + " ");
-		Text changetext3 = new Text(((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString() + " BTC");
+		Text changetext3 = new Text(((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString());
 		changetext3.setFill(Paint.valueOf("#98d947"));
 		TextFlow changeflow = new TextFlow();
 		changeflow.getChildren().addAll(changetext, changetext2,changetext3);
@@ -1227,7 +1227,7 @@ public class Controller {
 		textformatted.add(spaceflow);
 		Text feetext = new Text("Fee:                         ");
 		feetext.setStyle("-fx-font-weight:bold;");
-		Text feetext2 = new Text(fee.toFriendlyString() + " BTC");
+		Text feetext2 = new Text(fee.toFriendlyString());
 		feetext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow feeflow = new TextFlow();
 		feeflow.getChildren().addAll(feetext, feetext2);
@@ -1235,7 +1235,7 @@ public class Controller {
 		textformatted.add(spaceflow);
 		Text leavingtext = new Text("Leaving Wallet:       ");
 		leavingtext.setStyle("-fx-font-weight:bold;");
-		Text leavingtext2 = new Text("-" + leavingWallet.toFriendlyString() + " BTC");
+		Text leavingtext2 = new Text("-" + leavingWallet.toFriendlyString());
 		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow leavingflow = new TextFlow();
 		leavingflow.getChildren().addAll(leavingtext, leavingtext2);
