@@ -2,6 +2,7 @@ package authenticator.network;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -25,6 +26,7 @@ import authenticator.Authenticator;
 import authenticator.BASE;
 import authenticator.WalletOperation;
 import authenticator.Utils.BAUtils;
+import authenticator.network.exceptions.TCPListenerCouldNotStartException;
 import authenticator.operations.ATOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
@@ -78,208 +80,208 @@ public class TCPListener extends BASE{
 	    this.listenerThread = new Thread(){
 	    	@SuppressWarnings("static-access")
 			@Override
-		    public void run() {
+			public void run() {
+	    		try{
+	    			startup();
+	    			looper();
+				}
+				catch (Exception e1) {
+					logAsInfo("Fatal Error, Authenticator Operation ShutDown Because Of: \n");
+					e1.printStackTrace();
+				}
+				finally
+				{
+					try { ss.close(); }  catch (IOException e) { }
+					try { plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
+					LOG.info("Listener Stopped");
+					notifyStopped();
+				}
+	    	}
+	    	
+	    	@SuppressWarnings("static-access")
+			private void startup() throws TCPListenerCouldNotStartException{
 	    		if(plugnplay != null)
 	    		{
-	    			//TODO - notify GUI that cannot run listener because one is already running
-	    			return;
+	    			throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 	    		}
 	    		
 	    		plugnplay = new UpNp();
 	    		int port = Integer.parseInt(args[0]);
-	    		boolean canStartLoop = true;
 	    		try {
 					plugnplay.run(new String[]{args[0]});
 				} catch (Exception e) {
-					canStartLoop = false;
+					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 				}
-	    		if(canStartLoop)
-	    		{
-	    			try {
-						ss = new ServerSocket (port);
-						ss.setSoTimeout(5000);
-					} catch (IOException e) {
-						try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
-						canStartLoop = false;
+	    		
+    			try {
+					ss = new ServerSocket (port);
+					ss.setSoTimeout(5000);
+				} catch (IOException e) {
+					try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
+					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+				}
+					
+	    	}
+	    	
+	    	private void looper() throws FileNotFoundException, IOException{
+	    		boolean isConnected;
+				sendUpdatedIPsToPairedAuthenticators();
+				while(true)
+	    	    {
+					isConnected = false;
+					//notifyUiAndLog("Listening on port "+port+"...");
+					try{
+						socket = ss.accept();
+						isConnected = true;
+					}
+					catch (SocketTimeoutException e){ isConnected = false; }
+					
+					//#################################
+					//
+					//		Inbound
+					//
+					//#################################
+					PendingRequest pendingReq = null;
+					try{
+						if(isConnected){
+							logAsInfo("Processing Pending Operation ...");
+							DataInputStream inStream = new DataInputStream(socket.getInputStream());
+							DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+							//get request ID
+							String requestID = "";
+							int keysize = inStream.readInt();
+							byte[] reqIdPayload = new byte[keysize];
+							inStream.read(reqIdPayload);
+							JSONObject jo = new JSONObject(new String(reqIdPayload));
+							requestID = jo.getString("requestID");
+							//
+							for(Object o:wallet.getPendingRequests()){
+								PendingRequest po = (PendingRequest)o;
+								if(po.getRequestID().equals(requestID))
+								{
+									pendingReq = po;
+									break;
+								}
+							}
+							//
+							if(pendingReq != null){ 
+								// Should we send something on connection ? 
+								if(pendingReq.getContract().getShouldSendPayloadOnConnection()){
+									byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().toByteArray();
+									outStream.writeInt(p.length);
+									outStream.write(p);
+									logAsInfo("Sent transaction");
+								}
+								
+								// Should we receive something ?
+								if(pendingReq.getContract().getShouldReceivePayloadAfterSendingPayloadOnConnection()){
+									keysize = inStream.readInt();
+									byte[] in = new byte[keysize];
+									inStream.read(in);
+									PendingRequest.Builder b = PendingRequest.newBuilder(pendingReq);
+									b.setPayloadIncoming(ByteString.copyFrom(in));
+									pendingReq = b.build();
+								}
+								
+								//cleanup
+								inStream.close();
+								outStream.close();
+								
+								// Complete Operation ?
+								switch(pendingReq.getOperationType()){
+								case SignAndBroadcastAuthenticatorTx:
+									byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
+									Transaction tx = new Transaction(wallet.getNetworkParams(),txBytes);
+									 
+									ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
+											tx,
+											pendingReq.getPairingID(), 
+											null,
+											true,
+											pendingReq.getPayloadIncoming().toByteArray(),
+											pendingReq);
+									op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+
+										@Override
+										public void onBegin(String str) { }
+
+										@Override
+										public void statusReport( String report) { }
+
+										@SuppressWarnings("restriction")
+										@Override
+										public void onFinished( String str) { 
+											if(str != null)
+											Platform.runLater(new Runnable() {
+											      @Override public void run() {
+											    	  Dialogs.create()
+												        .owner(Main.stage)
+												        .title("New Info.")
+												        .masthead(null)
+												        .message(str)
+												        .showInformation();
+											      }
+											    });
+											
+										}
+
+										@Override
+										public void onError( Exception e, Throwable t) { }
+										
+									});
+									Authenticator.operationsQueue.add(op);
+									break;
+								}
+								
+								if(!pendingReq.getContract().getShouldLetPendingRequestHandleRemoval())
+									wallet.removePendingRequest(pendingReq);
+							}
+							else{ // pending request not found
+								logAsInfo("No Pending Request Found");
+							}
+						}
+						else{
+							//notifyUiAndLog("Timed-out, Not Connections");
+						}
+					}
+					catch(Exception e){
+						wallet.removePendingRequest(pendingReq);
+						logAsInfo("Error Occured while executing Inbound operation:\n"
+								+ e.toString());
 					}
 					
-	    		}
-				if(canStartLoop)
-					try{
-						boolean isConnected;
-						sendUpdatedIPsToPairedAuthenticators();
-						while(true)
-			    	    {
-							isConnected = false;
-							//notifyUiAndLog("Listening on port "+port+"...");
-							try{
-								socket = ss.accept();
-								isConnected = true;
-							}
-							catch (SocketTimeoutException e){ isConnected = false; }
-							
-							//#################################
-							//
-							//		Inbound
-							//
-							//#################################
-							PendingRequest pendingReq = null;
-							try{
-								if(isConnected){
-									logAsInfo("Processing Pending Operation ...");
-									DataInputStream inStream = new DataInputStream(socket.getInputStream());
-									DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
-									//get request ID
-									String requestID = "";
-									int keysize = inStream.readInt();
-									byte[] reqIdPayload = new byte[keysize];
-									inStream.read(reqIdPayload);
-									JSONObject jo = new JSONObject(new String(reqIdPayload));
-									requestID = jo.getString("requestID");
-									//
-									for(Object o:wallet.getPendingRequests()){
-										PendingRequest po = (PendingRequest)o;
-										if(po.getRequestID().equals(requestID))
-										{
-											pendingReq = po;
-											break;
-										}
-									}
-									//
-									if(pendingReq != null){ 
-										// Should we send something on connection ? 
-										if(pendingReq.getContract().getShouldSendPayloadOnConnection()){
-											byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().toByteArray();
-											outStream.writeInt(p.length);
-											outStream.write(p);
-											logAsInfo("Sent transaction");
-										}
-										
-										// Should we receive something ?
-										if(pendingReq.getContract().getShouldReceivePayloadAfterSendingPayloadOnConnection()){
-											keysize = inStream.readInt();
-											byte[] in = new byte[keysize];
-											inStream.read(in);
-											PendingRequest.Builder b = PendingRequest.newBuilder(pendingReq);
-											b.setPayloadIncoming(ByteString.copyFrom(in));
-											pendingReq = b.build();
-										}
-										
-										//cleanup
-										inStream.close();
-										outStream.close();
-										
-										// Complete Operation ?
-										switch(pendingReq.getOperationType()){
-										case SignAndBroadcastAuthenticatorTx:
-											byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
-											Transaction tx = new Transaction(wallet.getNetworkParams(),txBytes);
-											 
-											ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
-													tx,
-													pendingReq.getPairingID(), 
-													null,
-													true,
-													pendingReq.getPayloadIncoming().toByteArray(),
-													pendingReq);
-											op.SetOperationUIUpdate(new OnOperationUIUpdate(){
-
-												@Override
-												public void onBegin(String str) { }
-
-												@Override
-												public void statusReport( String report) { }
-
-												@SuppressWarnings("restriction")
-												@Override
-												public void onFinished( String str) { 
-													if(str != null)
-													Platform.runLater(new Runnable() {
-													      @Override public void run() {
-													    	  Dialogs.create()
-														        .owner(Main.stage)
-														        .title("New Info.")
-														        .masthead(null)
-														        .message(str)
-														        .showInformation();
-													      }
-													    });
-													
-												}
-
-												@Override
-												public void onError( Exception e, Throwable t) { }
-												
-											});
-											Authenticator.operationsQueue.add(op);
-											break;
-										}
-										
-										if(!pendingReq.getContract().getShouldLetPendingRequestHandleRemoval())
-											wallet.removePendingRequest(pendingReq);
-									}
-									else{ // pending request not found
-										logAsInfo("No Pending Request Found");
-									}
-								}
-								else{
-									//notifyUiAndLog("Timed-out, Not Connections");
-								}
-							}
-							catch(Exception e){
-								wallet.removePendingRequest(pendingReq);
-								logAsInfo("Error Occured while executing Inbound operation:\n"
-										+ e.toString());
-							}
-							
-							//#################################
-							//
-							//		Outbound
-							//
-							//#################################
-							
-							logAsInfo("Checking For outbound operations...");
-							if(Authenticator.operationsQueue.size() > 0)
-							{
-								while (Authenticator.operationsQueue.size() > 0){
-									ATOperation op = Authenticator.operationsQueue.poll();
-									if (op == null)
-										break;
-									logAsInfo("Executing Operation: " + op.getDescription());
-									try{
-										op.run(ss);
-									}
-									catch (Exception e)
-									{
-										logAsInfo("Error Occured while executing Outbound operation:\n"
-												+ e.toString());
-										op.OnExecutionError(e);
-										e.printStackTrace();
-									}
-								}
-							}
-							else
-								logAsInfo("No Outbound Operations Found.");
-							
-							if(shouldStopListener)
-								break;
-			    	    }
-					}
-					catch (Exception e1) {
-						
-						//TODO - notify gui
-						logAsInfo("Fatal Error, Authenticator Operation ShutDown Because Of: \n");
-						e1.printStackTrace();
-					}
-					finally
+					//#################################
+					//
+					//		Outbound
+					//
+					//#################################
+					
+					logAsInfo("Checking For outbound operations...");
+					if(Authenticator.operationsQueue.size() > 0)
 					{
-						try { ss.close(); }  catch (IOException e) { }
-						try { plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
-						LOG.info("Listener Stopped");
-						notifyStopped();
+						while (Authenticator.operationsQueue.size() > 0){
+							ATOperation op = Authenticator.operationsQueue.poll();
+							if (op == null)
+								break;
+							logAsInfo("Executing Operation: " + op.getDescription());
+							try{
+								op.run(ss);
+							}
+							catch (Exception e)
+							{
+								logAsInfo("Error Occured while executing Outbound operation:\n"
+										+ e.toString());
+								op.OnExecutionError(e);
+								e.printStackTrace();
+							}
+						}
 					}
-	    	    //TODO - return to main
-	    	    //Main.inputCommand();
+					else
+						logAsInfo("No Outbound Operations Found.");
+					
+					if(shouldStopListener)
+						break;
+	    	    }
 	    	}
 	    };
 	    listenerThread.start();

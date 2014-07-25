@@ -235,13 +235,20 @@ public class Authenticator extends BASE{
 
 	@Override
 	protected void doStop() {
-		mTCPListener.stopAsync();
-		mTCPListener.addListener(new Service.Listener() {
-			@Override public void terminated(State from) {
-				LOG.info("Authenticator Stopped");
-				notifyStopped();
-	         }
-		}, MoreExecutors.sameThreadExecutor());		
+		if(mTCPListener.isRunning()){ // in case the tcp crashed 
+			mTCPListener.stopAsync();
+			mTCPListener.addListener(new Service.Listener() {
+				@Override public void terminated(State from) {
+					LOG.info("Authenticator Stopped");
+					notifyStopped();
+		         }
+			}, MoreExecutors.sameThreadExecutor());	
+		}
+		else{
+			LOG.info("Authenticator Stopped");
+			notifyStopped();
+		}
+			
 	}
 
 	//#####################################
