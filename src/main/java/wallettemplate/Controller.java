@@ -45,6 +45,8 @@ import com.google.bitcoin.uri.BitcoinURI;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.Response;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
 
@@ -821,12 +823,34 @@ public class Controller {
         lblConfirmedBalance.setText(confirmed.toFriendlyString());
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString());
         String currency = "USD";
-        JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + currency + "/");
-		double last = json.getDouble("last");
-		double conf = Double.parseDouble(confirmed.toPlainString())*last;
-		Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " " + currency));
-		double unconf = Double.parseDouble(unconfirmed.toPlainString())*last;
-		Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " " + currency));
+        //JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + currency + "/");
+        BAUtils.readFromUrl("https://api.bitcoinaverage.com/ticker/global/" + currency + "/", new AsyncCompletionHandler<Response>(){
+			@Override
+			public Response onCompleted(Response arg0) throws Exception {
+				String res = arg0.getResponseBody();
+				JSONObject json = new JSONObject(res);
+				double last = json.getDouble("last");
+				
+				Platform.runLater(new Runnable() { 
+					  @Override
+					  public void run() {
+						  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+					      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+						  
+						  // Confirmed
+						  double conf = Double.parseDouble(confirmed.toPlainString())*last;
+						  Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " " + currency));
+						  
+						  // Unconfirmed
+						  double unconf = Double.parseDouble(unconfirmed.toPlainString())*last;
+						  Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " " + currency));
+					  }
+				});
+				
+				return null;
+			}
+        });		
+		
 		
         
     }
@@ -1061,6 +1085,7 @@ public class Controller {
 						amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
 					}
 					else {
+						// TODO - change to async !!!
 						JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
 						double last = json.getDouble("last");
 						amount = (double) (Double.parseDouble(na.txfAmount.getText())/last)*100000000;

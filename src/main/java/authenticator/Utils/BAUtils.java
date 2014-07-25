@@ -15,6 +15,9 @@ import org.spongycastle.util.encoders.Hex;
 
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Response;
 
 public class BAUtils {
 	
@@ -29,8 +32,16 @@ public class BAUtils {
 	  }
 
 	/**Reads JSON object from a URL*/
-	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException { 
-	    URL urladdr = new URL(url);
+	public static void readFromUrl(String url, AsyncCompletionHandler<Response> listener) throws IOException, JSONException { 
+		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+		asyncHttpClient.prepareGet(url).execute(listener);
+		
+	}
+	
+	
+	// DO NOT USE !!  here only for controller.java:convert usd to btc in tx send
+	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException{
+		URL urladdr = new URL(url);
         URLConnection conn = urladdr.openConnection();
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         BufferedReader rd = null;
@@ -42,7 +53,7 @@ public class BAUtils {
 	    } finally {
 	      rd.close();
 	    }
-	  }
+	}
 
 	static public String getAbsolutePathForFile(String fileName) throws IOException
 	{
