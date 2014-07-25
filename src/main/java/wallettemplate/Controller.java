@@ -818,14 +818,14 @@ public class Controller {
     	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
   
         //final Coin total = confirmed.add(unconfirmed);
-        lblConfirmedBalance.setText(confirmed.toFriendlyString() + " BTC");
-        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString() + " BTC");
+        lblConfirmedBalance.setText(confirmed.toFriendlyString());
+        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString());
         String currency = "USD";
         JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + currency + "/");
 		double last = json.getDouble("last");
-		double conf = Double.parseDouble(confirmed.toFriendlyString())*last;
+		double conf = Double.parseDouble(confirmed.toPlainString())*last;
 		Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " " + currency));
-		double unconf = Double.parseDouble(unconfirmed.toFriendlyString())*last;
+		double unconf = Double.parseDouble(unconfirmed.toPlainString())*last;
 		Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " " + currency));
 		
         
