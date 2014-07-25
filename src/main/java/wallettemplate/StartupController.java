@@ -263,9 +263,9 @@ public class StartupController {
 			 SecureRandom secureRandom = null;
 			 try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
 			 catch (NoSuchAlgorithmException e) {e.printStackTrace();}
-			 byte[] bytes = new byte[16];
-			 secureRandom.nextBytes(bytes);
-			 seed = new DeterministicSeed(bytes, Utils.currentTimeSeconds());
+			 //byte[] bytes = new byte[16];
+			 //secureRandom.nextBytes(bytes);
+			 seed = new DeterministicSeed(secureRandom, 8 * 16, "", Utils.currentTimeSeconds());
 			 
 			 // set wallet
 			 wallet = Wallet.fromSeed(params,seed);
@@ -278,7 +278,7 @@ public class StartupController {
 			 // update params in main
 			 Main.returnedParamsFromSetup = appParams;
 			 
-			 for (String word : seed.toMnemonicCode()){mnemonic = mnemonic + word + " ";}
+			 for (String word : seed.getMnemonicCode()){mnemonic = mnemonic + word + " ";}
 			 lblSeed.setText(mnemonic);
 			 final ContextMenu contextMenu = new ContextMenu();
 			 MenuItem item1 = new MenuItem("Copy");

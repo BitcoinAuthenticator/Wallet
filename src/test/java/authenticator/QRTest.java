@@ -44,20 +44,20 @@ public class QRTest {
 	    hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 	    //
 		qr.createQRCode(qrData, 
-				new java.io.File( "." ).getCanonicalPath() + "/PairingQRCodeTEST.png", 
+				new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCodeTEST.png", 
 				"UTF-8", 
 				hintMap,
 				350, 350);
 		
-		String readQRDataFromImage = qr.readQRCode(new java.io.File( "." ).getCanonicalPath() + "/PairingQRCodeTEST.png",
+		String readQRDataFromImage = qr.readQRCode(new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCodeTEST.png",
 				"UTF-8",
 				hintMap);
 		
-		assert(qrData.equals(readQRDataFromImage));
+		assertTrue(qrData.equals(readQRDataFromImage));
 		
 		// Dispose of file 
-		File file = new File(new java.io.File( "." ).getCanonicalPath() + "/PairingQRCodeTEST.png");
-		assert(file.delete());
+		File file = new File(new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCodeTEST.png");
+		file.delete();
 	}
 
 }

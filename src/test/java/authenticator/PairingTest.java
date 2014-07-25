@@ -53,9 +53,9 @@ public class PairingTest {
 		SecureRandom secureRandom = null;
 		try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
 		catch (NoSuchAlgorithmException e) {e.printStackTrace();}
-		byte[] bytes = new byte[16];
-		secureRandom.nextBytes(bytes);
-		DeterministicSeed Dseed = new DeterministicSeed(bytes, Utils.currentTimeSeconds());
+		//byte[] bytes = new byte[16];
+		//secureRandom.nextBytes(bytes);
+		DeterministicSeed Dseed = new DeterministicSeed(secureRandom, 8 * 16, "", Utils.currentTimeSeconds());
 		byte[] seed = Dseed.getSecretBytes();
 		HDKeyDerivation HDKey = null;
 		DeterministicKey m = HDKey.createMasterPrivateKey(seed);

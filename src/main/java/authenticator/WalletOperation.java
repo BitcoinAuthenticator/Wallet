@@ -1492,7 +1492,7 @@ public class WalletOperation extends BASE{
 	public void connectInputs(List<TransactionInput> inputs)
 	{
 		assert(mWalletWrapper != null);
-		LinkedList<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
+		List<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
 		for(TransactionOutput out:unspentOutputs)
 			for(TransactionInput in:inputs){
 				String hashIn = in.getOutpoint().getHash().toString();
@@ -1544,7 +1544,7 @@ public class WalletOperation extends BASE{
 	}
 	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
-		LinkedList<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
+		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
 		for(TransactionOutput unspentOut:all){
 			ATAddress add = findAddressInAccounts(unspentOut.getScriptPubKey().getToAddress(getNetworkParams()).toString());

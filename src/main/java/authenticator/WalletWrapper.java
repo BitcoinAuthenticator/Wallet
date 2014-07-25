@@ -98,14 +98,14 @@ public class WalletWrapper extends BASE{
 	//
 	//#####################################
 	
-	public LinkedList<TransactionOutput> getWatchedOutputs(){
+	public List<TransactionOutput> getWatchedOutputs(){
 		trackedWallet.allowSpendingUnconfirmedTransactions();
 		return trackedWallet.getWatchedOutputs(false);
 	} 
 	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
-		LinkedList<TransactionOutput> allWatchedAddresses = getWatchedOutputs();
+		List<TransactionOutput> allWatchedAddresses = getWatchedOutputs();
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
 		for(TransactionOutput Txout: allWatchedAddresses)
 			for(String lookedAddr: addressArr){
