@@ -892,14 +892,14 @@ public class Controller {
     		ImageView arrow = null;
     		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
     			l3.setTextFill(Paint.valueOf("#ea4f4a"));
-    			l3.setText("-" + exit.subtract(enter).toFriendlyString() + " BTC"); // get total out minus enter to subtract change amount
-    			tip += "Amount: -" + exit.subtract(enter).toFriendlyString() + " BTC\n";	
+    			l3.setText("-" + exit.subtract(enter).toFriendlyString()); // get total out minus enter to subtract change amount
+    			tip += "Amount: -" + exit.subtract(enter).toFriendlyString() + "\n";	
     			arrow = new ImageView(out);
     		}
     		else { // i only received coins
     			l3.setTextFill(Paint.valueOf("#98d947"));
-    			l3.setText(enter.toFriendlyString() + " BTC");
-    			tip+= "Amount: " + enter.toFriendlyString() + " BTC\n";
+    			l3.setText(enter.toFriendlyString());
+    			tip+= "Amount: " + enter.toFriendlyString() + "\n";
     			arrow = new ImageView(in);
     		}
      		l3.setFont(Font.font(13));
