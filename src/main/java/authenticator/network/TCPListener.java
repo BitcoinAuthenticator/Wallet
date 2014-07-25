@@ -110,6 +110,7 @@ public class TCPListener extends BASE{
 	    		try {
 					plugnplay.run(new String[]{args[0]});
 				} catch (Exception e) {
+					e.printStackTrace();
 					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 				}
 	    		
@@ -117,6 +118,7 @@ public class TCPListener extends BASE{
 					ss = new ServerSocket (port);
 					ss.setSoTimeout(5000);
 				} catch (IOException e) {
+					e.printStackTrace();
 					try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
 					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 				}
