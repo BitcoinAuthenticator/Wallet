@@ -6,6 +6,8 @@ import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.BAUtils;
 import authenticator.Utils.KeyUtils;
+import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
+import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
 import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
@@ -316,6 +318,9 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
+    	/**
+    	 * refreshBalanceLabel will take care of downloading the currency data needed
+    	 */
     	 setReceiveAddresses();
          setTxHistoryContent();
          setLockIcons();
@@ -823,37 +828,46 @@ public class Controller  extends BaseUI{
         //final Coin total = confirmed.add(unconfirmed);
         lblConfirmedBalance.setText(confirmed.toFriendlyString());
         lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString());
-        String currency = "USD";
-        //JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + currency + "/");
-        BAUtils.readFromUrl("https://api.bitcoinaverage.com/ticker/global/" + currency + "/", new AsyncCompletionHandler<Response>(){
+        new CurrencyConverterSingelton(new CurrencyConverterSingelton.CurrencyConverterListener(){
 			@Override
-			public Response onCompleted(Response arg0) throws Exception {
-				String res = arg0.getResponseBody();
-				JSONObject json = new JSONObject(res);
-				double last = json.getDouble("last");
-				
-				Platform.runLater(new Runnable() { 
-					  @Override
-					  public void run() {
-						  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-					      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-						  
-						  // Confirmed
-						  double conf = Double.parseDouble(confirmed.toPlainString())*last;
-						  Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " " + currency));
-						  
-						  // Unconfirmed
-						  double unconf = Double.parseDouble(unconfirmed.toPlainString())*last;
-						  Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " " + currency));
-					  }
-				});
-				
-				return null;
+			public void onFinishedGettingCurrencyData(CurrencyConverterSingelton currencies) {
+				Platform.runLater(new Runnable() {
+				      @Override public void run() {
+							attachBalanceToolTip();
+				      }
+				    });
 			}
-        });		
-		
-		
+
+			@Override
+			public void onErrorGettingCurrencyData(Exception e) {
+				Platform.runLater(new Runnable() {
+				      @Override public void run() {
+				    	  Dialogs.create()
+					        .owner(Main.stage)
+					        .title("Error !")
+					        .masthead("Cannot Download Currency Data")
+					        .message("Some functionalities may be compromised")
+					        .showInformation();   
+				      }
+				    });
+			}
+        });
         
+    }
+    
+    private void attachBalanceToolTip(){
+    	  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+	      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+		  
+		  // Confirmed
+		  //double conf = Double.parseDouble(confirmed.toPlainString())*last;
+		  double conf = CurrencyConverterSingelton.USD.convertToCurrency(Double.parseDouble(confirmed.toPlainString()));
+		  Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " USD"));
+		  
+		  // Unconfirmed
+		  //double unconf = Double.parseDouble(unconfirmed.toPlainString())*last;
+		  double unconf = CurrencyConverterSingelton.USD.convertToCurrency(Double.parseDouble(unconfirmed.toPlainString()));
+		  Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " USD"));
     }
     
     @SuppressWarnings("unused")
@@ -1045,7 +1059,7 @@ public class Controller  extends BaseUI{
     	btnClearSendPane.setStyle("-fx-background-color: linear-gradient(#f2f2f2 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%), linear-gradient(#e0e0e0 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%);");
     } 
     
-    private boolean ValidateTx() throws NoSuchAlgorithmException, JSONException, AddressFormatException, IOException
+    private boolean ValidateTx()
     {
     	// fee
     	Coin fee = Coin.ZERO;
@@ -1055,10 +1069,16 @@ public class Controller  extends BaseUI{
         	double f = (double) Double.parseDouble(txFee.getText())*100000000;
         	fee = Coin.valueOf((long)f);
         }
-    	return SendTxHelper.ValidateTx(scrlContent, fee);
+    	try {
+			return SendTxHelper.ValidateTx(scrlContent, fee);
+		} catch (NoSuchAlgorithmException | JSONException
+				| AddressFormatException | IOException e) { 
+			e.printStackTrace();
+			return false;
+		}
     }
     
-    @FXML protected void SendTx(ActionEvent event) throws Exception{
+    @FXML protected void SendTx(ActionEvent event) throws CurrencyConverterSingeltonNoDataException{
     	if(!ValidateTx()){
     		Dialogs.create()
 	        .owner(Main.stage)
@@ -1086,11 +1106,9 @@ public class Controller  extends BaseUI{
 					if (na.cbCurrency.getValue().toString().equals("BTC")){
 						amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
 					}
-					else {
-						// TODO - change to async !!!
-						JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
-						double last = json.getDouble("last");
-						amount = (double) (Double.parseDouble(na.txfAmount.getText())/last)*100000000;
+					else {		
+						CurrencyConverterSingelton.CANNOT_EXECUTE_ASYNC_SO_CHECK_IS_READY();
+						amount = CurrencyConverterSingelton.USD.convertToBTC(Double.parseDouble(na.txfAmount.getText()));
 					}
 					long satoshis = (long) amount;
 					if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
@@ -1111,7 +1129,7 @@ public class Controller  extends BaseUI{
 					    	  Dialogs.create()
 						        .owner(Main.stage)
 						        .title("Error !")
-						        .masthead("Wrong Address")
+						        .masthead("Cannot Create Tx")
 						        .message("")
 						        .showConfirm();   
 					      }
@@ -1119,38 +1137,54 @@ public class Controller  extends BaseUI{
 				}        		
         	}
         	
-        	//	get fee
-        	Coin fee = Coin.ZERO;
-    		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
-            else 
-            {
-            	double f = (double) Double.parseDouble(txFee.getText())*100000000;
-            	fee = Coin.valueOf((long)f);
-            }
-    		
-    		// get input outputs / change address
-    		ArrayList<TransactionOutput> outputs = Authenticator.
-    				getWalletOperation().
-    				getUnspentOutputsForAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    		String changeaddr = Authenticator.getWalletOperation()
-								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-								.getAddressStr();
-    		   
-    		// complete Tx
-    		Transaction tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
-						to,
-						fee,
-						changeaddr,
-						Authenticator.getWalletOperation().getNetworkParams());
-						
-			//
-			displayTxOverview(tx,
-					OutputAddresses, 
-					to,
-					changeaddr, 
-					outAmount, 
-					fee, 
-					Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(Authenticator.getWalletOperation().getTxValueSentToMe(tx)));
+        	try{
+//        		get fee
+            	Coin fee = Coin.ZERO;
+        		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+                else 
+                {
+                	double f = (double) Double.parseDouble(txFee.getText())*100000000;
+                	fee = Coin.valueOf((long)f);
+                }
+        		
+        		// get input outputs / change address
+        		ArrayList<TransactionOutput> outputs = Authenticator.
+        				getWalletOperation().
+        				getUnspentOutputsForAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+        		String changeaddr = Authenticator.getWalletOperation()
+    								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
+    								.getAddressStr();
+        		   
+        		// complete Tx
+        		Transaction tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
+    						to,
+    						fee,
+    						changeaddr,
+    						Authenticator.getWalletOperation().getNetworkParams());
+    						
+    			//
+    			displayTxOverview(tx,
+    					OutputAddresses, 
+    					to,
+    					changeaddr, 
+    					outAmount, 
+    					fee, 
+    					Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(Authenticator.getWalletOperation().getTxValueSentToMe(tx)));
+        	}
+        	catch(Exception e){
+        		e.printStackTrace();
+        		Platform.runLater(new Runnable() {
+				      @Override public void run() {
+				    	  Dialogs.create()
+					        .owner(Main.stage)
+					        .title("Error !")
+					        .masthead("Cannot Create Tx")
+					        .message("")
+					        .showConfirm();   
+				      }
+				    });
+        	}
+        	
     	}
     }
     
