@@ -371,7 +371,7 @@ public class Controller  extends BaseUI{
 							// Create a custom Notification without icon
 							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received :" + 
 									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
-									" BTC\n" + 
+									"\n" + 
 									"Status: " + (confidence == ConfidenceType.PENDING? "Pending":"Confirmed"), logo);
 							
 							// Show the custom notification
@@ -391,7 +391,7 @@ public class Controller  extends BaseUI{
 							// Create a custom Notification without icon
 							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Sent :" + 
 									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
-									" BTC\n" + 
+									"\n" + 
 									"Status: " + "Confirmed", logo);
 							
 							// Show the custom notification
