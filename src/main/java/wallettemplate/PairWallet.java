@@ -37,7 +37,7 @@ public class PairWallet extends BaseUI{
     public Main.OverlayUI overlayUi;
     
     public void initialize() {
-        super.init();
+        super.initialize(PairWallet.class);
         doneBtn.setDisable(true);
     }
     private void runPairing(String pairName) throws IOException

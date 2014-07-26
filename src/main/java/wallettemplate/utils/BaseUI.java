@@ -2,8 +2,30 @@ package wallettemplate.utils;
 
 import java.util.ArrayList;
 
-public class BaseUI {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class BaseUI {
+	
+	public Logger LOG;
+	public BaseUI(){ }
+	public BaseUI(Class<?> t)
+	{
+		init(t);
+	}
+	
+	public void initialize(Class<?> t){
+		init(t);
+	}
+	
+	private void init(Class<?> t){
+		LOG = LoggerFactory.getLogger(t);
+	}
+
+	/**
+	 * For passing params to the controller
+	 * 
+	 */
 	public ArrayList<Object> arrParams;
 	public void setParams(ArrayList<Object> param)
 	{
@@ -14,10 +36,6 @@ public class BaseUI {
 	{
 		
 	}
-	
-    public void init() {
-        
-    }
 
     public void cancel() {
         

@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
 
+import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
@@ -74,7 +75,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 
-public class StartupController {
+public class StartupController  extends BaseUI{
 	
 	@FXML private Pane Pane1;
 	@FXML private Pane Pane2;
@@ -129,7 +130,9 @@ public class StartupController {
 	 */
 	static public BAApplicationParameters appParams;
 	
+
 	 public void initialize() {
+		 super.initialize(StartupController.class);
 		 assert(appParams != null);
 		 
 		 // set testnet checkbox

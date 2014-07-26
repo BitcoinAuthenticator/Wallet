@@ -108,6 +108,7 @@ import wallettemplate.ControllerHelpers.SendTxHelper;
 import wallettemplate.ControllerHelpers.SendTxHelper.NewAddress;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
+import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 
@@ -151,7 +152,7 @@ import static wallettemplate.utils.GuiUtils.informationalAlert;
  * Gets created auto-magically by FXMLLoader via reflection. The widget fields are set to the GUI controls they're named
  * after. This class handles all the updates and event handling for the main UI.
  */
-public class Controller {
+public class Controller  extends BaseUI{
 	 @FXML private Label lblMinimize;
 	 @FXML private Label lblClose;
 	 @FXML private Button btnOverview_white;
@@ -217,13 +218,10 @@ public class Controller {
 	//	Initialization Methods
 	//
 	//#####################################
-	 
+	
     public void initialize() {
-        syncProgress.setProgress(-1);
-        RotateTransition rt = new RotateTransition(Duration.millis(3000),ivSync);
-        rt.setByAngle(360);
-        rt.setCycleCount(10000); // to infinite ?
-        rt.play();
+    	super.initialize(Controller.class);
+    	startSyncRotation();
         
         scrlContent = new ScrollPaneContentManager().setSpacingBetweenItems(15);
         scrlpane.setFitToHeight(true);
@@ -699,6 +697,7 @@ public class Controller {
     }
    
    private void setLockIcons(){
+	   LOG.info("Updatting wallet locking ");
 	   if(!Authenticator.getWalletOperation().isWalletEncrypted()){
 		   btnLocked.setVisible(false);
 		   btnUnlocked.setVisible(true);
@@ -755,6 +754,7 @@ public class Controller {
    
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
+	   LOG.info("Setting accounts checkbox");
 	   List<ATAccount> all = new ArrayList<ATAccount>();
 	   all = Authenticator.getWalletOperation().getAllAccounts();
 	   
@@ -776,7 +776,7 @@ public class Controller {
  	//#####################################
    
    public void setupOneName(AuthenticatorConfiguration.ConfigOneNameProfile one){
-	   
+	   LOG.info("Setting oneName avatar image");
 	   // get image
 	   File imgFile = null;
 	   BufferedImage bimg = null;
@@ -816,6 +816,7 @@ public class Controller {
     
     @SuppressWarnings("static-access")
 	public void refreshBalanceLabel() throws JSONException, IOException {
+    	LOG.info("Refreshing balance");
     	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
     	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
   
@@ -857,6 +858,7 @@ public class Controller {
     
     @SuppressWarnings("unused")
 	public void setTxHistoryContent(){
+    	LOG.info("Setting Tx History in Overview Pane");
     	scrlViewTxHistoryContentManager.clearAll();
     	List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
     	if (txAll.size()==0){
@@ -1377,7 +1379,6 @@ public class Controller {
 
 			@Override
 			public void onError(Exception e, Throwable t) {
-				removeActivitySpinner();
 				Platform.runLater(new Runnable() {
 				      @Override public void run() {
 				    	  String desc = "";
@@ -1810,6 +1811,7 @@ public class Controller {
     	
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
+    	LOG.info("Updating received addresses");
     	Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
@@ -1890,6 +1892,7 @@ public class Controller {
    	//#####################################
     
     public void changeAccount(String toValue){
+    	LOG.info("Changing Authenticator account to " + toValue);
     	ATAccount acc = Authenticator.getWalletOperation().getAccountByName(toValue);
     	if(acc != null){
     		if(Authenticator.getWalletOperation().setActiveAccount(acc.getIndex()) != null)
@@ -1901,6 +1904,7 @@ public class Controller {
     }
     
     public void updateUIForNewActiveAccount(){
+    	LOG.info("Updating UI because of Authenticator account change");
     	try {refreshBalanceLabel();}
     	catch (JSONException | IOException e) {e.printStackTrace();}
     	setReceiveAddresses();
@@ -1919,11 +1923,18 @@ public class Controller {
      * @param direction
      */
     private boolean isSpinnerVisible = true;
-    public void readyToGoAnimation(int direction, @Nullable EventHandler<ActionEvent> listener) {
+    private void readyToGoAnimation(int direction, @Nullable EventHandler<ActionEvent> listener) {
     	// Sync progress bar slides out ...
         TranslateTransition leave = new TranslateTransition(Duration.millis(600), SyncPane);
-        if(listener != null)
-        	leave.setOnFinished(listener);
+    	leave.setOnFinished(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent arg0) {
+				SyncPane.setVisible(false);
+				stopSyncRotation();
+				if(listener != null)
+					listener.handle(arg0);
+			}
+    	});
         leave.setByY(direction==1? 80.0:-80.0);
         leave.setCycleCount(1);
         leave.setInterpolator(direction==1? Interpolator.EASE_OUT:Interpolator.EASE_IN);
@@ -1932,7 +1943,21 @@ public class Controller {
         	isSpinnerVisible = false;
     }
     
-    public void setActivitySpinner(String text){
+    private RotateTransition rt;
+    private void startSyncRotation(){
+    	if(rt == null){
+    		syncProgress.setProgress(-1);
+            rt = new RotateTransition(Duration.millis(3000),ivSync);
+            rt.setByAngle(360);
+            rt.setCycleCount(10000);
+    	}
+        rt.play();
+    }
+    private void stopSyncRotation(){
+    	rt.stop();
+    }
+    
+    /*public void setActivitySpinner(String text){
     	if(isSpinnerVisible == false){
     		syncProgress.setVisible(false);
 			lblStatus.setText(text);
@@ -1953,12 +1978,7 @@ public class Controller {
     
     public void removeActivitySpinner(){
     	if(isSpinnerVisible == true){
-	    	/*Platform.runLater(new Runnable(){
-				@Override
-				public void run() {
-					
-				}
-	        });*/
+	    
     		// Sync progress bar slides out ...
 	        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
 	        leave.setByX(-300.0);
@@ -1978,6 +1998,6 @@ public class Controller {
 	        });
 	        isSpinnerVisible = false;  
 	    }
-    }
+    }*/
     
 }

@@ -9,6 +9,7 @@ import org.json.JSONException;
 
 import wallettemplate.controls.DisplayAccountCell;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.utils.BaseUI;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.network.OneName;
@@ -37,11 +38,13 @@ import org.controlsfx.dialog.Dialogs;
 
 import com.google.bitcoin.core.Transaction;
 
-public class AccountsController {
+public class AccountsController  extends BaseUI{
 	@FXML public ScrollPane scrlPane;
+	
 	private ScrollPaneContentManager scrlPaneContentManager;
 	
 	public void initialize() {
+		super.initialize(AccountsController.class);
 		scrlPaneContentManager = new ScrollPaneContentManager()
 									.setSpacingBetweenItems(0)
 									.setScrollStyle(scrlPane.getStyle());

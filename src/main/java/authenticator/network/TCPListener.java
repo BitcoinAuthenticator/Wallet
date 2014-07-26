@@ -289,20 +289,6 @@ public class TCPListener extends BASE{
 	    listenerThread.start();
 	}
 	
-	/*public void stop() throws InterruptedException{
-		shouldStopListener = true;
-		logAsInfo("Stopping Listener ... ");
-		synchronized(this.listenerThread){
-			this.listenerThread.wait();
-			return;
-		}
-	}*/
-	
-	/*public boolean isRuning()
-	{
-		return isRunning ;
-	}*/
-	
 	protected void doStart() {
 		try {
 			runListener(args);

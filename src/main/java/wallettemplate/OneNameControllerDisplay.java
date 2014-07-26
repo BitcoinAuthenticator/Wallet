@@ -6,6 +6,7 @@ import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
 import wallettemplate.controls.BitcoinAddressValidator;
+import wallettemplate.utils.BaseUI;
 import authenticator.Authenticator;
 import authenticator.network.OneName;
 import javafx.application.Platform;
@@ -19,14 +20,15 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
 
-public class OneNameControllerDisplay {
+public class OneNameControllerDisplay  extends BaseUI{
 	@FXML private WebView webView;
 	WebEngine engine;
 	@FXML private Button done;
 	public Main.OverlayUI overlayUi;
-	
+
 	// Called by FXMLLoader
     public void initialize() {
+    	super.initialize(OneNameControllerDisplay.class);
     	engine = webView.getEngine();
 		engine.load("https://onename.io/" + Authenticator.getWalletOperation().getOnename().getOnename());
     }

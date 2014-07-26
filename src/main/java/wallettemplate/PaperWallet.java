@@ -17,6 +17,7 @@ import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
 
+import wallettemplate.utils.BaseUI;
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 
@@ -24,7 +25,11 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.wallet.DeterministicSeed;
 
-public class PaperWallet {
+public class PaperWallet  extends BaseUI{
+	
+	public PaperWallet(){
+		 super(PaperWallet.class);
+	}
 
 	public static void createPaperWallet(String mnemonic, DeterministicSeed seed) throws IOException{
 		byte[] imageBytes = null;
