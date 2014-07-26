@@ -128,8 +128,9 @@ message AuthenticatorConfiguration{
 	}
 
 	message Hierarchy{
-		required bytes hierarchySeed 				   	= 1;
-		required int32 hierarchyNextAvailableAccountID 	= 2;
+		required bytes hierarchyMasterPublicKey		 	= 1;
+		required bytes hierarchyChaincode               = 2;
+		required int32 hierarchyNextAvailableAccountID 	= 3;
 	}
 
 	optional ConfigActiveAccount configActiveAccount 				= 1;

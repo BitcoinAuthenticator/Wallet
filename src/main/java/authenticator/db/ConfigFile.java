@@ -24,6 +24,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthe
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.wallet.KeyChain;
 import com.google.protobuf.ByteString;
 
@@ -72,9 +73,12 @@ public class ConfigFile {
         return false;
 	}
 
-	public void initConfigFile(byte[] seed) throws IOException{
+	public void initConfigFile(DeterministicKey mpubkey) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigHierarchyBuilder().setHierarchySeed(ByteString.copyFrom(seed));
+		byte[] pubkey = mpubkey.getPubKey();
+		byte[] chaincode = mpubkey.getChainCode();
+		auth.getConfigHierarchyBuilder().setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
+		auth.getConfigHierarchyBuilder().setHierarchyChaincode(ByteString.copyFrom(chaincode));
 		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
 		auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(0);
 		writeConfigFile(auth);
@@ -307,6 +311,23 @@ public class ConfigFile {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.setConfigOneNameProfile(one);
 		writeConfigFile(auth);
+	}
+	
+	public void writeHierarchyPubKey(DeterministicKey mpubkey) throws IOException{
+		byte[] pubkey = mpubkey.getPubKey();
+		byte[] chaincode = mpubkey.getChainCode();
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.getConfigHierarchyBuilder().setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
+		auth.getConfigHierarchyBuilder().setHierarchyChaincode(ByteString.copyFrom(chaincode));
+		writeConfigFile(auth);
+	}
+	
+	public DeterministicKey getHierarchyPubKey(){
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		byte[] mpubkey = auth.getConfigHierarchy().getHierarchyMasterPublicKey().toByteArray();
+		byte[] chaincode = auth.getConfigHierarchy().getHierarchyChaincode().toByteArray();
+		DeterministicKey key = HDKeyDerivation.createMasterPubKeyFromBytes(mpubkey, chaincode);
+		return key;
 	}
 
 	/*public byte[] getHierarchySeed() throws FileNotFoundException, IOException{

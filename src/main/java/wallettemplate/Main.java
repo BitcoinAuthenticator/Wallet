@@ -207,7 +207,9 @@ public class Main extends BAApplication {
         /**
          * Authenticator Operation Setup
          */
-    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params);
+        
+        ConfigFile config = new ConfigFile(BAApplication.ApplicationParams.getAppName());
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params, config.getHierarchyPubKey());
     	auth.startAsync();
     	auth.awaitRunning();
     	controller.onAuthenticatorSetup();

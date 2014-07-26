@@ -38,14 +38,13 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	
  	@SuppressWarnings("static-access")
  	public BAHierarchy(){}
- 	public BAHierarchy(byte[] seed, HierarchyCoinTypes coinType){
+ 	public BAHierarchy(DeterministicKey masterkey, HierarchyCoinTypes coinType){
  		HDKeyDerivation HDKey = null;
-     	DeterministicKey masterkey = HDKey.createMasterPrivateKey(seed);
      	// purpose level
-     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,true); // is harden
+     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,false); // is harden
      	DeterministicKey purpose = HDKey.deriveChildKey(masterkey,purposeIndex);
      	// coin level
-     	ChildNumber coinIndex = new ChildNumber(coinType.getNumber(),true); // is harden
+     	ChildNumber coinIndex = new ChildNumber(coinType.getNumber(),false); // is harden
      	DeterministicKey coin = HDKey.deriveChildKey(purpose,coinIndex);
      	
      	//put root
