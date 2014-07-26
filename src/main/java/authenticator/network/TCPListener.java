@@ -89,7 +89,14 @@ public class TCPListener extends BASE{
 			@Override
 			public void run() {
 	    		try{
-	    			startup();
+	    			try{
+	    				startup();
+	    			}
+	    			catch (TCPListenerCouldNotStartException e){
+	    				logAsInfo("Something went wrong with the TCPLIstener startup, some operations may not work\n");
+						e.printStackTrace();
+	    			}
+	    			
 	    			notifyStarted();
 	    			looper();
 				}
@@ -142,7 +149,6 @@ public class TCPListener extends BASE{
 					try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
 					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 				}
-					
 	    	}
 	    	
 	    	private void looper() throws FileNotFoundException, IOException{
