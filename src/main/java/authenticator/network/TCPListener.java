@@ -28,6 +28,8 @@ import authenticator.WalletOperation;
 import authenticator.Utils.BAUtils;
 import authenticator.network.exceptions.TCPListenerCouldNotStartException;
 import authenticator.operations.ATOperation;
+import authenticator.operations.ATOperation.ATNetworkRequirement;
+import authenticator.operations.ATOperationNetworkRequirementsNotAvailable;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
@@ -60,6 +62,11 @@ public class TCPListener extends BASE{
 	private static UpNp plugnplay;
 	private String[] args;
 	private ServerSocket ss = null;
+	/**
+	 * Network Requirements flags
+	 */
+	public boolean UPNP_CONNECTED;
+	public boolean SOCKET_OPERATIONAL;
 	
 	WalletOperation wallet;
 	
@@ -83,6 +90,7 @@ public class TCPListener extends BASE{
 			public void run() {
 	    		try{
 	    			startup();
+	    			notifyStarted();
 	    			looper();
 				}
 				catch (Exception e1) {
@@ -98,6 +106,16 @@ public class TCPListener extends BASE{
 				}
 	    	}
 	    	
+	    	/**
+	    	 * Setup all necessary things for the TCP looper to run.<br>
+	    	 * Test:
+	    	 * <ol>
+	    	 * <li>UPNP</li>
+	    	 * <li>Socket listening</li>
+	    	 * </ol>
+	    	 * 
+	    	 * @throws TCPListenerCouldNotStartException
+	    	 */
 	    	@SuppressWarnings("static-access")
 			private void startup() throws TCPListenerCouldNotStartException{
 	    		if(plugnplay != null)
@@ -109,6 +127,7 @@ public class TCPListener extends BASE{
 	    		int port = Integer.parseInt(args[0]);
 	    		try {
 					plugnplay.run(new String[]{args[0]});
+					UPNP_CONNECTED = true;
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
@@ -117,6 +136,7 @@ public class TCPListener extends BASE{
     			try {
 					ss = new ServerSocket (port);
 					ss.setSoTimeout(5000);
+					SOCKET_OPERATIONAL = true;
 				} catch (IOException e) {
 					e.printStackTrace();
 					try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
@@ -131,7 +151,6 @@ public class TCPListener extends BASE{
 				while(true)
 	    	    {
 					isConnected = false;
-					//notifyUiAndLog("Listening on port "+port+"...");
 					try{
 						socket = ss.accept();
 						isConnected = true;
@@ -146,6 +165,11 @@ public class TCPListener extends BASE{
 					PendingRequest pendingReq = null;
 					try{
 						if(isConnected){
+							/**
+							 * Check for network requirements availability
+							 */
+							// if we have an inbound operation that means upnp and socket work
+							
 							logAsInfo("Processing Pending Operation ...");
 							DataInputStream inStream = new DataInputStream(socket.getInputStream());
 							DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
@@ -263,8 +287,21 @@ public class TCPListener extends BASE{
 					{
 						while (Authenticator.operationsQueue.size() > 0){
 							ATOperation op = Authenticator.operationsQueue.poll();
-							if (op == null)
+							if (op == null){
 								break;
+							}
+							/**
+							 * Check for network requirements availability
+							 */
+							logAsInfo("Checking network requirements availability for outbound operation");
+							if((op.getOperationNetworkRequirements().getValue() & ATNetworkRequirement.PORT_MAPPING.getValue()) > 0){
+								if(!UPNP_CONNECTED || !SOCKET_OPERATIONAL){
+									op.OnExecutionError(new ATOperationNetworkRequirementsNotAvailable("Port mapping not available"));
+									break;
+								}
+							}
+									
+							
 							logAsInfo("Executing Operation: " + op.getDescription());
 							try{
 								op.run(ss);
@@ -292,10 +329,9 @@ public class TCPListener extends BASE{
 	protected void doStart() {
 		try {
 			runListener(args);
-			notifyStarted();
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.notifyFailed(new Throwable("Failed to run TCPListener"));
+			notifyFailed(new Throwable("Failed to run TCPListener"));
 		}
 		
 	}

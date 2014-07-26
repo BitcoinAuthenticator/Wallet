@@ -65,6 +65,7 @@ import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.BAUtils;
+import authenticator.operations.ATOperation.ATNetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
@@ -95,6 +96,7 @@ public class OperationsFactory extends BASE{
 			Runnable animation,
 			Runnable animationAfterPairing){
 		return new ATOperation(ATOperationType.Pairing)
+					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
@@ -125,11 +127,8 @@ public class OperationsFactory extends BASE{
 
 						@Override
 						public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
-							try {
-								socket.setSoTimeout(timeout);
-							} catch (SocketException e1) {
-							
-							}
+							try {socket.setSoTimeout(timeout); } catch(Exception e1) {}
+							listenerUI.onError(e, null);
 						}
 						
 					});
@@ -162,6 +161,7 @@ public class OperationsFactory extends BASE{
 																 */
 																@Nullable PendingRequest pendigReq){
 		ATOperation op = new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
+				.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
 					//int timeout = 5;
@@ -287,10 +287,9 @@ public class OperationsFactory extends BASE{
 
 					@Override
 					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { 
-						try {
-							wallet.removePendingRequest(pendigReq);
-						} catch (IOException e1) { e1.printStackTrace();
-						}
+						try { wallet.removePendingRequest(pendigReq); } catch (IOException e1) { e1.printStackTrace(); }
+						if(listenerUI != null)
+							listenerUI.onError(e, null);
 					}
 					
 				});
@@ -313,6 +312,7 @@ public class OperationsFactory extends BASE{
 	 */
 	static public ATOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
 		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
+					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
 					.SetDescription("Update Authenticator's wallet IPs")
 					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
 					.SetFinishedMsg("Finished IPs updates")
@@ -341,7 +341,10 @@ public class OperationsFactory extends BASE{
 						public void PostExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
 
 						@Override
-						public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
+						public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { 
+							if(listenerUI != null)
+								listenerUI.onError(e, null);
+						}
 						
 					});
 	}
@@ -404,7 +407,10 @@ public class OperationsFactory extends BASE{
 			public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
 
 			@Override
-			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { }
+			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { 
+				if(listenerUI != null)
+					listenerUI.onError(e, null);
+			}
 		});
 	}
 }

@@ -14,6 +14,7 @@ public class ATOperation {
 	private OnOperationUIUpdate listener;
 	private String operationDescription;
 	private ATOperationType mOperationType;
+	private ATNetworkRequirement mATNetworkRequirement = ATNetworkRequirement.NONE;
 	private String[] args = null;
 	
 	
@@ -23,13 +24,15 @@ public class ATOperation {
 	}
 	
 	public ATOperation (ATOperationType type, 
+			ATNetworkRequirement networkRequirements,
 			OperationActions action, 
 			String desc,
 			String[] ar){
-		mOperationType = type;
-		mOperationActions = action;
-		operationDescription = desc;
-		args = ar;
+		mOperationType			 = type;
+		mATNetworkRequirement	 = networkRequirements;
+		mOperationActions 		 = action;
+		operationDescription 	 = desc;
+		args 					 = ar;
 	}
 	
 	public void run(ServerSocket ss)  throws Exception 
@@ -93,4 +96,22 @@ public class ATOperation {
 		this.finishedMsg = msg;
 		return this;
 	}
+	
+	public ATNetworkRequirement getOperationNetworkRequirements(){ return mATNetworkRequirement; }
+	public ATOperation setOperationNetworkRequirements(ATNetworkRequirement value){
+		mATNetworkRequirement = value;
+		return this;
+	}
+	
+	public enum ATNetworkRequirement{
+		NONE		 (0),
+		PORT_MAPPING (1 << 0);		// 1
+		
+		private int value;
+		ATNetworkRequirement(int value) {
+	            this.value = value;
+	    }
+	    public int getValue() { return this.value; }
+	}
+	
 }
