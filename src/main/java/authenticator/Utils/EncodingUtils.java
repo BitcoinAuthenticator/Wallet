@@ -19,7 +19,7 @@ import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
-public class BAUtils {
+public class EncodingUtils {
 	
 	/**For reading the JSON*/
 	private static String readAll(Reader rd) throws IOException {

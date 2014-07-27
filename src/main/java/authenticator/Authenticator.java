@@ -51,7 +51,6 @@ public class Authenticator extends BASE{
 	final static public int LISTENER_PORT = 1234;
 	
 	private static TCPListener mTCPListener;
-	public static ConcurrentLinkedQueue<ATOperation> operationsQueue;
 	//private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
@@ -111,9 +110,6 @@ public class Authenticator extends BASE{
 		if(generalEventsListeners == null)
 			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
 		
-		if(operationsQueue == null)
-			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
-		
 		new OperationsFactory(); // to instantiate various things
 	}
 	
@@ -128,12 +124,11 @@ public class Authenticator extends BASE{
 		mApplicationParams = null;
 		generalEventsListeners = null;
 		mTCPListener = null;
-		operationsQueue = null;
 	}
 		
 	//#####################################
 	//
-	//		Operations Queue Control
+	//		TCPListener Control
 	//
 	//#####################################
 	
@@ -142,10 +137,21 @@ public class Authenticator extends BASE{
 	 * 
 	 * @param operation
 	 */
-	public void addOperation(ATOperation operation)
+	public static boolean addOperation(ATOperation operation)
 	{
-		if(this.isRunning())
-			operationsQueue.add(operation);
+		return mTCPListener.addOperation(operation);
+	}
+	
+	public static boolean checkForOperationNetworkRequirements(ATOperation operation){
+		return mTCPListener.checkForOperationNetworkRequirements(operation);
+	}
+	
+	public static int getQueuePendingOperations(){
+		return mTCPListener.getQueuePendingOperations();
+	}
+	
+	public static boolean areAllNetworkRequirementsAreFullyRunning(){
+		return mTCPListener.areAllNetworkRequirementsAreFullyRunning();
 	}
 	
 	//#####################################
@@ -225,9 +231,10 @@ public class Authenticator extends BASE{
 		assert(this.getWalletOperation() != null);
 		assert(mTCPListener != null);
 		assert(mApplicationParams != null);
-		assert(operationsQueue != null);
 		try { 
 			mTCPListener.startAsync();
+			mTCPListener.awaitRunning();
+			assert(mTCPListener.isRunning() == true);
 			notifyStarted();
 		} 
 		catch (Exception e) { e.printStackTrace(); }

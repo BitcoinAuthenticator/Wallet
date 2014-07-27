@@ -15,7 +15,7 @@ import org.json.simple.parser.ParseException;
 
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.WalletOperation;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
 import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;
@@ -71,7 +71,7 @@ public class PairingProtocol {
       //sharedsecret = kgen.generateKey();
       SecretKey sharedsecret = kgen.generateKey();
       byte[] raw = sharedsecret.getEncoded();
-      String key = BAUtils.bytesToHex(raw);
+      String key = EncodingUtils.bytesToHex(raw);
 	  
 	  //Display a QR code for the user to scan
 	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[2]));
@@ -146,13 +146,13 @@ public class PairingProtocol {
 	  postUIStatusUpdate(listener,"Decrypting message ...");
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
-	  String payload = BAUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
+	  String payload = EncodingUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
 	  return payload;
   }
   
   public JSONObject parseAndVerifyPayload(String payload, SecretKey sharedsecret, OnOperationUIUpdate listener) throws NoSuchAlgorithmException, InvalidKeyException, ParseException{
-	  byte[] testpayload = BAUtils.hexStringToByteArray(payload.substring(0,payload.length()-64));
-	  byte[] hash = BAUtils.hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
+	  byte[] testpayload = EncodingUtils.hexStringToByteArray(payload.substring(0,payload.length()-64));
+	  byte[] hash = EncodingUtils.hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
 	  Mac mac = Mac.getInstance("HmacSHA256");
 	  mac.init(sharedsecret);
 	  byte[] macbytes = mac.doFinal(testpayload);

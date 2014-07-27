@@ -18,7 +18,7 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.operations.OperationsUtils.QRCode;
 
 public class QRTest {
@@ -35,7 +35,7 @@ public class QRTest {
 		// AES key
 		SecretKey sharedsecret = kgen.generateKey();
 		byte[] raw = sharedsecret.getEncoded();
-		String key = BAUtils.bytesToHex(raw);
+		String key = EncodingUtils.bytesToHex(raw);
 	      
 		QRCode qr = new QRCode();
 		String qrData = qr.generateQRDataString(ip, localIP, wallettype, key, networkType);

@@ -217,7 +217,7 @@ public class Main extends BAApplication {
 			@Override
     		public void handle(WindowEvent e) {
     			Action response = null;
-    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.operationsQueue.size() > 0){
+    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0){
     				response = Dialogs.create()
             	        .owner(stage)
             	        .title("Warning !")

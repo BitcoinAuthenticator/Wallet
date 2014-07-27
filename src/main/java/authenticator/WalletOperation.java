@@ -30,7 +30,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 
 import wallettemplate.Main;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
@@ -1023,8 +1023,8 @@ public class WalletOperation extends BASE{
 	
 	public ECKey getPairedAuthenticatorKey(PairedAuthenticator po, int keyIndex){
 		ArrayList<String> keyandchain = getPublicKeyAndChain(po.getPairingID());
-		byte[] key = BAUtils.hexStringToByteArray(keyandchain.get(0));
-		byte[] chain = BAUtils.hexStringToByteArray(keyandchain.get(1));
+		byte[] key = EncodingUtils.hexStringToByteArray(keyandchain.get(0));
+		byte[] chain = EncodingUtils.hexStringToByteArray(keyandchain.get(1));
 		HDKeyDerivation HDKey = null;
   		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
   		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, keyIndex);
@@ -1532,7 +1532,7 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.getRecentTransactions();
 	}
 	
-	public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
+	/*public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
 	{
 		LinkedList<TransactionOutput> outs = new LinkedList<TransactionOutput> (candidates);
 		DefaultCoinSelector selector = new DefaultCoinSelector();
@@ -1541,7 +1541,7 @@ public class WalletOperation extends BASE{
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>(gathered);
 	
 		return ret;
-	}
+	}*/
 	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
 		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();

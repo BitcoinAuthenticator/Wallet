@@ -28,7 +28,7 @@ import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 
 import com.google.bitcoin.core.NetworkParameters;
@@ -469,7 +469,7 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void split(ActionEvent event) throws IOException{
 		 BipSSS sss = new BipSSS();
-		 List<Share> shares = sss.shard(BAUtils.hexStringToByteArray(seed.toHexString()), 
+		 List<Share> shares = sss.shard(EncodingUtils.hexStringToByteArray(seed.toHexString()), 
 				 Integer.parseInt(txThreshold.getText().toString()), Integer.parseInt(txPieces.getText().toString()), EncodingFormat.SHORT, params);
 		 final ObservableList list = FXCollections.observableArrayList();
 		 for (Share share: shares){list.add(share.toString());}

@@ -4,7 +4,7 @@ import authenticator.Authenticator;
 import authenticator.AuthenticatorGeneralEventsListener;
 import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
@@ -318,6 +318,20 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
+    	if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
+    		Platform.runLater(new Runnable() { 
+  			  @Override
+  			  public void run() {
+  				Dialogs.create()
+  		        .owner(Main.stage)
+  		        .title("Error !")
+  		        .masthead("Some network requirements are not available, some functionalities may be compromised")
+  		        .message("If this problem repeats, your router may not allow port mapping.")
+  		        .showInformation();   
+  			  }
+  			});
+    	}
+    	
     	/**
     	 * refreshBalanceLabel will take care of downloading the currency data needed
     	 */
@@ -448,20 +462,25 @@ public class Controller  extends BaseUI{
 				String pairingID, PendingRequest pendingReq,
 				AuthenticatorAnswerType answerType,
 				String str) {
+			Platform.runLater(new Runnable() { 
+				  @Override
+				  public void run() {
+					    String notifStr = "";
+						if(answerType == AuthenticatorAnswerType.Authorized)
+							notifStr = "Authenticator Authorized a Transaction:\n";
+						else if(answerType == AuthenticatorAnswerType.NotAuthorized)
+							notifStr = "Authenticator Refused To Sign a Transaction:\n";
+						else
+							return;
+						
+						Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+				    	// Create a custom Notification without icon
+				    	Notification info = new Notification("Bitcoin Authenticator Wallet", notifStr , logo);
+				    	// Show the custom notification
+				    	Notifier.INSTANCE.notify(info);
+				  }
+				});
 			
-			String notifStr = "";
-			if(answerType == AuthenticatorAnswerType.Authorized)
-				notifStr = "Authenticator Authorized a Transaction:\n";
-			else if(answerType == AuthenticatorAnswerType.NotAuthorized)
-				notifStr = "Authenticator Refused To Sign a Transaction:\n";
-			else
-				return;
-			
-			Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
-	    	// Create a custom Notification without icon
-	    	Notification info = new Notification("Bitcoin Authenticator Wallet", notifStr , logo);
-	    	// Show the custom notification
-	    	Notifier.INSTANCE.notify(info);
 		}
     }
     
@@ -1131,7 +1150,7 @@ public class Controller  extends BaseUI{
 						        .title("Error !")
 						        .masthead("Cannot Create Tx")
 						        .message("")
-						        .showConfirm();   
+						        .showInformation();   
 					      }
 					    });
 				}        		
@@ -1180,7 +1199,7 @@ public class Controller  extends BaseUI{
 					        .title("Error !")
 					        .masthead("Cannot Create Tx")
 					        .message("")
-					        .showConfirm();   
+					        .showInformation();   
 				      }
 				    });
         	}
@@ -1197,6 +1216,7 @@ public class Controller  extends BaseUI{
     		Coin leavingWallet){
     	//Display Transaction Overview
 		Pane pane = new Pane();
+		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
 		pane.setMaxSize(600, 360);
 		pane.setStyle("-fx-background-color: white;");
 		pane.setEffect(new DropShadow());
@@ -1351,8 +1371,15 @@ public class Controller  extends BaseUI{
         			Animation ani = GuiUtils.fadeOut(v);
         			GuiUtils.fadeIn(successVbox);
         			v.setVisible(false);
-        			successVbox.setVisible(true);
-        			broadcast(tx);
+        			if(broadcast(tx) == true)
+        				successVbox.setVisible(true);
+        			else{
+        				overlay.done();
+                    	txMsgLabel.clear();
+                    	scrlContent.clearAll(); addOutput();
+                    	txFee.clear();
+        			}
+        				
         		} 
         		catch (NoSuchAlgorithmException
         				| AddressWasNotFoundException | JSONException
@@ -1373,7 +1400,6 @@ public class Controller  extends BaseUI{
 		v.getChildren().add(lvTx);
 		v.getChildren().add(h);
 		pane.getChildren().add(v);
-		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
 		btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
@@ -1394,8 +1420,8 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public void broadcast (Transaction tx) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
-    	SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), new OnOperationUIUpdate(){
+    public boolean broadcast (Transaction tx) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), new OnOperationUIUpdate(){
 			@Override
 			public void onBegin(String str) { }
 
@@ -1609,7 +1635,7 @@ public class Controller  extends BaseUI{
 						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
 						int index = ca.getKeyIndex();
 						ECKey key = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, HierarchyAddressTypes.External, index, false);
-						outPut = BAUtils.bytesToHex(key.getPubKey());
+						outPut = EncodingUtils.bytesToHex(key.getPubKey());
 					}
 					else
 					{
@@ -1626,8 +1652,8 @@ public class Controller  extends BaseUI{
 								keyIndex, 
 								true); // true cause its a P2SH address
 						
-						outPut = "Authenticator Pubkey: " + BAUtils.bytesToHex(authKey.getPubKey()) + "\n" + 
-								 "Wallet Pubkey: " + BAUtils.bytesToHex(walletKey.getPubKey());
+						outPut = "Authenticator Pubkey: " + EncodingUtils.bytesToHex(authKey.getPubKey()) + "\n" + 
+								 "Wallet Pubkey: " + EncodingUtils.bytesToHex(walletKey.getPubKey());
 					}
 					final Clipboard clipboard = Clipboard.getSystemClipboard();
 	                final ClipboardContent content = new ClipboardContent();

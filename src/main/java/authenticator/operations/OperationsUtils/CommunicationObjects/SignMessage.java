@@ -11,7 +11,7 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 
 public class SignMessage  extends JSONObject{
 	private static final long serialVersionUID = 1L;
@@ -64,7 +64,7 @@ public class SignMessage  extends JSONObject{
 			 for(int i=0; i<jsonlist.size(); i++){
 				 jsonObj = (JSONObject) jsonlist.get(i);
 				 String sig = (String) jsonObj.get("signature");
-				 sigs.add(BAUtils.hexStringToByteArray(sig));
+				 sigs.add(EncodingUtils.hexStringToByteArray(sig));
 			 }
 			 return sigs;
 		 }
@@ -99,7 +99,7 @@ public class SignMessage  extends JSONObject{
 		this.keyIndexArr = new ArrayList<KeyIndex>();
 		for(int i=0;i<publickeys.size();i++)
 		{
-			KeyIndex ki = new KeyIndex(BAUtils.bytesToHex(publickeys.get(i)),childkeyindex.get(i));
+			KeyIndex ki = new KeyIndex(EncodingUtils.bytesToHex(publickeys.get(i)),childkeyindex.get(i));
 			this.keyIndexArr.add(ki);
 		}
 		return this;

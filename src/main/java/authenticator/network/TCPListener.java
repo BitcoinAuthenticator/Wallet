@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -25,7 +26,7 @@ import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;
 import authenticator.WalletOperation;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.network.exceptions.TCPListenerCouldNotStartException;
 import authenticator.operations.ATOperation;
 import authenticator.operations.ATOperation.ATNetworkRequirement;
@@ -58,6 +59,7 @@ import authenticator.protobuf.ProtoConfig.WalletAccountType;
  */
 public class TCPListener extends BASE{
 	public static Socket socket;
+	private static ConcurrentLinkedQueue<ATOperation> operationsQueue;
 	private static Thread listenerThread;
 	private static UpNp plugnplay;
 	private String[] args;
@@ -65,8 +67,8 @@ public class TCPListener extends BASE{
 	/**
 	 * Network Requirements flags
 	 */
-	public boolean UPNP_CONNECTED;
-	public boolean SOCKET_OPERATIONAL;
+	public  boolean UPNP_CONNECTED = false;
+	public  boolean SOCKET_OPERATIONAL = false;
 	
 	WalletOperation wallet;
 	
@@ -79,6 +81,8 @@ public class TCPListener extends BASE{
 		super(TCPListener.class);
 		this.wallet = wallet;
 		this.args = args;
+		if(operationsQueue == null)
+			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
 	}
 	
 	public void runListener(final String[] args) throws Exception
@@ -97,7 +101,9 @@ public class TCPListener extends BASE{
 						e.printStackTrace();
 	    			}
 	    			
+	    			assert(operationsQueue != null);
 	    			notifyStarted();
+	    			
 	    			looper();
 				}
 				catch (Exception e1) {
@@ -106,8 +112,8 @@ public class TCPListener extends BASE{
 				}
 				finally
 				{
-					try { ss.close(); }  catch (IOException e) { }
-					try { plugnplay.removeMapping(); } catch (IOException | SAXException e) { } 
+					try { ss.close(); }  catch (Exception e) { }
+					try { plugnplay.removeMapping(); } catch (Exception e) { } 
 					LOG.info("Listener Stopped");
 					notifyStopped();
 				}
@@ -157,11 +163,18 @@ public class TCPListener extends BASE{
 				while(true)
 	    	    {
 					isConnected = false;
-					try{
-						socket = ss.accept();
-						isConnected = true;
-					}
-					catch (SocketTimeoutException e){ isConnected = false; }
+					if(UPNP_CONNECTED && SOCKET_OPERATIONAL)
+						try{
+							socket = ss.accept();
+							isConnected = true;
+						}
+						catch (SocketTimeoutException e){ isConnected = false; }
+					else
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 					
 					//#################################
 					//
@@ -222,7 +235,7 @@ public class TCPListener extends BASE{
 								// Complete Operation ?
 								switch(pendingReq.getOperationType()){
 								case SignAndBroadcastAuthenticatorTx:
-									byte[] txBytes = BAUtils.hexStringToByteArray(pendingReq.getRawTx());
+									byte[] txBytes = EncodingUtils.hexStringToByteArray(pendingReq.getRawTx());
 									Transaction tx = new Transaction(wallet.getNetworkParams(),txBytes);
 									 
 									ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
@@ -261,7 +274,7 @@ public class TCPListener extends BASE{
 										public void onError( Exception e, Throwable t) { }
 										
 									});
-									Authenticator.operationsQueue.add(op);
+									operationsQueue.add(op);
 									break;
 								}
 								
@@ -288,11 +301,11 @@ public class TCPListener extends BASE{
 					//
 					//#################################
 					
-					logAsInfo("Checking For outbound operations...");
-					if(Authenticator.operationsQueue.size() > 0)
+					if(operationsQueue.size() > 0)
 					{
-						while (Authenticator.operationsQueue.size() > 0){
-							ATOperation op = Authenticator.operationsQueue.poll();
+						logAsInfo("Found " + operationsQueue.size() + " Operations in queue");
+						while (operationsQueue.size() > 0){
+							ATOperation op = operationsQueue.poll();
 							if (op == null){
 								break;
 							}
@@ -300,11 +313,10 @@ public class TCPListener extends BASE{
 							 * Check for network requirements availability
 							 */
 							logAsInfo("Checking network requirements availability for outbound operation");
-							if((op.getOperationNetworkRequirements().getValue() & ATNetworkRequirement.PORT_MAPPING.getValue()) > 0){
-								if(!UPNP_CONNECTED || !SOCKET_OPERATIONAL){
-									op.OnExecutionError(new ATOperationNetworkRequirementsNotAvailable("Port mapping not available"));
-									break;
-								}
+							if(checkForOperationNetworkRequirements(op) == false )
+							{
+								op.OnExecutionError(new ATOperationNetworkRequirementsNotAvailable("Port mapping not available"));
+								break;
 							}
 									
 							
@@ -332,6 +344,71 @@ public class TCPListener extends BASE{
 	    listenerThread.start();
 	}
 	
+	public boolean checkForOperationNetworkRequirements(ATOperation op){
+		if((op.getOperationNetworkRequirements().getValue() & ATNetworkRequirement.PORT_MAPPING.getValue()) > 0){
+			if(!UPNP_CONNECTED || !SOCKET_OPERATIONAL){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	//#####################################
+	//
+	//		Queue
+	//
+	//#####################################
+	
+	public boolean addOperation(ATOperation operation)
+	{
+		checkForOperationNetworkRequirements(operation);
+		if(this.isRunning())
+			operationsQueue.add(operation);
+		return true;
+	}
+
+	public int getQueuePendingOperations(){
+		return operationsQueue.size();
+	}
+	
+	//#####################################
+	//
+	//		General
+	//
+	//#####################################
+	
+	public void logAsInfo(String str)
+    {
+		if(Authenticator.getApplicationParams().getShouldPrintTCPListenerInfoToConsole())
+			LOG.info(str);
+    }
+	
+	/**
+	 * Check if the TCPListener has all the various operation network requirements
+	 */
+	public void sendUpdatedIPsToPairedAuthenticators(){
+		for(ATAccount acc:wallet.getAllAccounts())
+			if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
+				PairedAuthenticator  po = wallet.getPairingObjectForAccountIndex(acc.getIndex());
+				ATOperation op = OperationsFactory.UPDATE_PAIRED_AUTHENTICATORS_IPS(wallet,
+																			po.getPairingID());
+				operationsQueue.add(op);
+			}
+	}
+	
+	public boolean areAllNetworkRequirementsAreFullyRunning(){
+		if(!UPNP_CONNECTED || !SOCKET_OPERATIONAL)
+			return false;
+		return true;
+	}
+	
+	//#####################################
+	//
+	//		Service methods
+	//
+	//#####################################
+	
 	protected void doStart() {
 		try {
 			runListener(args);
@@ -348,20 +425,5 @@ public class TCPListener extends BASE{
 		LOG.info("Stopping Listener ... ");
 	}
 	
-	public void logAsInfo(String str)
-    {
-		if(Authenticator.getApplicationParams().getShouldPrintTCPListenerInfoToConsole())
-			LOG.info(str);
-    }
 	
-	//##
-	public void sendUpdatedIPsToPairedAuthenticators(){
-		for(ATAccount acc:wallet.getAllAccounts())
-			if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
-				PairedAuthenticator  po = wallet.getPairingObjectForAccountIndex(acc.getIndex());
-				ATOperation op = OperationsFactory.UPDATE_PAIRED_AUTHENTICATORS_IPS(wallet,
-																			po.getPairingID());
-				Authenticator.operationsQueue.add(op);
-			}
-	}
 }

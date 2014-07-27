@@ -33,7 +33,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.wallet.DeterministicSeed;
 
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 
@@ -68,14 +68,14 @@ public class PairingTest {
 		// AES key
 		SecretKey sharedsecret = kgen.generateKey();
 		byte[] raw = sharedsecret.getEncoded();
-		String key = BAUtils.bytesToHex(raw);
+		String key = EncodingUtils.bytesToHex(raw);
 		//
 		
 		JSONObject payloadObj = new JSONObject();
-				   payloadObj.put("mpubkey", BAUtils.bytesToHex(pub.getPubKey()));
-				   payloadObj.put("chaincode", BAUtils.bytesToHex(pub.getChainCode()));
+				   payloadObj.put("mpubkey", EncodingUtils.bytesToHex(pub.getPubKey()));
+				   payloadObj.put("chaincode", EncodingUtils.bytesToHex(pub.getChainCode()));
 				   MessageDigest md = MessageDigest.getInstance("SHA-1");
-				   payloadObj.put("pairID",  BAUtils.bytesToHex(md.digest(("Some crazy thing").getBytes())));
+				   payloadObj.put("pairID",  EncodingUtils.bytesToHex(md.digest(("Some crazy thing").getBytes())));
 				   payloadObj.put("gcmID", "some registration id");
 				   
 		String payloadUnencryptedStr = payloadObj.toString();   
@@ -111,9 +111,9 @@ public class PairingTest {
 		String chaincodeRec = (String) jsonPayloadFromAuth.get("chaincode");
 	    String pairingIDRec = (String) jsonPayloadFromAuth.get("pairID");
 	    String GCMRec = (String) jsonPayloadFromAuth.get("gcmID");
-	    assert(mPubKeyRec.equals(BAUtils.bytesToHex(pub.getPubKey())));
-	    assert(chaincodeRec.equals(BAUtils.bytesToHex(pub.getChainCode())));
-	    assert(pairingIDRec.equals(BAUtils.bytesToHex(md.digest(("Some crazy thing").getBytes()))));
+	    assert(mPubKeyRec.equals(EncodingUtils.bytesToHex(pub.getPubKey())));
+	    assert(chaincodeRec.equals(EncodingUtils.bytesToHex(pub.getChainCode())));
+	    assert(pairingIDRec.equals(EncodingUtils.bytesToHex(md.digest(("Some crazy thing").getBytes()))));
 	    assert(GCMRec.equals("some registration id"));
 	}
 

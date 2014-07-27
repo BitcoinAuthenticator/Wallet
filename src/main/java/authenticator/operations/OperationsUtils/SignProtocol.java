@@ -22,7 +22,7 @@ import authenticator.Authenticator;
 import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.helpers.exceptions.UnableToCompleteTxSigningException;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ATAddress;
@@ -55,7 +55,7 @@ public class SignProtocol {
 	static public byte[] prepareTX(WalletOperation wallet, Transaction tx,  String pairingID) throws Exception {
 		//Create the payload
 		//PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
-		String formatedTx = BAUtils.getStringTransaction(tx);
+		String formatedTx = EncodingUtils.getStringTransaction(tx);
 		System.out.println("Raw unSigned Tx - " + formatedTx);
 		//Get pub keys and indexes
 		ArrayList<byte[]> pubKeysArr = new ArrayList<byte[]>();
@@ -82,7 +82,7 @@ public class SignProtocol {
 		byte[] jsonBytes = signMsgPayload.serializeToBytes();
 		
 		Mac mac = Mac.getInstance("HmacSHA256");
-		SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
 		mac.init(secretkey);
 		byte[] macbytes = mac.doFinal(jsonBytes);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -117,8 +117,8 @@ public class SignProtocol {
 	 {
 		try{
 			//Prep the keys needed for signing
-			byte[] key = BAUtils.hexStringToByteArray(po.getMasterPublicKey());
-			byte[] chain = BAUtils.hexStringToByteArray(po.getChainCode());
+			byte[] key = EncodingUtils.hexStringToByteArray(po.getMasterPublicKey());
+			byte[] chain = EncodingUtils.hexStringToByteArray(po.getChainCode());
 			
 			// we rebuild the Tx from a raw string so we need to reconnect the inputs
 			wallet.connectInputs(tx.getInputs());
@@ -187,7 +187,7 @@ public class SignProtocol {
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
-		SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");						
+		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");						
 		PairedAuthenticator  po = wallet.getPairingObject(pairingID);
 		byte[] gcmID = po.getGCM().getBytes();
 		assert(gcmID != null);
@@ -207,7 +207,7 @@ public class SignProtocol {
 		   pr.setRequestID(reqID);
 		   pr.setOperationType(ATOperationType.SignAndBroadcastAuthenticatorTx);
 		   pr.setPayloadToSendInCaseOfConnection(ByteString.copyFrom(cypherBytes));
-		   pr.setRawTx(BAUtils.getStringTransaction(tx));
+		   pr.setRawTx(EncodingUtils.getStringTransaction(tx));
 		   PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
 					cb.setShouldSendPayloadOnConnection(true);
 					cb.setShouldReceivePayloadAfterSendingPayloadOnConnection(true);

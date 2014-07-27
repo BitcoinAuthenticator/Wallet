@@ -9,7 +9,7 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
 
 import com.ning.http.client.AsyncCompletionHandler;
@@ -48,7 +48,7 @@ public class CurrencyConverterSingelton {
 	}
 	
 	private void getCurrencies(final CurrencyConverterListener listener, CurrencyConverterSingelton self) throws IOException, JSONException{
-		BAUtils.readFromUrl("https://api.bitcoinaverage.com/ticker/global/USD/", new AsyncCompletionHandler<Response>(){
+		EncodingUtils.readFromUrl("https://api.bitcoinaverage.com/ticker/global/USD/", new AsyncCompletionHandler<Response>(){
 			@Override
 			public Response onCompleted(Response arg0) throws Exception {
 				String res = arg0.getResponseBody();

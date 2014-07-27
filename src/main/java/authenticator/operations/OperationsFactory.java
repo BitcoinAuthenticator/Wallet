@@ -64,7 +64,7 @@ import authenticator.BASE;
 import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.operations.ATOperation.ATNetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.SignProtocol;
@@ -185,20 +185,20 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(BAUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
 						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
-						    String message = BAUtils.bytesToHex(cipher.doFinal(authenticatorByteResponse));
+						    String message = EncodingUtils.bytesToHex(cipher.doFinal(authenticatorByteResponse));
 						    String sig = message.substring(0,message.length()-64);
 						    String HMAC = message.substring(message.length()-64,message.length());
-						    byte[] testsig = BAUtils.hexStringToByteArray(sig);
-						    byte[] hash = BAUtils.hexStringToByteArray(HMAC);
+						    byte[] testsig = EncodingUtils.hexStringToByteArray(sig);
+						    byte[] hash = EncodingUtils.hexStringToByteArray(HMAC);
 						    //Calculate the HMAC of the message and verify it is valid
 						    Mac mac = Mac.getInstance("HmacSHA256");
 							mac.init(secretkey);
 							byte[] macbytes = mac.doFinal(testsig);
 							if (Arrays.equals(macbytes, hash)){
-								staticLooger.info("Received Response: " + BAUtils.bytesToHex(testsig));
+								staticLooger.info("Received Response: " + EncodingUtils.bytesToHex(testsig));
 							}
 							else {
 								staticLooger.info("Message authentication code is invalid");
@@ -240,7 +240,7 @@ public class OperationsFactory extends BASE{
 										tx,
 										AuthSigs,
 										po);
-								staticLooger.info("Signed Tx - " + BAUtils.getStringTransaction(tx));
+								staticLooger.info("Signed Tx - " + EncodingUtils.getStringTransaction(tx));
 								/**
 								 * Condition sending by is Test Mode
 								 */

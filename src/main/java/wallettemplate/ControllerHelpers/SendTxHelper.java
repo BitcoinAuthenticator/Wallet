@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
-import authenticator.Utils.BAUtils;
+import authenticator.Utils.EncodingUtils;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.operations.ATOperation;
@@ -75,7 +75,7 @@ public class SendTxHelper {
 			}
 			else {
 				// TOOD - it is not async !
-				JSONObject json = BAUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
+				JSONObject json = EncodingUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
 				double last = json.getDouble("last");
 				a = (double) (Double.parseDouble(na.txfAmount.getText())/last)*100000000;
 			}
@@ -95,7 +95,7 @@ public class SendTxHelper {
     	return true;
     }
 	
-	static public void broadcastTx (Transaction tx, String txLabel,OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+	static public boolean broadcastTx (Transaction tx, String txLabel,OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
     	// broadcast
 		ATOperation op = null;
 		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
@@ -125,7 +125,11 @@ public class SendTxHelper {
 		
 		// operation listeners
 		op.SetOperationUIUpdate(opUpdateListener);
-		Authenticator.operationsQueue.add(op);
+		if(Authenticator.checkForOperationNetworkRequirements(op) == true)
+			return Authenticator.addOperation(op);
+		else
+			opUpdateListener.onError(new Exception("Cannot add operation to queue, network requirements not available"), null);
+		return false;
     }	
 	
 	/**

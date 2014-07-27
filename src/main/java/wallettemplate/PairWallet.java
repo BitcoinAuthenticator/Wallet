@@ -106,7 +106,7 @@ public class PairWallet extends BaseUI{
 			}
         	
         });
-    	Authenticator.operationsQueue.add(op);
+    	Authenticator.addOperation(op);
     }
     
     @FXML
