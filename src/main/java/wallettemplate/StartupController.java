@@ -34,6 +34,8 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.collect.ImmutableMap;
@@ -275,8 +277,11 @@ public class StartupController  extends BaseUI{
 			 wallet.setKeychainLookaheadSize(0);
 			 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
 			 
+			 // create master public key
+			 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(seed.getSecretBytes()).getPubOnly();
+			 
 			 // set Authenticator wallet
-			 auth = new Authenticator(wallet, appParams);
+			 auth = new Authenticator(masterPubKey, appParams);
 			 
 			 // update params in main
 			 Main.returnedParamsFromSetup = appParams;

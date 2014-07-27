@@ -38,14 +38,13 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	
  	@SuppressWarnings("static-access")
  	public BAHierarchy(){}
- 	public BAHierarchy(byte[] seed, HierarchyCoinTypes coinType){
+ 	public BAHierarchy(DeterministicKey masterkey, HierarchyCoinTypes coinType){
  		HDKeyDerivation HDKey = null;
-     	DeterministicKey masterkey = HDKey.createMasterPrivateKey(seed);
      	// purpose level
-     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,true); // is harden
+     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,false); // is not harden
      	DeterministicKey purpose = HDKey.deriveChildKey(masterkey,purposeIndex);
      	// coin level
-     	ChildNumber coinIndex = new ChildNumber(coinType.getNumber(),true); // is harden
+     	ChildNumber coinIndex = new ChildNumber(coinType.getNumber(),false); // is not harden
      	DeterministicKey coin = HDKey.deriveChildKey(purpose,coinIndex);
      	
      	//put root
@@ -113,7 +112,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  		// root
  		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
  		// account
- 		ChildNumber account = new ChildNumber(accountIndex,true);
+ 		ChildNumber account = new ChildNumber(accountIndex,false);
   	    p.add(account);
   	    // address type
   	    ChildNumber addressType = new ChildNumber(type.getNumber(),false); // TODO - also savings addresses

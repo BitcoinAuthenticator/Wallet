@@ -13,6 +13,7 @@ import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
@@ -67,12 +68,12 @@ public class Authenticator extends BASE{
 	 * @param wallet
 	 * @param appParams
 	 */
-	public Authenticator(Wallet wallet, BAApplicationParameters appParams){
+	public Authenticator(DeterministicKey mpubkey, BAApplicationParameters appParams){
 		super(Authenticator.class);
 		init(appParams);
 		if(mWalletOperation == null){
 			try {
-				mWalletOperation = new WalletOperation(appParams, wallet.getKeyChainSeed());
+				mWalletOperation = new WalletOperation(appParams, mpubkey);
 			} catch (IOException e) { e.printStackTrace(); }
 			
 			initPendingRequests();
@@ -89,13 +90,13 @@ public class Authenticator extends BASE{
 	 * @param appParams
 	 * @throws IOException
 	 */
-	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) throws IOException
+	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams, DeterministicKey mpubkey) throws IOException
 	{
 		super(Authenticator.class);
 		init(appParams);
 		if(mWalletOperation == null){
 			try {
-				mWalletOperation = new WalletOperation(wallet,peerGroup,appParams, wallet.getKeyChainSeed());
+				mWalletOperation = new WalletOperation(wallet,peerGroup,appParams, mpubkey);
 			} catch (IOException e) { e.printStackTrace(); }
 			
 			initPendingRequests();

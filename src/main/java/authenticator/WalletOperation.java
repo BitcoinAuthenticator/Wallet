@@ -102,9 +102,9 @@ public class WalletOperation extends BASE{
 	 * @param params
 	 * @throws IOException
 	 */
-	public WalletOperation(BAApplicationParameters params, DeterministicSeed seed) throws IOException{
+	public WalletOperation(BAApplicationParameters params, DeterministicKey mpubkey) throws IOException{
 		super(WalletOperation.class);
-		init(params, seed);
+		init(params, mpubkey);
 	}
 	
 	/**
@@ -114,14 +114,14 @@ public class WalletOperation extends BASE{
 	 * @param peerGroup
 	 * @throws IOException
 	 */
-	public WalletOperation(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters params, DeterministicSeed seed) throws IOException{
+	public WalletOperation(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters params, DeterministicKey mpubkey) throws IOException{
 		super(WalletOperation.class);
 		if(mWalletWrapper == null){
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
 			mWalletWrapper.addEventListener(new WalletListener());
 		}
 		
-		init(params, seed);
+		init(params, mpubkey);
 	}
 	
 	public void dispose(){
@@ -131,7 +131,7 @@ public class WalletOperation extends BASE{
 		staticLogger = null;
 	}
 	
-	private void init(BAApplicationParameters params, DeterministicSeed seed) throws IOException{
+	private void init(BAApplicationParameters params, DeterministicKey mpubkey) throws IOException{
 		staticLogger = this.LOG;
 		AppParams = params;
 		if(configFile == null){
@@ -141,13 +141,13 @@ public class WalletOperation extends BASE{
 			 */
 			if(!configFile.checkConfigFile()){
 				//byte[] seed = BAHierarchy.generateMnemonicSeed();
-				configFile.initConfigFile(seed.getSecretBytes());
+				configFile.initConfigFile(mpubkey);
 			}
 		}
 		if(authenticatorWalletHierarchy == null)
 		{
 			//byte[] seed = configFile.getHierarchySeed();
-			authenticatorWalletHierarchy = new BAHierarchy(seed.getSecretBytes(),HierarchyCoinTypes.CoinBitcoin);
+			authenticatorWalletHierarchy = new BAHierarchy(mpubkey,HierarchyCoinTypes.CoinBitcoin);
 			/**
 			 * Load num of keys generated in every account to get 
 			 * the next fresh key

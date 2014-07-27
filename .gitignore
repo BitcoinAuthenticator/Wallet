@@ -12,3 +12,4 @@ bin/
 gen/
 target/
 proguard/
+/target/
