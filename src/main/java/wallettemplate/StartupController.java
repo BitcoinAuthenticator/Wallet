@@ -8,10 +8,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,13 @@ import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
+import authenticator.operations.BAWalletRestorer;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 
+import com.google.bitcoin.core.Block;
+import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -90,6 +96,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane MainRestorePane;
 	@FXML private Pane RestoreFromMnemonicPane;
 	@FXML private Pane RestoreProcessPane;
+	@FXML private Pane RestoreAccountsPane;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
 	@FXML private Button btnNewWallet;
@@ -105,6 +112,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnRestoreFromSeedContinue;
 	@FXML private Button btnCancelRestoreProcess;
 	@FXML private Button btnFinishRestoreProcess;
+	@FXML private Button btnBackFromAccountRestore;
+	@FXML private Button btnAccountRestoreContinue;
 	@FXML private Label lblMinimize;
 	@FXML private Label lblClose;
 	@FXML private Button btnDone;
@@ -195,6 +204,14 @@ public class StartupController  extends BaseUI{
 		 labeRestoreFromSeedContinue.setPadding(new Insets(0,6,0,0));
 		 btnRestoreFromSeedContinue.setGraphic(labeRestoreFromSeedContinue);
 		 //
+		 Label labelBackFromAccountRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labelBackFromAccountRestore.setPadding(new Insets(0,6,0,0));
+		 btnBackFromAccountRestore.setGraphic(labelBackFromAccountRestore);
+		 //
+		 Label labeAccountRestoreContinue = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeAccountRestoreContinue.setPadding(new Insets(0,6,0,0));
+		 btnAccountRestoreContinue.setGraphic(labeAccountRestoreContinue);
+		 //
 		 Label labeCancelRestoreProcess = AwesomeDude.createIconLabel(AwesomeIcon.STOP, "20");
 		 labeCancelRestoreProcess.setPadding(new Insets(0,6,0,0));
 		 btnCancelRestoreProcess.setGraphic(labeCancelRestoreProcess);
@@ -222,7 +239,6 @@ public class StartupController  extends BaseUI{
 			 public void handle(MouseEvent t) {
 				 com.sun.javafx.application.PlatformImpl.tkExit();
 				 Platform.exit();
-				 
 			 }
 		 });
 		 btnContinue2.setStyle("-fx-background-color: #badb93;");
@@ -582,23 +598,56 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void goRestoreFromSeed(ActionEvent event){
 		 RestoreFromMnemonicPane.setVisible(false);
-		 launchRestoreProcess(RestoreFromMnemonicPane);
+		 launchRestoreAccoutns(RestoreFromMnemonicPane);
 	 }
 	 
-	//##############################
+	 //##############################
+	 //
+	 //		Restore accounts 
+	 //
+	 //##############################
+	 
+	 @FXML protected void goRestoreAccounts(ActionEvent event){
+		 launchRestoreProcess();
+	 }
+	 
+	 
+	 @FXML protected void returnToBeforeRestoreAccounts(ActionEvent event){
+		 previousNode.setVisible(true);
+		 RestoreAccountsPane.setVisible(false);
+	 }
+	 
+	 @FXML protected void addAccount(ActionEvent event){
+	 }
+	 
+	 private Node previousNode;
+	 private void launchRestoreAccoutns(Node node){
+		 node.setVisible(false);
+		 previousNode = node;
+		 RestoreAccountsPane.setVisible(true);
+	 }
+	 
+	 //##############################
 	 //
 	 //		Restore process 
 	 //
 	 //##############################
 	 
-	 private void launchRestoreProcess(Node node){
+	 private void launchRestoreProcess(){
 		 RestoreProcessPane.setVisible(true);
-		 previousNode = node;
+		 RestoreAccountsPane.setVisible(false);
+		 new BAWalletRestorer(new RestorerDonwloadListener()).runRestorer();
 	 }
 	 
-	 private Node previousNode;
 	 @FXML protected void returnBackFromRestoreProcess(ActionEvent event){
 		 RestoreProcessPane.setVisible(false);
-		 previousNode.setVisible(true);
+		 RestoreAccountsPane.setVisible(true);
 	 }
+	 
+	 public class RestorerDonwloadListener extends DownloadListener{
+		 @Override
+		 protected void progress(double pct, int blocksSoFar, Date date) {
+			 Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
+		 }
+	}
 }

@@ -134,6 +134,11 @@
     -fx-font-size: 12px;
 }
 
+#RestoreAccountsPane .choice-box {
+	-fx-background-color: #c1c3c4;  
+    -fx-font-size: 12px;
+}
+
 .main-menu-button {
 	-fx-background-insets: 10, 0, 1, 2;
 	-fx-focus-color: red;
