@@ -140,12 +140,14 @@ public class TCPListener extends BASE{
 	    		int port = Integer.parseInt(args[0]);
 	    		try {
 					plugnplay.run(new String[]{args[0]});
-					UPNP_CONNECTED = true;
+					if(plugnplay.isPortMapped(Integer.parseInt(args[0])) == true)
+						UPNP_CONNECTED = true;
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 				}
 	    		
+	    		if(UPNP_CONNECTED)
     			try {
 					ss = new ServerSocket (port);
 					ss.setSoTimeout(5000);

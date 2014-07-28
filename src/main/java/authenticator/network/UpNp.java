@@ -18,15 +18,15 @@ import authenticator.BASE;
  */
 public class UpNp extends BASE{
 
-	private static int SAMPLE_PORT = 1234;
-	private static boolean LIST_ALL_MAPPINGS = false;
+	private int SAMPLE_PORT;
 	static String externalIPAddress;
 	static String localIPAddress;
 	static GatewayDevice activeGW;
 
 	public UpNp() { super(UpNp.class); }
-	public static void run(String[] args) throws Exception{
+	public void run(String[] args) throws Exception{
 		SAMPLE_PORT = Integer.parseInt(args[0]);
+		boolean LIST_ALL_MAPPINGS = false;
 		addLogLine("Starting weupnp");
 		GatewayDiscover gatewayDiscover = new GatewayDiscover();
 		addLogLine("Looking for Gateway Devices...");
