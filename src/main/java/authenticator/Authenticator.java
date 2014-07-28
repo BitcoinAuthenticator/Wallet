@@ -23,7 +23,7 @@ import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
 import authenticator.db.ConfigFile;
 import authenticator.network.TCPListener;
-import authenticator.operations.ATOperation;
+import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
@@ -140,12 +140,12 @@ public class Authenticator extends BASE{
 	 * 
 	 * @param operation
 	 */
-	public static boolean addOperation(ATOperation operation)
+	public static boolean addOperation(BAOperation operation)
 	{
 		return mTCPListener.addOperation(operation);
 	}
 	
-	public static boolean checkForOperationNetworkRequirements(ATOperation operation){
+	public static boolean checkForOperationNetworkRequirements(BAOperation operation){
 		return mTCPListener.checkForOperationNetworkRequirements(operation);
 	}
 	

@@ -37,7 +37,7 @@ import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
-import authenticator.operations.ATOperation;
+import authenticator.operations.BAOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.ProtoConfig.ATAddress;
@@ -123,7 +123,7 @@ public class SendTxHelper {
 			try {config.writeNextSavedTxData(tx.getHashAsString(), "", txLabel);}
 			catch (IOException e) {e.printStackTrace();}
 		}
-		ATOperation op = null;
+		BAOperation op = null;
 		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
 			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
 			for(TransactionInput in:tx.getInputs()){				

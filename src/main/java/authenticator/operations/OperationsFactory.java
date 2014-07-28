@@ -92,12 +92,12 @@ public class OperationsFactory extends BASE{
 	 * @param pairingName
 	 * @return
 	 */
-	static public ATOperation PAIRING_OPERATION(WalletOperation wallet,
+	static public BAOperation PAIRING_OPERATION(WalletOperation wallet,
 			String pairingName, 
 			NetworkType networkType, 
 			Runnable animation,
 			Runnable animationAfterPairing){
-		return new ATOperation(ATOperationType.Pairing)
+		return new BAOperation(ATOperationType.Pairing)
 					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
@@ -157,7 +157,7 @@ public class OperationsFactory extends BASE{
 	 * @param onlyComplete
 	 * @return
 	 */
-	static public ATOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(WalletOperation wallet, Transaction tx, 
+	static public BAOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(WalletOperation wallet, Transaction tx, 
 																String pairingID, 
 																@Nullable String txLabel,
 																@Nullable String to,
@@ -169,7 +169,7 @@ public class OperationsFactory extends BASE{
 																 */
 																@Nullable PendingRequest pendigReq,
 																@Nullable String WALLET_PW){
-		ATOperation op = new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
+		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
@@ -335,8 +335,8 @@ public class OperationsFactory extends BASE{
 	 * @param pairingID
 	 * @return
 	 */
-	static public ATOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
-		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
+	static public BAOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
+		return new BAOperation(ATOperationType.updateIpAddressesForPreviousMessage)
 					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
 					.SetDescription("Update Authenticator's wallet IPs")
 					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
@@ -376,12 +376,8 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, 
-			String to, 
-			WalletOperation wallet, 
-			Transaction tx, Map<String,ATAddress> keys,
-			@Nullable String WALLET_PW){
-		return new ATOperation(ATOperationType.BroadcastNormalTx)
+	static public BAOperation BROADCAST_NORMAL_TRANSACTION(WalletOperation wallet, Transaction tx, Map<String,ATAddress> keys){
+		return new BAOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
 		.SetOperationAction(new OperationActions(){

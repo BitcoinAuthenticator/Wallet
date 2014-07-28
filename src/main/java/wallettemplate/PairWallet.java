@@ -10,7 +10,7 @@ import org.controlsfx.dialog.Dialogs;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import authenticator.Authenticator;
-import authenticator.operations.ATOperation;
+import authenticator.operations.BAOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.PairingProtocol;
@@ -47,7 +47,7 @@ public class PairWallet extends BaseUI{
     	
     	textarea.appendText("Pairing setup ..\n");
     	
-    	ATOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
+    	BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
     			animDisplay, 

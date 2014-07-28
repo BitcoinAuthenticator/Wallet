@@ -13,7 +13,7 @@ import authenticator.protobuf.ProtoConfig.ATOperationType;
  * @author alon
  *
  */
-public class ATOperation {
+public class BAOperation {
 	private OperationActions mOperationActions;
 	private OnOperationUIUpdate listener;
 	private String operationDescription;
@@ -22,12 +22,12 @@ public class ATOperation {
 	private String[] args = null;
 	
 	
-	public ATOperation(ATOperationType type)
+	public BAOperation(ATOperationType type)
 	{
 		mOperationType = type;
 	}
 	
-	public ATOperation (ATOperationType type, 
+	public BAOperation (ATOperationType type, 
 			ATNetworkRequirement networkRequirements,
 			OperationActions action, 
 			String desc,
@@ -69,46 +69,46 @@ public class ATOperation {
 	//#####################################
 	
 	public String getDescription() { return this.operationDescription; }
-	public ATOperation SetDescription(String desc)
+	public BAOperation SetDescription(String desc)
 	{
 		this.operationDescription = desc;
 		return this;
 	}
 	
-	public ATOperation SetOperationAction(OperationActions action)
+	public BAOperation SetOperationAction(OperationActions action)
 	{
 		this.mOperationActions = action;
 		return this;
 	}
 	
-	public ATOperation SetOperationUIUpdate(OnOperationUIUpdate listener)
+	public BAOperation SetOperationUIUpdate(OnOperationUIUpdate listener)
 	{
 		this.listener = listener;
 		return this;
 	}
 	
-	public ATOperation SetArguments(String[] ar)
+	public BAOperation SetArguments(String[] ar)
 	{
 		this.args = ar;
 		return this;
 	}
 	
 	private String beginMsg;
-	public ATOperation SetBeginMsg(String msg)
+	public BAOperation SetBeginMsg(String msg)
 	{
 		this.beginMsg = msg;
 		return this;
 	}
 	
 	private String finishedMsg;
-	public ATOperation SetFinishedMsg(String msg)
+	public BAOperation SetFinishedMsg(String msg)
 	{
 		this.finishedMsg = msg;
 		return this;
 	}
 	
 	public ATNetworkRequirement getOperationNetworkRequirements(){ return mATNetworkRequirement; }
-	public ATOperation setOperationNetworkRequirements(ATNetworkRequirement value){
+	public BAOperation setOperationNetworkRequirements(ATNetworkRequirement value){
 		mATNetworkRequirement = value;
 		return this;
 	}
