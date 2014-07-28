@@ -43,7 +43,7 @@
     </Pane>
     <!--
     
-    	The create new first accoutn in a new wallet.
+    	The create new first account in a new wallet.
     	
     	
     	-->
@@ -161,21 +161,7 @@
         <Hyperlink fx:id="hlFinished" layoutX="471.0" layoutY="339.0" onAction="#finished" text="I will do it later" visible="false" />
       </children>
     </Pane>
-    <!--
-    
-    	Restore from seed pane
-    	
-    	
-    	-->
-    <Pane fx:id="RestoreFromSeedPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
-      <children>
-        <TextField layoutX="82.0" layoutY="134.0" prefHeight="31.1328125" prefWidth="342.0" />
-        <Label layoutX="82.0" layoutY="84.0" prefHeight="31.1328125" prefWidth="355.0" text="Enter First Word" />
-        <Button layoutX="451.0" layoutY="134.0" mnemonicParsing="false" prefHeight="31.1328125" prefWidth="56.0" text="Next" />
-        <Label layoutX="48.0" layoutY="40.0" text="Follow the instructions below to throw off key loggers as you enter your seed" />
-        <Button layoutX="38.0" layoutY="316.0" mnemonicParsing="false" prefHeight="57.1328125" prefWidth="105.0" text="Back" />
-      </children>
-    </Pane>
+   
     <!--
     
     	-->
@@ -216,7 +202,7 @@
     <Pane fx:id="MainRestorePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
       <children>
         <Button fx:id="btnBack4" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
-        <Button fx:id="btnMnemonic" contentDisplay="TOP" layoutX="132.0" layoutY="40.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" styleClass="restore-button" text="Enter mnemonic" textAlignment="CENTER" wrapText="true" />
+        <Button fx:id="btnMnemonic" onAction="#btnRestoreMnemonic" contentDisplay="TOP" layoutX="132.0" layoutY="40.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" styleClass="restore-button" text="Enter mnemonic" textAlignment="CENTER" wrapText="true" />
         <Button fx:id="btnScanQR" contentDisplay="TOP" layoutX="319.0" layoutY="40.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="146.0" styleClass="restore-button" text="Scan QR code" textAlignment="CENTER" wrapText="true" />
         <Button fx:id="btnLoad" contentDisplay="TOP" layoutX="132.0" layoutY="216.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" text="Load from file" textAlignment="CENTER" wrapText="true">
           <graphic>
@@ -232,6 +218,44 @@
             </ImageView>
           </graphic>
         </Button>
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore from mnemonic pane
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreFromMnemonicPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label layoutX="28.0" layoutY="40.0" text="Restore From Mnemonic Seed">
+          <font>
+            <Font size="18.0" />
+          </font>
+        </Label>
+        <Label layoutX="45.0" layoutY="61.0" prefHeight="87.0" prefWidth="541.0" text="This dialog allows you to reconstruct your entire wallet from the mnemonic seed" wrapText="true" />
+	    <TextField fx:id="lblSeedRestorer" layoutX="45.0" layoutY="130.0" prefHeight="70.1328125" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" />
+     	<Button fx:id="btnBackFromSeedRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnToMainRestorePane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+      	<Button fx:id="btnRestoreFromSeedContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSeed" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore process pane
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreProcessPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label layoutX="28.0" layoutY="40.0" text="Restore Process">
+          <font>
+            <Font size="18.0" />
+          </font>
+        </Label>
+        <Button fx:id="btnCancelRestoreProcess" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnBackFromRestoreProcess" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+      	<Button fx:id="btnFinishRestoreProcess" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSeed" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      	<Label fx:id="lblRestoreProcessStatus" layoutX="150.0" layoutY="320.0" prefHeight="20.0" prefWidth="294.0" text="Status String ... " wrapText="true" />
+      	<ProgressBar fx:id="syncProgress" layoutX="150.0" layoutY="340.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
       </children>
     </Pane>
     <!--

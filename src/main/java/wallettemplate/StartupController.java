@@ -76,6 +76,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
+import javafx.scene.Node;
+import javafx.scene.control.ProgressBar;
 
 public class StartupController  extends BaseUI{
 	
@@ -83,10 +85,11 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane CreateAccountPane;
 	@FXML private Pane BackupNewWalletPane;
 	@FXML private Pane ExplanationPane1;
-	@FXML private Pane RestoreFromSeedPane;
 	@FXML private Pane Pane6;
 	@FXML private Pane SSSBackupPane;
 	@FXML private Pane MainRestorePane;
+	@FXML private Pane RestoreFromMnemonicPane;
+	@FXML private Pane RestoreProcessPane;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
 	@FXML private Button btnNewWallet;
@@ -98,6 +101,10 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnBack3;
 	@FXML private Button btnBack4;
 	@FXML private Button btnBack5;
+	@FXML private Button btnBackFromSeedRestore;
+	@FXML private Button btnRestoreFromSeedContinue;
+	@FXML private Button btnCancelRestoreProcess;
+	@FXML private Button btnFinishRestoreProcess;
 	@FXML private Label lblMinimize;
 	@FXML private Label lblClose;
 	@FXML private Button btnDone;
@@ -122,6 +129,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Hyperlink hlFinished;
 	@FXML private ImageView imgSSS;
 	@FXML private Button btnSSS;
+	@FXML private ProgressBar syncProgress;
+	@FXML private Label lblRestoreProcessStatus;
 	private DeterministicSeed seed;
 	NetworkParameters params = MainNetParams.get();
 	Authenticator auth;
@@ -145,30 +154,55 @@ public class StartupController  extends BaseUI{
 		 chkTestNet.setDisable(true);
 		 
 		 btnSSS.setPadding(new Insets(-4,0,0,0));
+		 //
 		 Label labelforward = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labelforward.setPadding(new Insets(0,0,0,6));
 		 btnContinue1.setGraphic(labelforward);
+		 //
 		 Label labelback = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelback.setPadding(new Insets(0,6,0,0));
 		 btnBack1.setGraphic(labelback);
+		 //
 		 Label labelforward2 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labelforward2.setPadding(new Insets(0,0,0,6));
 		 btnContinue2.setGraphic(labelforward2);
+		 //
 		 Label labelforward3 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labelforward3.setPadding(new Insets(0,0,0,6));
 		 btnContinue3.setGraphic(labelforward3);
+		 //
 		 Label labelback2 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelback2.setPadding(new Insets(0,6,0,0));
 		 btnBack2.setGraphic(labelback2);
+		 //
 		 Label labelback3 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelback3.setPadding(new Insets(0,6,0,0));
 		 btnBack3.setGraphic(labelback3);
+		 //
 		 Label labelback4 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelback4.setPadding(new Insets(0,6,0,0));
 		 btnBack4.setGraphic(labelback4);
+		 //
 		 Label labelback5 = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelback5.setPadding(new Insets(0,6,0,0));
 		 btnBack5.setGraphic(labelback5);
+		 //
+		 Label labelackFromSeedRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labelackFromSeedRestore.setPadding(new Insets(0,6,0,0));
+		 btnBackFromSeedRestore.setGraphic(labelackFromSeedRestore);
+		 //
+		 Label labeRestoreFromSeedContinue = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeRestoreFromSeedContinue.setPadding(new Insets(0,6,0,0));
+		 btnRestoreFromSeedContinue.setGraphic(labeRestoreFromSeedContinue);
+		 //
+		 Label labeCancelRestoreProcess = AwesomeDude.createIconLabel(AwesomeIcon.STOP, "20");
+		 labeCancelRestoreProcess.setPadding(new Insets(0,6,0,0));
+		 btnCancelRestoreProcess.setGraphic(labeCancelRestoreProcess);
+		 //
+		 Label labeFinishRestoreProcess = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeFinishRestoreProcess.setPadding(new Insets(0,6,0,0));
+		 btnFinishRestoreProcess.setGraphic(labeFinishRestoreProcess);
+		 //
 		 Label lblMnemonic = AwesomeDude.createIconLabel(AwesomeIcon.KEYBOARD_ALT, "90");
 		 btnMnemonic.setGraphic(lblMnemonic);
 		 Label lblScanQR = AwesomeDude.createIconLabel(AwesomeIcon.QRCODE, "90");
@@ -530,5 +564,41 @@ public class StartupController  extends BaseUI{
 		 btnDone.setStyle("-fx-background-color: #95d946; -fx-text-fill: white;");
 	 } 
 	 
-
+	 //##############################
+	 //
+	 //		Restore from seed
+	 //
+	 //##############################
+	 
+	 @FXML protected void btnRestoreMnemonic(ActionEvent event){
+		 MainRestorePane.setVisible(false);
+		 RestoreFromMnemonicPane.setVisible(true);
+	 }
+	 
+	 @FXML protected void returnToMainRestorePane(ActionEvent event){
+		 MainRestorePane.setVisible(true);
+		 RestoreFromMnemonicPane.setVisible(false);
+	 }
+	 
+	 @FXML protected void goRestoreFromSeed(ActionEvent event){
+		 RestoreFromMnemonicPane.setVisible(false);
+		 launchRestoreProcess(RestoreFromMnemonicPane);
+	 }
+	 
+	//##############################
+	 //
+	 //		Restore process 
+	 //
+	 //##############################
+	 
+	 private void launchRestoreProcess(Node node){
+		 RestoreProcessPane.setVisible(true);
+		 previousNode = node;
+	 }
+	 
+	 private Node previousNode;
+	 @FXML protected void returnBackFromRestoreProcess(ActionEvent event){
+		 RestoreProcessPane.setVisible(false);
+		 previousNode.setVisible(true);
+	 }
 }
