@@ -93,12 +93,10 @@ public class PaperWallet  extends BaseUI{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Save Paper Wallet");
 		fileChooser.setInitialFileName("paperwallet.png");
-		File outputfile = fileChooser.showSaveDialog(Main.startup);        
-        ImageIO.write(d, "png", outputfile);        
-        
-        //Desktop dt = Desktop.getDesktop();
-        //File f = new File(path3);
-        //dt.open(f);
+		File outputfile = fileChooser.showSaveDialog(Main.startup);   
+		if(outputfile != null)
+			ImageIO.write(d, "png", outputfile);        
+       
 	}
 	
 }

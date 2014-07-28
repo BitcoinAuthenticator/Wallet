@@ -53,8 +53,8 @@
         <TextField fx:id="txAccount" layoutX="59.0" layoutY="64.0" prefHeight="27.1328125" prefWidth="481.0" promptText="Name your first account" />
         <PasswordField fx:id="txPW1" layoutX="59.0" layoutY="117.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
         <PasswordField fx:id="txPW2" layoutX="304.0" layoutY="117.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
-        <Button fx:id="btnBack1" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toPaneOne" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
-        <Button fx:id="btnContinue1" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toPaneThree" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+        <Button fx:id="btnBack1" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinue1" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toBackupNewWalletPane" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       </children>
     </Pane>
     <!--
@@ -65,8 +65,8 @@
     	-->
     <Pane fx:id="BackupNewWalletPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0000999999975" visible="false">
       <children>
-        <Button fx:id="btnBack2" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toPaneTwo" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
-        <Button fx:id="btnContinue2" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toPaneFour" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+        <Button fx:id="btnBack2" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toCreateAccountPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinue2" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toExplanationPane1" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
         <Label fx:id="lblSeed" layoutX="45.0" layoutY="91.0" prefHeight="70.1328125" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
         <Button fx:id="btnSave" contentDisplay="TOP" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#saveWallet" prefHeight="143.1328125" prefWidth="146.0" text="Backup to file" textAlignment="CENTER">
           <graphic>
@@ -118,7 +118,7 @@
             </ImageView>
           </graphic>
         </Button>
-        <Button fx:id="btnBack5" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#backToThree" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnBack5" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#backToBackupNewWalletPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Pane fx:id="BA1" layoutX="14.0" layoutY="67.0" prefHeight="242.0" prefWidth="560.0" visible="true">
           <children>
             <ImageView fitHeight="220.0" fitWidth="220.0" layoutX="14.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
@@ -201,7 +201,7 @@
         <Label layoutX="28.0" layoutY="61.0" prefHeight="87.0" prefWidth="541.0" text="This dialog allows you split your wallet's seed into cryptographically-secure pieces for storing in separate locations. You can set a &quot;threshold&quot; for the number of pieces needed to reconstruct the seed. For example, with four pieces and and threshold of three, any three of the four pieces can be used to reconstruct the seed." wrapText="true" />
         <Button fx:id="btnSplit" layoutX="485.0" layoutY="148.0" mnemonicParsing="false" onAction="#split" prefHeight="30.0" prefWidth="84.0" text="Split" />
         <ListView fx:id="lvSSS" layoutX="29.0" layoutY="186.0" prefHeight="126.0" prefWidth="539.9998779296875" />
-        <Button fx:id="btnBack3" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnToPaneThree" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnBack3" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returntoBackupNewWalletPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Label layoutX="29.0" layoutY="148.0" prefHeight="30.0" prefWidth="84.0" text="# of Pieces" />
         <Label layoutX="256.0" layoutY="155.0" text="Threshold" />
         <TextField fx:id="txPieces" layoutX="113.0" layoutY="148.0" prefHeight="30.0" prefWidth="110.0" />
@@ -215,7 +215,7 @@
     -->
     <Pane fx:id="MainRestorePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
       <children>
-        <Button fx:id="btnBack4" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toPaneOne" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnBack4" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnMnemonic" contentDisplay="TOP" layoutX="132.0" layoutY="40.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" styleClass="restore-button" text="Enter mnemonic" textAlignment="CENTER" wrapText="true" />
         <Button fx:id="btnScanQR" contentDisplay="TOP" layoutX="319.0" layoutY="40.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="146.0" styleClass="restore-button" text="Scan QR code" textAlignment="CENTER" wrapText="true" />
         <Button fx:id="btnLoad" contentDisplay="TOP" layoutX="132.0" layoutY="216.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" text="Load from file" textAlignment="CENTER" wrapText="true">

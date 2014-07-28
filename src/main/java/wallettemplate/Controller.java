@@ -337,36 +337,40 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
-    	
-    	/**
-    	 * refreshBalanceLabel will take care of downloading the currency data needed
-    	 */
-    	 setReceiveAddresses();
-    	 try {setTxPaneHistory();} 
-     	 catch (NoSuchAlgorithmException | JSONException
+    	Platform.runLater(new Runnable() { 
+		 @Override
+		public void run() {
+			/**
+    	 	 * refreshBalanceLabel will take care of downloading the currency data needed
+    	 	 */
+    	 	 setReceiveAddresses();
+    	 	 try {setTxPaneHistory();} 
+     	 	 catch (NoSuchAlgorithmException | JSONException
  				| AddressFormatException | KeyIndexOutOfRangeException
  				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
-         try {setTxHistoryContent();} 
-         catch (NoSuchAlgorithmException | JSONException
+         	 try {setTxHistoryContent();} 
+        	 catch (NoSuchAlgorithmException | JSONException
 				| AddressFormatException | KeyIndexOutOfRangeException
 				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
          
-         setupOneName(Authenticator.getWalletOperation().getOnename());
-         try {refreshBalanceLabel();} 
-         catch (JSONException | IOException e) {e.printStackTrace();}
+        	 setupOneName(Authenticator.getWalletOperation().getOnename());
+        	 try {refreshBalanceLabel();} 
+         	 catch (JSONException | IOException e) {e.printStackTrace();}
          
-         Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
-         //Authenticator.getWalletOperation().addEventListener(new WalletListener());
+        	 Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
+         	//Authenticator.getWalletOperation().addEventListener(new WalletListener());
          
-         // Account choicebox
-         setAccountChoiceBox();
+        	 // Account choicebox
+        	 setAccountChoiceBox();
          
-         /**
-          * Read the comments in TCPListener#looper()
-          */
-         if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
+         	/**
+         	 * Read the comments in TCPListener#looper()
+        	 */
+         	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
         	 if(Authenticator.getWalletOperation().isWalletEncrypted())
         		 lockControl(null);
+			  }
+    	});    	
     }
 	
     

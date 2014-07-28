@@ -306,7 +306,7 @@ public class StartupController  extends BaseUI{
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }
 	 
-	 @FXML protected void toPaneOne(ActionEvent event) {
+	 @FXML protected void toMainPane(ActionEvent event) {
 		 Animation ani = GuiUtils.fadeOut(MainRestorePane);
 		 Animation ani2 = GuiUtils.fadeOut(CreateAccountPane);
 		 GuiUtils.fadeIn(MainPane);
@@ -315,14 +315,14 @@ public class StartupController  extends BaseUI{
 		 MainPane.setVisible(true);
 	 }
 	 
-	 @FXML protected void toPaneTwo(ActionEvent event) {
+	 @FXML protected void toCreateAccountPane(ActionEvent event) {
 		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
 		 GuiUtils.fadeIn(CreateAccountPane);
 		 BackupNewWalletPane.setVisible(false);
 		 CreateAccountPane.setVisible(true);
 	 }
 	 
-	 @FXML protected void toPaneFour(ActionEvent event) {
+	 @FXML protected void toExplanationPane1(ActionEvent event) {
 		 if (ckSeed.isSelected()){
 			 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
 			 GuiUtils.fadeIn(ExplanationPane1);
@@ -375,14 +375,14 @@ public class StartupController  extends BaseUI{
 		 } 
 	 }
 	 
-	 @FXML protected void backToThree(ActionEvent event){
+	 @FXML protected void backToBackupNewWalletPane(ActionEvent event){
 		 Animation ani = GuiUtils.fadeOut(ExplanationPane1);
 		 GuiUtils.fadeIn(BackupNewWalletPane);
 		 ExplanationPane1.setVisible(false);
 		 BackupNewWalletPane.setVisible(true);
 	 }
 	 
-	 @FXML protected void toPaneThree(ActionEvent event) {
+	 @FXML protected void toBackupNewWalletPane(ActionEvent event) {
 		 if (txAccount.getText().toString().equals("")){
 			 informationalAlert("Unfortunately, you messed up.",
 					 "You need to enter a name for your account");
@@ -476,7 +476,7 @@ public class StartupController  extends BaseUI{
 		 
 	 }
 	 
-	 @FXML protected void returnToPaneThree(ActionEvent event){
+	 @FXML protected void returntoBackupNewWalletPane(ActionEvent event){
 		 Animation ani = GuiUtils.fadeOut(SSSBackupPane);
 		 GuiUtils.fadeIn(BackupNewWalletPane);
 		 SSSBackupPane.setVisible(false);

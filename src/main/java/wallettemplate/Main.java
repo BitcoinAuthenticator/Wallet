@@ -179,8 +179,12 @@ public class Main extends BAApplication {
         ConfigFile config = new ConfigFile(BAApplication.ApplicationParams.getAppName());
     	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params, config.getHierarchyPubKey());
     	auth.startAsync();
-    	auth.awaitRunning();
-    	controller.onAuthenticatorSetup();
+    	auth.addListener(new Service.Listener() {
+			@Override public void running() {
+				controller.onAuthenticatorSetup();
+	         }
+		}, MoreExecutors.sameThreadExecutor());
+    	
     
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     		@SuppressWarnings("static-access")

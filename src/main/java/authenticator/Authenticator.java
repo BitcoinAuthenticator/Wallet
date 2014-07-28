@@ -236,13 +236,20 @@ public class Authenticator extends BASE{
 		assert(mApplicationParams != null);
 		try { 
 			mTCPListener.startAsync();
-			mTCPListener.awaitRunning();
-			assert(mTCPListener.isRunning() == true);
-			notifyStarted();
+			mTCPListener.addListener(new Service.Listener() {
+				@Override public void running() {
+					assert(mTCPListener.isRunning() == true);
+					finishStartup();
+		         }
+			}, MoreExecutors.sameThreadExecutor());
 		} 
 		catch (Exception e) { e.printStackTrace(); }
 	}
 
+	public void finishStartup(){
+		notifyStarted();
+	}
+	
 	@Override
 	protected void doStop() {
 		if(mTCPListener.isRunning()){ // in case the tcp crashed 
