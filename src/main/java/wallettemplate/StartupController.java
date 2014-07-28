@@ -79,14 +79,14 @@ import javafx.stage.FileChooser;
 
 public class StartupController  extends BaseUI{
 	
-	@FXML private Pane Pane1;
-	@FXML private Pane Pane2;
-	@FXML private Pane Pane3;
-	@FXML private Pane Pane4;
-	@FXML private Pane Pane5;
+	@FXML private Pane MainPane;
+	@FXML private Pane CreateAccountPane;
+	@FXML private Pane BackupNewWalletPane;
+	@FXML private Pane ExplanationPane1;
+	@FXML private Pane RestoreFromSeedPane;
 	@FXML private Pane Pane6;
-	@FXML private Pane Pane7;
-	@FXML private Pane Pane8;
+	@FXML private Pane SSSBackupPane;
+	@FXML private Pane MainRestorePane;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
 	@FXML private Button btnNewWallet;
@@ -245,10 +245,10 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void restoreFromSeed(ActionEvent event) {
-		 Animation ani = GuiUtils.fadeOut(Pane1);
-		 GuiUtils.fadeIn(Pane8);
-		 Pane1.setVisible(false);
-		 Pane8.setVisible(true);
+		 Animation ani = GuiUtils.fadeOut(MainPane);
+		 GuiUtils.fadeIn(MainRestorePane);
+		 MainPane.setVisible(false);
+		 MainRestorePane.setVisible(true);
 	 }
 	 
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
@@ -295,10 +295,10 @@ public class StartupController  extends BaseUI{
 			 contextMenu.getItems().addAll(item1);
 			 lblSeed.setContextMenu(contextMenu);
 		 }
-		 Animation ani = GuiUtils.fadeOut(Pane1);
-		 GuiUtils.fadeIn(Pane2);
-		 Pane1.setVisible(false);
-		 Pane2.setVisible(true);
+		 Animation ani = GuiUtils.fadeOut(MainPane);
+		 GuiUtils.fadeIn(CreateAccountPane);
+		 MainPane.setVisible(false);
+		 CreateAccountPane.setVisible(true);
 	 }
 	 
 	 private void createNewStandardAccount(String accountName) throws IOException{
@@ -307,27 +307,27 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void toPaneOne(ActionEvent event) {
-		 Animation ani = GuiUtils.fadeOut(Pane8);
-		 Animation ani2 = GuiUtils.fadeOut(Pane2);
-		 GuiUtils.fadeIn(Pane1);
-		 Pane2.setVisible(false);
-		 Pane8.setVisible(false);
-		 Pane1.setVisible(true);
+		 Animation ani = GuiUtils.fadeOut(MainRestorePane);
+		 Animation ani2 = GuiUtils.fadeOut(CreateAccountPane);
+		 GuiUtils.fadeIn(MainPane);
+		 CreateAccountPane.setVisible(false);
+		 MainRestorePane.setVisible(false);
+		 MainPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void toPaneTwo(ActionEvent event) {
-		 Animation ani = GuiUtils.fadeOut(Pane3);
-		 GuiUtils.fadeIn(Pane2);
-		 Pane3.setVisible(false);
-		 Pane2.setVisible(true);
+		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
+		 GuiUtils.fadeIn(CreateAccountPane);
+		 BackupNewWalletPane.setVisible(false);
+		 CreateAccountPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void toPaneFour(ActionEvent event) {
 		 if (ckSeed.isSelected()){
-			 Animation ani = GuiUtils.fadeOut(Pane3);
-			 GuiUtils.fadeIn(Pane4);
-			 Pane3.setVisible(false);
-			 Pane4.setVisible(true);
+			 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
+			 GuiUtils.fadeIn(ExplanationPane1);
+			 BackupNewWalletPane.setVisible(false);
+			 ExplanationPane1.setVisible(true);
 		 }
 	 }
 	 
@@ -376,10 +376,10 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void backToThree(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(Pane4);
-		 GuiUtils.fadeIn(Pane3);
-		 Pane4.setVisible(false);
-		 Pane3.setVisible(true);
+		 Animation ani = GuiUtils.fadeOut(ExplanationPane1);
+		 GuiUtils.fadeIn(BackupNewWalletPane);
+		 ExplanationPane1.setVisible(false);
+		 BackupNewWalletPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void toPaneThree(ActionEvent event) {
@@ -410,10 +410,10 @@ public class StartupController  extends BaseUI{
 						 }
 					 }
 				 });
-				 Animation ani = GuiUtils.fadeOut(Pane2);
-				 GuiUtils.fadeIn(Pane3);
-				 Pane2.setVisible(false);
-				 Pane3.setVisible(true);
+				 Animation ani = GuiUtils.fadeOut(CreateAccountPane);
+				 GuiUtils.fadeIn(BackupNewWalletPane);
+				 CreateAccountPane.setVisible(false);
+				 BackupNewWalletPane.setVisible(true);
 				 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
 			} catch (Exception e) { 
 				e.printStackTrace();
@@ -460,10 +460,10 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void openSSS(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(Pane3);
-		 GuiUtils.fadeIn(Pane7);
-		 Pane3.setVisible(false);
-		 Pane7.setVisible(true); 
+		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
+		 GuiUtils.fadeIn(SSSBackupPane);
+		 BackupNewWalletPane.setVisible(false);
+		 SSSBackupPane.setVisible(true); 
 	 }
 	 
 	 @FXML protected void split(ActionEvent event) throws IOException{
@@ -477,16 +477,16 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void returnToPaneThree(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(Pane7);
-		 GuiUtils.fadeIn(Pane3);
-		 Pane7.setVisible(false);
-		 Pane3.setVisible(true);
+		 Animation ani = GuiUtils.fadeOut(SSSBackupPane);
+		 GuiUtils.fadeIn(BackupNewWalletPane);
+		 SSSBackupPane.setVisible(false);
+		 BackupNewWalletPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void openWeb(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(Pane2);
+		 Animation ani = GuiUtils.fadeOut(CreateAccountPane);
 		 GuiUtils.fadeIn(Pane6);
-		 Pane2.setVisible(false);
+		 CreateAccountPane.setVisible(false);
 		 Pane6.setVisible(true);
 		 browser.autosize();
 		 URL location = Main.class.getResource("passwords.html");
@@ -495,9 +495,9 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void webFinished(ActionEvent event){
 		 Animation ani = GuiUtils.fadeOut(Pane6);
-		 GuiUtils.fadeIn(Pane2);
+		 GuiUtils.fadeIn(CreateAccountPane);
 		 Pane6.setVisible(false);
-		 Pane2.setVisible(true);
+		 CreateAccountPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void btnBackPressed(MouseEvent event) {

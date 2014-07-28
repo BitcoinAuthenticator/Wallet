@@ -61,6 +61,7 @@ import authenticator.protobuf.ProtoConfig.WalletAccountType;
  *
  */
 public class TCPListener extends BASE{
+	final int LOOPER_BLOCKING_TIMEOUT = 3000;
 	public static Socket socket;
 	private static ConcurrentLinkedQueue<ATOperation> operationsQueue;
 	private static Thread listenerThread;
@@ -178,7 +179,7 @@ public class TCPListener extends BASE{
 	    		if(PORT_FORWARDED)
     			try {
 					ss = new ServerSocket (forwardedPort);
-					ss.setSoTimeout(5000);
+					ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
 					SOCKET_OPERATIONAL = true;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -212,7 +213,7 @@ public class TCPListener extends BASE{
 						catch (SocketTimeoutException e){ isConnected = false; }
 					else
 						try {
-							Thread.sleep(2000);
+							Thread.sleep(LOOPER_BLOCKING_TIMEOUT);
 						} catch (InterruptedException e1) {
 							e1.printStackTrace();
 						}
