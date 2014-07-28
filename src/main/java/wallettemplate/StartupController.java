@@ -12,12 +12,16 @@ import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nullable;
 
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
@@ -42,9 +46,12 @@ import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.MnemonicCode;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.wallet.DeterministicSeed;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
@@ -84,6 +91,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.DatePicker;
 
 public class StartupController  extends BaseUI{
 	
@@ -140,7 +148,9 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnSSS;
 	@FXML private ProgressBar syncProgress;
 	@FXML private Label lblRestoreProcessStatus;
-	private DeterministicSeed seed;
+	@FXML private TextField lblSeedRestorer;
+	@FXML private DatePicker seedCreationDatePicker;
+	private DeterministicSeed walletSeed;
 	NetworkParameters params = MainNetParams.get();
 	Authenticator auth;
 	Wallet wallet;
@@ -302,59 +312,39 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
-		 // app params
-		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
-		 File f = new File(filePath);
-		 String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + "Temp" + ".wallet";
-		 File temp = new File(filePath2);
-		 if(!f.exists()) { 
-			 //Generate a new Seed
-			 SecureRandom secureRandom = null;
-			 try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
-			 catch (NoSuchAlgorithmException e) {e.printStackTrace();}
-			 //byte[] bytes = new byte[16];
-			 //secureRandom.nextBytes(bytes);
-			 seed = new DeterministicSeed(secureRandom, 8 * 16, "", Utils.currentTimeSeconds());
-			 
-			 // set wallet
-			 wallet = Wallet.fromSeed(params,seed);
-			 wallet.setKeychainLookaheadSize(0);
-			 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
-			 
-			 // create master public key
-			 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(seed.getSecretBytes()).getPubOnly();
-			 
-			 // set Authenticator wallet
-			 auth = new Authenticator(masterPubKey, appParams);
-			 
-			 // update params in main
-			 Main.returnedParamsFromSetup = appParams;
-			 
-			 for (String word : seed.getMnemonicCode()){mnemonic = mnemonic + word + " ";}
-			 lblSeed.setText(mnemonic);
-			 final ContextMenu contextMenu = new ContextMenu();
-			 MenuItem item1 = new MenuItem("Copy");
-			 item1.setOnAction(new EventHandler<ActionEvent>() {
-				 public void handle(ActionEvent e) {
-					 Clipboard clipboard = Clipboard.getSystemClipboard();
-					 ClipboardContent content = new ClipboardContent();
-					 content.putString(lblSeed.getText().toString());
-					 clipboard.setContent(content);
-				 }
-			 });
-			 contextMenu.getItems().addAll(item1);
-			 lblSeed.setContextMenu(contextMenu);
-		 }
+
+		 createWallet(null);
+		 
+		// create master public key
+		 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
+		 
+		 // set Authenticator wallet
+		 auth = new Authenticator(masterPubKey, appParams);
+		 
+		 // update params in main
+		 Main.returnedParamsFromSetup = appParams;
+		 
+		 for (String word : walletSeed.getMnemonicCode()){mnemonic = mnemonic + word + " ";}
+		 lblSeed.setText(mnemonic);
+		 final ContextMenu contextMenu = new ContextMenu();
+		 MenuItem item1 = new MenuItem("Copy");
+		 item1.setOnAction(new EventHandler<ActionEvent>() {
+			 public void handle(ActionEvent e) {
+				 Clipboard clipboard = Clipboard.getSystemClipboard();
+				 ClipboardContent content = new ClipboardContent();
+				 content.putString(lblSeed.getText().toString());
+				 clipboard.setContent(content);
+			 }
+		 });
+		 contextMenu.getItems().addAll(item1);
+		 lblSeed.setContextMenu(contextMenu);
+		 
 		 Animation ani = GuiUtils.fadeOut(MainPane);
 		 GuiUtils.fadeIn(CreateAccountPane);
 		 MainPane.setVisible(false);
 		 CreateAccountPane.setVisible(true);
 	 }
-	 
-	 private void createNewStandardAccount(String accountName) throws IOException{
-		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
-		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
-	 }
+	
 	 
 	 @FXML protected void toMainPane(ActionEvent event) {
 		 Animation ani = GuiUtils.fadeOut(MainRestorePane);
@@ -506,7 +496,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void printPaperWallet(ActionEvent event) throws IOException{
-		 PaperWallet.createPaperWallet(mnemonic, seed);
+		 PaperWallet.createPaperWallet(mnemonic, walletSeed);
 	 }
 	 
 	 @FXML protected void openSSS(ActionEvent event){
@@ -518,7 +508,7 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void split(ActionEvent event) throws IOException{
 		 BipSSS sss = new BipSSS();
-		 List<Share> shares = sss.shard(EncodingUtils.hexStringToByteArray(seed.toHexString()), 
+		 List<Share> shares = sss.shard(EncodingUtils.hexStringToByteArray(walletSeed.toHexString()), 
 				 Integer.parseInt(txThreshold.getText().toString()), Integer.parseInt(txPieces.getText().toString()), EncodingFormat.SHORT, params);
 		 final ObservableList list = FXCollections.observableArrayList();
 		 for (Share share: shares){list.add(share.toString());}
@@ -597,10 +587,41 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void goRestoreFromSeed(ActionEvent event){
-		 RestoreFromMnemonicPane.setVisible(false);
-		 launchRestoreAccoutns(RestoreFromMnemonicPane);
+		 DeterministicSeed seed = reconstructSeed();
+		 if(seed != null){
+			 try {
+				createWallet(seed);
+				RestoreFromMnemonicPane.setVisible(false);
+				launchRestoreAccoutns(RestoreFromMnemonicPane);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Dialogs.create()
+		        .owner(Main.startup)
+		        .title("Error")
+		        .masthead("Cannot Restore from Mnemonic Seed")
+		        .message("Please try again")
+		        .showError();
+			}
+		 }
+		 else
+			 Dialogs.create()
+		        .owner(Main.startup)
+		        .title("Error")
+		        .masthead("Cannot Restore from Mnemonic Seed")
+		        .message("Please try again")
+		        .showError();
+		
 	 }
 	 
+	 private DeterministicSeed reconstructSeed(){
+		 String mnemonicStr = lblSeedRestorer.getText();
+		 List<String>mnemonicArr = Lists.newArrayList(Splitter.on(" ").split(mnemonicStr));
+		 LocalDate date = seedCreationDatePicker.getValue();
+		 long unix = date.atStartOfDay().toEpochSecond(ZoneOffset.UTC);
+		 
+		 return reconstructSeedFromStringMnemonics(mnemonicArr, unix);
+	 }
+	 	 
 	 //##############################
 	 //
 	 //		Restore accounts 
@@ -650,4 +671,64 @@ public class StartupController  extends BaseUI{
 			 Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
 		 }
 	}
+	 
+	//##############################
+	 //
+	 //		Wallet specific methods 
+	 //
+	 //##############################
+	 
+	 private void createWallet(@Nullable DeterministicSeed seed) throws IOException{
+		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
+		 File f = new File(filePath);
+		 String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + "Temp" + ".wallet";
+		 File temp = new File(filePath2);
+		 if(!f.exists()) { 
+			 if(seed == null){
+				//Generate a new Seed
+				 SecureRandom secureRandom = null;
+				 try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
+				 catch (NoSuchAlgorithmException e) {e.printStackTrace();}
+				 //byte[] bytes = new byte[16];
+				 //secureRandom.nextBytes(bytes);
+				 walletSeed = new DeterministicSeed(secureRandom, 8 * 16, "", Utils.currentTimeSeconds());
+			 }
+			 else
+				 walletSeed = seed;
+			 
+			 // set wallet
+			 wallet = Wallet.fromSeed(params,walletSeed);
+			 wallet.setKeychainLookaheadSize(0);
+			 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
+			 
+		 }
+		 
+	 }
+	 
+	 private void createNewStandardAccount(String accountName) throws IOException{
+		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
+		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
+	 }
+	 
+	 private DeterministicSeed reconstructSeedFromStringMnemonics(List<String> mnemonic, long creationTimeSeconds){
+		 if(validateSeedInputs(mnemonic, creationTimeSeconds) == false)
+			 return null;
+		 byte[] seed = MnemonicCode.toSeed(mnemonic, "");
+		 DeterministicSeed deterministicSeed = new DeterministicSeed(seed, "", creationTimeSeconds);
+		 return deterministicSeed;
+	 }
+	 
+	 private boolean validateSeedInputs(List<String> mnemonic, long creationTimeSeconds){
+		 if (mnemonic.size() <= 10)
+			 return false;
+		for(String word:mnemonic) 
+			if(word.length() <= 1 ||
+				word.equals(" ") == true)
+				return false;
+		if(creationTimeSeconds <= 1388534400) // 1.1.2014 00:00:00
+			return false;
+		
+		return true;
+	 }
+	
 }
