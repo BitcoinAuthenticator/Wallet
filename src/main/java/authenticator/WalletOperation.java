@@ -354,7 +354,7 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
-	/**Pushes the raw transaction the the Eligius mining pool
+	/**Pushes the raw transaction 
 	 * @throws InsufficientMoneyException */
 	public SendResult pushTxWithWallet(Transaction tx) throws IOException, InsufficientMoneyException{
 		this.LOG.info("Broadcasting to network...");
@@ -640,7 +640,7 @@ public class WalletOperation extends BASE{
 	 * @throws KeyIndexOutOfRangeException 
 	 */
 	private DeterministicKey getNextExternalKey(int accountI, boolean shouldAddToWatchList) throws AddressFormatException, IOException, NoUnusedKeyException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException{
-		DeterministicKey ret = authenticatorWalletHierarchy.getNextKey(accountI, HierarchyAddressTypes.External);
+		DeterministicKey ret = authenticatorWalletHierarchy.getNextPubKey(accountI, HierarchyAddressTypes.External);
 		if(shouldAddToWatchList)
 			addAddressToWatch( ret.toAddress(getNetworkParams()).toString() );
 		return ret;
@@ -658,7 +658,7 @@ public class WalletOperation extends BASE{
 	 * @throws AddressNotWatchedByWalletException
 	 */
 	public ECKey getECKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey, boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
-		DeterministicKey hdKey = getKeyFromAccount(accountIndex, type, addressKey, iKnowAddressFromKeyIsNotWatched);
+		DeterministicKey hdKey = getPrivKeyFromAccount(accountIndex, type, addressKey, iKnowAddressFromKeyIsNotWatched);
 		return ECKey.fromPrivate(hdKey.getPrivKeyBytes());
 	}
 	
@@ -677,11 +677,21 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException
 	 * @throws AddressNotWatchedByWalletException
 	 */
-	public DeterministicKey getKeyFromAccount(int accountIndex, 
+	public DeterministicKey getPrivKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
 			int addressKey, 
 			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
-		DeterministicKey ret = authenticatorWalletHierarchy.getKeyFromAccount(accountIndex, type, addressKey);
+		DeterministicKey ret = authenticatorWalletHierarchy.getPrivKeyFromAccount(accountIndex, type, addressKey);
+		if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
+			throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
+		return ret;
+	}
+	
+	public DeterministicKey getPubKeyFromAccount(int accountIndex, 
+			HierarchyAddressTypes type, 
+			int addressKey, 
+			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
+		DeterministicKey ret = authenticatorWalletHierarchy.getPubKeyFromAccount(accountIndex, type, addressKey);
 		if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 			throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 		return ret;
@@ -776,7 +786,7 @@ public class WalletOperation extends BASE{
 						   */
 						  if(acc.getAccountType() == WalletAccountType.StandardAccount){
 							  //THIS LINE THROWS A NULLPOINTER EXCEPTION DUE TO CHANGE IN HIERARCHY
-							  DeterministicKey hdKey = getKeyFromAccount(accountIndex,type,addressKey, false);
+							  DeterministicKey hdKey = getPubKeyFromAccount(accountIndex,type,addressKey, false);
 							  atAdd.setAddressStr(hdKey.toAddress(getNetworkParams()).toString());
 						  }
 						  else{
@@ -789,7 +799,7 @@ public class WalletOperation extends BASE{
 							ECKey authKey = getPairedAuthenticatorKey(po, addressKey);
 							
 							// wallet key
-							ECKey walletKey = getECKeyFromAccount(accountIndex, type, addressKey, true);
+							ECKey walletKey = getPubKeyFromAccount(accountIndex, type, addressKey, true);
 							
 							//get address
 							ATAddress add = getP2SHAddress(authKey, walletKey, addressKey, accountIndex, type);

@@ -98,18 +98,18 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	 * @throws NoAccountCouldBeFoundException 
  	 * @throws KeyIndexOutOfRangeException 
  	 */
- 	public DeterministicKey getNextKey(int accountIndex, HierarchyAddressTypes type) throws NoUnusedKeyException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException{
+ 	public DeterministicKey getNextPubKey(int accountIndex, HierarchyAddressTypes type) throws NoUnusedKeyException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException{
   	   AccountTracker tracker = getAccountTracker(accountIndex); //this.accountTracker.get(getAccountPlace(accountIndex));
   	   ChildNumber indx = type == HierarchyAddressTypes.External? tracker.getUnusedExternalKey(): tracker.getUnusedInternalKey();
-  	   DeterministicKey ret = getKeyFromAccount(accountIndex, type, indx);// hierarchy.deriveChild(p, false, true, indx);	
+  	   DeterministicKey ret = getPubKeyFromAccount(accountIndex, type, indx);// hierarchy.deriveChild(p, false, true, indx);	
  	    
  	   return ret;
  	}
  	
- 	public DeterministicKey getKeyFromAccount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
- 		return getKeyFromAccount(accountIndex, type, addressKey.num());
+ 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
+ 		return getPrivKeyFromAccount(accountIndex, type, addressKey.num());
  	}
- 	public DeterministicKey getKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
+ 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
  		if(addressKey > Math.pow(2, 31)) throw new KeyIndexOutOfRangeException("Key index out of range");
  		HDKeyDerivation HDKey = null;
 
@@ -133,6 +133,26 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
   	    ChildNumber ind = new ChildNumber(addressKey,false);
  	    
  	    DeterministicKey ret = temp.deriveChild(p, false, true, ind);	    
+ 		return ret;
+ 	}
+ 	
+ 	public DeterministicKey getPubKeyFromAccount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
+ 		return getPrivKeyFromAccount(accountIndex, type, addressKey.num());
+ 	}
+ 	public DeterministicKey getPubKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
+ 		if(addressKey > Math.pow(2, 31)) throw new KeyIndexOutOfRangeException("Key index out of range");
+ 		//root
+ 		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
+ 		// account
+ 		ChildNumber account = new ChildNumber(accountIndex,false);
+  	    p.add(account);
+  	    // address type
+  	    ChildNumber addressType = new ChildNumber(type.getNumber(),false); // TODO - also savings addresses
+  	    p.add(addressType);
+  	    // address
+  	    ChildNumber ind = new ChildNumber(addressKey,false);
+ 	    
+ 	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
  		return ret;
  	}
  	
