@@ -52,7 +52,7 @@ public class PaperWallet  extends BaseUI{
         Image qrMPubKey = new Image(new ByteArrayInputStream(imageBytes), 122,122, true, false);
       
         String path3 = null;
-        URL location = Main.class.getResource("PaperWallet.png");
+        URL location = Main.class.getResource("/wallettemplate/startup/PaperWallet.png");
         try {path3 = new java.io.File( "." ).getCanonicalPath() + "/paperwallet.png";} 
         catch (IOException e1) {e1.printStackTrace();}
         BufferedImage a = ImageIO.read(location);

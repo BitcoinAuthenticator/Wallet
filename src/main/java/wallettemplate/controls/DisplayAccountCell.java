@@ -26,6 +26,7 @@ import javafx.util.Duration;
 import javafx.scene.image.Image;
 
 public class DisplayAccountCell extends Region{	
+	
 	private ATAccount account;
 	private AccountCellEvents listener;
 	
@@ -187,4 +188,5 @@ public class DisplayAccountCell extends Region{
 		 */
 		public void onChangeNameRequest(DisplayAccountCell cell);
 	}
+	
 }

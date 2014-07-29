@@ -109,7 +109,7 @@ public class Main extends BAApplication {
         	Parent root;
             try {
             	StartupController.appParams = ApplicationParams;
-                root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
+                root = FXMLLoader.load(Main.class.getResource("/wallettemplate/startup/walletstartup.fxml"));
                 startup = new Stage();
                 startup.setTitle("Setup");
                 startup.initStyle(StageStyle.UNDECORATED);

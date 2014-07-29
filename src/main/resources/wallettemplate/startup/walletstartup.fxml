@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
+<?import javafx.scene.web.*?>
+<?import com.oracle.javafx.authoring.persist.*?>
 <?import java.lang.*?>
+<?import java.net.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.web.*?>
-<?import javafx.collections.*?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.StartupController">
   <children>
@@ -265,7 +269,10 @@
           </font>
         </Label>
         <Label layoutX="28.0" layoutY="40.0" prefHeight="87.0" prefWidth="541.0" text="This dialog allows you to reconstruct your wallet's accounts." wrapText="true" />
-     	<ScrollPane fx:id="scrlpane" disable="false" layoutX="28.0" layoutY="100.0" prefHeight="200.0" prefWidth="550.0" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+     	<ScrollPane fx:id="restoreAccountsScrll" disable="false" layoutX="28.0" layoutY="100.0" prefHeight="200.0" prefWidth="550.0" style="-fx-border-color: white;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+        	<stylesheets>
+                <URL value="@application.css" />
+            </stylesheets>
         </ScrollPane>
         <Button fx:id="btnAddAccount" layoutX="140.0" layoutY="320.0" prefHeight="20.0" prefWidth="100.0" contentDisplay="RIGHT" defaultButton="true" mnemonicParsing="false" onAction="#addAccount" styleClass="custom-button" text="Add Account" textAlignment="CENTER" textFill="WHITE" />
         <ChoiceBox fx:id="accountTypeBox" layoutX="245.0" layoutY="320.0" prefHeight="20.0" prefWidth="200.0">
@@ -308,7 +315,7 @@
             <graphic>
               <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                 <image>
-                  <Image url="@minimize.png" />
+                  <Image url="@/wallettemplate/minimize.png" />
                 </image>
               </ImageView>
             </graphic>
@@ -317,7 +324,7 @@
             <graphic>
               <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                 <image>
-                  <Image url="@close.png" />
+                  <Image url="@/wallettemplate/close.png" />
                 </image>
               </ImageView>
             </graphic>

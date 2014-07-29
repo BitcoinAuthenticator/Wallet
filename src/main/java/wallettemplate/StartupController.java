@@ -26,6 +26,8 @@ import javax.annotation.Nullable;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
 
+import wallettemplate.controls.RestoreAccountCell;
+import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
@@ -92,6 +94,9 @@ import javafx.stage.FileChooser;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 
 public class StartupController  extends BaseUI{
 	
@@ -150,6 +155,9 @@ public class StartupController  extends BaseUI{
 	@FXML private Label lblRestoreProcessStatus;
 	@FXML private TextField lblSeedRestorer;
 	@FXML private DatePicker seedCreationDatePicker;
+	@FXML private ChoiceBox accountTypeBox;
+	@FXML private ScrollPane restoreAccountsScrll;
+	private ScrollPaneContentManager restoreAccountsScrllContent;
 	private DeterministicSeed walletSeed;
 	NetworkParameters params = MainNetParams.get();
 	Authenticator auth;
@@ -292,6 +300,18 @@ public class StartupController  extends BaseUI{
 		 });
 		 contextMenu2.getItems().addAll(item12);
 		 lvSSS.setContextMenu(contextMenu2);
+		 
+		 // accounts restore
+		 accountTypeBox.getItems().clear();
+		 accountTypeBox.getItems().add("Standard Account");
+		 accountTypeBox.getItems().add("Paired Bitcoin Authenticator Account");
+		 accountTypeBox.setTooltip(new Tooltip("Select Account Type"));
+		 accountTypeBox.setValue("Standard Account");
+		 
+		 restoreAccountsScrllContent = new ScrollPaneContentManager().setSpacingBetweenItems(15)
+				 							.setScrollStyle(restoreAccountsScrll.getStyle());
+		 restoreAccountsScrll.setContent(restoreAccountsScrllContent);
+		 restoreAccountsScrll.setHbarPolicy(ScrollBarPolicy.NEVER);
 	 }
 	 
 	 @FXML protected void drag1(MouseEvent event) {
@@ -587,7 +607,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void goRestoreFromSeed(ActionEvent event){
-		 DeterministicSeed seed = reconstructSeed();
+		 /*DeterministicSeed seed = reconstructSeed();
 		 if(seed != null){
 			 try {
 				createWallet(seed);
@@ -609,7 +629,8 @@ public class StartupController  extends BaseUI{
 		        .title("Error")
 		        .masthead("Cannot Restore from Mnemonic Seed")
 		        .message("Please try again")
-		        .showError();
+		        .showError();*/
+		 launchRestoreAccoutns(RestoreFromMnemonicPane);
 		
 	 }
 	 
@@ -639,6 +660,8 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void addAccount(ActionEvent event){
+		 RestoreAccountCell cell = new RestoreAccountCell();
+		 restoreAccountsScrllContent.addItem(cell);
 	 }
 	 
 	 private Node previousNode;
