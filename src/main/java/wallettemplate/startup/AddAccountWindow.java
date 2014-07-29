@@ -121,7 +121,7 @@ public class AddAccountWindow{
     
     @FXML protected void pair(ActionEvent event){
     	Stage pairWindow = null;
-    	pairWindow = loadFXML(pairWindow, getViewURL("/wallettemplate/pair_wallet.fxml"), 635, 340);
+    	pairWindow = loadFXML(pairWindow, getViewURL("/wallettemplate/pair_wallet.fxml"), 665, 340);
     	pairWindow.show();
     }
 }

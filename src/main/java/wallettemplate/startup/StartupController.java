@@ -61,9 +61,11 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
 
+import javafx.geometry.Pos;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.Animation;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.value.ChangeListener;
@@ -100,6 +102,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.util.Duration;
 
 public class StartupController  extends BaseUI{
 	
@@ -113,6 +116,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane RestoreFromMnemonicPane;
 	@FXML private Pane RestoreProcessPane;
 	@FXML private Pane RestoreAccountsPane;
+	@FXML private Pane LoadingPane;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
 	@FXML private Button btnNewWallet;
@@ -160,6 +164,7 @@ public class StartupController  extends BaseUI{
 	@FXML private DatePicker seedCreationDatePicker;
 	@FXML private ChoiceBox accountTypeBox;
 	@FXML private ScrollPane restoreAccountsScrll;
+	@FXML private Label lblLoading;
 	private ScrollPaneContentManager restoreAccountsScrllContent;
 	private DeterministicSeed walletSeed;
 	NetworkParameters params = MainNetParams.get();
@@ -315,6 +320,15 @@ public class StartupController  extends BaseUI{
 				 							.setScrollStyle(restoreAccountsScrll.getStyle());
 		 restoreAccountsScrll.setContent(restoreAccountsScrllContent);
 		 restoreAccountsScrll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		 
+		 // loading pane
+		 Label labelLoading = AwesomeDude.createIconLabel(AwesomeIcon.GEAR, "45");
+		 lblLoading.setAlignment(Pos.CENTER);
+		 lblLoading.setGraphic(labelLoading);
+		 RotateTransition rt = new RotateTransition(Duration.millis(2000),lblLoading);
+         rt.setByAngle(360);
+         rt.setCycleCount(10000);
+         rt.play();
 	 }
 	 
 	 @FXML protected void drag1(MouseEvent event) {
@@ -337,10 +351,8 @@ public class StartupController  extends BaseUI{
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
 
 		 createWallet(null);
-		 
 		// create master public key
 		 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
-		 
 		 // set Authenticator wallet
 		 auth = new Authenticator(masterPubKey, appParams);
 		 
@@ -610,7 +622,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void goRestoreFromSeed(ActionEvent event){
-		 /*DeterministicSeed seed = reconstructSeed();
+		 DeterministicSeed seed = reconstructSeed();
 		 if(seed != null){
 			 try {
 				createWallet(seed);
@@ -632,9 +644,7 @@ public class StartupController  extends BaseUI{
 		        .title("Error")
 		        .masthead("Cannot Restore from Mnemonic Seed")
 		        .message("Please try again")
-		        .showError();*/
-		 launchRestoreAccoutns(RestoreFromMnemonicPane);
-		
+		        .showError();
 	 }
 	 
 	 private DeterministicSeed reconstructSeed(){
@@ -688,9 +698,25 @@ public class StartupController  extends BaseUI{
 	 
 	 private Node previousNode;
 	 private void launchRestoreAccoutns(Node node){
+		 // create master public key
+		 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
+		 // set Authenticator wallet
+		 auth = new Authenticator(masterPubKey, appParams);
 		 node.setVisible(false);
 		 previousNode = node;
-		 RestoreAccountsPane.setVisible(true);
+		 LoadingPane.setVisible(true);
+		 auth.startAsync();
+		 auth.addListener(new Service.Listener() {
+				@Override public void running() {
+					Platform.runLater(new Runnable() { 
+						  @Override
+						  public void run() {
+							  RestoreAccountsPane.setVisible(true);
+							  LoadingPane.setVisible(false);
+						  }
+					});
+		         }
+			}, MoreExecutors.sameThreadExecutor());
 	 }
 	 
 	 public static interface AddAccountListener{
