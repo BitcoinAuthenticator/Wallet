@@ -29,6 +29,7 @@ import org.controlsfx.dialog.Dialogs;
 import wallettemplate.Main;
 import wallettemplate.PaperWallet;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
@@ -670,7 +671,12 @@ public class StartupController  extends BaseUI{
 		 AddAccountWindow w = new AddAccountWindow(type, new AddAccountListener(){
 			@Override
 			public void addedAccount(AddedAccountObject acc) {
-				RestoreAccountCell cell = new RestoreAccountCell();
+				RestoreAccountCell cell = new RestoreAccountCell(type, new AccountCellListener(){
+					@Override
+					public void close(RestoreAccountCell cell) {
+						restoreAccountsScrllContent.removeNode(cell);
+					}
+				});
 				cell.setAccountTypeName(accountTypeBox.getValue().toString());
 				cell.setAccountID(Integer.toString(acc.accountAccountID));
 				cell.setAccountName(acc.accountName);

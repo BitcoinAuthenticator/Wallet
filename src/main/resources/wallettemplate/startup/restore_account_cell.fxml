@@ -51,7 +51,7 @@
 	<children>
 	<VBox fx:id="closeBox" alignment="CENTER_RIGHT" prefHeight="160.0" prefWidth="100.0">
 		<children>
-			<Button fx:id="btnClose" focusTraversable="false" mnemonicParsing="false" style="-fx-background-color: transperent;-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
+			<Button fx:id="btnClose" focusTraversable="false" mnemonicParsing="false" onAction="#close" style="-fx-background-color: transperent;-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
 				  <graphic>
 				    <ImageView fx:id="ivAuth" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" x="0.0">
 				      <image>
@@ -70,23 +70,7 @@
 	</VBox>
 	<VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
 		<children>
-			<Button fx:id="btnDone" focusTraversable="false" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
-			  <graphic>
-			    <ImageView fx:id="ivAuth" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" x="0.0">
-			      <image>
-			        <Image url="@/wallettemplate/authenticator_logo_plain_small.png" />
-			      </image>
-			    </ImageView>
-			    <ImageView fx:id="ivBitcoin" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" x="0.0">
-			      <image>
-			        <Image url="@/wallettemplate/bitcoin_logo_plain_small.png" />
-			      </image>
-			    </ImageView>
-			  </graphic>
-				<HBox.margin>
-				<Insets left="10.0" />
-				</HBox.margin>
-			</Button>
+			<ImageView fx:id="ivLogo" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" x="0.0" />
 		</children>
 	<padding>
 	<Insets top="10.0" />

@@ -51,23 +51,25 @@ public class AddAccountWindow{
 	public AddAccountWindow( WalletAccountType type, AddAccountListener lis) {
 		 listener = lis;
 		 this.type = type;
-		 this.loadFXML();
+		 stage = loadFXML(stage, getViewURL(getViewPath(type)), 328, 370);
     }
 	
 	@SuppressWarnings("restriction")
-	private void loadFXML() {    	
-		stage = new Stage();
+	private Stage loadFXML(Stage s, URL url, int width, int height) {    	
+		s = new Stage();
 		try {
-			FXMLLoader loader = new FXMLLoader(getViewURL(type));
-			stage.setTitle("Add Account");
+			FXMLLoader loader = new FXMLLoader(url);
+			s.setTitle("Add Account");
 	    	Scene scene;
-			scene = new Scene((AnchorPane) loader.load(), 328, 370);
+			scene = new Scene((AnchorPane) loader.load(), width, height);
 			final String file = TextFieldValidator.class.getResource("GUI.css").toString();
 	        scene.getStylesheets().add(file); 
-	        stage.setScene(scene);	
+	        s.setScene(scene);	
+	        return s;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
     }
 	
 	private String getViewPath(WalletAccountType type) {
@@ -77,8 +79,8 @@ public class AddAccountWindow{
 			return "startup/addPairedAccount.fxml";
     }
 
-    private URL getViewURL(WalletAccountType type) {
-        return Main.class.getResource(this.getViewPath(type));
+    private URL getViewURL(String path) {
+        return Main.class.getResource(path);
     }
     
     public void show(){
@@ -118,6 +120,8 @@ public class AddAccountWindow{
 	 }
     
     @FXML protected void pair(ActionEvent event){
-    	
+    	Stage pairWindow = null;
+    	pairWindow = loadFXML(pairWindow, getViewURL("/wallettemplate/pair_wallet.fxml"), 635, 340);
+    	pairWindow.show();
     }
 }

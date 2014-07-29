@@ -12,6 +12,7 @@ import wallettemplate.Main;
 import wallettemplate.Main.OverlayUI;
 import authenticator.network.OneName;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,13 +30,19 @@ public class RestoreAccountCell extends Region{
 	@FXML private Label lblAccountType;
 	@FXML private Label lblAccountID;
 	@FXML private Label lblAccountName;
-	@FXML private ImageView ivAuth;
-	@FXML private ImageView ivBitcoin;
+	@FXML private ImageView ivLogo;
+	
+	AccountCellListener listener;
 	
 	@SuppressWarnings("restriction")
-	public RestoreAccountCell() {
+	public RestoreAccountCell(WalletAccountType type, AccountCellListener r) {
+		this.listener = r;
         this.loadFXML();
         this.setSnapToPixel(true);
+        if(type == WalletAccountType.StandardAccount)
+        	ivLogo.setImage(new Image("/wallettemplate/bitcoin_logo_plain_small.png"));
+        else
+        	ivLogo.setImage(new Image("/wallettemplate/authenticator_logo_plain_small.png"));
       }
 	
 	public void setAccountTypeName(String value){
@@ -72,5 +79,14 @@ public class RestoreAccountCell extends Region{
 
     private URL getViewURL() {
         return Main.class.getResource(this.getViewPath());
+    }
+    
+    @FXML protected void close(ActionEvent event){
+		 if(this.listener != null)
+			 this.listener.close(this);
+	 }
+    
+    public interface AccountCellListener{
+    	public void close(RestoreAccountCell cell);
     }
 }
