@@ -6,6 +6,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+import authenticator.Authenticator;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import authenticator.hierarchy.exceptions.NoUnusedKeyException;
@@ -35,10 +36,12 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	DeterministicKey rootKey;
  	List<AccountTracker> accountTracker;
  	int nextAvailableAccount;
+ 	HierarchyCoinTypes typeBitcoin;
  	
  	@SuppressWarnings("static-access")
  	public BAHierarchy(){}
  	public BAHierarchy(DeterministicKey masterkey, HierarchyCoinTypes coinType){
+ 		typeBitcoin = coinType;
  		HDKeyDerivation HDKey = null;
      	// purpose level
      	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,false); // is not harden
@@ -98,19 +101,28 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	public DeterministicKey getNextKey(int accountIndex, HierarchyAddressTypes type) throws NoUnusedKeyException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException{
   	   AccountTracker tracker = getAccountTracker(accountIndex); //this.accountTracker.get(getAccountPlace(accountIndex));
   	   ChildNumber indx = type == HierarchyAddressTypes.External? tracker.getUnusedExternalKey(): tracker.getUnusedInternalKey();
-  	   DeterministicKey ret = getKeyFromAcoount(accountIndex, type, indx);// hierarchy.deriveChild(p, false, true, indx);	
+  	   DeterministicKey ret = getKeyFromAccount(accountIndex, type, indx);// hierarchy.deriveChild(p, false, true, indx);	
  	    
  	   return ret;
  	}
  	
- 	public DeterministicKey getKeyFromAcoount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
- 		return getKeyFromAcoount(accountIndex, type, addressKey.num());
+ 	public DeterministicKey getKeyFromAccount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
+ 		return getKeyFromAccount(accountIndex, type, addressKey.num());
  	}
- 	public DeterministicKey getKeyFromAcoount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
+ 	public DeterministicKey getKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
  		if(addressKey > Math.pow(2, 31)) throw new KeyIndexOutOfRangeException("Key index out of range");
- 		
+ 		HDKeyDerivation HDKey = null;
+
+ 		DeterministicKey masterkey = HDKey.createMasterPrivateKey(Authenticator.getWalletOperation().mWalletWrapper.trackedWallet.getKeyChainSeed().getSecretBytes());
+     	// purpose level
+     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,false); // is not harden
+     	DeterministicKey purpose = HDKey.deriveChildKey(masterkey,purposeIndex);
+     	// coin level
+     	ChildNumber coinIndex = new ChildNumber(typeBitcoin.getNumber(),false); // is not harden
+     	DeterministicKey coin = HDKey.deriveChildKey(purpose,coinIndex);
+ 		DeterministicHierarchy temp = new DeterministicHierarchy(coin);
  		// root
- 		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
+ 		List<ChildNumber> p = new ArrayList<ChildNumber>(coin.getPath());
  		// account
  		ChildNumber account = new ChildNumber(accountIndex,false);
   	    p.add(account);
@@ -120,7 +132,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
   	    // address
   	    ChildNumber ind = new ChildNumber(addressKey,false);
  	    
- 	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
+ 	    DeterministicKey ret = temp.deriveChild(p, false, true, ind);	    
  		return ret;
  	}
  	

@@ -45,7 +45,7 @@ import com.google.bitcoin.wallet.DefaultCoinSelector;
  */
 public class WalletWrapper extends BASE{
 
-	private Wallet trackedWallet;
+	public Wallet trackedWallet;
 	private PeerGroup mPeerGroup;
 	public WalletWrapper(Wallet wallet, PeerGroup peerGroup){
 		super(WalletWrapper.class);

@@ -86,7 +86,7 @@ import com.google.common.collect.ImmutableList;
  */
 public class WalletOperation extends BASE{
 	
-	private static WalletWrapper mWalletWrapper;
+	public static WalletWrapper mWalletWrapper;
 	private static BAHierarchy authenticatorWalletHierarchy;
 	public static ConfigFile configFile;
 	private static Logger staticLogger;
@@ -681,7 +681,7 @@ public class WalletOperation extends BASE{
 			HierarchyAddressTypes type, 
 			int addressKey, 
 			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
-		DeterministicKey ret = authenticatorWalletHierarchy.getKeyFromAcoount(accountIndex, type, addressKey);
+		DeterministicKey ret = authenticatorWalletHierarchy.getKeyFromAccount(accountIndex, type, addressKey);
 		if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 			throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 		return ret;
@@ -775,6 +775,7 @@ public class WalletOperation extends BASE{
 						   * Standard Pay-To-PubHash
 						   */
 						  if(acc.getAccountType() == WalletAccountType.StandardAccount){
+							  //THIS LINE THROWS A NULLPOINTER EXCEPTION DUE TO CHANGE IN HIERARCHY
 							  DeterministicKey hdKey = getKeyFromAccount(accountIndex,type,addressKey, false);
 							  atAdd.setAddressStr(hdKey.toAddress(getNetworkParams()).toString());
 						  }
