@@ -1,4 +1,4 @@
-package wallettemplate.controls;
+package wallettemplate.startup;
 
 import java.awt.Button;
 import java.io.IOException;
@@ -37,6 +37,18 @@ public class RestoreAccountCell extends Region{
         this.loadFXML();
         this.setSnapToPixel(true);
       }
+	
+	public void setAccountTypeName(String value){
+		lblAccountType.setText(value);
+	}
+	
+	public void setAccountID(String value){
+		lblAccountID.setText(value);
+	}
+	
+	public void setAccountName(String value){
+		lblAccountName.setText(value);
+	}
 	
 	@SuppressWarnings("restriction")
 	private void loadFXML() {

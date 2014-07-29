@@ -1,4 +1,4 @@
-package wallettemplate;
+package wallettemplate.startup;
 
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
@@ -26,7 +26,8 @@ import javax.annotation.Nullable;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
 
-import wallettemplate.controls.RestoreAccountCell;
+import wallettemplate.Main;
+import wallettemplate.PaperWallet;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
@@ -39,6 +40,7 @@ import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
 import authenticator.operations.BAWalletRestorer;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
 import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.DownloadListener;
@@ -660,8 +662,22 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void addAccount(ActionEvent event){
-		 RestoreAccountCell cell = new RestoreAccountCell();
-		 restoreAccountsScrllContent.addItem(cell);
+		 WalletAccountType type;
+		 if(accountTypeBox.getValue().toString().equals("Standard Account"))
+			 type = WalletAccountType.StandardAccount;
+		 else
+			 type = WalletAccountType.AuthenticatorAccount;
+		 AddAccountWindow w = new AddAccountWindow(type, new AddAccountListener(){
+			@Override
+			public void addedAccount(AddedAccountObject acc) {
+				RestoreAccountCell cell = new RestoreAccountCell();
+				cell.setAccountTypeName(accountTypeBox.getValue().toString());
+				cell.setAccountID(Integer.toString(acc.accountAccountID));
+				cell.setAccountName(acc.accountName);
+				restoreAccountsScrllContent.addItem(cell);
+			}
+		 });
+		 w.show();
 	 }
 	 
 	 private Node previousNode;
@@ -669,6 +685,22 @@ public class StartupController  extends BaseUI{
 		 node.setVisible(false);
 		 previousNode = node;
 		 RestoreAccountsPane.setVisible(true);
+	 }
+	 
+	 public static interface AddAccountListener{
+		 public void addedAccount(AddedAccountObject acc);
+	 }
+	 
+	 public static class AddedAccountObject{
+		 WalletAccountType type;
+		 String accountName;
+		 int accountAccountID;
+		 
+		 public AddedAccountObject(WalletAccountType type, String accountName, int accountAccountID){
+			 this.type = type;
+			 this.accountName = accountName;
+			 this.accountAccountID = accountAccountID;
+		 }
 	 }
 	 
 	 //##############################
