@@ -26,20 +26,13 @@ import authenticator.operations.OnOperationUIUpdate;
  * opens a port for Alice, displays a QR code for the user to scan, and receives the master public key and chaincode.
  */
 public class PairingProtocol {
-	/*public  DataInputStream in;
-	public  DataOutputStream out;
-	public static byte[] chaincode;
-	public static byte[] mPubKey;
-	public static byte[] gcmRegId;
-	public static byte[] pairingID;
-	public static SecretKey sharedsecret;*/
-	//public  SecretKey sharedsecret;
 	
   /**
    * Run a complete process of pairing with an authenticator device.<br>
    * args[]:
    * <ol>
    * <li>Pairing name</li>
+   * <li>Account ID, could be blank ("") if none is provided</li>
    * <li>Pair type, by default "blockchain"</li>
    * <li>NetworkType - 1 for main net, 0 for testnet</li>
    * </ol>
@@ -58,7 +51,7 @@ public class PairingProtocol {
 		  Runnable animationAfterPairing) throws Exception {
 
 	  assert(args != null);
-	  String walletType = args[1];
+	  String walletType = args[2];
 
 	  //UpNp plugnplay = new UpNp();
 	  String ip = netInfo.EXTERNAL_IP;//plugnplay.getExternalIP();
@@ -75,7 +68,7 @@ public class PairingProtocol {
       String key = EncodingUtils.bytesToHex(raw);
 	  
 	  //Display a QR code for the user to scan
-	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[2]));
+	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[3]));
 	  Socket socket = dispalyQRAnListenForCommunication(ss, listener,displayQRAnimation, animationAfterPairing);
 	  if(socket == null)
 		  return;
@@ -96,6 +89,7 @@ public class PairingProtocol {
 		  String chaincode = (String) jsonObject.get("chaincode");
 		  String pairingID = (String) jsonObject.get("pairID");
 		  String GCM = (String) jsonObject.get("gcmID");
+		  Integer accID = args[1].length() == 0? null:Integer.parseInt(args[1]);
 		  //Save to file
 		  wallet.generateNewPairing(mPubKey, 
 				  chaincode, 
@@ -103,6 +97,7 @@ public class PairingProtocol {
 				  GCM, 
 				  pairingID, 
 				  args[0], 
+				  accID,
 				  NetworkType.fromString(args[2]));
 	  }
 	  else {

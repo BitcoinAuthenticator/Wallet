@@ -3,6 +3,10 @@ package wallettemplate.startup;
 import java.awt.Button;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.annotation.Nullable;
 
 import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
@@ -12,13 +16,17 @@ import com.google.bitcoin.core.Coin;
 import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.Main.OverlayUI;
+import wallettemplate.PairWallet;
+import wallettemplate.PairWallet.PairingWalletControllerListener;
 import wallettemplate.startup.StartupController.AddAccountListener;
 import wallettemplate.startup.StartupController.AddedAccountObject;
+import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.TextFieldValidator;
 import authenticator.network.OneName;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -36,7 +44,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AddAccountWindow{	
+public class AddAccountWindow extends BaseUI{	
 	@FXML private TextArea txfAccountID;
 	@FXML private TextArea txfAccountName;
 	//@FXML private TextArea txfAccountName;
@@ -46,22 +54,35 @@ public class AddAccountWindow{
 	
 	static Stage stage;
 	
-	public AddAccountWindow(){}
+	boolean isPaired = false;
+	
+	public AddAccountWindow(){ super(AddAccountWindow.class); }
 	@SuppressWarnings("restriction")
 	public AddAccountWindow( WalletAccountType type, AddAccountListener lis) {
+		 super(AddAccountWindow.class);
 		 listener = lis;
 		 this.type = type;
-		 stage = loadFXML(stage, getViewURL(getViewPath(type)), 328, 370);
+		 stage = loadFXML(stage, getViewURL(getViewPath(type)), 328, 370, null, null);
     }
 	
 	@SuppressWarnings("restriction")
-	private Stage loadFXML(Stage s, URL url, int width, int height) {    	
+	private Stage loadFXML(Stage s, URL url, int width, int height, @Nullable ArrayList<Object> param, @Nullable PairingWalletControllerListener l) {    	
 		s = new Stage();
 		try {
 			FXMLLoader loader = new FXMLLoader(url);
 			s.setTitle("Add Account");
 	    	Scene scene;
 			scene = new Scene((AnchorPane) loader.load(), width, height);
+			if(param != null){
+				BaseUI controller = loader.<BaseUI>getController();
+				try{
+					PairWallet w = loader.<PairWallet>getController();
+					w.setListener(l);
+				}
+				catch (Exception e){ }
+				controller.setParams(param);
+				controller.updateUIBecauseForParams();
+			}
 			final String file = TextFieldValidator.class.getResource("GUI.css").toString();
 	        scene.getStylesheets().add(file); 
 	        s.setScene(scene);	
@@ -98,6 +119,9 @@ public class AddAccountWindow{
     	if(txfAccountName.getText().length() <= 2)
     		return false;
     	
+    	if(!isPaired)
+    		return false;
+    	
     	return true;
     }
     
@@ -121,7 +145,33 @@ public class AddAccountWindow{
     
     @FXML protected void pair(ActionEvent event){
     	Stage pairWindow = null;
-    	pairWindow = loadFXML(pairWindow, getViewURL("/wallettemplate/pair_wallet.fxml"), 665, 340);
+    	pairWindow = loadFXML(pairWindow, 
+    			getViewURL("/wallettemplate/pair_wallet.fxml"), 
+    			700, 340, 
+    			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
+    			new PairingWalletControllerListener(){
+					@Override
+					public void onPairedWallet() {
+						isPaired = true;
+					}
+
+					@SuppressWarnings("restriction")
+					@Override
+					public void onFailed(Exception e) {
+						isPaired = false;
+						Platform.runLater(new Runnable() {
+					        @Override
+					        public void run() {
+					        	Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Error !")
+							        .masthead("Something is wrong")
+							        .message("Pairing Failed")
+							        .showInformation(); 
+					        }
+						});
+					}
+    			});
     	pairWindow.show();
     }
 }

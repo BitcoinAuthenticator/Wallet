@@ -32,9 +32,17 @@ public class BaseUI {
 		arrParams = param;
 	}
 	
-	public void loadParams()
-	{
+	public void updateUIBecauseForParams(){
 		
+	}
+	
+	protected boolean hasParameters(){
+		if(arrParams == null)
+			return false;
+		if(arrParams.size() == 0)
+			return false;
+		
+		return true;
 	}
 
     public void cancel() {

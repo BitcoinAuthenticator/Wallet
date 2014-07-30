@@ -60,10 +60,8 @@ public class RestoreAccountCell extends Region{
 	@SuppressWarnings("restriction")
 	private void loadFXML() {
         FXMLLoader loader = new FXMLLoader();
- 
         loader.setController(this);
         loader.setLocation(this.getViewURL());
- 
         try {
             Node root = (Node) loader.load();
             this.getChildren().add(root);

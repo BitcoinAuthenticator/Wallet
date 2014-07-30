@@ -87,13 +87,19 @@ public class OperationsFactory extends BASE{
 	}
 
 	/**
-	 * An operation for pairing the wallet with an Authenticator app.
+	 * An operation for pairing the wallet with an Authenticator app.<br> 
 	 * 
+	 * @param wallet
 	 * @param pairingName
+	 * @param accountID - if != null will force the account ID
+	 * @param networkType
+	 * @param animation
+	 * @param animationAfterPairing
 	 * @return
 	 */
 	static public BAOperation PAIRING_OPERATION(WalletOperation wallet,
 			String pairingName, 
+			@Nullable Integer accountID,
 			NetworkType networkType, 
 			Runnable animation,
 			Runnable animationAfterPairing){
@@ -102,7 +108,7 @@ public class OperationsFactory extends BASE{
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, "blockchain", Integer.toString(networkType.getValue()) })
+					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "blockchain", Integer.toString(networkType.getValue()) })
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;

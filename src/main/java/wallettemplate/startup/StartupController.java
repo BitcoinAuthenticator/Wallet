@@ -787,7 +787,6 @@ public class StartupController  extends BaseUI{
 			 wallet = Wallet.fromSeed(params,walletSeed);
 			 wallet.setKeychainLookaheadSize(0);
 			 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
-			 
 		 }
 		 
 	 }

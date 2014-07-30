@@ -580,21 +580,42 @@ public class WalletOperation extends BASE{
  	 */
  	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type) throws IOException{
  		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount().getAccountIndex();
- 		ATAccount.Builder b = ATAccount.newBuilder();
- 						  b.setIndex(accoutnIdx);
- 						 // b.setLastExternalIndex(0);
- 						  //b.setLastInternalIndex(0);
- 						  b.setConfirmedBalance(0);
- 						  b.setUnConfirmedBalance(0);
- 						  b.setNetworkType(nt.getValue());
- 						  b.setAccountName(accountName);
- 						  b.setAccountType(type);
-						  
+ 		ATAccount b = completeAccountObject(nt, accoutnIdx, accountName, type);
 		writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
- 	    configFile.addAccount(b.build());
- 	    staticLogger.info("Generated new account at index, " + accoutnIdx);
- 		return b.build();
+		addNewAccountToRegister(b);
+ 		return b;
  	}
+ 	
+ 	/**
+ 	 * Giving the necessary params, will return a complete {@link authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount ATAccount} object
+ 	 * 
+ 	 * @param nt
+ 	 * @param accoutnIdx
+ 	 * @param accountName
+ 	 * @param type
+ 	 * @return
+ 	 */
+ 	private ATAccount completeAccountObject(NetworkType nt, int accoutnIdx, String accountName, WalletAccountType type){
+ 		ATAccount.Builder b = ATAccount.newBuilder();
+						  b.setIndex(accoutnIdx);
+						  b.setConfirmedBalance(0);
+						  b.setUnConfirmedBalance(0);
+						  b.setNetworkType(nt.getValue());
+						  b.setAccountName(accountName);
+						  b.setAccountType(type);
+		return b.build();
+ 	}
+ 	
+ 	/**
+ 	 * Register an account in the config file. Should be used whenever a new account is created
+ 	 * @param b
+ 	 * @throws IOException
+ 	 */
+ 	private void addNewAccountToRegister(ATAccount b) throws IOException{
+ 		configFile.addAccount(b);
+ 	    staticLogger.info("Generated new account at index, " + b.getIndex());
+ 	}
+ 	
  	
  	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName) throws IOException{
 		ATAccount ret = generateNewAccount(nt, accountName, WalletAccountType.StandardAccount);
@@ -1107,14 +1128,34 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
+	/**
+	 * If accID is provided, will not create a new account but will use the account ID
+	 * 
+	 * @param authMpubkey
+	 * @param authhaincode
+	 * @param sharedAES
+	 * @param GCM
+	 * @param pairingID
+	 * @param pairName
+	 * @param accID
+	 * @param nt
+	 * @throws IOException
+	 */
 	public void generateNewPairing(String authMpubkey, 
 			String authhaincode, 
 			String sharedAES, 
 			String GCM, 
 			String pairingID, 
 			String pairName,
+			@Nullable Integer accID,
 			NetworkType nt) throws IOException{
-		int accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
+		int accountID ;
+		if( accID == null )
+			accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
+		else{
+			accountID = accID;
+			addNewAccountToRegister(this.completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount));
+		}
 		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnNewPairedAuthenticator();
 	}

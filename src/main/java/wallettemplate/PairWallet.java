@@ -36,19 +36,33 @@ public class PairWallet extends BaseUI{
 	public ImageView imgViewQR;
     public Main.OverlayUI overlayUi;
     
+    PairingWalletControllerListener listener;
+    
+    Runnable animDisplay;
+    Runnable animAfterPairing;
+    
     public void initialize() {
         super.initialize(PairWallet.class);
         doneBtn.setDisable(true);
     }
-    private void runPairing(String pairName) throws IOException
-    {
-    	Runnable animDisplay = getAnimationForDisplayingQR();
-    	Runnable animAfterPairing = getAnimationForAfterPairing();
-    	
+    
+    @SuppressWarnings("restriction")
+	@Override
+    public void updateUIBecauseForParams(){
+    	if(hasParameters()){
+        	textfield.setText(arrParams.get(0).toString());
+        	textfield.setEditable(false);
+        	textfield.setDisable(true);
+        }
+	}
+    
+    private void runPairing(String pairName, @Nullable Integer accountID) throws IOException
+    {    	
     	textarea.appendText("Pairing setup ..\n");
     	
     	BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
+    			accountID,
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
     			animDisplay, 
     			animAfterPairing).SetOperationUIUpdate(new OnOperationUIUpdate(){
@@ -79,6 +93,8 @@ public class PairWallet extends BaseUI{
 			@SuppressWarnings("restriction")
 			@Override
 			public void onFinished(String str) {
+				if( listener != null)
+					listener.onPairedWallet();
 				Platform.runLater(new Runnable() {
 			        @Override
 			        public void run() {
@@ -95,6 +111,8 @@ public class PairWallet extends BaseUI{
 			@SuppressWarnings("restriction")
 			@Override
 			public void onError(@Nullable Exception e, @Nullable Throwable t) {
+				if( listener != null)
+					listener.onFailed(e);
 				Platform.runLater(new Runnable() {
 					@Override
 			        public void run() {
@@ -111,11 +129,20 @@ public class PairWallet extends BaseUI{
     
     @FXML
     public void run(ActionEvent event) throws IOException {
+    	if (animDisplay == null || animAfterPairing == null)
+    		prepareAnimations();
+    	
     	if(textfield.getText().length() > 0)
     	{
     		// in case any messages are on 
     		textarea.clear();
-    		this.runPairing(textfield.getText());
+    		if(hasParameters()){
+    			String name = arrParams.get(0).toString();
+    			Integer accID = Integer.parseInt(arrParams.get(1).toString());
+    			this.runPairing(name, accID);
+    		}
+    		else
+    			this.runPairing(textfield.getText(), null);
     	}
     	else
     	{
@@ -124,18 +151,30 @@ public class PairWallet extends BaseUI{
     							"===========================================\n");
     	}
     }
+    
+    public void setListener(PairingWalletControllerListener l){
+    	listener = l;
+    }
 
     @FXML
     public void cancel(ActionEvent event) {
-    	super.cancel();
-        overlayUi.done();
+    	if(overlayUi != null)
+    		overlayUi.done();
     }
     
     @FXML
     public void done(ActionEvent event) {
-    	overlayUi.done();
+    	if(overlayUi != null)
+    		overlayUi.done();
+    	else
+    		doneBtn.setDisable(true);
     }
     
+    public void prepareAnimations(){
+    	animDisplay = getAnimationForDisplayingQR();
+    	animAfterPairing = getAnimationForAfterPairing();
+    }
+        
     public Runnable getAnimationForDisplayingQR(){
     	return new Runnable(){
 
@@ -184,5 +223,10 @@ public class PairWallet extends BaseUI{
 			}
     		
     	};
+    }
+    
+    public interface PairingWalletControllerListener{
+    	public void onPairedWallet();
+    	public void onFailed(Exception e);
     }
 }
