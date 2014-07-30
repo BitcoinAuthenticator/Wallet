@@ -137,7 +137,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	}
  	
  	public DeterministicKey getPubKeyFromAccount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
- 		return getPrivKeyFromAccount(accountIndex, type, addressKey.num());
+ 		return getPubKeyFromAccount(accountIndex, type, addressKey.num());
  	}
  	public DeterministicKey getPubKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
  		if(addressKey > Math.pow(2, 31)) throw new KeyIndexOutOfRangeException("Key index out of range");

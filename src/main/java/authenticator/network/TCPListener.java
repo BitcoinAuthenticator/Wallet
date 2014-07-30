@@ -20,8 +20,6 @@ import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.protobuf.ByteString;
 
-import eu.hansolo.enzo.notification.Notification;
-import eu.hansolo.enzo.notification.Notification.Notifier;
 import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;

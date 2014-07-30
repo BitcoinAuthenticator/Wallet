@@ -300,8 +300,8 @@ public class Controller  extends BaseUI{
 	   });
 		
 		// wallet lock/ unlock
-		Tooltip.install(btnUnlocked, new Tooltip("Click to Unlock wallet"));
-		Tooltip.install(btnLocked, new Tooltip("Click to Lock wallet"));
+		Tooltip.install(btnLocked, new Tooltip("Click to Unlock Wallet"));
+		Tooltip.install(btnUnlocked, new Tooltip("Click to Lock Wallet"));
     }
     
     /**
@@ -337,7 +337,6 @@ public class Controller  extends BaseUI{
     	 */
     	 setReceiveAddresses();
          setTxHistoryContent();
-         setLockIcons();
          
          setupOneName(Authenticator.getWalletOperation().getOnename());
          try {refreshBalanceLabel();} 
@@ -383,7 +382,7 @@ public class Controller  extends BaseUI{
 					  public void run() {
 							Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
 							// Create a custom Notification without icon
-							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received :" + 
+							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received: " + 
 									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
 									"\n" + 
 									"Status: " + (confidence == ConfidenceType.PENDING? "Pending":"Confirmed"), logo);
@@ -720,61 +719,8 @@ public class Controller  extends BaseUI{
  	     AppsPane.setVisible(true);
     }
    
-   private void setLockIcons(){
-	   LOG.info("Updatting wallet locking ");
-	   if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-		   btnLocked.setVisible(false);
-		   btnUnlocked.setVisible(true);
-		}
-	   else{
-		   btnLocked.setVisible(true);
-		   btnUnlocked.setVisible(false);
-	   }
-   }
    
-   /**
-    * called when user presses the unlocked icon
-    * @param event
-    */
-   @FXML protected void lockWallet(ActionEvent event){
-	   Optional<String> response = Dialogs.create()
-   	        .owner(stage)
-   	        .title("Encrypt Wallet")
-   	        .message("Please Insert a wallet password")
-   	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-   	        .showTextInput("Password");
-   		if (response.isPresent()){
-   			Authenticator.getWalletOperation().encryptWallet(response.get());
-   			setLockIcons();
-   		}
-   }
    
-   /**
-    * called when user presses the locked icon 
-    * @param event
-    */
-   @FXML protected void unlockWallet(ActionEvent event){
-	   Optional<String> response = Dialogs.create()
-   	        .owner(stage)
-   	        .title("Decrypt Wallet")
-   	        .message("Please Insert your wallet's password")
-   	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-   	        .showTextInput("Password");
-	   	if (response.isPresent())
-	   		try{
-	   			Authenticator.getWalletOperation().decryptWallet(response.get());
-	   			setLockIcons();
-	   		}
-	   		catch(KeyCrypterException e){
-	   			Dialogs.create()
-	       	        .owner(stage)
-	       	        .title("Error !")
-	       	        .message("You have not entered the right wallet password")
-	       	        .actions(Dialog.Actions.OK)
-	       	        .showWarning();
-	   		}
-		   
-   }
    
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
@@ -798,6 +744,52 @@ public class Controller  extends BaseUI{
  	//	Overview Pane
  	//
  	//#####################################
+   
+   /**
+    * called when user presses the unlocked icon
+    * @param event
+    */
+   @FXML protected void lockWallet(ActionEvent event){
+	   
+   }
+   
+   /**
+    * called when user presses the locked icon 
+    * @param event
+    */
+   @FXML protected void unlockWallet(ActionEvent event){
+	   Pane pane = new Pane();
+	   final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+	   Image lock = new Image(Main.class.getResourceAsStream("lockbackground.png"));
+	   ImageView ivLock = new ImageView(lock);
+	   pane.setMaxSize(420, 288);
+	   pane.setStyle("-fx-background-color: white;");
+	   pane.setEffect(new DropShadow());
+	   pane.getChildren().add(ivLock);
+	   VBox unlockVBox = new VBox();
+	   PasswordField pw = new PasswordField();
+	   pw.setPrefWidth(240);
+	   pw.setPromptText("Enter Password");
+	   Button btnOK = new Button("OK");
+	   Button btnCancel = new Button("Cancel");
+	   HBox buttonHBox = new HBox();
+	   unlockVBox.getChildren().add(pw);
+	   buttonHBox.getChildren().add(btnOK);
+	   buttonHBox.getChildren().add(btnCancel);
+	   unlockVBox.getChildren().add(buttonHBox);
+	   pane.getChildren().add(unlockVBox);
+	   unlockVBox.setPadding(new Insets(70,0,0,100));
+	   buttonHBox.setPadding(new Insets(20,0,0,0));
+	   buttonHBox.setAlignment(Pos.CENTER);
+	   btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+				public void handle(MouseEvent event) {
+				overlay.done();
+			}
+		});
+	   
+	   
+   }
    
    public void setupOneName(AuthenticatorConfiguration.ConfigOneNameProfile one){
 	   LOG.info("Setting oneName avatar image");
@@ -1356,7 +1348,6 @@ public class Controller  extends BaseUI{
                 		return;
                 	}
                 	else {
-                		//Main.bitcoin.wallet().decrypt(password.getText());
                 		try{
                 			Authenticator.getWalletOperation().decryptWallet(password.getText());
                 		}
@@ -1403,7 +1394,6 @@ public class Controller  extends BaseUI{
 		btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	//Main.bitcoin.wallet().encrypt(password.getText());
             	if(!Authenticator.getWalletOperation().isWalletEncrypted() && password.getText().length() > 0)
             		Authenticator.getWalletOperation().encryptWallet(password.getText());
             	overlay.done();

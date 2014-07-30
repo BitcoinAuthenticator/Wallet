@@ -171,38 +171,6 @@ public class Main extends BAApplication {
         System.out.println(bitcoin.wallet());
         
         controller.onBitcoinSetup();
-       
-        /**
-         * Unlock wallet for seed
-         */
-        boolean isOk = true;
-        if(bitcoin.wallet().isEncrypted()){
-        	isOk = false;
-        	Optional<String> response = Dialogs.create()
-        	        .owner(stage)
-        	        .title("Decrypt Wallet")
-        	        .message("Please Insert your wallet's password")
-        	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-        	        .showTextInput("Password");
-        	if (response.isPresent())
-        		try{
-        			bitcoin.wallet().decrypt(response.get());
-        			isOk = true;
-        		}
-        		catch(KeyCrypterException e){
-        			isOk = false;
-        			Dialogs.create()
-	        	        .owner(stage)
-	        	        .title("Cannot Proccede")
-	        	        .message("You have not entered the right wallet password")
-	        	        .actions(Dialog.Actions.OK)
-	        	        .showWarning();
-        		}
-        }
-        if(isOk == false){
-        	handleStopRequest();
-        	return;
-        }
         
         /**
          * Authenticator Operation Setup
