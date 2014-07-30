@@ -684,7 +684,13 @@ public class StartupController  extends BaseUI{
 				RestoreAccountCell cell = new RestoreAccountCell(type, new AccountCellListener(){
 					@Override
 					public void close(RestoreAccountCell cell) {
-						restoreAccountsScrllContent.removeNode(cell);
+						try {
+							auth.getWalletOperation().removeAccount(cell.getAccountID());
+							restoreAccountsScrllContent.removeNode(cell);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
 					}
 				});
 				cell.setAccountTypeName(accountTypeBox.getValue().toString());

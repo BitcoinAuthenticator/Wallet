@@ -45,14 +45,17 @@ public class RestoreAccountCell extends Region{
         	ivLogo.setImage(new Image("/wallettemplate/authenticator_logo_plain_small.png"));
       }
 	
+	public String getAccountTypeName() { return lblAccountType.getText(); }
 	public void setAccountTypeName(String value){
 		lblAccountType.setText(value);
 	}
 	
+	public int getAccountID(){ return Integer.parseInt(lblAccountID.getText()); }
 	public void setAccountID(String value){
 		lblAccountID.setText(value);
 	}
 	
+	public String getAccountName(){ return lblAccountName.getText(); }
 	public void setAccountName(String value){
 		lblAccountName.setText(value);
 	}

@@ -857,6 +857,7 @@ public class WalletOperation extends BASE{
 		if(po != null)
 			removePairingObject(po.getPairingID());
 		configFile.removeAccount(index);
+		staticLogger.info("Removed account at index, " + index);
 		Authenticator.fireOnAccountDeleted(index);
 	}
 	

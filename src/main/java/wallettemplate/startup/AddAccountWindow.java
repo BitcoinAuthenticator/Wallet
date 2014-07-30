@@ -143,11 +143,11 @@ public class AddAccountWindow extends BaseUI{
     	}
 	 }
     
+    Stage pairWindow = null;
     @FXML protected void pair(ActionEvent event){
-    	Stage pairWindow = null;
     	pairWindow = loadFXML(pairWindow, 
     			getViewURL("/wallettemplate/pair_wallet.fxml"), 
-    			700, 340, 
+    			656, 340, 
     			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
     			new PairingWalletControllerListener(){
 					@Override
@@ -170,6 +170,18 @@ public class AddAccountWindow extends BaseUI{
 							        .showInformation(); 
 					        }
 						});
+					}
+
+					@SuppressWarnings("restriction")
+					@Override
+					public void closeWindow() {
+						Platform.runLater(new Runnable() {
+					        @Override
+					        public void run() {
+					        	pairWindow.close();
+					        }
+						});
+						
 					}
     			});
     	pairWindow.show();

@@ -160,14 +160,17 @@ public class PairWallet extends BaseUI{
     public void cancel(ActionEvent event) {
     	if(overlayUi != null)
     		overlayUi.done();
+    	else if(listener != null)
+    		listener.closeWindow();
     }
     
     @FXML
     public void done(ActionEvent event) {
     	if(overlayUi != null)
     		overlayUi.done();
-    	else
-    		doneBtn.setDisable(true);
+    	else if(listener != null)
+    		listener.closeWindow();
+    		
     }
     
     public void prepareAnimations(){
@@ -185,7 +188,7 @@ public class PairWallet extends BaseUI{
 				      @Override public void run() {
 				    	
 				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), textarea);
-				    	  move.setByX(-150.0);
+				    	  move.setByX(-130.0);
 				    	  move.setCycleCount(1);
 				    	  move.play();
 							//
@@ -214,7 +217,7 @@ public class PairWallet extends BaseUI{
 				      @Override public void run() {
 				    	
 				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), textarea);
-				    	  move.setByX(150.0);
+				    	  move.setByX(130.0);
 				    	  move.setCycleCount(1);
 				    	  move.play();
 				    	  imgViewQR.setImage(null);
@@ -228,5 +231,6 @@ public class PairWallet extends BaseUI{
     public interface PairingWalletControllerListener{
     	public void onPairedWallet();
     	public void onFailed(Exception e);
+    	public void closeWindow();
     }
 }
