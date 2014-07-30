@@ -50,7 +50,7 @@ import authenticator.protobuf.ProtoConfig.PendingRequest;
  */
 public class Authenticator extends BASE{
 	final static public int LISTENER_PORT = 1234;
-	
+	public static String AUTHENTICATOR_PW = "";
 	private static TCPListener mTCPListener;
 	//private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;

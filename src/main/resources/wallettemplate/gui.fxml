@@ -247,27 +247,18 @@
             </ImageView>
           </graphic>
         </Button>
-        <HBox layoutX="126.0" layoutY="33.0" prefHeight="51.0" prefWidth="337.0">
+        <HBox fx:id="overviewHBox" layoutX="126.0" layoutY="33.0" prefHeight="51.0" prefWidth="337.0">
           <children>
             <Label fx:id="lblName" prefHeight="25.0" prefWidth="286.9999000000025" text="Welcome back, Zach Galifianakis" textFill="#4b698f">
               <font>
                 <Font size="15.0" />
               </font>
             </Label>
-            <Button fx:id="btnLocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#unlockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
+            <Button fx:id="btnLock" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockControl" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
                <graphic>
                  <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
                    <image>
                      <Image url="@btnLocked.png" />
-                   </image>
-                 </ImageView>
-               </graphic>
-             </Button>
-             <Button fx:id="btnUnlocked" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockWallet" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="false">
-               <graphic>
-                 <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
-                   <image>
-                     <Image url="@btnUnlocked.png" />
                    </image>
                  </ImageView>
                </graphic>
