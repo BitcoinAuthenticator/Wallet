@@ -1272,34 +1272,6 @@ public class WalletOperation extends BASE{
 		return afterUnconfirmed;
 	}
 	
-	public ArrayList<Transaction> filterHistoryByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
-		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();
-		ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
-		Set<Transaction> fullTxSet = Main.bitcoin.wallet().getTransactions(false);
-    	for (Transaction tx : fullTxSet){
-    		for (int a=0; a<tx.getInputs().size(); a++){
-    			String address = tx.getInput(a).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-    			for (String addr : usedExternalAddressList){
-    				if (addr.equals(address)){
-    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
-    				}
-    			}
-    			//We need to do the same thing here for internal addresses
-    			
-    		}
-    		for (int b=0; b<tx.getOutputs().size(); b++){
-    			String address = tx.getOutput(b).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-    			for (String addr : usedExternalAddressList){
-    				if (addr.equals(address)){
-    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
-    				}
-    			}
-    			//Same thing here, we need to check internal addresses as well.
-    		}
-    	}	
-		return filteredHistory;
-	}
-	
 	
 	//#####################################
 	//
@@ -1588,6 +1560,42 @@ public class WalletOperation extends BASE{
 	
 	public boolean isWalletEncrypted(){
 		return mWalletWrapper.isWalletEncrypted();
+	}
+	
+	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();
+		ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
+		//ArrayList<String> usedInternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.Internal);
+		Set<Transaction> fullTxSet = Authenticator.getWalletOperation().mWalletWrapper.trackedWallet.getTransactions(false);
+    	for (Transaction tx : fullTxSet){
+    		for (int a=0; a<tx.getInputs().size(); a++){
+    			if (tx.getInput(a).getConnectedOutput()!=null){
+    				String address = tx.getInput(a).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+    				for (String addr : usedExternalAddressList){
+    					if (addr.equals(address)){
+    						if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+    					}
+    				}
+    				/*for (String addr : usedInternalAddressList){
+    					if (addr.equals(address)){
+    						if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+    					}
+    				}*/
+    			}
+    			//We need to do the same thing here for internal addresses
+    			
+    		}
+    		for (int b=0; b<tx.getOutputs().size(); b++){
+    			String address = tx.getOutput(b).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+    			for (String addr : usedExternalAddressList){
+    				if (addr.equals(address)){
+    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+    				}
+    			}
+    			//Same thing here, we need to check internal addresses as well.
+    		}
+    	}	
+		return filteredHistory;
 	}
 }
 

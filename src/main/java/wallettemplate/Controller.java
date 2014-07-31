@@ -174,6 +174,7 @@ public class Controller  extends BaseUI{
 	 @FXML private Pane ReceivePane;
 	 @FXML private Pane AppsPane;
 	 @FXML private Pane SyncPane;
+	 @FXML private Pane TxPane;
 	 @FXML private ImageView ivSync;
 	 @FXML private ProgressBar syncProgress;
 	 @FXML private Button btnAvatar;
@@ -338,7 +339,10 @@ public class Controller  extends BaseUI{
     	 * refreshBalanceLabel will take care of downloading the currency data needed
     	 */
     	 setReceiveAddresses();
-         setTxHistoryContent();
+         try {setTxHistoryContent();} 
+         catch (NoSuchAlgorithmException | JSONException
+				| AddressFormatException | KeyIndexOutOfRangeException
+				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
          
          setupOneName(Authenticator.getWalletOperation().getOnename());
          try {refreshBalanceLabel();} 
@@ -421,7 +425,10 @@ public class Controller  extends BaseUI{
 				try {refreshBalanceLabel();} 
 				catch (JSONException | IOException e) {e.printStackTrace();}
 		        setReceiveAddresses();
-		        setTxHistoryContent();
+		        try {setTxHistoryContent();} 
+		        catch (NoSuchAlgorithmException | JSONException
+						| AddressFormatException | KeyIndexOutOfRangeException
+						| AddressNotWatchedByWalletException e) {e.printStackTrace();}
 			  }
 			});
 			
@@ -631,6 +638,7 @@ public class Controller  extends BaseUI{
 	 	 SendPane.setVisible(false);
 	 	 ReceivePane.setVisible(false);
 	 	 AppsPane.setVisible(false);
+	 	 TxPane.setVisible(false);
    }
    
    @FXML protected void actionSend(ActionEvent event) {
@@ -653,6 +661,7 @@ public class Controller  extends BaseUI{
       	 SendPane.setVisible(true);
       	 ReceivePane.setVisible(false);
       	 AppsPane.setVisible(false);
+      	 TxPane.setVisible(false);
       }
    
    @FXML protected void actionReceive(ActionEvent event) {
@@ -675,6 +684,7 @@ public class Controller  extends BaseUI{
   	     SendPane.setVisible(false);
   	     ReceivePane.setVisible(true);
   	     AppsPane.setVisible(false);
+  	     TxPane.setVisible(false);
      }
    
    @FXML protected void actionTransactions(ActionEvent event) {
@@ -697,6 +707,7 @@ public class Controller  extends BaseUI{
  	     SendPane.setVisible(false);
  	     ReceivePane.setVisible(false);
  	     AppsPane.setVisible(false);
+ 	     TxPane.setVisible(true);
     }
    
    @FXML protected void actionApps(ActionEvent event) {
@@ -719,6 +730,7 @@ public class Controller  extends BaseUI{
  	     SendPane.setVisible(false);
  	     ReceivePane.setVisible(false);
  	     AppsPane.setVisible(true);
+ 	     TxPane.setVisible(false);
     }
    
    
@@ -918,10 +930,11 @@ public class Controller  extends BaseUI{
     }
     
     @SuppressWarnings("unused")
-	public void setTxHistoryContent(){
+	public void setTxHistoryContent() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
     	LOG.info("Setting Tx History in Overview Pane");
     	scrlViewTxHistoryContentManager.clearAll();
-    	List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
+    	//List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
+    	ArrayList<Transaction> txAll = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
     	if (txAll.size()==0){
     		HBox mainNode = new HBox();
     		Label l = new Label("                    No transaction history   ");
@@ -1942,8 +1955,7 @@ public class Controller  extends BaseUI{
    	//#####################################
     
     public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
-    	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterHistoryByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    	
+    	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
     }
     
     //#####################################
@@ -2006,7 +2018,10 @@ public class Controller  extends BaseUI{
     	try {refreshBalanceLabel();}
     	catch (JSONException | IOException e) {e.printStackTrace();}
     	setReceiveAddresses();
-    	setTxHistoryContent();
+    	try {setTxHistoryContent();} 
+    	catch (NoSuchAlgorithmException | JSONException
+				| AddressFormatException | KeyIndexOutOfRangeException
+				| AddressNotWatchedByWalletException e) {e.printStackTrace();}
     }
     
     //#####################################
