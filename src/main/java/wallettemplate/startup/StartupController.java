@@ -697,6 +697,25 @@ public class StartupController  extends BaseUI{
 				cell.setAccountID(Integer.toString(acc.accountAccountID));
 				cell.setAccountName(acc.accountName);
 				restoreAccountsScrllContent.addItem(cell);
+				
+				try {
+					if(type == WalletAccountType.StandardAccount){
+						ATAccount newAcc = auth.getWalletOperation().completeAccountObject(appParams.getBitcoinNetworkType(),
+								acc.accountAccountID, 
+								acc.accountName, 
+								WalletAccountType.StandardAccount);
+						auth.getWalletOperation().addNewAccountToConfig(newAcc);
+						auth.getWalletOperation().addAccountToHierarchy(newAcc);
+						
+					}
+					else
+						;/**
+						 * Authenticator account is created in the pairing operation
+						 */
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		 });
 		 w.show();
@@ -708,6 +727,8 @@ public class StartupController  extends BaseUI{
 		 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
 		 // set Authenticator wallet
 		 auth = new Authenticator(masterPubKey, appParams);
+		 auth.getWalletOperation().setTrackedWallet(wallet);
+		 
 		 node.setVisible(false);
 		 previousNode = node;
 		 LoadingPane.setVisible(true);
@@ -750,7 +771,7 @@ public class StartupController  extends BaseUI{
 	 private void launchRestoreProcess(){
 		 RestoreProcessPane.setVisible(true);
 		 RestoreAccountsPane.setVisible(false);
-		 new BAWalletRestorer(new RestorerDonwloadListener()).runRestorer();
+		 new BAWalletRestorer(auth, new RestorerDonwloadListener()).startAsync();
 	 }
 	 
 	 @FXML protected void returnBackFromRestoreProcess(ActionEvent event){
@@ -774,27 +795,23 @@ public class StartupController  extends BaseUI{
 	 private void createWallet(@Nullable DeterministicSeed seed) throws IOException{
 		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
 		 File f = new File(filePath);
-		 String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + "Temp" + ".wallet";
-		 File temp = new File(filePath2);
-		 if(!f.exists()) { 
-			 if(seed == null){
-				//Generate a new Seed
-				 SecureRandom secureRandom = null;
-				 try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
-				 catch (NoSuchAlgorithmException e) {e.printStackTrace();}
-				 //byte[] bytes = new byte[16];
-				 //secureRandom.nextBytes(bytes);
-				 walletSeed = new DeterministicSeed(secureRandom, 8 * 16, "", Utils.currentTimeSeconds());
-			 }
-			 else
-				 walletSeed = seed;
-			 
-			 // set wallet
-			 wallet = Wallet.fromSeed(params,walletSeed);
-			 wallet.setKeychainLookaheadSize(0);
-			 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
+		 assert(f.exists() == false);
+		 if(seed == null){
+			//Generate a new Seed
+			 SecureRandom secureRandom = null;
+			 try {secureRandom = SecureRandom.getInstance("SHA1PRNG");} 
+			 catch (NoSuchAlgorithmException e) {e.printStackTrace();}
+			 //byte[] bytes = new byte[16];
+			 //secureRandom.nextBytes(bytes);
+			 walletSeed = new DeterministicSeed(secureRandom, 8 * 16, "", Utils.currentTimeSeconds());
 		 }
+		 else
+			 walletSeed = seed;
 		 
+		 // set wallet
+		 wallet = Wallet.fromSeed(params,walletSeed);
+		 wallet.setKeychainLookaheadSize(0);
+		 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
 	 }
 	 
 	 private void createNewStandardAccount(String accountName) throws IOException{

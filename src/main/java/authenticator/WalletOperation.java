@@ -222,6 +222,7 @@ public class WalletOperation extends BASE{
     			Script scr = out.getScriptPubKey();
     			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+    				staticLogger.info("Received coins to watched address " + addrStr);
     				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
     				TransactionConfidence conf = tx.getConfidence();
     				switch(conf.getConfidenceType()){
@@ -294,6 +295,7 @@ public class WalletOperation extends BASE{
         	for (TransactionInput in : ins){
     				String addrStr = in.getFromAddress().toString();
         			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+        				staticLogger.info("Sent coins from watched address " + addrStr);
         				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
         				TransactionConfidence conf = tx.getConfidence();
         				switch(conf.getConfidenceType()){
@@ -582,7 +584,7 @@ public class WalletOperation extends BASE{
  		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount().getAccountIndex();
  		ATAccount b = completeAccountObject(nt, accoutnIdx, accountName, type);
 		writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
-		addNewAccountToRegister(b);
+		addNewAccountToConfig(b);
  		return b;
  	}
  	
@@ -595,7 +597,7 @@ public class WalletOperation extends BASE{
  	 * @param type
  	 * @return
  	 */
- 	private ATAccount completeAccountObject(NetworkType nt, int accoutnIdx, String accountName, WalletAccountType type){
+ 	public ATAccount completeAccountObject(NetworkType nt, int accoutnIdx, String accountName, WalletAccountType type){
  		ATAccount.Builder b = ATAccount.newBuilder();
 						  b.setIndex(accoutnIdx);
 						  b.setConfirmedBalance(0);
@@ -611,11 +613,19 @@ public class WalletOperation extends BASE{
  	 * @param b
  	 * @throws IOException
  	 */
- 	private void addNewAccountToRegister(ATAccount b) throws IOException{
+ 	public void addNewAccountToConfig(ATAccount b) throws IOException{
  		configFile.addAccount(b);
  	    staticLogger.info("Generated new account at index, " + b.getIndex());
  	}
  	
+ 	/**
+ 	 * Manual add an account to the Authenticator hierarchy.<br>
+ 	 * Usually used when restoring a wallet's accounts.
+ 	 * @param b
+ 	 */
+ 	public void addAccountToHierarchy(ATAccount b){
+ 		authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
+ 	}
  	
  	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName) throws IOException{
 		ATAccount ret = generateNewAccount(nt, accountName, WalletAccountType.StandardAccount);
@@ -1155,7 +1165,7 @@ public class WalletOperation extends BASE{
 			accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
 		else{
 			accountID = accID;
-			addNewAccountToRegister(this.completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount));
+			addNewAccountToConfig(this.completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount));
 		}
 		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnNewPairedAuthenticator();
@@ -1488,6 +1498,18 @@ public class WalletOperation extends BASE{
   	//	Regular Bitocoin Wallet Operations
   	//
   	//#####################################
+		
+	public Wallet getTrackedWallet(){
+		return mWalletWrapper.getTrackedWallet();
+	}
+	
+	public void setTrackedWallet(Wallet wallet){
+		if(mWalletWrapper == null)
+			mWalletWrapper = new WalletWrapper(wallet,null);
+		else
+			mWalletWrapper.setTrackedWallet(wallet);
+		mWalletWrapper.addEventListener(new WalletListener());
+	}
     
     public NetworkParameters getNetworkParams()
 	{

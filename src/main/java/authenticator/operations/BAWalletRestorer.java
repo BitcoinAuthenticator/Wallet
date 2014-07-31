@@ -7,22 +7,39 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import authenticator.BASE;
+import org.json.JSONException;
 
+import authenticator.Authenticator;
+import authenticator.BAApplicationParameters;
+import authenticator.BASE;
+import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
+import authenticator.hierarchy.BAHierarchy;
+import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
+import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.ProtoConfig.ATAddress;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+
+import com.google.bitcoin.core.AbstractWalletEventListener;
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.BlockChain;
 import com.google.bitcoin.core.BlockChainListener;
 import com.google.bitcoin.core.BloomFilter;
 import com.google.bitcoin.core.CheckpointManager;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -38,18 +55,26 @@ import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.VerificationException;
 import com.google.bitcoin.core.AbstractBlockChain.NewBlockType;
+import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.net.discovery.DnsDiscovery;
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.script.Script;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.store.SPVBlockStore;
 import com.google.bitcoin.utils.Threading;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.Service.State;
 import com.subgraph.orchid.TorClient;
 
 public class BAWalletRestorer extends BASE{
 	Thread mainThread;
 	//
-	String filePrefix;
-	NetworkParameters params;
+	Authenticator vAuthenticator;
+	Wallet vWallet;
+	File vWalletFile;
+	NetworkParameters netParams;
+	BAApplicationParameters vBAApplicationParameters;
     BlockChain vChain;
     SPVBlockStore vStore;
     PeerGroup vPeerGroup;
@@ -57,23 +82,21 @@ public class BAWalletRestorer extends BASE{
     PeerAddress[] peerAddresses;
     String userAgent, version;
     File directory;
-    FilterProvider vFilterProvider;
+    //FilterProvider vFilterProvider;
         
     /**
      * Discovery vars
      */
-    List<ECKey> watchedKeys;
-    List<ECKey> lastBatchOfWatchedKeys;
+    //List<ECKey> watchedKeys;
+    //List<ECKey> lastBatchOfWatchedKeys;
+    Map<ATAccount,List<ATAddress>> mapAccountAddresses;
     
     final int MINIMUM_BLOOM_DATA_LENGTH = 8;
     final long AUTHENTICATOR_CREATION_TIME = 1388534402; // Represents 1.1.2014 00:00:01
     
-    int numberOfRounds = 1;
-    int addedKeysInEveryRound = 100;
     long earliestKeyTime = AUTHENTICATOR_CREATION_TIME;
     String startTsmp;
     String endTsmp;
-    
     
     
     /**
@@ -82,20 +105,47 @@ public class BAWalletRestorer extends BASE{
     boolean useTor = false;
     boolean usePreselectedAddresses = true;
     
-    public void runRestorer(){
+    @Override
+    protected void doStart() {
     	mainThread.start();
     }
     
-	public BAWalletRestorer(DownloadListener listener) {      
+    @Override
+	protected void doStop() {
+    	vPeerGroup.stopAsync();
+        vPeerGroup.addListener(new Service.Listener(){
+        	@Override public void terminated(State from) {
+        		try {
+                    vWallet.saveToFile(vWalletFile);
+                    vStore.close();
+
+                    vPeerGroup = null;
+                    vWallet = null;
+                    vStore = null;
+                    vChain = null;
+                    
+                    notifyStopped();
+                }catch (IOException | BlockStoreException e) {
+        			e.printStackTrace();
+        			notifyStopped();
+        		}
+        	}
+        }, MoreExecutors.sameThreadExecutor());
+    }
+    
+	public BAWalletRestorer(Authenticator auth,DownloadListener listener) {      
 		super (BAWalletRestorer.class);
+		vAuthenticator = auth;
+		vWallet = vAuthenticator.getWalletOperation().getTrackedWallet();
+		vBAApplicationParameters = vAuthenticator.getApplicationParams();
 		mainThread = new Thread(){
 			@Override
 			public void run() {
 				directory = new File(".");
-		        watchedKeys = new ArrayList<ECKey>();
+		        //watchedKeys = new ArrayList<ECKey>();
 		        
 		        //params = TestNet3Params.get();
-		        params = MainNetParams.get();
+				netParams = MainNetParams.get();
 		        
 		        if(usePreselectedAddresses)
 		        {
@@ -119,37 +169,25 @@ public class BAWalletRestorer extends BASE{
 		        if(peerAddresses != null)
 		        try {
 		        	startTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());        	
-		        	//initWatchedScripts();
-		        	for(int i=0;i<1;i++){
-		        		System.out.println("\nStarting round " + i + "\n");
-		        		addMoreWatchedAddresses(addedKeysInEveryRound);
-		        		init();
-		        		initBlockChainDownload(listener);
-		        		
-		        		//if(didFindPositiveBalanceInLastBatch == false)
-		        		//	break;
-		        	}
-		        	
+	        		init();
+	        		initWatchedAddresses(BAHierarchy.keyLookAhead);
+	        		notifyStarted();
+	        		initBlockChainDownload(listener);
 		        	endTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());
 		        	
 		        	System.out.println(this.toString());
 		        				
-				} catch (IOException e) { e.printStackTrace();
-				} catch (InterruptedException e) { e.printStackTrace();
-				} catch (TimeoutException e) { e.printStackTrace();
-				} catch (AddressFormatException e) { e.printStackTrace();
-				}
+				} catch (Exception e) { e.printStackTrace(); }
 			}
 		};
 	}
 	
 	@Override
 	public String toString(){
-		return "Started at: "		   		 + startTsmp 				+ "\n" +
-			   "Ended at: " 		   		 + endTsmp   				+ "\n" +
-     		   "Did " 				    	 + numberOfRounds 			+ " Rounds \n" +
-     		   "Total elements in filter " 	 + watchedKeys.size()*2 	+ "\n" +
-     		   "Fast catchup up until "		 + new java.util.Date((long)earliestKeyTime*1000).toLocaleString() + "\n";
+		return "Started at: "		   		 + startTsmp 														+ "\n" +
+			   "Ended at: " 		   		 + endTsmp   														+ "\n" +
+     		   "Total elements in filter " 	 + vWallet.getWatchedAddresses().size()*2 							+ "\n" +
+     		   "Fast catchup up until "		 + new java.util.Date((long)earliestKeyTime*1000).toLocaleString() 	+ "\n";
 	}
 	
 	private void init() throws IOException{
@@ -164,7 +202,7 @@ public class BAWalletRestorer extends BASE{
 			 */
 			File chainFile = new File(directory, "RestoreWallet" + ".spvchain");
 			chainFile.delete();
-			vStore = new SPVBlockStore(params, new File(directory, "RestoreWallet" + ".spvchain"));
+			vStore = new SPVBlockStore(netParams, new File(directory, "RestoreWallet" + ".spvchain"));
 			
 			setCheckpoints(getClass().getResourceAsStream("/wallettemplate/checkpoints"));
 			if (checkpoints != null) {
@@ -172,27 +210,32 @@ public class BAWalletRestorer extends BASE{
 	            // away. The reason is that wallet extensions might need access to peergroups/chains/etc so we have to
 	            // create the wallet later, but we need to know the time early here before we create the BlockChain
 	            // object.
-	            CheckpointManager.checkpoint(params, checkpoints, vStore, earliestKeyTime);
+	            CheckpointManager.checkpoint(netParams, checkpoints, vStore, earliestKeyTime);
 	        }
 			
-	        vChain = new BlockChain(params, vStore);
-	        vChain.addListener(new ChainListener(watchedKeys));
-	        
+	        vChain = new BlockChain(netParams, vStore);
+	        //vChain.addListener(new ChainListener(watchedKeys));
 	        vPeerGroup = createPeerGroup();
 	        if (userAgent != null)
 	            vPeerGroup.setUserAgent(userAgent, version);
-	        
-
+	        	        
 	        if (peerAddresses != null) {
                 for (PeerAddress addr : peerAddresses) vPeerGroup.addAddress(addr);
                 vPeerGroup.setMaxConnections(peerAddresses.length);
                 peerAddresses = null;
             } else {
-                vPeerGroup.addPeerDiscovery(new DnsDiscovery(params));
+                vPeerGroup.addPeerDiscovery(new DnsDiscovery(netParams));
             }
+	        
+	        vWalletFile = new File(directory, vBAApplicationParameters.getAppName() + ".wallet");
+	        if(!vWalletFile.exists())
+	        	vWallet.saveToFile(vWalletFile);
 	    	        
-	        vFilterProvider = new FilterProvider(watchedKeys);
-	        vPeerGroup.addPeerFilterProvider(vFilterProvider);
+	        //vFilterProvider = new FilterProvider(watchedKeys);
+	        //vPeerGroup.addPeerFilterProvider(vFilterProvider);
+	        vChain.addWallet(vWallet);
+            vPeerGroup.addWallet(vWallet);
+            vWallet.addEventListener(new WalletListener());
 	        if (true){//blockingStartup) {
                 vPeerGroup.startAsync();
                 vPeerGroup.awaitRunning();
@@ -204,13 +247,26 @@ public class BAWalletRestorer extends BASE{
 		
 	}
 	
+	@SuppressWarnings("static-access")
+	private void initWatchedAddresses(int lookaheadForEachAccount) throws Exception{
+		mapAccountAddresses = new HashMap<ATAccount,List<ATAddress>>();
+		List<ATAccount> all = vAuthenticator.getWalletOperation().getAllAccounts();
+		for(ATAccount acc:all){
+			List<ATAddress> arr = new ArrayList<ATAddress>();
+			for(int i=0; i< lookaheadForEachAccount; i++){
+				ATAddress add = vAuthenticator.getWalletOperation().getNextExternalAddress(acc.getIndex());
+				arr.add(add);
+				vAuthenticator.getWalletOperation().addAddressToWatch(add.getAddressStr()); 
+			}
+			mapAccountAddresses.put(acc, arr);
+		}
+	}
+	
 	@SuppressWarnings("unused")
 	private void initBlockChainDownload(DownloadListener listener) throws IOException, InterruptedException, TimeoutException{
 		System.out.println("Connected peers: " + vPeerGroup.getConnectedPeers().size());
         vPeerGroup.startBlockChainDownload(listener);
         listener.await();
-        
-        //timer.cancel();
 	}
 	
 	public void setCheckpoints(InputStream checkpoints) {
@@ -219,36 +275,56 @@ public class BAWalletRestorer extends BASE{
 	
 	PeerGroup createPeerGroup() throws TimeoutException {
         if (useTor) {
-            return PeerGroup.newWithTor(params, vChain, new TorClient());
+            return PeerGroup.newWithTor(netParams, vChain, new TorClient());
         }
         else
-            return new PeerGroup(params, vChain);
+            return new PeerGroup(netParams, vChain);
     }
-	
-	private void initWatchedAddresses() throws AddressFormatException{
-		//Address address = new Address(params,"1FJ9Tywe9btDTcvGoj7ccHDEkyZE4uVuWf");
-    	//Script script = ScriptBuilder.createOutputScript(address);
-        //script.setCreationTimeSeconds(AUTHENTICATOR_CREATION_TIME);
-        //watchedScripts.add(script);
-		//watchedAddresses.add(address);
-		//System.out.println("Added init addresses");
-	}
-	
-	private void addMoreWatchedAddresses(int howManyToAdd) throws AddressFormatException{
-    	//List<Address> addresses = new ArrayList<Address>();
-    	lastBatchOfWatchedKeys = new ArrayList<ECKey>();
-    	for(int i=0; i< howManyToAdd;i++){
-    		ECKey k = new ECKey();
-			//Address add = k.toAddress(params);
-			lastBatchOfWatchedKeys.add(k);
-			watchedKeys.add(k);
-    	}
-    	
-    	System.out.println("Added " + howManyToAdd +" random address");
-	}
 
+	private class WalletListener extends AbstractWalletEventListener {
+		@Override
+        public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+			try {
+				handler(wallet, tx);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+        	try {
+				handler(wallet, tx);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        @SuppressWarnings("static-access")
+		private void handler(Wallet wallet, Transaction tx) throws Exception{
+        	LOG.info("Some watched address appeared in a Tx");
+        	for(TransactionOutput out:tx.getOutputs()){
+        		Script scr = out.getScriptPubKey();
+    			Address addr = scr.getToAddress(netParams);
+    			if(wallet.isAddressWatched(addr))
+    				for(ATAccount acc:mapAccountAddresses.keySet()){
+    					for(ATAddress add:mapAccountAddresses.get(acc)){
+    						if(addr.toString().equals(add.getAddressStr())){
+    							vAuthenticator.getWalletOperation().markAddressAsUsed(acc.getIndex(), add.getKeyIndex(), HierarchyAddressTypes.External);
+    							ATAddress newAdd = vAuthenticator.getWalletOperation().getNextExternalAddress(acc.getIndex());
+    							mapAccountAddresses.get(acc).add(newAdd);
+    							vAuthenticator.getWalletOperation().addAddressToWatch(newAdd.getAddressStr()); 
+    							LOG.info("Address " + add.getAddressStr() + " found used.\n" + 
+    									"Added a new address " + newAdd.getAddressStr());
+    						}
+    					}
+    				}
+        	}
+        }
+	}
 	
-	public class FilterProvider implements PeerFilterProvider{
+	/*public class FilterProvider implements PeerFilterProvider{
 		ReentrantLock lock ;
 		List<ECKey> keys;
 		
@@ -295,9 +371,9 @@ public class BAWalletRestorer extends BASE{
 			return lock;
 		}
 		
-	}
+	}*/
 	
-	private class ChainListener implements BlockChainListener{
+	/*private class ChainListener implements BlockChainListener{
 		private List<Sha256Hash> relevantTx = new ArrayList<Sha256Hash>();
 		List<ECKey> watchedKeys;
 		List<byte[]> watchedPubKeys;
@@ -385,5 +461,5 @@ public class BAWalletRestorer extends BASE{
 			return false;
 		}
 		
-	}
+	}*/
 }

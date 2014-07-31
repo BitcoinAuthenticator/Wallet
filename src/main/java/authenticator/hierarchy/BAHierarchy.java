@@ -31,6 +31,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
   *
   */
  public class BAHierarchy{
+	static public final int keyLookAhead = 10; 
  	
  	DeterministicHierarchy hierarchy;
  	DeterministicKey rootKey;
@@ -163,13 +164,16 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	
  	public AccountTracker generateNewAccount(){
 		int index = this.nextAvailableAccount;
-		/*accountsHeightsUsed.add(new ChildNumber[]{  new ChildNumber(this.nextAvailableAccount,false), 
-													new ChildNumber(0,false),
-													new ChildNumber(0,false) });*/
-		AccountTracker at = new AccountTracker(index);
-		this.accountTracker.add(at);
+		
+		AccountTracker at = addAccountToTracker(index,this.keyLookAhead);
 		this.nextAvailableAccount ++;
  		return at;
+ 	}
+ 	
+ 	public AccountTracker addAccountToTracker(int index, int lookAhead){
+ 		AccountTracker at = new AccountTracker(index, lookAhead);
+		this.accountTracker.add(at);
+		return at;
  	}
  	
  	/*private void bumpHeight(int accountIndex, HierarchyAddressTypes type){
@@ -241,8 +245,11 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		private List<ChildNumber> returnedExternalKeys;
 		private List<ChildNumber> returnedInternalKeys;
 		
-		public AccountTracker(int accountIndex){
+		private int keyLookAhead;
+		
+		public AccountTracker(int accountIndex, int keyLookAhead){
 			this.accountIndex = accountIndex;
+			this.keyLookAhead = keyLookAhead;
 			this.usedExternalKeys = new ArrayList<Integer>();
 			this.usedInternalKeys = new ArrayList<Integer>();
 			init();
@@ -262,7 +269,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		
 		public ChildNumber getUnusedExternalKey() throws NoUnusedKeyException{
 			ChildNumber ret;
-			if(returnedExternalKeys.size() < 10){
+			if(returnedExternalKeys.size() < keyLookAhead){
 				ret = getUnusedKeyIndex(usedExternalKeys, returnedExternalKeys);
 				returnedExternalKeys.add(ret);
 			}
@@ -277,7 +284,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		
 		public ChildNumber getUnusedInternalKey() throws NoUnusedKeyException{
 			ChildNumber ret;
-			if(returnedInternalKeys.size() < 10){
+			if(returnedInternalKeys.size() < keyLookAhead){
 				ret = getUnusedKeyIndex(usedInternalKeys, returnedInternalKeys);
 				returnedInternalKeys.add(ret);
 			}
