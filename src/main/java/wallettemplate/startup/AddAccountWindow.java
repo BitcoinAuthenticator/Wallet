@@ -119,7 +119,7 @@ public class AddAccountWindow extends BaseUI{
     	if(txfAccountName.getText().length() <= 2)
     		return false;
     	
-    	if(!isPaired)
+    	if(!isPaired && type == WalletAccountType.AuthenticatorAccount)
     		return false;
     	
     	return true;
