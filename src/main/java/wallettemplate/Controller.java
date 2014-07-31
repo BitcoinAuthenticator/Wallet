@@ -321,19 +321,6 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
-    	if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
-    		Platform.runLater(new Runnable() { 
-  			  @Override
-  			  public void run() {
-  				Dialogs.create()
-  		        .owner(Main.stage)
-  		        .title("Error !")
-  		        .masthead("Some network requirements are not available, some functionalities may be compromised")
-  		        .message("If this problem repeats, your router may not allow port mapping.")
-  		        .showInformation();   
-  			  }
-  			});
-    	}
     	
     	/**
     	 * refreshBalanceLabel will take care of downloading the currency data needed
@@ -738,6 +725,21 @@ public class Controller  extends BaseUI{
    
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
+	   if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.AuthenticatorAccount){
+		   if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
+			   Platform.runLater(new Runnable() { 
+				   @Override
+				   public void run() {
+					   Dialogs.create()
+					   .owner(Main.stage)
+					   .title("Error !")
+					   .masthead("Some network requirements are not available, some functionalities may be compromised")
+					   .message("If this problem repeats, your router may not allow port mapping.")
+					   .showInformation();   
+				   }
+			   });
+	   		}
+	   }
 	   LOG.info("Setting accounts checkbox");
 	   List<ATAccount> all = new ArrayList<ATAccount>();
 	   all = Authenticator.getWalletOperation().getAllAccounts();
