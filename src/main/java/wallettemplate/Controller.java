@@ -87,6 +87,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -206,6 +207,13 @@ public class Controller  extends BaseUI{
 	 @FXML public ScrollPane scrlViewTxHistory;
 	 @FXML private ImageView ivLogo;
 	 @FXML private HBox overviewHBox;
+	 @FXML private TableView txTable;
+	 @FXML private TableColumn colConfirmations;
+	 @FXML private TableColumn colInOut;
+	 @FXML private TableColumn colDate;
+	 @FXML private TableColumn colToFrom;
+	 @FXML private TableColumn colDescription;
+	 @FXML private TableColumn colAmount;
 	 private ScrollPaneContentManager scrlViewTxHistoryContentManager;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
@@ -303,8 +311,7 @@ public class Controller  extends BaseUI{
 	   });
 		
 		// wallet lock/ unlock
-		if (locked){Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));}
-		else {Tooltip.install(btnLock, new Tooltip("Click to Lock Wallet"));}
+		Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
     }
     
     /**
@@ -326,6 +333,10 @@ public class Controller  extends BaseUI{
     	 * refreshBalanceLabel will take care of downloading the currency data needed
     	 */
     	 setReceiveAddresses();
+    	 try {setTxPaneHistory();} 
+     	 catch (NoSuchAlgorithmException | JSONException
+ 				| AddressFormatException | KeyIndexOutOfRangeException
+ 				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
          try {setTxHistoryContent();} 
          catch (NoSuchAlgorithmException | JSONException
 				| AddressFormatException | KeyIndexOutOfRangeException
@@ -412,6 +423,10 @@ public class Controller  extends BaseUI{
 				try {refreshBalanceLabel();} 
 				catch (JSONException | IOException e) {e.printStackTrace();}
 		        setReceiveAddresses();
+		        try {setTxPaneHistory();} 
+		    	catch (NoSuchAlgorithmException | JSONException
+						| AddressFormatException | KeyIndexOutOfRangeException
+						| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
 		        try {setTxHistoryContent();} 
 		        catch (NoSuchAlgorithmException | JSONException
 						| AddressFormatException | KeyIndexOutOfRangeException
@@ -819,6 +834,7 @@ public class Controller  extends BaseUI{
 							   btnLock.setGraphic(img);
 							   overviewHBox.setMargin(btnLock, new Insets(-2,0,0,0));
 							   locked = false;
+							   Tooltip.install(btnLock, new Tooltip("Click to Lock Wallet"));
 						   }
 						   catch(KeyCrypterException  e){
 							   informationalAlert("Unfortunately, you messed up.",
@@ -837,6 +853,7 @@ public class Controller  extends BaseUI{
 		   btnLock.setGraphic(img);
 		   overviewHBox.setMargin(btnLock, new Insets(0,0,0,0));
 		   locked = true;
+		   Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
 	   }
 	   
    }
@@ -1958,6 +1975,36 @@ public class Controller  extends BaseUI{
     
     public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
     	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+    	final ObservableList<TableTx> txdata = FXCollections.observableArrayList();
+    	for (Transaction tx : history){
+    		Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
+    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
+    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
+    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
+    		ImageView arrow = null;
+    		String amount = "";
+    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
+    			arrow = new ImageView(out);
+    			amount = exit.toFriendlyString();
+    		}
+    		else { // i only received coins
+    			arrow = new ImageView(in);
+    			amount = enter.toFriendlyString();
+    		}
+    		String date = tx.getUpdateTime().toLocaleString();
+    		String txid = tx.getHashAsString();
+    		String toFrom = "multiple";
+    		String confirmations = "0";
+    		TableTx transaction = new TableTx(confirmations, arrow, date, toFrom, txid, amount);
+    		txdata.add(transaction);
+    	}
+    	colConfirmations.setCellValueFactory(new PropertyValueFactory<TableTx,String>("confirmations"));
+    	colInOut.setCellValueFactory(new PropertyValueFactory<TableTx,ImageView>("inOut"));
+    	colDate.setCellValueFactory(new PropertyValueFactory<TableTx,String>("date"));
+    	colToFrom.setCellValueFactory(new PropertyValueFactory<TableTx,String>("toFrom"));
+    	colDescription.setCellValueFactory(new PropertyValueFactory<TableTx,String>("description"));
+    	colAmount.setCellValueFactory(new PropertyValueFactory<TableTx,String>("amount"));
+    	txTable.setItems(txdata);
     }
     
     //#####################################
@@ -2020,6 +2067,10 @@ public class Controller  extends BaseUI{
     	try {refreshBalanceLabel();}
     	catch (JSONException | IOException e) {e.printStackTrace();}
     	setReceiveAddresses();
+    	try {setTxPaneHistory();} 
+    	catch (NoSuchAlgorithmException | JSONException
+				| AddressFormatException | KeyIndexOutOfRangeException
+				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
     	try {setTxHistoryContent();} 
     	catch (NoSuchAlgorithmException | JSONException
 				| AddressFormatException | KeyIndexOutOfRangeException
