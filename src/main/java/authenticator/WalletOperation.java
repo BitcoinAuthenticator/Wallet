@@ -156,6 +156,7 @@ public class WalletOperation extends BASE{
 			List<ATAccount> allAccount = getAllAccounts();
 			for(ATAccount acc:allAccount){
 				BAHierarchy.AccountTracker at =   new BAHierarchy().new AccountTracker(acc.getIndex(), 
+						BAHierarchy.keyLookAhead,
 						acc.getUsedExternalKeysList(), 
 						acc.getUsedInternalKeysList());
 				

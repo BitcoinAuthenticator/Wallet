@@ -255,8 +255,9 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 			init();
 		}
 		
-		public AccountTracker(int accountIndex, List<Integer> usedExternalKeys, List<Integer> usedInternalKeys){
+		public AccountTracker(int accountIndex, int keyLookAhead, List<Integer> usedExternalKeys, List<Integer> usedInternalKeys){
 			this.accountIndex = accountIndex;
+			this.keyLookAhead = keyLookAhead;
 			this.usedExternalKeys = new ArrayList<Integer>(usedExternalKeys);
 			this.usedInternalKeys = new ArrayList<Integer>(usedInternalKeys);
 			init();
