@@ -182,10 +182,10 @@ public class Main extends BAApplication {
     	auth.startAsync();
     	auth.addListener(new Service.Listener() {
 			@Override public void running() {
-				controller.onAuthenticatorSetup();
+				controller.onAuthenticatorSetup2();
 	         }
 		}, MoreExecutors.sameThreadExecutor());
-    	
+    	controller.onAuthenticatorSetup1();
     
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     		@SuppressWarnings("static-access")

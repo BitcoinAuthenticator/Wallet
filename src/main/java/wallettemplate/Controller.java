@@ -330,10 +330,11 @@ public class Controller  extends BaseUI{
     	bitcoin.wallet().freshReceiveAddress();
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
-    	tor.addInitializationListener(listener);        
+    	tor.addInitializationListener(listener);       
+    	
     }
     
-    /**
+   /**
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
@@ -372,7 +373,6 @@ public class Controller  extends BaseUI{
 			  }
     	});    	
     }
-
     
     public class AuthenticatorGeneralEvents implements AuthenticatorGeneralEventsListener{
 		
