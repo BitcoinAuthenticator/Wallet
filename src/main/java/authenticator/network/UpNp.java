@@ -54,16 +54,6 @@ public class UpNp extends BASE{
 					"\n\tLocal interface address: " + gw.getLocalAddress().getHostAddress()+"\n");
 		}
 		// Choose the first active gateway for the tests
-		Map<InetAddress, GatewayDevice> m = gatewayDiscover.getAllGateways();
-		for (GatewayDevice device : m.values()) {
-            try {
-                if (device.isConnected()) {
-                }
-            } catch (Exception e) {
-            	e.printStackTrace();
-            }
-        }
-		
 		activeGW = gatewayDiscover.getValidGateway();
 		if (null != activeGW) {
 			addLogLine("Using gateway: " + activeGW.getFriendlyName());
