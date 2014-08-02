@@ -985,6 +985,8 @@ public class Controller  extends BaseUI{
     		mainNode.getChildren().add(arrows);
     		scrlViewTxHistoryContentManager.addItem(mainNode);	
     	}
+    	ConfigFile config = Authenticator.getWalletOperation().configFile;
+    	ArrayList<String> savedTXIDs = config.getSavedTxidList();
     	int size = txAll.size();
     	int n;
     	if (size < 10) {n=size;}
@@ -1009,7 +1011,13 @@ public class Controller  extends BaseUI{
     		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
     		l2.setTextFill(Paint.valueOf("#6e86a0"));
     		l2.setFont(Font.font(11));
-    		l2.setText(txid.substring(0, 20) + "...");
+    		for (int a=0; a<savedTXIDs.size(); a++){
+    			if (savedTXIDs.get(a).equals(txAll.get(i).getHashAsString())){
+    				if(!config.getSavedDescription(a).equals("")){txid = config.getSavedDescription(a);}
+    			}
+    		}
+    		if (txid.length()>20){txid = txid.substring(0, 20) + "...";}
+    		l2.setText(txid); 
     		tip += "When: " + txAll.get(i).getUpdateTime().toLocaleString() + "\n";
     		leftBox.getChildren().add(l2);
     		
@@ -1044,55 +1052,7 @@ public class Controller  extends BaseUI{
     		content.getChildren().add(l3);
     		content.getChildren().add(arrow);
     		rightBox.getChildren().add(content);
-    		
     		mainNode.getChildren().add(rightBox);
-    		mainNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
-    		    @Override
-    		    public void handle(MouseEvent mouseEvent) {
-                   if(!mouseEvent.isPrimaryButtonDown()){
-                	   final ContextMenu contextMenu = new ContextMenu();
-                	   MenuItem openExplore;
-                	   if(Authenticator.getApplicationParams().getBitcoinNetworkType() == NetworkType.MAIN_NET){
-                		   openExplore = new MenuItem("Open In blockchain.info");
-                		   openExplore.setOnAction(new EventHandler<ActionEvent>() {
-                    		    @Override
-                    		    public void handle(ActionEvent event) {
-                    		    	String url = "https://blockchain.info/tx/" + txid; 
-                             	   // open the default web browser for the HTML page
-             	            	   try {
-             							Desktop.getDesktop().browse(java.net.URI.create(url));
-             	            	   } catch (IOException e) { e.printStackTrace(); }
-                    		    }
-                    		});
-                	   }
-                	   else
-                	   {
-                		   openExplore = new MenuItem("Open In blockexplorer.com");
-                		   openExplore.setOnAction(new EventHandler<ActionEvent>() {
-                    		    @Override
-                    		    public void handle(ActionEvent event) {
-                    		    	String url = "http://blockexplorer.com/testnet/tx/" + txid; 
-                             	   // open the default web browser for the HTML page
-             	            	   try {
-             							Desktop.getDesktop().browse(java.net.URI.create(url));
-             	            	   } catch (IOException e) { e.printStackTrace(); }
-                    		    }
-                    		});
-                	   }
-                	   
-                	   MenuItem cancel = new MenuItem("Cancel");
-                	   cancel.setOnAction(new EventHandler<ActionEvent>() {
-               		    @Override
-               		    public void handle(ActionEvent event) {
-               		    	contextMenu.hide();
-               		    }
-               		});
-                	contextMenu.getItems().addAll(openExplore, cancel);
-                	contextMenu.show(Main.stage);
-                	
-                   }
-    		    }
-    		});
     		Tooltip.install(mainNode, new Tooltip(tip));
     		
     		// add to scroll
@@ -1458,9 +1418,10 @@ public class Controller  extends BaseUI{
         			Animation ani = GuiUtils.fadeOut(v);
         			GuiUtils.fadeIn(successVbox);
         			v.setVisible(false);
-        			if(broadcast(tx) == true)
+        			if (broadcast(tx) == true) {
         				successVbox.setVisible(true);
-        			else{
+        			}
+        			else {
         				overlay.done();
                     	txMsgLabel.clear();
                     	scrlContent.clearAll(); addOutput();
@@ -2107,6 +2068,11 @@ public class Controller  extends BaseUI{
     	            		catch (IOException e) {e.printStackTrace();}
     	            	}   
     	            }
+    	            try {setTxHistoryContent();} 
+    	            catch (NoSuchAlgorithmException | JSONException
+							| AddressFormatException
+							| KeyIndexOutOfRangeException
+							| AddressNotWatchedByWalletException e) {e.printStackTrace();}
     	        }
     	    }
     	);

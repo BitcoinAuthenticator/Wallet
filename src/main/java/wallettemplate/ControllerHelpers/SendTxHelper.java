@@ -27,10 +27,12 @@ import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
+import authenticator.db.ConfigFile;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.operations.ATOperation;
@@ -97,6 +99,11 @@ public class SendTxHelper {
 	
 	static public boolean broadcastTx (Transaction tx, String txLabel,OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
     	// broadcast
+		ConfigFile config = Authenticator.getWalletOperation().configFile;
+		if (!txLabel.isEmpty()){
+			try {config.writeNextSavedTxData(tx.getHashAsString(), "", txLabel);}
+			catch (IOException e) {e.printStackTrace();}
+		}
 		ATOperation op = null;
 		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){
 			Map<String,ATAddress> keys = new HashMap<String,ATAddress>();
@@ -110,7 +117,7 @@ public class SendTxHelper {
 				//add key
 				keys.put(add, ca);
 			}
-			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(Authenticator.getWalletOperation(),tx,keys);
+			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(txLabel, Authenticator.getWalletOperation(),tx,keys);
 		}
 		else{
 			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();

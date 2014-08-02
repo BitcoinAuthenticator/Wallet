@@ -65,6 +65,7 @@ import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
+import authenticator.db.ConfigFile;
 import authenticator.operations.ATOperation.ATNetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.SignProtocol;
@@ -152,7 +153,7 @@ public class OperationsFactory extends BASE{
 	 */
 	static public ATOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(WalletOperation wallet, Transaction tx, 
 																String pairingID, 
-																@Nullable String txMessage,
+																@Nullable String txLabel,
 																boolean onlyComplete, 
 																@Nullable byte[] authenticatorByteResponse,
 																/**
@@ -178,7 +179,7 @@ public class OperationsFactory extends BASE{
 						//
 						if (!onlyComplete){
 							byte[] cypherBytes = SignProtocol.prepareTX(wallet, tx,pairingID);
-							String reqID = SignProtocol.sendGCM(wallet, pairingID,txMessage );
+							String reqID = SignProtocol.sendGCM(wallet, pairingID,txLabel );
 							PendingRequest pr = SignProtocol.generatePendingRequest(tx, cypherBytes, pairingID, reqID);
 							
 							wallet.addPendingRequest(pr);
@@ -241,6 +242,11 @@ public class OperationsFactory extends BASE{
 										AuthSigs,
 										po);
 								staticLooger.info("Signed Tx - " + EncodingUtils.getStringTransaction(tx));
+								ConfigFile config = Authenticator.getWalletOperation().configFile;
+								if (!txLabel.isEmpty()){
+									try {config.writeNextSavedTxData(tx.getHashAsString(), "multiple", txLabel);}
+									catch (IOException e) {e.printStackTrace();}
+								}
 								/**
 								 * Condition sending by is Test Mode
 								 */
@@ -349,7 +355,7 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation BROADCAST_NORMAL_TRANSACTION(WalletOperation wallet, Transaction tx, Map<String,ATAddress> keys){
+	static public ATOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, WalletOperation wallet, Transaction tx, Map<String,ATAddress> keys){
 		return new ATOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
@@ -364,6 +370,11 @@ public class OperationsFactory extends BASE{
 					throws Exception {
 				try{
 					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);
+					ConfigFile config = Authenticator.getWalletOperation().configFile;
+					if (!txLabel.isEmpty()){
+						try {config.writeNextSavedTxData(signedTx.getHashAsString(), "multiple", txLabel);}
+						catch (IOException e) {e.printStackTrace();}
+					}
 					if(signedTx == null){
 						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
 					}
