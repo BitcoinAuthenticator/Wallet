@@ -1095,7 +1095,7 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnAddTxOutputReleased(MouseEvent event) {
-    	btnAddTxOutput.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+    	btnAddTxOutput.setStyle("-fx-background-color: #199bd6;");
     }
     
     @FXML protected void btnSendTxPressed(MouseEvent event) {
@@ -1103,7 +1103,7 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnSendTxReleased(MouseEvent event) {
-    	btnSendTx.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+    	btnSendTx.setStyle("-fx-background-color: #199bd6;");
     } 
     
     @FXML protected void btnClearSendPanePressed(MouseEvent event) {
@@ -1114,7 +1114,7 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnClearSendPaneReleased(MouseEvent event) {
-    	btnClearSendPane.setStyle("-fx-background-color: linear-gradient(#f2f2f2 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%), linear-gradient(#e0e0e0 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%);");
+    	btnClearSendPane.setStyle("-fx-background-color: #999999;");
     } 
     
     private boolean ValidateTx()
@@ -1348,7 +1348,7 @@ public class Controller  extends BaseUI{
         btnCancel.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnCancel.setStyle("-fx-background-color: linear-gradient(#f2f2f2 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%), linear-gradient(#e0e0e0 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%);");
+            	btnCancel.setStyle("-fx-background-color: #999999;");
             }
         });
 		Button btnConfirm = new Button("Send Transaction");
@@ -1362,7 +1362,7 @@ public class Controller  extends BaseUI{
         btnConfirm.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnConfirm.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+            	btnConfirm.setStyle("-fx-background-color: #199bd6;");
             }
         });
 		PasswordField password = new PasswordField();
@@ -1559,7 +1559,7 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnRequestReleased(MouseEvent event) {
-    	btnRequest.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+    	btnRequest.setStyle("-fx-background-color: #199bd6;");
     }
     
     @FXML protected void btnClearReceivePanePressed(MouseEvent event) {
@@ -1567,7 +1567,7 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnClearReceivePaneReleased(MouseEvent event) {
-    	btnClearReceivePane.setStyle("-fx-background-color: linear-gradient(#f2f2f2 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%), linear-gradient(#e0e0e0 0%, #d6d6d6 20%, #bababa 80%, #adadad 100%);");
+    	btnClearReceivePane.setStyle("-fx-background-color: #999999;");
     } 
     
     void createReceivePaneButtons(){
@@ -1595,7 +1595,7 @@ public class Controller  extends BaseUI{
         btnCopy.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnCopy.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+            	btnCopy.setStyle("-fx-background-color: #199bd6;");
             }
         });
         btnCopy.setOnAction(new EventHandler<ActionEvent>() {
@@ -1622,7 +1622,7 @@ public class Controller  extends BaseUI{
         btnQR.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnQR.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+            	btnQR.setStyle("-fx-background-color: #199bd6;");
             }
         });
         btnQR.setOnAction(new EventHandler<ActionEvent>() {
@@ -1671,7 +1671,7 @@ public class Controller  extends BaseUI{
         btnKey.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnKey.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+            	btnKey.setStyle("-fx-background-color: #199bd6;");
             }
         });
         btnKey.setOnAction(new EventHandler<ActionEvent>() {
@@ -1775,7 +1775,7 @@ public class Controller  extends BaseUI{
             		btnCopyURI.setOnMouseReleased(new EventHandler<MouseEvent>(){
             			@Override
             			public void handle(MouseEvent t) {
-            				btnCopyURI.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+            				btnCopyURI.setStyle("-fx-background-color: #199bd6;");
             			}
             		});
             		Button btnSaveImg = new Button("Save Image");
@@ -1806,7 +1806,7 @@ public class Controller  extends BaseUI{
             		btnSaveImg.setOnMouseReleased(new EventHandler<MouseEvent>(){
             			@Override
             			public void handle(MouseEvent t) {
-            				btnSaveImg.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+            				btnSaveImg.setStyle("-fx-background-color: #199bd6;");
             			}
             		});
             		Button btnReqClose = new Button("Close");
@@ -1820,7 +1820,7 @@ public class Controller  extends BaseUI{
             		btnReqClose.setOnMouseReleased(new EventHandler<MouseEvent>(){
             			@Override
             			public void handle(MouseEvent t) {
-            				btnReqClose.setStyle("-fx-background-color: linear-gradient(#1baff2 0%, #199bd6 20%, #1786ba 80%, #137dad 100%), linear-gradient(#19a2e0 0%, #199bd6 20%, #1786ba 80%, #137dad 100%);");
+            				btnReqClose.setStyle("-fx-background-color: #199bd6;");
             			}
             		});
             		txReqMemo.setFocusTraversable(false);
