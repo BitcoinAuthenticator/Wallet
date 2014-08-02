@@ -4468,6 +4468,41 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccountOrBuilder getConfigAccountsOrBuilder(
         int index);
+
+    // required int32 configNextAvailableSavedIndex = 8;
+    /**
+     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+     */
+    boolean hasConfigNextAvailableSavedIndex();
+    /**
+     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+     */
+    int getConfigNextAvailableSavedIndex();
+
+    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> 
+        getConfigSavedTXDataList();
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index);
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    int getConfigSavedTXDataCount();
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
+        getConfigSavedTXDataOrBuilderList();
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration}
@@ -4580,6 +4615,19 @@ public final class ProtoConfig {
               configAccounts_.add(input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount.PARSER, extensionRegistry));
               break;
             }
+            case 64: {
+              bitField0_ |= 0x00000010;
+              configNextAvailableSavedIndex_ = input.readInt32();
+              break;
+            }
+            case 74: {
+              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+                configSavedTXData_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX>();
+                mutable_bitField0_ |= 0x00000040;
+              }
+              configSavedTXData_.add(input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.PARSER, extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4590,6 +4638,9 @@ public final class ProtoConfig {
       } finally {
         if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
           configAccounts_ = java.util.Collections.unmodifiableList(configAccounts_);
+        }
+        if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+          configSavedTXData_ = java.util.Collections.unmodifiableList(configSavedTXData_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -10056,6 +10107,797 @@ public final class ProtoConfig {
       // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.Hierarchy)
     }
 
+    public interface SavedTXOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // required string txid = 1;
+      /**
+       * <code>required string txid = 1;</code>
+       */
+      boolean hasTxid();
+      /**
+       * <code>required string txid = 1;</code>
+       */
+      java.lang.String getTxid();
+      /**
+       * <code>required string txid = 1;</code>
+       */
+      com.google.protobuf.ByteString
+          getTxidBytes();
+
+      // optional string toFrom = 2;
+      /**
+       * <code>optional string toFrom = 2;</code>
+       */
+      boolean hasToFrom();
+      /**
+       * <code>optional string toFrom = 2;</code>
+       */
+      java.lang.String getToFrom();
+      /**
+       * <code>optional string toFrom = 2;</code>
+       */
+      com.google.protobuf.ByteString
+          getToFromBytes();
+
+      // optional string description = 3;
+      /**
+       * <code>optional string description = 3;</code>
+       */
+      boolean hasDescription();
+      /**
+       * <code>optional string description = 3;</code>
+       */
+      java.lang.String getDescription();
+      /**
+       * <code>optional string description = 3;</code>
+       */
+      com.google.protobuf.ByteString
+          getDescriptionBytes();
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.SavedTX}
+     */
+    public static final class SavedTX extends
+        com.google.protobuf.GeneratedMessage
+        implements SavedTXOrBuilder {
+      // Use SavedTX.newBuilder() to construct.
+      private SavedTX(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private SavedTX(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final SavedTX defaultInstance;
+      public static SavedTX getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public SavedTX getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private SavedTX(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                txid_ = input.readBytes();
+                break;
+              }
+              case 18: {
+                bitField0_ |= 0x00000002;
+                toFrom_ = input.readBytes();
+                break;
+              }
+              case 26: {
+                bitField0_ |= 0x00000004;
+                description_ = input.readBytes();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<SavedTX> PARSER =
+          new com.google.protobuf.AbstractParser<SavedTX>() {
+        public SavedTX parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new SavedTX(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<SavedTX> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      // required string txid = 1;
+      public static final int TXID_FIELD_NUMBER = 1;
+      private java.lang.Object txid_;
+      /**
+       * <code>required string txid = 1;</code>
+       */
+      public boolean hasTxid() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string txid = 1;</code>
+       */
+      public java.lang.String getTxid() {
+        java.lang.Object ref = txid_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            txid_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string txid = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTxidBytes() {
+        java.lang.Object ref = txid_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          txid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // optional string toFrom = 2;
+      public static final int TOFROM_FIELD_NUMBER = 2;
+      private java.lang.Object toFrom_;
+      /**
+       * <code>optional string toFrom = 2;</code>
+       */
+      public boolean hasToFrom() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string toFrom = 2;</code>
+       */
+      public java.lang.String getToFrom() {
+        java.lang.Object ref = toFrom_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            toFrom_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string toFrom = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getToFromBytes() {
+        java.lang.Object ref = toFrom_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          toFrom_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      // optional string description = 3;
+      public static final int DESCRIPTION_FIELD_NUMBER = 3;
+      private java.lang.Object description_;
+      /**
+       * <code>optional string description = 3;</code>
+       */
+      public boolean hasDescription() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string description = 3;</code>
+       */
+      public java.lang.String getDescription() {
+        java.lang.Object ref = description_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            description_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string description = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDescriptionBytes() {
+        java.lang.Object ref = description_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          description_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      private void initFields() {
+        txid_ = "";
+        toFrom_ = "";
+        description_ = "";
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        if (!hasTxid()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getTxidBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, getToFromBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBytes(3, getDescriptionBytes());
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getTxidBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, getToFromBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(3, getDescriptionBytes());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.SavedTX}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          txid_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          toFrom_ = "";
+          bitField0_ = (bitField0_ & ~0x00000002);
+          description_ = "";
+          bitField0_ = (bitField0_ & ~0x00000004);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX build() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX buildPartial() {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.txid_ = txid_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.toFrom_ = toFrom_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.description_ = description_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX other) {
+          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance()) return this;
+          if (other.hasTxid()) {
+            bitField0_ |= 0x00000001;
+            txid_ = other.txid_;
+            onChanged();
+          }
+          if (other.hasToFrom()) {
+            bitField0_ |= 0x00000002;
+            toFrom_ = other.toFrom_;
+            onChanged();
+          }
+          if (other.hasDescription()) {
+            bitField0_ |= 0x00000004;
+            description_ = other.description_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasTxid()) {
+            
+            return false;
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // required string txid = 1;
+        private java.lang.Object txid_ = "";
+        /**
+         * <code>required string txid = 1;</code>
+         */
+        public boolean hasTxid() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>required string txid = 1;</code>
+         */
+        public java.lang.String getTxid() {
+          java.lang.Object ref = txid_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            txid_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>required string txid = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getTxidBytes() {
+          java.lang.Object ref = txid_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            txid_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>required string txid = 1;</code>
+         */
+        public Builder setTxid(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          txid_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string txid = 1;</code>
+         */
+        public Builder clearTxid() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          txid_ = getDefaultInstance().getTxid();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string txid = 1;</code>
+         */
+        public Builder setTxidBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          txid_ = value;
+          onChanged();
+          return this;
+        }
+
+        // optional string toFrom = 2;
+        private java.lang.Object toFrom_ = "";
+        /**
+         * <code>optional string toFrom = 2;</code>
+         */
+        public boolean hasToFrom() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional string toFrom = 2;</code>
+         */
+        public java.lang.String getToFrom() {
+          java.lang.Object ref = toFrom_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            toFrom_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string toFrom = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getToFromBytes() {
+          java.lang.Object ref = toFrom_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            toFrom_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string toFrom = 2;</code>
+         */
+        public Builder setToFrom(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          toFrom_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string toFrom = 2;</code>
+         */
+        public Builder clearToFrom() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          toFrom_ = getDefaultInstance().getToFrom();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string toFrom = 2;</code>
+         */
+        public Builder setToFromBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          toFrom_ = value;
+          onChanged();
+          return this;
+        }
+
+        // optional string description = 3;
+        private java.lang.Object description_ = "";
+        /**
+         * <code>optional string description = 3;</code>
+         */
+        public boolean hasDescription() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>optional string description = 3;</code>
+         */
+        public java.lang.String getDescription() {
+          java.lang.Object ref = description_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            description_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string description = 3;</code>
+         */
+        public com.google.protobuf.ByteString
+            getDescriptionBytes() {
+          java.lang.Object ref = description_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            description_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string description = 3;</code>
+         */
+        public Builder setDescription(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          description_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string description = 3;</code>
+         */
+        public Builder clearDescription() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          description_ = getDefaultInstance().getDescription();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string description = 3;</code>
+         */
+        public Builder setDescriptionBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          description_ = value;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.SavedTX)
+      }
+
+      static {
+        defaultInstance = new SavedTX(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.SavedTX)
+    }
+
     private int bitField0_;
     // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;
     public static final int CONFIGACTIVEACCOUNT_FIELD_NUMBER = 1;
@@ -10193,12 +11035,66 @@ public final class ProtoConfig {
       return configAccounts_.get(index);
     }
 
+    // required int32 configNextAvailableSavedIndex = 8;
+    public static final int CONFIGNEXTAVAILABLESAVEDINDEX_FIELD_NUMBER = 8;
+    private int configNextAvailableSavedIndex_;
+    /**
+     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+     */
+    public boolean hasConfigNextAvailableSavedIndex() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+     */
+    public int getConfigNextAvailableSavedIndex() {
+      return configNextAvailableSavedIndex_;
+    }
+
+    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;
+    public static final int CONFIGSAVEDTXDATA_FIELD_NUMBER = 9;
+    private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_;
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> getConfigSavedTXDataList() {
+      return configSavedTXData_;
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    public java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
+        getConfigSavedTXDataOrBuilderList() {
+      return configSavedTXData_;
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    public int getConfigSavedTXDataCount() {
+      return configSavedTXData_.size();
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index) {
+      return configSavedTXData_.get(index);
+    }
+    /**
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
+        int index) {
+      return configSavedTXData_.get(index);
+    }
+
     private void initFields() {
       configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
       configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
       configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
       configHierarchy_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
       configAccounts_ = java.util.Collections.emptyList();
+      configNextAvailableSavedIndex_ = 0;
+      configSavedTXData_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10206,6 +11102,10 @@ public final class ProtoConfig {
       if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasConfigHierarchy()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasConfigNextAvailableSavedIndex()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -10237,6 +11137,12 @@ public final class ProtoConfig {
           return false;
         }
       }
+      for (int i = 0; i < getConfigSavedTXDataCount(); i++) {
+        if (!getConfigSavedTXData(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -10258,6 +11164,12 @@ public final class ProtoConfig {
       }
       for (int i = 0; i < configAccounts_.size(); i++) {
         output.writeMessage(7, configAccounts_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeInt32(8, configNextAvailableSavedIndex_);
+      }
+      for (int i = 0; i < configSavedTXData_.size(); i++) {
+        output.writeMessage(9, configSavedTXData_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -10287,6 +11199,14 @@ public final class ProtoConfig {
       for (int i = 0; i < configAccounts_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, configAccounts_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, configNextAvailableSavedIndex_);
+      }
+      for (int i = 0; i < configSavedTXData_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, configSavedTXData_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -10401,6 +11321,7 @@ public final class ProtoConfig {
           getConfigOneNameProfileFieldBuilder();
           getConfigHierarchyFieldBuilder();
           getConfigAccountsFieldBuilder();
+          getConfigSavedTXDataFieldBuilder();
         }
       }
       private static Builder create() {
@@ -10438,6 +11359,14 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000010);
         } else {
           configAccountsBuilder_.clear();
+        }
+        configNextAvailableSavedIndex_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        if (configSavedTXDataBuilder_ == null) {
+          configSavedTXData_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+        } else {
+          configSavedTXDataBuilder_.clear();
         }
         return this;
       }
@@ -10508,6 +11437,19 @@ public final class ProtoConfig {
         } else {
           result.configAccounts_ = configAccountsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.configNextAvailableSavedIndex_ = configNextAvailableSavedIndex_;
+        if (configSavedTXDataBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) == 0x00000040)) {
+            configSavedTXData_ = java.util.Collections.unmodifiableList(configSavedTXData_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.configSavedTXData_ = configSavedTXData_;
+        } else {
+          result.configSavedTXData_ = configSavedTXDataBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -10562,12 +11504,45 @@ public final class ProtoConfig {
             }
           }
         }
+        if (other.hasConfigNextAvailableSavedIndex()) {
+          setConfigNextAvailableSavedIndex(other.getConfigNextAvailableSavedIndex());
+        }
+        if (configSavedTXDataBuilder_ == null) {
+          if (!other.configSavedTXData_.isEmpty()) {
+            if (configSavedTXData_.isEmpty()) {
+              configSavedTXData_ = other.configSavedTXData_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+            } else {
+              ensureConfigSavedTXDataIsMutable();
+              configSavedTXData_.addAll(other.configSavedTXData_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.configSavedTXData_.isEmpty()) {
+            if (configSavedTXDataBuilder_.isEmpty()) {
+              configSavedTXDataBuilder_.dispose();
+              configSavedTXDataBuilder_ = null;
+              configSavedTXData_ = other.configSavedTXData_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              configSavedTXDataBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getConfigSavedTXDataFieldBuilder() : null;
+            } else {
+              configSavedTXDataBuilder_.addAllMessages(other.configSavedTXData_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasConfigHierarchy()) {
+          
+          return false;
+        }
+        if (!hasConfigNextAvailableSavedIndex()) {
           
           return false;
         }
@@ -10595,6 +11570,12 @@ public final class ProtoConfig {
         }
         for (int i = 0; i < getConfigAccountsCount(); i++) {
           if (!getConfigAccounts(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getConfigSavedTXDataCount(); i++) {
+          if (!getConfigSavedTXData(i).isInitialized()) {
             
             return false;
           }
@@ -11365,6 +12346,279 @@ public final class ProtoConfig {
         return configAccountsBuilder_;
       }
 
+      // required int32 configNextAvailableSavedIndex = 8;
+      private int configNextAvailableSavedIndex_ ;
+      /**
+       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+       */
+      public boolean hasConfigNextAvailableSavedIndex() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+       */
+      public int getConfigNextAvailableSavedIndex() {
+        return configNextAvailableSavedIndex_;
+      }
+      /**
+       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+       */
+      public Builder setConfigNextAvailableSavedIndex(int value) {
+        bitField0_ |= 0x00000020;
+        configNextAvailableSavedIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
+       */
+      public Builder clearConfigNextAvailableSavedIndex() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        configNextAvailableSavedIndex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;
+      private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_ =
+        java.util.Collections.emptyList();
+      private void ensureConfigSavedTXDataIsMutable() {
+        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
+          configSavedTXData_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX>(configSavedTXData_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> configSavedTXDataBuilder_;
+
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> getConfigSavedTXDataList() {
+        if (configSavedTXDataBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(configSavedTXData_);
+        } else {
+          return configSavedTXDataBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public int getConfigSavedTXDataCount() {
+        if (configSavedTXDataBuilder_ == null) {
+          return configSavedTXData_.size();
+        } else {
+          return configSavedTXDataBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index) {
+        if (configSavedTXDataBuilder_ == null) {
+          return configSavedTXData_.get(index);
+        } else {
+          return configSavedTXDataBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder setConfigSavedTXData(
+          int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
+        if (configSavedTXDataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureConfigSavedTXDataIsMutable();
+          configSavedTXData_.set(index, value);
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder setConfigSavedTXData(
+          int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
+        if (configSavedTXDataBuilder_ == null) {
+          ensureConfigSavedTXDataIsMutable();
+          configSavedTXData_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder addConfigSavedTXData(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
+        if (configSavedTXDataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureConfigSavedTXDataIsMutable();
+          configSavedTXData_.add(value);
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder addConfigSavedTXData(
+          int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
+        if (configSavedTXDataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureConfigSavedTXDataIsMutable();
+          configSavedTXData_.add(index, value);
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder addConfigSavedTXData(
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
+        if (configSavedTXDataBuilder_ == null) {
+          ensureConfigSavedTXDataIsMutable();
+          configSavedTXData_.add(builderForValue.build());
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder addConfigSavedTXData(
+          int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
+        if (configSavedTXDataBuilder_ == null) {
+          ensureConfigSavedTXDataIsMutable();
+          configSavedTXData_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder addAllConfigSavedTXData(
+          java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> values) {
+        if (configSavedTXDataBuilder_ == null) {
+          ensureConfigSavedTXDataIsMutable();
+          super.addAll(values, configSavedTXData_);
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder clearConfigSavedTXData() {
+        if (configSavedTXDataBuilder_ == null) {
+          configSavedTXData_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public Builder removeConfigSavedTXData(int index) {
+        if (configSavedTXDataBuilder_ == null) {
+          ensureConfigSavedTXDataIsMutable();
+          configSavedTXData_.remove(index);
+          onChanged();
+        } else {
+          configSavedTXDataBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder getConfigSavedTXDataBuilder(
+          int index) {
+        return getConfigSavedTXDataFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
+          int index) {
+        if (configSavedTXDataBuilder_ == null) {
+          return configSavedTXData_.get(index);  } else {
+          return configSavedTXDataBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
+           getConfigSavedTXDataOrBuilderList() {
+        if (configSavedTXDataBuilder_ != null) {
+          return configSavedTXDataBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(configSavedTXData_);
+        }
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder addConfigSavedTXDataBuilder() {
+        return getConfigSavedTXDataFieldBuilder().addBuilder(
+            authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder addConfigSavedTXDataBuilder(
+          int index) {
+        return getConfigSavedTXDataFieldBuilder().addBuilder(
+            index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       */
+      public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder> 
+           getConfigSavedTXDataBuilderList() {
+        return getConfigSavedTXDataFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
+          getConfigSavedTXDataFieldBuilder() {
+        if (configSavedTXDataBuilder_ == null) {
+          configSavedTXDataBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder>(
+                  configSavedTXData_,
+                  ((bitField0_ & 0x00000040) == 0x00000040),
+                  getParentForChildren(),
+                  isClean());
+          configSavedTXData_ = null;
+        }
+        return configSavedTXDataBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration)
     }
 
@@ -11426,6 +12680,11 @@ public final class ProtoConfig {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -11455,7 +12714,7 @@ public final class ProtoConfig {
       "%\n\035ShouldSendPayloadOnConnection\030\001 \001(\010\022;" +
       "\n3ShouldReceivePayloadAfterSendingPayloa" +
       "dOnConnection\030\002 \001(\010\022,\n$ShouldLetPendingR",
-      "equestHandleRemoval\030\003 \001(\010\"\374\n\n\032Authentica" +
+      "equestHandleRemoval\030\003 \001(\010\"\270\014\n\032Authentica" +
       "torConfiguration\022c\n\023configActiveAccount\030" +
       "\001 \001(\0132F.authenticator.protobuf.Authentic" +
       "atorConfiguration.ConfigActiveAccount\022o\n" +
@@ -11468,37 +12727,41 @@ public final class ProtoConfig {
       ".authenticator.protobuf.AuthenticatorCon" +
       "figuration.Hierarchy\022T\n\016configAccounts\030\007" +
       " \003(\0132<.authenticator.protobuf.Authentica" +
-      "torConfiguration.ATAccount\032\264\001\n\023ConfigAct" +
-      "iveAccount\022H\n\023pairedAuthenticator\030\001 \001(\0132" +
-      "+.authenticator.protobuf.PairedAuthentic" +
-      "ator\022S\n\ractiveAccount\030\002 \002(\0132<.authentica" +
-      "tor.protobuf.AuthenticatorConfiguration." +
-      "ATAccount\032\260\001\n\031ConfigAuthenticatorWallet\022" +
-      "\016\n\006paired\030\001 \001(\010\022B\n\rpairedWallets\030\002 \003(\0132+",
-      ".authenticator.protobuf.PairedAuthentica" +
-      "tor\022?\n\017pendingRequests\030\003 \003(\0132&.authentic" +
-      "ator.protobuf.PendingRequest\032z\n\024ConfigOn" +
-      "eNameProfile\022\017\n\007onename\030\001 \002(\t\022\030\n\020onename" +
-      "Formatted\030\002 \001(\t\022\030\n\020onenameAvatarURL\030\003 \001(" +
-      "\t\022\035\n\025onenameAvatarFilePath\030\004 \001(\t\032\231\002\n\tATA" +
-      "ccount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExternalKey" +
-      "s\030\003 \003(\005\022\030\n\020usedInternalKeys\030\005 \003(\005\022\030\n\020con" +
-      "firmedBalance\030\006 \002(\022\022\032\n\022unConfirmedBalanc" +
-      "e\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013pending",
-      "InTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005\022>\n\013accou" +
-      "ntType\030\013 \002(\0162).authenticator.protobuf.Wa" +
-      "lletAccountType\022\023\n\013accountName\030\014 \002(\t\032r\n\t" +
-      "Hierarchy\022 \n\030hierarchyMasterPublicKey\030\001 " +
-      "\002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014\022\'\n\037hiera" +
-      "rchyNextAvailableAccountID\030\003 \002(\005*;\n\020ATGC" +
-      "MMessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendin" +
-      "gRequestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pai" +
-      "ring\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAu" +
-      "thenticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'",
-      "\n#updateIpAddressesForPreviousMessage\020\004*" +
-      "B\n\021WalletAccountType\022\023\n\017StandardAccount\020" +
-      "\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013ProtoConf" +
-      "ig"
+      "torConfiguration.ATAccount\022%\n\035configNext" +
+      "AvailableSavedIndex\030\010 \002(\005\022U\n\021configSaved" +
+      "TXData\030\t \003(\0132:.authenticator.protobuf.Au" +
+      "thenticatorConfiguration.SavedTX\032\264\001\n\023Con" +
+      "figActiveAccount\022H\n\023pairedAuthenticator\030" +
+      "\001 \001(\0132+.authenticator.protobuf.PairedAut" +
+      "henticator\022S\n\ractiveAccount\030\002 \002(\0132<.auth",
+      "enticator.protobuf.AuthenticatorConfigur" +
+      "ation.ATAccount\032\260\001\n\031ConfigAuthenticatorW" +
+      "allet\022\016\n\006paired\030\001 \001(\010\022B\n\rpairedWallets\030\002" +
+      " \003(\0132+.authenticator.protobuf.PairedAuth" +
+      "enticator\022?\n\017pendingRequests\030\003 \003(\0132&.aut" +
+      "henticator.protobuf.PendingRequest\032z\n\024Co" +
+      "nfigOneNameProfile\022\017\n\007onename\030\001 \002(\t\022\030\n\020o" +
+      "nenameFormatted\030\002 \001(\t\022\030\n\020onenameAvatarUR" +
+      "L\030\003 \001(\t\022\035\n\025onenameAvatarFilePath\030\004 \001(\t\032\231" +
+      "\002\n\tATAccount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExter",
+      "nalKeys\030\003 \003(\005\022\030\n\020usedInternalKeys\030\005 \003(\005\022" +
+      "\030\n\020confirmedBalance\030\006 \002(\022\022\032\n\022unConfirmed" +
+      "Balance\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013p" +
+      "endingInTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005\022>\n" +
+      "\013accountType\030\013 \002(\0162).authenticator.proto" +
+      "buf.WalletAccountType\022\023\n\013accountName\030\014 \002" +
+      "(\t\032r\n\tHierarchy\022 \n\030hierarchyMasterPublic" +
+      "Key\030\001 \002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014\022\'\n" +
+      "\037hierarchyNextAvailableAccountID\030\003 \002(\005\032<" +
+      "\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t\022",
+      "\023\n\013description\030\003 \001(\t*;\n\020ATGCMMessageType" +
+      "\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs\020" +
+      "\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006Un" +
+      "pair\020\001\022#\n\037SignAndBroadcastAuthenticatorT" +
+      "x\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#updateIpAd" +
+      "dressesForPreviousMessage\020\004*B\n\021WalletAcc" +
+      "ountType\022\023\n\017StandardAccount\020\000\022\030\n\024Authent" +
+      "icatorAccount\020\001B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -11534,7 +12797,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
-              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigHierarchy", "ConfigAccounts", });
+              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigHierarchy", "ConfigAccounts", "ConfigNextAvailableSavedIndex", "ConfigSavedTXData", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
@@ -11565,6 +12828,12 @@ public final class ProtoConfig {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor,
               new java.lang.String[] { "HierarchyMasterPublicKey", "HierarchyChaincode", "HierarchyNextAvailableAccountID", });
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
+            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(5);
+          internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor,
+              new java.lang.String[] { "Txid", "ToFrom", "Description", });
           return null;
         }
       };

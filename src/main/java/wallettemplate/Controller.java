@@ -8,6 +8,7 @@ import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
+import authenticator.db.ConfigFile;
 import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
@@ -40,6 +41,7 @@ import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
+import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.script.Script;
@@ -82,12 +84,14 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -347,10 +351,12 @@ public class Controller  extends BaseUI{
          catch (JSONException | IOException e) {e.printStackTrace();}
          
          Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
+         Authenticator.getWalletOperation().addEventListener(new WalletListener());
          
          // Account choicebox
          setAccountChoiceBox();
     }
+	
     
     public class AuthenticatorGeneralEvents implements AuthenticatorGeneralEventsListener{
 		
@@ -543,6 +549,19 @@ public class Controller  extends BaseUI{
 				});
 		}
     }
+    
+    public class WalletListener extends AbstractWalletEventListener {
+
+		@Override
+		public void onWalletChanged(Wallet wallet) {
+			try {setTxPaneHistory();} 
+			catch (NoSuchAlgorithmException | JSONException
+					| AddressFormatException
+					| KeyIndexOutOfRangeException
+					| AddressNotWatchedByWalletException e) {e.printStackTrace();}	
+		}
+    }
+    
     
     public class PeerListener extends AbstractPeerEventListener {
     	
@@ -1975,6 +1994,8 @@ public class Controller  extends BaseUI{
     
     public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
     	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+    	ConfigFile config = Authenticator.getWalletOperation().configFile;
+    	ArrayList<String> savedTXIDs = config.getSavedTxidList();
     	final ObservableList<TableTx> txdata = FXCollections.observableArrayList();
     	for (Transaction tx : history){
     		Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
@@ -1991,20 +2012,107 @@ public class Controller  extends BaseUI{
     			arrow = new ImageView(in);
     			amount = enter.toFriendlyString();
     		}
+    		String desc = tx.getHashAsString();
     		String date = tx.getUpdateTime().toLocaleString();
-    		String txid = tx.getHashAsString();
+    		for (int i=0; i<savedTXIDs.size(); i++){
+    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
+    				desc = config.getSavedDescription(i);
+    			}
+    		}
     		String toFrom = "multiple";
-    		String confirmations = "0";
-    		TableTx transaction = new TableTx(confirmations, arrow, date, toFrom, txid, amount);
+    		for (int i=0; i<savedTXIDs.size(); i++){
+    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
+    				toFrom = config.getSavedToFrom(i);
+    			}
+    		}
+    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
+    		TableTx transaction = new TableTx(tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
     		txdata.add(transaction);
     	}
     	colConfirmations.setCellValueFactory(new PropertyValueFactory<TableTx,String>("confirmations"));
     	colInOut.setCellValueFactory(new PropertyValueFactory<TableTx,ImageView>("inOut"));
     	colDate.setCellValueFactory(new PropertyValueFactory<TableTx,String>("date"));
     	colToFrom.setCellValueFactory(new PropertyValueFactory<TableTx,String>("toFrom"));
+    	colToFrom.setCellFactory(TextFieldTableCell.forTableColumn());
+    	colToFrom.setOnEditCommit(
+    	    new EventHandler<CellEditEvent<TableTx, String>>() {
+    	        @Override
+    	        public void handle(CellEditEvent<TableTx, String> t) {
+    	            ((TableTx) t.getTableView().getItems().get(
+    	                t.getTablePosition().getRow())
+    	                ).setToFrom(t.getNewValue());
+    	            String txid = ((TableTx) t.getTableView().getItems().get(
+        	                t.getTablePosition().getRow())
+        	                ).getTxid();
+    	            String desc = ((TableTx) t.getTableView().getItems().get(
+        	                t.getTablePosition().getRow())
+        	                ).getDescription();
+    	            String toFrom = ((TableTx) t.getTableView().getItems().get(
+        	                t.getTablePosition().getRow())
+        	                ).getToFrom();
+    	            if (savedTXIDs.size()==0){
+    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
+    	            	catch (IOException e) {e.printStackTrace();}
+    	            }
+    	            else {
+    	            	if (savedTXIDs.contains(txid)){
+    	            		for (int i=0; i<savedTXIDs.size(); i++){
+    	            			if (savedTXIDs.get(i).equals(txid)){
+    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
+    	            				catch (IOException e) {e.printStackTrace();}
+    	            			}
+    	            		}
+    	            	}
+    	            	else {
+    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
+    	            		catch (IOException e) {e.printStackTrace();}
+    	            	}   
+    	            }
+    	        }
+    	    }
+    	);
     	colDescription.setCellValueFactory(new PropertyValueFactory<TableTx,String>("description"));
+    	colDescription.setCellFactory(TextFieldTableCell.forTableColumn());
+    	colDescription.setOnEditCommit(
+    	    new EventHandler<CellEditEvent<TableTx, String>>() {
+    	        @Override
+    	        public void handle(CellEditEvent<TableTx, String> t) {
+    	            ((TableTx) t.getTableView().getItems().get(
+    	                t.getTablePosition().getRow())
+    	                ).setDescription(t.getNewValue());
+    	            String txid = ((TableTx) t.getTableView().getItems().get(
+        	                t.getTablePosition().getRow())
+        	                ).getTxid();
+    	            String desc = ((TableTx) t.getTableView().getItems().get(
+        	                t.getTablePosition().getRow())
+        	                ).getDescription();
+    	            String toFrom = ((TableTx) t.getTableView().getItems().get(
+        	                t.getTablePosition().getRow())
+        	                ).getToFrom();
+    	            if (savedTXIDs.size()==0){
+    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
+    	            	catch (IOException e) {e.printStackTrace();}
+    	            }
+    	            else {
+    	            	if (savedTXIDs.contains(txid)){
+    	            		for (int i=0; i<savedTXIDs.size(); i++){
+    	            			if (savedTXIDs.get(i).equals(txid)){
+    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
+    	            				catch (IOException e) {e.printStackTrace();}
+    	            			}
+    	            		}
+    	            	}
+    	            	else {
+    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
+    	            		catch (IOException e) {e.printStackTrace();}
+    	            	}   
+    	            }
+    	        }
+    	    }
+    	);
     	colAmount.setCellValueFactory(new PropertyValueFactory<TableTx,String>("amount"));
     	txTable.setItems(txdata);
+    	txTable.setEditable(true);
     }
     
     //#####################################

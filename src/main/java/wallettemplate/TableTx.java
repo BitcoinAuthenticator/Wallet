@@ -4,7 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class TableTx {
-
+	
+	private String txid;
 	private String confirmations;
 	private ImageView inOut;
 	private String date;
@@ -12,13 +13,18 @@ public class TableTx {
 	private String description;
 	private String amount;
 	
-	public TableTx (String pConfirmations, ImageView pInOut, String pDate, String pToFrom, String pDescription, String pAmount){
+	public TableTx (String ptxid, String pConfirmations, ImageView pInOut, String pDate, String pToFrom, String pDescription, String pAmount){
+		this.txid = ptxid;
 		this.confirmations = pConfirmations;
 		this.inOut = pInOut;
 		this.date = pDate;
 		this.toFrom = pToFrom;
 		this.description = pDescription;
 		this.amount = pAmount;
+	}
+	
+	public String getTxid(){
+		return txid;
 	}
 	
 	public String getConfirmations(){

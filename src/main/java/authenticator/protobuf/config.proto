@@ -132,6 +132,12 @@ message AuthenticatorConfiguration{
 		required bytes hierarchyChaincode               = 2;
 		required int32 hierarchyNextAvailableAccountID 	= 3;
 	}
+	
+	message SavedTX {
+		required string txid           = 1;
+		optional string toFrom         = 2;
+		optional string description    = 3;
+	}
 
 	optional ConfigActiveAccount configActiveAccount 				= 1;
 	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
@@ -139,4 +145,6 @@ message AuthenticatorConfiguration{
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
 	required Hierarchy ConfigHierarchy								= 6;
 	repeated ATAccount configAccounts								= 7;
+	required int32 configNextAvailableSavedIndex                    = 8;
+	repeated SavedTX configSavedTXData                              = 9;	
 }

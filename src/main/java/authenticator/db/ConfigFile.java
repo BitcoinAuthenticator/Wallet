@@ -17,6 +17,7 @@ import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet;
@@ -329,17 +330,48 @@ public class ConfigFile {
 		DeterministicKey key = HDKeyDerivation.createMasterPubKeyFromBytes(mpubkey, chaincode);
 		return key;
 	}
-
-	/*public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
+	
+	public void writeNextSavedTxData(String txid, String toFrom, String description) throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigHierarchy().getHierarchySeed().toByteArray();
-	}
-
-	public void writeHierarchySeed(byte[] seed) throws FileNotFoundException, IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigHierarchyBuilder().setHierarchySeed(ByteString.copyFrom(seed));
+		SavedTX.Builder saved = SavedTX.newBuilder();
+		saved.setTxid(txid);
+		saved.setToFrom(toFrom);
+		saved.setDescription(description);
+		auth.addConfigSavedTXData(saved);
 		writeConfigFile(auth);
-	}*/
+	}
+	
+	public void writeSavedTxData(int x, String txid, String toFrom, String description) throws IOException{
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		SavedTX.Builder saved = SavedTX.newBuilder();
+		saved.setTxid(txid);
+		saved.setToFrom(toFrom);
+		saved.setDescription(description);
+		auth.getConfigSavedTXDataBuilder(x).setTxid(txid);
+		auth.getConfigSavedTXDataBuilder(x).setToFrom(toFrom);
+		auth.getConfigSavedTXDataBuilder(x).setDescription(description);
+		writeConfigFile(auth);
+	}
+	
+	public ArrayList<String> getSavedTxidList(){
+		ArrayList<String> txid = new ArrayList<String>();
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<SavedTX> saved = auth.getConfigSavedTXDataList();
+		for (SavedTX tx : saved){
+			txid.add(tx.getTxid());
+		}
+		return txid;
+	}
+	
+	public String getSavedDescription (int index) {
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigSavedTXData(index).getDescription();
+	}
+	
+	public String getSavedToFrom (int index) {
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		return auth.getConfigSavedTXData(index).getToFrom();
+	}
 
  	public List<String> getPendingOutTx(int accountIdx){
  		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
@@ -390,7 +422,6 @@ public class ConfigFile {
 				b.addPendingInTx(all.get(i));
 		updateAccount(b.build());
  	}
-
 
 	public int getHierarchyNextAvailableAccountID(){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
