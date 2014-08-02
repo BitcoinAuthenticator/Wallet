@@ -124,7 +124,14 @@ public class PairWallet extends BaseUI{
 			}
         	
         });
-    	Authenticator.addOperation(op);
+    	boolean result = Authenticator.addOperation(op);
+    	if(!result){
+    		Dialogs.create()
+		        .owner(Main.stage)
+		        .title("Error !")
+		        .masthead("Could not add operation")
+		        .showInformation();   
+    	}
     }
     
     @FXML

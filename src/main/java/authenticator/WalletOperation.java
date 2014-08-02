@@ -1,6 +1,6 @@
 package authenticator;
 
-import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
+import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;

@@ -9,7 +9,7 @@ import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 
-public interface AuthenticatorGeneralEventsListener {
+public interface BAGeneralEventsListener {
 	/**
 	 * Called when a new pairing is completed
 	 */

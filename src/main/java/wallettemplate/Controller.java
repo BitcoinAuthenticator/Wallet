@@ -1,8 +1,8 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
-import authenticator.AuthenticatorGeneralEventsListener;
-import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
+import authenticator.BAGeneralEventsListener;
+import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.KeyUtils;
@@ -374,7 +374,7 @@ public class Controller  extends BaseUI{
     	});    	
     }
     
-    public class AuthenticatorGeneralEvents implements AuthenticatorGeneralEventsListener{
+    public class AuthenticatorGeneralEvents implements BAGeneralEventsListener{
 		
 		@Override
 		public void onNewPairedAuthenticator() {
@@ -1468,6 +1468,12 @@ public class Controller  extends BaseUI{
                     	txMsgLabel.clear();
                     	scrlContent.clearAll(); addOutput();
                     	txFee.clear();
+                    	// Notify user
+                    	Dialogs.create()
+        		        .owner(Main.stage)
+        		        .title("Error !")
+        		        .masthead("Could not add operation")
+        		        .showInformation();
         			}
         				
         		} 

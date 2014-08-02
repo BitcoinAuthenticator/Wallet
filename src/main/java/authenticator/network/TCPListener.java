@@ -175,7 +175,7 @@ public class TCPListener extends BASE{
 						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 					}
 	    		}
-	    		
+	    			    		
 	    		if(PORT_FORWARDED)
     			try {
 					ss = new ServerSocket (forwardedPort);
@@ -390,7 +390,7 @@ public class TCPListener extends BASE{
 	
 	public boolean checkForOperationNetworkRequirements(BAOperation op){
 		if((op.getOperationNetworkRequirements().getValue() & ATNetworkRequirement.PORT_MAPPING.getValue()) > 0){
-			if(!PORT_FORWARDED || !SOCKET_OPERATIONAL){
+			if(! PORT_FORWARDED || !SOCKET_OPERATIONAL){
 				return false;
 			}
 		}
@@ -407,9 +407,11 @@ public class TCPListener extends BASE{
 	public boolean addOperation(BAOperation operation)
 	{
 		checkForOperationNetworkRequirements(operation);
-		if(this.isRunning())
+		if(isRunning()){
 			operationsQueue.add(operation);
-		return true;
+			return true;
+		}
+		return false;
 	}
 
 	public int getQueuePendingOperations(){
@@ -442,7 +444,7 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean areAllNetworkRequirementsAreFullyRunning(){
-		if(!PORT_FORWARDED || !SOCKET_OPERATIONAL)
+		if(! PORT_FORWARDED || !SOCKET_OPERATIONAL)
 			return false;
 		return true;
 	}
