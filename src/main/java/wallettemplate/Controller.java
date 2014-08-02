@@ -1417,8 +1417,11 @@ public class Controller  extends BaseUI{
             	try {
         			Animation ani = GuiUtils.fadeOut(v);
         			GuiUtils.fadeIn(successVbox);
+        			String to = "";
+        			if (OutputAddresses.size()==1){to=OutputAddresses.get(0);}
+        			else {to = "multiple";}
         			v.setVisible(false);
-        			if (broadcast(tx) == true) {
+        			if (broadcast(tx,to) == true) {
         				successVbox.setVisible(true);
         			}
         			else {
@@ -1470,8 +1473,8 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public boolean broadcast (Transaction tx) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
-    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), new OnOperationUIUpdate(){
+    public boolean broadcast (Transaction tx, String to) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, new OnOperationUIUpdate(){
 			@Override
 			public void onBegin(String str) { }
 

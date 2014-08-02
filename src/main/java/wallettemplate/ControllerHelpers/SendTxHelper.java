@@ -97,7 +97,7 @@ public class SendTxHelper {
     	return true;
     }
 	
-	static public boolean broadcastTx (Transaction tx, String txLabel,OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+	static public boolean broadcastTx (Transaction tx, String txLabel, String to, OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
     	// broadcast
 		ConfigFile config = Authenticator.getWalletOperation().configFile;
 		if (!txLabel.isEmpty()){
@@ -117,7 +117,7 @@ public class SendTxHelper {
 				//add key
 				keys.put(add, ca);
 			}
-			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(txLabel, Authenticator.getWalletOperation(),tx,keys);
+			op = OperationsFactory.BROADCAST_NORMAL_TRANSACTION(txLabel, to, Authenticator.getWalletOperation(),tx,keys);
 		}
 		else{
 			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
@@ -125,6 +125,7 @@ public class SendTxHelper {
 					tx, 
 					pairID, 
 					txLabel,
+					to,
 					false,
 					null,
 					null);
