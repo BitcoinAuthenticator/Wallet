@@ -1968,13 +1968,15 @@ public class Controller  extends BaseUI{
     		Image out = new Image(Main.class.getResourceAsStream("out.png"));
     		ImageView arrow = null;
     		String amount = "";
+    		String toFrom = "multiple";
     		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
     			arrow = new ImageView(out);
-    			amount = exit.toFriendlyString();
+    			amount = exit.subtract(enter).toFriendlyString();
     		}
     		else { // i only received coins
     			arrow = new ImageView(in);
     			amount = enter.toFriendlyString();
+    			if (tx.getInputs().size()==1){toFrom = tx.getInput(0).getFromAddress().toString();}
     		}
     		String desc = tx.getHashAsString();
     		String date = tx.getUpdateTime().toLocaleString();
@@ -1983,7 +1985,6 @@ public class Controller  extends BaseUI{
     				desc = config.getSavedDescription(i);
     			}
     		}
-    		String toFrom = "multiple";
     		for (int i=0; i<savedTXIDs.size(); i++){
     			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
     				toFrom = config.getSavedToFrom(i);
