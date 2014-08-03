@@ -98,7 +98,7 @@ public class SendTxHelper {
     }
 	
 	static public boolean broadcastTx (Transaction tx, String txLabel, String to, OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
-    	// broadcast
+		// broadcast
 		ConfigFile config = Authenticator.getWalletOperation().configFile;
 		if (!txLabel.isEmpty()){
 			try {config.writeNextSavedTxData(tx.getHashAsString(), "", txLabel);}

@@ -34,6 +34,7 @@ import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.Peer;
+import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
@@ -1418,8 +1419,18 @@ public class Controller  extends BaseUI{
         			Animation ani = GuiUtils.fadeOut(v);
         			GuiUtils.fadeIn(successVbox);
         			String to = "";
-        			if (OutputAddresses.size()==1){to=OutputAddresses.get(0);}
-        			else {to = "multiple";}
+        			if (OutputAddresses.size()==1){
+        				try {
+        					ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(OutputAddresses.get(0));
+        					int index = add.getAccountIndex();
+        					if (index==Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()){
+        						to = "Internal Transfer";
+        					}
+        					else {to = "Transfer to " + Authenticator.getWalletOperation().getAccount(index).getAccountName();}
+        				} catch (ScriptException e) {e.printStackTrace(); 
+        				} catch (AddressWasNotFoundException e) {to=OutputAddresses.get(0);}
+        			}
+        			else {to = "Multiple";}
         			v.setVisible(false);
         			if (broadcast(tx,to) == true) {
         				successVbox.setVisible(true);
@@ -1976,7 +1987,9 @@ public class Controller  extends BaseUI{
     		else { // i only received coins
     			arrow = new ImageView(in);
     			amount = enter.toFriendlyString();
-    			if (tx.getInputs().size()==1){toFrom = tx.getInput(0).getFromAddress().toString();}
+    			if (tx.getInputs().size()==1){
+    				toFrom = tx.getInput(0).getFromAddress().toString();
+    			}
     		}
     		String desc = tx.getHashAsString();
     		String date = tx.getUpdateTime().toLocaleString();
