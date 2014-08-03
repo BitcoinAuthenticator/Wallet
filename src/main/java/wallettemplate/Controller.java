@@ -86,6 +86,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -98,6 +99,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -1382,7 +1384,32 @@ public class Controller  extends BaseUI{
 		Label txid = new Label();
 		Label lblTxid = new Label("Transaction ID:");
 		Button btnContinue = new Button("Continue");
+		btnContinue.getStyleClass().add("custom-button");
+        btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	btnContinue.setStyle("-fx-background-color: #a1d2e7;");
+            }
+        });
+        btnContinue.setOnMouseReleased(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	btnContinue.setStyle("-fx-background-color: #199bd6;");
+            }
+        });
 		txid.setText(tx.getHashAsString());
+		final ContextMenu contextMenu = new ContextMenu();
+		MenuItem item1 = new MenuItem("Copy");
+		item1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				Clipboard clipboard = Clipboard.getSystemClipboard();
+				ClipboardContent content = new ClipboardContent();
+				content.putString(txid.getText().toString());
+				clipboard.setContent(content);
+			}
+		});
+		contextMenu.getItems().addAll(item1);
+		txid.setContextMenu(contextMenu);
 		successVbox.getChildren().add(img);
 		successVbox.getChildren().add(lblTxid);
 		successVbox.getChildren().add(txid);
@@ -1394,26 +1421,26 @@ public class Controller  extends BaseUI{
 		successVbox.setMargin(lblTxid, new Insets(15,0,0,0));
 		successVbox.setMargin(btnContinue, new Insets(15,0,0,0));
 		pane.getChildren().add(successVbox);
-		btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
+		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
             	if(Authenticator.getWalletOperation().isWalletEncrypted()){
-            		if (password.getText().equals("")){
-                		informationalAlert("Unfortunately, you messed up.",
-           					 "You need to enter your password to decrypt your wallet.");
-                		return;
-                	}
-                	else {
-                		try{
-                			if (Authenticator.AUTHENTICATOR_PW.equals("")){Authenticator.getWalletOperation().decryptWallet(password.getText());}
-                			else {Authenticator.getWalletOperation().decryptWallet(Authenticator.AUTHENTICATOR_PW);}
-                		}
-                		catch(KeyCrypterException  e){
-                			informationalAlert("Unfortunately, you messed up.",
-                  					 "Wrong wallet password");
-                			return;
-                		}
-                	}
+            		try{
+            			if (Authenticator.AUTHENTICATOR_PW.equals("")){
+            				if (password.getText().equals("")){
+                        		informationalAlert("Unfortunately, you messed up.",
+                   					 "You need to enter your password to decrypt your wallet.");
+                        		return;
+                        	}
+            				else {Authenticator.getWalletOperation().decryptWallet(password.getText());}
+            			}
+            			else {Authenticator.getWalletOperation().decryptWallet(Authenticator.AUTHENTICATOR_PW);}
+            		}
+            		catch(KeyCrypterException  e){
+            			informationalAlert("Unfortunately, you messed up.",
+            					"Wrong wallet password");
+            			return;
+            		} 	
             	}
             	try {
         			Animation ani = GuiUtils.fadeOut(v);
@@ -1462,7 +1489,7 @@ public class Controller  extends BaseUI{
 		v.getChildren().add(lvTx);
 		v.getChildren().add(h);
 		pane.getChildren().add(v);
-		btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
+		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
             	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
@@ -2096,6 +2123,33 @@ public class Controller  extends BaseUI{
     	colAmount.setCellValueFactory(new PropertyValueFactory<TableTx,String>("amount"));
     	txTable.setItems(txdata);
     	txTable.setEditable(true);
+    	txTable.setOnMouseClicked(new EventHandler<MouseEvent>(){
+    		@Override
+    		public void handle(MouseEvent event) {
+    			if (event.getClickCount()==2){
+    			 @SuppressWarnings("rawtypes")
+    			  ObservableList<TablePosition> cells = txTable.getSelectionModel().getSelectedCells();
+    			  for( TablePosition< TableTx, ? > cell : cells )
+    			  {
+    			     if(!(cell.getColumn()==3) && !(cell.getColumn()==4)){
+    			    	Pane pane = new Pane();
+    			 		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+    			 		pane.setMaxSize(600, 360);
+    			 		pane.setStyle("-fx-background-color: white;");
+    			 		pane.setEffect(new DropShadow());
+    			 		Button btnClose = new Button("Close");
+    			 		pane.getChildren().add(btnClose);
+    			 		btnClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                			@Override
+                				public void handle(MouseEvent event) {
+                				overlay.done();
+                			}
+                		});
+    			     }
+    			  }
+    			}
+    		}
+    	});
     }
     
     //#####################################
