@@ -66,6 +66,7 @@ import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
+import authenticator.network.BANeworkInfo;
 import authenticator.operations.ATOperation.ATNetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.SignProtocol;
@@ -110,12 +111,15 @@ public class OperationsFactory extends BASE{
 
 						@SuppressWarnings("static-access")
 						@Override
-						public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
-							 timeout = ss.getSoTimeout();
+						public void Execute(OnOperationUIUpdate listenerUI,
+								ServerSocket ss, BANeworkInfo netInfo,
+								String[] args, OnOperationUIUpdate listener)
+								throws Exception {
+							timeout = ss.getSoTimeout();
 							 ss.setSoTimeout(0);
 							 socket = ss;
 							 PairingProtocol pair = new PairingProtocol();
-							 pair.run(wallet,ss,args,listener,animation, animationAfterPairing); 
+							 pair.run(wallet,ss,netInfo, args,listener,animation, animationAfterPairing); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(timeout);
 						}
@@ -131,6 +135,8 @@ public class OperationsFactory extends BASE{
 							try {socket.setSoTimeout(timeout); } catch(Exception e1) {}
 							listenerUI.onError(e, null);
 						}
+
+						
 						
 					});
 	}
@@ -175,8 +181,9 @@ public class OperationsFactory extends BASE{
 					}
 
 					@Override
-					public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args,
-							OnOperationUIUpdate listener) throws Exception {
+					public void Execute(OnOperationUIUpdate listenerUI,
+							ServerSocket ss, BANeworkInfo netInfo,
+							String[] args, OnOperationUIUpdate listener) throws Exception {
 						//
 						if (!onlyComplete){
 							byte[] cypherBytes = SignProtocol.prepareTX(wallet, tx,pairingID);
@@ -328,7 +335,9 @@ public class OperationsFactory extends BASE{
 						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
 
 						@Override
-						public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener) throws Exception {
+						public void Execute(OnOperationUIUpdate listenerUI,
+								ServerSocket ss, BANeworkInfo netInfo,
+								String[] args, OnOperationUIUpdate listener) throws Exception {
 							PairedAuthenticator po = wallet.getPairingObject(pairingID);
 							Dispacher disp;
 							disp = new Dispacher(null,null);
@@ -367,7 +376,9 @@ public class OperationsFactory extends BASE{
 			}
 
 			@Override
-			public void Execute(OnOperationUIUpdate listenerUI, ServerSocket ss, String[] args, OnOperationUIUpdate listener)
+			public void Execute(OnOperationUIUpdate listenerUI,
+					ServerSocket ss, BANeworkInfo netInfo,
+					String[] args, OnOperationUIUpdate listener)
 					throws Exception {
 				try{
 					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);

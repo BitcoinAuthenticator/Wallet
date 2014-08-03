@@ -145,6 +145,5 @@ message AuthenticatorConfiguration{
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
 	required Hierarchy ConfigHierarchy								= 6;
 	repeated ATAccount configAccounts								= 7;
-	required int32 configNextAvailableSavedIndex                    = 8;
-	repeated SavedTX configSavedTXData                              = 9;	
+	repeated SavedTX configSavedTXData                              = 8;	
 }

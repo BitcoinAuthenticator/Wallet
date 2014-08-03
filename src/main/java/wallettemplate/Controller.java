@@ -354,7 +354,7 @@ public class Controller  extends BaseUI{
          catch (JSONException | IOException e) {e.printStackTrace();}
          
          Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
-         Authenticator.getWalletOperation().addEventListener(new WalletListener());
+         //Authenticator.getWalletOperation().addEventListener(new WalletListener());
          
          // Account choicebox
          setAccountChoiceBox();
@@ -553,7 +553,7 @@ public class Controller  extends BaseUI{
 		}
     }
     
-    public class WalletListener extends AbstractWalletEventListener {
+    /*public class WalletListener extends AbstractWalletEventListener {
 
 		@Override
 		public void onWalletChanged(Wallet wallet) {
@@ -563,7 +563,7 @@ public class Controller  extends BaseUI{
 					| KeyIndexOutOfRangeException
 					| AddressNotWatchedByWalletException e) {e.printStackTrace();}	
 		}
-    }
+    }*/
     
     
     public class PeerListener extends AbstractPeerEventListener {

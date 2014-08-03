@@ -206,7 +206,8 @@ public class WalletOperation extends BASE{
 			} catch (Exception e) { e.printStackTrace(); }
         }
         
-        private void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
+        @SuppressWarnings("incomplete-switch")
+		private void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
         	/**
         	 * 
         	 * Check for coins exiting
@@ -353,7 +354,7 @@ public class WalletOperation extends BASE{
 	 * @throws InsufficientMoneyException */
 	public SendResult pushTxWithWallet(Transaction tx) throws IOException, InsufficientMoneyException{
 		this.LOG.info("Broadcasting to network...");
-		return this.mWalletWrapper.broadcastTrabsactionFromWallet(tx);
+		return mWalletWrapper.broadcastTrabsactionFromWallet(tx);
 	}
 	
 	/**
@@ -371,7 +372,7 @@ public class WalletOperation extends BASE{
 		PairedAuthenticator po = getPairingObjectForAccountIndex(accountIdx);
 		return generateNextP2SHAddress(po.getPairingID(), addressType);
 	}
-	@SuppressWarnings({ "static-access", "deprecation" })
+	@SuppressWarnings({ "deprecation" })
 	private ATAddress generateNextP2SHAddress(String pairingID, HierarchyAddressTypes addressType) throws NoSuchAlgorithmException, JSONException, AddressFormatException, NoUnusedKeyException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException, IncorrectPathException{
 		try {
 			//Create a new key pair for wallet
@@ -1561,7 +1562,7 @@ public class WalletOperation extends BASE{
 		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();
 		ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
 		//ArrayList<String> usedInternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.Internal);
-		Set<Transaction> fullTxSet = Authenticator.getWalletOperation().mWalletWrapper.trackedWallet.getTransactions(false);
+		Set<Transaction> fullTxSet = mWalletWrapper.trackedWallet.getTransactions(false);
     	for (Transaction tx : fullTxSet){
     		for (int a=0; a<tx.getInputs().size(); a++){
     			if (tx.getInput(a).getConnectedOutput()!=null){

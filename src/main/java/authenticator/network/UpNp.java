@@ -24,6 +24,12 @@ public class UpNp extends BASE{
 	static GatewayDevice activeGW;
 
 	public UpNp() { super(UpNp.class); }
+	/**
+	 * args:<br>
+	 * [0] - port number
+	 * @param args
+	 * @throws Exception
+	 */
 	public void run(String[] args) throws Exception{
 		SAMPLE_PORT = Integer.parseInt(args[0]);
 		boolean LIST_ALL_MAPPINGS = false;

@@ -4469,37 +4469,47 @@ public final class ProtoConfig {
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccountOrBuilder getConfigAccountsOrBuilder(
         int index);
 
-    // required int32 configNextAvailableSavedIndex = 8;
+    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;
     /**
-     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-     */
-    boolean hasConfigNextAvailableSavedIndex();
-    /**
-     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-     */
-    int getConfigNextAvailableSavedIndex();
-
-    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;
-    /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> 
         getConfigSavedTXDataList();
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index);
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     int getConfigSavedTXDataCount();
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
         getConfigSavedTXDataOrBuilderList();
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
         int index);
@@ -4615,15 +4625,10 @@ public final class ProtoConfig {
               configAccounts_.add(input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount.PARSER, extensionRegistry));
               break;
             }
-            case 64: {
-              bitField0_ |= 0x00000010;
-              configNextAvailableSavedIndex_ = input.readInt32();
-              break;
-            }
-            case 74: {
-              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+            case 66: {
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
                 configSavedTXData_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX>();
-                mutable_bitField0_ |= 0x00000040;
+                mutable_bitField0_ |= 0x00000020;
               }
               configSavedTXData_.add(input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.PARSER, extensionRegistry));
               break;
@@ -4639,7 +4644,7 @@ public final class ProtoConfig {
         if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
           configAccounts_ = java.util.Collections.unmodifiableList(configAccounts_);
         }
-        if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
           configSavedTXData_ = java.util.Collections.unmodifiableList(configSavedTXData_);
         }
         this.unknownFields = unknownFields.build();
@@ -11035,52 +11040,56 @@ public final class ProtoConfig {
       return configAccounts_.get(index);
     }
 
-    // required int32 configNextAvailableSavedIndex = 8;
-    public static final int CONFIGNEXTAVAILABLESAVEDINDEX_FIELD_NUMBER = 8;
-    private int configNextAvailableSavedIndex_;
-    /**
-     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-     */
-    public boolean hasConfigNextAvailableSavedIndex() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-     */
-    public int getConfigNextAvailableSavedIndex() {
-      return configNextAvailableSavedIndex_;
-    }
-
-    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;
-    public static final int CONFIGSAVEDTXDATA_FIELD_NUMBER = 9;
+    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;
+    public static final int CONFIGSAVEDTXDATA_FIELD_NUMBER = 8;
     private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_;
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> getConfigSavedTXDataList() {
       return configSavedTXData_;
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     public java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
         getConfigSavedTXDataOrBuilderList() {
       return configSavedTXData_;
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     public int getConfigSavedTXDataCount() {
       return configSavedTXData_.size();
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index) {
       return configSavedTXData_.get(index);
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     *
+     * <pre>
+     *required int32 configNextAvailableSavedIndex                    = 8;
+     * </pre>
      */
     public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
         int index) {
@@ -11093,7 +11102,6 @@ public final class ProtoConfig {
       configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
       configHierarchy_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
       configAccounts_ = java.util.Collections.emptyList();
-      configNextAvailableSavedIndex_ = 0;
       configSavedTXData_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -11102,10 +11110,6 @@ public final class ProtoConfig {
       if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasConfigHierarchy()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasConfigNextAvailableSavedIndex()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -11165,11 +11169,8 @@ public final class ProtoConfig {
       for (int i = 0; i < configAccounts_.size(); i++) {
         output.writeMessage(7, configAccounts_.get(i));
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt32(8, configNextAvailableSavedIndex_);
-      }
       for (int i = 0; i < configSavedTXData_.size(); i++) {
-        output.writeMessage(9, configSavedTXData_.get(i));
+        output.writeMessage(8, configSavedTXData_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -11200,13 +11201,9 @@ public final class ProtoConfig {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, configAccounts_.get(i));
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, configNextAvailableSavedIndex_);
-      }
       for (int i = 0; i < configSavedTXData_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, configSavedTXData_.get(i));
+          .computeMessageSize(8, configSavedTXData_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -11360,11 +11357,9 @@ public final class ProtoConfig {
         } else {
           configAccountsBuilder_.clear();
         }
-        configNextAvailableSavedIndex_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000020);
         if (configSavedTXDataBuilder_ == null) {
           configSavedTXData_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000020);
         } else {
           configSavedTXDataBuilder_.clear();
         }
@@ -11437,14 +11432,10 @@ public final class ProtoConfig {
         } else {
           result.configAccounts_ = configAccountsBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.configNextAvailableSavedIndex_ = configNextAvailableSavedIndex_;
         if (configSavedTXDataBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          if (((bitField0_ & 0x00000020) == 0x00000020)) {
             configSavedTXData_ = java.util.Collections.unmodifiableList(configSavedTXData_);
-            bitField0_ = (bitField0_ & ~0x00000040);
+            bitField0_ = (bitField0_ & ~0x00000020);
           }
           result.configSavedTXData_ = configSavedTXData_;
         } else {
@@ -11504,14 +11495,11 @@ public final class ProtoConfig {
             }
           }
         }
-        if (other.hasConfigNextAvailableSavedIndex()) {
-          setConfigNextAvailableSavedIndex(other.getConfigNextAvailableSavedIndex());
-        }
         if (configSavedTXDataBuilder_ == null) {
           if (!other.configSavedTXData_.isEmpty()) {
             if (configSavedTXData_.isEmpty()) {
               configSavedTXData_ = other.configSavedTXData_;
-              bitField0_ = (bitField0_ & ~0x00000040);
+              bitField0_ = (bitField0_ & ~0x00000020);
             } else {
               ensureConfigSavedTXDataIsMutable();
               configSavedTXData_.addAll(other.configSavedTXData_);
@@ -11524,7 +11512,7 @@ public final class ProtoConfig {
               configSavedTXDataBuilder_.dispose();
               configSavedTXDataBuilder_ = null;
               configSavedTXData_ = other.configSavedTXData_;
-              bitField0_ = (bitField0_ & ~0x00000040);
+              bitField0_ = (bitField0_ & ~0x00000020);
               configSavedTXDataBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getConfigSavedTXDataFieldBuilder() : null;
@@ -11539,10 +11527,6 @@ public final class ProtoConfig {
 
       public final boolean isInitialized() {
         if (!hasConfigHierarchy()) {
-          
-          return false;
-        }
-        if (!hasConfigNextAvailableSavedIndex()) {
           
           return false;
         }
@@ -12346,46 +12330,13 @@ public final class ProtoConfig {
         return configAccountsBuilder_;
       }
 
-      // required int32 configNextAvailableSavedIndex = 8;
-      private int configNextAvailableSavedIndex_ ;
-      /**
-       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-       */
-      public boolean hasConfigNextAvailableSavedIndex() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-       */
-      public int getConfigNextAvailableSavedIndex() {
-        return configNextAvailableSavedIndex_;
-      }
-      /**
-       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-       */
-      public Builder setConfigNextAvailableSavedIndex(int value) {
-        bitField0_ |= 0x00000020;
-        configNextAvailableSavedIndex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int32 configNextAvailableSavedIndex = 8;</code>
-       */
-      public Builder clearConfigNextAvailableSavedIndex() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        configNextAvailableSavedIndex_ = 0;
-        onChanged();
-        return this;
-      }
-
-      // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;
+      // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;
       private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_ =
         java.util.Collections.emptyList();
       private void ensureConfigSavedTXDataIsMutable() {
-        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
           configSavedTXData_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX>(configSavedTXData_);
-          bitField0_ |= 0x00000040;
+          bitField0_ |= 0x00000020;
          }
       }
 
@@ -12393,7 +12344,11 @@ public final class ProtoConfig {
           authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> configSavedTXDataBuilder_;
 
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> getConfigSavedTXDataList() {
         if (configSavedTXDataBuilder_ == null) {
@@ -12403,7 +12358,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public int getConfigSavedTXDataCount() {
         if (configSavedTXDataBuilder_ == null) {
@@ -12413,7 +12372,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index) {
         if (configSavedTXDataBuilder_ == null) {
@@ -12423,7 +12386,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder setConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
@@ -12440,7 +12407,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder setConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
@@ -12454,7 +12425,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder addConfigSavedTXData(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
         if (configSavedTXDataBuilder_ == null) {
@@ -12470,7 +12445,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder addConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
@@ -12487,7 +12466,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder addConfigSavedTXData(
           authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
@@ -12501,7 +12484,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder addConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
@@ -12515,7 +12502,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder addAllConfigSavedTXData(
           java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> values) {
@@ -12529,12 +12520,16 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder clearConfigSavedTXData() {
         if (configSavedTXDataBuilder_ == null) {
           configSavedTXData_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000020);
           onChanged();
         } else {
           configSavedTXDataBuilder_.clear();
@@ -12542,7 +12537,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public Builder removeConfigSavedTXData(int index) {
         if (configSavedTXDataBuilder_ == null) {
@@ -12555,14 +12554,22 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder getConfigSavedTXDataBuilder(
           int index) {
         return getConfigSavedTXDataFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
           int index) {
@@ -12572,7 +12579,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
            getConfigSavedTXDataOrBuilderList() {
@@ -12583,14 +12594,22 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder addConfigSavedTXDataBuilder() {
         return getConfigSavedTXDataFieldBuilder().addBuilder(
             authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance());
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder addConfigSavedTXDataBuilder(
           int index) {
@@ -12598,7 +12617,11 @@ public final class ProtoConfig {
             index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance());
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 9;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       *
+       * <pre>
+       *required int32 configNextAvailableSavedIndex                    = 8;
+       * </pre>
        */
       public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder> 
            getConfigSavedTXDataBuilderList() {
@@ -12611,7 +12634,7 @@ public final class ProtoConfig {
           configSavedTXDataBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder>(
                   configSavedTXData_,
-                  ((bitField0_ & 0x00000040) == 0x00000040),
+                  ((bitField0_ & 0x00000020) == 0x00000020),
                   getParentForChildren(),
                   isClean());
           configSavedTXData_ = null;
@@ -12714,7 +12737,7 @@ public final class ProtoConfig {
       "%\n\035ShouldSendPayloadOnConnection\030\001 \001(\010\022;" +
       "\n3ShouldReceivePayloadAfterSendingPayloa" +
       "dOnConnection\030\002 \001(\010\022,\n$ShouldLetPendingR",
-      "equestHandleRemoval\030\003 \001(\010\"\270\014\n\032Authentica" +
+      "equestHandleRemoval\030\003 \001(\010\"\221\014\n\032Authentica" +
       "torConfiguration\022c\n\023configActiveAccount\030" +
       "\001 \001(\0132F.authenticator.protobuf.Authentic" +
       "atorConfiguration.ConfigActiveAccount\022o\n" +
@@ -12727,41 +12750,40 @@ public final class ProtoConfig {
       ".authenticator.protobuf.AuthenticatorCon" +
       "figuration.Hierarchy\022T\n\016configAccounts\030\007" +
       " \003(\0132<.authenticator.protobuf.Authentica" +
-      "torConfiguration.ATAccount\022%\n\035configNext" +
-      "AvailableSavedIndex\030\010 \002(\005\022U\n\021configSaved" +
-      "TXData\030\t \003(\0132:.authenticator.protobuf.Au" +
-      "thenticatorConfiguration.SavedTX\032\264\001\n\023Con" +
-      "figActiveAccount\022H\n\023pairedAuthenticator\030" +
-      "\001 \001(\0132+.authenticator.protobuf.PairedAut" +
-      "henticator\022S\n\ractiveAccount\030\002 \002(\0132<.auth",
-      "enticator.protobuf.AuthenticatorConfigur" +
-      "ation.ATAccount\032\260\001\n\031ConfigAuthenticatorW" +
-      "allet\022\016\n\006paired\030\001 \001(\010\022B\n\rpairedWallets\030\002" +
-      " \003(\0132+.authenticator.protobuf.PairedAuth" +
-      "enticator\022?\n\017pendingRequests\030\003 \003(\0132&.aut" +
-      "henticator.protobuf.PendingRequest\032z\n\024Co" +
-      "nfigOneNameProfile\022\017\n\007onename\030\001 \002(\t\022\030\n\020o" +
-      "nenameFormatted\030\002 \001(\t\022\030\n\020onenameAvatarUR" +
-      "L\030\003 \001(\t\022\035\n\025onenameAvatarFilePath\030\004 \001(\t\032\231" +
-      "\002\n\tATAccount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExter",
-      "nalKeys\030\003 \003(\005\022\030\n\020usedInternalKeys\030\005 \003(\005\022" +
-      "\030\n\020confirmedBalance\030\006 \002(\022\022\032\n\022unConfirmed" +
-      "Balance\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013p" +
-      "endingInTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005\022>\n" +
-      "\013accountType\030\013 \002(\0162).authenticator.proto" +
-      "buf.WalletAccountType\022\023\n\013accountName\030\014 \002" +
-      "(\t\032r\n\tHierarchy\022 \n\030hierarchyMasterPublic" +
-      "Key\030\001 \002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014\022\'\n" +
-      "\037hierarchyNextAvailableAccountID\030\003 \002(\005\032<" +
-      "\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t\022",
-      "\023\n\013description\030\003 \001(\t*;\n\020ATGCMMessageType" +
-      "\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs\020" +
-      "\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006Un" +
-      "pair\020\001\022#\n\037SignAndBroadcastAuthenticatorT" +
-      "x\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#updateIpAd" +
-      "dressesForPreviousMessage\020\004*B\n\021WalletAcc" +
-      "ountType\022\023\n\017StandardAccount\020\000\022\030\n\024Authent" +
-      "icatorAccount\020\001B\rB\013ProtoConfig"
+      "torConfiguration.ATAccount\022U\n\021configSave" +
+      "dTXData\030\010 \003(\0132:.authenticator.protobuf.A" +
+      "uthenticatorConfiguration.SavedTX\032\264\001\n\023Co" +
+      "nfigActiveAccount\022H\n\023pairedAuthenticator" +
+      "\030\001 \001(\0132+.authenticator.protobuf.PairedAu" +
+      "thenticator\022S\n\ractiveAccount\030\002 \002(\0132<.aut" +
+      "henticator.protobuf.AuthenticatorConfigu",
+      "ration.ATAccount\032\260\001\n\031ConfigAuthenticator" +
+      "Wallet\022\016\n\006paired\030\001 \001(\010\022B\n\rpairedWallets\030" +
+      "\002 \003(\0132+.authenticator.protobuf.PairedAut" +
+      "henticator\022?\n\017pendingRequests\030\003 \003(\0132&.au" +
+      "thenticator.protobuf.PendingRequest\032z\n\024C" +
+      "onfigOneNameProfile\022\017\n\007onename\030\001 \002(\t\022\030\n\020" +
+      "onenameFormatted\030\002 \001(\t\022\030\n\020onenameAvatarU" +
+      "RL\030\003 \001(\t\022\035\n\025onenameAvatarFilePath\030\004 \001(\t\032" +
+      "\231\002\n\tATAccount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExte" +
+      "rnalKeys\030\003 \003(\005\022\030\n\020usedInternalKeys\030\005 \003(\005",
+      "\022\030\n\020confirmedBalance\030\006 \002(\022\022\032\n\022unConfirme" +
+      "dBalance\030\007 \002(\022\022\024\n\014pendingOutTx\030\010 \003(\t\022\023\n\013" +
+      "pendingInTx\030\t \003(\t\022\023\n\013networkType\030\n \002(\005\022>" +
+      "\n\013accountType\030\013 \002(\0162).authenticator.prot" +
+      "obuf.WalletAccountType\022\023\n\013accountName\030\014 " +
+      "\002(\t\032r\n\tHierarchy\022 \n\030hierarchyMasterPubli" +
+      "cKey\030\001 \002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014\022\'" +
+      "\n\037hierarchyNextAvailableAccountID\030\003 \002(\005\032" +
+      "<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t" +
+      "\022\023\n\013description\030\003 \001(\t*;\n\020ATGCMMessageTyp",
+      "e\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs" +
+      "\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006U" +
+      "npair\020\001\022#\n\037SignAndBroadcastAuthenticator" +
+      "Tx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#updateIpA" +
+      "ddressesForPreviousMessage\020\004*B\n\021WalletAc" +
+      "countType\022\023\n\017StandardAccount\020\000\022\030\n\024Authen" +
+      "ticatorAccount\020\001B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12797,7 +12819,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
-              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigHierarchy", "ConfigAccounts", "ConfigNextAvailableSavedIndex", "ConfigSavedTXData", });
+              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigHierarchy", "ConfigAccounts", "ConfigSavedTXData", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new

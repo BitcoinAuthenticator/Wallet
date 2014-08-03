@@ -15,6 +15,7 @@ public class BAApplicationParameters{
 	boolean isTestMode = false;
 	public boolean shouldLaunchProgram = false;
 	boolean shouldPrintTCPListenerInfoToConsole;
+	boolean isManuallyPortForwarded = false;
 	String APP_NAME = "AuthenticatorWallet";
 	
 	public BAApplicationParameters(Map<String, String> params, List<String> raw){
@@ -61,6 +62,14 @@ public class BAApplicationParameters{
 		else
 			setShouldPrintTCPListenerInfoToConsole(false);
 		
+		// Port Forwarding
+		if(params.containsKey("portforwarding")){
+			boolean value = Boolean.parseBoolean(params.get("portforwarding"));
+			setIsManuallyPortForwarded(value);
+		}
+		else
+			setIsManuallyPortForwarded(false);
+		
 		//App Name
 		if(getBitcoinNetworkType() == NetworkType.TEST_NET){
 			setAppName(APP_NAME + "_TestNet");
@@ -76,9 +85,10 @@ public class BAApplicationParameters{
 				{"Parameters Available For This Wallet",""},{"",""},
 				
 				{"--help","Print Help"},
-				{"--testnet","If =true will use testnet parameters, else mainnet parameters"},
-				{"--debuglistener","If =true will print tcp listener info. False by default"},
-				{"--testermode","Testing mode, if true will not send bitcoins. False by default"},
+				{"--testnet"			,"If =true will use testnet parameters, else mainnet parameters"},
+				{"--debuglistener"		,"If =true will print tcp listener info. False by default"},
+				{"--testermode"			,"Testing mode, if true will not send bitcoins. False by default"},
+				{"--portforwarding"		,"Manual Port Forwarding mode, if true will not use UPNP to map ports (Port:1234)"}
 		};
 		
 		for (String[] kv : help) {
@@ -117,6 +127,12 @@ public class BAApplicationParameters{
 	}
 	public void setAppName(String name){
 		APP_NAME = name;
+	}
+	
+	public boolean getIsManuallyPortForwarded(){ return isManuallyPortForwarded; }
+	public BAApplicationParameters setIsManuallyPortForwarded(boolean value) {
+		this.isManuallyPortForwarded = value;
+		return this;
 	}
 	
 	public enum NetworkType{

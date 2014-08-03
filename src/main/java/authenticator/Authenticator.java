@@ -116,7 +116,9 @@ public class Authenticator extends BASE{
 	
 	public void init2(){
 		if(mTCPListener == null)
-			mTCPListener = new TCPListener(getWalletOperation(), new String[]{Integer.toString(LISTENER_PORT)});
+			mTCPListener = new TCPListener(getWalletOperation(), 
+					mApplicationParams.getIsManuallyPortForwarded(),
+					new String[]{Integer.toString(LISTENER_PORT)});
 	}
 	
 	public static void disposeOfAuthenticator(){

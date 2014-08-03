@@ -17,6 +17,7 @@ import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.WalletOperation;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
+import authenticator.network.BANeworkInfo;
 import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;
 
@@ -50,6 +51,7 @@ public class PairingProtocol {
    */
   public void run (WalletOperation wallet,
 		  ServerSocket ss,
+		  BANeworkInfo netInfo,
 		  String[] args, 
 		  OnOperationUIUpdate listener, 
 		  Runnable displayQRAnimation, 
@@ -58,10 +60,9 @@ public class PairingProtocol {
 	  assert(args != null);
 	  String walletType = args[1];
 
-	  // Open a port and wait for a connection
-	  UpNp plugnplay = new UpNp();
-	  String ip = plugnplay.getExternalIP();
-	  String localip = plugnplay.getLocalIP().substring(1);
+	  //UpNp plugnplay = new UpNp();
+	  String ip = netInfo.EXTERNAL_IP;//plugnplay.getExternalIP();
+	  String localip = netInfo.INTERNAL_IP;//plugnplay.getLocalIP().substring(1);
 	  
 	  //Generate 256 bit key.
 	  KeyGenerator kgen = KeyGenerator.getInstance("AES");

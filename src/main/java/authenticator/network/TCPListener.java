@@ -1,12 +1,17 @@
 package authenticator.network;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javafx.application.Platform;
@@ -60,12 +65,15 @@ public class TCPListener extends BASE{
 	private static ConcurrentLinkedQueue<ATOperation> operationsQueue;
 	private static Thread listenerThread;
 	private static UpNp plugnplay;
+	private static boolean isManuallyPortForwarded;
+	private static int forwardedPort;
+	private static BANeworkInfo vBANeworkInfo;
 	private String[] args;
 	private ServerSocket ss = null;
 	/**
 	 * Network Requirements flags
 	 */
-	public  boolean UPNP_CONNECTED = false;
+	public  boolean PORT_FORWARDED = false;
 	public  boolean SOCKET_OPERATIONAL = false;
 	
 	WalletOperation wallet;
@@ -75,10 +83,18 @@ public class TCPListener extends BASE{
 	 */
 	private boolean shouldStopListener;
 	
-	public TCPListener(WalletOperation wallet, String[] args){
+	/**
+	 * args:<br>
+	 * [0] - port number<br>
+	 * @param wallet
+	 * @param isManuallyPortForwarded
+	 * @param args
+	 */
+	public TCPListener(WalletOperation wallet, boolean isManuallyPortForwarded,String[] args){
 		super(TCPListener.class);
 		this.wallet = wallet;
 		this.args = args;
+		this.isManuallyPortForwarded = isManuallyPortForwarded;
 		if(operationsQueue == null)
 			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
 	}
@@ -129,25 +145,39 @@ public class TCPListener extends BASE{
 	    	 */
 	    	@SuppressWarnings("static-access")
 			private void startup() throws TCPListenerCouldNotStartException{
-	    		if(plugnplay != null)
-	    		{
-	    			throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+	    		forwardedPort = Integer.parseInt(args[0]);
+	    		if(!isManuallyPortForwarded){
+	    			if(plugnplay != null)
+		    		{
+		    			throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+		    		}
+		    		
+		    		plugnplay = new UpNp();
+		    		try {
+						plugnplay.run(new String[]{args[0]});
+						if(plugnplay.isPortMapped(Integer.parseInt(args[0])) == true){
+							PORT_FORWARDED = true;
+							vBANeworkInfo = new BANeworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP());
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+					}
+	    		}
+	    		// TODO - check if is truly forwarded
+	    		else{
+	    			PORT_FORWARDED = true;
+	    			try {
+						vBANeworkInfo = new BANeworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+					}
 	    		}
 	    		
-	    		plugnplay = new UpNp();
-	    		int port = Integer.parseInt(args[0]);
-	    		try {
-					plugnplay.run(new String[]{args[0]});
-					if(plugnplay.isPortMapped(Integer.parseInt(args[0])) == true)
-						UPNP_CONNECTED = true;
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
-				}
-	    		
-	    		if(UPNP_CONNECTED)
+	    		if(PORT_FORWARDED)
     			try {
-					ss = new ServerSocket (port);
+					ss = new ServerSocket (forwardedPort);
 					ss.setSoTimeout(5000);
 					SOCKET_OPERATIONAL = true;
 				} catch (IOException e) {
@@ -163,7 +193,7 @@ public class TCPListener extends BASE{
 				while(true)
 	    	    {
 					isConnected = false;
-					if(UPNP_CONNECTED && SOCKET_OPERATIONAL)
+					if(PORT_FORWARDED && SOCKET_OPERATIONAL)
 						try{
 							socket = ss.accept();
 							isConnected = true;
@@ -323,7 +353,7 @@ public class TCPListener extends BASE{
 							
 							logAsInfo("Executing Operation: " + op.getDescription());
 							try{
-								op.run(ss);
+								op.run(ss, vBANeworkInfo);
 							}
 							catch (Exception e)
 							{
@@ -347,7 +377,7 @@ public class TCPListener extends BASE{
 	
 	public boolean checkForOperationNetworkRequirements(ATOperation op){
 		if((op.getOperationNetworkRequirements().getValue() & ATNetworkRequirement.PORT_MAPPING.getValue()) > 0){
-			if(!UPNP_CONNECTED || !SOCKET_OPERATIONAL){
+			if(!PORT_FORWARDED || !SOCKET_OPERATIONAL){
 				return false;
 			}
 		}
@@ -399,9 +429,15 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean areAllNetworkRequirementsAreFullyRunning(){
-		if(!UPNP_CONNECTED || !SOCKET_OPERATIONAL)
+		if(!PORT_FORWARDED || !SOCKET_OPERATIONAL)
 			return false;
 		return true;
+	}
+	
+	private String getExternalIp() throws IOException{
+	    URL whatismyip = new URL("http://icanhazip.com");
+	    BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+	    return in.readLine();
 	}
 	
 	//#####################################
