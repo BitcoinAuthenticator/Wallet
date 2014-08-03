@@ -32,7 +32,7 @@ import authenticator.WalletOperation;
 import authenticator.Utils.EncodingUtils;
 import authenticator.network.exceptions.TCPListenerCouldNotStartException;
 import authenticator.operations.BAOperation;
-import authenticator.operations.BAOperation.ATNetworkRequirement;
+import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.exceptions.BAOperationNetworkRequirementsNotAvailableException;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
@@ -389,7 +389,7 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean checkForOperationNetworkRequirements(BAOperation op){
-		if((op.getOperationNetworkRequirements().getValue() & ATNetworkRequirement.PORT_MAPPING.getValue()) > 0){
+		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.PORT_MAPPING.getValue()) > 0){
 			if(! PORT_FORWARDED || !SOCKET_OPERATIONAL){
 				return false;
 			}

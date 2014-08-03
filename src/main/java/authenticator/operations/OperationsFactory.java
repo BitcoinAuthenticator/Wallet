@@ -67,7 +67,7 @@ import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
 import authenticator.network.BANeworkInfo;
-import authenticator.operations.ATOperation.ATNetworkRequirement;
+import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
@@ -104,7 +104,7 @@ public class OperationsFactory extends BASE{
 			Runnable animation,
 			Runnable animationAfterPairing){
 		return new BAOperation(ATOperationType.Pairing)
-					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)	
+					.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
@@ -176,7 +176,7 @@ public class OperationsFactory extends BASE{
 																@Nullable PendingRequest pendigReq,
 																@Nullable String WALLET_PW){
 		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
-				.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
+				.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
 					//int timeout = 5;
@@ -343,7 +343,7 @@ public class OperationsFactory extends BASE{
 	 */
 	static public BAOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
 		return new BAOperation(ATOperationType.updateIpAddressesForPreviousMessage)
-					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
+					.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 					.SetDescription("Update Authenticator's wallet IPs")
 					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
 					.SetFinishedMsg("Finished IPs updates")
@@ -382,7 +382,11 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public BAOperation BROADCAST_NORMAL_TRANSACTION(WalletOperation wallet, Transaction tx, Map<String,ATAddress> keys){
+	static public BAOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, 
+			String to, 
+			WalletOperation wallet, 
+			Transaction tx, Map<String,ATAddress> keys,
+			@Nullable String WALLET_PW){
 		return new BAOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")

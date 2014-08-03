@@ -18,7 +18,7 @@ public class BAOperation {
 	private OnOperationUIUpdate listener;
 	private String operationDescription;
 	private ATOperationType mOperationType;
-	private ATNetworkRequirement mATNetworkRequirement = ATNetworkRequirement.NONE;
+	private BANetworkRequirement mATNetworkRequirement = BANetworkRequirement.NONE;
 	private String[] args = null;
 	
 	
@@ -28,7 +28,7 @@ public class BAOperation {
 	}
 	
 	public BAOperation (ATOperationType type, 
-			ATNetworkRequirement networkRequirements,
+			BANetworkRequirement networkRequirements,
 			OperationActions action, 
 			String desc,
 			String[] ar){
@@ -107,18 +107,18 @@ public class BAOperation {
 		return this;
 	}
 	
-	public ATNetworkRequirement getOperationNetworkRequirements(){ return mATNetworkRequirement; }
-	public BAOperation setOperationNetworkRequirements(ATNetworkRequirement value){
+	public BANetworkRequirement getOperationNetworkRequirements(){ return mATNetworkRequirement; }
+	public BAOperation setOperationNetworkRequirements(BANetworkRequirement value){
 		mATNetworkRequirement = value;
 		return this;
 	}
 	
-	public enum ATNetworkRequirement{
+	public enum BANetworkRequirement{
 		NONE		 (0),
 		PORT_MAPPING (1 << 0);		// 1
 		
 		private int value;
-		ATNetworkRequirement(int value) {
+		BANetworkRequirement(int value) {
 	            this.value = value;
 	    }
 	    public int getValue() { return this.value; }
