@@ -750,9 +750,11 @@ public class WalletOperation extends BASE{
 	 * @throws NoSuchAlgorithmException 
 	 */
 	public ATAddress findAddressInAccounts(String addressStr) throws AddressWasNotFoundException, NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
+		if(!isWatchingAddress(addressStr))
+			throw new AddressWasNotFoundException("Cannot find address in accounts");
 		List<ATAccount> accounts = getAllAccounts();
 		int gapLookAhead = 30;
-		while(gapLookAhead < 10000) // just arbitrary number
+		while(gapLookAhead < 10000) // just arbitrary number, TODO - this is very stupid !!
 		{
 			for(ATAccount acc:accounts){
 				for(int i = gapLookAhead - 30 ; i < gapLookAhead; i++)
