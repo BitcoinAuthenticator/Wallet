@@ -167,7 +167,8 @@ public class OperationsFactory extends BASE{
 																 * will be used to remove the pending request
 																 * if necessary
 																 */
-																@Nullable PendingRequest pendigReq){
+																@Nullable PendingRequest pendigReq,
+																@Nullable String WALLET_PW){
 		ATOperation op = new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
@@ -186,9 +187,18 @@ public class OperationsFactory extends BASE{
 							String[] args, OnOperationUIUpdate listener) throws Exception {
 						//
 						if (!onlyComplete){
-							byte[] cypherBytes = SignProtocol.prepareTX(wallet, tx,pairingID);
-							String reqID = SignProtocol.sendGCM(wallet, pairingID,txLabel );
-							PendingRequest pr = SignProtocol.generatePendingRequest(tx, cypherBytes, pairingID, reqID);
+							byte[] cypherBytes = SignProtocol.prepareTX(wallet, WALLET_PW, tx,pairingID);
+							String reqID = SignProtocol.sendGCM(wallet, 
+									pairingID,
+									txLabel,
+									netInfo.EXTERNAL_IP,
+									netInfo.INTERNAL_IP);
+							PendingRequest pr = SignProtocol.generatePendingRequest(tx, 
+									cypherBytes, 
+									pairingID, 
+									reqID,
+									txLabel,
+									to);
 							
 							wallet.addPendingRequest(pr);
 						}
@@ -246,13 +256,14 @@ public class OperationsFactory extends BASE{
 								// Complete Signing and broadcast
 								PairedAuthenticator po = wallet.getPairingObject(pairingID);
 								SignProtocol.complete(wallet, 
+										WALLET_PW,
 										tx,
 										AuthSigs,
 										po);
 								staticLooger.info("Signed Tx - " + EncodingUtils.getStringTransaction(tx));
 								ConfigFile config = Authenticator.getWalletOperation().configFile;
-								if (!txLabel.isEmpty()){
-									try {config.writeNextSavedTxData(tx.getHashAsString(), to, txLabel);}
+								if (pendigReq.hasTxLabel() && pendigReq.hasTxDestinationDescription()){
+									try {config.writeNextSavedTxData(tx.getHashAsString(), pendigReq.getTxDestinationDescription(), pendigReq.getTxLabel());}
 									catch (IOException e) {e.printStackTrace();}
 								}
 								/**
@@ -350,7 +361,7 @@ public class OperationsFactory extends BASE{
 									null);
 							
 							// returns the request ID
-							disp.dispachMessage(new Authenticator(), ATGCMMessageType.UpdatePendingRequestIPs, d);
+							disp.dispachMessage(ATGCMMessageType.UpdatePendingRequestIPs, d, new String[]{ netInfo.EXTERNAL_IP, netInfo.INTERNAL_IP });
 						}
 
 						@Override
@@ -365,7 +376,11 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, String to, WalletOperation wallet, Transaction tx, Map<String,ATAddress> keys){
+	static public ATOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, 
+			String to, 
+			WalletOperation wallet, 
+			Transaction tx, Map<String,ATAddress> keys,
+			@Nullable String WALLET_PW){
 		return new ATOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
@@ -381,7 +396,7 @@ public class OperationsFactory extends BASE{
 					String[] args, OnOperationUIUpdate listener)
 					throws Exception {
 				try{
-					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);
+					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
 					ConfigFile config = Authenticator.getWalletOperation().configFile;
 					if (!txLabel.isEmpty()){
 						try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}

@@ -46,13 +46,14 @@ public class SignProtocol {
 	
 	/**
 	 * 
-	 * 
+	 * @param wallet
+	 * @param WALLET_PW
 	 * @param tx
 	 * @param pairingID
 	 * @return
 	 * @throws Exception
 	 */
-	static public byte[] prepareTX(WalletOperation wallet, Transaction tx,  String pairingID) throws Exception {
+	static public byte[] prepareTX(WalletOperation wallet,@Nullable String WALLET_PW, Transaction tx,  String pairingID) throws Exception {
 		//Create the payload
 		//PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
 		String formatedTx = EncodingUtils.getStringTransaction(tx);
@@ -63,9 +64,10 @@ public class SignProtocol {
 		for(TransactionInput in:tx.getInputs()){
 			String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 			ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
-			ECKey pubkey = wallet.getECKeyFromAccount(atAdd.getAccountIndex(),
+			ECKey pubkey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																	atAdd.getType(),
 																	atAdd.getKeyIndex(),
+																	WALLET_PW,
 																	true);
 			
 			pubKeysArr.add(pubkey.getPubKey());
@@ -106,14 +108,15 @@ public class SignProtocol {
 
 	/**
 	 * 
-	 * 
+	 * @param wallet
+	 * @param WALLET_PW
 	 * @param tx
 	 * @param AuthSigs
 	 * @param po
-	 * @throws UnableToCompleteTxSigningException 
+	 * @throws UnableToCompleteTxSigningException
 	 */
 	@SuppressWarnings({ "static-access", "deprecation", "unused" })
-	static public void complete(WalletOperation wallet, Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws UnableToCompleteTxSigningException
+	static public void complete(WalletOperation wallet, @Nullable String WALLET_PW,Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws UnableToCompleteTxSigningException
 	 {
 		try{
 			//Prep the keys needed for signing
@@ -132,9 +135,10 @@ public class SignProtocol {
 				ECKey authKey = wallet.getPairedAuthenticatorKey(po, atAdd.getKeyIndex());
 				
 				//Wallet key
-				ECKey walletKey = wallet.getECKeyFromAccount(atAdd.getAccountIndex(),
+				ECKey walletKey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																					atAdd.getType(),
 																					atAdd.getKeyIndex(),
+																					WALLET_PW,
 																					true);
 				
 				// Create Program for the script
@@ -183,7 +187,11 @@ public class SignProtocol {
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	static public String sendGCM(WalletOperation wallet, String pairingID, @Nullable String txMessage) throws JSONException, IOException{
+	static public String sendGCM(WalletOperation wallet,
+			String pairingID,
+			@Nullable String txMessage,
+			String extIP,
+			String intIP) throws JSONException, IOException{
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
@@ -198,16 +206,23 @@ public class SignProtocol {
 				secretkey);
 		
 		// returns the request ID
-		return disp.dispachMessage(new Authenticator(),ATGCMMessageType.SignTX, d, new String[]{ txMessage });
+		return disp.dispachMessage(ATGCMMessageType.SignTX, d, new String[]{ txMessage, extIP, intIP });
 	 }
 	
-	static public PendingRequest generatePendingRequest(Transaction tx, byte[] cypherBytes, String pairingID, String reqID){
+	static public PendingRequest generatePendingRequest(Transaction tx, 
+			byte[] cypherBytes, 
+			String pairingID,
+			String reqID, 
+			@Nullable String txLabel,
+			@Nullable String destinationDescription){
 		PendingRequest.Builder pr = PendingRequest.newBuilder();
 		   pr.setPairingID(pairingID);
 		   pr.setRequestID(reqID);
 		   pr.setOperationType(ATOperationType.SignAndBroadcastAuthenticatorTx);
 		   pr.setPayloadToSendInCaseOfConnection(ByteString.copyFrom(cypherBytes));
 		   pr.setRawTx(EncodingUtils.getStringTransaction(tx));
+		   pr.setTxLabel(txLabel);
+		   pr.setTxDestinationDescription(destinationDescription);
 		   PendingRequest.Contract.Builder cb = PendingRequest.Contract.newBuilder();
 					cb.setShouldSendPayloadOnConnection(true);
 					cb.setShouldReceivePayloadAfterSendingPayloadOnConnection(true);

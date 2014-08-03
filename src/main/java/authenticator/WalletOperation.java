@@ -385,7 +385,11 @@ public class WalletOperation extends BASE{
 			}
 			/*else
 				walletHDKey = getNextSavingsKey(this.getAccountIndexForPairing(pairingID));*/
-			ECKey walletKey = new ECKey(walletHDKey.getPrivKeyBytes(), walletHDKey.getPubKey()); 
+			ECKey walletKey = null;
+			if(!walletHDKey.isPubKeyOnly())
+				walletKey = new ECKey(walletHDKey.getPrivKeyBytes(), walletHDKey.getPubKey()); 
+			else
+				walletKey = new ECKey(null, walletHDKey.getPubKey());
 			
 			//Derive the child public key from the master public key.
 			PairedAuthenticator po = getPairingObject(pairingID);
@@ -515,20 +519,25 @@ public class WalletOperation extends BASE{
 	}
 	
 	/**
+	 * If WALLET_PW is null, assumes wallet is not encrypted
 	 * 
 	 * @param tx
 	 * @param keys
+	 * @param WALLET_PW
 	 * @return
 	 * @throws KeyIndexOutOfRangeException
 	 * @throws AddressFormatException
 	 * @throws AddressNotWatchedByWalletException
 	 */
-	public Transaction signStandardTxWithAddresses(Transaction tx, Map<String,ATAddress> keys) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
+	public Transaction signStandardTxWithAddresses(Transaction tx, 
+			Map<String,ATAddress> keys, 
+			@Nullable String WALLET_PW) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
 		Map<String,ECKey> keys2 = new HashMap<String,ECKey> ();
 		for(String k:keys.keySet()){
-			ECKey addECKey = getECKeyFromAccount(keys.get(k).getAccountIndex(), 
+			ECKey addECKey = getPrivECKeyFromAccount(keys.get(k).getAccountIndex(), 
 					HierarchyAddressTypes.External, 
 					keys.get(k).getKeyIndex(),
+					WALLET_PW,
 					true);
 			keys2.put(k, addECKey);
 		}
@@ -642,20 +651,17 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	/**
-	 * 
-	 * @param accountIndex
-	 * @param type
-	 * @param addressKey
-	 * @param iKnowAddressFromKeyIsNotWatched
-	 * @return
-	 * @throws KeyIndexOutOfRangeException
-	 * @throws AddressFormatException
-	 * @throws AddressNotWatchedByWalletException
-	 */
-	public ECKey getECKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey, boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
-		DeterministicKey hdKey = getPrivKeyFromAccount(accountIndex, type, addressKey, iKnowAddressFromKeyIsNotWatched);
-		return ECKey.fromPrivate(hdKey.getPrivKeyBytes());
+	public ECKey getPrivECKeyFromAccount(int accountIndex, 
+			HierarchyAddressTypes type, 
+			int addressKey, 
+			String WALLET_PW,
+			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
+		DeterministicKey ret = getPrivKeyFromAccount(accountIndex,
+				type,
+				addressKey,
+				WALLET_PW,
+				iKnowAddressFromKeyIsNotWatched);
+		return new ECKey(ret.getPrivKeyBytes(), ret.getPubKey());
 	}
 	
 	/**
@@ -667,6 +673,7 @@ public class WalletOperation extends BASE{
 	 * @param accountIndex
 	 * @param type
 	 * @param addressKey
+	 * @param WALLET_PW
 	 * @param iKnowAddressFromKeyIsNotWatched
 	 * @return
 	 * @throws KeyIndexOutOfRangeException
@@ -676,8 +683,10 @@ public class WalletOperation extends BASE{
 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
 			int addressKey, 
+			String WALLET_PW,
 			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
-		DeterministicKey ret = authenticatorWalletHierarchy.getPrivKeyFromAccount(accountIndex, type, addressKey);
+		byte[] seed = getWalletSeed(WALLET_PW);
+		DeterministicKey ret = authenticatorWalletHierarchy.getPrivKeyFromAccount(seed, accountIndex, type, addressKey);
 		if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 			throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 		return ret;
@@ -1556,6 +1565,22 @@ public class WalletOperation extends BASE{
 	
 	public boolean isWalletEncrypted(){
 		return mWalletWrapper.isWalletEncrypted();
+	}
+	
+	/**
+	 * If pw is not null, will decrypt the wallet, get the seed and encrypt the wallet.
+	 * 
+	 * @param pw
+	 * @return
+	 */
+	public byte[] getWalletSeed(@Nullable String pw){
+		if(isWalletEncrypted() && pw == null)
+			return null;
+		if(isWalletEncrypted())
+			decryptWallet(pw);
+		byte[] ret = mWalletWrapper.getWalletSeed();
+		encryptWallet(pw);
+		return ret;
 	}
 	
 	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{

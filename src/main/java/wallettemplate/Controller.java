@@ -358,6 +358,13 @@ public class Controller  extends BaseUI{
          
          // Account choicebox
          setAccountChoiceBox();
+         
+         /**
+          * Read the comments in TCPListener#looper()
+          */
+         if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
+        	 if(Authenticator.getWalletOperation().isWalletEncrypted())
+        		 lockControl(null);
     }
 	
     
@@ -1424,42 +1431,30 @@ public class Controller  extends BaseUI{
 		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	if(Authenticator.getWalletOperation().isWalletEncrypted()){
-            		try{
-            			if (Authenticator.AUTHENTICATOR_PW.equals("")){
-            				if (password.getText().equals("")){
-                        		informationalAlert("Unfortunately, you messed up.",
-                   					 "You need to enter your password to decrypt your wallet.");
-                        		return;
-                        	}
-            				else {Authenticator.getWalletOperation().decryptWallet(password.getText());}
-            			}
-            			else {Authenticator.getWalletOperation().decryptWallet(Authenticator.AUTHENTICATOR_PW);}
-            		}
-            		catch(KeyCrypterException  e){
-            			informationalAlert("Unfortunately, you messed up.",
-            					"Wrong wallet password");
-            			return;
-            		} 	
-            	}
+            	if(!checkIfPasswordDecryptsWallet(password.getText()))
+            		return;
             	try {
         			Animation ani = GuiUtils.fadeOut(v);
         			GuiUtils.fadeIn(successVbox);
         			String to = "";
         			if (OutputAddresses.size()==1){
         				try {
-        					ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(OutputAddresses.get(0));
-        					int index = add.getAccountIndex();
-        					if (index==Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()){
-        						to = "Internal Transfer";
+        					if( Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
+        						ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(OutputAddresses.get(0));
+            					int index = add.getAccountIndex();
+            					if (index==Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()){
+            						to = "Internal Transfer";
+            					}
+            					else {to = "Transfer to " + Authenticator.getWalletOperation().getAccount(index).getAccountName();}
         					}
-        					else {to = "Transfer to " + Authenticator.getWalletOperation().getAccount(index).getAccountName();}
+        					else {to = "Transfer to " + OutputAddresses.get(0) ;}
+        					
         				} catch (ScriptException e) {e.printStackTrace(); 
         				} catch (AddressWasNotFoundException e) {to=OutputAddresses.get(0);}
         			}
         			else {to = "Multiple";}
         			v.setVisible(false);
-        			if (broadcast(tx,to) == true) {
+        			if (broadcast(tx,to, Authenticator.AUTHENTICATOR_PW) == true) {
         				successVbox.setVisible(true);
         			}
         			else {
@@ -1492,10 +1487,10 @@ public class Controller  extends BaseUI{
 		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
+            	/*if(!Authenticator.getWalletOperation().isWalletEncrypted()){
             		if (Authenticator.AUTHENTICATOR_PW.equals("")){Authenticator.getWalletOperation().encryptWallet(password.getText());}
             		else {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);}
-            	}
+            	}*/
             	overlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();
@@ -1511,8 +1506,8 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public boolean broadcast (Transaction tx, String to) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
-    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, new OnOperationUIUpdate(){
+    public boolean broadcast (Transaction tx, String to, String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, WALLET_PW,new OnOperationUIUpdate(){
 			@Override
 			public void onBegin(String str) { }
 
@@ -1725,7 +1720,7 @@ public class Controller  extends BaseUI{
 						int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
 						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
 						int index = ca.getKeyIndex();
-						ECKey key = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, HierarchyAddressTypes.External, index, false);
+						ECKey key = Authenticator.getWalletOperation().getPubKeyFromAccount(accountID, HierarchyAddressTypes.External, index, false);
 						outPut = EncodingUtils.bytesToHex(key.getPubKey());
 					}
 					else
@@ -1738,7 +1733,7 @@ public class Controller  extends BaseUI{
 						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
 						int keyIndex = ca.getKeyIndex();
 						ECKey authKey = Authenticator.getWalletOperation().getPairedAuthenticatorKey(po, keyIndex);
-						ECKey walletKey = Authenticator.getWalletOperation().getECKeyFromAccount(accountID, 
+						ECKey walletKey = Authenticator.getWalletOperation().getPubKeyFromAccount(accountID, 
 								HierarchyAddressTypes.External, 
 								keyIndex, 
 								true); // true cause its a P2SH address
@@ -2221,6 +2216,44 @@ public class Controller  extends BaseUI{
 				| AddressFormatException | KeyIndexOutOfRangeException
 				| AddressNotWatchedByWalletException e) {e.printStackTrace();}
     }
+    
+    /**
+     * Will check if the given password or the chached Authenticator password can decrypt the wallet.<br>
+     * If wallet is encrypted, at the end of the check will keep the wallet encrypted.<br>
+     * If wallet is not encrypted or the password does decrypt the wallet, this will return true;
+     * 
+     * @param password
+     * @return
+     */
+	private boolean checkIfPasswordDecryptsWallet(String password){
+		if(Authenticator.getWalletOperation().isWalletEncrypted()){
+    		try{
+    			if (Authenticator.AUTHENTICATOR_PW.equals("")){
+    				if (password.equals("")){
+                		informationalAlert("Unfortunately, you messed up.",
+           					 "You need to enter your password to decrypt your wallet.");
+                		return false;
+                	}
+    				else {
+    					Authenticator.getWalletOperation().decryptWallet(password);
+    					Authenticator.getWalletOperation().encryptWallet(password);
+    					Authenticator.AUTHENTICATOR_PW = password;
+    				}
+    			}
+    			else {
+    				Authenticator.getWalletOperation().decryptWallet(Authenticator.AUTHENTICATOR_PW);
+    				Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
+    			}
+    		}
+    		catch(KeyCrypterException  e){
+    			informationalAlert("Unfortunately, you messed up.",
+    					"Wrong wallet password");
+    			return false;
+    		} 	
+    	}
+		
+		return true;
+	}
     
     //#####################################
   	//

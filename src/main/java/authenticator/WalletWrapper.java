@@ -183,6 +183,10 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.getNetworkParameters();
 	}
 	
+	public byte[] getWalletSeed(){
+		return trackedWallet.getKeyChainSeed().getSecretBytes();
+	}
+	
 	//#####################################
 	//
 	//		wallet encryption/ decryption

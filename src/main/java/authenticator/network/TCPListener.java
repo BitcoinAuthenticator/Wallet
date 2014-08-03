@@ -187,6 +187,17 @@ public class TCPListener extends BASE{
 				}
 	    	}
 	    	
+	    	/**
+	    	 * IMPORTANT !
+	    	 * 
+	    	 * Some operations require the Authenticator the set its AUTHENTICATOR_PW variable for pending requests.
+	    	 * One example is the SignAndBroadcastAuthenticatorTx operation which has 2 parts, the first send a Tx to be
+	    	 * signed by the Authenticator app and the second part which completes the operation. This second part requires 
+	    	 * signing the Tx and therefore a valid AUTHENTICATOR_PW.
+	    	 * 
+	    	 * @throws FileNotFoundException
+	    	 * @throws IOException
+	    	 */
 	    	private void looper() throws FileNotFoundException, IOException{
 	    		boolean isConnected;
 				sendUpdatedIPsToPairedAuthenticators();
@@ -275,7 +286,8 @@ public class TCPListener extends BASE{
 											null,
 											true,
 											pendingReq.getPayloadIncoming().toByteArray(),
-											pendingReq);
+											pendingReq,
+											Authenticator.AUTHENTICATOR_PW);
 									op.SetOperationUIUpdate(new OnOperationUIUpdate(){
 
 										@Override
