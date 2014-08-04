@@ -234,36 +234,34 @@ public class Main extends BAApplication {
 			@Override public void terminated(State from) {
 				System.out.println("Bitcoin Wallet terminated");
 				if(auth == null || auth.state() == State.TERMINATED){
-					Platform.runLater(new Runnable() { 
-						  @Override
-						  public void run() {
-							  stageNotif.close();
-						  }
-					 });
-					Runtime.getRuntime().exit(0);
+					close();
+				}
+				else{
+					while(true){
+						if(auth.state() == State.TERMINATED){
+							close();
+						}
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) { e.printStackTrace(); }
+					}
 				}
 	         }
+			
+			private void close(){
+				Platform.runLater(new Runnable() { 
+					  @Override
+					  public void run() {
+						  stageNotif.close();
+					  }
+				 });
+				Runtime.getRuntime().exit(0);
+			}
 		}, MoreExecutors.sameThreadExecutor());
 		bitcoin.stopAsync();
     
-		if(auth != null){
-			auth.addListener(new Service.Listener() {
-				@Override public void terminated(State from) {
-					System.out.println("Authenticator terminated");
-					if(bitcoin.state() == State.TERMINATED){
-						 Platform.runLater(new Runnable() { 
-							  @Override
-							  public void run() {
-								  stageNotif.close();
-							  }
-						 });
-						Runtime.getRuntime().exit(0);
-					}
-		         }
-			}, MoreExecutors.sameThreadExecutor());
-	        auth.stopAsync();
-		}
-        
+		if(auth != null)
+	        auth.stopAsync();        
     }
 
     public class OverlayUI<T> {
