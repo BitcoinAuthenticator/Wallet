@@ -25,6 +25,7 @@ import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
+import com.google.bitcoin.core.AbstractBlockChain;
 import com.google.bitcoin.core.AbstractPeerEventListener;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
@@ -35,6 +36,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.ScriptException;
+import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
@@ -1267,6 +1269,7 @@ public class Controller  extends BaseUI{
 		v.setMargin(lblOverview, new Insets(10,0,10,20));
 		lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
 		ListView lvTx= new ListView();
+		lvTx.setStyle("-fx-background-color: transparent;");
 		v.setMargin(lvTx, new Insets(0,0,0,20));
 		lvTx.setPrefSize(560, 270);
 		ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
@@ -1280,7 +1283,7 @@ public class Controller  extends BaseUI{
 			Text inputtext2 = new Text("");
 			Text inputtext3 = new Text("");
 			inputtext3.setFill(Paint.valueOf("#98d947"));
-			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
+			inputtext2.setText(tx.getInput(b).getFromAddress().toString() + " ");
 			intext.add(inputtext2);
 			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
 			inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());
@@ -2031,7 +2034,7 @@ public class Controller  extends BaseUI{
     			}
     		}
     		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
-    		TableTx transaction = new TableTx(tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
+    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
     		txdata.add(transaction);
     	}
     	colConfirmations.setCellValueFactory(new PropertyValueFactory<TableTx,String>("confirmations"));
@@ -2132,19 +2135,243 @@ public class Controller  extends BaseUI{
     			  for( TablePosition< TableTx, ? > cell : cells )
     			  {
     			     if(!(cell.getColumn()==3) && !(cell.getColumn()==4)){
-    			    	Pane pane = new Pane();
-    			 		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
-    			 		pane.setMaxSize(600, 360);
-    			 		pane.setStyle("-fx-background-color: white;");
-    			 		pane.setEffect(new DropShadow());
-    			 		Button btnClose = new Button("Close");
-    			 		pane.getChildren().add(btnClose);
-    			 		btnClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                			@Override
-                				public void handle(MouseEvent event) {
-                				overlay.done();
-                			}
-                		});
+    			    	 TableTx txObj= (TableTx)txTable.getItems().get(cell.getRow());
+    			    	 Transaction tx = txObj.getTransaction();
+    			    	 Pane pane = new Pane();
+    			    	 final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+    			    	 pane.setMaxSize(600, 360);
+    			    	 pane.setStyle("-fx-background-color: white;");
+    			    	 pane.setEffect(new DropShadow());
+    			    	 Button btnClose = new Button("Close");
+    			    	 HBox hbclose = new HBox();
+    			    	 hbclose.getChildren().add(btnClose);
+    			    	 hbclose.setAlignment(Pos.CENTER);
+    			    	 VBox v = new VBox();
+    			    	 Label lblOverview = new Label("Transaction Details");
+    			    	 v.setMargin(lblOverview, new Insets(10,0,10,15));
+    			    	 lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
+    			    	 ListView lvTx= new ListView();
+    			    	 v.setMargin(lvTx, new Insets(0,0,10,15));
+    			    	 lvTx.setPrefSize(570, 270);
+    			    	 ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
+    			    	 //Transaction ID
+    			    	 Text idtext = new Text("ID:  ");
+    			    	 Text idtext2 = new Text(tx.getHashAsString());
+    			    	 idtext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow idflow = new TextFlow();
+    			    	 idflow.getChildren().addAll(idtext);
+    			    	 idflow.getChildren().addAll(idtext2);
+    			    	 textformatted.add(idflow);
+    			    	 TextFlow spaceflow = new TextFlow();
+    			    	 Text space = new Text(" ");
+    			    	 spaceflow.getChildren().addAll(space);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Date and Time
+    			    	 Text datetext = new Text("Date & Time:          ");
+    			    	 Text datetext2 = new Text(tx.getUpdateTime().toLocaleString());
+    			    	 datetext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow dateflow = new TextFlow();
+    			    	 dateflow.getChildren().addAll(datetext);
+    			    	 dateflow.getChildren().addAll(datetext2);
+    			    	 textformatted.add(dateflow);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Confirmations
+    			    	 Text conftext = new Text("Confirmations:        ");
+    			    	 Text conftext2 = new Text("");
+    			    	 if (tx.getConfidence().getDepthInBlocks()==0){
+    			    		 conftext2.setFill(Paint.valueOf("#f06e6e"));
+    			    		 conftext2.setText("Unconfirmed");
+    			    	 }
+    			    	 else if (tx.getConfidence().getDepthInBlocks()>0 && tx.getConfidence().getDepthInBlocks()<6){
+    			    		 conftext2.setFill(Paint.valueOf("#f8fb1a"));
+    			    		 conftext2.setText(String.valueOf(tx.getConfidence().getDepthInBlocks()));
+    			    	 }
+    			    	 else {
+    			    		 conftext2.setFill(Paint.valueOf("#98d947"));
+    			    		 conftext2.setText(String.valueOf(tx.getConfidence().getDepthInBlocks()));
+    			    	 }
+    			    	 conftext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow confflow = new TextFlow();
+    			    	 confflow.getChildren().addAll(conftext);
+    			    	 confflow.getChildren().addAll(conftext2);
+    			    	 textformatted.add(confflow);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Appears in Block
+    			    	 Text blocktext = new Text("Included In Block:  ");
+    			    	 Text blocktext2 = new Text();
+    			    	 try {blocktext2.setText("#" + String.valueOf(tx.getConfidence().getAppearedAtChainHeight()));}
+    			    	 catch (IllegalStateException e){blocktext2.setText("None");}
+    			    	 blocktext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow blockflow = new TextFlow();
+    			    	 blockflow.getChildren().addAll(blocktext);
+    			    	 blockflow.getChildren().addAll(blocktext2);
+    			    	 textformatted.add(blockflow);
+    			    	 textformatted.add(spaceflow); 
+    			    	 //Peers
+    			    	 Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
+    			    	 Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);	
+    			    	 Text peertext = new Text();
+    			    	 if (exit.compareTo(Coin.ZERO) > 0){ peertext.setText("Seen By:                 ");}
+    			    	 else { peertext.setText("Relayed By:             ");}
+    			    	 Text peertext2 = new Text("");
+    			    	 peertext2.setText(String.valueOf(tx.getConfidence().numBroadcastPeers() + " peers"));
+    			    	 peertext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow peerflow = new TextFlow();
+    			    	 peerflow.getChildren().addAll(peertext);
+    			    	 peerflow.getChildren().addAll(peertext2);
+    			    	 textformatted.add(peerflow);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Inputs
+    			    	 Text inputtext = new Text("Inputs:                    ");
+    			    	 inputtext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow inputflow = new TextFlow();
+    			    	 inputflow.getChildren().addAll(inputtext);
+    			    	 ArrayList<Text> intext = new ArrayList<Text>();
+    			    	 Coin inAmount = Coin.ZERO;
+    			    	 for (int b=0; b<tx.getInputs().size(); b++){
+    			    		 Text inputtext2 = new Text("");
+    			    		 Text inputtext3 = new Text("");
+    			    		 inputtext3.setFill(Paint.valueOf("#98d947"));
+    			    		 inputtext2.setText(tx.getInput(b).getFromAddress().toString() + " ");
+    			    		 intext.add(inputtext2);
+    			    		 try { 
+    			    			 inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());
+    			    			 inAmount = inAmount.add(tx.getInput(b).getValue());
+    			    		 } catch (NullPointerException e) {inputtext3.setText("unavailable");}
+    			    		 if (b<tx.getInputs().size()-1){
+    			    			 inputtext3.setText(inputtext3.getText() + "\n                                   ");
+    			    		 }
+    			    		 intext.add(inputtext3);
+    			    	 }
+    			    	 for (Text t : intext){inputflow.getChildren().addAll(t);}
+    			    	 textformatted.add(inputflow);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Total Inputs
+    			    	 Text intotaltext = new Text("Total Inputs:           ");
+    			    	 Text intotaltext2 = new Text("");
+    			    	 if(tx.getInput(0).getConnectedOutput()!=null){intotaltext2.setText(inAmount.toFriendlyString());}
+    			    	 else {intotaltext2.setText("unavailable");}
+    			    	 intotaltext2.setFill(Paint.valueOf("#98d947"));
+    			    	 intotaltext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow intotalflow = new TextFlow();
+    			    	 intotalflow.getChildren().addAll(intotaltext);
+    			    	 intotalflow.getChildren().addAll(intotaltext2);
+    			    	 textformatted.add(intotalflow);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Outputs
+    			    	 Text outputtext = new Text("Outputs:                 ");
+    			    	 outputtext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow outputflow = new TextFlow();
+    			    	 outputflow.getChildren().addAll(outputtext);
+    			    	 ArrayList<Text> outtext = new ArrayList<Text>();
+    			    	 Coin outAmount = Coin.ZERO;
+    			    	 for (int a=0; a < tx.getOutputs().size(); a++){
+    			    		 Text outputtext2 = new Text("");
+    			    		 Text outputtext3 = new Text("");
+    			    		 outputtext3.setFill(Paint.valueOf("#f06e6e"));
+    			    		 outputtext2.setText(tx.getOutput(a).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()) + " ");
+    			    		 outtext.add(outputtext2);
+    			    		 outAmount = outAmount.add(tx.getOutput(a).getValue());
+    			    		 outputtext3.setText(tx.getOutput(a).getValue().toFriendlyString());
+    			    		 if (a<tx.getOutputs().size()-1){
+    			    			 outputtext3.setText(outputtext3.getText() + "\n                                   ");
+    			    		 }
+    			    		 outtext.add(outputtext3);
+    			    	 }
+    			    	 for (Text t : outtext){outputflow.getChildren().addAll(t);}
+    			    	 textformatted.add(outputflow);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Total outputs
+    			    	 Text outtotaltext = new Text("Total Outputs:        ");
+    			    	 Text outtotaltext2 = new Text("");
+    			    	 outtotaltext2.setFill(Paint.valueOf("#f06e6e"));
+    			    	 outtotaltext2.setText(outAmount.toFriendlyString());
+    			    	 outtotaltext.setStyle("-fx-font-weight:bold;");
+    			    	 TextFlow outtotalflow = new TextFlow();
+    			    	 outtotalflow.getChildren().addAll(outtotaltext);
+    			    	 outtotalflow.getChildren().addAll(outtotaltext2);
+    			    	 textformatted.add(outtotalflow);
+    			    	 textformatted.add(spaceflow);
+    			    	 //Transaction Fee
+    			    	 Text feetext = new Text("Fee:                        ");
+    			    	 Text feetext2 = new Text("");
+    			    	 try {feetext2.setText(tx.getFee().toFriendlyString());}
+    			    	 catch (NullPointerException e) {feetext2.setText("unavailable");}
+    			    	 feetext2.setFill(Paint.valueOf("#f06e6e"));
+    			    	 TextFlow feeflow = new TextFlow();
+    			    	 feetext.setStyle("-fx-font-weight:bold;");
+    			    	 feeflow.getChildren().addAll(feetext);
+    			    	 feeflow.getChildren().addAll(feetext2);
+    			    	 textformatted.add(feeflow);
+    			    	 lvTx.setItems(textformatted);
+    			    	 lvTx.setStyle("-fx-background-color: transparent;");
+    			    	 v.getChildren().add(lblOverview);
+    			    	 v.getChildren().add(lvTx);
+    			    	 v.getChildren().add(hbclose);
+    			    	 pane.getChildren().add(v);
+    			    	 btnClose.getStyleClass().add("custom-button");
+    			    	 btnClose.setOnMousePressed(new EventHandler<MouseEvent>(){
+    	            			@Override
+    	            			public void handle(MouseEvent t) {
+    	            				btnClose.setStyle("-fx-background-color: #a1d2e7;");
+    	            			}
+    	            		});
+    	            		btnClose.setOnMouseReleased(new EventHandler<MouseEvent>(){
+    	            			@Override
+    	            			public void handle(MouseEvent t) {
+    	            				btnClose.setStyle("-fx-background-color: #199bd6;");
+    	            			}
+    	            		});
+    			    	 btnClose.setPrefWidth(150);
+    			    	 btnClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    			    		 @Override
+    			    		 public void handle(MouseEvent event) {
+    			    			 overlay.done();
+    			    		 }
+    			    	 });
+    			    	 final ContextMenu contextMenu2 = new ContextMenu();
+    					 MenuItem item12 = new MenuItem("Copy");
+    					 item12.setOnAction(new EventHandler<ActionEvent>() {
+    						 public void handle(ActionEvent e) {
+    							 Clipboard clipboard = Clipboard.getSystemClipboard();
+    							 ClipboardContent content = new ClipboardContent();
+    							 String stringToCopy = "";
+    							 switch (lvTx.getSelectionModel().getSelectedIndex()) {
+    					            case 0:  stringToCopy = tx.getHashAsString();
+    					                     break;
+    					            case 1:  break;
+    					            case 2:  stringToCopy = tx.getUpdateTime().toLocaleString();
+    					                     break;
+    					            case 3:  break;
+    					            case 4:  stringToCopy = String.valueOf(tx.getConfidence().getDepthInBlocks());
+    					                     break;
+    					            case 5:  break;
+    					            case 6:  stringToCopy = blocktext2.getText();
+    					                     break;
+    					            case 7:  break;
+    					            case 8:  stringToCopy = String.valueOf(tx.getConfidence().numBroadcastPeers() + " peers");
+    					                     break;
+    					            case 9:  break;
+    					            case 10: for (TransactionInput in : tx.getInputs()){stringToCopy = stringToCopy + in.getFromAddress().toString() + "; ";}
+    					                     break;
+    					            case 11: break;
+    					            case 12: stringToCopy = intotaltext2.getText();
+    					                     break;
+    					            case 13: break;
+    					            case 14: for (TransactionOutput out : tx.getOutputs()){stringToCopy = stringToCopy + out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()) + "; ";}
+    					            		 break;
+    					            case 15: break;
+    					            case 16: stringToCopy = outtotaltext2.getText();
+    					            		 break;
+    					            case 17: break;
+    					            case 18: stringToCopy = feetext2.getText();
+    					        }
+    							 content.putString(stringToCopy);
+    							 clipboard.setContent(content);
+    						 }
+    					 });
+    					 contextMenu2.getItems().addAll(item12);
+    					 lvTx.setContextMenu(contextMenu2);
     			     }
     			  }
     			}

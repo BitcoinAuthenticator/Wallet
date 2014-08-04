@@ -1,10 +1,13 @@
 package wallettemplate;
 
+import com.google.bitcoin.core.Transaction;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class TableTx {
 	
+	private Transaction T;
 	private String txid;
 	private String confirmations;
 	private ImageView inOut;
@@ -13,7 +16,8 @@ public class TableTx {
 	private String description;
 	private String amount;
 	
-	public TableTx (String ptxid, String pConfirmations, ImageView pInOut, String pDate, String pToFrom, String pDescription, String pAmount){
+	public TableTx (Transaction pT, String ptxid, String pConfirmations, ImageView pInOut, String pDate, String pToFrom, String pDescription, String pAmount){
+		this.T = pT;
 		this.txid = ptxid;
 		this.confirmations = pConfirmations;
 		this.inOut = pInOut;
@@ -21,6 +25,10 @@ public class TableTx {
 		this.toFrom = pToFrom;
 		this.description = pDescription;
 		this.amount = pAmount;
+	}
+	
+	public Transaction getTransaction(){
+		return T;
 	}
 	
 	public String getTxid(){
