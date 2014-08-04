@@ -1290,7 +1290,7 @@ public class Controller  extends BaseUI{
 			Text inputtext2 = new Text("");
 			Text inputtext3 = new Text("");
 			inputtext3.setFill(Paint.valueOf("#98d947"));
-			inputtext2.setText(tx.getInput(b).getFromAddress().toString() + " ");
+			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
 			intext.add(inputtext2);
 			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
 			inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());
@@ -1380,6 +1380,7 @@ public class Controller  extends BaseUI{
         });
 		PasswordField password = new PasswordField();
 		password.setPrefWidth(350);
+		password.setStyle("-fx-border-color: #dae0e5; -fx-background-color: white; -fx-border-radius: 2;");
 		if (Authenticator.AUTHENTICATOR_PW.equals("")){
 			password.setDisable(false);
 			password.setPromptText("Enter Password");
@@ -1441,19 +1442,17 @@ public class Controller  extends BaseUI{
         			GuiUtils.fadeIn(successVbox);
         			String to = "";
         			if (OutputAddresses.size()==1){
-        				try {
-        					if( Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
-        						ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(OutputAddresses.get(0));
-            					int index = add.getAccountIndex();
-            					if (index==Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()){
-            						to = "Internal Transfer";
-            					}
-            					else {to = "Transfer to " + Authenticator.getWalletOperation().getAccount(index).getAccountName();}
+        				if (Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
+        					ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(OutputAddresses.get(0));
+        					int index = add.getAccountIndex();
+        					if (index==Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()){
+        						to = "Internal Transfer";
         					}
-        					else {to = "Transfer to " + OutputAddresses.get(0) ;}
-        					
-        				} catch (ScriptException e) {e.printStackTrace(); 
-        				} catch (AddressWasNotFoundException e) {to=OutputAddresses.get(0);}
+        					else {to = "Transfer to " + Authenticator.getWalletOperation().getAccount(index).getAccountName();}
+        				}
+        				else {
+        					to = OutputAddresses.get(0) ;
+        				}
         			}
         			else {to = "Multiple";}
         			v.setVisible(false);
@@ -1480,6 +1479,7 @@ public class Controller  extends BaseUI{
 		HBox h = new HBox();
 		h.setPadding(new Insets(10,0,0,20));
 		h.setMargin(btnCancel, new Insets(0,5,0,10));
+		h.setMargin(password, new Insets(-1,0,0,0));
 		h.getChildren().add(password);
 		h.getChildren().add(btnCancel);
 		h.getChildren().add(btnConfirm);
