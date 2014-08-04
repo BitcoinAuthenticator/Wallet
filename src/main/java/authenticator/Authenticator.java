@@ -111,7 +111,7 @@ public class Authenticator extends BASE{
 		if(generalEventsListeners == null)
 			generalEventsListeners = new ArrayList<BAGeneralEventsListener>();
 		
-		new OperationsFactory(); // to instantiate various things
+		new OperationsFactory(); // to instantiate various things		
 	}
 	
 	public void init2(){

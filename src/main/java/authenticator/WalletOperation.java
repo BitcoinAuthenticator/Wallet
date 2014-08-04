@@ -211,7 +211,7 @@ public class WalletOperation extends BASE{
 		private void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
         	/**
         	 * 
-        	 * Check for coins exiting
+        	 * Check for coins entering
         	 */
         	List<TransactionOutput> outs = tx.getOutputs();
         	// accountsEffectedPending is for collecting all effected account in pending confidence.
@@ -222,7 +222,7 @@ public class WalletOperation extends BASE{
         	for (TransactionOutput out : outs){
     			Script scr = out.getScriptPubKey();
     			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-    			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+    			if(isWatchingAddress(addrStr)){
     				staticLogger.info("Received coins to watched address " + addrStr);
     				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
     				TransactionConfidence conf = tx.getConfidence();
@@ -233,7 +233,7 @@ public class WalletOperation extends BASE{
     					 * If the transaction is new but we don't know about it, just add it to confirmed.
     					 * If the transaction is moving from pending to confirmed, make it so.
     					 */
-    					if(!isNewTx && Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
+    					if(!isNewTx && isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
     						if(!accountsEffectedBuilding.contains(add.getAccountIndex())) accountsEffectedBuilding.add(add.getAccountIndex());
     						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
     						confirmedTx.add(tx.getHashAsString());
@@ -259,7 +259,7 @@ public class WalletOperation extends BASE{
     				case PENDING:
     					if(!isNewTx)
     						; // do nothing
-    					else if(!Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
+    					else if(!isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
     						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
     						if(!didFireOnSendingCoins){
@@ -288,14 +288,18 @@ public class WalletOperation extends BASE{
         			removePendingInTx(acIndx, tx.getHashAsString());
         	
         	/**
-        	 * Check for coins received
+        	 * Check for coins exiting
         	 */
     		List<TransactionInput> ins = tx.getInputs();
     		accountsEffectedPending = new ArrayList<Integer>();
     		boolean didFireOnReceivingCoins = false;
         	for (TransactionInput in : ins){
-    				String addrStr = in.getFromAddress().toString();
-        			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+        		TransactionOutput out = in.getConnectedOutput();
+        		if(out != null) // could be not connected
+    			{
+        			Script scr = out.getScriptPubKey();
+    				String addrStr = scr.getToAddress(getNetworkParams()).toString();
+    				if(isWatchingAddress(addrStr)){
         				staticLogger.info("Sent coins from watched address " + addrStr);
         				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
         				TransactionConfidence conf = tx.getConfidence();
@@ -305,7 +309,7 @@ public class WalletOperation extends BASE{
         					 * IMPORTANT:
         					 * We can only get here for Tx we know because we sent them.
         					 */
-        					if(!isNewTx && Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
+        					if(!isNewTx && isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
         						removePendingOutTx(add.getAccountIndex(), tx.getHashAsString());
         						if(!didFireOnReceivingCoins){
         							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
@@ -320,12 +324,9 @@ public class WalletOperation extends BASE{
         					 * IMPORTANT:
 	    					 * We add the transaction to isPendingOutTx list so after that it cannot enter here anymore.
         					 */
-        					else if(!Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
+        					else if(!isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
         						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
-        						
-        						// We only enter here once so transfer all the funds going out
-        						subtractFromConfirmedBalance(add.getAccountIndex(), in.getValue());
-        						
+        						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
         						if(!didFireOnReceivingCoins){
 	            					Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.PENDING);
 	            					didFireOnReceivingCoins = true;
@@ -336,7 +337,9 @@ public class WalletOperation extends BASE{
         					//Authenticator.getWalletOperation().addToConfirmedBalance(add.getAccountIndex(), out.getValue());
         					break;
         				}
-        			}        			
+        			}      
+    			}
+        			  			
         	}     
         	
         	// In case there are several inputs from the same account(PENDING)
