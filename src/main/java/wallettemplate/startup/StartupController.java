@@ -53,6 +53,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.MnemonicCode;
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
@@ -167,7 +168,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Label lblLoading;
 	private ScrollPaneContentManager restoreAccountsScrllContent;
 	private DeterministicSeed walletSeed;
-	NetworkParameters params = MainNetParams.get();
+	NetworkParameters params;
 	Authenticator auth;
 	Wallet wallet;
 	
@@ -182,10 +183,14 @@ public class StartupController  extends BaseUI{
 		 assert(appParams != null);
 		 
 		 // set testnet checkbox
-		 if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET)
+		 if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
 			 chkTestNet.setSelected(false);
-		 else
+			 params = MainNetParams.get();
+		 }
+		 else{
 			 chkTestNet.setSelected(true);
+			 params = TestNet3Params.get();
+		 }
 		 chkTestNet.setDisable(true);
 		 
 		 btnSSS.setPadding(new Insets(-4,0,0,0));
@@ -351,10 +356,7 @@ public class StartupController  extends BaseUI{
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
 
 		 createWallet(null);
-		// create master public key
-		 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
-		 // set Authenticator wallet
-		 auth = new Authenticator(masterPubKey, appParams);
+		 createAuthenticatorObject();
 		 
 		 // update params in main
 		 Main.returnedParamsFromSetup = appParams;
@@ -653,7 +655,7 @@ public class StartupController  extends BaseUI{
 		 LocalDate date = seedCreationDatePicker.getValue();
 		 long unix = date.atStartOfDay().toEpochSecond(ZoneOffset.UTC);
 		 
-		 return reconstructSeedFromStringMnemonics(mnemonicArr, unix);
+		 return new DeterministicSeed(mnemonicArr, "", unix);//reconstructSeedFromStringMnemonics(mnemonicArr, unix);
 	 }
 	 	 
 	 //##############################
@@ -706,7 +708,6 @@ public class StartupController  extends BaseUI{
 								WalletAccountType.StandardAccount);
 						auth.getWalletOperation().addNewAccountToConfig(newAcc);
 						auth.getWalletOperation().addAccountToHierarchy(newAcc);
-						
 					}
 					else
 						;/**
@@ -723,10 +724,7 @@ public class StartupController  extends BaseUI{
 	 
 	 private Node previousNode;
 	 private void launchRestoreAccoutns(Node node){
-		 // create master public key
-		 DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
-		 // set Authenticator wallet
-		 auth = new Authenticator(masterPubKey, appParams);
+		 createAuthenticatorObject();
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 
 		 node.setVisible(false);
@@ -814,18 +812,25 @@ public class StartupController  extends BaseUI{
 		 wallet.autosaveToFile(f, 200, TimeUnit.MILLISECONDS, null);
 	 }
 	 
+	private void createAuthenticatorObject(){
+		// create master public key
+		DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
+	    // set Authenticator wallet
+		auth = new Authenticator(masterPubKey, appParams);
+	}
+	 
 	 private void createNewStandardAccount(String accountName) throws IOException{
 		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }
 	 
-	 private DeterministicSeed reconstructSeedFromStringMnemonics(List<String> mnemonic, long creationTimeSeconds){
+	 /*private DeterministicSeed reconstructSeedFromStringMnemonics(List<String> mnemonic, long creationTimeSeconds){
 		 if(validateSeedInputs(mnemonic, creationTimeSeconds) == false)
 			 return null;
 		 byte[] seed = MnemonicCode.toSeed(mnemonic, "");
 		 DeterministicSeed deterministicSeed = new DeterministicSeed(seed, "", creationTimeSeconds);
 		 return deterministicSeed;
-	 }
+	 }*/
 	 
 	 private boolean validateSeedInputs(List<String> mnemonic, long creationTimeSeconds){
 		 if (mnemonic.size() <= 10)

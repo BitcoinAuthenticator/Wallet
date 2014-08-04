@@ -629,6 +629,7 @@ public class WalletOperation extends BASE{
  	 */
  	public void addAccountToHierarchy(ATAccount b){
  		authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
+ 		staticLogger.info("Added an account at index, " + b.getIndex() + " to hierarchy");
  	}
  	
  	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName) throws IOException{
@@ -1158,7 +1159,7 @@ public class WalletOperation extends BASE{
 	 * @param nt
 	 * @throws IOException
 	 */
-	public void generateNewPairing(String authMpubkey, 
+	public void generatePairing(String authMpubkey, 
 			String authhaincode, 
 			String sharedAES, 
 			String GCM, 
@@ -1171,7 +1172,9 @@ public class WalletOperation extends BASE{
 			accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
 		else{
 			accountID = accID;
-			addNewAccountToConfig(this.completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount));
+			ATAccount a = completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount);
+			addNewAccountToConfig(a);
+			addAccountToHierarchy(a);
 		}
 		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnNewPairedAuthenticator();

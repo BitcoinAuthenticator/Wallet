@@ -91,7 +91,7 @@ public class PairingProtocol {
 		  String GCM = (String) jsonObject.get("gcmID");
 		  Integer accID = args[1].length() == 0? null:Integer.parseInt(args[1]);
 		  //Save to file
-		  wallet.generateNewPairing(mPubKey, 
+		  wallet.generatePairing(mPubKey, 
 				  chaincode, 
 				  key, 
 				  GCM, 

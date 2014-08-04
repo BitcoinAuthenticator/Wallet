@@ -103,10 +103,10 @@ public class BAWalletRestorer extends BASE{
      *	Flags
      */
     boolean useTor = false;
-    boolean usePreselectedAddresses = true;
+    boolean usePreselectedAddresses = false;
     
     @Override
-    protected void doStart() {
+    protected void doStart() {    	
     	mainThread.start();
     }
     
@@ -145,7 +145,7 @@ public class BAWalletRestorer extends BASE{
 		        //watchedKeys = new ArrayList<ECKey>();
 		        
 		        //params = TestNet3Params.get();
-				netParams = MainNetParams.get();
+				netParams = vAuthenticator.getWalletOperation().getNetworkParams();//MainNetParams.get();
 		        
 		        if(usePreselectedAddresses)
 		        {
@@ -165,8 +165,6 @@ public class BAWalletRestorer extends BASE{
 						e.printStackTrace();
 					}
 		        }
-		        
-		        if(peerAddresses != null)
 		        try {
 		        	startTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());        	
 	        		init();
@@ -200,9 +198,9 @@ public class BAWalletRestorer extends BASE{
 			/**
 			 * Delete chain file so we start from zero every round
 			 */
-			File chainFile = new File(directory, "RestoreWallet" + ".spvchain");
+			File chainFile = new File(directory, vAuthenticator.getApplicationParams().getAppName() + ".spvchain");
 			chainFile.delete();
-			vStore = new SPVBlockStore(netParams, new File(directory, "RestoreWallet" + ".spvchain"));
+			vStore = new SPVBlockStore(netParams, new File(directory, vAuthenticator.getApplicationParams().getAppName() + ".spvchain"));
 			
 			setCheckpoints(getClass().getResourceAsStream("/wallettemplate/checkpoints"));
 			if (checkpoints != null) {
@@ -218,6 +216,8 @@ public class BAWalletRestorer extends BASE{
 	        vPeerGroup = createPeerGroup();
 	        if (userAgent != null)
 	            vPeerGroup.setUserAgent(userAgent, version);
+	        else
+	        	vPeerGroup.setUserAgent(vBAApplicationParameters.getAppName(), "1.0");
 	        	        
 	        if (peerAddresses != null) {
                 for (PeerAddress addr : peerAddresses) vPeerGroup.addAddress(addr);
@@ -231,10 +231,9 @@ public class BAWalletRestorer extends BASE{
 	        if(!vWalletFile.exists())
 	        	vWallet.saveToFile(vWalletFile);
 	    	        
-	        //vFilterProvider = new FilterProvider(watchedKeys);
-	        //vPeerGroup.addPeerFilterProvider(vFilterProvider);
 	        vChain.addWallet(vWallet);
             vPeerGroup.addWallet(vWallet);
+            vPeerGroup.setMaxConnections(11);
             vWallet.addEventListener(new WalletListener());
 	        if (true){//blockingStartup) {
                 vPeerGroup.startAsync();
@@ -274,10 +273,10 @@ public class BAWalletRestorer extends BASE{
     }
 	
 	PeerGroup createPeerGroup() throws TimeoutException {
-        if (useTor) {
+        /*if (useTor) {
             return PeerGroup.newWithTor(netParams, vChain, new TorClient());
         }
-        else
+        else*/
             return new PeerGroup(netParams, vChain);
     }
 
@@ -303,7 +302,7 @@ public class BAWalletRestorer extends BASE{
         
         @SuppressWarnings("static-access")
 		private void handler(Wallet wallet, Transaction tx) throws Exception{
-        	LOG.info("Some watched address appeared in a Tx");
+        	LOG.debug("Some watched address appeared in a Tx");
         	for(TransactionOutput out:tx.getOutputs()){
         		Script scr = out.getScriptPubKey();
     			Address addr = scr.getToAddress(netParams);
@@ -315,7 +314,7 @@ public class BAWalletRestorer extends BASE{
     							ATAddress newAdd = vAuthenticator.getWalletOperation().getNextExternalAddress(acc.getIndex());
     							mapAccountAddresses.get(acc).add(newAdd);
     							vAuthenticator.getWalletOperation().addAddressToWatch(newAdd.getAddressStr()); 
-    							LOG.info("Address " + add.getAddressStr() + " found used.\n" + 
+    							LOG.debug("Address " + add.getAddressStr() + " found used.\n" + 
     									"Added a new address " + newAdd.getAddressStr());
     						}
     					}
