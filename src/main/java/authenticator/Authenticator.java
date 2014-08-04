@@ -49,7 +49,6 @@ import authenticator.protobuf.ProtoConfig.PendingRequest;
  *
  */
 public class Authenticator extends BASE{
-	final static public int LISTENER_PORT = 1234;
 	public static String AUTHENTICATOR_PW = "";
 	private static TCPListener mTCPListener;
 	//private static SafeList pendingRequests;
@@ -106,8 +105,9 @@ public class Authenticator extends BASE{
 	}
 	
 	private void init(BAApplicationParameters appParams){
-		if(mApplicationParams == null)
+		if(mApplicationParams == null){
 			mApplicationParams = appParams;
+		}
 		if(generalEventsListeners == null)
 			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
 		
@@ -116,7 +116,9 @@ public class Authenticator extends BASE{
 	
 	public void init2(){
 		if(mTCPListener == null)
-			mTCPListener = new TCPListener(getWalletOperation(), new String[]{Integer.toString(LISTENER_PORT)});
+			mTCPListener = new TCPListener(getWalletOperation(), 
+					mApplicationParams.getIsManuallyPortForwarded(),
+					new String[]{Integer.toString(getApplicationParams().getNetworkPort())});
 	}
 	
 	public static void disposeOfAuthenticator(){

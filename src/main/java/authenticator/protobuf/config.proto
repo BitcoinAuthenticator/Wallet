@@ -65,9 +65,11 @@ message PendingRequest{
 	required string requestID 									= 2;
 	required ATOperationType operationType					 	= 3;
 	optional string rawTx 										= 4;
-	optional bytes payloadIncoming 								= 5;
-	optional bytes payloadToSendInCaseOfConnection 				= 6;
-	required Contract contract 									= 7;
+	optional string txLabel										= 5;
+	optional string txDestinationDescription					= 6;
+	optional bytes payloadIncoming 								= 7;
+	optional bytes payloadToSendInCaseOfConnection 				= 8;
+	required Contract contract 									= 9;
 }
 
 
@@ -145,6 +147,5 @@ message AuthenticatorConfiguration{
 	optional ConfigOneNameProfile configOneNameProfile				= 5;
 	required Hierarchy ConfigHierarchy								= 6;
 	repeated ATAccount configAccounts								= 7;
-	required int32 configNextAvailableSavedIndex                    = 8;
-	repeated SavedTX configSavedTXData                              = 9;	
+	repeated SavedTX configSavedTXData                              = 8;	
 }

@@ -24,7 +24,6 @@ import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 public class Dispacher {
 	DataOutputStream outStream;
 	DataInputStream inStream;
-	UpNp plugnplay;
 	
 	public Dispacher(){}
 	public Dispacher(DataOutputStream out,DataInputStream in)
@@ -33,24 +32,25 @@ public class Dispacher {
 		inStream = in;
 	}
 	
-	public String dispachMessage(Authenticator Auth, ATGCMMessageType msgType, Device device, String ... args) throws JSONException, IOException
+	public String dispachMessage(ATGCMMessageType msgType, Device device, String ... args) throws JSONException, IOException
 	{
 		switch (msgType){
+		/**
+		 * arg:
+		 * [0] - Custom msg
+		 * [1] - external IP
+		 * [2] - Internal IP
+		 */
 		case SignTX:
 			if(device.gcmRegId != null)
-			{
-				final int port = 1234;
-				
-				plugnplay = new UpNp();
+			{				
 				MessageBuilder msgGCM = null;
 				try {
-					if (!plugnplay.isPortMapped(port)) // TODO - move port to singelton
-						plugnplay.run(null);
-					//assert(plugnplay.isPortMapped(port));
+					
 					msgGCM = new MessageBuilder(ATGCMMessageType.SignTX,
 							new String[]{new String(device.pairingID),
-										plugnplay.getExternalIP(),
-										plugnplay.getLocalIP().substring(1), 
+										args[1],
+										args[2], 
 										args[0]});
 					ArrayList<String> devicesList = new ArrayList<String>();
 					devicesList.add(new String(device.gcmRegId));
@@ -68,19 +68,20 @@ public class Dispacher {
 			else
 				;//TODO
 			break;
+		/**
+		 * arg:
+		 * [0] - external IP
+		 * [1] - Internal IP
+		 */
 		case UpdatePendingRequestIPs:
 			if(device.gcmRegId != null)
 			{
-				plugnplay = new UpNp();
 				MessageBuilder msgGCM = null;
 				try {
-					if (!plugnplay.isPortMapped(Auth.LISTENER_PORT))
-						plugnplay.run(null);
-					//assert(plugnplay.isPortMapped(port));
 					msgGCM = new MessageBuilder(ATGCMMessageType.UpdatePendingRequestIPs,
 							new String[]{new String(device.pairingID),
-											plugnplay.getExternalIP(),
-										    plugnplay.getLocalIP().substring(1), 
+											args[0],
+											args[1], 
 										    ""});
 					ArrayList<String> devicesList = new ArrayList<String>();
 					devicesList.add(new String(device.gcmRegId));

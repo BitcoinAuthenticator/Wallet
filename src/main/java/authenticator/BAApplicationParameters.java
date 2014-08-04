@@ -12,9 +12,14 @@ import java.util.Map;
  */
 public class BAApplicationParameters{
 	NetworkType bitcoinNetworkType;
+	
 	boolean isTestMode = false;
-	public boolean shouldLaunchProgram = false;
+	boolean shouldLaunchProgram = false;
 	boolean shouldPrintTCPListenerInfoToConsole;
+	boolean isManuallyPortForwarded = false;
+	
+	int NETWORK_PORT = 1234;
+	
 	String APP_NAME = "AuthenticatorWallet";
 	
 	public BAApplicationParameters(Map<String, String> params, List<String> raw){
@@ -61,6 +66,22 @@ public class BAApplicationParameters{
 		else
 			setShouldPrintTCPListenerInfoToConsole(false);
 		
+		// Port Forwarding
+		if(params.containsKey("portforwarding")){
+			boolean value = Boolean.parseBoolean(params.get("portforwarding"));
+			setIsManuallyPortForwarded(value);
+		}
+		else
+			setIsManuallyPortForwarded(false);
+		
+		// Port
+		if(params.containsKey("port")){
+			int value = Integer.parseInt(params.get("port"));
+			setNetworkPort(value);
+		}
+		else
+			setNetworkPort(1234);
+		
 		//App Name
 		if(getBitcoinNetworkType() == NetworkType.TEST_NET){
 			setAppName(APP_NAME + "_TestNet");
@@ -76,9 +97,11 @@ public class BAApplicationParameters{
 				{"Parameters Available For This Wallet",""},{"",""},
 				
 				{"--help","Print Help"},
-				{"--testnet","If =true will use testnet parameters, else mainnet parameters"},
-				{"--debuglistener","If =true will print tcp listener info. False by default"},
-				{"--testermode","Testing mode, if true will not send bitcoins. False by default"},
+				{"--testnet"			,"If =true will use testnet parameters, else mainnet parameters"},
+				{"--debuglistener"		,"If =true will print tcp listener info. False by default"},
+				{"--testermode"			,"Testing mode, if true will not send bitcoins. False by default"},
+				{"--portforwarding"		,"Manual Port Forwarding mode, if true will not use UPNP to map ports (Port:1234)"},
+				{"--port"				,"Port Number, default is 1234"}
 		};
 		
 		for (String[] kv : help) {
@@ -118,6 +141,20 @@ public class BAApplicationParameters{
 	public void setAppName(String name){
 		APP_NAME = name;
 	}
+	
+	public boolean getIsManuallyPortForwarded(){ return isManuallyPortForwarded; }
+	public BAApplicationParameters setIsManuallyPortForwarded(boolean value) {
+		this.isManuallyPortForwarded = value;
+		return this;
+	}
+	
+	public int getNetworkPort(){ return NETWORK_PORT; }
+	public BAApplicationParameters setNetworkPort(int value) {
+		this.NETWORK_PORT = value;
+		return this;
+	}
+	
+	public boolean getShouldLaunchProgram(){ return shouldLaunchProgram; }
 	
 	public enum NetworkType{
 		TEST_NET (0),

@@ -106,14 +106,15 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	   return ret;
  	}
  	
- 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
- 		return getPrivKeyFromAccount(accountIndex, type, addressKey.num());
+ 	public DeterministicKey getPrivKeyFromAccount(byte[] seed, int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
+ 		return getPrivKeyFromAccount(seed, accountIndex, type, addressKey.num());
  	}
- 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
+ 	@SuppressWarnings("static-access")
+	public DeterministicKey getPrivKeyFromAccount(byte[] seed, int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
  		if(addressKey > Math.pow(2, 31)) throw new KeyIndexOutOfRangeException("Key index out of range");
  		HDKeyDerivation HDKey = null;
 
- 		DeterministicKey masterkey = HDKey.createMasterPrivateKey(Authenticator.getWalletOperation().mWalletWrapper.trackedWallet.getKeyChainSeed().getSecretBytes());
+ 		DeterministicKey masterkey = HDKey.createMasterPrivateKey(seed);//Authenticator.getWalletOperation().mWalletWrapper.trackedWallet.getKeyChainSeed().getSecretBytes());
      	// purpose level
      	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,false); // is not harden
      	DeterministicKey purpose = HDKey.deriveChildKey(masterkey,purposeIndex);

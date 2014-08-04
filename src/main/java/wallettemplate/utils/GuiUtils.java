@@ -39,7 +39,7 @@ public class GuiUtils {
 
     public static void crashAlert(Throwable t) {
         t.printStackTrace();
-        Throwable rootCause = Throwables.getRootCause(t);
+        /*Throwable rootCause = Throwables.getRootCause(t);
         Runnable r = () -> {
             runAlert((stage, controller) -> controller.crashAlert(stage, rootCause.toString()));
             Platform.exit();
@@ -47,7 +47,8 @@ public class GuiUtils {
         if (Platform.isFxApplicationThread())
             r.run();
         else
-            Platform.runLater(r);
+            Platform.runLater(r);*/
+        Platform.exit();
     }
 
     /** Show a GUI alert box for any unhandled exceptions that propagate out of this thread. */

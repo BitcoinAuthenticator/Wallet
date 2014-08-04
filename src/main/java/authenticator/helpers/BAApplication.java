@@ -37,7 +37,7 @@ public class BAApplication extends Application{
      */
     public boolean BAInit(){
     	ApplicationParams = new BAApplicationParameters(getParameters().getNamed(),getParameters().getRaw());
-    	return ApplicationParams.shouldLaunchProgram;
+    	return ApplicationParams.getShouldLaunchProgram();
     }
     
     //######################

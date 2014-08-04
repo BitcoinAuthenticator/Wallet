@@ -1,6 +1,10 @@
 package authenticator.operations;
 
 import java.net.ServerSocket;
+
+import javax.annotation.Nullable;
+
+import authenticator.network.BANeworkInfo;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 
 /**
@@ -35,12 +39,18 @@ public class ATOperation {
 		args 					 = ar;
 	}
 	
-	public void run(ServerSocket ss)  throws Exception 
+	/**
+	 * 
+	 * @param ss
+	 * @param netInfo
+	 * @throws Exception
+	 */
+	public void run(ServerSocket ss, @Nullable BANeworkInfo netInfo)  throws Exception 
 	{
 		if(this.listener != null)
 			this.listener.onBegin(beginMsg);
 		mOperationActions.PreExecution(listener,args);
-		mOperationActions.Execute( listener, ss, args, this.listener);
+		mOperationActions.Execute( listener, ss, netInfo, args, this.listener);
 		mOperationActions.PostExecution(listener, args);
 		if(this.listener != null)
 			this.listener.onFinished(finishedMsg);

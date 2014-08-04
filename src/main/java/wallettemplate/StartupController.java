@@ -253,12 +253,6 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
 		 // app params
-		 appParams = new BAApplicationParameters(chkTestNet.isSelected()? 
-																		ImmutableMap.of("testnet","true"):
-																		ImmutableMap.of(),
-														new ArrayList<String>());
-		 
-		 
 		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
 		 File f = new File(filePath);
 		 String filePath2 = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + "Temp" + ".wallet";
