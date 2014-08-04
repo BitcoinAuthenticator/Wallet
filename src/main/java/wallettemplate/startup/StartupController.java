@@ -805,7 +805,7 @@ public class StartupController  extends BaseUI{
 		 }
 		 else
 			 walletSeed = seed;
-		 
+		  
 		 // set wallet
 		 wallet = Wallet.fromSeed(params,walletSeed);
 		 wallet.setKeychainLookaheadSize(0);

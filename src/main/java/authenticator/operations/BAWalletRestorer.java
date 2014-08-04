@@ -12,8 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -202,7 +204,7 @@ public class BAWalletRestorer extends BASE{
 			chainFile.delete();
 			vStore = new SPVBlockStore(netParams, new File(directory, vAuthenticator.getApplicationParams().getAppName() + ".spvchain"));
 			
-			setCheckpoints(getClass().getResourceAsStream("/wallettemplate/checkpoints"));
+			if(netParams == MainNetParams.get()) setCheckpoints(getClass().getResourceAsStream("checkpoints"));
 			if (checkpoints != null) {
 	            // Ugly hack! We have to create the wallet once here to learn the earliest key time, and then throw it
 	            // away. The reason is that wallet extensions might need access to peergroups/chains/etc so we have to
@@ -248,7 +250,7 @@ public class BAWalletRestorer extends BASE{
 	
 	@SuppressWarnings("static-access")
 	private void initWatchedAddresses(int lookaheadForEachAccount) throws Exception{
-		mapAccountAddresses = new HashMap<ATAccount,List<ATAddress>>();
+		mapAccountAddresses = java.util.Collections.synchronizedMap(new HashMap<ATAccount,List<ATAddress>>());//new HashMap<ATAccount,List<ATAddress>>();
 		List<ATAccount> all = vAuthenticator.getWalletOperation().getAllAccounts();
 		for(ATAccount acc:all){
 			List<ATAddress> arr = new ArrayList<ATAddress>();
@@ -301,24 +303,27 @@ public class BAWalletRestorer extends BASE{
         }
         
         @SuppressWarnings("static-access")
-		private void handler(Wallet wallet, Transaction tx) throws Exception{
-        	LOG.debug("Some watched address appeared in a Tx");
+		private synchronized void handler(Wallet wallet, Transaction tx) throws Exception{
+        	LOG.info("Some watched address appeared in a Tx");
         	for(TransactionOutput out:tx.getOutputs()){
         		Script scr = out.getScriptPubKey();
     			Address addr = scr.getToAddress(netParams);
-    			if(wallet.isAddressWatched(addr))
-    				for(ATAccount acc:mapAccountAddresses.keySet()){
-    					for(ATAddress add:mapAccountAddresses.get(acc)){
+    			if(wallet.isAddressWatched(addr)){
+    				Map<ATAccount, List<ATAddress>> copyMap = new HashMap<ATAccount, List<ATAddress>>(mapAccountAddresses);
+    				Set<ATAccount> keys = new HashSet<ATAccount>(copyMap.keySet());
+    				for(ATAccount acc:keys){
+    					for(ATAddress add:copyMap.get(acc)){
     						if(addr.toString().equals(add.getAddressStr())){
     							vAuthenticator.getWalletOperation().markAddressAsUsed(acc.getIndex(), add.getKeyIndex(), HierarchyAddressTypes.External);
     							ATAddress newAdd = vAuthenticator.getWalletOperation().getNextExternalAddress(acc.getIndex());
     							mapAccountAddresses.get(acc).add(newAdd);
     							vAuthenticator.getWalletOperation().addAddressToWatch(newAdd.getAddressStr()); 
-    							LOG.debug("Address " + add.getAddressStr() + " found used.\n" + 
+    							LOG.info("Address " + add.getAddressStr() + " found used. " + 
     									"Added a new address " + newAdd.getAddressStr());
     						}
     					}
     				}
+    			}
         	}
         }
 	}
