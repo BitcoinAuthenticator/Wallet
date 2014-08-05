@@ -22,6 +22,10 @@
    -fx-background-color: transparent;
 }
 
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: white;    
+}
+
 /* The main scrollbar **track** CSS class  */
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{

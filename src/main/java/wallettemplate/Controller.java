@@ -356,7 +356,7 @@ public class Controller  extends BaseUI{
          catch (JSONException | IOException e) {e.printStackTrace();}
          
          Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
-         //Authenticator.getWalletOperation().addEventListener(new WalletListener());
+         Authenticator.getWalletOperation().addEventListener(new WalletListener());
          
          // Account choicebox
          setAccountChoiceBox();
@@ -562,7 +562,7 @@ public class Controller  extends BaseUI{
 		}
     }
     
-    /*public class WalletListener extends AbstractWalletEventListener {
+    public class WalletListener extends AbstractWalletEventListener {
 
 		@Override
 		public void onWalletChanged(Wallet wallet) {
@@ -572,7 +572,7 @@ public class Controller  extends BaseUI{
 					| KeyIndexOutOfRangeException
 					| AddressNotWatchedByWalletException e) {e.printStackTrace();}	
 		}
-    }*/
+    }
     
     
     public class PeerListener extends AbstractPeerEventListener {
@@ -1442,7 +1442,7 @@ public class Controller  extends BaseUI{
         			GuiUtils.fadeIn(successVbox);
         			String to = "";
         			if (OutputAddresses.size()==1){
-        				if (Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
+        				if( Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
         					ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(OutputAddresses.get(0));
         					int index = add.getAccountIndex();
         					if (index==Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()){
@@ -1450,9 +1450,7 @@ public class Controller  extends BaseUI{
         					}
         					else {to = "Transfer to " + Authenticator.getWalletOperation().getAccount(index).getAccountName();}
         				}
-        				else {
-        					to = OutputAddresses.get(0) ;
-        				}
+        				else {to = OutputAddresses.get(0) ;}	
         			}
         			else {to = "Multiple";}
         			v.setVisible(false);
