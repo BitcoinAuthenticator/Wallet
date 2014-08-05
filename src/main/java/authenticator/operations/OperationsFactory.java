@@ -67,7 +67,7 @@ import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
 import authenticator.network.BANeworkInfo;
-import authenticator.operations.ATOperation.ATNetworkRequirement;
+import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
@@ -87,22 +87,28 @@ public class OperationsFactory extends BASE{
 	}
 
 	/**
-	 * An operation for pairing the wallet with an Authenticator app.
+	 * An operation for pairing the wallet with an Authenticator app.<br> 
 	 * 
+	 * @param wallet
 	 * @param pairingName
+	 * @param accountID - if != null will force the account ID
+	 * @param networkType
+	 * @param animation
+	 * @param animationAfterPairing
 	 * @return
 	 */
-	static public ATOperation PAIRING_OPERATION(WalletOperation wallet,
+	static public BAOperation PAIRING_OPERATION(WalletOperation wallet,
 			String pairingName, 
+			@Nullable Integer accountID,
 			NetworkType networkType, 
 			Runnable animation,
 			Runnable animationAfterPairing){
-		return new ATOperation(ATOperationType.Pairing)
-					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)	
+		return new BAOperation(ATOperationType.Pairing)
+					.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, "blockchain", Integer.toString(networkType.getValue()) })
+					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "blockchain", Integer.toString(networkType.getValue()) })
 					.SetOperationAction(new OperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;
@@ -157,7 +163,7 @@ public class OperationsFactory extends BASE{
 	 * @param onlyComplete
 	 * @return
 	 */
-	static public ATOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(WalletOperation wallet, Transaction tx, 
+	static public BAOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(WalletOperation wallet, Transaction tx, 
 																String pairingID, 
 																@Nullable String txLabel,
 																@Nullable String to,
@@ -169,8 +175,8 @@ public class OperationsFactory extends BASE{
 																 */
 																@Nullable PendingRequest pendigReq,
 																@Nullable String WALLET_PW){
-		ATOperation op = new ATOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
-				.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
+		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
+				.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new OperationActions(){
 					//int timeout = 5;
@@ -335,9 +341,9 @@ public class OperationsFactory extends BASE{
 	 * @param pairingID
 	 * @return
 	 */
-	static public ATOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
-		return new ATOperation(ATOperationType.updateIpAddressesForPreviousMessage)
-					.setOperationNetworkRequirements(ATNetworkRequirement.PORT_MAPPING)
+	static public BAOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
+		return new BAOperation(ATOperationType.updateIpAddressesForPreviousMessage)
+					.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 					.SetDescription("Update Authenticator's wallet IPs")
 					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
 					.SetFinishedMsg("Finished IPs updates")
@@ -376,12 +382,12 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
-	static public ATOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, 
+	static public BAOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, 
 			String to, 
 			WalletOperation wallet, 
 			Transaction tx, Map<String,ATAddress> keys,
 			@Nullable String WALLET_PW){
-		return new ATOperation(ATOperationType.BroadcastNormalTx)
+		return new BAOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
 		.SetOperationAction(new OperationActions(){

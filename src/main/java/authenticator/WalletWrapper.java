@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
@@ -47,12 +49,21 @@ public class WalletWrapper extends BASE{
 
 	public Wallet trackedWallet;
 	private PeerGroup mPeerGroup;
-	public WalletWrapper(Wallet wallet, PeerGroup peerGroup){
+	/**
+	 * If PeerGroup is Null, no broadcasting function is available
+	 * 
+	 * @param wallet
+	 * @param peerGroup
+	 */
+	public WalletWrapper(Wallet wallet, @Nullable PeerGroup peerGroup){
 		super(WalletWrapper.class);
 		this.trackedWallet = wallet;
 		this.mPeerGroup = peerGroup;
 	}
 	public  Wallet getTrackedWallet(){ return trackedWallet; }
+	public void setTrackedWallet(Wallet wallet){
+		this.trackedWallet = wallet;
+	}
 	
 	public NetworkParameters getNetworkParameters(){
 		return trackedWallet.getNetworkParameters();

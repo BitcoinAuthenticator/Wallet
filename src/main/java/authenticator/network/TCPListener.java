@@ -31,9 +31,9 @@ import authenticator.BASE;
 import authenticator.WalletOperation;
 import authenticator.Utils.EncodingUtils;
 import authenticator.network.exceptions.TCPListenerCouldNotStartException;
-import authenticator.operations.ATOperation;
-import authenticator.operations.ATOperation.ATNetworkRequirement;
-import authenticator.operations.ATOperationNetworkRequirementsNotAvailable;
+import authenticator.operations.BAOperation;
+import authenticator.operations.BAOperation.BANetworkRequirement;
+import authenticator.operations.exceptions.BAOperationNetworkRequirementsNotAvailableException;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
@@ -53,7 +53,7 @@ import authenticator.protobuf.ProtoConfig.WalletAccountType;
  * <li>Inbound Operations - The listener will listen on the socket for any inbound communication. When it hooks to another socket, it will expect a requestID for reference.<br>
  * 		When the requestID is received, it will search it in the pending requests file. When the pending operation is found, the TCPListener will follow the
  * 		{@link authenticator.protobuf.ProtoConfig.PendingRequest.Contract Contract} to complete the reques.</li>
- * <li>Outbound Operations - When calling {@link authenticator.Authenticator#addOperation(ATOperation operation) addOperation}, the authenticator will add
+ * <li>Outbound Operations - When calling {@link authenticator.Authenticator#addOperation(BAOperation operation) addOperation}, the authenticator will add
  * 	   an operation to the operation queue. Here, the TCPListener will look for operations to execute from the said queue.</li>
  * <ol>
  * 
@@ -61,8 +61,9 @@ import authenticator.protobuf.ProtoConfig.WalletAccountType;
  *
  */
 public class TCPListener extends BASE{
+	final int LOOPER_BLOCKING_TIMEOUT = 3000;
 	public static Socket socket;
-	private static ConcurrentLinkedQueue<ATOperation> operationsQueue;
+	private static ConcurrentLinkedQueue<BAOperation> operationsQueue;
 	private static Thread listenerThread;
 	private static UpNp plugnplay;
 	private static boolean isManuallyPortForwarded;
@@ -96,7 +97,7 @@ public class TCPListener extends BASE{
 		this.args = args;
 		this.isManuallyPortForwarded = isManuallyPortForwarded;
 		if(operationsQueue == null)
-			operationsQueue = new ConcurrentLinkedQueue<ATOperation>();
+			operationsQueue = new ConcurrentLinkedQueue<BAOperation>();
 	}
 	
 	public void runListener(final String[] args) throws Exception
@@ -174,11 +175,11 @@ public class TCPListener extends BASE{
 						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 					}
 	    		}
-	    		
+	    			    		
 	    		if(PORT_FORWARDED)
     			try {
 					ss = new ServerSocket (forwardedPort);
-					ss.setSoTimeout(5000);
+					ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
 					SOCKET_OPERATIONAL = true;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -212,7 +213,7 @@ public class TCPListener extends BASE{
 						catch (SocketTimeoutException e){ isConnected = false; }
 					else
 						try {
-							Thread.sleep(2000);
+							Thread.sleep(LOOPER_BLOCKING_TIMEOUT);
 						} catch (InterruptedException e1) {
 							e1.printStackTrace();
 						}
@@ -279,7 +280,7 @@ public class TCPListener extends BASE{
 									byte[] txBytes = EncodingUtils.hexStringToByteArray(pendingReq.getRawTx());
 									Transaction tx = new Transaction(wallet.getNetworkParams(),txBytes);
 									 
-									ATOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
+									BAOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
 											tx,
 											pendingReq.getPairingID(), 
 											null,
@@ -348,7 +349,7 @@ public class TCPListener extends BASE{
 					{
 						logAsInfo("Found " + operationsQueue.size() + " Operations in queue");
 						while (operationsQueue.size() > 0){
-							ATOperation op = operationsQueue.poll();
+							BAOperation op = operationsQueue.poll();
 							if (op == null){
 								break;
 							}
@@ -358,7 +359,7 @@ public class TCPListener extends BASE{
 							logAsInfo("Checking network requirements availability for outbound operation");
 							if(checkForOperationNetworkRequirements(op) == false )
 							{
-								op.OnExecutionError(new ATOperationNetworkRequirementsNotAvailable("Port mapping not available"));
+								op.OnExecutionError(new BAOperationNetworkRequirementsNotAvailableException("Port mapping not available"));
 								break;
 							}
 									
@@ -387,9 +388,9 @@ public class TCPListener extends BASE{
 	    listenerThread.start();
 	}
 	
-	public boolean checkForOperationNetworkRequirements(ATOperation op){
-		if((op.getOperationNetworkRequirements().getValue() & ATNetworkRequirement.PORT_MAPPING.getValue()) > 0){
-			if(!PORT_FORWARDED || !SOCKET_OPERATIONAL){
+	public boolean checkForOperationNetworkRequirements(BAOperation op){
+		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.PORT_MAPPING.getValue()) > 0){
+			if(! PORT_FORWARDED || !SOCKET_OPERATIONAL){
 				return false;
 			}
 		}
@@ -403,12 +404,14 @@ public class TCPListener extends BASE{
 	//
 	//#####################################
 	
-	public boolean addOperation(ATOperation operation)
+	public boolean addOperation(BAOperation operation)
 	{
 		checkForOperationNetworkRequirements(operation);
-		if(this.isRunning())
+		if(isRunning()){
 			operationsQueue.add(operation);
-		return true;
+			return true;
+		}
+		return false;
 	}
 
 	public int getQueuePendingOperations(){
@@ -434,14 +437,14 @@ public class TCPListener extends BASE{
 		for(ATAccount acc:wallet.getAllAccounts())
 			if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
 				PairedAuthenticator  po = wallet.getPairingObjectForAccountIndex(acc.getIndex());
-				ATOperation op = OperationsFactory.UPDATE_PAIRED_AUTHENTICATORS_IPS(wallet,
+				BAOperation op = OperationsFactory.UPDATE_PAIRED_AUTHENTICATORS_IPS(wallet,
 																			po.getPairingID());
 				operationsQueue.add(op);
 			}
 	}
 	
 	public boolean areAllNetworkRequirementsAreFullyRunning(){
-		if(!PORT_FORWARDED || !SOCKET_OPERATIONAL)
+		if(! PORT_FORWARDED || !SOCKET_OPERATIONAL)
 			return false;
 		return true;
 	}

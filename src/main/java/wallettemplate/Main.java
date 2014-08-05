@@ -33,6 +33,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import wallettemplate.startup.StartupController;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 
@@ -109,7 +110,7 @@ public class Main extends BAApplication {
         	Parent root;
             try {
             	StartupController.appParams = ApplicationParams;
-                root = FXMLLoader.load(Main.class.getResource("walletstartup.fxml"));
+                root = FXMLLoader.load(Main.class.getResource("/wallettemplate/startup/walletstartup.fxml"));
                 startup = new Stage();
                 startup.setTitle("Setup");
                 startup.initStyle(StageStyle.UNDECORATED);
@@ -179,7 +180,6 @@ public class Main extends BAApplication {
         ConfigFile config = new ConfigFile(BAApplication.ApplicationParams.getAppName());
     	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params, config.getHierarchyPubKey());
     	auth.startAsync();
-    	auth.awaitRunning();
     	controller.onAuthenticatorSetup();
     
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -234,36 +234,34 @@ public class Main extends BAApplication {
 			@Override public void terminated(State from) {
 				System.out.println("Bitcoin Wallet terminated");
 				if(auth == null || auth.state() == State.TERMINATED){
-					Platform.runLater(new Runnable() { 
-						  @Override
-						  public void run() {
-							  stageNotif.close();
-						  }
-					 });
-					Runtime.getRuntime().exit(0);
+					close();
+				}
+				else{
+					while(true){
+						if(auth.state() == State.TERMINATED){
+							close();
+						}
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) { e.printStackTrace(); }
+					}
 				}
 	         }
+			
+			private void close(){
+				Platform.runLater(new Runnable() { 
+					  @Override
+					  public void run() {
+						  stageNotif.close();
+					  }
+				 });
+				Runtime.getRuntime().exit(0);
+			}
 		}, MoreExecutors.sameThreadExecutor());
 		bitcoin.stopAsync();
     
-		if(auth != null){
-			auth.addListener(new Service.Listener() {
-				@Override public void terminated(State from) {
-					System.out.println("Authenticator terminated");
-					if(bitcoin.state() == State.TERMINATED){
-						 Platform.runLater(new Runnable() { 
-							  @Override
-							  public void run() {
-								  stageNotif.close();
-							  }
-						 });
-						Runtime.getRuntime().exit(0);
-					}
-		         }
-			}, MoreExecutors.sameThreadExecutor());
-	        auth.stopAsync();
-		}
-        
+		if(auth != null)
+	        auth.stopAsync();        
     }
 
     public class OverlayUI<T> {

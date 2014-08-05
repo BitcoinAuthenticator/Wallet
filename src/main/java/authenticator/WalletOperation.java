@@ -1,6 +1,6 @@
 package authenticator;
 
-import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
+import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
@@ -156,13 +156,14 @@ public class WalletOperation extends BASE{
 			List<ATAccount> allAccount = getAllAccounts();
 			for(ATAccount acc:allAccount){
 				BAHierarchy.AccountTracker at =   new BAHierarchy().new AccountTracker(acc.getIndex(), 
+						BAHierarchy.keyLookAhead,
 						acc.getUsedExternalKeysList(), 
 						acc.getUsedInternalKeysList());
 				
 				accountTrackers.add(at);
 			}
 			
-			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers, getHierarchyNextAvailableAccountID());
+			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
 		}
 	}
 	
@@ -207,10 +208,10 @@ public class WalletOperation extends BASE{
         }
         
         @SuppressWarnings("incomplete-switch")
-		private void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
+		private synchronized void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
         	/**
         	 * 
-        	 * Check for coins exiting
+        	 * Check for coins entering
         	 */
         	List<TransactionOutput> outs = tx.getOutputs();
         	// accountsEffectedPending is for collecting all effected account in pending confidence.
@@ -221,7 +222,7 @@ public class WalletOperation extends BASE{
         	for (TransactionOutput out : outs){
     			Script scr = out.getScriptPubKey();
     			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-    			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+    			if(isWatchingAddress(addrStr)){
     				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
     				TransactionConfidence conf = tx.getConfidence();
     				switch(conf.getConfidenceType()){
@@ -231,7 +232,7 @@ public class WalletOperation extends BASE{
     					 * If the transaction is new but we don't know about it, just add it to confirmed.
     					 * If the transaction is moving from pending to confirmed, make it so.
     					 */
-    					if(!isNewTx && Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
+    					if(!isNewTx && isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
     						if(!accountsEffectedBuilding.contains(add.getAccountIndex())) accountsEffectedBuilding.add(add.getAccountIndex());
     						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
     						confirmedTx.add(tx.getHashAsString());
@@ -239,6 +240,8 @@ public class WalletOperation extends BASE{
     							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
     							didFireOnSendingCoins = true;
     						}
+    						
+    						staticLogger.info("Received coins {Conf: BUILDING} to watched address " + addrStr);
     					}
     					/**
     					 * IMPORTANT:
@@ -252,20 +255,23 @@ public class WalletOperation extends BASE{
 	    						didFireOnSendingCoins = true;
     						}
     						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
+    						
+    						staticLogger.info("Received coins {Conf: BUILDING} to watched address " + addrStr);
     					}
     					break;
     				case PENDING:
     					if(!isNewTx)
     						; // do nothing
-    					else if(!Authenticator.getWalletOperation().isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
+    					else if(!isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
     						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
     						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
     						if(!didFireOnSendingCoins){
 	    						Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.PENDING);
 	    						didFireOnSendingCoins = true;
     						}
-    						
     						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
+    						
+    						staticLogger.info("Received coins {Conf: PENDING} to watched address " + addrStr);
     					}
     					break;
     				case DEAD:
@@ -286,28 +292,42 @@ public class WalletOperation extends BASE{
         			removePendingInTx(acIndx, tx.getHashAsString());
         	
         	/**
-        	 * Check for coins received
+        	 * Check for coins exiting
         	 */
     		List<TransactionInput> ins = tx.getInputs();
     		accountsEffectedPending = new ArrayList<Integer>();
     		boolean didFireOnReceivingCoins = false;
         	for (TransactionInput in : ins){
-    				String addrStr = in.getFromAddress().toString();
-        			if(Authenticator.getWalletOperation().isWatchingAddress(addrStr)){
+        		TransactionOutput out = in.getConnectedOutput();
+        		if(out != null) // could be not connected
+    			{
+        			Script scr = out.getScriptPubKey();
+    				String addrStr = scr.getToAddress(getNetworkParams()).toString();
+    				if(isWatchingAddress(addrStr)){
         				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
         				TransactionConfidence conf = tx.getConfidence();
         				switch(conf.getConfidenceType()){
         				case BUILDING:
-        					/**
-        					 * IMPORTANT:
-        					 * We can only get here for Tx we know because we sent them.
-        					 */
-        					if(!isNewTx && Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
+        					if(!isNewTx && isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
         						removePendingOutTx(add.getAccountIndex(), tx.getHashAsString());
         						if(!didFireOnReceivingCoins){
         							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
         							didFireOnReceivingCoins = true;
         						}
+        						
+        						// no need to transfer funds cause we transfered them in PENDING
+        						
+        						staticLogger.info("Sent coins {Conf: BUILDING} from watched address " + addrStr);
+        					}
+        					else if(isNewTx && !isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
+        						if(!didFireOnReceivingCoins){
+        							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
+        							didFireOnReceivingCoins = true;
+        						}
+        						
+        						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+        						
+        						staticLogger.info("Sent coins {Conf: BUILDING} from watched address " + addrStr);
         					}
         					break;
         				case PENDING:
@@ -317,23 +337,23 @@ public class WalletOperation extends BASE{
         					 * IMPORTANT:
 	    					 * We add the transaction to isPendingOutTx list so after that it cannot enter here anymore.
         					 */
-        					else if(!Authenticator.getWalletOperation().isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
+        					else if(!isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
         						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
-        						
-        						// We only enter here once so transfer all the funds going out
-        						subtractFromConfirmedBalance(add.getAccountIndex(), in.getValue());
-        						
+        						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
         						if(!didFireOnReceivingCoins){
 	            					Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.PENDING);
 	            					didFireOnReceivingCoins = true;
         						}
+        						staticLogger.info("Sent coins {Conf: PENDING} from watched address " + addrStr);
         					}
         					break;
         				case DEAD:
         					//Authenticator.getWalletOperation().addToConfirmedBalance(add.getAccountIndex(), out.getValue());
         					break;
         				}
-        			}        			
+        			}      
+    			}
+        			  			
         	}     
         	
         	// In case there are several inputs from the same account(PENDING)
@@ -580,20 +600,42 @@ public class WalletOperation extends BASE{
  	 */
  	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type) throws IOException{
  		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount().getAccountIndex();
+ 		ATAccount b = completeAccountObject(nt, accoutnIdx, accountName, type);
+		//writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
+		addNewAccountToConfigAndHierarchy(b);
+ 		return b;
+ 	}
+ 	
+ 	/**
+ 	 * Giving the necessary params, will return a complete {@link authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount ATAccount} object
+ 	 * 
+ 	 * @param nt
+ 	 * @param accoutnIdx
+ 	 * @param accountName
+ 	 * @param type
+ 	 * @return
+ 	 */
+ 	public ATAccount completeAccountObject(NetworkType nt, int accoutnIdx, String accountName, WalletAccountType type){
  		ATAccount.Builder b = ATAccount.newBuilder();
- 						  b.setIndex(accoutnIdx);
- 						 // b.setLastExternalIndex(0);
- 						  //b.setLastInternalIndex(0);
- 						  b.setConfirmedBalance(0);
- 						  b.setUnConfirmedBalance(0);
- 						  b.setNetworkType(nt.getValue());
- 						  b.setAccountName(accountName);
- 						  b.setAccountType(type);
-						  
-		writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
- 	    configFile.addAccount(b.build());
- 	    staticLogger.info("Generated new account at index, " + accoutnIdx);
- 		return b.build();
+						  b.setIndex(accoutnIdx);
+						  b.setConfirmedBalance(0);
+						  b.setUnConfirmedBalance(0);
+						  b.setNetworkType(nt.getValue());
+						  b.setAccountName(accountName);
+						  b.setAccountType(type);
+		return b.build();
+ 	}
+ 	
+ 	/**
+ 	 * Register an account in the config file. Should be used whenever a new account is created
+ 	 * @param b
+ 	 * @throws IOException
+ 	 */
+ 	public void addNewAccountToConfigAndHierarchy(ATAccount b) throws IOException{
+ 		configFile.addAccount(b);
+ 	    staticLogger.info("Generated new account at index, " + b.getIndex());
+ 	    authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
+		staticLogger.info("Added an account at index, " + b.getIndex() + " to hierarchy");
  	}
  	
  	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName) throws IOException{
@@ -718,9 +760,11 @@ public class WalletOperation extends BASE{
 	 * @throws NoSuchAlgorithmException 
 	 */
 	public ATAddress findAddressInAccounts(String addressStr) throws AddressWasNotFoundException, NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
+		if(!isWatchingAddress(addressStr))
+			throw new AddressWasNotFoundException("Cannot find address in accounts");
 		List<ATAccount> accounts = getAllAccounts();
 		int gapLookAhead = 30;
-		while(gapLookAhead < 10000) // just arbitrary number
+		while(gapLookAhead < 10000) // just arbitrary number, TODO - this is very stupid !!
 		{
 			for(ATAccount acc:accounts){
 				for(int i = gapLookAhead - 30 ; i < gapLookAhead; i++)
@@ -836,6 +880,7 @@ public class WalletOperation extends BASE{
 		if(po != null)
 			removePairingObject(po.getPairingID());
 		configFile.removeAccount(index);
+		staticLogger.info("Removed account at index, " + index);
 		Authenticator.fireOnAccountDeleted(index);
 	}
 	
@@ -949,13 +994,13 @@ public class WalletOperation extends BASE{
 		this.LOG.info("Marked " + add.getAddressStr() + " as used.");
 	}
 
-	public int getHierarchyNextAvailableAccountID(){
+	/*public int getHierarchyNextAvailableAccountID(){
 		return configFile.getHierarchyNextAvailableAccountID();
 	}
 
 	public void writeHierarchyNextAvailableAccountID(int i) throws IOException{
 		configFile.writeHierarchyNextAvailableAccountID(i);
-	}
+	}*/
 	
 	/*public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
 		return configFile.getHierarchySeed();
@@ -1107,14 +1152,35 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	public void generateNewPairing(String authMpubkey, 
+	/**
+	 * If accID is provided, will not create a new account but will use the account ID
+	 * 
+	 * @param authMpubkey
+	 * @param authhaincode
+	 * @param sharedAES
+	 * @param GCM
+	 * @param pairingID
+	 * @param pairName
+	 * @param accID
+	 * @param nt
+	 * @throws IOException
+	 */
+	public void generatePairing(String authMpubkey, 
 			String authhaincode, 
 			String sharedAES, 
 			String GCM, 
 			String pairingID, 
 			String pairName,
+			@Nullable Integer accID,
 			NetworkType nt) throws IOException{
-		int accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
+		int accountID ;
+		if( accID == null )
+			accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount).getIndex();
+		else{
+			accountID = accID;
+			ATAccount a = completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount);
+			addNewAccountToConfigAndHierarchy(a);
+		}
 		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnNewPairedAuthenticator();
 	}
@@ -1158,7 +1224,9 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin addToConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getConfirmedBalance(accountIdx);
-		return setConfirmedBalance(accountIdx, old.add(amount));
+		Coin ret = setConfirmedBalance(accountIdx, old.add(amount));
+		staticLogger.info("Added " + amount.toFriendlyString() + " to confirmed balance. Account: " + accountIdx );
+		return ret;
 	}
 	
 	/**
@@ -1172,7 +1240,9 @@ public class WalletOperation extends BASE{
 	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getConfirmedBalance(accountIdx);
 		assert(old.compareTo(amount) >= 0);
-		return setConfirmedBalance(accountIdx, old.subtract(amount));
+		Coin ret = setConfirmedBalance(accountIdx, old.subtract(amount));
+		staticLogger.info("Subtracted " + amount.toFriendlyString() + " from confirmed balance. Account: " + accountIdx );
+		return ret;
 	}
 	
 	/**
@@ -1185,7 +1255,8 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws IOException{
 		long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
-		return Coin.valueOf(balance);
+		Coin ret = Coin.valueOf(balance);
+		return ret;
 	}
 	
 	public Coin getUnConfirmedBalance(int accountIdx){
@@ -1203,7 +1274,9 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin addToUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getUnConfirmedBalance(accountIdx);
-		return setUnConfirmedBalance(accountIdx, old.add(amount));
+		Coin ret = setUnConfirmedBalance(accountIdx, old.add(amount));
+		staticLogger.info("Added " + amount.toFriendlyString() + " to unconfirmed balance. Account: " + accountIdx );
+		return ret;
 	}
 	
 	/**
@@ -1217,7 +1290,9 @@ public class WalletOperation extends BASE{
 	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getUnConfirmedBalance(accountIdx);
 		assert(old.compareTo(amount) >= 0);
-		return setUnConfirmedBalance(accountIdx, old.subtract(amount));
+		Coin ret = setUnConfirmedBalance(accountIdx, old.subtract(amount));
+		staticLogger.info("Subtracted " + amount.toFriendlyString() + " from unconfirmed balance. Account: " + accountIdx );
+		return ret;
 	}
 	
 	/**
@@ -1252,6 +1327,8 @@ public class WalletOperation extends BASE{
 		setConfirmedBalance(accountId,afterConfirmed);
 		setUnConfirmedBalance(accountId,afterUnconfirmed);
 		
+		staticLogger.info("Moved " + amount.toFriendlyString() + " from unconfirmed to confirmed balance. Account: " + accountId );
+		
 		return afterConfirmed;
 	}
 	
@@ -1273,6 +1350,8 @@ public class WalletOperation extends BASE{
 		
 		setConfirmedBalance(accountId,afterConfirmed);
 		setUnConfirmedBalance(accountId,afterUnconfirmed);
+		
+		staticLogger.info("Moved " + amount.toFriendlyString() + " from confirmed to unconfirmed balance. Account: " + accountId );
 		
 		return afterUnconfirmed;
 	}
@@ -1446,6 +1525,18 @@ public class WalletOperation extends BASE{
   	//	Regular Bitocoin Wallet Operations
   	//
   	//#####################################
+		
+	public Wallet getTrackedWallet(){
+		return mWalletWrapper.getTrackedWallet();
+	}
+	
+	public void setTrackedWallet(Wallet wallet){
+		if(mWalletWrapper == null)
+			mWalletWrapper = new WalletWrapper(wallet,null);
+		else
+			mWalletWrapper.setTrackedWallet(wallet);
+		mWalletWrapper.addEventListener(new WalletListener());
+	}
     
     public NetworkParameters getNetworkParams()
 	{

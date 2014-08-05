@@ -19,11 +19,11 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
 
-import authenticator.AuthenticatorGeneralEventsListener.HowBalanceChanged;
+import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
 import authenticator.db.ConfigFile;
 import authenticator.network.TCPListener;
-import authenticator.operations.ATOperation;
+import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
@@ -42,7 +42,7 @@ import authenticator.protobuf.ProtoConfig.PendingRequest;
  * 	  TCPListener.</li>
  * <li>{@link authenticator.WalletOperation}</li>
  * <li>{@link authenticator.protobuf.ProtoConfig.ActiveAccountType} - Current active account. Will effect operations that depend on the active account</li>
- * <li>{@link authenticator.AuthenticatorGeneralEventsListener} - General events listener for the authenticatro. For Example: a new paired Authenticator was added</li>
+ * <li>{@link authenticator.BAGeneralEventsListener} - General events listener for the authenticatro. For Example: a new paired Authenticator was added</li>
  * </ol>
  * <br>
  * @author alon
@@ -55,7 +55,7 @@ public class Authenticator extends BASE{
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
 	// Listeners
-	private static List<AuthenticatorGeneralEventsListener> generalEventsListeners;
+	private static List<BAGeneralEventsListener> generalEventsListeners;
 
 	public Authenticator(){ 
 		super(Authenticator.class);
@@ -109,9 +109,9 @@ public class Authenticator extends BASE{
 			mApplicationParams = appParams;
 		}
 		if(generalEventsListeners == null)
-			generalEventsListeners = new ArrayList<AuthenticatorGeneralEventsListener>();
+			generalEventsListeners = new ArrayList<BAGeneralEventsListener>();
 		
-		new OperationsFactory(); // to instantiate various things
+		new OperationsFactory(); // to instantiate various things		
 	}
 	
 	public void init2(){
@@ -140,12 +140,12 @@ public class Authenticator extends BASE{
 	 * 
 	 * @param operation
 	 */
-	public static boolean addOperation(ATOperation operation)
+	public static boolean addOperation(BAOperation operation)
 	{
 		return mTCPListener.addOperation(operation);
 	}
 	
-	public static boolean checkForOperationNetworkRequirements(ATOperation operation){
+	public static boolean checkForOperationNetworkRequirements(BAOperation operation){
 		return mTCPListener.checkForOperationNetworkRequirements(operation);
 	}
 	
@@ -236,13 +236,20 @@ public class Authenticator extends BASE{
 		assert(mApplicationParams != null);
 		try { 
 			mTCPListener.startAsync();
-			mTCPListener.awaitRunning();
-			assert(mTCPListener.isRunning() == true);
-			notifyStarted();
+			mTCPListener.addListener(new Service.Listener() {
+				@Override public void running() {
+					assert(mTCPListener.isRunning() == true);
+					finishStartup();
+		         }
+			}, MoreExecutors.sameThreadExecutor());
 		} 
 		catch (Exception e) { e.printStackTrace(); }
 	}
 
+	public void finishStartup(){
+		notifyStarted();
+	}
+	
 	@Override
 	protected void doStop() {
 		if(mTCPListener.isRunning()){ // in case the tcp crashed 
@@ -267,32 +274,32 @@ public class Authenticator extends BASE{
 	//
 	//#####################################
 	
-	public static void addGeneralEventsListener(AuthenticatorGeneralEventsListener listener){
+	public static void addGeneralEventsListener(BAGeneralEventsListener listener){
 		generalEventsListeners.add(listener);
 	}
 	
 	public static void fireOnNewPairedAuthenticator(){
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onNewPairedAuthenticator();
 	}
 	
 	public static void fireonNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile){
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onNewUserNamecoinIdentitySelection(profile);
 	}
 	
 	public static void fireOnBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onBalanceChanged(tx, howBalanceChanged, confidence);
 	}
 	
 	public static void fireOnNewStandardAccountAdded(){
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onNewStandardAccountAdded();
 	}
 
 	public static void fireOnAccountDeleted(int accountIndex){
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAccountDeleted(accountIndex);
 	}
 
@@ -303,7 +310,7 @@ public class Authenticator extends BASE{
 		if(getWalletOperation().getActiveAccount().getActiveAccount().getIndex() == accountIndex)
 			getWalletOperation().setActiveAccount(accountIndex); // just to update the active account
 
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAccountBeenModified(accountIndex);
 	}
 	
@@ -312,7 +319,7 @@ public class Authenticator extends BASE{
 			PendingRequest pendingReq, 
 			SignProtocol.AuthenticatorAnswerType answerType,
 			String str){
-		for(AuthenticatorGeneralEventsListener l:generalEventsListeners)
+		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAuthenticatorSigningResponse(tx, pairingID, pendingReq, answerType, str);
 	}
 }

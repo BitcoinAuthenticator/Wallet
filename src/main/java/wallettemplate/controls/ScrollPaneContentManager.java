@@ -32,6 +32,10 @@ public class ScrollPaneContentManager extends VBox{
 	{
 		this.getChildren().remove(index);
 	}
+	
+	public void removeNode(Node n){
+		this.getChildren().remove(n);
+	}
 
 	public ScrollPaneContentManager clearAll()
 	{

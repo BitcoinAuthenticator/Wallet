@@ -132,7 +132,7 @@ message AuthenticatorConfiguration{
 	message Hierarchy{
 		required bytes hierarchyMasterPublicKey		 	= 1;
 		required bytes hierarchyChaincode               = 2;
-		required int32 hierarchyNextAvailableAccountID 	= 3;
+		//required int32 hierarchyNextAvailableAccountID 	= 3;
 	}
 	
 	message SavedTX {

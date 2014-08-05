@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="545.0" style="-fx-background-color: white; -fx-border-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><HBox prefHeight="94.0" prefWidth="545.0" style="-fx-border-color: white;">
+<children><VBox prefHeight="92.0" prefWidth="544.0">
+<children><HBox alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="544.0">
+<children><Label text="Tx ID:">
+<font>
+<Font size="14.0" />
+</font>
+<padding>
+<Insets left="10.0" />
+</padding>
+</Label><Label fx:id="lblTxID" text="Tx ID">
+<font>
+<Font size="9.0" />
+</font>
+<padding>
+<Insets left="10.0" />
+</padding></Label>
+</children></HBox><HBox prefHeight="61.0" prefWidth="444.0">
+<children><VBox fx:id="inputsVBox" prefHeight="59.0" prefWidth="418.0">
+<children><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+<children><Label prefHeight="16.0" prefWidth="129.0" text="Coins Received" textFill="#27b535">
+<padding>
+<Insets left="10.0" right="5.0" />
+</padding></Label><Label fx:id="lblCoinsReceived" prefHeight="16.0" prefWidth="288.0" text="XXX" textFill="#27b535">
+<HBox.margin>
+<Insets />
+</HBox.margin></Label>
+</children></HBox><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+<children>
+<Label prefHeight="16.0" prefWidth="129.0" text="Coins Sent:" textFill="#c92929">
+<padding>
+<Insets left="10.0" right="10.0" />
+</padding>
+</Label><Label fx:id="lblCoinsSent" prefHeight="16.0" prefWidth="288.0" text="XXX" textFill="#c92929" />
+</children>
+</HBox>
+</children>
+<HBox.margin>
+<Insets left="10.0" />
+</HBox.margin></VBox>
+</children></HBox>
+</children></VBox>
+</children></HBox>
+</children></AnchorPane>

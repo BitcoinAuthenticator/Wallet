@@ -9832,22 +9832,20 @@ public final class ProtoConfig {
       // required bytes hierarchyChaincode = 2;
       /**
        * <code>required bytes hierarchyChaincode = 2;</code>
+       *
+       * <pre>
+       *required int32 hierarchyNextAvailableAccountID 	= 3;
+       * </pre>
        */
       boolean hasHierarchyChaincode();
       /**
        * <code>required bytes hierarchyChaincode = 2;</code>
+       *
+       * <pre>
+       *required int32 hierarchyNextAvailableAccountID 	= 3;
+       * </pre>
        */
       com.google.protobuf.ByteString getHierarchyChaincode();
-
-      // required int32 hierarchyNextAvailableAccountID = 3;
-      /**
-       * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-       */
-      boolean hasHierarchyNextAvailableAccountID();
-      /**
-       * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-       */
-      int getHierarchyNextAvailableAccountID();
     }
     /**
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.Hierarchy}
@@ -9908,11 +9906,6 @@ public final class ProtoConfig {
               case 18: {
                 bitField0_ |= 0x00000002;
                 hierarchyChaincode_ = input.readBytes();
-                break;
-              }
-              case 24: {
-                bitField0_ |= 0x00000004;
-                hierarchyNextAvailableAccountID_ = input.readInt32();
                 break;
               }
             }
@@ -9976,37 +9969,28 @@ public final class ProtoConfig {
       private com.google.protobuf.ByteString hierarchyChaincode_;
       /**
        * <code>required bytes hierarchyChaincode = 2;</code>
+       *
+       * <pre>
+       *required int32 hierarchyNextAvailableAccountID 	= 3;
+       * </pre>
        */
       public boolean hasHierarchyChaincode() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required bytes hierarchyChaincode = 2;</code>
+       *
+       * <pre>
+       *required int32 hierarchyNextAvailableAccountID 	= 3;
+       * </pre>
        */
       public com.google.protobuf.ByteString getHierarchyChaincode() {
         return hierarchyChaincode_;
       }
 
-      // required int32 hierarchyNextAvailableAccountID = 3;
-      public static final int HIERARCHYNEXTAVAILABLEACCOUNTID_FIELD_NUMBER = 3;
-      private int hierarchyNextAvailableAccountID_;
-      /**
-       * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-       */
-      public boolean hasHierarchyNextAvailableAccountID() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-       */
-      public int getHierarchyNextAvailableAccountID() {
-        return hierarchyNextAvailableAccountID_;
-      }
-
       private void initFields() {
         hierarchyMasterPublicKey_ = com.google.protobuf.ByteString.EMPTY;
         hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
-        hierarchyNextAvailableAccountID_ = 0;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -10018,10 +10002,6 @@ public final class ProtoConfig {
           return false;
         }
         if (!hasHierarchyChaincode()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-        if (!hasHierarchyNextAvailableAccountID()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -10037,9 +10017,6 @@ public final class ProtoConfig {
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeBytes(2, hierarchyChaincode_);
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          output.writeInt32(3, hierarchyNextAvailableAccountID_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -10057,10 +10034,6 @@ public final class ProtoConfig {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBytesSize(2, hierarchyChaincode_);
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(3, hierarchyNextAvailableAccountID_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -10182,8 +10155,6 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000001);
           hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000002);
-          hierarchyNextAvailableAccountID_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
 
@@ -10220,10 +10191,6 @@ public final class ProtoConfig {
             to_bitField0_ |= 0x00000002;
           }
           result.hierarchyChaincode_ = hierarchyChaincode_;
-          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-            to_bitField0_ |= 0x00000004;
-          }
-          result.hierarchyNextAvailableAccountID_ = hierarchyNextAvailableAccountID_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -10246,9 +10213,6 @@ public final class ProtoConfig {
           if (other.hasHierarchyChaincode()) {
             setHierarchyChaincode(other.getHierarchyChaincode());
           }
-          if (other.hasHierarchyNextAvailableAccountID()) {
-            setHierarchyNextAvailableAccountID(other.getHierarchyNextAvailableAccountID());
-          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
@@ -10259,10 +10223,6 @@ public final class ProtoConfig {
             return false;
           }
           if (!hasHierarchyChaincode()) {
-            
-            return false;
-          }
-          if (!hasHierarchyNextAvailableAccountID()) {
             
             return false;
           }
@@ -10328,18 +10288,30 @@ public final class ProtoConfig {
         private com.google.protobuf.ByteString hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
         /**
          * <code>required bytes hierarchyChaincode = 2;</code>
+         *
+         * <pre>
+         *required int32 hierarchyNextAvailableAccountID 	= 3;
+         * </pre>
          */
         public boolean hasHierarchyChaincode() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         /**
          * <code>required bytes hierarchyChaincode = 2;</code>
+         *
+         * <pre>
+         *required int32 hierarchyNextAvailableAccountID 	= 3;
+         * </pre>
          */
         public com.google.protobuf.ByteString getHierarchyChaincode() {
           return hierarchyChaincode_;
         }
         /**
          * <code>required bytes hierarchyChaincode = 2;</code>
+         *
+         * <pre>
+         *required int32 hierarchyNextAvailableAccountID 	= 3;
+         * </pre>
          */
         public Builder setHierarchyChaincode(com.google.protobuf.ByteString value) {
           if (value == null) {
@@ -10352,43 +10324,14 @@ public final class ProtoConfig {
         }
         /**
          * <code>required bytes hierarchyChaincode = 2;</code>
+         *
+         * <pre>
+         *required int32 hierarchyNextAvailableAccountID 	= 3;
+         * </pre>
          */
         public Builder clearHierarchyChaincode() {
           bitField0_ = (bitField0_ & ~0x00000002);
           hierarchyChaincode_ = getDefaultInstance().getHierarchyChaincode();
-          onChanged();
-          return this;
-        }
-
-        // required int32 hierarchyNextAvailableAccountID = 3;
-        private int hierarchyNextAvailableAccountID_ ;
-        /**
-         * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-         */
-        public boolean hasHierarchyNextAvailableAccountID() {
-          return ((bitField0_ & 0x00000004) == 0x00000004);
-        }
-        /**
-         * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-         */
-        public int getHierarchyNextAvailableAccountID() {
-          return hierarchyNextAvailableAccountID_;
-        }
-        /**
-         * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-         */
-        public Builder setHierarchyNextAvailableAccountID(int value) {
-          bitField0_ |= 0x00000004;
-          hierarchyNextAvailableAccountID_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>required int32 hierarchyNextAvailableAccountID = 3;</code>
-         */
-        public Builder clearHierarchyNextAvailableAccountID() {
-          bitField0_ = (bitField0_ & ~0x00000004);
-          hierarchyNextAvailableAccountID_ = 0;
           onChanged();
           return this;
         }
@@ -12938,7 +12881,7 @@ public final class ProtoConfig {
       "\n\010Contract\022%\n\035ShouldSendPayloadOnConnect" +
       "ion\030\001 \001(\010\022;\n3ShouldReceivePayloadAfterSe",
       "ndingPayloadOnConnection\030\002 \001(\010\022,\n$Should" +
-      "LetPendingRequestHandleRemoval\030\003 \001(\010\"\221\014\n" +
+      "LetPendingRequestHandleRemoval\030\003 \001(\010\"\350\013\n" +
       "\032AuthenticatorConfiguration\022c\n\023configAct" +
       "iveAccount\030\001 \001(\0132F.authenticator.protobu" +
       "f.AuthenticatorConfiguration.ConfigActiv" +
@@ -12973,19 +12916,18 @@ public final class ProtoConfig {
       "x\030\010 \003(\t\022\023\n\013pendingInTx\030\t \003(\t\022\023\n\013networkT" +
       "ype\030\n \002(\005\022>\n\013accountType\030\013 \002(\0162).authent" +
       "icator.protobuf.WalletAccountType\022\023\n\013acc" +
-      "ountName\030\014 \002(\t\032r\n\tHierarchy\022 \n\030hierarchy" +
+      "ountName\030\014 \002(\t\032I\n\tHierarchy\022 \n\030hierarchy" +
       "MasterPublicKey\030\001 \002(\014\022\032\n\022hierarchyChainc" +
-      "ode\030\002 \002(\014\022\'\n\037hierarchyNextAvailableAccou" +
-      "ntID\030\003 \002(\005\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006t",
-      "oFrom\030\002 \001(\t\022\023\n\013description\030\003 \001(\t*;\n\020ATGC" +
-      "MMessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendin" +
-      "gRequestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pai" +
-      "ring\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAu" +
-      "thenticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'" +
-      "\n#updateIpAddressesForPreviousMessage\020\004*" +
-      "B\n\021WalletAccountType\022\023\n\017StandardAccount\020" +
-      "\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013ProtoConf" +
-      "ig"
+      "ode\030\002 \002(\014\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006to" +
+      "From\030\002 \001(\t\022\023\n\013description\030\003 \001(\t*;\n\020ATGCM",
+      "MessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePending" +
+      "RequestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pair" +
+      "ing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAut" +
+      "henticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n" +
+      "#updateIpAddressesForPreviousMessage\020\004*B" +
+      "\n\021WalletAccountType\022\023\n\017StandardAccount\020\000" +
+      "\022\030\n\024AuthenticatorAccount\020\001B\rB\013ProtoConfi" +
+      "g"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -13051,7 +12993,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor,
-              new java.lang.String[] { "HierarchyMasterPublicKey", "HierarchyChaincode", "HierarchyNextAvailableAccountID", });
+              new java.lang.String[] { "HierarchyMasterPublicKey", "HierarchyChaincode", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(5);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new

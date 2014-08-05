@@ -52,7 +52,7 @@ public class PaperWallet  extends BaseUI{
         Image qrMPubKey = new Image(new ByteArrayInputStream(imageBytes), 122,122, true, false);
       
         String path3 = null;
-        URL location = Main.class.getResource("PaperWallet.png");
+        URL location = Main.class.getResource("/wallettemplate/startup/PaperWallet.png");
         try {path3 = new java.io.File( "." ).getCanonicalPath() + "/paperwallet.png";} 
         catch (IOException e1) {e1.printStackTrace();}
         BufferedImage a = ImageIO.read(location);
@@ -93,12 +93,10 @@ public class PaperWallet  extends BaseUI{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Save Paper Wallet");
 		fileChooser.setInitialFileName("paperwallet.png");
-		File outputfile = fileChooser.showSaveDialog(Main.startup);        
-        ImageIO.write(d, "png", outputfile);        
-        
-        //Desktop dt = Desktop.getDesktop();
-        //File f = new File(path3);
-        //dt.open(f);
+		File outputfile = fileChooser.showSaveDialog(Main.startup);   
+		if(outputfile != null)
+			ImageIO.write(d, "png", outputfile);        
+       
 	}
 	
 }
