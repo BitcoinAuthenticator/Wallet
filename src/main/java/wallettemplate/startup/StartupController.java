@@ -723,9 +723,6 @@ public class StartupController  extends BaseUI{
 				cell.setAccountName(acc.accountName);
 				restoreAccountsScrllContent.addItem(cell);
 				
-				if(restoreAccountsScrllContent.getCount() == 1)
-					auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
-				
 				try {
 					if(type == WalletAccountType.StandardAccount){
 						ATAccount newAcc = auth.getWalletOperation().completeAccountObject(appParams.getBitcoinNetworkType(),
@@ -739,6 +736,10 @@ public class StartupController  extends BaseUI{
 						;/**
 						 * Authenticator account is created in the pairing operation
 						 */
+					
+
+					if(restoreAccountsScrllContent.getCount() == 1)
+						auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
 					
 				} catch (IOException e) {
 					e.printStackTrace();

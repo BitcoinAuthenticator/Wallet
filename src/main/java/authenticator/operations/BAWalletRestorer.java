@@ -297,11 +297,13 @@ public class BAWalletRestorer extends BASE{
         
         @SuppressWarnings("static-access")
 		private synchronized void handler(Wallet wallet, Transaction tx) throws Exception{
-        	LOG.info("Some watched address appeared in a Tx");
+        	Coin sentToMe = Coin.ZERO;
+        	Coin sentFromMe = Coin.ZERO;
         	for(TransactionOutput out:tx.getOutputs()){
         		Script scr = out.getScriptPubKey();
     			Address addr = scr.getToAddress(netParams);
     			if(wallet.isAddressWatched(addr)){
+    				sentToMe = sentToMe.add(out.getValue());
     				Set<ATAccount> keys = new HashSet<ATAccount>(mapAccountAddresses.keySet());
     				for(ATAccount acc:keys){
     					List<ATAddress> addresses = new ArrayList<ATAddress>(mapAccountAddresses.get(acc));
@@ -319,9 +321,20 @@ public class BAWalletRestorer extends BASE{
     			}
         	}
         	
+        	for(TransactionInput in:tx.getInputs()){
+        		TransactionOutput out = in.getConnectedOutput();
+        		if(out != null){
+        			Script scr = out.getScriptPubKey();
+        			Address addr = scr.getToAddress(netParams);
+        			if(wallet.isAddressWatched(addr)){
+        				sentFromMe = sentFromMe.add(out.getValue());
+        			}
+        		}
+        	}
+        	
         	listener.onTxFound(tx, 
-        			tx.getValueSentToMe(vWallet), 
-        			tx.getValueSentFromMe(vWallet));
+        			sentToMe, 
+        			sentFromMe);
         }
 	}
 	
