@@ -362,17 +362,16 @@ public class Controller  extends BaseUI{
 	         	//Authenticator.getWalletOperation().addEventListener(new WalletListener());
 	         
 	        	 // Account choicebox
-	        	 setAccountChoiceBox();
-	         
+	        	 setAccountChoiceBox();	         	
+	         	
+	         	// lock 
+	         	locked = Authenticator.getWalletOperation().isWalletEncrypted();
 	         	/**
 	         	 * Read the comments in TCPListener#looper()
 	        	 */
 	         	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
 	        	 if(Authenticator.getWalletOperation().isWalletEncrypted())
 	        		 lockControl(null);
-	         	
-	         	// lock 
-	         	locked = Authenticator.getWalletOperation().isWalletEncrypted();
 	         	updateLockIcon();
 			}
 	    });    	
