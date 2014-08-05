@@ -729,8 +729,7 @@ public class StartupController  extends BaseUI{
 								acc.accountAccountID, 
 								acc.accountName, 
 								WalletAccountType.StandardAccount);
-						auth.getWalletOperation().addNewAccountToConfig(newAcc);
-						auth.getWalletOperation().addAccountToHierarchy(newAcc);
+						auth.getWalletOperation().addNewAccountToConfigAndHierarchy(newAcc);
 					}
 					else
 						;/**

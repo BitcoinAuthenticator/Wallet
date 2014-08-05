@@ -81,9 +81,19 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  		}
  	}*/
  	
- 	public void buildWalletHierarchyForStartup(List<AccountTracker> tracker, int nextAvailableAccount){
- 		this.nextAvailableAccount = nextAvailableAccount;
+ 	public void buildWalletHierarchyForStartup(List<AccountTracker> tracker){
  		this.accountTracker = tracker;
+		recalculateNextAvailableAccountIndex();
+ 	}
+ 	
+ 	private void recalculateNextAvailableAccountIndex(){
+ 		int highestAccountIdx = 0;
+ 		for(AccountTracker acc: accountTracker){
+ 			if(acc.getAccountIndex() > highestAccountIdx)
+ 				highestAccountIdx = acc.getAccountIndex();
+ 		}
+ 		
+ 		nextAvailableAccount = highestAccountIdx + 1;
  	}
  	
  	/**
@@ -173,6 +183,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	public AccountTracker addAccountToTracker(int index, int lookAhead){
  		AccountTracker at = new AccountTracker(index, lookAhead);
 		this.accountTracker.add(at);
+		recalculateNextAvailableAccountIndex();
 		return at;
  	}
  	

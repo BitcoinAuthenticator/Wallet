@@ -163,7 +163,7 @@ public class WalletOperation extends BASE{
 				accountTrackers.add(at);
 			}
 			
-			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers, getHierarchyNextAvailableAccountID());
+			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
 		}
 	}
 	
@@ -208,7 +208,7 @@ public class WalletOperation extends BASE{
         }
         
         @SuppressWarnings("incomplete-switch")
-		private void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
+		private synchronized void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
         	/**
         	 * 
         	 * Check for coins entering
@@ -601,8 +601,8 @@ public class WalletOperation extends BASE{
  	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type) throws IOException{
  		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount().getAccountIndex();
  		ATAccount b = completeAccountObject(nt, accoutnIdx, accountName, type);
-		writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
-		addNewAccountToConfig(b);
+		//writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
+		addNewAccountToConfigAndHierarchy(b);
  		return b;
  	}
  	
@@ -631,19 +631,11 @@ public class WalletOperation extends BASE{
  	 * @param b
  	 * @throws IOException
  	 */
- 	public void addNewAccountToConfig(ATAccount b) throws IOException{
+ 	public void addNewAccountToConfigAndHierarchy(ATAccount b) throws IOException{
  		configFile.addAccount(b);
  	    staticLogger.info("Generated new account at index, " + b.getIndex());
- 	}
- 	
- 	/**
- 	 * Manual add an account to the Authenticator hierarchy.<br>
- 	 * Usually used when restoring a wallet's accounts.
- 	 * @param b
- 	 */
- 	public void addAccountToHierarchy(ATAccount b){
- 		authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
- 		staticLogger.info("Added an account at index, " + b.getIndex() + " to hierarchy");
+ 	    authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
+		staticLogger.info("Added an account at index, " + b.getIndex() + " to hierarchy");
  	}
  	
  	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName) throws IOException{
@@ -1002,13 +994,13 @@ public class WalletOperation extends BASE{
 		this.LOG.info("Marked " + add.getAddressStr() + " as used.");
 	}
 
-	public int getHierarchyNextAvailableAccountID(){
+	/*public int getHierarchyNextAvailableAccountID(){
 		return configFile.getHierarchyNextAvailableAccountID();
 	}
 
 	public void writeHierarchyNextAvailableAccountID(int i) throws IOException{
 		configFile.writeHierarchyNextAvailableAccountID(i);
-	}
+	}*/
 	
 	/*public byte[] getHierarchySeed() throws FileNotFoundException, IOException{
 		return configFile.getHierarchySeed();
@@ -1187,8 +1179,7 @@ public class WalletOperation extends BASE{
 		else{
 			accountID = accID;
 			ATAccount a = completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount);
-			addNewAccountToConfig(a);
-			addAccountToHierarchy(a);
+			addNewAccountToConfigAndHierarchy(a);
 		}
 		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnNewPairedAuthenticator();

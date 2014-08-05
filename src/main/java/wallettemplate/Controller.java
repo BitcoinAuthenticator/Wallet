@@ -834,9 +834,10 @@ public class Controller  extends BaseUI{
 		   //Authenticator.AUTHENTICATOR_PW="";
 		   if(Authenticator.AUTHENTICATOR_PW.length() == 0)
 			   displayLockDialog();
-		   else
+		   else{
 			   Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
-		   locked = true;
+			   locked = true;
+		   }
 		   updateLockIcon();
 	   }
 	   
@@ -2581,48 +2582,5 @@ public class Controller  extends BaseUI{
     private void stopSyncRotation(){
     	rt.stop();
     }
-    
-    /*public void setActivitySpinner(String text){
-    	if(isSpinnerVisible == false){
-    		syncProgress.setVisible(false);
-			lblStatus.setText(text);
-	    	readyToGoAnimation(-1,new EventHandler<ActionEvent>(){
-				@Override
-				public void handle(ActionEvent arg0) {
-					// Sync progress bar slides out ...
-			        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
-			        leave.setByX(300.0);
-			        leave.setCycleCount(1);
-			        leave.play();
-				}
-	        });
-	    	isSpinnerVisible = true;
-    	}
-    	
-    }
-    
-    public void removeActivitySpinner(){
-    	if(isSpinnerVisible == true){
-	    
-    		// Sync progress bar slides out ...
-	        TranslateTransition leave = new TranslateTransition(Duration.millis(600), lblStatus);
-	        leave.setByX(-300.0);
-	        leave.setCycleCount(1);
-	        leave.play();
-	        leave.setOnFinished(new EventHandler<ActionEvent>(){
-				@Override
-				public void handle(ActionEvent arg0) {
-					readyToGoAnimation(1, new EventHandler<ActionEvent>(){
-						@Override
-						public void handle(ActionEvent arg0) {
-							syncProgress.setVisible(true);
-							lblStatus.setText("No Activity");
-						}
-					});	
-				}
-	        });
-	        isSpinnerVisible = false;  
-	    }
-    }*/
     
 }

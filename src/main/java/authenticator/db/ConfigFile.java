@@ -81,7 +81,7 @@ public class ConfigFile {
 		auth.getConfigHierarchyBuilder().setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
 		auth.getConfigHierarchyBuilder().setHierarchyChaincode(ByteString.copyFrom(chaincode));
 		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
-		auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(0);
+		//auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(0);
 		writeConfigFile(auth);
 	}
 
@@ -423,7 +423,7 @@ public class ConfigFile {
 		updateAccount(b.build());
  	}
 
-	public int getHierarchyNextAvailableAccountID(){
+	/*public int getHierarchyNextAvailableAccountID(){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigHierarchy().getHierarchyNextAvailableAccountID();
 	}
@@ -432,5 +432,5 @@ public class ConfigFile {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(i);
 		writeConfigFile(auth);
-	}
+	}*/
 }
