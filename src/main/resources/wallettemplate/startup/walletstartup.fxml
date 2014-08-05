@@ -297,8 +297,13 @@
             <Font size="18.0" />
           </font>
         </Label>
+        <ScrollPane fx:id="restoreProcessScrll" disable="false" layoutX="28.0" layoutY="100.0" prefHeight="200.0" prefWidth="550.0" style="-fx-border-color: white;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+        	<stylesheets>
+                <URL value="@application.css" />
+            </stylesheets>
+        </ScrollPane>
         <Button fx:id="btnCancelRestoreProcess" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnBackFromRestoreProcess" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
-      	<Button fx:id="btnFinishRestoreProcess" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSeed" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      	<Button fx:id="btnFinishRestoreProcess" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#finishRestoreProcess" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       	<Label fx:id="lblRestoreProcessStatus" layoutX="150.0" layoutY="320.0" prefHeight="20.0" prefWidth="294.0" text="Status String ... " wrapText="true" />
       	<ProgressBar fx:id="syncProgress" layoutX="150.0" layoutY="340.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
       </children>

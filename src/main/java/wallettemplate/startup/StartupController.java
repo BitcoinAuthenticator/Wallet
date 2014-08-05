@@ -40,13 +40,16 @@ import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
 import authenticator.operations.BAWalletRestorer;
+import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
 import com.google.bitcoin.core.Block;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Peer;
+import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -54,6 +57,7 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.MnemonicCode;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.TestNet3Params;
+import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
@@ -164,8 +168,10 @@ public class StartupController  extends BaseUI{
 	@FXML private TextField lblSeedRestorer;
 	@FXML private DatePicker seedCreationDatePicker;
 	@FXML private ChoiceBox accountTypeBox;
-	@FXML private ScrollPane restoreAccountsScrll;
 	@FXML private Label lblLoading;
+	@FXML private ScrollPane restoreProcessScrll;
+	private ScrollPaneContentManager restoreProcessScrllContent;
+	@FXML private ScrollPane restoreAccountsScrll;
 	private ScrollPaneContentManager restoreAccountsScrllContent;
 	private DeterministicSeed walletSeed;
 	NetworkParameters params;
@@ -321,10 +327,17 @@ public class StartupController  extends BaseUI{
 		 accountTypeBox.setTooltip(new Tooltip("Select Account Type"));
 		 accountTypeBox.setValue("Standard Account");
 		 
+		 // restore accounts scroll
 		 restoreAccountsScrllContent = new ScrollPaneContentManager().setSpacingBetweenItems(15)
 				 							.setScrollStyle(restoreAccountsScrll.getStyle());
 		 restoreAccountsScrll.setContent(restoreAccountsScrllContent);
 		 restoreAccountsScrll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		 
+		 // restore prcess scroll
+		 restoreProcessScrllContent = new ScrollPaneContentManager().setSpacingBetweenItems(15)
+				 							.setScrollStyle(restoreProcessScrll.getStyle());
+		 restoreProcessScrll.setContent(restoreProcessScrllContent);
+		 restoreProcessScrll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		 
 		 // loading pane
 		 Label labelLoading = AwesomeDude.createIconLabel(AwesomeIcon.GEAR, "45");
@@ -401,23 +414,29 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void toExplanationPane1(ActionEvent event) {
 		 if (ckSeed.isSelected()){
-			 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
-			 GuiUtils.fadeIn(ExplanationPane1);
-			 BackupNewWalletPane.setVisible(false);
-			 ExplanationPane1.setVisible(true);
+			 displayExplanationPane();
 		 }
+	 }
+	 
+	 private void displayExplanationPane(){
+		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
+		 GuiUtils.fadeIn(ExplanationPane1);
+		 BackupNewWalletPane.setVisible(false);
+		 ExplanationPane1.setVisible(true);
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
 		 auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
-					auth.disposeOfAuthenticator();
-					Main.startup.hide();
-					Main.stage.show();
-					wallet.encrypt(txPW2.getText());
-					try {
-						Main.finishLoading();
-					} catch (IOException e) { e.printStackTrace(); }
+					 Platform.runLater(() -> {
+						 auth.disposeOfAuthenticator();
+							Main.startup.hide();
+							Main.stage.show();
+							wallet.encrypt(txPW2.getText());
+							try {
+								Main.finishLoading();
+							} catch (IOException e) { e.printStackTrace(); }
+					 });
 		         }
 			}, MoreExecutors.sameThreadExecutor());
          auth.stopAsync();
@@ -766,23 +785,64 @@ public class StartupController  extends BaseUI{
 	 //
 	 //##############################
 	 
+	 private BAWalletRestorer restorer;
 	 private void launchRestoreProcess(){
 		 RestoreProcessPane.setVisible(true);
+		 btnFinishRestoreProcess.setDisable(true);
 		 RestoreAccountsPane.setVisible(false);
-		 new BAWalletRestorer(auth, new RestorerDonwloadListener()).startAsync();
+		 syncProgress.setProgress(0);
+		 restorer = new BAWalletRestorer(auth, new WalletRestoreListener(){
+			@Override
+			public void onProgress(double pct, int blocksSoFar, Date date) {
+				float completion = (float) (pct / 100.0);
+				Platform.runLater(() -> syncProgress.setProgress(completion));
+			}
+
+			@Override
+			public void onTxFound(Transaction Tx, Coin received, Coin sent) {
+				addFoundTxFromRestore(Tx, received, sent);
+			}
+
+			@Override
+			public void onStatusChange(String newStatus) {
+				Platform.runLater(() -> lblRestoreProcessStatus.setText(newStatus));
+			}
+
+			@Override
+			public void onDiscoveryDone() {
+				Platform.runLater(() -> btnFinishRestoreProcess.setDisable(false));
+			}
+			 
+		 });
+		 restorer.startAsync();
+	 }
+	 
+	 private void addFoundTxFromRestore(Transaction tx, Coin received, Coin sent){
+		 Platform.runLater(() -> {
+			 RestoreProcessCell c = new RestoreProcessCell();
+			 c.setTxID(tx.getHashAsString());
+			 c.setCoinsReceived(received.toFriendlyString());
+			 c.setCoinsSent(sent.toFriendlyString());
+			 restoreProcessScrllContent.addItem(c);
+		 });
 	 }
 	 
 	 @FXML protected void returnBackFromRestoreProcess(ActionEvent event){
-		 RestoreProcessPane.setVisible(false);
-		 RestoreAccountsPane.setVisible(true);
+		 restorer.stopAsync();
+		 restorer.addListener(new Service.Listener(){
+	        	@Override public void terminated(State from) {
+	        		Platform.runLater(() -> {
+	        			RestoreProcessPane.setVisible(false);
+		       		 	RestoreAccountsPane.setVisible(true);
+	        		});
+	        	}
+	        }, MoreExecutors.sameThreadExecutor());
 	 }
-	 
-	 public class RestorerDonwloadListener extends DownloadListener{
-		 @Override
-		 protected void progress(double pct, int blocksSoFar, Date date) {
-			 Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
-		 }
-	}
+	  
+	 @FXML protected void finishRestoreProcess(ActionEvent event){
+		 RestoreProcessPane.setVisible(false);
+		 displayExplanationPane();
+	 }
 	 
 	//##############################
 	 //

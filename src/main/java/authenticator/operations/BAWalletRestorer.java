@@ -11,14 +11,18 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javafx.application.Platform;
 
 import org.json.JSONException;
 
@@ -84,14 +88,13 @@ public class BAWalletRestorer extends BASE{
     PeerAddress[] peerAddresses;
     String userAgent, version;
     File directory;
-    //FilterProvider vFilterProvider;
+    
+    WalletRestoreListener listener;
         
     /**
      * Discovery vars
      */
-    //List<ECKey> watchedKeys;
-    //List<ECKey> lastBatchOfWatchedKeys;
-    Map<ATAccount,List<ATAddress>> mapAccountAddresses;
+    ConcurrentHashMap<ATAccount,List<ATAddress>> mapAccountAddresses;
     
     final int MINIMUM_BLOOM_DATA_LENGTH = 8;
     final long AUTHENTICATOR_CREATION_TIME = 1388534402; // Represents 1.1.2014 00:00:01
@@ -100,43 +103,15 @@ public class BAWalletRestorer extends BASE{
     String startTsmp;
     String endTsmp;
     
-    
     /**
      *	Flags
      */
     boolean useTor = false;
     boolean usePreselectedAddresses = false;
     
-    @Override
-    protected void doStart() {    	
-    	mainThread.start();
-    }
-    
-    @Override
-	protected void doStop() {
-    	vPeerGroup.stopAsync();
-        vPeerGroup.addListener(new Service.Listener(){
-        	@Override public void terminated(State from) {
-        		try {
-                    vWallet.saveToFile(vWalletFile);
-                    vStore.close();
-
-                    vPeerGroup = null;
-                    vWallet = null;
-                    vStore = null;
-                    vChain = null;
-                    
-                    notifyStopped();
-                }catch (IOException | BlockStoreException e) {
-        			e.printStackTrace();
-        			notifyStopped();
-        		}
-        	}
-        }, MoreExecutors.sameThreadExecutor());
-    }
-    
-	public BAWalletRestorer(Authenticator auth,DownloadListener listener) {      
+	public BAWalletRestorer(Authenticator auth,WalletRestoreListener l) {      
 		super (BAWalletRestorer.class);
+		listener = l;
 		vAuthenticator = auth;
 		vWallet = vAuthenticator.getWalletOperation().getTrackedWallet();
 		vBAApplicationParameters = vAuthenticator.getApplicationParams();
@@ -168,11 +143,29 @@ public class BAWalletRestorer extends BASE{
 					}
 		        }
 		        try {
-		        	startTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());        	
+		        	startTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());    
+		        	listener.onStatusChange("Initializing ... ");
 	        		init();
 	        		initWatchedAddresses(BAHierarchy.keyLookAhead);
 	        		notifyStarted();
-	        		initBlockChainDownload(listener);
+	        		initBlockChainDownload(new DownloadListener(){
+	        			@Override
+	        			 protected void progress(double pct, int blocksSoFar, Date date) {
+	        				 listener.onProgress(pct, blocksSoFar, date);
+	        			 }
+	        			
+	        			 @Override
+	        	         protected void doneDownload() {
+	        				 listener.onStatusChange("Finished !");
+	        				 listener.onDiscoveryDone();
+	        				 
+	        				 try {
+								disposeOfRestorer();
+							} catch (BlockStoreException | IOException e) {
+								e.printStackTrace();
+							}
+	        			 }
+	        		});
 		        	endTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());
 		        	
 		        	System.out.println(this.toString());
@@ -198,7 +191,7 @@ public class BAWalletRestorer extends BASE{
         }
 		try {
 			/**
-			 * Delete chain file so we start from zero every round
+			 * Delete files so we start from zero every round
 			 */
 			File chainFile = new File(directory, vAuthenticator.getApplicationParams().getAppName() + ".spvchain");
 			chainFile.delete();
@@ -250,7 +243,7 @@ public class BAWalletRestorer extends BASE{
 	
 	@SuppressWarnings("static-access")
 	private void initWatchedAddresses(int lookaheadForEachAccount) throws Exception{
-		mapAccountAddresses = java.util.Collections.synchronizedMap(new HashMap<ATAccount,List<ATAddress>>());//new HashMap<ATAccount,List<ATAddress>>();
+		mapAccountAddresses = new ConcurrentHashMap<ATAccount,List<ATAddress>>();//new HashMap<ATAccount,List<ATAddress>>();
 		List<ATAccount> all = vAuthenticator.getWalletOperation().getAllAccounts();
 		for(ATAccount acc:all){
 			List<ATAddress> arr = new ArrayList<ATAddress>();
@@ -265,7 +258,7 @@ public class BAWalletRestorer extends BASE{
 	
 	@SuppressWarnings("unused")
 	private void initBlockChainDownload(DownloadListener listener) throws IOException, InterruptedException, TimeoutException{
-		System.out.println("Connected peers: " + vPeerGroup.getConnectedPeers().size());
+		this.listener.onStatusChange("Discovering ... ");
         vPeerGroup.startBlockChainDownload(listener);
         listener.await();
 	}
@@ -275,10 +268,10 @@ public class BAWalletRestorer extends BASE{
     }
 	
 	PeerGroup createPeerGroup() throws TimeoutException {
-        /*if (useTor) {
+        if (useTor) {
             return PeerGroup.newWithTor(netParams, vChain, new TorClient());
         }
-        else*/
+        else
             return new PeerGroup(netParams, vChain);
     }
 
@@ -309,10 +302,10 @@ public class BAWalletRestorer extends BASE{
         		Script scr = out.getScriptPubKey();
     			Address addr = scr.getToAddress(netParams);
     			if(wallet.isAddressWatched(addr)){
-    				Map<ATAccount, List<ATAddress>> copyMap = new HashMap<ATAccount, List<ATAddress>>(mapAccountAddresses);
-    				Set<ATAccount> keys = new HashSet<ATAccount>(copyMap.keySet());
+    				Set<ATAccount> keys = new HashSet<ATAccount>(mapAccountAddresses.keySet());
     				for(ATAccount acc:keys){
-    					for(ATAddress add:copyMap.get(acc)){
+    					List<ATAddress> addresses = new ArrayList<ATAddress>(mapAccountAddresses.get(acc));
+    					for(ATAddress add:addresses){
     						if(addr.toString().equals(add.getAddressStr())){
     							vAuthenticator.getWalletOperation().markAddressAsUsed(acc.getIndex(), add.getKeyIndex(), HierarchyAddressTypes.External);
     							ATAddress newAdd = vAuthenticator.getWalletOperation().getNextExternalAddress(acc.getIndex());
@@ -325,145 +318,49 @@ public class BAWalletRestorer extends BASE{
     				}
     			}
         	}
+        	
+        	listener.onTxFound(tx, 
+        			tx.getValueSentToMe(vWallet), 
+        			tx.getValueSentFromMe(vWallet));
         }
 	}
 	
-	/*public class FilterProvider implements PeerFilterProvider{
-		ReentrantLock lock ;
-		List<ECKey> keys;
-		
-		public FilterProvider(List<ECKey> keys){
-			lock = Threading.lock("wallet");
-			updateKeys(keys);
-		}
-		
-		public void updateKeys(List<ECKey> keys){
-			this.keys = new ArrayList<ECKey>(keys);
-		}
-
-		public long getEarliestKeyCreationTime() {
-			return earliestKeyTime; //just a week ago   
-		}
-
-		public int getBloomFilterElementCount() {
-			return keys.size() * 2; // for every key we enter its pubKey and pubKeyHash bytes
-		}
-
-		public BloomFilter getBloomFilter(int size, double falsePositiveRate, long nTweak) {
-			BloomFilter filter = null;
-			lock.lock();
-	        try {	        	
-	        	filter = new BloomFilter(size, falsePositiveRate, nTweak);
-
-	        	
-	        	for(ECKey k:keys){
-	        		filter.insert(k.getPubKey());
-	        		filter.insert(k.getPubKeyHash());
-	        	}
-	        	
-	        }  finally {
-	            lock.unlock();
-	        }
-			return filter;
-		}
-
-		public boolean isRequiringUpdateAllBloomFilter() {
-			return false;
-		}
-		
-		public Lock getLock() {
-			return lock;
-		}
-		
-	}*/
+	public interface WalletRestoreListener{
+		public void onProgress(double pct, int blocksSoFar, Date date);
+		public void onTxFound(Transaction Tx, Coin received, Coin sent);
+		public void onStatusChange(String newStatus);
+		public void onDiscoveryDone();
+	}
 	
-	/*private class ChainListener implements BlockChainListener{
-		private List<Sha256Hash> relevantTx = new ArrayList<Sha256Hash>();
-		List<ECKey> watchedKeys;
-		List<byte[]> watchedPubKeys;
-		List<byte[]> watchedPubKeyHashes;
-		
-		public ChainListener(List<ECKey> watchedKeys){
-			this.watchedKeys = new ArrayList<ECKey>( watchedKeys );
-			
-			watchedPubKeys = new ArrayList<byte[]>();
-			watchedPubKeyHashes = new ArrayList<byte[]>();
-			for(ECKey k:watchedKeys){
-				watchedPubKeys.add(k.getPubKey());
-				watchedPubKeyHashes.add(k.getPubKeyHash());
-			}
-		}
-		
-		public void notifyNewBestBlock(StoredBlock block)
-				throws VerificationException {
-			// TODO Auto-generated method stub
-			
-		}
+	@Override
+    protected void doStart() {    	
+    	mainThread.start();
+    }
+    
+    @Override
+	protected void doStop() {
+    	listener.onStatusChange("Aborting ... ");
+    	vPeerGroup.stopAsync();
+        vPeerGroup.addListener(new Service.Listener(){
+        	@Override public void terminated(State from) {
+        		try {
+        			disposeOfRestorer();
+                    notifyStopped();
+                }catch (IOException | BlockStoreException e) {
+        			e.printStackTrace();
+        			notifyStopped();
+        		}
+        	}
+        }, MoreExecutors.sameThreadExecutor());
+    }
+    
+    private void disposeOfRestorer() throws BlockStoreException, IOException{
+    	vWallet.saveToFile(vWalletFile);
+        vStore.close();
 
-		public void reorganize(StoredBlock splitPoint,
-				List<StoredBlock> oldBlocks, List<StoredBlock> newBlocks)
-				throws VerificationException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@SuppressWarnings("unused")
-		public boolean isTransactionRelevant(Transaction tx) {
-			
-			
-			for(TransactionOutput out:tx.getOutputs())
-			{
-				try{
-					byte[] hashOut = out.getScriptPubKey().getPubKeyHash();
-					if(watchedPubKeyHashes.contains(hashOut)){
-						relevantTx.add(tx.getHash());
-						return true;
-					}
-				}
-				catch(Exception e){
-					e.printStackTrace();
-					System.out.println("\n\n" + out.toString() + "\n\n");
-					return false;
-				}
-			}
-				
-			
-			
-			for(TransactionInput in: tx.getInputs()){
-				TransactionOutPoint putPoint = in.getOutpoint();
-				Sha256Hash id  = putPoint.getHash();
-				if(relevantTx.contains(id))
-					return true;
-				try{
-					byte[] pubKeyIn = in.getScriptSig().getPubKey();
-					if(watchedPubKeys.contains(pubKeyIn)){
-						relevantTx.add(tx.getHash());
-						return true;
-					}
-				}
-				catch(Exception e){
-					e.printStackTrace();
-					System.out.println("\n\n" + in.toString() + "\n\n");
-					return false;
-				}
-			}
-			
-			return false;
-		}
-
-		public void receiveFromBlock(Transaction tx, StoredBlock block,
-				NewBlockType blockType, int relativityOffset)
-				throws VerificationException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public boolean notifyTransactionIsInBlock(Sha256Hash txHash, StoredBlock block, NewBlockType blockType, int relativityOffset)
-				throws VerificationException {
-			if(relevantTx.contains(txHash))
-				return true;
-			return false;
-		}
-		
-	}*/
+        vPeerGroup = null;
+        vWallet = null;
+        vStore = null;
+        vChain = null;
+    }
 }
