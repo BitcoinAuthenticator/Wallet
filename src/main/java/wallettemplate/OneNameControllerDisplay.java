@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
@@ -25,12 +26,24 @@ public class OneNameControllerDisplay  extends BaseUI{
 	WebEngine engine;
 	@FXML private Button done;
 	public Main.OverlayUI overlayUi;
+	 private double xOffset = 0;
+	 private double yOffset = 0;
 
 	// Called by FXMLLoader
     public void initialize() {
     	super.initialize(OneNameControllerDisplay.class);
     	engine = webView.getEngine();
 		engine.load("https://onename.io/" + Authenticator.getWalletOperation().getOnename().getOnename());
+    }
+    
+    @FXML protected void drag1(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML protected void drag2(MouseEvent event) {
+    	Main.stage.setX(event.getScreenX() - xOffset);
+    	Main.stage.setY(event.getScreenY() - yOffset);
     }
     
     public void btnBack(ActionEvent event) { goBack(); }
