@@ -231,7 +231,7 @@ public class Controller  extends BaseUI{
 	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
 	 TorListener listener = new TorListener();
-	 private boolean locked = true;
+	 private boolean locked;
 	 
 	 
 
@@ -339,39 +339,43 @@ public class Controller  extends BaseUI{
      */
     public void onAuthenticatorSetup() {
     	Platform.runLater(new Runnable() { 
-		 @Override
-		public void run() {
-			/**
-    	 	 * refreshBalanceLabel will take care of downloading the currency data needed
-    	 	 */
-    	 	 setReceiveAddresses();
-    	 	 try {setTxPaneHistory();} 
-     	 	 catch (NoSuchAlgorithmException | JSONException
- 				| AddressFormatException | KeyIndexOutOfRangeException
- 				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
-         	 try {setTxHistoryContent();} 
-        	 catch (NoSuchAlgorithmException | JSONException
-				| AddressFormatException | KeyIndexOutOfRangeException
-				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
-         
-        	 setupOneName(Authenticator.getWalletOperation().getOnename());
-        	 try {refreshBalanceLabel();} 
-         	 catch (JSONException | IOException e) {e.printStackTrace();}
-         
-        	 Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
-         	//Authenticator.getWalletOperation().addEventListener(new WalletListener());
-         
-        	 // Account choicebox
-        	 setAccountChoiceBox();
-         
-         	/**
-         	 * Read the comments in TCPListener#looper()
-        	 */
-         	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
-        	 if(Authenticator.getWalletOperation().isWalletEncrypted())
-        		 lockControl(null);
-			  }
-    	});    	
+			 @Override
+			public void run() {
+				/**
+	    	 	 * refreshBalanceLabel will take care of downloading the currency data needed
+	    	 	 */
+	    	 	 setReceiveAddresses();
+	    	 	 try {setTxPaneHistory();} 
+	     	 	 catch (NoSuchAlgorithmException | JSONException
+	 				| AddressFormatException | KeyIndexOutOfRangeException
+	 				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
+	         	 try {setTxHistoryContent();} 
+	        	 catch (NoSuchAlgorithmException | JSONException
+					| AddressFormatException | KeyIndexOutOfRangeException
+					| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
+	         
+	        	 setupOneName(Authenticator.getWalletOperation().getOnename());
+	        	 try {refreshBalanceLabel();} 
+	         	 catch (JSONException | IOException e) {e.printStackTrace();}
+	         
+	        	 Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
+	         	//Authenticator.getWalletOperation().addEventListener(new WalletListener());
+	         
+	        	 // Account choicebox
+	        	 setAccountChoiceBox();
+	         
+	         	/**
+	         	 * Read the comments in TCPListener#looper()
+	        	 */
+	         	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
+	        	 if(Authenticator.getWalletOperation().isWalletEncrypted())
+	        		 lockControl(null);
+	         	
+	         	// lock 
+	         	locked = Authenticator.getWalletOperation().isWalletEncrypted();
+	         	updateLockIcon();
+			}
+	    });    	
     }
     
     public class AuthenticatorGeneralEvents implements BAGeneralEventsListener{
@@ -816,81 +820,121 @@ public class Controller  extends BaseUI{
     * @param event
     */
    @FXML protected void lockControl(ActionEvent event){
+	   /**
+	    * decrypt
+	    */
 	   if (locked){
-		   Pane pane = new Pane();
-		   final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
-		   Image lock = new Image(Main.class.getResourceAsStream("lockbackground.png"));
-		   ImageView ivLock = new ImageView(lock);
-		   pane.setMaxSize(314, 288);
-		   pane.setStyle("-fx-background-color: white;");
-		   pane.setEffect(new DropShadow());
-		   pane.getChildren().add(ivLock);
-		   VBox unlockVBox = new VBox();
-		   PasswordField pw = new PasswordField();
-		   pw.setPrefWidth(250);
-		   pw.setPromptText("Enter Password");
-		   Button btnOK = new Button("OK");
-		   btnOK.setPrefWidth(123);
-		   Button btnCancel = new Button("Cancel");
-		   btnCancel.setPrefWidth(123);
-		   HBox buttonHBox = new HBox();
-		   unlockVBox.getChildren().add(pw);
-		   buttonHBox.getChildren().add(btnOK);
-		   buttonHBox.getChildren().add(btnCancel);
-		   unlockVBox.getChildren().add(buttonHBox);
-		   pane.getChildren().add(unlockVBox);
-		   unlockVBox.setPadding(new Insets(80,0,0,32));
-		   buttonHBox.setPadding(new Insets(148,0,0,0));
-		   buttonHBox.setMargin(btnOK, new Insets(0,4,0,0));
-		   buttonHBox.setAlignment(Pos.CENTER);
-		   btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			   @Override
-			   public void handle(MouseEvent event) {
-				   overlay.done();
-			   }
-		   });
-		   btnOK.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			   @Override
-			   public void handle(MouseEvent event) {
-				   if(Authenticator.getWalletOperation().isWalletEncrypted()){
-					   if (pw.getText().equals("")){
-						   informationalAlert("Unfortunately, you messed up.",
-								   "You need to enter your password to decrypt your wallet.");
-						   return;
+		   displayLockDialog();
+	   }
+	   /**
+	    * Encrypt
+	    */
+	   else 
+	   {
+		   //Authenticator.AUTHENTICATOR_PW="";
+		   if(Authenticator.AUTHENTICATOR_PW.length() == 0)
+			   displayLockDialog();
+		   else
+			   Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
+		   locked = true;
+		   updateLockIcon();
+	   }
+	   
+   }
+   
+   private void displayLockDialog(){
+	   Pane pane = new Pane();
+	   final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
+	   Image lock = new Image(Main.class.getResourceAsStream("lockbackground.png"));
+	   ImageView ivLock = new ImageView(lock);
+	   pane.setMaxSize(314, 288);
+	   pane.setStyle("-fx-background-color: white;");
+	   pane.setEffect(new DropShadow());
+	   pane.getChildren().add(ivLock);
+	   VBox unlockVBox = new VBox();
+	   PasswordField pw = new PasswordField();
+	   pw.setPrefWidth(250);
+	   pw.setPromptText("Enter Password");
+	   Button btnOK = new Button("OK");
+	   btnOK.setPrefWidth(123);
+	   Button btnCancel = new Button("Cancel");
+	   btnCancel.setPrefWidth(123);
+	   HBox buttonHBox = new HBox();
+	   unlockVBox.getChildren().add(pw);
+	   buttonHBox.getChildren().add(btnOK);
+	   buttonHBox.getChildren().add(btnCancel);
+	   unlockVBox.getChildren().add(buttonHBox);
+	   pane.getChildren().add(unlockVBox);
+	   unlockVBox.setPadding(new Insets(80,0,0,32));
+	   buttonHBox.setPadding(new Insets(148,0,0,0));
+	   buttonHBox.setMargin(btnOK, new Insets(0,4,0,0));
+	   buttonHBox.setAlignment(Pos.CENTER);
+	   btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		   @Override
+		   public void handle(MouseEvent event) {
+			   overlay.done();
+		   }
+	   });
+	   btnOK.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		   @Override
+		   public void handle(MouseEvent event) {
+			   /**
+			    * In case we decrypt
+			    */
+			   if(Authenticator.getWalletOperation().isWalletEncrypted()){
+				   if (pw.getText().equals("")){
+					   informationalAlert("Unfortunately, you messed up.",
+							   "You need to enter your password to decrypt your wallet.");
+					   return;
+				   }
+				   else {
+					   try{
+						   Authenticator.getWalletOperation().decryptWallet(pw.getText());
+						   //Authenticator.getWalletOperation().encryptWallet(pw.getText());
+						   Authenticator.AUTHENTICATOR_PW = pw.getText();
+						   overlay.done();
+						   locked = false;
+						   updateLockIcon();
 					   }
-					   else {
-						   try{
-							   Authenticator.getWalletOperation().decryptWallet(pw.getText());
-							   Authenticator.getWalletOperation().encryptWallet(pw.getText());
-							   Authenticator.AUTHENTICATOR_PW = pw.getText();
-							   overlay.done();
-							   Image unlocked = new Image(Main.class.getResource("btnUnlocked.png").toString());
-							   ImageView img = new ImageView(unlocked);
-							   btnLock.setGraphic(img);
-							   overviewHBox.setMargin(btnLock, new Insets(-2,0,0,0));
-							   locked = false;
-							   Tooltip.install(btnLock, new Tooltip("Click to Lock Wallet"));
-						   }
-						   catch(KeyCrypterException  e){
-							   informationalAlert("Unfortunately, you messed up.",
-									   "Wrong wallet password");
-							   return;
-						   }
+					   catch(KeyCrypterException  e){
+						   informationalAlert("Unfortunately, you messed up.",
+								   "Wrong wallet password");
+						   return;
 					   }
 				   }
 			   }
-		   });   
-	   }
-	   else {
-		   Authenticator.AUTHENTICATOR_PW="";
+			   else{
+				   /**
+				    * In case we encrypt but we don't have the password
+				    */
+				   if(Authenticator.AUTHENTICATOR_PW.length() == 0){
+					   Authenticator.getWalletOperation().encryptWallet(pw.getText());
+					   Authenticator.AUTHENTICATOR_PW = pw.getText();
+					   overlay.done();
+					   locked = true;
+					   updateLockIcon();
+				   }
+			   }
+		   }
+	   });   
+   }
+   
+   private void updateLockIcon(){
+	   if(locked){
 		   Image imglocked = new Image(Main.class.getResource("btnLocked.png").toString());
 		   ImageView img = new ImageView(imglocked);
 		   btnLock.setGraphic(img);
 		   overviewHBox.setMargin(btnLock, new Insets(0,0,0,0));
-		   locked = true;
 		   Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
 	   }
-	   
+	   else
+	   {
+		   Image unlocked = new Image(Main.class.getResource("btnUnlocked.png").toString());
+		   ImageView img = new ImageView(unlocked);
+		   btnLock.setGraphic(img);
+		   overviewHBox.setMargin(btnLock, new Insets(-2,0,0,0));
+		   Tooltip.install(btnLock, new Tooltip("Click to Lock Wallet"));
+	   }
    }
    
    public void setupOneName(AuthenticatorConfiguration.ConfigOneNameProfile one){

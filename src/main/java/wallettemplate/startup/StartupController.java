@@ -174,6 +174,7 @@ public class StartupController  extends BaseUI{
 	@FXML private ScrollPane restoreAccountsScrll;
 	private ScrollPaneContentManager restoreAccountsScrllContent;
 	private DeterministicSeed walletSeed;
+	String encryptionPassword = null;
 	NetworkParameters params;
 	Authenticator auth;
 	Wallet wallet;
@@ -432,7 +433,8 @@ public class StartupController  extends BaseUI{
 						 auth.disposeOfAuthenticator();
 							Main.startup.hide();
 							Main.stage.show();
-							wallet.encrypt(txPW2.getText());
+							if(encryptionPassword != null && encryptionPassword.length() > 0)
+								wallet.encrypt(encryptionPassword);
 							try {
 								Main.finishLoading();
 							} catch (IOException e) { e.printStackTrace(); }
@@ -493,6 +495,8 @@ public class StartupController  extends BaseUI{
 		 }
 		 else {
 			 try {
+				encryptionPassword =  txPW2.getText();
+				 
 				createNewStandardAccount(txAccount.getText());
 				
 				ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -718,6 +722,9 @@ public class StartupController  extends BaseUI{
 				cell.setAccountID(Integer.toString(acc.accountAccountID));
 				cell.setAccountName(acc.accountName);
 				restoreAccountsScrllContent.addItem(cell);
+				
+				if(restoreAccountsScrllContent.getCount() == 1)
+					auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
 				
 				try {
 					if(type == WalletAccountType.StandardAccount){
