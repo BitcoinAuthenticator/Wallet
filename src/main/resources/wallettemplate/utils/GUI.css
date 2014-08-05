@@ -198,27 +198,57 @@
 -fx-text-fill: -icons-color;
 }
 
-#Pane2 .awesome{
+#MainPane .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }
 
-#Pane3 .awesome{
+#CreateAccountPane .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }
 
-#Pane4 .awesome{
+#BackupNewWalletPane .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }
 
-#Pane7 .awesome{
+#ExplanationPane1 .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }
 
-#Pane8 .awesome{
+#Pane6 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#SSSBackupPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#MainRestorePane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#RestoreFromMnemonicPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#RestoreProcessPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#RestoreAccountsPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#LoadingPane .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }
@@ -227,3 +257,4 @@
 	-fx-text-fill: #4b698f;
 	-fx-cursor: hand;
 }
+
