@@ -2438,6 +2438,10 @@ public class Controller  extends BaseUI{
     	Main.instance.overlayUI("Pair_wallet.fxml");
     }
     
+    @FXML protected void btnSettings(MouseEvent event) {
+    	Main.instance.overlayUI("Settings.fxml");
+    }
+    
     @FXML protected void btnOneName(MouseEvent event) {
     	if(Authenticator.getWalletOperation().getOnename() != null)
     		Main.instance.overlayUI("DisplayOneName.fxml");
@@ -2445,7 +2449,7 @@ public class Controller  extends BaseUI{
     		Dialogs.create()
 		        .owner(Main.stage)
 		        .title("Cannot display your OneName account")
-		        .message("Please press on your avatr picture on the overview panel to set your OneName account")
+		        .message("Please press on your avatr picture on the overview tab to set your OneName account")
 		        .showWarning();
     }
     
