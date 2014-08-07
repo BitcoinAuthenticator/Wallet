@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -178,41 +179,124 @@ public class WalletOperation extends BASE{
 	 * @author alon
 	 *
 	 */
+	public static boolean isRequiringBalanceChange = false;
 	public class WalletListener extends AbstractWalletEventListener {
-		/**
-		 * just keep track we don't add the same Tx several times
-		 */
-        List<String> confirmedTx;
-        
-        public WalletListener(){
-        	confirmedTx = new ArrayList<String>();
-        }
 		
         @Override
         public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	try {
-				updateBalace(tx, true);
+        		isRequiringBalanceChange = true;
+				updateBalace(wallet);
+				notifyBalanceUpdate(wallet,tx);
 			} catch (Exception e) { e.printStackTrace(); }
         }
         
+        @Override
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	try {
-				updateBalace(tx, true);
+        		isRequiringBalanceChange = true;
+				updateBalace(wallet);
+				notifyBalanceUpdate(wallet,tx);
 			} catch (Exception e) { e.printStackTrace(); }
         }
         
+        @Override
         public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
         	try {
-				updateBalace(tx, false);
+        		if(isRequiringBalanceChange){
+        			updateBalace(wallet);
+        			notifyBalanceUpdate(wallet,tx);
+        			isRequiringBalanceChange = false;
+        		}
 			} catch (Exception e) { e.printStackTrace(); }
+        }
+        
+        private void notifyBalanceUpdate(Wallet wallet, Transaction tx){
+        	if(tx.getValueSentToMe(wallet).signum() > 0){
+        		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, tx.getConfidence().getConfidenceType());
+        	}
+        	
+        	if(tx.getValueSentFromMe(wallet).signum() > 0){
+        		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, tx.getConfidence().getConfidenceType());
+        	}
         }
         
         @SuppressWarnings("incomplete-switch")
-		private synchronized void updateBalace(Transaction tx, boolean isNewTx) throws Exception{
+		private synchronized void updateBalace(Wallet wallet) throws Exception{
+        	List<ATAccount> accounts = getAllAccounts();
+        	for(ATAccount acc:accounts){
+        		setConfirmedBalance(acc.getIndex(), Coin.ZERO);
+        		setUnConfirmedBalance(acc.getIndex(), Coin.ZERO);
+        	}
+        	
+        	List<Transaction> allTx = wallet.getRecentTransactions(0, false);
+        	Collections.reverse(allTx);
+        	for(Transaction tx: allTx){
+        		/**
+        		 * BUILDING
+        		 */
+        		if(tx.getConfidence().getConfidenceType() == ConfidenceType.BUILDING){
+        			if(tx.getValueSentToMe(wallet).signum() > 0){
+        				for (TransactionOutput out : tx.getOutputs()){
+        					Script scr = out.getScriptPubKey();
+        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+        	    			if(isWatchingAddress(addrStr)){
+        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+        	    				addToConfirmedBalance(add.getAccountIndex(), out.getValue());
+        	    			}
+        				}
+        			}
+        			
+        			if(tx.getValueSentFromMe(wallet).signum() > 0){
+        				for (TransactionInput in : tx.getInputs()){
+        					TransactionOutput out = in.getConnectedOutput();
+        					if(out != null){
+        						Script scr = out.getScriptPubKey();
+            	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+            	    			if(isWatchingAddress(addrStr)){
+            	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+            	    				subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+            	    			}
+        					}
+        				}
+        			}
+        		}
+        		
+        		/**
+        		 * PENDING
+        		 */
+        		if(tx.getConfidence().getConfidenceType() == ConfidenceType.PENDING){
+        			if(tx.getValueSentToMe(wallet).signum() > 0){
+        				for (TransactionOutput out : tx.getOutputs()){
+        					Script scr = out.getScriptPubKey();
+        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+        	    			if(isWatchingAddress(addrStr)){
+        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+        	    				addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
+        	    			}
+        				}
+        			}
+        			
+        			if(tx.getValueSentFromMe(wallet).signum() > 0){
+        				for (TransactionInput in : tx.getInputs()){
+        					TransactionOutput out = in.getConnectedOutput();
+        					if(out != null){
+        						Script scr = out.getScriptPubKey();
+            	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+            	    			if(isWatchingAddress(addrStr)){
+            	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+            	    				subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+            	    			}
+        					}
+        				}
+        			}
+        		}
+        	}
+        	
         	/**
         	 * 
         	 * Check for coins entering
-        	 */
+        	 *//*
         	List<TransactionOutput> outs = tx.getOutputs();
         	// accountsEffectedPending is for collecting all effected account in pending confidence.
         	List<Integer> accountsEffectedPending = new ArrayList<Integer>();
@@ -227,11 +311,11 @@ public class WalletOperation extends BASE{
     				TransactionConfidence conf = tx.getConfidence();
     				switch(conf.getConfidenceType()){
     				case BUILDING:
-    					/**
+    					*//**
     					 * CONDITIONING:
     					 * If the transaction is new but we don't know about it, just add it to confirmed.
     					 * If the transaction is moving from pending to confirmed, make it so.
-    					 */
+    					 *//*
     					if(!isNewTx && isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
     						if(!accountsEffectedBuilding.contains(add.getAccountIndex())) accountsEffectedBuilding.add(add.getAccountIndex());
     						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
@@ -243,11 +327,11 @@ public class WalletOperation extends BASE{
     						
     						staticLogger.info("Received coins {Conf: BUILDING} to watched address " + addrStr);
     					}
-    					/**
+    					*//**
     					 * IMPORTANT:
     					 * Doesn't add the tx to confirmedTx because we didn't know about it before so
     					 * we want to iterate all the outputs
-    					 */
+    					 *//*
     					else if(isNewTx && !confirmedTx.contains(tx.getHashAsString())){
     						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
     						if(!didFireOnSendingCoins){
@@ -275,7 +359,7 @@ public class WalletOperation extends BASE{
     					}
     					break;
     				case DEAD:
-    					// how the fuck do i know from where i should subtract ?!?!
+    					// TODO
     					break;
     				}
     			}
@@ -291,9 +375,9 @@ public class WalletOperation extends BASE{
         		for(Integer acIndx:accountsEffectedBuilding)
         			removePendingInTx(acIndx, tx.getHashAsString());
         	
-        	/**
+        	*//**
         	 * Check for coins exiting
-        	 */
+        	 *//*
     		List<TransactionInput> ins = tx.getInputs();
     		accountsEffectedPending = new ArrayList<Integer>();
     		boolean didFireOnReceivingCoins = false;
@@ -333,10 +417,10 @@ public class WalletOperation extends BASE{
         				case PENDING:
         					if(!isNewTx)
         						;
-        					/**
+        					*//**
         					 * IMPORTANT:
 	    					 * We add the transaction to isPendingOutTx list so after that it cannot enter here anymore.
-        					 */
+        					 *//*
         					else if(!isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
         						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
         						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
@@ -359,7 +443,7 @@ public class WalletOperation extends BASE{
         	// In case there are several inputs from the same account(PENDING)
         	if(accountsEffectedPending.size() > 0)
         		for(Integer acIndx:accountsEffectedPending)
-        			addPendingOutTx(acIndx, tx.getHashAsString());
+        			addPendingOutTx(acIndx, tx.getHashAsString());*/
         }
        
     }
@@ -1239,9 +1323,9 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getConfirmedBalance(accountIdx);
+		staticLogger.info("Subtracting " + amount.toFriendlyString() + " from confirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
 		assert(old.compareTo(amount) >= 0);
 		Coin ret = setConfirmedBalance(accountIdx, old.subtract(amount));
-		staticLogger.info("Subtracted " + amount.toFriendlyString() + " from confirmed balance. Account: " + accountIdx );
 		return ret;
 	}
 	
@@ -1289,9 +1373,9 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
 		Coin old = getUnConfirmedBalance(accountIdx);
+		staticLogger.info("Subtracting " + amount.toFriendlyString() + " from unconfirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
 		assert(old.compareTo(amount) >= 0);
 		Coin ret = setUnConfirmedBalance(accountIdx, old.subtract(amount));
-		staticLogger.info("Subtracted " + amount.toFriendlyString() + " from unconfirmed balance. Account: " + accountIdx );
 		return ret;
 	}
 	
@@ -1319,6 +1403,9 @@ public class WalletOperation extends BASE{
 	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws IOException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
+		staticLogger.info("Moving " + amount.toFriendlyString() + 
+				" from unconfirmed(" + beforeUnconf.toFriendlyString() 
+				+") to confirmed(" + beforeConfirmed.toFriendlyString() + ") balance. Account: " + accountId );
 		assert(beforeUnconf.compareTo(amount) >= 0);
 		//
 		Coin afterConfirmed = beforeConfirmed.add(amount);
@@ -1326,9 +1413,7 @@ public class WalletOperation extends BASE{
 		
 		setConfirmedBalance(accountId,afterConfirmed);
 		setUnConfirmedBalance(accountId,afterUnconfirmed);
-		
-		staticLogger.info("Moved " + amount.toFriendlyString() + " from unconfirmed to confirmed balance. Account: " + accountId );
-		
+				
 		return afterConfirmed;
 	}
 	
@@ -1343,16 +1428,16 @@ public class WalletOperation extends BASE{
 	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws IOException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
+		staticLogger.info("Moving " + amount.toFriendlyString() + 
+				" from confirmed(" + beforeConfirmed.toFriendlyString() 
+				+") to unconfirmed(" + beforeUnconf.toFriendlyString() + ") balance. Account: " + accountId );
 		assert(beforeConfirmed.compareTo(amount) >= 0);
 		//
 		Coin afterConfirmed = beforeConfirmed.subtract(amount);
 		Coin afterUnconfirmed = beforeUnconf.add(amount);
 		
 		setConfirmedBalance(accountId,afterConfirmed);
-		setUnConfirmedBalance(accountId,afterUnconfirmed);
-		
-		staticLogger.info("Moved " + amount.toFriendlyString() + " from confirmed to unconfirmed balance. Account: " + accountId );
-		
+		setUnConfirmedBalance(accountId,afterUnconfirmed);		
 		return afterUnconfirmed;
 	}
 	
@@ -1414,7 +1499,7 @@ public class WalletOperation extends BASE{
 	//		Pending transactions 
 	//
 	//#####################################
-		public List<String> getPendingOutTx(int accountIdx){
+		/*public List<String> getPendingOutTx(int accountIdx){
 			return configFile.getPendingOutTx(accountIdx);
 		}
 		
@@ -1452,7 +1537,7 @@ public class WalletOperation extends BASE{
 				if(tx.equals(txID))
 					return true;
 			return false;
-		}
+		}*/
 		
 	//#####################################
 	//
@@ -1611,7 +1696,13 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.getRecentTransactions();
 	}
 	
-	/*public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
+	public ArrayList<TransactionOutput> selectOutputsFromAccount(int accountIndex, Coin value) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
+		ArrayList<TransactionOutput> all = getUnspentOutputsForAccount(accountIndex);
+		ArrayList<TransactionOutput> ret = selectOutputs(value, all);
+		return ret;
+	}
+	
+	public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
 	{
 		LinkedList<TransactionOutput> outs = new LinkedList<TransactionOutput> (candidates);
 		DefaultCoinSelector selector = new DefaultCoinSelector();
@@ -1620,7 +1711,7 @@ public class WalletOperation extends BASE{
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>(gathered);
 	
 		return ret;
-	}*/
+	}
 	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
 		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
@@ -1647,10 +1738,12 @@ public class WalletOperation extends BASE{
 	}
 	
 	public void decryptWallet(String password){
+		staticLogger.info("Decrypted wallet with password: " + password);
 		mWalletWrapper.decryptWallet(password);
 	}
 	
 	public void encryptWallet(String password){
+		staticLogger.info("Encrypted wallet with password: " + password);
 		mWalletWrapper.encryptWallet(password);
 	}
 	

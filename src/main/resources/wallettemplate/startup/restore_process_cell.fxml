@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="545.0" style="-fx-background-color: white; -fx-border-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<children><HBox prefHeight="94.0" prefWidth="545.0" style="-fx-border-color: white;">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="545.0" style="-fx-background-color: white; -fx-border-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><HBox prefHeight="154.0" prefWidth="545.0" style="-fx-border-color: white;">
 <children><VBox prefHeight="92.0" prefWidth="544.0">
 <children><HBox alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="544.0">
 <children><Label text="Tx ID:">
@@ -24,7 +24,27 @@
 <padding>
 <Insets left="10.0" />
 </padding></Label>
-</children></HBox><HBox prefHeight="61.0" prefWidth="444.0">
+</children></HBox><VBox prefHeight="30.0" prefWidth="544.0">
+<children><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+<children><Label text="Confidence: ">
+<HBox.margin>
+<Insets left="20.0" />
+</HBox.margin></Label><Label fx:id="lblConfidence" text="Label">
+<HBox.margin>
+<Insets left="5.0" />
+</HBox.margin></Label>
+</children></HBox>
+</children></VBox><VBox prefHeight="30.0" prefWidth="544.0">
+<children><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+<children><Label text="Status: ">
+<HBox.margin>
+<Insets left="20.0" />
+</HBox.margin></Label><Label fx:id="lblStatus" text="Label">
+<HBox.margin>
+<Insets left="5.0" />
+</HBox.margin></Label>
+</children></HBox>
+</children></VBox><HBox prefHeight="61.0" prefWidth="444.0">
 <children><VBox fx:id="inputsVBox" prefHeight="59.0" prefWidth="418.0">
 <children><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
 <children><Label prefHeight="16.0" prefWidth="129.0" text="Coins Received" textFill="#27b535">

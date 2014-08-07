@@ -430,7 +430,7 @@ public class StartupController  extends BaseUI{
 		 auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
 					 Platform.runLater(() -> {
-						 auth.disposeOfAuthenticator();
+						 	auth.disposeOfAuthenticator();
 							Main.startup.hide();
 							Main.stage.show();
 							if(encryptionPassword != null && encryptionPassword.length() > 0)
@@ -827,9 +827,12 @@ public class StartupController  extends BaseUI{
 	 private void addFoundTxFromRestore(Transaction tx, Coin received, Coin sent){
 		 Platform.runLater(() -> {
 			 RestoreProcessCell c = new RestoreProcessCell();
-			 c.setTxID(tx.getHashAsString());
+			 c.setTxID(tx.getHashAsString() + "(" + tx.getUpdateTime().toGMTString() + ")");
 			 c.setCoinsReceived(received.toFriendlyString());
-			 c.setCoinsSent(sent.toFriendlyString());
+			 c.setCoinsSent(sent.toFriendlyString());			
+			 c.setConfidence(tx.getConfidence().getConfidenceType().toString());
+			 String status = tx.isEveryOwnedOutputSpent(wallet)? "Spent":"At least one output is unspent";
+			 c.setStatus(status);
 			 restoreProcessScrllContent.addItem(c);
 		 });
 	 }

@@ -831,7 +831,7 @@ public class Controller  extends BaseUI{
 	   else 
 	   {
 		   //Authenticator.AUTHENTICATOR_PW="";
-		   if(Authenticator.AUTHENTICATOR_PW.length() == 0)
+		   if(Authenticator.AUTHENTICATOR_PW != null)
 			   displayLockDialog();
 		   else{
 			   Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
@@ -1266,9 +1266,16 @@ public class Controller  extends BaseUI{
                 }
         		
         		// get input outputs / change address
-        		ArrayList<TransactionOutput> outputs = Authenticator.
+        		/*ArrayList<TransactionOutput> outputs = Authenticator.
         				getWalletOperation().
         				getUnspentOutputsForAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+        		*/
+        		
+        		ArrayList<TransactionOutput> outputs = Authenticator
+        				.getWalletOperation()
+        				.selectOutputsFromAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
+        						outAmount.add(fee));
+        		
         		String changeaddr = Authenticator.getWalletOperation()
     								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
     								.getAddressStr();

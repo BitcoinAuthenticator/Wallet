@@ -78,6 +78,7 @@ public class BAWalletRestorer extends BASE{
 	//
 	Authenticator vAuthenticator;
 	Wallet vWallet;
+	WalletListener vWalletListener = new WalletListener();
 	File vWalletFile;
 	NetworkParameters netParams;
 	BAApplicationParameters vBAApplicationParameters;
@@ -88,6 +89,19 @@ public class BAWalletRestorer extends BASE{
     PeerAddress[] peerAddresses;
     String userAgent, version;
     File directory;
+    
+    DownloadListener downloadListener = new DownloadListener(){
+		@Override
+		 protected void progress(double pct, int blocksSoFar, Date date) {
+			 listener.onProgress(pct, blocksSoFar, date);
+		 }
+		
+		 @Override
+         protected void doneDownload() {
+			 listener.onStatusChange("Finishing ... ");
+			 endLoop();
+		 }
+	};
     
     WalletRestoreListener listener;
         
@@ -146,26 +160,9 @@ public class BAWalletRestorer extends BASE{
 		        	startTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());    
 		        	listener.onStatusChange("Initializing ... ");
 	        		init();
-	        		initWatchedAddresses(BAHierarchy.keyLookAhead);
+	        		initWatchedAddresses(BAHierarchy.keyLookAhead * 2);
 	        		notifyStarted();
-	        		initBlockChainDownload(new DownloadListener(){
-	        			@Override
-	        			 protected void progress(double pct, int blocksSoFar, Date date) {
-	        				 listener.onProgress(pct, blocksSoFar, date);
-	        			 }
-	        			
-	        			 @Override
-	        	         protected void doneDownload() {
-	        				 listener.onStatusChange("Finished !");
-	        				 listener.onDiscoveryDone();
-	        				 
-	        				 try {
-								disposeOfRestorer();
-							} catch (BlockStoreException | IOException e) {
-								e.printStackTrace();
-							}
-	        			 }
-	        		});
+	        		initBlockChainDownload(downloadListener);
 		        	endTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());
 		        	
 		        	System.out.println(this.toString());
@@ -181,6 +178,30 @@ public class BAWalletRestorer extends BASE{
 			   "Ended at: " 		   		 + endTsmp   														+ "\n" +
      		   "Total elements in filter " 	 + vWallet.getWatchedAddresses().size()*2 							+ "\n" +
      		   "Fast catchup up until "		 + new java.util.Date((long)earliestKeyTime*1000).toLocaleString() 	+ "\n";
+	}
+	
+	private boolean didGetNewTx = false;
+	/**
+	 * A fix because of some weird behavior, the download listener indicates the download is
+	 * complete but we still get Tx handling after that. This loop verifies there are no handled Tx for 
+	 * at least 30 second and then fires the on done event
+	 */
+	private void endLoop(){
+		try {
+			while (true){
+				 didGetNewTx = false;
+				 Thread.sleep(30000);
+				 
+				 if(!didGetNewTx){
+					disposeOfRestorer(true);	
+					listener.onStatusChange("Finished !");
+					listener.onDiscoveryDone();
+					break;
+				 }				 
+			 }
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}		 
 	}
 	
 	private void init() throws IOException{
@@ -229,7 +250,7 @@ public class BAWalletRestorer extends BASE{
 	        vChain.addWallet(vWallet);
             vPeerGroup.addWallet(vWallet);
             vPeerGroup.setMaxConnections(11);
-            vWallet.addEventListener(new WalletListener());
+            vWallet.addEventListener(vWalletListener);
 	        if (true){//blockingStartup) {
                 vPeerGroup.startAsync();
                 vPeerGroup.awaitRunning();
@@ -297,13 +318,12 @@ public class BAWalletRestorer extends BASE{
         
         @SuppressWarnings("static-access")
 		private synchronized void handler(Wallet wallet, Transaction tx) throws Exception{
-        	Coin sentToMe = Coin.ZERO;
-        	Coin sentFromMe = Coin.ZERO;
+        	didGetNewTx = true;
+        	LOG.info("Received Tx: " + tx.toString());
         	for(TransactionOutput out:tx.getOutputs()){
         		Script scr = out.getScriptPubKey();
     			Address addr = scr.getToAddress(netParams);
     			if(wallet.isAddressWatched(addr)){
-    				sentToMe = sentToMe.add(out.getValue());
     				Set<ATAccount> keys = new HashSet<ATAccount>(mapAccountAddresses.keySet());
     				for(ATAccount acc:keys){
     					List<ATAddress> addresses = new ArrayList<ATAddress>(mapAccountAddresses.get(acc));
@@ -320,21 +340,10 @@ public class BAWalletRestorer extends BASE{
     				}
     			}
         	}
-        	
-        	for(TransactionInput in:tx.getInputs()){
-        		TransactionOutput out = in.getConnectedOutput();
-        		if(out != null){
-        			Script scr = out.getScriptPubKey();
-        			Address addr = scr.getToAddress(netParams);
-        			if(wallet.isAddressWatched(addr)){
-        				sentFromMe = sentFromMe.add(out.getValue());
-        			}
-        		}
-        	}
-        	
+        
         	listener.onTxFound(tx, 
-        			sentToMe, 
-        			sentFromMe);
+        			tx.getValueSentToMe(vWallet), 
+        			tx.getValueSentFromMe(vWallet));
         }
 	}
 	
@@ -353,27 +362,66 @@ public class BAWalletRestorer extends BASE{
     @Override
 	protected void doStop() {
     	listener.onStatusChange("Aborting ... ");
-    	vPeerGroup.stopAsync();
-        vPeerGroup.addListener(new Service.Listener(){
-        	@Override public void terminated(State from) {
-        		try {
-        			disposeOfRestorer();
-                    notifyStopped();
-                }catch (IOException | BlockStoreException e) {
-        			e.printStackTrace();
-        			notifyStopped();
-        		}
-        	}
-        }, MoreExecutors.sameThreadExecutor());
+    	disposeOfRestorer(false);
     }
     
-    private void disposeOfRestorer() throws BlockStoreException, IOException{
-    	vWallet.saveToFile(vWalletFile);
-        vStore.close();
+    private void disposeOfRestorer(boolean blocking){
+    	/*if(!blocking){
+    		vPeerGroup.stopAsync();
+            vPeerGroup.addListener(new Service.Listener(){
+            	@Override public void terminated(State from) {
+            		try {
+            	    	vWallet.saveToFile(vWalletFile);
+            	        vStore.close();
 
-        vPeerGroup = null;
-        vWallet = null;
-        vStore = null;
-        vChain = null;
+            	        vPeerGroup = null;
+            	        vWallet = null;
+            	        vStore = null;
+            	        vChain = null;
+            	        notifyStopped();
+                    }catch (IOException | BlockStoreException e) {
+            			e.printStackTrace();
+            			notifyStopped();
+            		}
+            	}
+            }, MoreExecutors.sameThreadExecutor());
+    	}
+    	else{
+    		vPeerGroup.stopAsync();
+    		vPeerGroup.awaitTerminated();
+    		try {
+    	    	vWallet.saveToFile(vWalletFile);
+    	        vStore.close();
+
+    	        vPeerGroup = null;
+    	        vWallet = null;
+    	        vStore = null;
+    	        vChain = null;
+    	        notifyStopped();
+            }catch (IOException | BlockStoreException e) {
+    			e.printStackTrace();
+    			notifyStopped();
+    		}
+    	}*/
+    	
+    	try {
+    		vPeerGroup.stopAsync();
+	    	vWallet.saveToFile(vWalletFile);
+	        vStore.close();
+
+	        vPeerGroup.removeWallet(vWallet);
+	        vPeerGroup.removeEventListener(downloadListener);
+	        vChain.removeWallet(vWallet);
+	        vWallet.removeEventListener(vWalletListener);
+	        vPeerGroup = null;
+	        vWallet = null;
+	        vStore = null;
+	        vChain = null;
+	        notifyStopped();
+        }catch (IOException | BlockStoreException e) {
+			e.printStackTrace();
+			notifyStopped();
+		}
+    	
     }
 }
