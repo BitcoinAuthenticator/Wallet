@@ -2022,11 +2022,11 @@ public class Controller  extends BaseUI{
 		    	ArrayList<String> add = new ArrayList<String>();
 				try {
 					for (int i=0; i<10; i++){
-						String newAdd = Authenticator.getWalletOperation()
+						ATAddress newAdd = Authenticator.getWalletOperation()
 									.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-									.getAddressStr();
-						
-						add.add(newAdd);	
+									;
+						String newAddStr = newAdd.getAddressStr();
+						add.add(newAddStr);	
 					}
 						
 					for (String address : add){

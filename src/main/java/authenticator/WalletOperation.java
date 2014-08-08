@@ -544,6 +544,16 @@ public class WalletOperation extends BASE{
 		return tx;
 	}
 	
+	//#####################################
+	//
+	//		 Hierarchy General
+	//
+	//#####################################
+	
+	public void setHierarchyKeyLookAhead(int value){
+		authenticatorWalletHierarchy.setKeyLookAhead(value);
+		staticLogger.info("Set hierarchy key look ahead value to {}", value);
+	}
 	
 	//#####################################
 	//

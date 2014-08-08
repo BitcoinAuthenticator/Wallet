@@ -159,14 +159,14 @@ public class BAWalletRestorer extends BASE{
 		        try {
 		        	startTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());    
 		        	listener.onStatusChange("Initializing ... ");
-	        		init();
 	        		// a number that should cover a lookahead of a getdata request, should be about 500 blocks
 	        		initWatchedAddresses(BAHierarchy.keyLookAhead * 15); 
+	        		init();
 	        		notifyStarted();
 	        		initBlockChainDownload(downloadListener);
 		        	endTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());
 		        	
-		        	System.out.println(this.toString());
+		        	//System.out.println(this.toString());
 		        				
 				} catch (Exception e) { e.printStackTrace(); }
 			}
@@ -265,21 +265,22 @@ public class BAWalletRestorer extends BASE{
 	
 	@SuppressWarnings("static-access")
 	private void initWatchedAddresses(int lookaheadForEachAccount) throws Exception{
+		vAuthenticator.getWalletOperation().setHierarchyKeyLookAhead(lookaheadForEachAccount);
 		mapAccountAddresses = new ConcurrentHashMap<ATAccount,List<ATAddress>>();//new HashMap<ATAccount,List<ATAddress>>();
 		List<ATAccount> all = vAuthenticator.getWalletOperation().getAllAccounts();
-		List<String> addressesToAdd = new ArrayList<String>();
+		//List<String> addressesToAdd = new ArrayList<String>();
 		for(ATAccount acc:all){
 			List<ATAddress> arr = new ArrayList<ATAddress>();
 			for(int i=0; i< lookaheadForEachAccount; i++){
 				ATAddress add = vAuthenticator.getWalletOperation().getNextExternalAddress(acc.getIndex());
 				arr.add(add);
 				//vAuthenticator.getWalletOperation().addAddressToWatch(add.getAddressStr()); 
-				addressesToAdd.add(add.getAddressStr());
+				//addressesToAdd.add(add.getAddressStr());
 			}
 			mapAccountAddresses.put(acc, arr);
 		}
 		
-		vAuthenticator.getWalletOperation().addAddressesToWatch(addressesToAdd);
+		//vAuthenticator.getWalletOperation().addAddressesToWatch(addressesToAdd);
 	}
 	
 	@SuppressWarnings("unused")
