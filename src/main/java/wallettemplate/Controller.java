@@ -1515,7 +1515,8 @@ public class Controller  extends BaseUI{
                     	Dialogs.create()
         		        .owner(Main.stage)
         		        .title("Error !")
-        		        .masthead("Could not add operation")
+        		        .masthead("Could not add operation to queue")
+        		        .message("try to restart the wallet and resend the Tx")
         		        .showInformation();
         			}
         				

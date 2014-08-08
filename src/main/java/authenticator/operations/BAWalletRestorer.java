@@ -93,6 +93,7 @@ public class BAWalletRestorer extends BASE{
     DownloadListener downloadListener = new DownloadListener(){
 		@Override
 		 protected void progress(double pct, int blocksSoFar, Date date) {
+			 listener.onStatusChange("Downloading Block Chain ... ");
 			 listener.onProgress(pct, blocksSoFar, date);
 		 }
 		

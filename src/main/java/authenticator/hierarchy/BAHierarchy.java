@@ -279,38 +279,35 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		}
 		
 		public ChildNumber getUnusedExternalKey() throws NoUnusedKeyException{
-			ChildNumber ret;
-			if(returnedExternalKeys.size() < keyLookAhead){
-				ret = getUnusedKeyIndex(usedExternalKeys, returnedExternalKeys);
-				returnedExternalKeys.add(ret);
-			}
-			else{
-				ret = returnedExternalKeys.get(0);
-				returnedExternalKeys.clear();
-				returnedExternalKeys.add(ret);
-			}
-			
-			return ret;
+			return handleGetKey(usedExternalKeys, returnedExternalKeys);
 		}
 		
 		public ChildNumber getUnusedInternalKey() throws NoUnusedKeyException{
+			return handleGetKey(usedInternalKeys, returnedInternalKeys);
+		}
+		
+		private ChildNumber handleGetKey(List<Integer> usedKeyList, List<ChildNumber> returnedKeyList) throws NoUnusedKeyException{
 			ChildNumber ret;
-			if(returnedInternalKeys.size() < keyLookAhead){
-				ret = getUnusedKeyIndex(usedInternalKeys, returnedInternalKeys);
-				returnedInternalKeys.add(ret);
-			}
-			else{
-				ret = returnedInternalKeys.get(0);
-				returnedInternalKeys.clear();
-				returnedInternalKeys.add(ret);
-			}
+			/**
+			 * In case we reached our lookahead limit, clean the returned keys
+			 * trackers and start again. We empty them because some keys could be
+			 * marked as used and make room for new keys 
+			 */
+			if(returnedKeyList.size() > keyLookAhead)
+				returnedKeyList.clear();
+			
+			ret = getUnusedKeyIndex(usedKeyList, returnedKeyList);
+			returnedKeyList.add(ret);
 			
 			return ret;
 		}
 		
-		private ChildNumber getUnusedKeyIndex(List<Integer> arr, List<ChildNumber> alreadyReturnedKey) throws NoUnusedKeyException{
-			for(int i=0; i< Math.pow(2, 31); i++){ // seems a bit excessive no ?
-				if(!arr.contains(i) && !alreadyReturnedKey.contains( new ChildNumber(i, false))){
+		private ChildNumber getUnusedKeyIndex(List<Integer> usedKeys, List<ChildNumber> alreadyReturnedKey) throws NoUnusedKeyException{
+			// TODO - i have no idea what was i thinking doing this loop !
+			// 		  we should find a better way for doing it
+			
+			for(int i=0; i< Math.pow(2, 31); i++){ 
+				if(!usedKeys.contains(i) && !alreadyReturnedKey.contains( new ChildNumber(i, false))){
 					return new ChildNumber(i, false);
 				}
 			}
@@ -321,11 +318,9 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		public void setKeyAsUsed(int keyIndex, HierarchyAddressTypes type){
 			if(type == HierarchyAddressTypes.External){
 				usedExternalKeys.add( new Integer(keyIndex));
-				returnedExternalKeys.remove((Object)keyIndex);
 			}
 			else{
 				usedInternalKeys.add( new Integer(keyIndex));
-				returnedInternalKeys.remove((Object)keyIndex);
 			}
 		}
 		
