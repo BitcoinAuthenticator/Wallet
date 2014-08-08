@@ -166,6 +166,19 @@ public class WalletOperation extends BASE{
 			
 			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
 		}
+		if(mWalletWrapper != null){
+			new Thread(){
+				@Override
+				public void run() {
+					try {
+						updateBalace(mWalletWrapper.getTrackedWallet());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();
+		}
+		
 	}
 	
 	public BAApplicationParameters getApplicationParams(){
@@ -179,12 +192,15 @@ public class WalletOperation extends BASE{
 	 * @author alon
 	 *
 	 */
-	public static boolean isRequiringBalanceChange = false;
+	public static boolean isRequiringBalanceChange = true;
 	public class WalletListener extends AbstractWalletEventListener {
 		
         @Override
         public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	try {
+        		staticLogger.info("Updating balance, Received {}, Sent {}", 
+        				tx.getValueSentToMe(wallet).toFriendlyString(),
+        				tx.getValueSentFromMe(wallet).toFriendlyString());
         		isRequiringBalanceChange = true;
 				updateBalace(wallet);
 				notifyBalanceUpdate(wallet,tx);
@@ -194,6 +210,9 @@ public class WalletOperation extends BASE{
         @Override
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	try {
+        		staticLogger.info("Updating balance, Received {}, Sent {}", 
+        				tx.getValueSentToMe(wallet).toFriendlyString(),
+        				tx.getValueSentFromMe(wallet).toFriendlyString());
         		isRequiringBalanceChange = true;
 				updateBalace(wallet);
 				notifyBalanceUpdate(wallet,tx);
@@ -204,6 +223,9 @@ public class WalletOperation extends BASE{
         public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
         	try {
         		if(isRequiringBalanceChange){
+        			staticLogger.info("Updating balance, Received {}, Sent {}", 
+            				tx.getValueSentToMe(wallet).toFriendlyString(),
+            				tx.getValueSentFromMe(wallet).toFriendlyString());
         			updateBalace(wallet);
         			notifyBalanceUpdate(wallet,tx);
         			isRequiringBalanceChange = false;
@@ -220,232 +242,81 @@ public class WalletOperation extends BASE{
         		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, tx.getConfidence().getConfidenceType());
         	}
         }
-        
-        @SuppressWarnings("incomplete-switch")
-		private synchronized void updateBalace(Wallet wallet) throws Exception{
-        	List<ATAccount> accounts = getAllAccounts();
-        	for(ATAccount acc:accounts){
-        		setConfirmedBalance(acc.getIndex(), Coin.ZERO);
-        		setUnConfirmedBalance(acc.getIndex(), Coin.ZERO);
-        	}
-        	
-        	List<Transaction> allTx = wallet.getRecentTransactions(0, false);
-        	Collections.reverse(allTx);
-        	for(Transaction tx: allTx){
-        		/**
-        		 * BUILDING
-        		 */
-        		if(tx.getConfidence().getConfidenceType() == ConfidenceType.BUILDING){
-        			if(tx.getValueSentToMe(wallet).signum() > 0){
-        				for (TransactionOutput out : tx.getOutputs()){
-        					Script scr = out.getScriptPubKey();
-        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-        	    			if(isWatchingAddress(addrStr)){
-        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-        	    				addToConfirmedBalance(add.getAccountIndex(), out.getValue());
-        	    			}
-        				}
-        			}
-        			
-        			if(tx.getValueSentFromMe(wallet).signum() > 0){
-        				for (TransactionInput in : tx.getInputs()){
-        					TransactionOutput out = in.getConnectedOutput();
-        					if(out != null){
-        						Script scr = out.getScriptPubKey();
-            	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-            	    			if(isWatchingAddress(addrStr)){
-            	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-            	    				subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
-            	    			}
-        					}
-        				}
-        			}
-        		}
-        		
-        		/**
-        		 * PENDING
-        		 */
-        		if(tx.getConfidence().getConfidenceType() == ConfidenceType.PENDING){
-        			if(tx.getValueSentToMe(wallet).signum() > 0){
-        				for (TransactionOutput out : tx.getOutputs()){
-        					Script scr = out.getScriptPubKey();
-        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-        	    			if(isWatchingAddress(addrStr)){
-        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-        	    				addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
-        	    			}
-        				}
-        			}
-        			
-        			if(tx.getValueSentFromMe(wallet).signum() > 0){
-        				for (TransactionInput in : tx.getInputs()){
-        					TransactionOutput out = in.getConnectedOutput();
-        					if(out != null){
-        						Script scr = out.getScriptPubKey();
-            	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-            	    			if(isWatchingAddress(addrStr)){
-            	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-            	    				subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
-            	    			}
-        					}
-        				}
-        			}
-        		}
-        	}
-        	
-        	/**
-        	 * 
-        	 * Check for coins entering
-        	 *//*
-        	List<TransactionOutput> outs = tx.getOutputs();
-        	// accountsEffectedPending is for collecting all effected account in pending confidence.
-        	List<Integer> accountsEffectedPending = new ArrayList<Integer>();
-        	// accountsEffectedBuilding is for collecting all effected account in pending confidence. 
-        	List<Integer> accountsEffectedBuilding = new ArrayList<Integer>();
-        	boolean didFireOnSendingCoins = false;
-        	for (TransactionOutput out : outs){
-    			Script scr = out.getScriptPubKey();
-    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-    			if(isWatchingAddress(addrStr)){
-    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-    				TransactionConfidence conf = tx.getConfidence();
-    				switch(conf.getConfidenceType()){
-    				case BUILDING:
-    					*//**
-    					 * CONDITIONING:
-    					 * If the transaction is new but we don't know about it, just add it to confirmed.
-    					 * If the transaction is moving from pending to confirmed, make it so.
-    					 *//*
-    					if(!isNewTx && isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){ 
-    						if(!accountsEffectedBuilding.contains(add.getAccountIndex())) accountsEffectedBuilding.add(add.getAccountIndex());
-    						moveFundsFromUnconfirmedToConfirmed(add.getAccountIndex(), out.getValue());
-    						confirmedTx.add(tx.getHashAsString());
-    						if(!didFireOnSendingCoins){
-    							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
-    							didFireOnSendingCoins = true;
-    						}
-    						
-    						staticLogger.info("Received coins {Conf: BUILDING} to watched address " + addrStr);
-    					}
-    					*//**
-    					 * IMPORTANT:
-    					 * Doesn't add the tx to confirmedTx because we didn't know about it before so
-    					 * we want to iterate all the outputs
-    					 *//*
-    					else if(isNewTx && !confirmedTx.contains(tx.getHashAsString())){
-    						addToConfirmedBalance(add.getAccountIndex(), out.getValue());
-    						if(!didFireOnSendingCoins){
-	    						Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.BUILDING);
-	    						didFireOnSendingCoins = true;
-    						}
-    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
-    						
-    						staticLogger.info("Received coins {Conf: BUILDING} to watched address " + addrStr);
-    					}
-    					break;
-    				case PENDING:
-    					if(!isNewTx)
-    						; // do nothing
-    					else if(!isPendingInTx(add.getAccountIndex(), tx.getHashAsString())){
-    						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
-    						addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
-    						if(!didFireOnSendingCoins){
-	    						Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, ConfidenceType.PENDING);
-	    						didFireOnSendingCoins = true;
-    						}
-    						markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
-    						
-    						staticLogger.info("Received coins {Conf: PENDING} to watched address " + addrStr);
-    					}
-    					break;
-    				case DEAD:
-    					// TODO
-    					break;
+       
+    }
+	
+	@SuppressWarnings("incomplete-switch")
+	private synchronized void updateBalace(Wallet wallet) throws Exception{
+    	List<ATAccount> accounts = getAllAccounts();
+    	for(ATAccount acc:accounts){
+    		setConfirmedBalance(acc.getIndex(), Coin.ZERO);
+    		setUnConfirmedBalance(acc.getIndex(), Coin.ZERO);
+    	}
+    	
+    	List<Transaction> allTx = wallet.getRecentTransactions(0, false);
+    	Collections.reverse(allTx);
+    	for(Transaction tx: allTx){
+    		/**
+    		 * BUILDING
+    		 */
+    		if(tx.getConfidence().getConfidenceType() == ConfidenceType.BUILDING){
+    			if(tx.getValueSentToMe(wallet).signum() > 0){
+    				for (TransactionOutput out : tx.getOutputs()){
+    					Script scr = out.getScriptPubKey();
+    	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+    	    			if(isWatchingAddress(addrStr)){
+    	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+    	    				addToConfirmedBalance(add.getAccountIndex(), out.getValue());
+    	    			}
     				}
     			}
-        	}
-        	
-        	// In case there are several outputs from the same account (PENDING)
-        	if(accountsEffectedPending.size() > 0)
-        		for(Integer acIndx:accountsEffectedPending)
-        			addPendingInTx(acIndx, tx.getHashAsString());      
-        	
-        	// In case there are several outputs from the same account (BUILDING)
-        	if(accountsEffectedBuilding.size() > 0)
-        		for(Integer acIndx:accountsEffectedBuilding)
-        			removePendingInTx(acIndx, tx.getHashAsString());
-        	
-        	*//**
-        	 * Check for coins exiting
-        	 *//*
-    		List<TransactionInput> ins = tx.getInputs();
-    		accountsEffectedPending = new ArrayList<Integer>();
-    		boolean didFireOnReceivingCoins = false;
-        	for (TransactionInput in : ins){
-        		TransactionOutput out = in.getConnectedOutput();
-        		if(out != null) // could be not connected
-    			{
-        			Script scr = out.getScriptPubKey();
-    				String addrStr = scr.getToAddress(getNetworkParams()).toString();
-    				if(isWatchingAddress(addrStr)){
-        				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-        				TransactionConfidence conf = tx.getConfidence();
-        				switch(conf.getConfidenceType()){
-        				case BUILDING:
-        					if(!isNewTx && isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){ 
-        						removePendingOutTx(add.getAccountIndex(), tx.getHashAsString());
-        						if(!didFireOnReceivingCoins){
-        							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
-        							didFireOnReceivingCoins = true;
-        						}
-        						
-        						// no need to transfer funds cause we transfered them in PENDING
-        						
-        						staticLogger.info("Sent coins {Conf: BUILDING} from watched address " + addrStr);
-        					}
-        					else if(isNewTx && !isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
-        						if(!didFireOnReceivingCoins){
-        							Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.BUILDING);
-        							didFireOnReceivingCoins = true;
-        						}
-        						
-        						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
-        						
-        						staticLogger.info("Sent coins {Conf: BUILDING} from watched address " + addrStr);
-        					}
-        					break;
-        				case PENDING:
-        					if(!isNewTx)
-        						;
-        					*//**
-        					 * IMPORTANT:
-	    					 * We add the transaction to isPendingOutTx list so after that it cannot enter here anymore.
-        					 *//*
-        					else if(!isPendingOutTx(add.getAccountIndex(), tx.getHashAsString())){
-        						if(!accountsEffectedPending.contains(add.getAccountIndex())) accountsEffectedPending.add(add.getAccountIndex());
-        						subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
-        						if(!didFireOnReceivingCoins){
-	            					Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, ConfidenceType.PENDING);
-	            					didFireOnReceivingCoins = true;
-        						}
-        						staticLogger.info("Sent coins {Conf: PENDING} from watched address " + addrStr);
-        					}
-        					break;
-        				case DEAD:
-        					//Authenticator.getWalletOperation().addToConfirmedBalance(add.getAccountIndex(), out.getValue());
-        					break;
-        				}
-        			}      
+    			
+    			if(tx.getValueSentFromMe(wallet).signum() > 0){
+    				for (TransactionInput in : tx.getInputs()){
+    					TransactionOutput out = in.getConnectedOutput();
+    					if(out != null){
+    						Script scr = out.getScriptPubKey();
+        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+        	    			if(isWatchingAddress(addrStr)){
+        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+        	    				subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+        	    			}
+    					}
+    				}
     			}
-        			  			
-        	}     
-        	
-        	// In case there are several inputs from the same account(PENDING)
-        	if(accountsEffectedPending.size() > 0)
-        		for(Integer acIndx:accountsEffectedPending)
-        			addPendingOutTx(acIndx, tx.getHashAsString());*/
-        }
-       
+    		}
+    		
+    		/**
+    		 * PENDING
+    		 */
+    		if(tx.getConfidence().getConfidenceType() == ConfidenceType.PENDING){
+    			if(tx.getValueSentToMe(wallet).signum() > 0){
+    				for (TransactionOutput out : tx.getOutputs()){
+    					Script scr = out.getScriptPubKey();
+    	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+    	    			if(isWatchingAddress(addrStr)){
+    	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+    	    				addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
+    	    			}
+    				}
+    			}
+    			
+    			if(tx.getValueSentFromMe(wallet).signum() > 0){
+    				for (TransactionInput in : tx.getInputs()){
+    					TransactionOutput out = in.getConnectedOutput();
+    					if(out != null){
+    						Script scr = out.getScriptPubKey();
+        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+        	    			if(isWatchingAddress(addrStr)){
+        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+        	    				subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+        	    			}
+    					}
+    				}
+    			}
+    		}
+    	}
+    	
     }
 	
 	//#####################################
@@ -918,7 +789,7 @@ public class WalletOperation extends BASE{
 						   * Standard Pay-To-PubHash
 						   */
 						  if(acc.getAccountType() == WalletAccountType.StandardAccount){
-							  //THIS LINE THROWS A NULLPOINTER EXCEPTION DUE TO CHANGE IN HIERARCHY
+							  //TODO - THIS LINE THROWS A NULLPOINTER EXCEPTION DUE TO CHANGE IN HIERARCHY
 							  DeterministicKey hdKey = getPubKeyFromAccount(accountIndex,type,addressKey, false);
 							  atAdd.setAddressStr(hdKey.toAddress(getNetworkParams()).toString());
 						  }
