@@ -3,6 +3,10 @@ local.properties
 .project
 .settings/
 .idea/
+consensus-microdesc
+certificates
+cached-microdescs
+state
 *.config
 *.spvchain
 *.wallet
