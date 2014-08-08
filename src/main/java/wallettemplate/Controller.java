@@ -1314,7 +1314,7 @@ public class Controller  extends BaseUI{
     		Coin fee,
     		Coin leavingWallet){
     	//Display Transaction Overview
-		Pane pane = new Pane();
+    	Pane pane = new Pane();
 		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
 		pane.setMaxSize(600, 360);
 		pane.setStyle("-fx-background-color: white;");

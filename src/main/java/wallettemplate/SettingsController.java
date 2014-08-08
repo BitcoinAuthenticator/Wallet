@@ -5,10 +5,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
 
 public class SettingsController  extends BaseUI{
 	@FXML private Button done;
+	@FXML private Pane settingspane;
 	public Main.OverlayUI overlayUi;
 	private double xOffset = 0;
 	private double yOffset = 0;
