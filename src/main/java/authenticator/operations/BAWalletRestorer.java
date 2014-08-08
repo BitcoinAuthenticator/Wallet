@@ -160,7 +160,8 @@ public class BAWalletRestorer extends BASE{
 		        	startTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());    
 		        	listener.onStatusChange("Initializing ... ");
 	        		init();
-	        		initWatchedAddresses(BAHierarchy.keyLookAhead * 2);
+	        		// a number that should cover a lookahead of a getdata request, should be about 500 blocks
+	        		initWatchedAddresses(BAHierarchy.keyLookAhead * 15); 
 	        		notifyStarted();
 	        		initBlockChainDownload(downloadListener);
 		        	endTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -266,15 +267,19 @@ public class BAWalletRestorer extends BASE{
 	private void initWatchedAddresses(int lookaheadForEachAccount) throws Exception{
 		mapAccountAddresses = new ConcurrentHashMap<ATAccount,List<ATAddress>>();//new HashMap<ATAccount,List<ATAddress>>();
 		List<ATAccount> all = vAuthenticator.getWalletOperation().getAllAccounts();
+		List<String> addressesToAdd = new ArrayList<String>();
 		for(ATAccount acc:all){
 			List<ATAddress> arr = new ArrayList<ATAddress>();
 			for(int i=0; i< lookaheadForEachAccount; i++){
 				ATAddress add = vAuthenticator.getWalletOperation().getNextExternalAddress(acc.getIndex());
 				arr.add(add);
-				vAuthenticator.getWalletOperation().addAddressToWatch(add.getAddressStr()); 
+				//vAuthenticator.getWalletOperation().addAddressToWatch(add.getAddressStr()); 
+				addressesToAdd.add(add.getAddressStr());
 			}
 			mapAccountAddresses.put(acc, arr);
 		}
+		
+		vAuthenticator.getWalletOperation().addAddressesToWatch(addressesToAdd);
 	}
 	
 	@SuppressWarnings("unused")

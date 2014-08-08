@@ -267,6 +267,7 @@ public class WalletOperation extends BASE{
     	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     	    			if(isWatchingAddress(addrStr)){
     	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+    	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     	    				addToConfirmedBalance(add.getAccountIndex(), out.getValue());
     	    			}
     				}
@@ -297,6 +298,7 @@ public class WalletOperation extends BASE{
     	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     	    			if(isWatchingAddress(addrStr)){
     	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+    	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     	    				addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
     	    			}
     				}
@@ -1534,6 +1536,13 @@ public class WalletOperation extends BASE{
     		mWalletWrapper.addAddressToWatch(address);
         	this.LOG.info("Added address to watch: " + address);
     	}
+	}
+    
+    public void addAddressesToWatch(final List<String> addresses) throws AddressFormatException
+	{
+    	assert(mWalletWrapper != null);
+    	mWalletWrapper.addAddressesStringToWatch(addresses);
+    	this.LOG.info("Added {} addresses to watch", addresses.size());
 	}
     
 	public void connectInputs(List<TransactionInput> inputs)
