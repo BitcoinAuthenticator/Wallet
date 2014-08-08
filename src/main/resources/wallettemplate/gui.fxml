@@ -12,7 +12,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="850.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.Controller">
+<AnchorPane fx:id="MainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="850.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.Controller">
   <children>
     <ImageView fitHeight="483.0" fitWidth="850.0" layoutX="0.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
       <image>
@@ -370,7 +370,7 @@
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Settings" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnSettings" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Settings" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>

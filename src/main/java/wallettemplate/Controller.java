@@ -334,7 +334,7 @@ public class Controller  extends BaseUI{
     	
     }
     
-   /**
+    /**
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
@@ -353,17 +353,17 @@ public class Controller  extends BaseUI{
 	        	 catch (NoSuchAlgorithmException | JSONException
 					| AddressFormatException | KeyIndexOutOfRangeException
 					| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
-	         
+
 	        	 setupOneName(Authenticator.getWalletOperation().getOnename());
 	        	 try {refreshBalanceLabel();} 
 	         	 catch (JSONException | IOException e) {e.printStackTrace();}
-	         
+
 	        	 Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
 	         	//Authenticator.getWalletOperation().addEventListener(new WalletListener());
-	         
+
 	        	 // Account choicebox
 	        	 setAccountChoiceBox();	         	
-	         	
+
 	         	// lock 
 	         	locked = Authenticator.getWalletOperation().isWalletEncrypted();
 	         	/**
@@ -569,7 +569,7 @@ public class Controller  extends BaseUI{
 		}
     }
     
-    /*public class WalletListener extends AbstractWalletEventListener {
+    public class WalletListener extends AbstractWalletEventListener {
 
 		@Override
 		public void onWalletChanged(Wallet wallet) {
@@ -579,7 +579,7 @@ public class Controller  extends BaseUI{
 					| KeyIndexOutOfRangeException
 					| AddressNotWatchedByWalletException e) {e.printStackTrace();}	
 		}
-    }*/
+    }
     
     
     public class PeerListener extends AbstractPeerEventListener {
@@ -1497,7 +1497,7 @@ public class Controller  extends BaseUI{
         			GuiUtils.fadeIn(successVbox);
         			String to = "";
         			if (OutputAddresses.size()==1){
-        				if (Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
+        				if( Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
         					ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(OutputAddresses.get(0));
         					int index = add.getAccountIndex();
         					if (index==Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex()){
@@ -1505,9 +1505,7 @@ public class Controller  extends BaseUI{
         					}
         					else {to = "Transfer to " + Authenticator.getWalletOperation().getAccount(index).getAccountName();}
         				}
-        				else {
-        					to = OutputAddresses.get(0) ;
-        				}
+        				else {to = OutputAddresses.get(0) ;}	
         			}
         			else {to = "Multiple";}
         			v.setVisible(false);
@@ -2064,15 +2062,17 @@ public class Controller  extends BaseUI{
     		Image in = new Image(Main.class.getResourceAsStream("in.png"));
     		Image out = new Image(Main.class.getResourceAsStream("out.png"));
     		ImageView arrow = null;
-    		String amount = "";
+    		Text amount = new Text();
     		String toFrom = "multiple";
     		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
     			arrow = new ImageView(out);
-    			amount = exit.subtract(enter).toFriendlyString();
+    			amount.setFill(Paint.valueOf("#f06e6e"));
+    			amount.setText(exit.subtract(enter).toFriendlyString());
     		}
     		else { // i only received coins
     			arrow = new ImageView(in);
-    			amount = enter.toFriendlyString();
+    			amount.setText(enter.toFriendlyString());
+    			amount.setFill(Paint.valueOf("#98d947"));
     			if (tx.getInputs().size()==1){
     				toFrom = tx.getInput(0).getFromAddress().toString();
     			}
@@ -2179,7 +2179,7 @@ public class Controller  extends BaseUI{
     	        }
     	    }
     	);
-    	colAmount.setCellValueFactory(new PropertyValueFactory<TableTx,String>("amount"));
+    	colAmount.setCellValueFactory(new PropertyValueFactory<TableTx,Text>("amount"));
     	txTable.setItems(txdata);
     	txTable.setEditable(true);
     	txTable.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -2445,6 +2445,10 @@ public class Controller  extends BaseUI{
     	Main.instance.overlayUI("Pair_wallet.fxml");
     }
     
+    @FXML protected void btnSettings(MouseEvent event) {
+    	Main.instance.overlayUI("Settings.fxml");
+    }
+    
     @FXML protected void btnOneName(MouseEvent event) {
     	if(Authenticator.getWalletOperation().getOnename() != null)
     		Main.instance.overlayUI("DisplayOneName.fxml");
@@ -2452,7 +2456,7 @@ public class Controller  extends BaseUI{
     		Dialogs.create()
 		        .owner(Main.stage)
 		        .title("Cannot display your OneName account")
-		        .message("Please press on your avatr picture on the overview panel to set your OneName account")
+		        .message("Please press on your avatr picture on the overview tab to set your OneName account")
 		        .showWarning();
     }
     

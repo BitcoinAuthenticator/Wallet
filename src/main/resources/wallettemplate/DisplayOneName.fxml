@@ -2,10 +2,24 @@
 
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.OneNameControllerDisplay">
-<children><WebView fx:id="webView" layoutX="-1.0" layoutY="-1.0" prefHeight="483.0" prefWidth="850.0" style=" -fx-background-color: transparent;"/><Button fx:id="done" layoutX="776.0" layoutY="14.0" mnemonicParsing="false" onAction="#exit" text="Close" /><Button fx:id="forward" layoutX="733.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnForward" text="&gt;" /><Button fx:id="back" layoutX="695.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnBack" text="&lt;" />
-</children>
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.OneNameControllerDisplay">
+  <children>
+    <Pane layoutX="0.0" layoutY="0.0" prefHeight="55.0" prefWidth="850.0" onMouseDragged="#drag2" onMousePressed="#drag1" style="-fx-background-color: #000000;">
+      <children>
+        <ImageView fitHeight="95.25" fitWidth="45.0" layoutX="-1.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" >
+          <image>
+            <Image url="@btnOneName.png" />
+          </image>
+        </ImageView>
+        <Button fx:id="back" layoutX="695.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnBack" text="&lt;" />
+        <Button fx:id="forward" layoutX="733.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnForward" text="&gt;" />
+        <Button fx:id="done" layoutX="776.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" text="Close" />
+      </children>
+    </Pane>
+    <WebView fx:id="webView" layoutX="-1.0" layoutY="41.0" prefHeight="442.0" prefWidth="851.0" style=" -fx-background-color: transparent;" />
+  </children>
 </AnchorPane>

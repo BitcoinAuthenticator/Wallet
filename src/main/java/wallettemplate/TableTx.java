@@ -4,6 +4,7 @@ import com.google.bitcoin.core.Transaction;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 
 public class TableTx {
 	
@@ -14,9 +15,9 @@ public class TableTx {
 	private String date;
 	private String toFrom;
 	private String description;
-	private String amount;
+	private Text amount;
 	
-	public TableTx (Transaction pT, String ptxid, String pConfirmations, ImageView pInOut, String pDate, String pToFrom, String pDescription, String pAmount){
+	public TableTx (Transaction pT, String ptxid, String pConfirmations, ImageView pInOut, String pDate, String pToFrom, String pDescription, Text pAmount){
 		this.T = pT;
 		this.txid = ptxid;
 		this.confirmations = pConfirmations;
@@ -67,7 +68,7 @@ public class TableTx {
 		this.description = pDescription;
 	}
 	
-	public String getAmount(){
+	public Text getAmount(){
 		return amount;
 	}
 	
