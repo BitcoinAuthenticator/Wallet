@@ -12,6 +12,7 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 import authenticator.network.OneName;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
@@ -158,7 +159,7 @@ public class AccountsController  extends BaseUI{
 							cell.setAccount(t);
 							cell.updateUI();
 							cell.setSettingsClose();
-						} catch (IOException e) { 
+						} catch (IOException | AccountWasNotFoundException e) { 
 							e.printStackTrace(); 
 							Dialogs.create()
 					        .owner(Controller.accountsAppStage)

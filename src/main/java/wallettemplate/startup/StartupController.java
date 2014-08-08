@@ -39,6 +39,7 @@ import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 import authenticator.operations.BAWalletRestorer;
 import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
@@ -437,7 +438,7 @@ public class StartupController  extends BaseUI{
 								wallet.encrypt(encryptionPassword);
 							try {
 								Main.finishLoading();
-							} catch (IOException e) { e.printStackTrace(); }
+							} catch (IOException | AccountWasNotFoundException e) { e.printStackTrace(); }
 					 });
 		         }
 			}, MoreExecutors.sameThreadExecutor());
@@ -740,7 +741,7 @@ public class StartupController  extends BaseUI{
 					if(restoreAccountsScrllContent.getCount() == 1)
 						auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
 					
-				} catch (IOException e) {
+				} catch (IOException | AccountWasNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
@@ -889,7 +890,7 @@ public class StartupController  extends BaseUI{
 		auth = new Authenticator(masterPubKey, appParams);
 	}
 	 
-	 private void createNewStandardAccount(String accountName) throws IOException{
+	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException{
 		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }

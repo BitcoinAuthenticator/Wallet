@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.Service.State;
 import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
 import authenticator.db.ConfigFile;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 import authenticator.network.TCPListener;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
@@ -75,7 +76,11 @@ public class Authenticator extends BASE{
 				mWalletOperation = new WalletOperation(appParams, mpubkey);
 			} catch (IOException e) { e.printStackTrace(); }
 			
-			initPendingRequests();
+			try {
+				initPendingRequests();
+			} catch (AccountWasNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		init2();
@@ -88,8 +93,9 @@ public class Authenticator extends BASE{
 	 * @param peerGroup
 	 * @param appParams
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams, DeterministicKey mpubkey) throws IOException
+	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams, DeterministicKey mpubkey) throws IOException, AccountWasNotFoundException
 	{
 		super(Authenticator.class);
 		init(appParams);
@@ -164,7 +170,7 @@ public class Authenticator extends BASE{
 	//#####################################
 	
 	@SuppressWarnings("static-access")
-	public static void initPendingRequests(){
+	public static void initPendingRequests() throws AccountWasNotFoundException{
 		List<PendingRequest> pending = new ArrayList<PendingRequest>();
 		String pendingStr = "No pending requests in wallet";
 		try {
@@ -308,7 +314,11 @@ public class Authenticator extends BASE{
 		 * update in case the active account was updated
 		 */
 		if(getWalletOperation().getActiveAccount().getActiveAccount().getIndex() == accountIndex)
-			getWalletOperation().setActiveAccount(accountIndex); // just to update the active account
+			try {
+				getWalletOperation().setActiveAccount(accountIndex);
+			} catch (AccountWasNotFoundException e) {
+				e.printStackTrace();
+			}
 
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAccountBeenModified(accountIndex);

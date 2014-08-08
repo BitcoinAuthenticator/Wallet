@@ -5,6 +5,7 @@ import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.db.ConfigFile;
 import authenticator.helpers.BAApplication;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -124,7 +125,7 @@ public class Main extends BAApplication {
     }
     
     @SuppressWarnings("restriction")
-	public static void finishLoading() throws IOException{
+	public static void finishLoading() throws IOException, AccountWasNotFoundException{
     	/**
     	 * If we get returned params from startup, use that
     	 */

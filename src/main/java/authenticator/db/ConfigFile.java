@@ -168,7 +168,7 @@ public class ConfigFile {
 
 	public ATAccount getAccount(int index){
 		List<ATAccount> all = getAllAccounts();
-		// We search the account like this because its id is not necessarly its id in the array
+		// We search the account like this because its id is not necessarily its id in the array
 		for(ATAccount acc:all)
 			if(acc.getIndex() == index)
 				return acc;

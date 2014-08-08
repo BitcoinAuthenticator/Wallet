@@ -2,6 +2,7 @@ package authenticator;
 
 import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.BAHierarchy;
@@ -713,8 +714,9 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException 
 	 * @throws JSONException 
 	 * @throws NoSuchAlgorithmException 
+	 * @throws AccountWasNotFoundException 
 	 */
-	public ATAddress findAddressInAccounts(String addressStr) throws AddressWasNotFoundException, NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
+	public ATAddress findAddressInAccounts(String addressStr) throws AddressWasNotFoundException, NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException{
 		if(!isWatchingAddress(addressStr))
 			throw new AddressWasNotFoundException("Cannot find address in accounts");
 		List<ATAccount> accounts = getAllAccounts();
@@ -751,8 +753,9 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException
 	 * @throws KeyIndexOutOfRangeException 
 	 * @throws AddressNotWatchedByWalletException 
+	 * @throws AccountWasNotFoundException 
 	 */
-	public List<ATAddress> getATAddreessesFromAccount(int accountIndex, HierarchyAddressTypes type,int standOff, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public List<ATAddress> getATAddreessesFromAccount(int accountIndex, HierarchyAddressTypes type,int standOff, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		List<ATAddress> ret = new ArrayList<ATAddress>();
 		if(type == HierarchyAddressTypes.External)
 			for(int i = standOff;i <= limit; i++)//Math.min(limit==-1? acc.getLastExternalIndex():limit, acc.getLastExternalIndex()) ; i++){
@@ -777,9 +780,10 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException
 	 * @throws KeyIndexOutOfRangeException 
 	 * @throws AddressNotWatchedByWalletException 
+	 * @throws AccountWasNotFoundException 
 	 */
 	@SuppressWarnings("static-access")
-	public ATAddress getATAddreessFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{		
+	public ATAddress getATAddreessFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{		
 		ATAccount acc = getAccount(accountIndex);
 		ATAddress.Builder atAdd = ATAddress.newBuilder();
 						  atAdd.setAccountIndex(accountIndex);
@@ -819,8 +823,11 @@ public class WalletOperation extends BASE{
 		return configFile.getAllAccounts();
 	}
 	
-	public ATAccount getAccount(int index){
-		return configFile.getAccount(index);
+	public ATAccount getAccount(int index) throws AccountWasNotFoundException{
+		ATAccount ret = configFile.getAccount(index);
+		if(ret != null)
+			return ret;
+		throw new AccountWasNotFoundException("Could not find account with index " + index);
 	} 
 
 	/**
@@ -859,8 +866,9 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException
 	 * @throws KeyIndexOutOfRangeException 
 	 * @throws AddressNotWatchedByWalletException 
+	 * @throws AccountWasNotFoundException 
 	 */
-	public ArrayList<String> getAccountNotUsedAddress(int accountIndex, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public ArrayList<String> getAccountNotUsedAddress(int accountIndex, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		ArrayList<String> ret = new ArrayList<String>();
 		ATAccount account = getAccount(accountIndex);
 		if(addressesType == HierarchyAddressTypes.External)
@@ -886,8 +894,9 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException
 	 * @throws KeyIndexOutOfRangeException
 	 * @throws AddressNotWatchedByWalletException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public ArrayList<ATAddress> getAccountUsedAddresses(int accountIndex, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public ArrayList<ATAddress> getAccountUsedAddresses(int accountIndex, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		ArrayList<ATAddress> ret = new ArrayList<ATAddress>();
 		ATAccount acc = getAccount(accountIndex);
 		if(addressesType == HierarchyAddressTypes.External){
@@ -900,7 +909,7 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	public ArrayList<String> getAccountUsedAddressesString(int accountIndex, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public ArrayList<String> getAccountUsedAddressesString(int accountIndex, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		ArrayList<ATAddress> addresses = getAccountUsedAddresses(accountIndex, addressesType);
 		ArrayList<String> ret = new ArrayList<String>();
 		for(ATAddress add: addresses)
@@ -920,8 +929,9 @@ public class WalletOperation extends BASE{
 	 * @throws AddressFormatException
 	 * @throws KeyIndexOutOfRangeException 
 	 * @throws AddressNotWatchedByWalletException 
+	 * @throws AccountWasNotFoundException 
 	 */
-	public ArrayList<String> getAccountAddresses(int accountIndex, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public ArrayList<String> getAccountAddresses(int accountIndex, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		ArrayList<String> ret = new ArrayList<String>();
 		if(addressesType == HierarchyAddressTypes.External)
 		for(int i=0;i < limit; i ++) //Math.min(account.getLastExternalIndex(), limit == -1? account.getLastExternalIndex():limit); i++){
@@ -933,7 +943,7 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 
-	public ATAccount setAccountName(String newName, int index) throws IOException{
+	public ATAccount setAccountName(String newName, int index) throws IOException, AccountWasNotFoundException{
 		assert(newName.length() > 0);
 		ATAccount.Builder b = ATAccount.newBuilder(getAccount(index));
 		b.setAccountName(newName);
@@ -942,7 +952,7 @@ public class WalletOperation extends BASE{
 		return b.build();
 	}
 	
-	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException, NoSuchAlgorithmException, JSONException, AddressFormatException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException, NoSuchAlgorithmException, JSONException, AddressFormatException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		configFile.markAddressAsUsed(accountIdx, addIndx,type);
 		authenticatorWalletHierarchy.markAddressAsUsed(accountIdx, addIndx, type);
 		ATAddress add = getATAddreessFromAccount(accountIdx, type, addIndx);
@@ -1011,9 +1021,10 @@ public class WalletOperation extends BASE{
 	 * @throws JSONException
 	 * @throws AddressFormatException
 	 * @throws KeyIndexOutOfRangeException 
+	 * @throws AccountWasNotFoundException 
 	 * @throws AddressNowWatchedByWalletException 
 	 */
-	public ArrayList<String> getPairingAddressesArray(String PairID, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public ArrayList<String> getPairingAddressesArray(String PairID, HierarchyAddressTypes addressesType, int limit) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		int accIndex = getAccountIndexForPairing(PairID);
 		return getAccountAddresses(accIndex,addressesType, limit);
 	}
@@ -1339,7 +1350,7 @@ public class WalletOperation extends BASE{
 			return configFile.getPendingRequests();
 		}
 		
-		public String pendingRequestToString(PendingRequest op){
+		public String pendingRequestToString(PendingRequest op) throws AccountWasNotFoundException{
 			String type = "";
 			switch(op.getOperationType()){
 				case Pairing:
@@ -1453,10 +1464,11 @@ public class WalletOperation extends BASE{
 		 * Will return null in case its not successful
 		 * @param accountIdx
 		 * @return
+		 * @throws AccountWasNotFoundException 
 		 * @throws IOException 
 		 * @throws FileNotFoundException 
 		 */
-		public ATAccount setActiveAccount(int accountIdx){
+		public ATAccount setActiveAccount(int accountIdx) throws AccountWasNotFoundException{
 			ATAccount acc = getAccount(accountIdx);
 			AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
 			b1.setActiveAccount(acc);
@@ -1567,7 +1579,7 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.getRecentTransactions();
 	}
 	
-	public ArrayList<TransactionOutput> selectOutputsFromAccount(int accountIndex, Coin value) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
+	public ArrayList<TransactionOutput> selectOutputsFromAccount(int accountIndex, Coin value) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException{
 		ArrayList<TransactionOutput> all = getUnspentOutputsForAccount(accountIndex);
 		ArrayList<TransactionOutput> ret = selectOutputs(value, all);
 		return ret;
@@ -1584,7 +1596,7 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException{
+	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException{
 		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
 		for(TransactionOutput unspentOut:all){
@@ -1638,7 +1650,7 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 	
-	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();
 		ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
 		//ArrayList<String> usedInternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.Internal);
