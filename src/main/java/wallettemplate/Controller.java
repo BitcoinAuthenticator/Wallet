@@ -825,7 +825,7 @@ public class Controller  extends BaseUI{
 	   else 
 	   {
 		   //Authenticator.AUTHENTICATOR_PW="";
-		   if(Authenticator.AUTHENTICATOR_PW == null)
+		   if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
 			   displayLockDialog();
 		   else{
 			   Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
