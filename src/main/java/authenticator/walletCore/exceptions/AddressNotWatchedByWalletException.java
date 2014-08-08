@@ -1,4 +1,4 @@
-package authenticator.helpers.exceptions;
+package authenticator.walletCore.exceptions;
 
 public class AddressNotWatchedByWalletException extends Exception{
 	public AddressNotWatchedByWalletException(String message) {

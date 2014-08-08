@@ -1,10 +1,12 @@
-package authenticator;
+package authenticator.walletCore;
 
+import authenticator.Authenticator;
+import authenticator.BAApplicationParameters;
+import authenticator.BASE;
 import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
-import authenticator.helpers.exceptions.AccountWasNotFoundException;
-import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
-import authenticator.helpers.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
+import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.HierarchyUtils;
 import authenticator.hierarchy.exceptions.IncorrectPathException;
@@ -34,6 +36,7 @@ import org.slf4j.Logger;
 import wallettemplate.Main;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
+import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
@@ -79,7 +82,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * <b>Main components are:</b>
  * <ol>
- * <li>{@link authenticator.WalletWrapper} for normal bitcoinj wallet operations</li>
+ * <li>{@link authenticator.walletCore.WalletWrapper} for normal bitcoinj wallet operations</li>
  * <li>Authenticator wallet operations</li>
  * <li>Pending requests control</li>
  * <li>Active account control</li>
@@ -678,7 +681,7 @@ public class WalletOperation extends BASE{
 	 * <b>The method remains public if any external method need it.</b><br>
 	 * If u don't know if the corresponding Pay-To-PubHash address is watched, will throw exception. <br>
 	 * If the key is part of a P2SH address, pass false for iKnowAddressFromKeyIsNotWatched<br>
-	 * If the key was never created before, use {@link authenticator.WalletOperation#getNextExternalAddress getNextExternalAddress} instead.
+	 * If the key was never created before, use {@link authenticator.walletCore.WalletOperation#getNextExternalAddress getNextExternalAddress} instead.
 	 * 
 	 * @param accountIndex
 	 * @param type
@@ -836,10 +839,7 @@ public class WalletOperation extends BASE{
 	}
 	
 	public ATAccount getAccount(int index) throws AccountWasNotFoundException{
-		ATAccount ret = configFile.getAccount(index);
-		if(ret != null)
-			return ret;
-		throw new AccountWasNotFoundException("Could not find account with index " + index);
+		return configFile.getAccount(index);
 	} 
 
 	/**
@@ -1187,7 +1187,7 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
-	public Coin getConfirmedBalance(int accountIdx){
+	public Coin getConfirmedBalance(int accountIdx) throws AccountWasNotFoundException{
 		long balance = configFile.getConfirmedBalace(accountIdx);
 		return Coin.valueOf(balance);
 	}
@@ -1199,8 +1199,9 @@ public class WalletOperation extends BASE{
 	 * @param amount
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin addToConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+	public Coin addToConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getConfirmedBalance(accountIdx);
 		Coin ret = setConfirmedBalance(accountIdx, old.add(amount));
 		staticLogger.info("Added " + amount.toFriendlyString() + " to confirmed balance. Account: " + accountIdx );
@@ -1214,8 +1215,9 @@ public class WalletOperation extends BASE{
 	 * @param amount
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getConfirmedBalance(accountIdx);
 		staticLogger.info("Subtracting " + amount.toFriendlyString() + " from confirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
 		assert(old.compareTo(amount) >= 0);
@@ -1230,14 +1232,15 @@ public class WalletOperation extends BASE{
 	 * @param newBalance
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws IOException{
+	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws IOException, AccountWasNotFoundException{
 		long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
 		Coin ret = Coin.valueOf(balance);
 		return ret;
 	}
 	
-	public Coin getUnConfirmedBalance(int accountIdx){
+	public Coin getUnConfirmedBalance(int accountIdx) throws AccountWasNotFoundException{
 		long balance = configFile.getUnConfirmedBalace(accountIdx);
 		return Coin.valueOf(balance);
 	}
@@ -1249,8 +1252,9 @@ public class WalletOperation extends BASE{
 	 * @param amount
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin addToUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+	public Coin addToUnConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getUnConfirmedBalance(accountIdx);
 		Coin ret = setUnConfirmedBalance(accountIdx, old.add(amount));
 		staticLogger.info("Added " + amount.toFriendlyString() + " to unconfirmed balance. Account: " + accountIdx );
@@ -1264,8 +1268,9 @@ public class WalletOperation extends BASE{
 	 * @param amount
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException{
+	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getUnConfirmedBalance(accountIdx);
 		staticLogger.info("Subtracting " + amount.toFriendlyString() + " from unconfirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
 		assert(old.compareTo(amount) >= 0);
@@ -1280,8 +1285,9 @@ public class WalletOperation extends BASE{
 	 * @param newBalance
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws IOException{
+	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws IOException, AccountWasNotFoundException{
 		long balance = configFile.writeUnConfirmedBalace(accountIdx, newBalance.longValue());
 		return Coin.valueOf(balance);
 	}
@@ -1293,8 +1299,9 @@ public class WalletOperation extends BASE{
 	 * @param amount
 	 * @return
 	 * @throws IOException 
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws IOException{
+	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
 		staticLogger.info("Moving " + amount.toFriendlyString() + 
@@ -1318,8 +1325,9 @@ public class WalletOperation extends BASE{
 	 * @param amount
 	 * @return
 	 * @throws IOException 
+	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws IOException{
+	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
 		staticLogger.info("Moving " + amount.toFriendlyString() + 

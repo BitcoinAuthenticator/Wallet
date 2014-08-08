@@ -28,7 +28,6 @@ import com.google.protobuf.ByteString;
 import wallettemplate.Main;
 import authenticator.Authenticator;
 import authenticator.BASE;
-import authenticator.WalletOperation;
 import authenticator.Utils.EncodingUtils;
 import authenticator.network.exceptions.TCPListenerCouldNotStartException;
 import authenticator.operations.BAOperation;
@@ -40,6 +39,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.walletCore.WalletOperation;
 
 /**
  * <b>The heart of the wallet operation.</b><br>

@@ -1,4 +1,4 @@
-package authenticator.helpers.exceptions;
+package authenticator.walletCore.exceptions;
 
 public class AddressWasNotFoundException extends Exception{
 	public AddressWasNotFoundException(String message) {

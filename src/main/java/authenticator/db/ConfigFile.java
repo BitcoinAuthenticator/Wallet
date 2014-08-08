@@ -12,6 +12,7 @@ import org.json.simple.parser.ParseException;
 
 import authenticator.Authenticator;
 import authenticator.Utils.KeyUtils;
+import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.ATAddress;
@@ -96,7 +97,7 @@ public class ConfigFile {
 		return auth.getConfigAuthenticatorWallet().getPaired();
 	}
 
-	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException{
+	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws IOException, AccountWasNotFoundException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		ATAccount acc = getAccount(accountIdx);
 		ATAccount.Builder b = ATAccount.newBuilder(acc);
@@ -116,7 +117,7 @@ public class ConfigFile {
 		return keypool;
 	}
 
-	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex){
+	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex) throws AccountWasNotFoundException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		ATAccount acc = getAccount(accountIndex);
 		if(addressType == HierarchyAddressTypes.External)
@@ -166,13 +167,13 @@ public class ConfigFile {
 		return auth.getConfigAccountsList();
 	}
 
-	public ATAccount getAccount(int index){
+	public ATAccount getAccount(int index) throws AccountWasNotFoundException{
 		List<ATAccount> all = getAllAccounts();
 		// We search the account like this because its id is not necessarily its id in the array
 		for(ATAccount acc:all)
 			if(acc.getIndex() == index)
 				return acc;
-		return null;
+		throw new AccountWasNotFoundException("Could not find account with index " + index);
 	}
 
 	public void addAccount(ATAccount acc) throws IOException{
@@ -229,7 +230,7 @@ public class ConfigFile {
 		this.updateAccount(b.build());
 	}*/
 
-	public long getConfirmedBalace(int accountIdx){
+	public long getConfirmedBalace(int accountIdx) throws AccountWasNotFoundException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return getAccount(accountIdx).getConfirmedBalance();
 	}
@@ -241,8 +242,9 @@ public class ConfigFile {
 	 * @param newBalance
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public long writeConfirmedBalace(int accountIdx, long newBalance) throws IOException{
+	public long writeConfirmedBalace(int accountIdx, long newBalance) throws IOException, AccountWasNotFoundException{
 		ATAccount acc = getAccount(accountIdx);
 		ATAccount.Builder b = ATAccount.newBuilder(acc);
 		b.setConfirmedBalance(newBalance);
@@ -250,7 +252,7 @@ public class ConfigFile {
 		return b.build().getConfirmedBalance();
 	}
 
-	public long getUnConfirmedBalace(int accountIdx){
+	public long getUnConfirmedBalace(int accountIdx) throws AccountWasNotFoundException{
 		return getAccount(accountIdx).getUnConfirmedBalance();
 	}
 
@@ -261,8 +263,9 @@ public class ConfigFile {
 	 * @param newBalance
 	 * @return
 	 * @throws IOException
+	 * @throws AccountWasNotFoundException 
 	 */
-	public long writeUnConfirmedBalace(int accountIdx, long newBalance) throws IOException{
+	public long writeUnConfirmedBalace(int accountIdx, long newBalance) throws IOException, AccountWasNotFoundException{
 		ATAccount acc = getAccount(accountIdx);
 		ATAccount.Builder b = ATAccount.newBuilder(acc);
 		b.setUnConfirmedBalance(newBalance);

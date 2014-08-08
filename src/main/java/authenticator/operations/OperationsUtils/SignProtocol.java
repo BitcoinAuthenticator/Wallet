@@ -19,17 +19,17 @@ import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 
 import authenticator.Authenticator;
-import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
-import authenticator.helpers.exceptions.UnableToCompleteTxSigningException;
+import authenticator.walletCore.exceptions.UnableToCompleteTxSigningException;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.walletCore.WalletOperation;
 
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;

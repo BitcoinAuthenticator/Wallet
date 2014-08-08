@@ -4,8 +4,8 @@ import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.db.ConfigFile;
+import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
-import authenticator.helpers.exceptions.AccountWasNotFoundException;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;

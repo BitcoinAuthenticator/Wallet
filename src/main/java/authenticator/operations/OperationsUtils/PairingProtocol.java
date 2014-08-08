@@ -14,12 +14,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import authenticator.BAApplicationParameters.NetworkType;
-import authenticator.WalletOperation;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
 import authenticator.network.BANeworkInfo;
 import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;
+import authenticator.walletCore.WalletOperation;
 
 /**
  * This is the wallet side of the Pairing Protocol. It uses UpNp to map a port on the router if there is one,

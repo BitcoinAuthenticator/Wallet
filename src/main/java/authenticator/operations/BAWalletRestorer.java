@@ -29,7 +29,7 @@ import org.json.JSONException;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BASE;
-import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
+import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
