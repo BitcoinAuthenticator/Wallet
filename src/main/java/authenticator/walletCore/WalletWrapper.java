@@ -131,7 +131,7 @@ public class WalletWrapper extends BASE{
 		trackedWallet.allowSpendingUnconfirmedTransactions();
 		return trackedWallet.getWatchedOutputs(false);
 	} 
-	
+
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
 		List<TransactionOutput> allWatchedAddresses = getWatchedOutputs();

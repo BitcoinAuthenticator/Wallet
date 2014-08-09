@@ -231,7 +231,7 @@ public class Main extends BAApplication {
 		});
     	
     	
-    	bitcoin.addListener(new Service.Listener() {
+    	/*bitcoin.addListener(new Service.Listener() {
 			@Override public void terminated(State from) {
 				System.out.println("Bitcoin Wallet terminated");
 				if(auth == null || auth.state() == State.TERMINATED){
@@ -249,21 +249,37 @@ public class Main extends BAApplication {
 				}
 	         }
 			
-			private void close(){
-				Platform.runLater(new Runnable() { 
-					  @Override
-					  public void run() {
-						  stageNotif.close();
-					  }
-				 });
-				Runtime.getRuntime().exit(0);
-			}
-		}, MoreExecutors.sameThreadExecutor());
+			
+		}, MoreExecutors.sameThreadExecutor());*/
 		bitcoin.stopAsync();
-    
+		
 		if(auth != null)
-	        auth.stopAsync();        
+	        auth.stopAsync();      
+		
+		while(true){
+			//  auth not initiated  OR			 auth initiated and terminated             AND
+			if((auth == null 		|| (auth != null && auth.state() == State.TERMINATED)) &&
+			//			bitcoin is terminated
+					bitcoin.state() == State.TERMINATED){
+				closeProgramAndClosingStage(stageNotif);
+			}
+			System.out.println("bitcoin " + bitcoin.state().toString() +"   authenticator " + auth.state().toString());
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) { e.printStackTrace(); }
+		}
     }
+    
+    @SuppressWarnings("restriction")
+	private static void closeProgramAndClosingStage(Stage s){
+		Platform.runLater(new Runnable() { 
+			  @Override
+			  public void run() {
+				  s.close();
+			  }
+		 });
+		Runtime.getRuntime().exit(0);
+	}
 
     public class OverlayUI<T> {
         public Node ui;

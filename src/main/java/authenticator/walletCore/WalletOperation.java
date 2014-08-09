@@ -175,7 +175,7 @@ public class WalletOperation extends BASE{
 				@Override
 				public void run() {
 					try {
-						updateBalace(mWalletWrapper.getTrackedWallet());
+						updateBalaceNonBlocking(mWalletWrapper.getTrackedWallet(), null);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -206,8 +206,12 @@ public class WalletOperation extends BASE{
         				tx.getValueSentToMe(wallet).toFriendlyString(),
         				tx.getValueSentFromMe(wallet).toFriendlyString());
         		isRequiringBalanceChange = true;
-				updateBalace(wallet);
-				notifyBalanceUpdate(wallet,tx);
+        		updateBalaceNonBlocking(wallet, new Runnable(){
+					@Override
+					public void run() {
+						notifyBalanceUpdate(wallet,tx);
+					}
+        		});
 			} catch (Exception e) { e.printStackTrace(); }
         }
         
@@ -218,8 +222,13 @@ public class WalletOperation extends BASE{
         				tx.getValueSentToMe(wallet).toFriendlyString(),
         				tx.getValueSentFromMe(wallet).toFriendlyString());
         		isRequiringBalanceChange = true;
-				updateBalace(wallet);
-				notifyBalanceUpdate(wallet,tx);
+        		updateBalaceNonBlocking(wallet, new Runnable(){
+					@Override
+					public void run() {
+						notifyBalanceUpdate(wallet,tx);
+					}
+        		});
+				
 			} catch (Exception e) { e.printStackTrace(); }
         }
         
@@ -230,9 +239,14 @@ public class WalletOperation extends BASE{
         			staticLogger.info("Updating balance, Received {}, Sent {}", 
             				tx.getValueSentToMe(wallet).toFriendlyString(),
             				tx.getValueSentFromMe(wallet).toFriendlyString());
-        			updateBalace(wallet);
-        			notifyBalanceUpdate(wallet,tx);
         			isRequiringBalanceChange = false;
+        			updateBalaceNonBlocking(wallet, new Runnable(){
+    					@Override
+    					public void run() {
+    						
+    						notifyBalanceUpdate(wallet,tx);
+    					}
+            		});
         		}
 			} catch (Exception e) { e.printStackTrace(); }
         }
@@ -249,9 +263,29 @@ public class WalletOperation extends BASE{
        
     }
 	
-	@SuppressWarnings("incomplete-switch")
-	private synchronized void updateBalace(Wallet wallet) throws Exception{
-    	List<ATAccount> accounts = getAllAccounts();
+	private void updateBalaceNonBlocking(Wallet wallet, Runnable completionBlock){
+		Thread t = new Thread(){
+			@Override
+			public void run() {
+				try {
+					updateBalance(wallet);
+					if(completionBlock != null)
+						completionBlock.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();
+    }
+	
+	/**
+	 * Be careful using this method directly because it can block the UI
+	 * @param wallet
+	 * @throws Exception
+	 */
+	private synchronized void updateBalance(Wallet wallet) throws Exception{
+		List<ATAccount> accounts = getAllAccounts();
     	for(ATAccount acc:accounts){
     		setConfirmedBalance(acc.getIndex(), Coin.ZERO);
     		setUnConfirmedBalance(acc.getIndex(), Coin.ZERO);
@@ -322,8 +356,7 @@ public class WalletOperation extends BASE{
     			}
     		}
     	}
-    	
-    }
+	}
 	
 	//#####################################
 	//
@@ -1624,8 +1657,8 @@ public class WalletOperation extends BASE{
 	}
 	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException{
-		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
+		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
 		for(TransactionOutput unspentOut:all){
 			ATAddress add = findAddressInAccounts(unspentOut.getScriptPubKey().getToAddress(getNetworkParams()).toString());
 			if(add.getAccountIndex() == accountIndex)
@@ -1668,12 +1701,16 @@ public class WalletOperation extends BASE{
 	 * @return
 	 */
 	public byte[] getWalletSeed(@Nullable String pw){
-		if(isWalletEncrypted() && pw == null)
+		if(isWalletEncrypted() && (pw == null || pw.length() == 0))
 			return null;
-		if(isWalletEncrypted())
+		byte[] ret;
+		if(isWalletEncrypted()){
 			decryptWallet(pw);
-		byte[] ret = mWalletWrapper.getWalletSeed();
-		encryptWallet(pw);
+			ret = mWalletWrapper.getWalletSeed();
+			encryptWallet(pw);
+		}
+		else
+			ret = mWalletWrapper.getWalletSeed();
 		return ret;
 	}
 	
