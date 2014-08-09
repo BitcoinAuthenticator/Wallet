@@ -230,27 +230,6 @@ public class Main extends BAApplication {
 			  }
 		});
     	
-    	
-    	/*bitcoin.addListener(new Service.Listener() {
-			@Override public void terminated(State from) {
-				System.out.println("Bitcoin Wallet terminated");
-				if(auth == null || auth.state() == State.TERMINATED){
-					close();
-				}
-				else{
-					while(true){
-						if(auth.state() == State.TERMINATED){
-							close();
-						}
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) { e.printStackTrace(); }
-					}
-				}
-	         }
-			
-			
-		}, MoreExecutors.sameThreadExecutor());*/
 		bitcoin.stopAsync();
 		
 		if(auth != null)
@@ -259,16 +238,24 @@ public class Main extends BAApplication {
 		new Thread(){
 			@Override
 			public void run() {
+				/**
+				 * the wallet kit has a weird bug that it doesn't shut down.
+				 * if it takes more than 30 seconds force shut it down
+				 */
+				int cnt = 0;
 				while(true){
-					//  auth not initiated  OR			 auth initiated and terminated             AND
-					if((auth == null 		|| (auth != null && auth.state() == com.google.common.util.concurrent.Service.State.TERMINATED)) &&
+					// fix for a bug, if bitcoin is not shutting down   OR
+					if(cnt > 30 										||
+					//  auth not initiated  OR			 auth initiated and terminated             											AND
+					((auth == null 			|| (auth != null && auth.state() == com.google.common.util.concurrent.Service.State.TERMINATED)) &&
 					//			bitcoin is terminated
-							bitcoin.state() == com.google.common.util.concurrent.Service.State.TERMINATED){
+					bitcoin.state() == com.google.common.util.concurrent.Service.State.TERMINATED)){
 						closeProgramAndClosingStage(stageNotif);
 					}
 					System.out.println("bitcoin " + bitcoin.state().toString() +"   authenticator " + auth.state().toString());
 					try {
-						Thread.sleep(500);
+						cnt ++;
+						Thread.sleep(1000);
 					} catch (InterruptedException e) { e.printStackTrace(); }
 				}
 			}

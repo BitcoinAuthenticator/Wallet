@@ -7,6 +7,7 @@ import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.HierarchyUtils;
 import authenticator.hierarchy.exceptions.IncorrectPathException;
@@ -538,10 +539,11 @@ public class WalletOperation extends BASE{
 	 * @throws KeyIndexOutOfRangeException
 	 * @throws AddressFormatException
 	 * @throws AddressNotWatchedByWalletException
+	 * @throws EmptyWalletPasswordException 
 	 */
 	public Transaction signStandardTxWithAddresses(Transaction tx, 
 			Map<String,ATAddress> keys, 
-			@Nullable String WALLET_PW) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
+			@Nullable String WALLET_PW) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, EmptyWalletPasswordException{
 		Map<String,ECKey> keys2 = new HashMap<String,ECKey> ();
 		for(String k:keys.keySet()){
 			ECKey addECKey = getPrivECKeyFromAccount(keys.get(k).getAccountIndex(), 
@@ -697,7 +699,7 @@ public class WalletOperation extends BASE{
 			HierarchyAddressTypes type, 
 			int addressKey, 
 			String WALLET_PW,
-			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
+			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, EmptyWalletPasswordException{
 		DeterministicKey ret = getPrivKeyFromAccount(accountIndex,
 				type,
 				addressKey,
@@ -721,12 +723,13 @@ public class WalletOperation extends BASE{
 	 * @throws KeyIndexOutOfRangeException
 	 * @throws AddressFormatException
 	 * @throws AddressNotWatchedByWalletException
+	 * @throws EmptyWalletPasswordException 
 	 */
 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
 			int addressKey, 
 			String WALLET_PW,
-			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException{
+			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, EmptyWalletPasswordException{
 		byte[] seed = getWalletSeed(WALLET_PW);
 		DeterministicKey ret = authenticatorWalletHierarchy.getPrivKeyFromAccount(seed, accountIndex, type, addressKey);
 		if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
@@ -1676,14 +1679,22 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.getTxValueSentFromMe(tx);
 	}
 	
-	public void decryptWallet(String password){
-		staticLogger.info("Decrypted wallet with password: " + password);
-		mWalletWrapper.decryptWallet(password);
+	public void decryptWallet(String password) throws EmptyWalletPasswordException{
+		if(password != null && password.length() > 0){
+			staticLogger.info("Decrypted wallet with password: " + password);
+			mWalletWrapper.decryptWallet(password);
+		}
+		else
+			throw new EmptyWalletPasswordException("Illegal Password");
 	}
 	
-	public void encryptWallet(String password){
-		staticLogger.info("Encrypted wallet with password: " + password);
-		mWalletWrapper.encryptWallet(password);
+	public void encryptWallet(String password) throws EmptyWalletPasswordException{
+		if(password != null && password.length() > 0){
+			staticLogger.info("Encrypted wallet with password: " + password);
+			mWalletWrapper.encryptWallet(password);
+		}
+		else
+			throw new EmptyWalletPasswordException("Illegal Password");
 	}
 	
 	public boolean isWalletEncrypted(){
@@ -1695,8 +1706,9 @@ public class WalletOperation extends BASE{
 	 * 
 	 * @param pw
 	 * @return
+	 * @throws EmptyWalletPasswordException 
 	 */
-	public byte[] getWalletSeed(@Nullable String pw){
+	public byte[] getWalletSeed(@Nullable String pw) throws EmptyWalletPasswordException{
 		if(isWalletEncrypted() && (pw == null || pw.length() == 0))
 			return null;
 		byte[] ret;

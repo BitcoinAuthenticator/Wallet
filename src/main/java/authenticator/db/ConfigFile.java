@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import authenticator.Authenticator;
 import authenticator.Utils.KeyUtils;
 import authenticator.db.exceptions.AccountWasNotFoundException;
+import authenticator.db.exceptions.CouldNotOpenConfigFileException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.ATAddress;
@@ -38,25 +39,25 @@ public class ConfigFile {
 
 	/**
 	 * 
-	 * 
-	 * @param networkType - 1 for main net, 0 for testnet
 	 * @throws IOException
 	 */
 	public ConfigFile(String appName) throws IOException{
 		filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appName + ".config";
 	}
 
-	private AuthenticatorConfiguration.Builder getConfigFileBuilder(){
+	private synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
 		AuthenticatorConfiguration.Builder auth = AuthenticatorConfiguration.newBuilder();
 		try{ auth.mergeDelimitedFrom(new FileInputStream(filePath)); }
 		catch(Exception e)
 		{ 
-			// do nothing
+			//throw new CouldNotOpenConfigFileException("Could not open config file");
+			e.printStackTrace();
 		}
+		
 		return auth;
 	}
 
-	private void writeConfigFile(AuthenticatorConfiguration.Builder auth) throws IOException{
+	private synchronized void writeConfigFile(AuthenticatorConfiguration.Builder auth) throws IOException{
 		FileOutputStream output = new FileOutputStream(filePath);  
 		auth.build().writeDelimitedTo(output);          
 		output.close();

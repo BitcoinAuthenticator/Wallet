@@ -210,7 +210,7 @@ public class TCPListener extends BASE{
 							socket = ss.accept();
 							isConnected = true;
 						}
-						catch (SocketTimeoutException e){ isConnected = false; }
+						catch (SocketTimeoutException | java.net.SocketException e){ isConnected = false; }
 					else
 						try {
 							Thread.sleep(LOOPER_BLOCKING_TIMEOUT);

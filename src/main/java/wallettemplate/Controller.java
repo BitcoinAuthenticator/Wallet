@@ -12,6 +12,7 @@ import authenticator.db.ConfigFile;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.network.OneName;
 import authenticator.operations.BAOperation;
@@ -345,31 +346,30 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
+    	Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
+    	
+    	// lock 
+      	locked = Authenticator.getWalletOperation().isWalletEncrypted();
+      	/**
+      	 * Read the comments in TCPListener#looper()
+     	 */
+      	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
+     	 if(Authenticator.getWalletOperation().isWalletEncrypted())
+     		 lockControl(null);
+      	
     	Platform.runLater(new Runnable() { 
 			 @Override
 			public void run() {
 				/**
 	    	 	 * refreshBalanceLabel will take care of downloading the currency data needed
 	    	 	 */
-				 updateUI();
 	        	 setupOneName(Authenticator.getWalletOperation().getOnename());
 
-	        	 Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
-	         	
-	        	 // Account choicebox
-	        	 setAccountChoiceBox();	         	
-
-	         	// lock 
-	         	locked = Authenticator.getWalletOperation().isWalletEncrypted();
-	         	/**
-	         	 * Read the comments in TCPListener#looper()
-	        	 */
-	         	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
-	        	 if(Authenticator.getWalletOperation().isWalletEncrypted())
-	        		 lockControl(null);
-	         	updateLockIcon();
+	         	 updateLockIcon();
 			}
-	    });    	
+	    });    
+    	setAccountChoiceBox();	
+    	updateUI();
     }
     
     boolean shouldUpdateUI = true;
@@ -847,7 +847,11 @@ public class Controller  extends BaseUI{
 		   if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
 			   displayLockDialog();
 		   else{
-			   Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
+			   try {
+				Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
+			} catch (EmptyWalletPasswordException e) {
+				e.printStackTrace();
+			}
 			   locked = true;
 		   }
 		   updateLockIcon();
@@ -909,7 +913,7 @@ public class Controller  extends BaseUI{
 						   locked = false;
 						   updateLockIcon();
 					   }
-					   catch(KeyCrypterException  e){
+					   catch(KeyCrypterException | EmptyWalletPasswordException  e){
 						   informationalAlert("Unfortunately, you messed up.",
 								   "Wrong wallet password");
 						   return;
@@ -925,11 +929,16 @@ public class Controller  extends BaseUI{
 							   "You need to enter your password to encrypt your wallet.");
 					   return;
 				   }
-				   Authenticator.getWalletOperation().encryptWallet(pw.getText());
-				   Authenticator.AUTHENTICATOR_PW = pw.getText();
+				   try {
+					Authenticator.getWalletOperation().encryptWallet(pw.getText());
+					Authenticator.AUTHENTICATOR_PW = pw.getText();
 				   overlay.done();
 				   locked = true;
 				   updateLockIcon();
+				} catch (EmptyWalletPasswordException e) {
+					e.printStackTrace();
+				}
+				   
 			   }
 		   }
 	   });   
@@ -1509,9 +1518,9 @@ public class Controller  extends BaseUI{
 		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	if(!checkIfPasswordDecryptsWallet(password.getText()))
-            		return;
             	try {
+            		if(!checkIfPasswordDecryptsWallet(password.getText()))
+                		return;
         			Animation ani = GuiUtils.fadeOut(v);
         			GuiUtils.fadeIn(successVbox);
         			String to = "";
@@ -2522,8 +2531,9 @@ public class Controller  extends BaseUI{
      * 
      * @param password
      * @return
+     * @throws EmptyWalletPasswordException 
      */
-	private boolean checkIfPasswordDecryptsWallet(String password){
+	private boolean checkIfPasswordDecryptsWallet(String password) throws EmptyWalletPasswordException{
 		if(Authenticator.getWalletOperation().isWalletEncrypted()){
     		try{
     			if (Authenticator.AUTHENTICATOR_PW.equals("")){
