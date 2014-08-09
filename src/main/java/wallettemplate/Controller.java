@@ -144,6 +144,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.Nullable;
@@ -349,19 +351,11 @@ public class Controller  extends BaseUI{
 				/**
 	    	 	 * refreshBalanceLabel will take care of downloading the currency data needed
 	    	 	 */
-	    	 	 setReceiveAddresses();
-	    	 	 try {setTxPaneHistory();} 
-	     	 	 catch (Exception e1) {e1.printStackTrace();}
-	         	 try {setTxHistoryContent();} 
-	        	 catch (Exception e1) {e1.printStackTrace();}
-
+				 updateUI();
 	        	 setupOneName(Authenticator.getWalletOperation().getOnename());
-	        	 try {refreshBalanceLabel();} 
-	         	 catch (Exception e) {e.printStackTrace();}
 
 	        	 Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
-	         	//Authenticator.getWalletOperation().addEventListener(new WalletListener());
-
+	         	
 	        	 // Account choicebox
 	        	 setAccountChoiceBox();	         	
 
@@ -376,6 +370,41 @@ public class Controller  extends BaseUI{
 	         	updateLockIcon();
 			}
 	    });    	
+    }
+    
+    boolean shouldUpdateUI = true;
+    Timer timer;
+    TimerTask t = new TimerTask(){
+		@Override
+		public void run() {
+			shouldUpdateUI = true;
+		}
+    };
+    private void updateUI(){
+    	Platform.runLater(new Runnable() { 
+			 @Override
+			public void run() {
+				 if(shouldUpdateUI){
+					 LOG.info("Updating UI");
+					 shouldUpdateUI = false;
+					 
+					 setReceiveAddresses();
+				 	 try {setTxPaneHistory();} 
+				 	 catch (Exception e1) {e1.printStackTrace();}
+				 	 
+			    	 try {setTxHistoryContent();} 
+			    	 catch (Exception e1) {e1.printStackTrace();}
+
+			    	 try {refreshBalanceLabel();} 
+			     	 catch (Exception e) {e.printStackTrace();}
+			    	 
+			    	 if(timer == null){
+			    		 timer = new Timer("Update UI Timer");
+				    	 timer.schedule(t, 1000);
+			    	 }
+				 }
+			 }
+    	});
     }
     
     public class AuthenticatorGeneralEvents implements BAGeneralEventsListener{
@@ -402,10 +431,11 @@ public class Controller  extends BaseUI{
 		}
 		
 		@Override
-		public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+		public void onBalanceChanged(@Nullable Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
 			/**
 			 * Will pop a notification when received coins are pending and built
 			 */
+			if(tx != null)
 			if(howBalanceChanged == HowBalanceChanged.ReceivedCoins){
 				Platform.runLater(new Runnable() { 
 					  @Override
@@ -426,6 +456,7 @@ public class Controller  extends BaseUI{
 			/**
 			 * Will pop a notification when sent coins are confirmed
 			 */
+			if(tx != null)
 			if(howBalanceChanged == HowBalanceChanged.SentCoins && confidence == ConfidenceType.BUILDING){
 				Platform.runLater(new Runnable() { 
 					  @Override
@@ -443,19 +474,7 @@ public class Controller  extends BaseUI{
 					});
 			}
 			
-			Platform.runLater(new Runnable() { 
-			  @Override
-			  public void run() {
-				try {refreshBalanceLabel();} 
-				catch (Exception e) {e.printStackTrace();}
-		        setReceiveAddresses();
-		        try {setTxPaneHistory();} 
-		    	catch (Exception e1) {e1.printStackTrace();}
-		        try {setTxHistoryContent();} 
-		        catch (Exception e) {e.printStackTrace();}
-			  }
-			});
-			
+			updateUI();
 		}
 
 		@Override
@@ -1527,11 +1546,7 @@ public class Controller  extends BaseUI{
         			}
         				
         		} 
-        		catch (NoSuchAlgorithmException
-        				| AddressWasNotFoundException | JSONException
-        				| AddressFormatException
-        				| KeyIndexOutOfRangeException | AccountWasNotFoundException e) {
-        			// TODO Auto-generated catch block
+        		catch (Exception e) {
         			e.printStackTrace();
         		}
             }
@@ -2497,17 +2512,7 @@ public class Controller  extends BaseUI{
     
     public void updateUIForNewActiveAccount(){
     	LOG.info("Updating UI because of Authenticator account change");
-    	try {refreshBalanceLabel();}
-    	catch (Exception e) {e.printStackTrace();}
-    	setReceiveAddresses();
-    	try {setTxPaneHistory();} 
-    	catch (NoSuchAlgorithmException | JSONException
-				| AddressFormatException | KeyIndexOutOfRangeException
-				| AddressNotWatchedByWalletException | AccountWasNotFoundException e1) {e1.printStackTrace();}
-    	try {setTxHistoryContent();} 
-    	catch (NoSuchAlgorithmException | JSONException
-				| AddressFormatException | KeyIndexOutOfRangeException
-				| AddressNotWatchedByWalletException | AccountWasNotFoundException e) {e.printStackTrace();}
+    	updateUI();
     }
     
     /**

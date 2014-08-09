@@ -256,18 +256,26 @@ public class Main extends BAApplication {
 		if(auth != null)
 	        auth.stopAsync();      
 		
-		while(true){
-			//  auth not initiated  OR			 auth initiated and terminated             AND
-			if((auth == null 		|| (auth != null && auth.state() == State.TERMINATED)) &&
-			//			bitcoin is terminated
-					bitcoin.state() == State.TERMINATED){
-				closeProgramAndClosingStage(stageNotif);
+		new Thread(){
+			@Override
+			public void run() {
+				while(true){
+					//  auth not initiated  OR			 auth initiated and terminated             AND
+					if((auth == null 		|| (auth != null && auth.state() == com.google.common.util.concurrent.Service.State.TERMINATED)) &&
+					//			bitcoin is terminated
+							bitcoin.state() == com.google.common.util.concurrent.Service.State.TERMINATED){
+						closeProgramAndClosingStage(stageNotif);
+					}
+					System.out.println("bitcoin " + bitcoin.state().toString() +"   authenticator " + auth.state().toString());
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) { e.printStackTrace(); }
+				}
 			}
-			System.out.println("bitcoin " + bitcoin.state().toString() +"   authenticator " + auth.state().toString());
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) { e.printStackTrace(); }
-		}
+			
+		}.start();
+		
+		
     }
     
     @SuppressWarnings("restriction")

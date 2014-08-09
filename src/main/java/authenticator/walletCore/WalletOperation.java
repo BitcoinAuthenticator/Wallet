@@ -170,18 +170,10 @@ public class WalletOperation extends BASE{
 			
 			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
 		}
-		if(mWalletWrapper != null){
-			new Thread(){
-				@Override
-				public void run() {
-					try {
-						updateBalaceNonBlocking(mWalletWrapper.getTrackedWallet(), null);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}.start();
-		}
+		
+		/*if(mWalletWrapper != null){
+			updateBalaceNonBlocking(mWalletWrapper.getTrackedWallet(), null);
+		}*/
 		
 	}
 	
@@ -251,16 +243,20 @@ public class WalletOperation extends BASE{
 			} catch (Exception e) { e.printStackTrace(); }
         }
         
-        private void notifyBalanceUpdate(Wallet wallet, Transaction tx){
-        	if(tx.getValueSentToMe(wallet).signum() > 0){
-        		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, tx.getConfidence().getConfidenceType());
-        	}
-        	
-        	if(tx.getValueSentFromMe(wallet).signum() > 0){
-        		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, tx.getConfidence().getConfidenceType());
-        	}
-        }
-       
+    }
+	
+	private void notifyBalanceUpdate(Wallet wallet, Transaction tx){
+		if(tx != null){
+			if(tx.getValueSentToMe(wallet).signum() > 0){
+	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, tx.getConfidence().getConfidenceType());
+	    	}
+	    	
+	    	if(tx.getValueSentFromMe(wallet).signum() > 0){
+	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, tx.getConfidence().getConfidenceType());
+	    	}
+		}
+		else
+			Authenticator.fireOnBalanceChanged(null, null, null);
     }
 	
 	private void updateBalaceNonBlocking(Wallet wallet, Runnable completionBlock){

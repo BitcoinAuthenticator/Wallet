@@ -40,11 +40,11 @@ public interface BAGeneralEventsListener {
 	 * <b> May be called multiple times if tx contains several changes</b><br>
 	 * 
 	 * @param walletID
-	 * @param tx
+	 * @param @Nullable tx - could be null to just update the UI
 	 * @param howBalanceChanged
 	 * @param confidence
 	 */
-	public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence);
+	public void onBalanceChanged(@Nullable Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence);
 	public enum HowBalanceChanged{
 		ReceivedCoins,
 		SentCoins;
