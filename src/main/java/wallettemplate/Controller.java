@@ -8,7 +8,7 @@ import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
-import authenticator.db.ConfigFile;
+import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
@@ -342,7 +342,7 @@ public class Controller  extends BaseUI{
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);       
     	
-    	throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
+    	throttledUIUpdater = new ThrottledRunnableExecutor(1500, new Runnable(){
 			@Override
 			public void run() {
 				Platform.runLater(new Runnable() { 
@@ -1068,7 +1068,7 @@ public class Controller  extends BaseUI{
     		mainNode.getChildren().add(arrows);
     		scrlViewTxHistoryContentManager.addItem(mainNode);	
     	}
-    	ConfigFile config = Authenticator.getWalletOperation().configFile;
+    	walletDB config = Authenticator.getWalletOperation().configFile;
     	ArrayList<String> savedTXIDs = config.getSavedTxidList();
     	int size = txAll.size();
     	int n;
@@ -2072,7 +2072,7 @@ public class Controller  extends BaseUI{
     
     public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
     	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    	ConfigFile config = Authenticator.getWalletOperation().configFile;
+    	walletDB config = Authenticator.getWalletOperation().configFile;
     	ArrayList<String> savedTXIDs = config.getSavedTxidList();
     	final ObservableList<TableTx> txdata = FXCollections.observableArrayList();
     	for (Transaction tx : history){

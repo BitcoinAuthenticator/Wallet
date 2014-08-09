@@ -21,7 +21,7 @@ import com.google.common.util.concurrent.Service.State;
 
 import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
-import authenticator.db.ConfigFile;
+import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.network.TCPListener;
 import authenticator.operations.BAOperation;

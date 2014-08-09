@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 
 import wallettemplate.Main;
 import authenticator.Utils.EncodingUtils;
-import authenticator.db.ConfigFile;
+import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
@@ -94,7 +94,7 @@ public class WalletOperation extends BASE{
 	
 	public static WalletWrapper mWalletWrapper;
 	private static BAHierarchy authenticatorWalletHierarchy;
-	public static ConfigFile configFile;
+	public static walletDB configFile;
 	private static Logger staticLogger;
 	private BAApplicationParameters AppParams;
 	
@@ -141,7 +141,7 @@ public class WalletOperation extends BASE{
 		staticLogger = this.LOG;
 		AppParams = params;
 		if(configFile == null){
-			configFile = new ConfigFile(params.getAppName());
+			configFile = new walletDB(params.getAppName());
 			/**
 			 * Check to see if a config file exists, if not, initialize
 			 */

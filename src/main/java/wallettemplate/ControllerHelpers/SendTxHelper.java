@@ -34,7 +34,7 @@ import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
-import authenticator.db.ConfigFile;
+import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
@@ -120,7 +120,7 @@ public class SendTxHelper {
 			String to, @Nullable String WALLET_PW, 
 			OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
 		// broadcast
-		ConfigFile config = Authenticator.getWalletOperation().configFile;
+		walletDB config = Authenticator.getWalletOperation().configFile;
 		if (!txLabel.isEmpty()){
 			try {config.writeNextSavedTxData(tx.getHashAsString(), "", txLabel);}
 			catch (IOException e) {e.printStackTrace();}

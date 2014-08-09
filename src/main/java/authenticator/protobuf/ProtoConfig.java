@@ -4721,7 +4721,7 @@ public final class ProtoConfig {
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      *
      * <pre>
-     *optional ConfigAddressBook configAddressBook 					= 4;
+     *optional ConfigAddressBook 		configAddressBook 					= 4;
      * </pre>
      */
     boolean hasConfigOneNameProfile();
@@ -4729,7 +4729,7 @@ public final class ProtoConfig {
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      *
      * <pre>
-     *optional ConfigAddressBook configAddressBook 					= 4;
+     *optional ConfigAddressBook 		configAddressBook 					= 4;
      * </pre>
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getConfigOneNameProfile();
@@ -4737,7 +4737,7 @@ public final class ProtoConfig {
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      *
      * <pre>
-     *optional ConfigAddressBook configAddressBook 					= 4;
+     *optional ConfigAddressBook 		configAddressBook 					= 4;
      * </pre>
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder();
@@ -4805,6 +4805,20 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
         int index);
+
+    // required .authenticator.protobuf.ConfigSettings configSettings = 9;
+    /**
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     */
+    boolean hasConfigSettings();
+    /**
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     */
+    authenticator.protobuf.ProtoSettings.ConfigSettings getConfigSettings();
+    /**
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     */
+    authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder getConfigSettingsOrBuilder();
   }
   /**
    * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration}
@@ -4923,6 +4937,19 @@ public final class ProtoConfig {
                 mutable_bitField0_ |= 0x00000020;
               }
               configSavedTXData_.add(input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.PARSER, extensionRegistry));
+              break;
+            }
+            case 74: {
+              authenticator.protobuf.ProtoSettings.ConfigSettings.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000010) == 0x00000010)) {
+                subBuilder = configSettings_.toBuilder();
+              }
+              configSettings_ = input.readMessage(authenticator.protobuf.ProtoSettings.ConfigSettings.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(configSettings_);
+                configSettings_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000010;
               break;
             }
           }
@@ -10725,7 +10752,7 @@ public final class ProtoConfig {
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      *
      * <pre>
-     *optional ConfigAddressBook configAddressBook 					= 4;
+     *optional ConfigAddressBook 		configAddressBook 					= 4;
      * </pre>
      */
     public boolean hasConfigOneNameProfile() {
@@ -10735,7 +10762,7 @@ public final class ProtoConfig {
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      *
      * <pre>
-     *optional ConfigAddressBook configAddressBook 					= 4;
+     *optional ConfigAddressBook 		configAddressBook 					= 4;
      * </pre>
      */
     public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getConfigOneNameProfile() {
@@ -10745,7 +10772,7 @@ public final class ProtoConfig {
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      *
      * <pre>
-     *optional ConfigAddressBook configAddressBook 					= 4;
+     *optional ConfigAddressBook 		configAddressBook 					= 4;
      * </pre>
      */
     public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder() {
@@ -10846,6 +10873,28 @@ public final class ProtoConfig {
       return configSavedTXData_.get(index);
     }
 
+    // required .authenticator.protobuf.ConfigSettings configSettings = 9;
+    public static final int CONFIGSETTINGS_FIELD_NUMBER = 9;
+    private authenticator.protobuf.ProtoSettings.ConfigSettings configSettings_;
+    /**
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     */
+    public boolean hasConfigSettings() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     */
+    public authenticator.protobuf.ProtoSettings.ConfigSettings getConfigSettings() {
+      return configSettings_;
+    }
+    /**
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     */
+    public authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
+      return configSettings_;
+    }
+
     private void initFields() {
       configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
       configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
@@ -10853,6 +10902,7 @@ public final class ProtoConfig {
       configHierarchy_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
       configAccounts_ = java.util.Collections.emptyList();
       configSavedTXData_ = java.util.Collections.emptyList();
+      configSettings_ = authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10860,6 +10910,10 @@ public final class ProtoConfig {
       if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasConfigHierarchy()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasConfigSettings()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -10897,6 +10951,10 @@ public final class ProtoConfig {
           return false;
         }
       }
+      if (!getConfigSettings().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -10921,6 +10979,9 @@ public final class ProtoConfig {
       }
       for (int i = 0; i < configSavedTXData_.size(); i++) {
         output.writeMessage(8, configSavedTXData_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeMessage(9, configSettings_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10954,6 +11015,10 @@ public final class ProtoConfig {
       for (int i = 0; i < configSavedTXData_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, configSavedTXData_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, configSettings_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -11069,6 +11134,7 @@ public final class ProtoConfig {
           getConfigHierarchyFieldBuilder();
           getConfigAccountsFieldBuilder();
           getConfigSavedTXDataFieldBuilder();
+          getConfigSettingsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -11113,6 +11179,12 @@ public final class ProtoConfig {
         } else {
           configSavedTXDataBuilder_.clear();
         }
+        if (configSettingsBuilder_ == null) {
+          configSettings_ = authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
+        } else {
+          configSettingsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -11190,6 +11262,14 @@ public final class ProtoConfig {
           result.configSavedTXData_ = configSavedTXData_;
         } else {
           result.configSavedTXData_ = configSavedTXDataBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        if (configSettingsBuilder_ == null) {
+          result.configSettings_ = configSettings_;
+        } else {
+          result.configSettings_ = configSettingsBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -11271,12 +11351,19 @@ public final class ProtoConfig {
             }
           }
         }
+        if (other.hasConfigSettings()) {
+          mergeConfigSettings(other.getConfigSettings());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasConfigHierarchy()) {
+          
+          return false;
+        }
+        if (!hasConfigSettings()) {
           
           return false;
         }
@@ -11313,6 +11400,10 @@ public final class ProtoConfig {
             
             return false;
           }
+        }
+        if (!getConfigSettings().isInitialized()) {
+          
+          return false;
         }
         return true;
       }
@@ -11578,7 +11669,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public boolean hasConfigOneNameProfile() {
@@ -11588,7 +11679,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getConfigOneNameProfile() {
@@ -11602,7 +11693,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public Builder setConfigOneNameProfile(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile value) {
@@ -11622,7 +11713,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public Builder setConfigOneNameProfile(
@@ -11640,7 +11731,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public Builder mergeConfigOneNameProfile(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile value) {
@@ -11663,7 +11754,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public Builder clearConfigOneNameProfile() {
@@ -11680,7 +11771,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder getConfigOneNameProfileBuilder() {
@@ -11692,7 +11783,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder() {
@@ -11706,7 +11797,7 @@ public final class ProtoConfig {
        * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
        *
        * <pre>
-       *optional ConfigAddressBook configAddressBook 					= 4;
+       *optional ConfigAddressBook 		configAddressBook 					= 4;
        * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
@@ -12320,6 +12411,123 @@ public final class ProtoConfig {
         return configSavedTXDataBuilder_;
       }
 
+      // required .authenticator.protobuf.ConfigSettings configSettings = 9;
+      private authenticator.protobuf.ProtoSettings.ConfigSettings configSettings_ = authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoSettings.ConfigSettings, authenticator.protobuf.ProtoSettings.ConfigSettings.Builder, authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder> configSettingsBuilder_;
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public boolean hasConfigSettings() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public authenticator.protobuf.ProtoSettings.ConfigSettings getConfigSettings() {
+        if (configSettingsBuilder_ == null) {
+          return configSettings_;
+        } else {
+          return configSettingsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public Builder setConfigSettings(authenticator.protobuf.ProtoSettings.ConfigSettings value) {
+        if (configSettingsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configSettings_ = value;
+          onChanged();
+        } else {
+          configSettingsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000040;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public Builder setConfigSettings(
+          authenticator.protobuf.ProtoSettings.ConfigSettings.Builder builderForValue) {
+        if (configSettingsBuilder_ == null) {
+          configSettings_ = builderForValue.build();
+          onChanged();
+        } else {
+          configSettingsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000040;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public Builder mergeConfigSettings(authenticator.protobuf.ProtoSettings.ConfigSettings value) {
+        if (configSettingsBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+              configSettings_ != authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance()) {
+            configSettings_ =
+              authenticator.protobuf.ProtoSettings.ConfigSettings.newBuilder(configSettings_).mergeFrom(value).buildPartial();
+          } else {
+            configSettings_ = value;
+          }
+          onChanged();
+        } else {
+          configSettingsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000040;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public Builder clearConfigSettings() {
+        if (configSettingsBuilder_ == null) {
+          configSettings_ = authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
+          onChanged();
+        } else {
+          configSettingsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public authenticator.protobuf.ProtoSettings.ConfigSettings.Builder getConfigSettingsBuilder() {
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return getConfigSettingsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      public authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
+        if (configSettingsBuilder_ != null) {
+          return configSettingsBuilder_.getMessageOrBuilder();
+        } else {
+          return configSettings_;
+        }
+      }
+      /**
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoSettings.ConfigSettings, authenticator.protobuf.ProtoSettings.ConfigSettings.Builder, authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder> 
+          getConfigSettingsFieldBuilder() {
+        if (configSettingsBuilder_ == null) {
+          configSettingsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoSettings.ConfigSettings, authenticator.protobuf.ProtoSettings.ConfigSettings.Builder, authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder>(
+                  configSettings_,
+                  getParentForChildren(),
+                  isClean());
+          configSettings_ = null;
+        }
+        return configSettingsBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration)
     }
 
@@ -12396,71 +12604,74 @@ public final class ProtoConfig {
   static {
     java.lang.String[] descriptorData = {
       "\n\014config.proto\022\026authenticator.protobuf\032\031" +
-      "AuthWalletHierarchy.proto\"\224\001\n\tATAddress\022" +
-      "\024\n\014accountIndex\030\001 \001(\005\022\020\n\010keyIndex\030\002 \001(\005\022" +
-      "\022\n\naddressStr\030\003 \002(\t\022\016\n\006isUsed\030\004 \001(\010\022;\n\004t" +
-      "ype\030\005 \001(\0162-.authenticator.protobuf.Hiera" +
-      "rchyAddressTypes\"\262\001\n\023PairedAuthenticator" +
-      "\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_public_key\030\002" +
-      " \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n" +
-      "\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 \002(\010\022\016\n\006key" +
-      "s_n\030\007 \002(\005\022\032\n\022walletAccountIndex\030\n \002(\005\"\334\003",
-      "\n\016PendingRequest\022\021\n\tpairingID\030\001 \002(\t\022\021\n\tr" +
-      "equestID\030\002 \002(\t\022>\n\roperationType\030\003 \002(\0162\'." +
-      "authenticator.protobuf.ATOperationType\022\r" +
-      "\n\005rawTx\030\004 \001(\t\022\017\n\007txLabel\030\005 \001(\t\022 \n\030txDest" +
-      "inationDescription\030\006 \001(\t\022\027\n\017payloadIncom" +
-      "ing\030\007 \001(\014\022\'\n\037payloadToSendInCaseOfConnec" +
-      "tion\030\010 \001(\014\022A\n\010contract\030\t \002(\0132/.authentic" +
-      "ator.protobuf.PendingRequest.Contract\032\234\001" +
-      "\n\010Contract\022%\n\035ShouldSendPayloadOnConnect" +
-      "ion\030\001 \001(\010\022;\n3ShouldReceivePayloadAfterSe",
-      "ndingPayloadOnConnection\030\002 \001(\010\022,\n$Should" +
-      "LetPendingRequestHandleRemoval\030\003 \001(\010\"\275\013\n" +
-      "\032AuthenticatorConfiguration\022c\n\023configAct" +
-      "iveAccount\030\001 \001(\0132F.authenticator.protobu" +
-      "f.AuthenticatorConfiguration.ConfigActiv" +
-      "eAccount\022o\n\031configAuthenticatorWallet\030\002 " +
-      "\001(\0132L.authenticator.protobuf.Authenticat" +
-      "orConfiguration.ConfigAuthenticatorWalle" +
-      "t\022e\n\024configOneNameProfile\030\005 \001(\0132G.authen" +
-      "ticator.protobuf.AuthenticatorConfigurat",
-      "ion.ConfigOneNameProfile\022U\n\017ConfigHierar" +
-      "chy\030\006 \002(\0132<.authenticator.protobuf.Authe" +
-      "nticatorConfiguration.Hierarchy\022T\n\016confi" +
-      "gAccounts\030\007 \003(\0132<.authenticator.protobuf" +
-      ".AuthenticatorConfiguration.ATAccount\022U\n" +
-      "\021configSavedTXData\030\010 \003(\0132:.authenticator" +
-      ".protobuf.AuthenticatorConfiguration.Sav" +
-      "edTX\032\264\001\n\023ConfigActiveAccount\022H\n\023pairedAu" +
-      "thenticator\030\001 \001(\0132+.authenticator.protob" +
-      "uf.PairedAuthenticator\022S\n\ractiveAccount\030",
-      "\002 \002(\0132<.authenticator.protobuf.Authentic" +
-      "atorConfiguration.ATAccount\032\260\001\n\031ConfigAu" +
-      "thenticatorWallet\022\016\n\006paired\030\001 \001(\010\022B\n\rpai" +
-      "redWallets\030\002 \003(\0132+.authenticator.protobu" +
-      "f.PairedAuthenticator\022?\n\017pendingRequests" +
-      "\030\003 \003(\0132&.authenticator.protobuf.PendingR" +
-      "equest\032z\n\024ConfigOneNameProfile\022\017\n\007onenam" +
-      "e\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(\t\022\030\n\020one" +
-      "nameAvatarURL\030\003 \001(\t\022\035\n\025onenameAvatarFile" +
-      "Path\030\004 \001(\t\032\356\001\n\tATAccount\022\r\n\005index\030\001 \002(\005\022",
-      "\030\n\020usedExternalKeys\030\003 \003(\005\022\030\n\020usedInterna" +
-      "lKeys\030\005 \003(\005\022\030\n\020confirmedBalance\030\006 \002(\022\022\032\n" +
-      "\022unConfirmedBalance\030\007 \002(\022\022\023\n\013networkType" +
-      "\030\n \002(\005\022>\n\013accountType\030\013 \002(\0162).authentica" +
-      "tor.protobuf.WalletAccountType\022\023\n\013accoun" +
-      "tName\030\014 \002(\t\032I\n\tHierarchy\022 \n\030hierarchyMas" +
-      "terPublicKey\030\001 \002(\014\022\032\n\022hierarchyChaincode" +
-      "\030\002 \002(\014\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFro" +
-      "m\030\002 \001(\t\022\023\n\013description\030\003 \001(\t*;\n\020ATGCMMes" +
-      "sageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingReq",
-      "uestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing" +
-      "\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAuthen" +
-      "ticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#up" +
-      "dateIpAddressesForPreviousMessage\020\004*B\n\021W" +
-      "alletAccountType\022\023\n\017StandardAccount\020\000\022\030\n" +
-      "\024AuthenticatorAccount\020\001B\rB\013ProtoConfig"
+      "AuthWalletHierarchy.proto\032\024configSetting" +
+      "s.proto\"\224\001\n\tATAddress\022\024\n\014accountIndex\030\001 " +
+      "\001(\005\022\020\n\010keyIndex\030\002 \001(\005\022\022\n\naddressStr\030\003 \002(" +
+      "\t\022\016\n\006isUsed\030\004 \001(\010\022;\n\004type\030\005 \001(\0162-.authen" +
+      "ticator.protobuf.HierarchyAddressTypes\"\262" +
+      "\001\n\023PairedAuthenticator\022\017\n\007aes_key\030\001 \002(\t\022" +
+      "\031\n\021master_public_key\030\002 \002(\t\022\022\n\nchain_code" +
+      "\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t\022\017" +
+      "\n\007testnet\030\006 \002(\010\022\016\n\006keys_n\030\007 \002(\005\022\032\n\022walle",
+      "tAccountIndex\030\n \002(\005\"\334\003\n\016PendingRequest\022\021" +
+      "\n\tpairingID\030\001 \002(\t\022\021\n\trequestID\030\002 \002(\t\022>\n\r" +
+      "operationType\030\003 \002(\0162\'.authenticator.prot" +
+      "obuf.ATOperationType\022\r\n\005rawTx\030\004 \001(\t\022\017\n\007t" +
+      "xLabel\030\005 \001(\t\022 \n\030txDestinationDescription" +
+      "\030\006 \001(\t\022\027\n\017payloadIncoming\030\007 \001(\014\022\'\n\037paylo" +
+      "adToSendInCaseOfConnection\030\010 \001(\014\022A\n\010cont" +
+      "ract\030\t \002(\0132/.authenticator.protobuf.Pend" +
+      "ingRequest.Contract\032\234\001\n\010Contract\022%\n\035Shou" +
+      "ldSendPayloadOnConnection\030\001 \001(\010\022;\n3Shoul",
+      "dReceivePayloadAfterSendingPayloadOnConn" +
+      "ection\030\002 \001(\010\022,\n$ShouldLetPendingRequestH" +
+      "andleRemoval\030\003 \001(\010\"\375\013\n\032AuthenticatorConf" +
+      "iguration\022c\n\023configActiveAccount\030\001 \001(\0132F" +
+      ".authenticator.protobuf.AuthenticatorCon" +
+      "figuration.ConfigActiveAccount\022o\n\031config" +
+      "AuthenticatorWallet\030\002 \001(\0132L.authenticato" +
+      "r.protobuf.AuthenticatorConfiguration.Co" +
+      "nfigAuthenticatorWallet\022e\n\024configOneName" +
+      "Profile\030\005 \001(\0132G.authenticator.protobuf.A",
+      "uthenticatorConfiguration.ConfigOneNameP" +
+      "rofile\022U\n\017ConfigHierarchy\030\006 \002(\0132<.authen" +
+      "ticator.protobuf.AuthenticatorConfigurat" +
+      "ion.Hierarchy\022T\n\016configAccounts\030\007 \003(\0132<." +
+      "authenticator.protobuf.AuthenticatorConf" +
+      "iguration.ATAccount\022U\n\021configSavedTXData" +
+      "\030\010 \003(\0132:.authenticator.protobuf.Authenti" +
+      "catorConfiguration.SavedTX\022>\n\016configSett" +
+      "ings\030\t \002(\0132&.authenticator.protobuf.Conf" +
+      "igSettings\032\264\001\n\023ConfigActiveAccount\022H\n\023pa",
+      "iredAuthenticator\030\001 \001(\0132+.authenticator." +
+      "protobuf.PairedAuthenticator\022S\n\ractiveAc" +
+      "count\030\002 \002(\0132<.authenticator.protobuf.Aut" +
+      "henticatorConfiguration.ATAccount\032\260\001\n\031Co" +
+      "nfigAuthenticatorWallet\022\016\n\006paired\030\001 \001(\010\022" +
+      "B\n\rpairedWallets\030\002 \003(\0132+.authenticator.p" +
+      "rotobuf.PairedAuthenticator\022?\n\017pendingRe" +
+      "quests\030\003 \003(\0132&.authenticator.protobuf.Pe" +
+      "ndingRequest\032z\n\024ConfigOneNameProfile\022\017\n\007" +
+      "onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(\t\022",
+      "\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAvat" +
+      "arFilePath\030\004 \001(\t\032\356\001\n\tATAccount\022\r\n\005index\030" +
+      "\001 \002(\005\022\030\n\020usedExternalKeys\030\003 \003(\005\022\030\n\020usedI" +
+      "nternalKeys\030\005 \003(\005\022\030\n\020confirmedBalance\030\006 " +
+      "\002(\022\022\032\n\022unConfirmedBalance\030\007 \002(\022\022\023\n\013netwo" +
+      "rkType\030\n \002(\005\022>\n\013accountType\030\013 \002(\0162).auth" +
+      "enticator.protobuf.WalletAccountType\022\023\n\013" +
+      "accountName\030\014 \002(\t\032I\n\tHierarchy\022 \n\030hierar" +
+      "chyMasterPublicKey\030\001 \002(\014\022\032\n\022hierarchyCha" +
+      "incode\030\002 \002(\014\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n",
+      "\006toFrom\030\002 \001(\t\022\023\n\013description\030\003 \001(\t*;\n\020AT" +
+      "GCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePend" +
+      "ingRequestIPs\020\004*\217\001\n\017ATOperationType\022\013\n\007P" +
+      "airing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcast" +
+      "AuthenticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003" +
+      "\022\'\n#updateIpAddressesForPreviousMessage\020" +
+      "\004*B\n\021WalletAccountType\022\023\n\017StandardAccoun" +
+      "t\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013ProtoCo" +
+      "nfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12496,7 +12707,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
-              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigHierarchy", "ConfigAccounts", "ConfigSavedTXData", });
+              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigHierarchy", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
@@ -12540,6 +12751,7 @@ public final class ProtoConfig {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           authenticator.protobuf.AuthWalletHierarchy.getDescriptor(),
+          authenticator.protobuf.ProtoSettings.getDescriptor(),
         }, assigner);
   }
 

@@ -3,6 +3,7 @@ package authenticator.protobuf;
 option java_outer_classname="ProtoConfig";
 
 import "AuthWalletHierarchy.proto";
+import "configSettings.proto";
 
 enum ATGCMMessageType{
 	SignTX 					= 2;
@@ -141,11 +142,12 @@ message AuthenticatorConfiguration{
 		optional string description    = 3;
 	}
 
-	optional ConfigActiveAccount configActiveAccount 				= 1;
-	optional ConfigAuthenticatorWallet configAuthenticatorWallet	= 2;
-	//optional ConfigAddressBook configAddressBook 					= 4;
-	optional ConfigOneNameProfile configOneNameProfile				= 5;
-	required Hierarchy ConfigHierarchy								= 6;
-	repeated ATAccount configAccounts								= 7;
-	repeated SavedTX configSavedTXData                              = 8;	
+	optional ConfigActiveAccount 		configActiveAccount 				= 1;
+	optional ConfigAuthenticatorWallet 	configAuthenticatorWallet			= 2;
+	//optional ConfigAddressBook 		configAddressBook 					= 4;
+	optional ConfigOneNameProfile 		configOneNameProfile				= 5;
+	required Hierarchy 					ConfigHierarchy						= 6;
+	repeated ATAccount 					configAccounts						= 7;
+	repeated SavedTX 					configSavedTXData                   = 8;	
+	required ConfigSettings 			configSettings						= 9;
 }

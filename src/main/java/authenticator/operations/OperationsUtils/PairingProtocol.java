@@ -15,7 +15,7 @@ import org.json.simple.parser.ParseException;
 
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.EncodingUtils;
-import authenticator.db.ConfigFile;
+import authenticator.db.walletDB;
 import authenticator.network.BANeworkInfo;
 import authenticator.network.UpNp;
 import authenticator.operations.OnOperationUIUpdate;

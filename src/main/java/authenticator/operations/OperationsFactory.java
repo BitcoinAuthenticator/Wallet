@@ -64,7 +64,7 @@ import authenticator.BASE;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
-import authenticator.db.ConfigFile;
+import authenticator.db.walletDB;
 import authenticator.network.BANeworkInfo;
 import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
@@ -267,7 +267,7 @@ public class OperationsFactory extends BASE{
 										AuthSigs,
 										po);
 								staticLooger.info("Signed Tx - " + EncodingUtils.getStringTransaction(tx));
-								ConfigFile config = Authenticator.getWalletOperation().configFile;
+								walletDB config = Authenticator.getWalletOperation().configFile;
 								if (pendigReq.hasTxLabel() && pendigReq.hasTxDestinationDescription()){
 									try {config.writeNextSavedTxData(tx.getHashAsString(), pendigReq.getTxDestinationDescription(), pendigReq.getTxLabel());}
 									catch (IOException e) {e.printStackTrace();}
@@ -403,7 +403,7 @@ public class OperationsFactory extends BASE{
 					throws Exception {
 				try{
 					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
-					ConfigFile config = Authenticator.getWalletOperation().configFile;
+					walletDB config = Authenticator.getWalletOperation().configFile;
 					if (!txLabel.isEmpty()){
 						try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}
 						catch (IOException e) {e.printStackTrace();}

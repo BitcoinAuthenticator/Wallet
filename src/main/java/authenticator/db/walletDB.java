@@ -33,16 +33,10 @@ import com.google.protobuf.ByteString;
 
 import wallettemplate.Main;
 
-public class ConfigFile {
+public class walletDB extends dbBase{
 
-	static public String filePath;
-
-	/**
-	 * 
-	 * @throws IOException
-	 */
-	public ConfigFile(String appName) throws IOException{
-		filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appName + ".config";
+	public walletDB(String appName) throws IOException{
+		super(appName);
 	}
 
 	private synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {

@@ -3,7 +3,7 @@ package wallettemplate;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
-import authenticator.db.ConfigFile;
+import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
 
@@ -178,7 +178,7 @@ public class Main extends BAApplication {
          * Authenticator Operation Setup
          */
         
-        ConfigFile config = new ConfigFile(BAApplication.ApplicationParams.getAppName());
+        walletDB config = new walletDB(BAApplication.ApplicationParams.getAppName());
     	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params, config.getHierarchyPubKey());
     	auth.startAsync();
     	controller.onAuthenticatorSetup();
