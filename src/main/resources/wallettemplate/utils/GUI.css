@@ -74,6 +74,7 @@
 	-fx-background-radius: 2em;
 }
 
+
 .progress-bar .track {
 	-fx-background-color: #d9dee1;
 	-fx-background-radius: .3em;
@@ -168,6 +169,20 @@
 .choice-box .context-menu .label {
   -fx-font-size: 16px;
   -fx-text-fill: #767676;
+}
+
+.choice-box-settings {
+    -fx-background-color: #FFFFFF;  
+    -fx-font-size: 12px;
+}
+
+.choice-box-settings .label {
+	-fx-text-fill: #0000000;
+}
+
+.choice-box-settings .context-menu .label {
+  -fx-font-size: 12px;
+  -fx-text-fill: #0000000;
 }
 
 .choice-box-account {

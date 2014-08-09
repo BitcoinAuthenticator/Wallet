@@ -20,6 +20,6 @@
         <Button fx:id="done" layoutX="776.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" text="Close" />
       </children>
     </Pane>
-    <WebView fx:id="webView" layoutX="-1.0" layoutY="41.0" prefHeight="442.0" prefWidth="851.0" style=" -fx-background-color: transparent;" />
+    <WebView fx:id="webView" layoutX="-1.0" layoutY="41.0" prefHeight="442.0" prefWidth="851.0" style=" -fx-background-color: transparent;" styleClass="scroll-bar-wv"/>
   </children>
 </AnchorPane>
