@@ -23,6 +23,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet;
+import authenticator.protobuf.ProtoSettings.ConfigSettings;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
@@ -77,7 +78,8 @@ public class walletDB extends dbBase{
 		auth.getConfigHierarchyBuilder().setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
 		auth.getConfigHierarchyBuilder().setHierarchyChaincode(ByteString.copyFrom(chaincode));
 		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
-		//auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(0);
+		ConfigSettings.Builder b = ConfigSettings.newBuilder();
+		auth.setConfigSettings(b);
 		writeConfigFile(auth);
 	}
 

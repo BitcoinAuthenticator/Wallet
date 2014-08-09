@@ -184,54 +184,54 @@ public final class ProtoSettings {
   public interface ConfigSettingsOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
+    // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
     /**
-     * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
      */
     boolean hasAccountUnit();
     /**
-     * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
      */
     authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit();
 
-    // required int32 decimalPoints = 2 [default = 2];
+    // optional int32 decimalPoints = 2 [default = 2];
     /**
-     * <code>required int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
      */
     boolean hasDecimalPoints();
     /**
-     * <code>required int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
      */
     int getDecimalPoints();
 
-    // required string localCurrencySymbol = 3 [default = "USD"];
+    // optional string localCurrencySymbol = 3 [default = "USD"];
     /**
-     * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+     * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
      */
     boolean hasLocalCurrencySymbol();
     /**
-     * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+     * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
      */
     java.lang.String getLocalCurrencySymbol();
     /**
-     * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+     * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
      */
     com.google.protobuf.ByteString
         getLocalCurrencySymbolBytes();
 
-    // required .authenticator.protobuf.Languages language = 4 [default = English];
+    // optional .authenticator.protobuf.Languages language = 4 [default = English];
     /**
-     * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+     * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
      */
     boolean hasLanguage();
     /**
-     * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+     * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
      */
     authenticator.protobuf.ProtoSettings.Languages getLanguage();
 
-    // required int32 defaultFee = 5 [default = 10000];
+    // optional int32 defaultFee = 5 [default = 10000];
     /**
-     * <code>required int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
      * in satoshies
@@ -239,7 +239,7 @@ public final class ProtoSettings {
      */
     boolean hasDefaultFee();
     /**
-     * <code>required int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
      * in satoshies
@@ -247,9 +247,9 @@ public final class ProtoSettings {
      */
     int getDefaultFee();
 
-    // required bool TOR = 6 [default = true];
+    // optional bool TOR = 6 [default = true];
     /**
-     * <code>required bool TOR = 6 [default = true];</code>
+     * <code>optional bool TOR = 6 [default = true];</code>
      *
      * <pre>
      * flags
@@ -257,7 +257,7 @@ public final class ProtoSettings {
      */
     boolean hasTOR();
     /**
-     * <code>required bool TOR = 6 [default = true];</code>
+     * <code>optional bool TOR = 6 [default = true];</code>
      *
      * <pre>
      * flags
@@ -265,23 +265,23 @@ public final class ProtoSettings {
      */
     boolean getTOR();
 
-    // required bool connectOnLocalHost = 7 [default = false];
+    // optional bool connectOnLocalHost = 7 [default = false];
     /**
-     * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+     * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
      */
     boolean hasConnectOnLocalHost();
     /**
-     * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+     * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
      */
     boolean getConnectOnLocalHost();
 
-    // required bool connectToTrustedPeer = 8 [default = false];
+    // optional bool connectToTrustedPeer = 8 [default = false];
     /**
-     * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+     * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
      */
     boolean hasConnectToTrustedPeer();
     /**
-     * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+     * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
      */
     boolean getConnectToTrustedPeer();
 
@@ -463,49 +463,49 @@ public final class ProtoSettings {
     }
 
     private int bitField0_;
-    // required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
+    // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
     public static final int ACCOUNTUNIT_FIELD_NUMBER = 1;
     private authenticator.protobuf.ProtoSettings.BitcoinUnit accountUnit_;
     /**
-     * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
      */
     public boolean hasAccountUnit() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
      */
     public authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit() {
       return accountUnit_;
     }
 
-    // required int32 decimalPoints = 2 [default = 2];
+    // optional int32 decimalPoints = 2 [default = 2];
     public static final int DECIMALPOINTS_FIELD_NUMBER = 2;
     private int decimalPoints_;
     /**
-     * <code>required int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
      */
     public boolean hasDecimalPoints() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
      */
     public int getDecimalPoints() {
       return decimalPoints_;
     }
 
-    // required string localCurrencySymbol = 3 [default = "USD"];
+    // optional string localCurrencySymbol = 3 [default = "USD"];
     public static final int LOCALCURRENCYSYMBOL_FIELD_NUMBER = 3;
     private java.lang.Object localCurrencySymbol_;
     /**
-     * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+     * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
      */
     public boolean hasLocalCurrencySymbol() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+     * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
      */
     public java.lang.String getLocalCurrencySymbol() {
       java.lang.Object ref = localCurrencySymbol_;
@@ -522,7 +522,7 @@ public final class ProtoSettings {
       }
     }
     /**
-     * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+     * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
      */
     public com.google.protobuf.ByteString
         getLocalCurrencySymbolBytes() {
@@ -538,27 +538,27 @@ public final class ProtoSettings {
       }
     }
 
-    // required .authenticator.protobuf.Languages language = 4 [default = English];
+    // optional .authenticator.protobuf.Languages language = 4 [default = English];
     public static final int LANGUAGE_FIELD_NUMBER = 4;
     private authenticator.protobuf.ProtoSettings.Languages language_;
     /**
-     * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+     * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
      */
     public boolean hasLanguage() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+     * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
      */
     public authenticator.protobuf.ProtoSettings.Languages getLanguage() {
       return language_;
     }
 
-    // required int32 defaultFee = 5 [default = 10000];
+    // optional int32 defaultFee = 5 [default = 10000];
     public static final int DEFAULTFEE_FIELD_NUMBER = 5;
     private int defaultFee_;
     /**
-     * <code>required int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
      * in satoshies
@@ -568,7 +568,7 @@ public final class ProtoSettings {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>required int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
      * in satoshies
@@ -578,11 +578,11 @@ public final class ProtoSettings {
       return defaultFee_;
     }
 
-    // required bool TOR = 6 [default = true];
+    // optional bool TOR = 6 [default = true];
     public static final int TOR_FIELD_NUMBER = 6;
     private boolean tOR_;
     /**
-     * <code>required bool TOR = 6 [default = true];</code>
+     * <code>optional bool TOR = 6 [default = true];</code>
      *
      * <pre>
      * flags
@@ -592,7 +592,7 @@ public final class ProtoSettings {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>required bool TOR = 6 [default = true];</code>
+     * <code>optional bool TOR = 6 [default = true];</code>
      *
      * <pre>
      * flags
@@ -602,33 +602,33 @@ public final class ProtoSettings {
       return tOR_;
     }
 
-    // required bool connectOnLocalHost = 7 [default = false];
+    // optional bool connectOnLocalHost = 7 [default = false];
     public static final int CONNECTONLOCALHOST_FIELD_NUMBER = 7;
     private boolean connectOnLocalHost_;
     /**
-     * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+     * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
      */
     public boolean hasConnectOnLocalHost() {
       return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+     * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
      */
     public boolean getConnectOnLocalHost() {
       return connectOnLocalHost_;
     }
 
-    // required bool connectToTrustedPeer = 8 [default = false];
+    // optional bool connectToTrustedPeer = 8 [default = false];
     public static final int CONNECTTOTRUSTEDPEER_FIELD_NUMBER = 8;
     private boolean connectToTrustedPeer_;
     /**
-     * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+     * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
      */
     public boolean hasConnectToTrustedPeer() {
       return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
-     * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+     * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
      */
     public boolean getConnectToTrustedPeer() {
       return connectToTrustedPeer_;
@@ -710,38 +710,6 @@ public final class ProtoSettings {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasAccountUnit()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasDecimalPoints()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasLocalCurrencySymbol()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasLanguage()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasDefaultFee()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasTOR()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasConnectOnLocalHost()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasConnectToTrustedPeer()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -1087,38 +1055,6 @@ public final class ProtoSettings {
       }
 
       public final boolean isInitialized() {
-        if (!hasAccountUnit()) {
-          
-          return false;
-        }
-        if (!hasDecimalPoints()) {
-          
-          return false;
-        }
-        if (!hasLocalCurrencySymbol()) {
-          
-          return false;
-        }
-        if (!hasLanguage()) {
-          
-          return false;
-        }
-        if (!hasDefaultFee()) {
-          
-          return false;
-        }
-        if (!hasTOR()) {
-          
-          return false;
-        }
-        if (!hasConnectOnLocalHost()) {
-          
-          return false;
-        }
-        if (!hasConnectToTrustedPeer()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -1141,22 +1077,22 @@ public final class ProtoSettings {
       }
       private int bitField0_;
 
-      // required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
+      // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
       private authenticator.protobuf.ProtoSettings.BitcoinUnit accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.Bits;
       /**
-       * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
        */
       public boolean hasAccountUnit() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
        */
       public authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit() {
         return accountUnit_;
       }
       /**
-       * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
        */
       public Builder setAccountUnit(authenticator.protobuf.ProtoSettings.BitcoinUnit value) {
         if (value == null) {
@@ -1168,7 +1104,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
        */
       public Builder clearAccountUnit() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1177,22 +1113,22 @@ public final class ProtoSettings {
         return this;
       }
 
-      // required int32 decimalPoints = 2 [default = 2];
+      // optional int32 decimalPoints = 2 [default = 2];
       private int decimalPoints_ = 2;
       /**
-       * <code>required int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
        */
       public boolean hasDecimalPoints() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
        */
       public int getDecimalPoints() {
         return decimalPoints_;
       }
       /**
-       * <code>required int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
        */
       public Builder setDecimalPoints(int value) {
         bitField0_ |= 0x00000002;
@@ -1201,7 +1137,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
        */
       public Builder clearDecimalPoints() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1210,16 +1146,16 @@ public final class ProtoSettings {
         return this;
       }
 
-      // required string localCurrencySymbol = 3 [default = "USD"];
+      // optional string localCurrencySymbol = 3 [default = "USD"];
       private java.lang.Object localCurrencySymbol_ = "USD";
       /**
-       * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+       * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
        */
       public boolean hasLocalCurrencySymbol() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+       * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
        */
       public java.lang.String getLocalCurrencySymbol() {
         java.lang.Object ref = localCurrencySymbol_;
@@ -1233,7 +1169,7 @@ public final class ProtoSettings {
         }
       }
       /**
-       * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+       * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
        */
       public com.google.protobuf.ByteString
           getLocalCurrencySymbolBytes() {
@@ -1249,7 +1185,7 @@ public final class ProtoSettings {
         }
       }
       /**
-       * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+       * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
        */
       public Builder setLocalCurrencySymbol(
           java.lang.String value) {
@@ -1262,7 +1198,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+       * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
        */
       public Builder clearLocalCurrencySymbol() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1271,7 +1207,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required string localCurrencySymbol = 3 [default = "USD"];</code>
+       * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
        */
       public Builder setLocalCurrencySymbolBytes(
           com.google.protobuf.ByteString value) {
@@ -1284,22 +1220,22 @@ public final class ProtoSettings {
         return this;
       }
 
-      // required .authenticator.protobuf.Languages language = 4 [default = English];
+      // optional .authenticator.protobuf.Languages language = 4 [default = English];
       private authenticator.protobuf.ProtoSettings.Languages language_ = authenticator.protobuf.ProtoSettings.Languages.English;
       /**
-       * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+       * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
        */
       public boolean hasLanguage() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+       * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
        */
       public authenticator.protobuf.ProtoSettings.Languages getLanguage() {
         return language_;
       }
       /**
-       * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+       * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
        */
       public Builder setLanguage(authenticator.protobuf.ProtoSettings.Languages value) {
         if (value == null) {
@@ -1311,7 +1247,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required .authenticator.protobuf.Languages language = 4 [default = English];</code>
+       * <code>optional .authenticator.protobuf.Languages language = 4 [default = English];</code>
        */
       public Builder clearLanguage() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1320,10 +1256,10 @@ public final class ProtoSettings {
         return this;
       }
 
-      // required int32 defaultFee = 5 [default = 10000];
+      // optional int32 defaultFee = 5 [default = 10000];
       private int defaultFee_ = 10000;
       /**
-       * <code>required int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
        * in satoshies
@@ -1333,7 +1269,7 @@ public final class ProtoSettings {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>required int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
        * in satoshies
@@ -1343,7 +1279,7 @@ public final class ProtoSettings {
         return defaultFee_;
       }
       /**
-       * <code>required int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
        * in satoshies
@@ -1356,7 +1292,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
        * in satoshies
@@ -1369,10 +1305,10 @@ public final class ProtoSettings {
         return this;
       }
 
-      // required bool TOR = 6 [default = true];
+      // optional bool TOR = 6 [default = true];
       private boolean tOR_ = true;
       /**
-       * <code>required bool TOR = 6 [default = true];</code>
+       * <code>optional bool TOR = 6 [default = true];</code>
        *
        * <pre>
        * flags
@@ -1382,7 +1318,7 @@ public final class ProtoSettings {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>required bool TOR = 6 [default = true];</code>
+       * <code>optional bool TOR = 6 [default = true];</code>
        *
        * <pre>
        * flags
@@ -1392,7 +1328,7 @@ public final class ProtoSettings {
         return tOR_;
       }
       /**
-       * <code>required bool TOR = 6 [default = true];</code>
+       * <code>optional bool TOR = 6 [default = true];</code>
        *
        * <pre>
        * flags
@@ -1405,7 +1341,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required bool TOR = 6 [default = true];</code>
+       * <code>optional bool TOR = 6 [default = true];</code>
        *
        * <pre>
        * flags
@@ -1418,22 +1354,22 @@ public final class ProtoSettings {
         return this;
       }
 
-      // required bool connectOnLocalHost = 7 [default = false];
+      // optional bool connectOnLocalHost = 7 [default = false];
       private boolean connectOnLocalHost_ ;
       /**
-       * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+       * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
        */
       public boolean hasConnectOnLocalHost() {
         return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+       * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
        */
       public boolean getConnectOnLocalHost() {
         return connectOnLocalHost_;
       }
       /**
-       * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+       * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
        */
       public Builder setConnectOnLocalHost(boolean value) {
         bitField0_ |= 0x00000040;
@@ -1442,7 +1378,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required bool connectOnLocalHost = 7 [default = false];</code>
+       * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
        */
       public Builder clearConnectOnLocalHost() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -1451,22 +1387,22 @@ public final class ProtoSettings {
         return this;
       }
 
-      // required bool connectToTrustedPeer = 8 [default = false];
+      // optional bool connectToTrustedPeer = 8 [default = false];
       private boolean connectToTrustedPeer_ ;
       /**
-       * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+       * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
        */
       public boolean hasConnectToTrustedPeer() {
         return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
-       * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+       * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
        */
       public boolean getConnectToTrustedPeer() {
         return connectToTrustedPeer_;
       }
       /**
-       * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+       * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
        */
       public Builder setConnectToTrustedPeer(boolean value) {
         bitField0_ |= 0x00000080;
@@ -1475,7 +1411,7 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>required bool connectToTrustedPeer = 8 [default = false];</code>
+       * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
        */
       public Builder clearConnectToTrustedPeer() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -1618,13 +1554,13 @@ public final class ProtoSettings {
     java.lang.String[] descriptorData = {
       "\n\024configSettings.proto\022\026authenticator.pr" +
       "otobuf\"\375\002\n\016ConfigSettings\022>\n\013accountUnit" +
-      "\030\001 \002(\0162#.authenticator.protobuf.BitcoinU" +
-      "nit:\004Bits\022\030\n\rdecimalPoints\030\002 \002(\005:\0012\022 \n\023l" +
-      "ocalCurrencySymbol\030\003 \002(\t:\003USD\022<\n\010languag" +
-      "e\030\004 \002(\0162!.authenticator.protobuf.Languag" +
-      "es:\007English\022\031\n\ndefaultFee\030\005 \002(\005:\00510000\022\021" +
-      "\n\003TOR\030\006 \002(\010:\004true\022!\n\022connectOnLocalHost\030" +
-      "\007 \002(\010:\005false\022#\n\024connectToTrustedPeer\030\010 \002" +
+      "\030\001 \001(\0162#.authenticator.protobuf.BitcoinU" +
+      "nit:\004Bits\022\030\n\rdecimalPoints\030\002 \001(\005:\0012\022 \n\023l" +
+      "ocalCurrencySymbol\030\003 \001(\t:\003USD\022<\n\010languag" +
+      "e\030\004 \001(\0162!.authenticator.protobuf.Languag" +
+      "es:\007English\022\031\n\ndefaultFee\030\005 \001(\005:\00510000\022\021" +
+      "\n\003TOR\030\006 \001(\010:\004true\022!\n\022connectOnLocalHost\030" +
+      "\007 \001(\010:\005false\022#\n\024connectToTrustedPeer\030\010 \001" +
       "(\010:\005false\022\025\n\rtrustedPeerIP\030\t \001(\t\022$\n\034bloo",
       "mFilterFalsePositiveRate\030\n \001(\002*=\n\013Bitcoi" +
       "nUnit\022\007\n\003BTC\020\000\022\010\n\004Bits\020\001\022\r\n\tMillibits\020\002\022" +

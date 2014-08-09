@@ -14,16 +14,16 @@ enum Languages{
 }
 
 message ConfigSettings{
-	required BitcoinUnit	 accountUnit 						= 1 [default = Bits];
-	required int32 			 decimalPoints 						= 2 [default = 2];
-	required string 		 localCurrencySymbol				= 3 [default = "USD"];
-	required Languages 		 language							= 4 [default = English];
-	required int32 			 defaultFee							= 5 [default = 10000]; // in satoshies
+	optional BitcoinUnit	 accountUnit 						= 1 [default = Bits];
+	optional int32 			 decimalPoints 						= 2 [default = 2];
+	optional string 		 localCurrencySymbol				= 3 [default = "USD"];
+	optional Languages 		 language							= 4 [default = English];
+	optional int32 			 defaultFee							= 5 [default = 10000]; // in satoshies
 	
 	// flags
-	required bool			 TOR								= 6 [default = true];
-	required bool			 connectOnLocalHost					= 7 [default = false];
-	required bool 			 connectToTrustedPeer				= 8 [default = false];
+	optional bool			 TOR								= 6 [default = true];
+	optional bool			 connectOnLocalHost					= 7 [default = false];
+	optional bool 			 connectToTrustedPeer				= 8 [default = false];
 	optional string			 trustedPeerIP						= 9;
 		
 	optional float			 bloomFilterFalsePositiveRate		= 10;
