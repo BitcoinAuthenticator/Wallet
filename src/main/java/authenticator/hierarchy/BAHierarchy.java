@@ -31,7 +31,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
   *
   */
  public class BAHierarchy{
-	static public final int keyLookAhead = 10; 
+	static public int keyLookAhead = 10; 
  	
  	DeterministicHierarchy hierarchy;
  	DeterministicKey rootKey;
@@ -83,10 +83,10 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	
  	public void buildWalletHierarchyForStartup(List<AccountTracker> tracker){
  		this.accountTracker = tracker;
-		recalculateNextAvailableAccountIndex();
+ 		calculateNextAvailableAccountIndex();
  	}
  	
- 	private void recalculateNextAvailableAccountIndex(){
+ 	private void calculateNextAvailableAccountIndex(){
  		int highestAccountIdx = 0;
  		for(AccountTracker acc: accountTracker){
  			if(acc.getAccountIndex() > highestAccountIdx)
@@ -183,22 +183,9 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	public AccountTracker addAccountToTracker(int index, int lookAhead){
  		AccountTracker at = new AccountTracker(index, lookAhead);
 		this.accountTracker.add(at);
-		recalculateNextAvailableAccountIndex();
+		calculateNextAvailableAccountIndex();
 		return at;
  	}
- 	
- 	/*private void bumpHeight(int accountIndex, HierarchyAddressTypes type){
- 		ChildNumber[] updr;
-		int accPlace = getAccountPlace(accountIndex);
-		ChildNumber[] x = accountsHeightsUsed.get(accPlace);
-		ChildNumber indx = x[type == HierarchyAddressTypes.External? 1:2];
-		
-	    if(type == HierarchyAddressTypes.External)
-	    	updr = new ChildNumber[]{x[0], new ChildNumber(indx.getI() +1, false), x[2]};
-	    else
-	    	updr = new ChildNumber[]{x[0], x[1], new ChildNumber(indx.getI() +1, false)};
-	    accountsHeightsUsed.set(accPlace, updr);
-	}*/
 	
 	private AccountTracker getAccountTracker(int accountIndex) throws NoAccountCouldBeFoundException{
 		for(int i=0;i<this.accountTracker.size();i++){
@@ -214,6 +201,14 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  		}
 		throw new NoAccountCouldBeFoundException("Could not find account");
  	}
+	
+	public void setKeyLookAhead(int value){
+		keyLookAhead = value;
+		for(AccountTracker a:accountTracker)
+		{
+			a.setKeylookahead(value);
+		}
+	}
  	
  	/**
  	 * This method implements BIP39 to generate a 512 bit seed from 128 bit checksummed entropy. The seed and the
@@ -251,7 +246,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		private List<Integer> usedInternalKeys;
 		
 		/**
-		 * Those trakcers are to return up to 10 fresh keys
+		 * Those trackers are to return up to #keyLookAhead fresh keys
 		 */
 		private List<ChildNumber> returnedExternalKeys;
 		private List<ChildNumber> returnedInternalKeys;
@@ -260,7 +255,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		
 		public AccountTracker(int accountIndex, int keyLookAhead){
 			this.accountIndex = accountIndex;
-			this.keyLookAhead = keyLookAhead;
+			setKeylookahead(keyLookAhead);
 			this.usedExternalKeys = new ArrayList<Integer>();
 			this.usedInternalKeys = new ArrayList<Integer>();
 			init();
@@ -268,7 +263,7 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		
 		public AccountTracker(int accountIndex, int keyLookAhead, List<Integer> usedExternalKeys, List<Integer> usedInternalKeys){
 			this.accountIndex = accountIndex;
-			this.keyLookAhead = keyLookAhead;
+			setKeylookahead(keyLookAhead);
 			this.usedExternalKeys = new ArrayList<Integer>(usedExternalKeys);
 			this.usedInternalKeys = new ArrayList<Integer>(usedInternalKeys);
 			init();
@@ -279,39 +274,40 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 			this.returnedInternalKeys = new ArrayList<ChildNumber>();
 		}
 		
+		public void setKeylookahead(int value){
+			this.keyLookAhead = value;
+		}
+		
 		public ChildNumber getUnusedExternalKey() throws NoUnusedKeyException{
-			ChildNumber ret;
-			if(returnedExternalKeys.size() < keyLookAhead){
-				ret = getUnusedKeyIndex(usedExternalKeys, returnedExternalKeys);
-				returnedExternalKeys.add(ret);
-			}
-			else{
-				ret = returnedExternalKeys.get(0);
-				returnedExternalKeys.clear();
-				returnedExternalKeys.add(ret);
-			}
-			
-			return ret;
+			return handleGetKey(usedExternalKeys, returnedExternalKeys);
 		}
 		
 		public ChildNumber getUnusedInternalKey() throws NoUnusedKeyException{
+			return handleGetKey(usedInternalKeys, returnedInternalKeys);
+		}
+		
+		private ChildNumber handleGetKey(List<Integer> usedKeyList, List<ChildNumber> returnedKeyList) throws NoUnusedKeyException{
 			ChildNumber ret;
-			if(returnedInternalKeys.size() < keyLookAhead){
-				ret = getUnusedKeyIndex(usedInternalKeys, returnedInternalKeys);
-				returnedInternalKeys.add(ret);
-			}
-			else{
-				ret = returnedInternalKeys.get(0);
-				returnedInternalKeys.clear();
-				returnedInternalKeys.add(ret);
-			}
+			/**
+			 * In case we reached our lookahead limit, clean the returned keys
+			 * trackers and start again. We empty them because some keys could be
+			 * marked as used and make room for new keys 
+			 */
+			if(returnedKeyList.size() > keyLookAhead)
+				returnedKeyList.clear();
+			
+			ret = getUnusedKeyIndex(usedKeyList, returnedKeyList);
+			returnedKeyList.add(ret);
 			
 			return ret;
 		}
 		
-		private ChildNumber getUnusedKeyIndex(List<Integer> arr, List<ChildNumber> alreadyReturnedKey) throws NoUnusedKeyException{
-			for(int i=0; i< Math.pow(2, 31); i++){ // seems a bit excessive no ?
-				if(!arr.contains(i) && !alreadyReturnedKey.contains( new ChildNumber(i, false))){
+		private ChildNumber getUnusedKeyIndex(List<Integer> usedKeys, List<ChildNumber> alreadyReturnedKey) throws NoUnusedKeyException{
+			// TODO - i have no idea what was i thinking doing this loop !
+			// 		  we should find a better way for doing it
+			
+			for(int i=0; i< Math.pow(2, 31); i++){ 
+				if(!usedKeys.contains(i) && !alreadyReturnedKey.contains( new ChildNumber(i, false))){
 					return new ChildNumber(i, false);
 				}
 			}
@@ -320,10 +316,12 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		}
 		
 		public void setKeyAsUsed(int keyIndex, HierarchyAddressTypes type){
-			if(type == HierarchyAddressTypes.External)
+			if(type == HierarchyAddressTypes.External){
 				usedExternalKeys.add( new Integer(keyIndex));
-			else
+			}
+			else{
 				usedInternalKeys.add( new Integer(keyIndex));
+			}
 		}
 		
 		public int getAccountIndex(){ return accountIndex; }

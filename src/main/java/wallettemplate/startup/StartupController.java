@@ -39,6 +39,7 @@ import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 import authenticator.operations.BAWalletRestorer;
 import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
@@ -430,14 +431,14 @@ public class StartupController  extends BaseUI{
 		 auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
 					 Platform.runLater(() -> {
-						 auth.disposeOfAuthenticator();
+						 	auth.disposeOfAuthenticator();
 							Main.startup.hide();
 							Main.stage.show();
 							if(encryptionPassword != null && encryptionPassword.length() > 0)
 								wallet.encrypt(encryptionPassword);
 							try {
 								Main.finishLoading();
-							} catch (IOException e) { e.printStackTrace(); }
+							} catch (IOException | AccountWasNotFoundException e) { e.printStackTrace(); }
 					 });
 		         }
 			}, MoreExecutors.sameThreadExecutor());
@@ -740,7 +741,7 @@ public class StartupController  extends BaseUI{
 					if(restoreAccountsScrllContent.getCount() == 1)
 						auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
 					
-				} catch (IOException e) {
+				} catch (IOException | AccountWasNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
@@ -827,9 +828,12 @@ public class StartupController  extends BaseUI{
 	 private void addFoundTxFromRestore(Transaction tx, Coin received, Coin sent){
 		 Platform.runLater(() -> {
 			 RestoreProcessCell c = new RestoreProcessCell();
-			 c.setTxID(tx.getHashAsString());
+			 c.setTxID(tx.getHashAsString() + "(" + tx.getUpdateTime().toGMTString() + ")");
 			 c.setCoinsReceived(received.toFriendlyString());
-			 c.setCoinsSent(sent.toFriendlyString());
+			 c.setCoinsSent(sent.toFriendlyString());			
+			 c.setConfidence(tx.getConfidence().getConfidenceType().toString());
+			 String status = tx.isEveryOwnedOutputSpent(wallet)? "Spent":"At least one output is unspent";
+			 c.setStatus(status);
 			 restoreProcessScrllContent.addItem(c);
 		 });
 	 }
@@ -886,7 +890,7 @@ public class StartupController  extends BaseUI{
 		auth = new Authenticator(masterPubKey, appParams);
 	}
 	 
-	 private void createNewStandardAccount(String accountName) throws IOException{
+	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException{
 		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }

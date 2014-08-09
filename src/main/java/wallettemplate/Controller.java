@@ -9,6 +9,7 @@ import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
 import authenticator.db.ConfigFile;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
@@ -314,7 +315,11 @@ public class Controller  extends BaseUI{
   			public void changed(ObservableValue ov, String t, String t1) {
   				if(t1 != null && t1.length() > 0){
 					AccountBox.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
-					changeAccount(t1);
+					try {
+						changeAccount(t1);
+					} catch (AccountWasNotFoundException e) {
+						e.printStackTrace();
+					}
   				}
   			}    
 	   });
@@ -346,13 +351,9 @@ public class Controller  extends BaseUI{
 	    	 	 */
 	    	 	 setReceiveAddresses();
 	    	 	 try {setTxPaneHistory();} 
-	     	 	 catch (NoSuchAlgorithmException | JSONException
-	 				| AddressFormatException | KeyIndexOutOfRangeException
-	 				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
+	     	 	 catch (Exception e1) {e1.printStackTrace();}
 	         	 try {setTxHistoryContent();} 
-	        	 catch (NoSuchAlgorithmException | JSONException
-					| AddressFormatException | KeyIndexOutOfRangeException
-					| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
+	        	 catch (Exception e1) {e1.printStackTrace();}
 
 	        	 setupOneName(Authenticator.getWalletOperation().getOnename());
 	        	 try {refreshBalanceLabel();} 
@@ -449,13 +450,9 @@ public class Controller  extends BaseUI{
 				catch (JSONException | IOException e) {e.printStackTrace();}
 		        setReceiveAddresses();
 		        try {setTxPaneHistory();} 
-		    	catch (NoSuchAlgorithmException | JSONException
-						| AddressFormatException | KeyIndexOutOfRangeException
-						| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
+		    	catch (Exception e1) {e1.printStackTrace();}
 		        try {setTxHistoryContent();} 
-		        catch (NoSuchAlgorithmException | JSONException
-						| AddressFormatException | KeyIndexOutOfRangeException
-						| AddressNotWatchedByWalletException e) {e.printStackTrace();}
+		        catch (Exception e) {e.printStackTrace();}
 			  }
 			});
 			
@@ -574,10 +571,7 @@ public class Controller  extends BaseUI{
 		@Override
 		public void onWalletChanged(Wallet wallet) {
 			try {setTxPaneHistory();} 
-			catch (NoSuchAlgorithmException | JSONException
-					| AddressFormatException
-					| KeyIndexOutOfRangeException
-					| AddressNotWatchedByWalletException e) {e.printStackTrace();}	
+			catch (Exception e) {e.printStackTrace();}	
 		}
     }
     
@@ -831,7 +825,7 @@ public class Controller  extends BaseUI{
 	   else 
 	   {
 		   //Authenticator.AUTHENTICATOR_PW="";
-		   if(Authenticator.AUTHENTICATOR_PW.length() == 0)
+		   if(Authenticator.AUTHENTICATOR_PW != null)
 			   displayLockDialog();
 		   else{
 			   Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
@@ -1028,7 +1022,7 @@ public class Controller  extends BaseUI{
     }
     
     @SuppressWarnings("unused")
-	public void setTxHistoryContent() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+	public void setTxHistoryContent() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
     	LOG.info("Setting Tx History in Overview Pane");
     	scrlViewTxHistoryContentManager.clearAll();
     	//List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
@@ -1266,9 +1260,16 @@ public class Controller  extends BaseUI{
                 }
         		
         		// get input outputs / change address
-        		ArrayList<TransactionOutput> outputs = Authenticator.
+        		/*ArrayList<TransactionOutput> outputs = Authenticator.
         				getWalletOperation().
         				getUnspentOutputsForAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+        		*/
+        		
+        		ArrayList<TransactionOutput> outputs = Authenticator
+        				.getWalletOperation()
+        				.selectOutputsFromAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
+        						outAmount.add(fee));
+        		
         		String changeaddr = Authenticator.getWalletOperation()
     								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
     								.getAddressStr();
@@ -1514,7 +1515,8 @@ public class Controller  extends BaseUI{
                     	Dialogs.create()
         		        .owner(Main.stage)
         		        .title("Error !")
-        		        .masthead("Could not add operation")
+        		        .masthead("Could not add operation to queue")
+        		        .message("try to restart the wallet and resend the Tx")
         		        .showInformation();
         			}
         				
@@ -1522,7 +1524,7 @@ public class Controller  extends BaseUI{
         		catch (NoSuchAlgorithmException
         				| AddressWasNotFoundException | JSONException
         				| AddressFormatException
-        				| KeyIndexOutOfRangeException e) {
+        				| KeyIndexOutOfRangeException | AccountWasNotFoundException e) {
         			// TODO Auto-generated catch block
         			e.printStackTrace();
         		}
@@ -1561,7 +1563,7 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public boolean broadcast (Transaction tx, String to, String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+    public boolean broadcast (Transaction tx, String to, String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
     	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, WALLET_PW,new OnOperationUIUpdate(){
 			@Override
 			public void onBegin(String str) { }
@@ -2021,11 +2023,11 @@ public class Controller  extends BaseUI{
 		    	ArrayList<String> add = new ArrayList<String>();
 				try {
 					for (int i=0; i<10; i++){
-						String newAdd = Authenticator.getWalletOperation()
+						ATAddress newAdd = Authenticator.getWalletOperation()
 									.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-									.getAddressStr();
-						
-						add.add(newAdd);	
+									;
+						String newAddStr = newAdd.getAddressStr();
+						add.add(newAddStr);	
 					}
 						
 					for (String address : add){
@@ -2044,7 +2046,7 @@ public class Controller  extends BaseUI{
    	//
    	//#####################################
     
-    public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException{
+    public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
     	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
     	ConfigFile config = Authenticator.getWalletOperation().configFile;
     	ArrayList<String> savedTXIDs = config.getSavedTxidList();
@@ -2168,7 +2170,7 @@ public class Controller  extends BaseUI{
     	            catch (NoSuchAlgorithmException | JSONException
 							| AddressFormatException
 							| KeyIndexOutOfRangeException
-							| AddressNotWatchedByWalletException e) {e.printStackTrace();}
+							| AddressNotWatchedByWalletException | AccountWasNotFoundException e) {e.printStackTrace();}
     	        }
     	    }
     	);
@@ -2475,7 +2477,7 @@ public class Controller  extends BaseUI{
    	//
    	//#####################################
     
-    public void changeAccount(String toValue){
+    public void changeAccount(String toValue) throws AccountWasNotFoundException{
     	LOG.info("Changing Authenticator account to " + toValue);
     	ATAccount acc = Authenticator.getWalletOperation().getAccountByName(toValue);
     	if(acc != null){
@@ -2495,11 +2497,11 @@ public class Controller  extends BaseUI{
     	try {setTxPaneHistory();} 
     	catch (NoSuchAlgorithmException | JSONException
 				| AddressFormatException | KeyIndexOutOfRangeException
-				| AddressNotWatchedByWalletException e1) {e1.printStackTrace();}
+				| AddressNotWatchedByWalletException | AccountWasNotFoundException e1) {e1.printStackTrace();}
     	try {setTxHistoryContent();} 
     	catch (NoSuchAlgorithmException | JSONException
 				| AddressFormatException | KeyIndexOutOfRangeException
-				| AddressNotWatchedByWalletException e) {e.printStackTrace();}
+				| AddressNotWatchedByWalletException | AccountWasNotFoundException e) {e.printStackTrace();}
     }
     
     /**

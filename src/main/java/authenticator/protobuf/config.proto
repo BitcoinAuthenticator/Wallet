@@ -118,8 +118,8 @@ message AuthenticatorConfiguration{
 		required sint64 confirmedBalance		= 6;
 		required sint64 unConfirmedBalance		= 7;
 		//
-		repeated string pendingOutTx			= 8; // pending spend Tx
-		repeated string pendingInTx				= 9; // pending receive Tx
+		//repeated string pendingOutTx			= 8; // pending spend Tx
+		//repeated string pendingInTx				= 9; // pending receive Tx
 		//
 		required int32 networkType				= 10; // 1 for main net, 0 for testnet
 		//

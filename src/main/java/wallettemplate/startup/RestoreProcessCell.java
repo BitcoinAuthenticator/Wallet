@@ -30,6 +30,8 @@ public class RestoreProcessCell extends Region{
 	@FXML private Label lblTxID;
 	@FXML private Label lblCoinsReceived;
 	@FXML private Label lblCoinsSent;
+	@FXML private Label lblConfidence;
+	@FXML private Label lblStatus;
 		
 	@SuppressWarnings("restriction")
 	public RestoreProcessCell() {
@@ -50,6 +52,16 @@ public class RestoreProcessCell extends Region{
 	public String getTxID(){ return lblTxID.getText(); }
 	public void setTxID(String value){
 		lblTxID.setText(value);
+	}
+	
+	public String getStatus(){ return lblStatus.getText(); }
+	public void setStatus(String value){
+		lblStatus.setText(value);
+	}
+	
+	public String getConfidence(){ return lblConfidence.getText(); }
+	public void setConfidence(String value){
+		lblConfidence.setText(value);
 	}
 	
 	@SuppressWarnings("restriction")

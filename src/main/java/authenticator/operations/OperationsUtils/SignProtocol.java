@@ -144,14 +144,15 @@ public class SignProtocol {
 				// Create Program for the script
 				List<ECKey> keys = ImmutableList.of(authKey, walletKey);
 				Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
-				byte[] program = scriptpubkey.getProgram();
+				//byte[] program = scriptpubkey.getProgram();
 				
 				//Create P2SH
 				// IMPORTANT - AuthSigs and the signiture we create here should refer to the same input !!
 				TransactionSignature sig1 = TransactionSignature.decodeFromBitcoin(AuthSigs.get(i), true);
 				TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
 				List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
-				Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, program);
+				Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, scriptpubkey);
+				
 				//TransactionInput input = inputs.get(i);
 				//input.setScriptSig(inputScript);
 				in.setScriptSig(inputScript);

@@ -168,7 +168,7 @@ public class ConfigFile {
 
 	public ATAccount getAccount(int index){
 		List<ATAccount> all = getAllAccounts();
-		// We search the account like this because its id is not necessarly its id in the array
+		// We search the account like this because its id is not necessarily its id in the array
 		for(ATAccount acc:all)
 			if(acc.getIndex() == index)
 				return acc;
@@ -373,7 +373,7 @@ public class ConfigFile {
 		return auth.getConfigSavedTXData(index).getToFrom();
 	}
 
- 	public List<String> getPendingOutTx(int accountIdx){
+ 	/*public List<String> getPendingOutTx(int accountIdx){
  		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return getAccount(accountIdx).getPendingOutTxList();
  	}
@@ -421,7 +421,7 @@ public class ConfigFile {
  			if(!all.get(i).equals(txID))
 				b.addPendingInTx(all.get(i));
 		updateAccount(b.build());
- 	}
+ 	}*/
 
 	/*public int getHierarchyNextAvailableAccountID(){
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();

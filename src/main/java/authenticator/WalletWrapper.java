@@ -21,6 +21,7 @@ import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionBroadcaster;
 import com.google.bitcoin.core.TransactionOutput;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.core.Wallet.SendResult;
@@ -83,9 +84,24 @@ public class WalletWrapper extends BASE{
 	{
 		addAddressToWatch(new Address(trackedWallet.getNetworkParameters(),address));
 	}
+	
 	public void addAddressToWatch(final Address address)
 	{
 		trackedWallet.addWatchedAddress(address);
+	}
+	
+	public void addAddressesStringToWatch(List<String> addresses) throws AddressFormatException
+	{
+		List<Address> lst = new ArrayList<Address>();
+		for(String add: addresses)
+			if(!isAuthenticatorAddressWatched(add))
+				lst.add(new Address(trackedWallet.getNetworkParameters(),add));
+		addAddressesToWatch(lst);
+	}
+	
+	public void addAddressesToWatch(final List<Address> addresses)
+	{
+		trackedWallet.addWatchedAddresses(addresses, Utils.currentTimeSeconds());
 	}
 	
 	public boolean isAuthenticatorAddressWatched(String address) throws AddressFormatException{

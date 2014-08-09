@@ -62,13 +62,13 @@ import authenticator.protobuf.ProtoConfig.WalletAccountType;
  */
 public class TCPListener extends BASE{
 	final int LOOPER_BLOCKING_TIMEOUT = 3000;
-	public static Socket socket;
+	private Socket socket;
 	private static ConcurrentLinkedQueue<BAOperation> operationsQueue;
-	private static Thread listenerThread;
-	private static UpNp plugnplay;
-	private static boolean isManuallyPortForwarded;
-	private static int forwardedPort;
-	private static BANeworkInfo vBANeworkInfo;
+	private Thread listenerThread;
+	private UpNp plugnplay;
+	private boolean isManuallyPortForwarded;
+	private int forwardedPort;
+	private BANeworkInfo vBANeworkInfo;
 	private String[] args;
 	private ServerSocket ss = null;
 	/**
@@ -167,9 +167,9 @@ public class TCPListener extends BASE{
 	    		}
 	    		// TODO - check if is truly forwarded
 	    		else{
-	    			PORT_FORWARDED = true;
 	    			try {
 						vBANeworkInfo = new BANeworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
+						PORT_FORWARDED = true;
 					} catch (IOException e) {
 						e.printStackTrace();
 						throw new TCPListenerCouldNotStartException("Could not start TCPListener");

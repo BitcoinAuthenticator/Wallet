@@ -95,9 +95,9 @@ public class AddAccountWindow extends BaseUI{
 	
 	private String getViewPath(WalletAccountType type) {
 		if (type == WalletAccountType.StandardAccount)
-			return "startup/addStandardAccount.fxml";
+			return "startup/AddStandardAccount.fxml";
 		else
-			return "startup/addPairedAccount.fxml";
+			return "startup/AddPairedAccount.fxml";
     }
 
     private URL getViewURL(String path) {

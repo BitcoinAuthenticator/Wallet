@@ -35,6 +35,7 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
+import authenticator.helpers.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.operations.BAOperation;
@@ -112,11 +113,12 @@ public class SendTxHelper {
 	 * @throws JSONException
 	 * @throws AddressFormatException
 	 * @throws KeyIndexOutOfRangeException
+	 * @throws AccountWasNotFoundException 
 	 */
 	static public boolean broadcastTx (Transaction tx, 
 			String txLabel, 
 			String to, @Nullable String WALLET_PW, 
-			OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException {
+			OnOperationUIUpdate opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
 		// broadcast
 		ConfigFile config = Authenticator.getWalletOperation().configFile;
 		if (!txLabel.isEmpty()){
