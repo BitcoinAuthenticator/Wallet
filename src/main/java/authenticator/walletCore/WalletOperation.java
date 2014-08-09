@@ -505,7 +505,7 @@ public class WalletOperation extends BASE{
 		Address change = new Address(getNetworkParams(), changeAdd);
 		Coin rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
-			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), null, rest, change);
+			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), tx, rest, change);
 			tx.addOutput(changeOut);
 			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
 							", Fees " + fee.toFriendlyString() + 

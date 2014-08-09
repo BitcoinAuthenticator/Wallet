@@ -377,34 +377,35 @@ public class Controller  extends BaseUI{
     TimerTask t = new TimerTask(){
 		@Override
 		public void run() {
-			shouldUpdateUI = true;
+			Platform.runLater(new Runnable() { 
+				 @Override
+				public void run() {
+					 if(shouldUpdateUI){
+						 LOG.info("Updating UI");
+						 
+						 setReceiveAddresses();
+					 	 try {setTxPaneHistory();} 
+					 	 catch (Exception e1) {e1.printStackTrace();}
+					 	 
+				    	 try {setTxHistoryContent();} 
+				    	 catch (Exception e1) {e1.printStackTrace();}
+
+				    	 try {refreshBalanceLabel();} 
+				     	 catch (Exception e) {e.printStackTrace();}
+				    	 
+				    	 shouldUpdateUI = false;
+					 }
+					 
+				 }
+			});
 		}
     };
     private void updateUI(){
-    	Platform.runLater(new Runnable() { 
-			 @Override
-			public void run() {
-				 if(shouldUpdateUI){
-					 LOG.info("Updating UI");
-					 shouldUpdateUI = false;
-					 
-					 setReceiveAddresses();
-				 	 try {setTxPaneHistory();} 
-				 	 catch (Exception e1) {e1.printStackTrace();}
-				 	 
-			    	 try {setTxHistoryContent();} 
-			    	 catch (Exception e1) {e1.printStackTrace();}
-
-			    	 try {refreshBalanceLabel();} 
-			     	 catch (Exception e) {e.printStackTrace();}
-			    	 
-			    	 if(timer == null){
-			    		 timer = new Timer("Update UI Timer");
-				    	 timer.schedule(t, 1000);
-			    	 }
-				 }
-			 }
-    	});
+    	if(timer == null){
+	   		 timer = new Timer("Update UI Timer");
+		     timer.schedule(t, 500);
+   	 	}
+    	shouldUpdateUI = true;
     }
     
     public class AuthenticatorGeneralEvents implements BAGeneralEventsListener{
