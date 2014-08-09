@@ -9,9 +9,9 @@ import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
 import authenticator.db.ConfigFile;
-import authenticator.helpers.exceptions.AccountWasNotFoundException;
-import authenticator.helpers.exceptions.AddressNotWatchedByWalletException;
-import authenticator.helpers.exceptions.AddressWasNotFoundException;
+import authenticator.db.exceptions.AccountWasNotFoundException;
+import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
+import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.network.OneName;
 import authenticator.operations.BAOperation;
@@ -357,7 +357,7 @@ public class Controller  extends BaseUI{
 
 	        	 setupOneName(Authenticator.getWalletOperation().getOnename());
 	        	 try {refreshBalanceLabel();} 
-	         	 catch (JSONException | IOException e) {e.printStackTrace();}
+	         	 catch (Exception e) {e.printStackTrace();}
 
 	        	 Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
 	         	//Authenticator.getWalletOperation().addEventListener(new WalletListener());
@@ -447,7 +447,7 @@ public class Controller  extends BaseUI{
 			  @Override
 			  public void run() {
 				try {refreshBalanceLabel();} 
-				catch (JSONException | IOException e) {e.printStackTrace();}
+				catch (Exception e) {e.printStackTrace();}
 		        setReceiveAddresses();
 		        try {setTxPaneHistory();} 
 		    	catch (Exception e1) {e1.printStackTrace();}
@@ -825,7 +825,7 @@ public class Controller  extends BaseUI{
 	   else 
 	   {
 		   //Authenticator.AUTHENTICATOR_PW="";
-		   if(Authenticator.AUTHENTICATOR_PW != null)
+		   if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
 			   displayLockDialog();
 		   else{
 			   Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
@@ -901,13 +901,16 @@ public class Controller  extends BaseUI{
 				   /**
 				    * In case we encrypt but we don't have the password
 				    */
-				   if(Authenticator.AUTHENTICATOR_PW.length() == 0){
-					   Authenticator.getWalletOperation().encryptWallet(pw.getText());
-					   Authenticator.AUTHENTICATOR_PW = pw.getText();
-					   overlay.done();
-					   locked = true;
-					   updateLockIcon();
+				   if (pw.getText().equals("")){
+					   informationalAlert("Unfortunately, you messed up.",
+							   "You need to enter your password to encrypt your wallet.");
+					   return;
 				   }
+				   Authenticator.getWalletOperation().encryptWallet(pw.getText());
+				   Authenticator.AUTHENTICATOR_PW = pw.getText();
+				   overlay.done();
+				   locked = true;
+				   updateLockIcon();
 			   }
 		   }
 	   });   
@@ -971,7 +974,7 @@ public class Controller  extends BaseUI{
     }
     
     @SuppressWarnings("static-access")
-	public void refreshBalanceLabel() throws JSONException, IOException {
+	public void refreshBalanceLabel() throws JSONException, IOException, AccountWasNotFoundException {
     	LOG.info("Refreshing balance");
     	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
     	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
@@ -984,7 +987,11 @@ public class Controller  extends BaseUI{
 			public void onFinishedGettingCurrencyData(CurrencyConverterSingelton currencies) {
 				Platform.runLater(new Runnable() {
 				      @Override public void run() {
-							attachBalanceToolTip();
+							try {
+								attachBalanceToolTip();
+							} catch (AccountWasNotFoundException e) {
+								e.printStackTrace();
+							}
 				      }
 				    });
 			}
@@ -1006,7 +1013,7 @@ public class Controller  extends BaseUI{
         
     }
     
-    private void attachBalanceToolTip(){
+    private void attachBalanceToolTip() throws AccountWasNotFoundException{
     	  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 	      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 		  
@@ -1183,8 +1190,7 @@ public class Controller  extends BaseUI{
         }
     	try {
 			return SendTxHelper.ValidateTx(scrlContent, fee);
-		} catch (NoSuchAlgorithmException | JSONException
-				| AddressFormatException | IOException e) { 
+		} catch (Exception e) { 
 			e.printStackTrace();
 			return false;
 		}
@@ -2492,7 +2498,7 @@ public class Controller  extends BaseUI{
     public void updateUIForNewActiveAccount(){
     	LOG.info("Updating UI because of Authenticator account change");
     	try {refreshBalanceLabel();}
-    	catch (JSONException | IOException e) {e.printStackTrace();}
+    	catch (Exception e) {e.printStackTrace();}
     	setReceiveAddresses();
     	try {setTxPaneHistory();} 
     	catch (NoSuchAlgorithmException | JSONException

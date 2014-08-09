@@ -1,4 +1,4 @@
-package authenticator.helpers.exceptions;
+package authenticator.db.exceptions;
 
 public class AccountWasNotFoundException  extends Exception{
 	public AccountWasNotFoundException(String message) {

@@ -39,7 +39,7 @@ import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
-import authenticator.helpers.exceptions.AccountWasNotFoundException;
+import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.operations.BAWalletRestorer;
 import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;

@@ -61,7 +61,6 @@ import com.google.protobuf.ByteString;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.BASE;
-import authenticator.WalletOperation;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
@@ -77,6 +76,7 @@ import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.walletCore.WalletOperation;
 
 public class OperationsFactory extends BASE{
 	

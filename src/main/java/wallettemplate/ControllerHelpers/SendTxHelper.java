@@ -35,8 +35,8 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.ConfigFile;
-import authenticator.helpers.exceptions.AccountWasNotFoundException;
-import authenticator.helpers.exceptions.AddressWasNotFoundException;
+import authenticator.db.exceptions.AccountWasNotFoundException;
+import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OnOperationUIUpdate;
@@ -56,7 +56,7 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 
 public class SendTxHelper {
 	@SuppressWarnings("restriction")
-	static public boolean ValidateTx(ScrollPaneContentManager scrlContent, Coin fee) throws NoSuchAlgorithmException, JSONException, AddressFormatException, IOException
+	static public boolean ValidateTx(ScrollPaneContentManager scrlContent, Coin fee) throws Exception
     {
     	//Check Outputs
     	if(scrlContent.getCount() == 0)

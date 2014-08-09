@@ -1,4 +1,4 @@
-package authenticator;
+package authenticator.walletCore;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import authenticator.BASE;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -39,7 +41,7 @@ import com.google.bitcoin.wallet.DefaultCoinSelector;
  * 
  * <p><b>Integration with the Authenticator app</b><br>
  * Alot of out Authenticator operations depend on an underlying wallet operation, for that, we use this class
- * as an intermediary layer between the {@link authenticator.WalletOperation} class and bitcoinj's {@link com.google.bitcoin.core.Wallet} class
+ * as an intermediary layer between the {@link authenticator.walletCore.WalletOperation} class and bitcoinj's {@link com.google.bitcoin.core.Wallet} class
  * </p>
  * 
  * <br>

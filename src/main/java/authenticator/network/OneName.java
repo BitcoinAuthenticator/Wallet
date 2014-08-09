@@ -26,8 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import authenticator.Authenticator;
-import authenticator.WalletOperation;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import authenticator.walletCore.WalletOperation;
 import wallettemplate.Main;
 
 public class OneName {

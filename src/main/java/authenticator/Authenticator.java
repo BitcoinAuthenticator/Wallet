@@ -22,7 +22,7 @@ import com.google.common.util.concurrent.Service.State;
 import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
 import authenticator.db.ConfigFile;
-import authenticator.helpers.exceptions.AccountWasNotFoundException;
+import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.network.TCPListener;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
@@ -32,6 +32,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.walletCore.WalletOperation;
 
 /**
  * <p>The main building block of the BitocinAuthenticator wallet.<br>
@@ -41,7 +42,7 @@ import authenticator.protobuf.ProtoConfig.PendingRequest;
  * <li>OnAuthenticatoGUIUpdateListener - a general pupose UI listener.</li>
  * <li>operationsQueue - all operations regarding communication with the Authenticators are added to this queue and executed by the
  * 	  TCPListener.</li>
- * <li>{@link authenticator.WalletOperation}</li>
+ * <li>{@link authenticator.walletCore.WalletOperation}</li>
  * <li>{@link authenticator.protobuf.ProtoConfig.ActiveAccountType} - Current active account. Will effect operations that depend on the active account</li>
  * <li>{@link authenticator.BAGeneralEventsListener} - General events listener for the authenticatro. For Example: a new paired Authenticator was added</li>
  * </ol>
@@ -194,7 +195,7 @@ public class Authenticator extends BASE{
 	//
 	//#####################################
 	/**
-	 * Get the Authenticator instance of the {@link authenticator.WalletOperation} object.<br>
+	 * Get the Authenticator instance of the {@link authenticator.walletCore.WalletOperation} object.<br>
 	 * Used for all funds management. 
 	 * 
 	 * @return

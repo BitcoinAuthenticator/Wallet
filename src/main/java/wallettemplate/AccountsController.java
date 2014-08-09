@@ -12,7 +12,7 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters.NetworkType;
-import authenticator.helpers.exceptions.AccountWasNotFoundException;
+import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.network.OneName;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
