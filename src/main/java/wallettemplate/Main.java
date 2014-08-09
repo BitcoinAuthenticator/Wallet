@@ -252,7 +252,6 @@ public class Main extends BAApplication {
 					bitcoin.state() == com.google.common.util.concurrent.Service.State.TERMINATED)){
 						closeProgramAndClosingStage(stageNotif);
 					}
-					System.out.println("bitcoin " + bitcoin.state().toString() +"   authenticator " + auth.state().toString());
 					try {
 						cnt ++;
 						Thread.sleep(1000);

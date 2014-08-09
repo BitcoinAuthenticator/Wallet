@@ -261,7 +261,7 @@ public class WalletOperation extends BASE{
     }
 	
 	private void updateBalaceNonBlocking(Wallet wallet, Runnable completionBlock){
-		Thread t = new Thread(){
+		new Thread(){
 			@Override
 			public void run() {
 				try {
@@ -272,8 +272,7 @@ public class WalletOperation extends BASE{
 					e.printStackTrace();
 				}
 			}
-		};
-		t.start();
+		}.start();
     }
 	
 	/**

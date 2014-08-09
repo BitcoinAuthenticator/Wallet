@@ -120,6 +120,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import wallettemplate.ControllerHelpers.SendTxHelper;
 import wallettemplate.ControllerHelpers.SendTxHelper.NewAddress;
+import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.BaseUI;
@@ -236,6 +237,7 @@ public class Controller  extends BaseUI{
 	 public Main.OverlayUI overlayUi;
 	 TorListener listener = new TorListener();
 	 private boolean locked;
+	 private ThrottledRunnableExecutor throttledUIUpdater;
 	 
 	 
 
@@ -340,6 +342,29 @@ public class Controller  extends BaseUI{
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);       
     	
+    	throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
+			@Override
+			public void run() {
+				Platform.runLater(new Runnable() { 
+					 @Override
+					public void run() {
+						 LOG.info("Updating UI");
+						 
+						 setReceiveAddresses();
+					 	 try {setTxPaneHistory();} 
+					 	 catch (Exception e1) {e1.printStackTrace();}
+					 	 
+				    	 try {setTxHistoryContent();} 
+				    	 catch (Exception e1) {e1.printStackTrace();}
+
+				    	 try {refreshBalanceLabel();} 
+				     	 catch (Exception e) {e.printStackTrace();}
+				    	 
+					 }
+				});
+			}
+    	});
+    	throttledUIUpdater.start();
     }
     
     /**
@@ -371,41 +396,9 @@ public class Controller  extends BaseUI{
     	setAccountChoiceBox();	
     	updateUI();
     }
-    
-    boolean shouldUpdateUI = true;
-    Timer timer;
-    TimerTask t = new TimerTask(){
-		@Override
-		public void run() {
-			Platform.runLater(new Runnable() { 
-				 @Override
-				public void run() {
-					 if(shouldUpdateUI){
-						 LOG.info("Updating UI");
-						 
-						 setReceiveAddresses();
-					 	 try {setTxPaneHistory();} 
-					 	 catch (Exception e1) {e1.printStackTrace();}
-					 	 
-				    	 try {setTxHistoryContent();} 
-				    	 catch (Exception e1) {e1.printStackTrace();}
-
-				    	 try {refreshBalanceLabel();} 
-				     	 catch (Exception e) {e.printStackTrace();}
-				    	 
-				    	 shouldUpdateUI = false;
-					 }
-					 
-				 }
-			});
-		}
-    };
+   
     private void updateUI(){
-    	if(timer == null){
-	   		 timer = new Timer("Update UI Timer");
-		     timer.schedule(t, 500);
-   	 	}
-    	shouldUpdateUI = true;
+    	throttledUIUpdater.execute();
     }
     
     public class AuthenticatorGeneralEvents implements BAGeneralEventsListener{
