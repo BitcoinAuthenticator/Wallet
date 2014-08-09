@@ -8,7 +8,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.SettingsController">
+<AnchorPane fx:id="SettingsApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.SettingsController">
   <children>
     <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="55.0" prefWidth="850.0" style="-fx-background-color: #d2cece;">
       <children>
@@ -17,7 +17,8 @@
             <Image url="@btnSettings.png" />
           </image>
         </ImageView>
-        <Button fx:id="done" layoutX="776.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" text="Close" />
+        <Button fx:id="btnDone" layoutX="721.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #b3b1b1;" text="Save &amp; Close" />
+        <Button fx:id="btnRestore" layoutX="579.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Restore Defaults" />
       </children>
     </Pane>
     <Pane fx:id="settingspane" layoutX="-1.0" layoutY="41.0" prefHeight="442.0" prefWidth="851.0" style=" -fx-background-color: #d2cece;">
@@ -34,7 +35,7 @@
                 <Font size="18.0" fx:id="x1" />
               </font>
             </Label>
-            <ChoiceBox layoutX="14.0" layoutY="39.0">
+            <ChoiceBox layoutX="14.0" layoutY="39.0" styleClass="choice-box-settings">
               <items>
                 <FXCollections fx:factory="observableArrayList">
                   <String fx:value="bits" />
@@ -45,7 +46,7 @@
               </items>
             </ChoiceBox>
             <Label font="$x1" layoutX="14.0" layoutY="80.0" text="Decimal Places" />
-            <ChoiceBox layoutX="14.0" layoutY="104.0" prefWidth="111.0">
+            <ChoiceBox layoutX="14.0" layoutY="104.0" prefWidth="58.0" styleClass="choice-box-settings">
               <items>
                 <FXCollections fx:factory="observableArrayList">
                   <String fx:value="0" />
@@ -62,50 +63,175 @@
         <Pane id="displayPane" layoutX="14.0" layoutY="155.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;" visible="true">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Local Currency" />
-            <ChoiceBox layoutX="14.0" layoutY="39.0">
+            <ChoiceBox layoutX="14.0" layoutY="39.0" prefWidth="94.0" styleClass="choice-box-settings">
               <items>
                 <FXCollections fx:factory="observableArrayList">
                   <String fx:value="AED" />
                   <String fx:value="AFN" />
                   <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  <String fx:value="ALL" />
-                  
+                  <String fx:value="AMD" />
+                  <String fx:value="ANG" />
+                  <String fx:value="AOA" />
+                  <String fx:value="ARS" />
+                  <String fx:value="AUD" />
+                  <String fx:value="AWG" />
+                  <String fx:value="AZN" />
+                  <String fx:value="BAM" />
+                  <String fx:value="BBD" />
+                  <String fx:value="BDT" />
+                  <String fx:value="BGN" />
+                  <String fx:value="BHD" />
+                  <String fx:value="BIF" />
+                  <String fx:value="BMD" />
+                  <String fx:value="BND" />
+                  <String fx:value="BOB" />
+                  <String fx:value="BRL" />
+                  <String fx:value="BSD" />
+                  <String fx:value="BTN" />
+                  <String fx:value="BWP" />
+                  <String fx:value="BYR" />
+                  <String fx:value="BZD" />
+                  <String fx:value="CAD" />
+                  <String fx:value="CDF" />
+                  <String fx:value="CHF" />
+                  <String fx:value="CLF" />
+                  <String fx:value="CLP" />
+                  <String fx:value="CLY" />
+                  <String fx:value="COP" />
+                  <String fx:value="CRC" />
+                  <String fx:value="CUP" />
+                  <String fx:value="CVE" />
+                  <String fx:value="CZK" />
+                  <String fx:value="DJF" />
+                  <String fx:value="DKK" />
+                  <String fx:value="DOP" />
+                  <String fx:value="DZD" />
+                  <String fx:value="EEK" />
+                  <String fx:value="EGP" />
+                  <String fx:value="ERN" />
+                  <String fx:value="ETB" />
+                  <String fx:value="EUR" />
+                  <String fx:value="FJD" />
+                  <String fx:value="FKP" />
+                  <String fx:value="GBP" />
+                  <String fx:value="GEL" />
+                  <String fx:value="GGP" />
+                  <String fx:value="GHS" />
+                  <String fx:value="GIP" />
+                  <String fx:value="GMD" />
+                  <String fx:value="GNF" />
+                  <String fx:value="GTQ" />
+                  <String fx:value="GYD" />
+                  <String fx:value="HKD" />
+                  <String fx:value="HNL" />
+                  <String fx:value="HRK" />
+                  <String fx:value="HTG" />
+                  <String fx:value="HUF" />
+                  <String fx:value="IDR" />
+                  <String fx:value="ILS" />
+                  <String fx:value="IMP" />
+                  <String fx:value="INR" />
+                  <String fx:value="IQD" />
+                  <String fx:value="IRR" />
+                  <String fx:value="ISK" />
+                  <String fx:value="JEP" />
+                  <String fx:value="JMD" />
+                  <String fx:value="JPY" />
+                  <String fx:value="KES" />
+                  <String fx:value="KGS" />
+                  <String fx:value="KHR" />
+                  <String fx:value="KMF" />
+                  <String fx:value="KPW" />
+                  <String fx:value="KRW" />
+                  <String fx:value="KWD" />
+                  <String fx:value="KYD" />
+                  <String fx:value="KZT" />
+                  <String fx:value="LAK" />
+                  <String fx:value="LBP" />
+                  <String fx:value="LKR" />
+                  <String fx:value="LRD" />
+                  <String fx:value="LSL" />
+                  <String fx:value="LTL" />
+                  <String fx:value="LVL" />
+                  <String fx:value="LYD" />
+                  <String fx:value="MAD" />
+                  <String fx:value="MDL" />
+                  <String fx:value="MGA" />
+                  <String fx:value="MKD" />
+                  <String fx:value="MMK" />
+                  <String fx:value="MNT" />
+                  <String fx:value="MOP" />
+                  <String fx:value="MRO" />
+                  <String fx:value="MTL" />
+                  <String fx:value="MUR" />
+                  <String fx:value="MVR" />
+                  <String fx:value="MWK" />
+                  <String fx:value="MXN" />
+                  <String fx:value="MYR" />
+                  <String fx:value="MZN" />
+                  <String fx:value="NAD" />
+                  <String fx:value="NGN" />
+                  <String fx:value="NIO" />
+                  <String fx:value="NOK" />
+                  <String fx:value="NPR" />
+                  <String fx:value="NZD" />
+                  <String fx:value="OMR" />
+                  <String fx:value="PAB" />
+                  <String fx:value="PEN" />
+                  <String fx:value="PGK" />
+                  <String fx:value="PHP" />
+                  <String fx:value="PKR" />
+                  <String fx:value="PLN" />
+                  <String fx:value="PYG" />
+                  <String fx:value="QAR" />
+                  <String fx:value="RON" />
+                  <String fx:value="RSD" />
+                  <String fx:value="RUB" />
+                  <String fx:value="RWF" />
+                  <String fx:value="SAR" />
+                  <String fx:value="SBD" />
+                  <String fx:value="SCR" />
+                  <String fx:value="SDG" />
+                  <String fx:value="SEK" />
+                  <String fx:value="SGD" />
+                  <String fx:value="SHP" />
+                  <String fx:value="SLL" />
+                  <String fx:value="SOS" />
+                  <String fx:value="SRD" />
+                  <String fx:value="STD" />
+                  <String fx:value="SVC" />
+                  <String fx:value="SYP" />
+                  <String fx:value="SZL" />
+                  <String fx:value="THB" />
+                  <String fx:value="TJS" />
+                  <String fx:value="TMT" />
+                  <String fx:value="TND" />
+                  <String fx:value="TOP" />
+                  <String fx:value="TRY" />
+                  <String fx:value="TTD" />
+                  <String fx:value="TWD" />
+                  <String fx:value="TZS" />
+                  <String fx:value="UAH" />
+                  <String fx:value="UGX" />
+                  <String fx:value="USD" />
+                  <String fx:value="UYU" />
+                  <String fx:value="UZS" />
+                  <String fx:value="VEF" />
+                  <String fx:value="VND" />
+                  <String fx:value="VUV" />
+                  <String fx:value="WST" />
+                  <String fx:value="XAF" />
+                  <String fx:value="XAG" />
+                  <String fx:value="XAU" />
+                  <String fx:value="XCD" />
+                  <String fx:value="XDR" />
+                  <String fx:value="XOF" />
+                  <String fx:value="XPF" />
+                  <String fx:value="YER" />
+                  <String fx:value="ZAR" />
+                  <String fx:value="ZMK" />
+                  <String fx:value="ZMW" />
+                  <String fx:value="ZWL" />
                 </FXCollections>
               </items>
             </ChoiceBox>
@@ -116,7 +242,7 @@
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Security" />
             <Label layoutX="15.0" layoutY="42.0" text="Enter Your Current Password" />
             <TextField layoutX="15.0" layoutY="67.0" prefWidth="240.0" />
-            <Button layoutX="14.0" layoutY="101.0" mnemonicParsing="false" text="Show Seed" />
+            <Button fx:id="btnShow" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Show Seed" />
             <Label font="$x1" layoutX="15.0" layoutY="142.0" text="Change your Password" />
             <Label layoutX="15.0" layoutY="169.0" text="Enter your current password" />
             <TextField layoutX="15.0" layoutY="186.0" prefWidth="240.0" />
@@ -124,13 +250,13 @@
             <TextField layoutX="15.0" layoutY="245.0" prefWidth="239.0" />
             <Label layoutX="15.0" layoutY="273.0" text="Repeat password" />
             <TextField layoutX="14.0" layoutY="295.0" prefWidth="240.0" />
-            <Button layoutX="15.0" layoutY="327.0" mnemonicParsing="false" text="Change password" />
+            <Button fx:id="btnChange" layoutX="15.0" layoutY="327.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Change password" />
           </children>
         </Pane>
         <Pane layoutX="14.0" layoutY="228.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="10.0" text="Language" />
-            <ChoiceBox layoutX="14.0" layoutY="35.0" prefWidth="232.0">
+            <ChoiceBox layoutX="14.0" layoutY="35.0" prefWidth="138.0" styleClass="choice-box-settings" value="English">
               <items>
                 <FXCollections fx:factory="observableArrayList">
                   <String fx:value="English" />
