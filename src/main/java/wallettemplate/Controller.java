@@ -353,7 +353,7 @@ public class Controller  extends BaseUI{
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);       
     	
-    	throttledUIUpdater = new ThrottledRunnableExecutor(1500, new Runnable(){
+    	throttledUIUpdater = new ThrottledRunnableExecutor(4000, new Runnable(){
 			@Override
 			public void run() {
 				LOG.info("Updating UI");
@@ -1009,7 +1009,7 @@ public class Controller  extends BaseUI{
     
     
     @SuppressWarnings("unused")
-	public void setTxHistoryContent() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
+	public void setTxHistoryContent() throws Exception{
     	LOG.info("Setting Tx History in Overview Pane");
     	new UIUpdateHelper.TxHistoryContentUpdater(scrlViewTxHistoryContentManager).execute();
     }

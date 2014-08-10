@@ -195,8 +195,8 @@ public class BAWalletRestorer extends BASE{
 				 Thread.sleep(30000);
 				 
 				 if(!didGetNewTx){
-					disposeOfRestorer(true);	
 					listener.onStatusChange("Finished !");
+					disposeOfRestorer(true);	
 					listener.onDiscoveryDone();
 					break;
 				 }				 

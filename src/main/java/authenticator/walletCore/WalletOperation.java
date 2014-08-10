@@ -174,9 +174,9 @@ public class WalletOperation extends BASE{
 			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
 		}
 		
-		/*if(mWalletWrapper != null){
+		if(mWalletWrapper != null){
 			updateBalaceNonBlocking(mWalletWrapper.getTrackedWallet(), null);
-		}*/
+		}
 		
 	}
 	
@@ -197,16 +197,25 @@ public class WalletOperation extends BASE{
         @Override
         public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
         	try {
-        		staticLogger.info("Updating balance, Received {}, Sent {}", 
-        				tx.getValueSentToMe(wallet).toFriendlyString(),
-        				tx.getValueSentFromMe(wallet).toFriendlyString());
-        		isRequiringBalanceChange = true;
-        		updateBalaceNonBlocking(wallet, new Runnable(){
-					@Override
-					public void run() {
-						notifyBalanceUpdate(wallet,tx);
-					}
-        		});
+        		/**
+        		 * Run balance update onCoinsSent() only if we don't receive any coins.
+        		 * The idea is that if we have a Tx that sends and receives coins to this wallet,
+        		 * update only onCoinsReceived() so we won't send multiple update balance calls.
+        		 * 
+        		 * If the Tx only sends coins, do update the balance from here.
+        		 */
+        		if(tx.getValueSentToMe(wallet).signum() == 0){
+        			staticLogger.info("Updating balance, Received {}, Sent {}", 
+            				tx.getValueSentToMe(wallet).toFriendlyString(),
+            				tx.getValueSentFromMe(wallet).toFriendlyString());
+            		updateBalaceNonBlocking(wallet, new Runnable(){
+    					@Override
+    					public void run() {
+    						notifyBalanceUpdate(wallet,tx);
+    						isRequiringBalanceChange = true;
+    					}
+            		});
+        		}
 			} catch (Exception e) { e.printStackTrace(); }
         }
         
@@ -216,11 +225,11 @@ public class WalletOperation extends BASE{
         		staticLogger.info("Updating balance, Received {}, Sent {}", 
         				tx.getValueSentToMe(wallet).toFriendlyString(),
         				tx.getValueSentFromMe(wallet).toFriendlyString());
-        		isRequiringBalanceChange = true;
         		updateBalaceNonBlocking(wallet, new Runnable(){
 					@Override
 					public void run() {
 						notifyBalanceUpdate(wallet,tx);
+						isRequiringBalanceChange = true;
 					}
         		});
 				

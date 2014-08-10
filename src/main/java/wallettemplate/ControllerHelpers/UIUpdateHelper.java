@@ -533,6 +533,7 @@ public class UIUpdateHelper {
 		
 		@Override
 		void onPreExecute() {
+			if(scrlViewTxHistoryContentManager.getCount() == 0)
 			Platform.runLater(new Runnable() {
 	            @Override
 	            public void run() {
