@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 
 import wallettemplate.Main;
 import authenticator.Utils.EncodingUtils;
+import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;

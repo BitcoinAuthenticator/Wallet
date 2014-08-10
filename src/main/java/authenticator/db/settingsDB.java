@@ -1,8 +1,16 @@
 package authenticator.db;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import wallettemplate.Main;
+
+import com.google.bitcoin.core.PeerGroup;
+import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.protobuf.ByteString;
 
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
@@ -20,6 +28,18 @@ public class settingsDB extends dbBase{
 	//				General
 	//
 	//#####################################
+
+	public void initSettings() throws IOException{
+		setAccountUnit(BitcoinUnit.Bits);
+		setDecimalPoint(0);
+		setLocalCurrencySymbol("USD");
+		setLanguage(Languages.English);
+		setDefaultFee((int)Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.longValue());
+		setIsUsingTOR(true);
+		setIsConnectingToLocalHost(false);
+		setNotConnectingToTrustedPeer();
+		setBloomFilterFalsePositiveRate((float)PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
+	}
 	
 	private synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
 		AuthenticatorConfiguration.Builder auth = AuthenticatorConfiguration.newBuilder();
