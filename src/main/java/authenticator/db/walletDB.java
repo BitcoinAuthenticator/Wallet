@@ -81,8 +81,8 @@ public class walletDB extends dbBase{
 		ConfigSettings.Builder b = ConfigSettings.newBuilder();
 		auth.setConfigSettings(b);
 		writeConfigFile(auth);
-		//settingsDB set = new settingsDB(Authenticator.getWalletOperation().getApplicationParams().getAppName());
-		//set.initSettings();
+		settingsDB set = new settingsDB(Authenticator.getWalletOperation().getApplicationParams().getAppName());
+		set.initSettings();
 	}
 
 	public void setPaired(boolean paired) throws IOException{
