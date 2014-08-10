@@ -532,7 +532,14 @@ public class UIUpdateHelper {
 		}
 		
 		@Override
-		void onPreExecute() { }
+		void onPreExecute() {
+			Platform.runLater(new Runnable() {
+	            @Override
+	            public void run() {
+	            	showNoTxHistory();
+	            }
+	        });
+		}
 
 		@Override
 		void doInBackground() {
@@ -622,16 +629,7 @@ public class UIUpdateHelper {
 		void onPostExecute() {
 			scrlViewTxHistoryContentManager.clearAll();
 			if (txAll.size()==0){
-	    		HBox mainNode = new HBox();
-	    		Label l = new Label("                    No transaction history   ");
-	    		l.setStyle("-fx-font-weight: SEMI_BOLD;");
-	    		l.setTextFill(Paint.valueOf("#6e86a0"));
-	    		l.setFont(Font.font(13));
-	    		mainNode.getChildren().add(l);
-	    		Image inout = new Image(Main.class.getResourceAsStream("in-out.png"));
-	    		ImageView arrows = new ImageView(inout);
-	    		mainNode.getChildren().add(arrows);
-	    		scrlViewTxHistoryContentManager.addItem(mainNode);	
+				showNoTxHistory();
 	    		return;
 	    	}
 			
@@ -639,6 +637,20 @@ public class UIUpdateHelper {
 				Tooltip.install(m, new Tooltip(entries.get(m)));
 				scrlViewTxHistoryContentManager.addItem(m);	
 			}
+		}
+		
+		private void showNoTxHistory(){
+			scrlViewTxHistoryContentManager.clearAll();
+			HBox mainNode = new HBox();
+    		Label l = new Label("                    No transaction history   ");
+    		l.setStyle("-fx-font-weight: SEMI_BOLD;");
+    		l.setTextFill(Paint.valueOf("#6e86a0"));
+    		l.setFont(Font.font(13));
+    		mainNode.getChildren().add(l);
+    		Image inout = new Image(Main.class.getResourceAsStream("in-out.png"));
+    		ImageView arrows = new ImageView(inout);
+    		mainNode.getChildren().add(arrows);
+    		scrlViewTxHistoryContentManager.addItem(mainNode);	
 		}
 
 		@Override
