@@ -1,4 +1,4 @@
-package wallettemplate;
+package wallettemplate.ControllerHelpers;
 
 import com.google.bitcoin.core.Transaction;
 

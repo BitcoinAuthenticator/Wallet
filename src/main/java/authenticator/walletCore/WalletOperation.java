@@ -35,7 +35,9 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 
 import wallettemplate.Main;
+import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
 import authenticator.Utils.EncodingUtils;
+import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
@@ -189,8 +191,8 @@ public class WalletOperation extends BASE{
 	 * @author alon
 	 *
 	 */
-	public static boolean isRequiringBalanceChange = true;
 	public class WalletListener extends AbstractWalletEventListener {
+		private boolean isRequiringBalanceChange = true;
 		
         @Override
         public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
@@ -276,7 +278,7 @@ public class WalletOperation extends BASE{
     }
 	
 	/**
-	 * Be careful using this method directly because it can block the UI
+	 * Be careful using this method directly because it can block 
 	 * @param wallet
 	 * @throws Exception
 	 */
@@ -345,7 +347,10 @@ public class WalletOperation extends BASE{
         	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
         	    			if(isWatchingAddress(addrStr)){
         	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
-        	    				subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
+        	    				if(out.getParentTransaction().getConfidence().getConfidenceType() == ConfidenceType.PENDING)
+        	    					subtractFromUnConfirmedBalance(add.getAccountIndex(), out.getValue());
+        	    				if(out.getParentTransaction().getConfidence().getConfidenceType() == ConfidenceType.BUILDING)
+        	    					subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
         	    			}
     					}
     				}
@@ -453,11 +458,11 @@ public class WalletOperation extends BASE{
 	@SuppressWarnings("static-access")
 	/**
 	 * 
+	 * @param tx
 	 * @param outSelected
 	 * @param to
 	 * @param fee
 	 * @param changeAdd
-	 * @param np
 	 * @return
 	 * @throws AddressFormatException
 	 * @throws JSONException
@@ -465,18 +470,36 @@ public class WalletOperation extends BASE{
 	 * @throws NoSuchAlgorithmException
 	 * @throws IllegalArgumentException
 	 */
-	public Transaction mkUnsignedTxWithSelectedInputs(ArrayList<TransactionOutput> outSelected, 
+	public Transaction mkUnsignedTxWithSelectedInputs(
+			ArrayList<TransactionOutput> outSelected, 
+			HashMap<String, Coin> to, 
+			Coin fee, 
+			String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException, IllegalArgumentException {
+		
+		Transaction tx = new Transaction(getNetworkParams());
+		ArrayList<TransactionOutput> Outputs = new ArrayList<TransactionOutput>();
+		for(String addStr: to.keySet()){
+			Address add = new Address(getNetworkParams(), addStr);			
+			long satoshis = (long) (Double.parseDouble(to.get(addStr).toPlainString()) * 100000000);
+			if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+				TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
+															tx, 
+									        				Coin.valueOf(satoshis), 
+									        				add);
+				Outputs.add(out);
+			}
+		}
+		
+		return this.mkUnsignedTxWithSelectedInputs(tx, outSelected, Outputs, fee, changeAdd);
+	}
+	private Transaction mkUnsignedTxWithSelectedInputs(Transaction tx,
+			ArrayList<TransactionOutput> outSelected, 
 			ArrayList<TransactionOutput>to, 
 			Coin fee, 
-			String changeAdd,
-			@Nullable NetworkParameters np) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException, IllegalArgumentException {
-		Transaction tx;
-		if(np == null)
-			tx = new Transaction(getNetworkParams());
-		else
-			tx = new Transaction(np);
+			String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException, IllegalArgumentException {
 		
-		//Get total output
+		tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
+		
 		Coin totalOut = Coin.ZERO;
 		for (TransactionOutput out:to){
 			totalOut = totalOut.add(out.getValue());

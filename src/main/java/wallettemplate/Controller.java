@@ -119,8 +119,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import wallettemplate.ControllerHelpers.SendTxHelper;
-import wallettemplate.ControllerHelpers.SendTxHelper.NewAddress;
+import wallettemplate.ControllerHelpers.TableTx;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
+import wallettemplate.ControllerHelpers.SendTxHelper.NewAddress;
+import wallettemplate.ControllerHelpers.UIUpdateHelper;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.BaseUI;
@@ -164,7 +166,6 @@ import static wallettemplate.Main.bitcoin;
 import static wallettemplate.utils.GuiUtils.checkGuiThread;
 import static wallettemplate.utils.GuiUtils.crashAlert;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
-
 /**
  * Gets created auto-magically by FXMLLoader via reflection. The widget fields are set to the GUI controls they're named
  * after. This class handles all the updates and event handling for the main UI.
@@ -266,6 +267,16 @@ public class Controller  extends BaseUI{
         createReceivePaneButtons();
         createSendButtons();
         
+        // Transaction pane
+        colConfirmations.setCellValueFactory(new PropertyValueFactory<TableTx,String>("confirmations"));
+    	colInOut.setCellValueFactory(new PropertyValueFactory<TableTx,ImageView>("inOut"));
+    	colDate.setCellValueFactory(new PropertyValueFactory<TableTx,String>("date"));
+    	colToFrom.setCellValueFactory(new PropertyValueFactory<TableTx,String>("toFrom"));
+    	colToFrom.setCellFactory(TextFieldTableCell.forTableColumn());
+    	colDescription.setCellValueFactory(new PropertyValueFactory<TableTx,String>("description"));
+    	colDescription.setCellFactory(TextFieldTableCell.forTableColumn());
+    	colAmount.setCellValueFactory(new PropertyValueFactory<TableTx,Text>("amount"));
+        
         
         // Pane Control
         Tooltip.install(lblMinimize, new Tooltip("Minimize Window"));
@@ -345,23 +356,17 @@ public class Controller  extends BaseUI{
     	throttledUIUpdater = new ThrottledRunnableExecutor(1500, new Runnable(){
 			@Override
 			public void run() {
-				Platform.runLater(new Runnable() { 
-					 @Override
-					public void run() {
-						 LOG.info("Updating UI");
-						 
-						 setReceiveAddresses();
-					 	 try {setTxPaneHistory();} 
-					 	 catch (Exception e1) {e1.printStackTrace();}
-					 	 
-				    	 try {setTxHistoryContent();} 
-				    	 catch (Exception e1) {e1.printStackTrace();}
+				LOG.info("Updating UI");
+				 
+				 setReceiveAddresses();
+			 	 try {setTxPaneHistory();} 
+			 	 catch (Exception e1) {e1.printStackTrace();}
+			 	 
+		    	 try {setTxHistoryContent();} 
+		    	 catch (Exception e1) {e1.printStackTrace();}
 
-				    	 try {refreshBalanceLabel();} 
-				     	 catch (Exception e) {e.printStackTrace();}
-				    	 
-					 }
-				});
+		    	 try {refreshBalanceLabel();} 
+		     	 catch (Exception e) {e.printStackTrace();}
 			}
     	});
     	throttledUIUpdater.start();
@@ -998,149 +1003,15 @@ public class Controller  extends BaseUI{
     @SuppressWarnings("static-access")
 	public void refreshBalanceLabel() throws JSONException, IOException, AccountWasNotFoundException {
     	LOG.info("Refreshing balance");
-    	Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    	Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-  
-        //final Coin total = confirmed.add(unconfirmed);
-        lblConfirmedBalance.setText(confirmed.toFriendlyString());
-        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString());
-        new CurrencyConverterSingelton(new CurrencyConverterSingelton.CurrencyConverterListener(){
-			@Override
-			public void onFinishedGettingCurrencyData(CurrencyConverterSingelton currencies) {
-				Platform.runLater(new Runnable() {
-				      @Override public void run() {
-							try {
-								attachBalanceToolTip();
-							} catch (AccountWasNotFoundException e) {
-								e.printStackTrace();
-							}
-				      }
-				    });
-			}
-
-			@Override
-			public void onErrorGettingCurrencyData(Exception e) {
-				Platform.runLater(new Runnable() {
-				      @Override public void run() {
-				    	  Dialogs.create()
-					        .owner(Main.stage)
-					        .title("Error !")
-					        .masthead("Cannot Download Currency Data")
-					        .message("Some functionalities may be compromised")
-					        .showInformation();   
-				      }
-				    });
-			}
-        });
-        
+    	new UIUpdateHelper.BalanceUpdater(lblConfirmedBalance, lblUnconfirmedBalance).execute();
     }
     
-    private void attachBalanceToolTip() throws AccountWasNotFoundException{
-    	  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-	      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-		  
-		  // Confirmed
-		  //double conf = Double.parseDouble(confirmed.toPlainString())*last;
-		  double conf = CurrencyConverterSingelton.USD.convertToCurrency(Double.parseDouble(confirmed.toPlainString()));
-		  Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " USD"));
-		  
-		  // Unconfirmed
-		  //double unconf = Double.parseDouble(unconfirmed.toPlainString())*last;
-		  double unconf = CurrencyConverterSingelton.USD.convertToCurrency(Double.parseDouble(unconfirmed.toPlainString()));
-		  Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " USD"));
-    }
+    
     
     @SuppressWarnings("unused")
 	public void setTxHistoryContent() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
     	LOG.info("Setting Tx History in Overview Pane");
-    	scrlViewTxHistoryContentManager.clearAll();
-    	//List<Transaction> txAll = Authenticator.getWalletOperation().getRecentTransactions();
-    	ArrayList<Transaction> txAll = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    	if (txAll.size()==0){
-    		HBox mainNode = new HBox();
-    		Label l = new Label("                    No transaction history   ");
-    		l.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		l.setTextFill(Paint.valueOf("#6e86a0"));
-    		l.setFont(Font.font(13));
-    		mainNode.getChildren().add(l);
-    		Image inout = new Image(Main.class.getResourceAsStream("in-out.png"));
-    		ImageView arrows = new ImageView(inout);
-    		mainNode.getChildren().add(arrows);
-    		scrlViewTxHistoryContentManager.addItem(mainNode);	
-    	}
-    	walletDB config = Authenticator.getWalletOperation().configFile;
-    	ArrayList<String> savedTXIDs = config.getSavedTxidList();
-    	int size = txAll.size();
-    	int n;
-    	if (size < 10) {n=size;}
-    	else {size =  10;}
-    	for(int i=0; i<size; i++){
-    		String txid = txAll.get(i).getHashAsString();
-    		String tip = "";
-    		// build node 
-    		HBox mainNode = new HBox();
-        		
-    		// left box
-    		VBox leftBox = new VBox();
-    		Label l1 = new Label();
-    		l1.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		l1.setTextFill(Paint.valueOf("#6e86a0"));
-    		l1.setFont(Font.font(13));
-    		l1.setText(txAll.get(i).getUpdateTime().toLocaleString()); 
-    		tip += "Txid: " + txid + "\n";
-    		leftBox.getChildren().add(l1);
-    		
-    		Label l2 = new Label();
-    		l2.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		l2.setTextFill(Paint.valueOf("#6e86a0"));
-    		l2.setFont(Font.font(11));
-    		for (int a=0; a<savedTXIDs.size(); a++){
-    			if (savedTXIDs.get(a).equals(txAll.get(i).getHashAsString())){
-    				if(!config.getSavedDescription(a).equals("")){txid = config.getSavedDescription(a);}
-    			}
-    		}
-    		if (txid.length()>20){txid = txid.substring(0, 20) + "...";}
-    		l2.setText(txid); 
-    		tip += "When: " + txAll.get(i).getUpdateTime().toLocaleString() + "\n";
-    		leftBox.getChildren().add(l2);
-    		
-    		mainNode.getChildren().add(leftBox);
-    		
-    		// right box
-    		VBox rightBox = new VBox();
-    		HBox content = new HBox();
-    		rightBox.setPadding(new Insets(0,0,0,40));
-    		Label l3 = new Label();
-    		l3.setStyle("-fx-font-weight: SEMI_BOLD;");
-    		l3.setPadding(new Insets(0,5,0,0));
-    		//check is it receiving or sending
-    		Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(txAll.get(i));//txAll.get(i).getValueSentToMe(Main.bitcoin.wallet());
-    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(txAll.get(i));//txAll.get(i).getValueSentFromMe(Main.bitcoin.wallet());
-    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
-    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
-    		ImageView arrow = null;
-    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
-    			l3.setTextFill(Paint.valueOf("#ea4f4a"));
-    			l3.setText("-" + exit.subtract(enter).toFriendlyString()); // get total out minus enter to subtract change amount
-    			tip += "Amount: -" + exit.subtract(enter).toFriendlyString() + "\n";	
-    			arrow = new ImageView(out);
-    		}
-    		else { // i only received coins
-    			l3.setTextFill(Paint.valueOf("#98d947"));
-    			l3.setText(enter.toFriendlyString());
-    			tip+= "Amount: " + enter.toFriendlyString() + "\n";
-    			arrow = new ImageView(in);
-    		}
-     		l3.setFont(Font.font(13));
-    		content.getChildren().add(l3);
-    		content.getChildren().add(arrow);
-    		rightBox.getChildren().add(content);
-    		mainNode.getChildren().add(rightBox);
-    		Tooltip.install(mainNode, new Tooltip(tip));
-    		
-    		// add to scroll
-    		scrlViewTxHistoryContentManager.addItem(mainNode);		
-    	}
+    	new UIUpdateHelper.TxHistoryContentUpdater(scrlViewTxHistoryContentManager).execute();
     }
     
     //#####################################
@@ -1231,50 +1102,32 @@ public class Controller  extends BaseUI{
 	        .showError();  
     	}
     	else{
+    		Transaction tx = new Transaction(Authenticator.getWalletOperation().getNetworkParams());
     		// collect Tx outputs
     		ArrayList<String> OutputAddresses = new ArrayList<String>();
-    		ArrayList<TransactionOutput> to = new ArrayList<TransactionOutput>();
+    		HashMap<String , Coin> to = new HashMap<String , Coin>();
     		Coin outAmount = Coin.valueOf(0);
         	for(Node n:scrlContent.getChildren())
         	{
         		NewAddress na = (NewAddress)n;
         		Address add;
-				try {
-					add = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText());
-					OutputAddresses.add(add.toString());
-					double amount;
-					if (na.cbCurrency.getValue().toString().equals("BTC")){
-						amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
-					}
-					else {		
-						CurrencyConverterSingelton.CANNOT_EXECUTE_ASYNC_SO_CHECK_IS_READY();
-						amount = CurrencyConverterSingelton.USD.convertToBTC(Double.parseDouble(na.txfAmount.getText()));
-					}
-					long satoshis = (long) amount;
-					if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
-						outAmount = outAmount.add(Coin.valueOf(satoshis));
-						TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
-											        				null, 
-											        				Coin.valueOf(satoshis), 
-											        				add);
-						to.add(out);
-					}
-					else 
-						;//TODO
-					
-				} catch (AddressFormatException e) { 
-					e.printStackTrace();
-					Platform.runLater(new Runnable() {
-					      @Override public void run() {
-					    	  Dialogs.create()
-						        .owner(Main.stage)
-						        .title("Error !")
-						        .masthead("Cannot Create Tx")
-						        .message("")
-						        .showInformation();   
-					      }
-					    });
-				}        		
+        		
+				double amount;
+				if (na.cbCurrency.getValue().toString().equals("BTC")){
+					amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+				}
+				else {		
+					CurrencyConverterSingelton.CANNOT_EXECUTE_ASYNC_SO_CHECK_IS_READY();
+					amount = CurrencyConverterSingelton.USD.convertToBTC(Double.parseDouble(na.txfAmount.getText()));
+				}
+				long satoshis = (long) amount;
+				if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+					outAmount = outAmount.add(Coin.valueOf(satoshis));
+					OutputAddresses.add(na.txfAddress.getText());
+					to.put(na.txfAddress.getText(), Coin.valueOf(satoshis));
+				}
+				else 
+					;//TODO        		
         	}
         	
         	try{
@@ -1286,13 +1139,7 @@ public class Controller  extends BaseUI{
                 	double f = (double) Double.parseDouble(txFee.getText())*100000000;
                 	fee = Coin.valueOf((long)f);
                 }
-        		
-        		// get input outputs / change address
-        		/*ArrayList<TransactionOutput> outputs = Authenticator.
-        				getWalletOperation().
-        				getUnspentOutputsForAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-        		*/
-        		
+        	
         		ArrayList<TransactionOutput> outputs = Authenticator
         				.getWalletOperation()
         				.selectOutputsFromAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
@@ -1303,16 +1150,13 @@ public class Controller  extends BaseUI{
     								.getAddressStr();
         		   
         		// complete Tx
-        		Transaction tx = Authenticator.getWalletOperation().mkUnsignedTxWithSelectedInputs(outputs, 
-    						to,
-    						fee,
-    						changeaddr,
-    						Authenticator.getWalletOperation().getNetworkParams());
+        		tx = Authenticator.getWalletOperation()
+        				.mkUnsignedTxWithSelectedInputs(outputs, to, fee, changeaddr);
     						
     			//
     			displayTxOverview(tx,
     					OutputAddresses, 
-    					to,
+    					tx.getOutputs(),
     					changeaddr, 
     					outAmount, 
     					fee, 
@@ -1337,7 +1181,7 @@ public class Controller  extends BaseUI{
     
     private void displayTxOverview(Transaction tx, 
     		ArrayList<String> OutputAddresses, 
-    		ArrayList<TransactionOutput> to, 
+    		List<TransactionOutput> to, 
     		String changeaddr,
     		Coin outAmount,
     		Coin fee,
@@ -2039,10 +1883,12 @@ public class Controller  extends BaseUI{
     @SuppressWarnings("unchecked")
 	private void setReceiveAddresses(){
     	LOG.info("Updating received addresses");
-    	Platform.runLater(new Runnable() { 
+    	new UIUpdateHelper.ReceiveAddressesUpdater(AddressBox).execute();
+    	
+    	/*Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
-				 AddressBox.getItems().clear();
+				AddressBox.getItems().clear();
 		    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
 		    	ArrayList<String> add = new ArrayList<String>();
 				try {
@@ -2061,7 +1907,7 @@ public class Controller  extends BaseUI{
 				} catch (NoSuchAlgorithmException | JSONException
 						| AddressFormatException e) { e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
 			  }
-		});
+		});*/
     }       
     
     //#####################################
@@ -2071,387 +1917,8 @@ public class Controller  extends BaseUI{
    	//#####################################
     
     public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
-    	ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-    	walletDB config = Authenticator.getWalletOperation().configFile;
-    	ArrayList<String> savedTXIDs = config.getSavedTxidList();
-    	final ObservableList<TableTx> txdata = FXCollections.observableArrayList();
-    	for (Transaction tx : history){
-    		Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
-    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
-    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
-    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
-    		ImageView arrow = null;
-    		Text amount = new Text();
-    		String toFrom = "multiple";
-    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
-    			arrow = new ImageView(out);
-    			amount.setFill(Paint.valueOf("#f06e6e"));
-    			amount.setText(exit.subtract(enter).toFriendlyString());
-    		}
-    		else { // i only received coins
-    			arrow = new ImageView(in);
-    			amount.setText(enter.toFriendlyString());
-    			amount.setFill(Paint.valueOf("#98d947"));
-    			if (tx.getInputs().size()==1){
-    				toFrom = tx.getInput(0).getFromAddress().toString();
-    			}
-    		}
-    		String desc = tx.getHashAsString();
-    		String date = tx.getUpdateTime().toLocaleString();
-    		for (int i=0; i<savedTXIDs.size(); i++){
-    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-    				desc = config.getSavedDescription(i);
-    			}
-    		}
-    		for (int i=0; i<savedTXIDs.size(); i++){
-    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-    				toFrom = config.getSavedToFrom(i);
-    			}
-    		}
-    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
-    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
-    		txdata.add(transaction);
-    	}
-    	colConfirmations.setCellValueFactory(new PropertyValueFactory<TableTx,String>("confirmations"));
-    	colInOut.setCellValueFactory(new PropertyValueFactory<TableTx,ImageView>("inOut"));
-    	colDate.setCellValueFactory(new PropertyValueFactory<TableTx,String>("date"));
-    	colToFrom.setCellValueFactory(new PropertyValueFactory<TableTx,String>("toFrom"));
-    	colToFrom.setCellFactory(TextFieldTableCell.forTableColumn());
-    	colToFrom.setOnEditCommit(
-    	    new EventHandler<CellEditEvent<TableTx, String>>() {
-    	        @Override
-    	        public void handle(CellEditEvent<TableTx, String> t) {
-    	            ((TableTx) t.getTableView().getItems().get(
-    	                t.getTablePosition().getRow())
-    	                ).setToFrom(t.getNewValue());
-    	            String txid = ((TableTx) t.getTableView().getItems().get(
-        	                t.getTablePosition().getRow())
-        	                ).getTxid();
-    	            String desc = ((TableTx) t.getTableView().getItems().get(
-        	                t.getTablePosition().getRow())
-        	                ).getDescription();
-    	            String toFrom = ((TableTx) t.getTableView().getItems().get(
-        	                t.getTablePosition().getRow())
-        	                ).getToFrom();
-    	            if (savedTXIDs.size()==0){
-    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-    	            	catch (IOException e) {e.printStackTrace();}
-    	            }
-    	            else {
-    	            	if (savedTXIDs.contains(txid)){
-    	            		for (int i=0; i<savedTXIDs.size(); i++){
-    	            			if (savedTXIDs.get(i).equals(txid)){
-    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
-    	            				catch (IOException e) {e.printStackTrace();}
-    	            			}
-    	            		}
-    	            	}
-    	            	else {
-    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-    	            		catch (IOException e) {e.printStackTrace();}
-    	            	}   
-    	            }
-    	        }
-    	    }
-    	);
-    	colDescription.setCellValueFactory(new PropertyValueFactory<TableTx,String>("description"));
-    	colDescription.setCellFactory(TextFieldTableCell.forTableColumn());
-    	colDescription.setOnEditCommit(
-    	    new EventHandler<CellEditEvent<TableTx, String>>() {
-    	        @Override
-    	        public void handle(CellEditEvent<TableTx, String> t) {
-    	            ((TableTx) t.getTableView().getItems().get(
-    	                t.getTablePosition().getRow())
-    	                ).setDescription(t.getNewValue());
-    	            String txid = ((TableTx) t.getTableView().getItems().get(
-        	                t.getTablePosition().getRow())
-        	                ).getTxid();
-    	            String desc = ((TableTx) t.getTableView().getItems().get(
-        	                t.getTablePosition().getRow())
-        	                ).getDescription();
-    	            String toFrom = ((TableTx) t.getTableView().getItems().get(
-        	                t.getTablePosition().getRow())
-        	                ).getToFrom();
-    	            if (savedTXIDs.size()==0){
-    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-    	            	catch (IOException e) {e.printStackTrace();}
-    	            }
-    	            else {
-    	            	if (savedTXIDs.contains(txid)){
-    	            		for (int i=0; i<savedTXIDs.size(); i++){
-    	            			if (savedTXIDs.get(i).equals(txid)){
-    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
-    	            				catch (IOException e) {e.printStackTrace();}
-    	            			}
-    	            		}
-    	            	}
-    	            	else {
-    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-    	            		catch (IOException e) {e.printStackTrace();}
-    	            	}   
-    	            }
-    	            try {setTxHistoryContent();} 
-    	            catch (NoSuchAlgorithmException | JSONException
-							| AddressFormatException
-							| KeyIndexOutOfRangeException
-							| AddressNotWatchedByWalletException | AccountWasNotFoundException e) {e.printStackTrace();}
-    	        }
-    	    }
-    	);
-    	colAmount.setCellValueFactory(new PropertyValueFactory<TableTx,Text>("amount"));
-    	txTable.setItems(txdata);
-    	txTable.setEditable(true);
-    	txTable.setOnMouseClicked(new EventHandler<MouseEvent>(){
-    		@Override
-    		public void handle(MouseEvent event) {
-    			if (event.getClickCount()==2){
-    			 @SuppressWarnings("rawtypes")
-    			  ObservableList<TablePosition> cells = txTable.getSelectionModel().getSelectedCells();
-    			  for( TablePosition< TableTx, ? > cell : cells )
-    			  {
-    			     if(!(cell.getColumn()==3) && !(cell.getColumn()==4)){
-    			    	 TableTx txObj= (TableTx)txTable.getItems().get(cell.getRow());
-    			    	 Transaction tx = txObj.getTransaction();
-    			    	 Pane pane = new Pane();
-    			    	 final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
-    			    	 pane.setMaxSize(600, 360);
-    			    	 pane.setStyle("-fx-background-color: white;");
-    			    	 pane.setEffect(new DropShadow());
-    			    	 Button btnClose = new Button("Close");
-    			    	 HBox hbclose = new HBox();
-    			    	 hbclose.getChildren().add(btnClose);
-    			    	 hbclose.setAlignment(Pos.CENTER);
-    			    	 VBox v = new VBox();
-    			    	 Label lblOverview = new Label("Transaction Details");
-    			    	 v.setMargin(lblOverview, new Insets(10,0,10,15));
-    			    	 lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
-    			    	 ListView lvTx= new ListView();
-    			    	 v.setMargin(lvTx, new Insets(0,0,10,15));
-    			    	 lvTx.setPrefSize(570, 270);
-    			    	 ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
-    			    	 //Transaction ID
-    			    	 Text idtext = new Text("ID:  ");
-    			    	 Text idtext2 = new Text(tx.getHashAsString());
-    			    	 idtext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow idflow = new TextFlow();
-    			    	 idflow.getChildren().addAll(idtext);
-    			    	 idflow.getChildren().addAll(idtext2);
-    			    	 textformatted.add(idflow);
-    			    	 TextFlow spaceflow = new TextFlow();
-    			    	 Text space = new Text(" ");
-    			    	 spaceflow.getChildren().addAll(space);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Date and Time
-    			    	 Text datetext = new Text("Date & Time:          ");
-    			    	 Text datetext2 = new Text(tx.getUpdateTime().toLocaleString());
-    			    	 datetext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow dateflow = new TextFlow();
-    			    	 dateflow.getChildren().addAll(datetext);
-    			    	 dateflow.getChildren().addAll(datetext2);
-    			    	 textformatted.add(dateflow);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Confirmations
-    			    	 Text conftext = new Text("Confirmations:        ");
-    			    	 Text conftext2 = new Text("");
-    			    	 if (tx.getConfidence().getDepthInBlocks()==0){
-    			    		 conftext2.setFill(Paint.valueOf("#f06e6e"));
-    			    		 conftext2.setText("Unconfirmed");
-    			    	 }
-    			    	 else if (tx.getConfidence().getDepthInBlocks()>0 && tx.getConfidence().getDepthInBlocks()<6){
-    			    		 conftext2.setFill(Paint.valueOf("#f8fb1a"));
-    			    		 conftext2.setText(String.valueOf(tx.getConfidence().getDepthInBlocks()));
-    			    	 }
-    			    	 else {
-    			    		 conftext2.setFill(Paint.valueOf("#98d947"));
-    			    		 conftext2.setText(String.valueOf(tx.getConfidence().getDepthInBlocks()));
-    			    	 }
-    			    	 conftext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow confflow = new TextFlow();
-    			    	 confflow.getChildren().addAll(conftext);
-    			    	 confflow.getChildren().addAll(conftext2);
-    			    	 textformatted.add(confflow);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Appears in Block
-    			    	 Text blocktext = new Text("Included In Block:  ");
-    			    	 Text blocktext2 = new Text();
-    			    	 try {blocktext2.setText("#" + String.valueOf(tx.getConfidence().getAppearedAtChainHeight()));}
-    			    	 catch (IllegalStateException e){blocktext2.setText("None");}
-    			    	 blocktext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow blockflow = new TextFlow();
-    			    	 blockflow.getChildren().addAll(blocktext);
-    			    	 blockflow.getChildren().addAll(blocktext2);
-    			    	 textformatted.add(blockflow);
-    			    	 textformatted.add(spaceflow); 
-    			    	 //Peers
-    			    	 Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
-    			    	 Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);	
-    			    	 Text peertext = new Text();
-    			    	 if (exit.compareTo(Coin.ZERO) > 0){ peertext.setText("Seen By:                 ");}
-    			    	 else { peertext.setText("Relayed By:             ");}
-    			    	 Text peertext2 = new Text("");
-    			    	 peertext2.setText(String.valueOf(tx.getConfidence().numBroadcastPeers() + " peers"));
-    			    	 peertext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow peerflow = new TextFlow();
-    			    	 peerflow.getChildren().addAll(peertext);
-    			    	 peerflow.getChildren().addAll(peertext2);
-    			    	 textformatted.add(peerflow);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Inputs
-    			    	 Text inputtext = new Text("Inputs:                    ");
-    			    	 inputtext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow inputflow = new TextFlow();
-    			    	 inputflow.getChildren().addAll(inputtext);
-    			    	 ArrayList<Text> intext = new ArrayList<Text>();
-    			    	 Coin inAmount = Coin.ZERO;
-    			    	 for (int b=0; b<tx.getInputs().size(); b++){
-    			    		 Text inputtext2 = new Text("");
-    			    		 Text inputtext3 = new Text("");
-    			    		 inputtext3.setFill(Paint.valueOf("#98d947"));
-    			    		 inputtext2.setText(tx.getInput(b).getFromAddress().toString() + " ");
-    			    		 intext.add(inputtext2);
-    			    		 try { 
-    			    			 inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());
-    			    			 inAmount = inAmount.add(tx.getInput(b).getValue());
-    			    		 } catch (NullPointerException e) {inputtext3.setText("unavailable");}
-    			    		 if (b<tx.getInputs().size()-1){
-    			    			 inputtext3.setText(inputtext3.getText() + "\n                                   ");
-    			    		 }
-    			    		 intext.add(inputtext3);
-    			    	 }
-    			    	 for (Text t : intext){inputflow.getChildren().addAll(t);}
-    			    	 textformatted.add(inputflow);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Total Inputs
-    			    	 Text intotaltext = new Text("Total Inputs:           ");
-    			    	 Text intotaltext2 = new Text("");
-    			    	 if(tx.getInput(0).getConnectedOutput()!=null){intotaltext2.setText(inAmount.toFriendlyString());}
-    			    	 else {intotaltext2.setText("unavailable");}
-    			    	 intotaltext2.setFill(Paint.valueOf("#98d947"));
-    			    	 intotaltext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow intotalflow = new TextFlow();
-    			    	 intotalflow.getChildren().addAll(intotaltext);
-    			    	 intotalflow.getChildren().addAll(intotaltext2);
-    			    	 textformatted.add(intotalflow);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Outputs
-    			    	 Text outputtext = new Text("Outputs:                 ");
-    			    	 outputtext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow outputflow = new TextFlow();
-    			    	 outputflow.getChildren().addAll(outputtext);
-    			    	 ArrayList<Text> outtext = new ArrayList<Text>();
-    			    	 Coin outAmount = Coin.ZERO;
-    			    	 for (int a=0; a < tx.getOutputs().size(); a++){
-    			    		 Text outputtext2 = new Text("");
-    			    		 Text outputtext3 = new Text("");
-    			    		 outputtext3.setFill(Paint.valueOf("#f06e6e"));
-    			    		 outputtext2.setText(tx.getOutput(a).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()) + " ");
-    			    		 outtext.add(outputtext2);
-    			    		 outAmount = outAmount.add(tx.getOutput(a).getValue());
-    			    		 outputtext3.setText(tx.getOutput(a).getValue().toFriendlyString());
-    			    		 if (a<tx.getOutputs().size()-1){
-    			    			 outputtext3.setText(outputtext3.getText() + "\n                                   ");
-    			    		 }
-    			    		 outtext.add(outputtext3);
-    			    	 }
-    			    	 for (Text t : outtext){outputflow.getChildren().addAll(t);}
-    			    	 textformatted.add(outputflow);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Total outputs
-    			    	 Text outtotaltext = new Text("Total Outputs:        ");
-    			    	 Text outtotaltext2 = new Text("");
-    			    	 outtotaltext2.setFill(Paint.valueOf("#f06e6e"));
-    			    	 outtotaltext2.setText(outAmount.toFriendlyString());
-    			    	 outtotaltext.setStyle("-fx-font-weight:bold;");
-    			    	 TextFlow outtotalflow = new TextFlow();
-    			    	 outtotalflow.getChildren().addAll(outtotaltext);
-    			    	 outtotalflow.getChildren().addAll(outtotaltext2);
-    			    	 textformatted.add(outtotalflow);
-    			    	 textformatted.add(spaceflow);
-    			    	 //Transaction Fee
-    			    	 Text feetext = new Text("Fee:                        ");
-    			    	 Text feetext2 = new Text("");
-    			    	 try {feetext2.setText(tx.getFee().toFriendlyString());}
-    			    	 catch (NullPointerException e) {feetext2.setText("unavailable");}
-    			    	 feetext2.setFill(Paint.valueOf("#f06e6e"));
-    			    	 TextFlow feeflow = new TextFlow();
-    			    	 feetext.setStyle("-fx-font-weight:bold;");
-    			    	 feeflow.getChildren().addAll(feetext);
-    			    	 feeflow.getChildren().addAll(feetext2);
-    			    	 textformatted.add(feeflow);
-    			    	 lvTx.setItems(textformatted);
-    			    	 lvTx.setStyle("-fx-background-color: transparent;");
-    			    	 v.getChildren().add(lblOverview);
-    			    	 v.getChildren().add(lvTx);
-    			    	 v.getChildren().add(hbclose);
-    			    	 pane.getChildren().add(v);
-    			    	 btnClose.getStyleClass().add("custom-button");
-    			    	 btnClose.setOnMousePressed(new EventHandler<MouseEvent>(){
-    	            			@Override
-    	            			public void handle(MouseEvent t) {
-    	            				btnClose.setStyle("-fx-background-color: #a1d2e7;");
-    	            			}
-    	            		});
-    	            		btnClose.setOnMouseReleased(new EventHandler<MouseEvent>(){
-    	            			@Override
-    	            			public void handle(MouseEvent t) {
-    	            				btnClose.setStyle("-fx-background-color: #199bd6;");
-    	            			}
-    	            		});
-    			    	 btnClose.setPrefWidth(150);
-    			    	 btnClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
-    			    		 @Override
-    			    		 public void handle(MouseEvent event) {
-    			    			 overlay.done();
-    			    		 }
-    			    	 });
-    			    	 final ContextMenu contextMenu2 = new ContextMenu();
-    					 MenuItem item12 = new MenuItem("Copy");
-    					 item12.setOnAction(new EventHandler<ActionEvent>() {
-    						 public void handle(ActionEvent e) {
-    							 Clipboard clipboard = Clipboard.getSystemClipboard();
-    							 ClipboardContent content = new ClipboardContent();
-    							 String stringToCopy = "";
-    							 switch (lvTx.getSelectionModel().getSelectedIndex()) {
-    					            case 0:  stringToCopy = tx.getHashAsString();
-    					                     break;
-    					            case 1:  break;
-    					            case 2:  stringToCopy = tx.getUpdateTime().toLocaleString();
-    					                     break;
-    					            case 3:  break;
-    					            case 4:  stringToCopy = String.valueOf(tx.getConfidence().getDepthInBlocks());
-    					                     break;
-    					            case 5:  break;
-    					            case 6:  stringToCopy = blocktext2.getText();
-    					                     break;
-    					            case 7:  break;
-    					            case 8:  stringToCopy = String.valueOf(tx.getConfidence().numBroadcastPeers() + " peers");
-    					                     break;
-    					            case 9:  break;
-    					            case 10: for (TransactionInput in : tx.getInputs()){stringToCopy = stringToCopy + in.getFromAddress().toString() + "; ";}
-    					                     break;
-    					            case 11: break;
-    					            case 12: stringToCopy = intotaltext2.getText();
-    					                     break;
-    					            case 13: break;
-    					            case 14: for (TransactionOutput out : tx.getOutputs()){stringToCopy = stringToCopy + out.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()) + "; ";}
-    					            		 break;
-    					            case 15: break;
-    					            case 16: stringToCopy = outtotaltext2.getText();
-    					            		 break;
-    					            case 17: break;
-    					            case 18: stringToCopy = feetext2.getText();
-    					        }
-    							 content.putString(stringToCopy);
-    							 clipboard.setContent(content);
-    						 }
-    					 });
-    					 contextMenu2.getItems().addAll(item12);
-    					 lvTx.setContextMenu(contextMenu2);
-    			     }
-    			  }
-    			}
-    		}
-    	});
+    	LOG.info("Updating Tx pane");
+    	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription).execute();
     }
     
     //#####################################
