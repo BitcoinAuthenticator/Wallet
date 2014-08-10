@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import wallettemplate.Main;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
 import authenticator.Utils.EncodingUtils;
-import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
+import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
@@ -174,9 +174,9 @@ public class WalletOperation extends BASE{
 			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
 		}
 		
-		if(mWalletWrapper != null){
+		/*if(mWalletWrapper != null){
 			updateBalaceNonBlocking(mWalletWrapper.getTrackedWallet(), null);
-		}
+		}*/
 		
 	}
 	

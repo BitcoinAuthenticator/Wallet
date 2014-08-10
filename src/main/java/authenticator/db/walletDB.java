@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
+import javafx.application.Platform;
 
 import org.json.simple.parser.ParseException;
 
@@ -80,7 +83,34 @@ public class walletDB extends dbBase{
 		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
 		ConfigSettings.Builder b = ConfigSettings.newBuilder();
 		auth.setConfigSettings(b);
-		writeConfigFile(auth);
+		final CountDownLatch latch = new CountDownLatch(1);
+        // asynchronous thread doing the process
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	try {writeConfigFile(auth);} 
+            	catch (IOException e) {e.printStackTrace();}    
+                latch.countDown();
+            }
+        }).start();
+        // asynchronous thread waiting for the process to finish
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {latch.await();} 
+                catch (InterruptedException ex) {}
+                // queuing the done notification into the javafx thread
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                    	settingsDB set = null;
+						try {set = new settingsDB(Authenticator.getWalletOperation().getApplicationParams().getAppName());} 
+						catch (IOException e) {e.printStackTrace();}
+                		try {set.initSettings();} catch (IOException e) {e.printStackTrace();}
+                    }
+                });
+            }
+        }).start();
 	}
 
 	public void setPaired(boolean paired) throws IOException{
