@@ -29,17 +29,6 @@ public class settingsDB extends dbBase{
 	//
 	//#####################################
 
-	public void initSettings() throws IOException{
-		setAccountUnit(BitcoinUnit.Bits);
-		setDecimalPoint(0);
-		setLocalCurrencySymbol("USD");
-		setLanguage(Languages.English);
-		setDefaultFee((int)Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.longValue());
-		setIsUsingTOR(true);
-		setIsConnectingToLocalHost(false);
-		setNotConnectingToTrustedPeer();
-		setBloomFilterFalsePositiveRate((float)PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
-	}
 	
 	private synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
 		AuthenticatorConfiguration.Builder auth = AuthenticatorConfiguration.newBuilder();

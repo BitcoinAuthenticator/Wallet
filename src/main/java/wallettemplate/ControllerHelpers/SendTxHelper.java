@@ -221,9 +221,24 @@ public class SendTxHelper {
     		//Text Fields
             HBox a = new HBox();
     		txfAddress = new TextField();
-    		txfAddress.setPromptText("Recipient Address or +OneName");
+    		txfAddress.setPromptText("Recipient Address or OneName");
     		txfAddress.setPrefWidth(400);
     		txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1;");
+    		txfAddress.focusedProperty().addListener(new ChangeListener<Boolean>()
+    		{
+    		    @Override
+    		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+    		    {
+    		        if (!newPropertyValue){
+    		        	try {
+    		        		Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), txfAddress.getText().toString());
+    		        		txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");}
+    		    		catch (AddressFormatException e) {
+    		    			txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #f06e6e;");
+    		    		}
+    		        }
+    		    }
+    		});
     		a.getChildren().add(txfAddress);
     		lblScanQR = new Label();
     		lblScanQR.setFont(new Font("Arial", 18));

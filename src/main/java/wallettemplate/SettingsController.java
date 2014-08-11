@@ -68,7 +68,7 @@ public class SettingsController  extends BaseUI{
     	super.initialize(SettingsController.class);
     	cbBitcoinUnit.setValue(strBitcoinUnit);
     	cbCurrency.setValue(strCurrency);
-    	cbDecimal.setValue(intDecimal);
+    	cbDecimal.setValue(String.valueOf(intDecimal));
     	cbLanguage.setValue(strLanguage);
     	txFee.setText(strFee + " satoshi"); //need to convert this into the unit in the choice box
     	ckTor.setSelected(useTor);
