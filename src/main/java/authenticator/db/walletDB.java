@@ -84,7 +84,8 @@ public class walletDB extends dbBase{
 		ConfigSettings.Builder b = ConfigSettings.newBuilder();
 		auth.setConfigSettings(b);
 		final CountDownLatch latch = new CountDownLatch(1);
-        // asynchronous thread doing the process
+		writeConfigFile(auth);
+        /*// asynchronous thread doing the process
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -110,7 +111,7 @@ public class walletDB extends dbBase{
                     }
                 });
             }
-        }).start();
+        }).start();*/
 	}
 
 	public void setPaired(boolean paired) throws IOException{

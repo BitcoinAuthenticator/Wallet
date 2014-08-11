@@ -208,7 +208,7 @@
       <children>
         <Button fx:id="btnBack4" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnMnemonic" onAction="#btnRestoreMnemonic" contentDisplay="TOP" layoutX="132.0" layoutY="40.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" styleClass="restore-button" text="Enter mnemonic" textAlignment="CENTER" wrapText="true" />
-        <Button fx:id="btnScanQR" contentDisplay="TOP" layoutX="319.0" layoutY="40.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="146.0" styleClass="restore-button" text="Scan QR code" textAlignment="CENTER" wrapText="true" />
+        <Button fx:id="btnScanQR" onAction="#btnRestoreQR" contentDisplay="TOP" layoutX="319.0" layoutY="40.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="146.0" styleClass="restore-button" text="Scan QR code" textAlignment="CENTER" wrapText="true" />
         <Button fx:id="btnLoad" contentDisplay="TOP" layoutX="132.0" layoutY="216.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" text="Load from file" textAlignment="CENTER" wrapText="true">
           <graphic>
             <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
@@ -251,8 +251,38 @@
           </font>
         </Label>
 	    <DatePicker fx:id="seedCreationDatePicker" layoutX="45.0" layoutY="250.0" prefHeight="35.0" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" />
-     	<Button fx:id="btnBackFromSeedRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnToMainRestorePane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+     	<Button fx:id="btnBackFromSeedRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromSeedRestore" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
       	<Button fx:id="btnRestoreFromSeedContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSeed" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore from QR pane
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreFromQRPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label layoutX="28.0" layoutY="40.0" text="Restore From QR">
+          <font>
+            <Font size="18.0" />
+          </font>
+        </Label>
+        <Button fx:id="btnStartWebCamQRScan" onAction="#startQRScan" contentDisplay="TOP" layoutX="230.0" layoutY="80.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" textAlignment="CENTER" wrapText="true">
+          <graphic>
+            <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnSave.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Label layoutX="45.0" layoutY="240.0" prefHeight="20.0" prefWidth="541.0" text="Mnemonic:" wrapText="true">
+        <font>
+            <Font size="16.0" />
+          </font>
+        </Label>
+	    <Label fx:id="lblSeedFromQR" layoutX="45.0" layoutY="265.0" prefHeight="30.0" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" />
+	    <Button fx:id="btnBackFromSeedFromQRRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromQRRestore" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+      	<Button fx:id="btnRestoreFromSeedFromQRContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromQR" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       </children>
     </Pane>
     <!--

@@ -68,7 +68,7 @@ public class PairingProtocol {
       String key = EncodingUtils.bytesToHex(raw);
 	  
 	  //Display a QR code for the user to scan
-	  QRCode PairingQR = new QRCode(ip, localip, walletType, key, Integer.parseInt(args[3]));
+	  PairingQRCode PairingQR = new PairingQRCode(ip, localip, walletType, key, Integer.parseInt(args[3]));
 	  Socket socket = dispalyQRAnListenForCommunication(ss, listener,displayQRAnimation, animationAfterPairing);
 	  if(socket == null)
 		  return;

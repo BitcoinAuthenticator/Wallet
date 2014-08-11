@@ -19,7 +19,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import authenticator.Utils.EncodingUtils;
-import authenticator.operations.OperationsUtils.QRCode;
+import authenticator.operations.OperationsUtils.PairingQRCode;
 
 public class QRTest {
 
@@ -37,7 +37,7 @@ public class QRTest {
 		byte[] raw = sharedsecret.getEncoded();
 		String key = EncodingUtils.bytesToHex(raw);
 	      
-		QRCode qr = new QRCode();
+		PairingQRCode qr = new PairingQRCode();
 		String qrData = qr.generateQRDataString(ip, localIP, wallettype, key, networkType);
 		// hint map
 		Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();

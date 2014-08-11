@@ -3,6 +3,10 @@ package wallettemplate.startup;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,14 +26,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
 
 import wallettemplate.Main;
-import wallettemplate.PaperWallet;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
+import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
@@ -45,6 +50,9 @@ import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
@@ -66,6 +74,13 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 
 import javafx.geometry.Pos;
 import de.jensd.fx.fontawesome.AwesomeDude;
@@ -120,6 +135,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane SSSBackupPane;
 	@FXML private Pane MainRestorePane;
 	@FXML private Pane RestoreFromMnemonicPane;
+	@FXML private Pane RestoreFromQRPane;
 	@FXML private Pane RestoreProcessPane;
 	@FXML private Pane RestoreAccountsPane;
 	@FXML private Pane LoadingPane;
@@ -136,6 +152,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnBack5;
 	@FXML private Button btnBackFromSeedRestore;
 	@FXML private Button btnRestoreFromSeedContinue;
+	@FXML private Button btnBackFromSeedFromQRRestore;
+	@FXML private Button btnRestoreFromSeedFromQRContinue;
 	@FXML private Button btnCancelRestoreProcess;
 	@FXML private Button btnFinishRestoreProcess;
 	@FXML private Button btnBackFromAccountRestore;
@@ -168,6 +186,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Label lblRestoreProcessStatus;
 	@FXML private TextField lblSeedRestorer;
 	@FXML private DatePicker seedCreationDatePicker;
+	@FXML private Label lblSeedFromQR;
+	@FXML private Button btnStartWebCamQRScan;
 	@FXML private ChoiceBox accountTypeBox;
 	@FXML private Label lblLoading;
 	@FXML private ScrollPane restoreProcessScrll;
@@ -243,6 +263,16 @@ public class StartupController  extends BaseUI{
 		 labeRestoreFromSeedContinue.setPadding(new Insets(0,6,0,0));
 		 btnRestoreFromSeedContinue.setGraphic(labeRestoreFromSeedContinue);
 		 //
+		 Label labelbackFromQRRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labelbackFromQRRestore.setPadding(new Insets(0,6,0,0));
+		 btnBackFromSeedFromQRRestore.setGraphic(labelbackFromQRRestore);
+		 //
+		 Label labeRestoreFromQRContinue = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeRestoreFromQRContinue.setPadding(new Insets(0,6,0,0));
+		 btnRestoreFromSeedFromQRContinue.setGraphic(labeRestoreFromQRContinue);
+		 Label lblStartQRScan = AwesomeDude.createIconLabel(AwesomeIcon.QRCODE, "90");
+		 btnStartWebCamQRScan.setGraphic(lblStartQRScan);
+		 //
 		 Label labelBackFromAccountRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelBackFromAccountRestore.setPadding(new Insets(0,6,0,0));
 		 btnBackFromAccountRestore.setGraphic(labelBackFromAccountRestore);
@@ -261,8 +291,11 @@ public class StartupController  extends BaseUI{
 		 //
 		 Label lblMnemonic = AwesomeDude.createIconLabel(AwesomeIcon.KEYBOARD_ALT, "90");
 		 btnMnemonic.setGraphic(lblMnemonic);
+		 //
 		 Label lblScanQR = AwesomeDude.createIconLabel(AwesomeIcon.QRCODE, "90");
 		 btnScanQR.setGraphic(lblScanQR);
+		 //
+		 
 		 lblMinimize.setPadding(new Insets(0,20,0,0));
 		 // Pane Control
 		 Tooltip.install(lblMinimize, new Tooltip("Minimize Window"));
@@ -428,6 +461,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
+		 hlFinished.setDisable(true);
 		 auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
 					 Platform.runLater(() -> {
@@ -557,7 +591,8 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void printPaperWallet(ActionEvent event) throws IOException{
-		 PaperWallet.createPaperWallet(mnemonic, walletSeed);
+		 PaperWalletController c = new PaperWalletController();
+		 c.createPaperWallet(mnemonic, walletSeed, Utils.currentTimeSeconds());
 	 }
 	 
 	 @FXML protected void openSSS(ActionEvent event){
@@ -642,7 +677,7 @@ public class StartupController  extends BaseUI{
 		 RestoreFromMnemonicPane.setVisible(true);
 	 }
 	 
-	 @FXML protected void returnToMainRestorePane(ActionEvent event){
+	 @FXML protected void returnFromSeedRestore(ActionEvent event){
 		 MainRestorePane.setVisible(true);
 		 RestoreFromMnemonicPane.setVisible(false);
 	 }
@@ -682,6 +717,96 @@ public class StartupController  extends BaseUI{
 		 return new DeterministicSeed(mnemonicArr, "", unix);//reconstructSeedFromStringMnemonics(mnemonicArr, unix);
 	 }
 	 	 
+	//##############################
+	 //
+	 //		Restore from QR 
+	 //
+	 //##############################
+	 
+	 @FXML protected void btnRestoreQR(ActionEvent event){
+		 MainRestorePane.setVisible(false);
+		 RestoreFromQRPane.setVisible(true);
+	 }
+	 
+	 @FXML protected void returnFromQRRestore(ActionEvent event){
+		 MainRestorePane.setVisible(true);
+		 RestoreFromQRPane.setVisible(false);
+	 }
+	 
+	 @FXML protected void startQRScan(ActionEvent event){
+		 btnStartWebCamQRScan.setText("Starting...");
+		 new Thread(){
+			 @Override
+             public void run() {
+				 JFrame frame = new JFrame();
+				 
+				 Dimension size = WebcamResolution.QVGA.getSize();
+				 Webcam webcam = Webcam.getDefault();
+				 webcam.setViewSize(size);
+				 WebcamPanel panel = new WebcamPanel(webcam);
+				 
+				 Platform.runLater(new Runnable() {
+	                @Override
+	                public void run() {
+	                	frame.add(panel);
+	                	frame.pack();
+	                	
+	                	frame.setVisible(true);
+	                	frame.addWindowListener(new java.awt.event.WindowAdapter() {
+	                	    @Override
+	                	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+	                	    	webcam.close();
+	                	    }
+	                	});
+	                	btnStartWebCamQRScan.setText("");
+	                }
+	            });
+				 
+				tryAndReadQR(webcam);
+			 }
+		 }.start();
+		 
+	 }
+	 
+	 private void tryAndReadQR(Webcam webcam){
+		 do {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				Result result = null;
+				BufferedImage image = null;
+
+				if (webcam.isOpen()) {
+
+					if ((image = webcam.getImage()) == null) {
+						continue;
+					}
+
+					LuminanceSource source = new BufferedImageLuminanceSource(image);
+					BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+					try {
+						result = new MultiFormatReader().decode(bitmap);
+					} catch (NotFoundException e) {
+						// fall thru, it means there is no QR code in image
+					}
+				}
+
+				if (result != null) {
+					 System.out.println(result.getText());
+				}
+
+			} while (true);
+	 }
+	 
+	 @FXML protected void goRestoreFromQR(ActionEvent event){
+		 
+	 }
+	 
+	 
 	 //##############################
 	 //
 	 //		Restore accounts 
