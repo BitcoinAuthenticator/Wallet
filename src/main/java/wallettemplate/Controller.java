@@ -353,7 +353,7 @@ public class Controller  extends BaseUI{
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);       
     	
-    	throttledUIUpdater = new ThrottledRunnableExecutor(4000, new Runnable(){
+    	throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
 			@Override
 			public void run() {
 				LOG.info("Updating UI");
