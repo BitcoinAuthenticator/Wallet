@@ -444,7 +444,7 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean areAllNetworkRequirementsAreFullyRunning(){
-		if(! PORT_FORWARDED || !SOCKET_OPERATIONAL)
+		if(!PORT_FORWARDED || !SOCKET_OPERATIONAL)
 			return false;
 		return true;
 	}

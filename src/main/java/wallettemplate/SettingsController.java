@@ -1,9 +1,16 @@
 package wallettemplate;
 
+import static wallettemplate.utils.GuiUtils.informationalAlert;
+
 import java.io.IOException;
+import java.util.List;
+
+import com.google.bitcoin.wallet.DeterministicSeed;
+import com.google.common.base.Joiner;
 
 import authenticator.Authenticator;
 import authenticator.db.settingsDB;
+import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
 import wallettemplate.utils.BaseUI;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,7 +30,7 @@ public class SettingsController  extends BaseUI{
 	@FXML private Button btnDone;
 	@FXML private Button btnRestore;
 	@FXML private Button btnChange;
-	@FXML private Button btnShow;
+	@FXML private Button btnShowSeed;
 	@FXML private Pane settingspane;
 	@FXML private ChoiceBox cbCurrency;
 	@FXML private ChoiceBox cbDecimal;
@@ -35,6 +42,7 @@ public class SettingsController  extends BaseUI{
 	@FXML private CheckBox ckTrustedPeer;
 	@FXML private TextField txFee;
 	@FXML private TextField txPeerIP;
+	@FXML private TextField txfShowSeedPassword;
 	public Main.OverlayUI overlayUi;
 	private double xOffset = 0;
 	private double yOffset = 0;
@@ -50,7 +58,8 @@ public class SettingsController  extends BaseUI{
 	
 
 	// Called by FXMLLoader
-    public void initialize() throws IOException {
+    @SuppressWarnings("restriction")
+	public void initialize() throws IOException {        	
     	settingsDB set = new settingsDB(Authenticator.getWalletOperation().getApplicationParams().getAppName());
     	String unit = set.getAccountUnit().toString();
     	if (unit.equals("BTC")){this.strBitcoinUnit="BTC";}
@@ -83,6 +92,9 @@ public class SettingsController  extends BaseUI{
             	btnDone.setStyle("-fx-background-color: #d7d4d4;");
             }
         });
+    	
+    	
+    	
         btnDone.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
@@ -101,16 +113,16 @@ public class SettingsController  extends BaseUI{
             	btnRestore.setStyle("-fx-background-color: #b3b1b1;");
             }
         });
-        btnShow.setOnMousePressed(new EventHandler<MouseEvent>(){
+        btnShowSeed.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnShow.setStyle("-fx-background-color: #d7d4d4;");
+            	btnShowSeed.setStyle("-fx-background-color: #d7d4d4;");
             }
         });
-        btnShow.setOnMouseReleased(new EventHandler<MouseEvent>(){
+        btnShowSeed.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnShow.setStyle("-fx-background-color: #b3b1b1;");
+            	btnShowSeed.setStyle("-fx-background-color: #b3b1b1;");
             }
         });
         btnChange.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -138,7 +150,23 @@ public class SettingsController  extends BaseUI{
     }
 
 	public void exit(ActionEvent event) {
-        overlayUi.done();
+		overlayUi.done();
     }
+	
+	@FXML protected void showSeed(ActionEvent event){
+		if(Authenticator.getWalletOperation().isWalletEncrypted()){
+			if(txfShowSeedPassword.getText().length() == 0)
+			{
+				informationalAlert("Unfortunately, you messed up.",
+      					 "You need to enter your password to decrypt your wallet.");
+				return;
+			}
+			
+			Authenticator.AUTHENTICATOR_PW = txfShowSeedPassword.getText();
+			
+		}
+		
+		Main.instance.overlayUI("show_seed.fxml");
+	}
     
 }

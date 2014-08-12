@@ -278,7 +278,7 @@ public class Main extends BAApplication {
     public class OverlayUI<T> {
         public Node ui;
         public T controller;
-
+        
         public OverlayUI(Node ui, T controller) {
             this.ui = ui;
             this.controller = controller;
@@ -293,7 +293,13 @@ public class Main extends BAApplication {
         public void done() {
             checkGuiThread();
             fadeOutAndRemove(ui, uiStack);
-            blurIn(mainUI);
+            
+            // could cause exception on multiple overlays
+            try{
+            	blurIn(mainUI);
+            }
+            catch(Exception e){ }
+            
             this.ui = null;
             this.controller = null;
         }

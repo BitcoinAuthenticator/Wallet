@@ -37,7 +37,7 @@
             </Label>
             <ChoiceBox fx:id="cbBitcoinUnit" layoutX="14.0" layoutY="39.0" styleClass="choice-box-settings">
               <items>
-                <FXCollections fx:factory="observableArrayList">
+              <FXCollections fx:factory="observableArrayList">
                   <String fx:value="bits" />
                   <String fx:value="BTC" />
                   <String fx:value="mBTC" />
@@ -241,8 +241,8 @@
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Security" />
             <Label layoutX="15.0" layoutY="42.0" text="Enter Your Current Password" />
-            <TextField layoutX="15.0" layoutY="67.0" prefWidth="240.0" />
-            <Button fx:id="btnShow" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Show Seed" />
+            <TextField fx:id="txfShowSeedPassword" layoutX="15.0" layoutY="67.0" prefWidth="240.0" />
+            <Button fx:id="btnShowSeed" onAction="#showSeed" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Show Seed" />
             <Label font="$x1" layoutX="15.0" layoutY="142.0" text="Change your Password" />
             <Label layoutX="15.0" layoutY="169.0" text="Enter your current password" />
             <TextField layoutX="15.0" layoutY="186.0" prefWidth="240.0" />

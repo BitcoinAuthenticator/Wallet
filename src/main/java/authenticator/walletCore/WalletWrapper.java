@@ -31,6 +31,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.CoinSelection;
 import com.google.bitcoin.wallet.DefaultCoinSelector;
+import com.google.bitcoin.wallet.DeterministicSeed;
 
 /**
  * <p>A wrapper class to handle all operations regarding the bitcoinj wallet.</p>
@@ -212,8 +213,8 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.getNetworkParameters();
 	}
 	
-	public byte[] getWalletSeed(){
-		return trackedWallet.getKeyChainSeed().getSecretBytes();
+	public DeterministicSeed getWalletSeed(){
+		return trackedWallet.getKeyChainSeed();
 	}
 	
 	//#####################################
