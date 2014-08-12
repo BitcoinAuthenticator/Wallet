@@ -20,6 +20,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 
 import wallettemplate.Controller;
 import wallettemplate.Main;
+import wallettemplate.OneNameControllerDisplay;
 import wallettemplate.controls.ScrollPaneContentManager;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
@@ -38,6 +41,8 @@ import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
+import authenticator.network.ONData;
+import authenticator.network.OneName;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
@@ -49,6 +54,7 @@ import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.params.MainNetParams;
 import com.google.common.base.Throwables;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
@@ -207,6 +213,7 @@ public class SendTxHelper {
     		this.index = index;
     		VBox main = new VBox();
     		VBox cancel = new VBox();
+    		VBox oneNameAvi = new VBox();
     		//Cancel
     		cancelLabel = new Label();
     		cancelLabel.setPadding(new Insets(0,5,0,0));
@@ -224,18 +231,65 @@ public class SendTxHelper {
     		txfAddress.setPromptText("Recipient Address or OneName");
     		txfAddress.setPrefWidth(400);
     		txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1;");
+    		//Validates the address or onename
     		txfAddress.focusedProperty().addListener(new ChangeListener<Boolean>()
     		{
     		    @Override
     		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
     		    {
     		        if (!newPropertyValue){
-    		        	try {
-    		        		Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), txfAddress.getText().toString());
-    		        		txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");}
-    		    		catch (AddressFormatException e) {
-    		    			txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #f06e6e;");
-    		    		}
+    		        	if (Authenticator.getWalletOperation().getNetworkParams() == MainNetParams.get()){
+    		        		if (!txfAddress.getText().equals("") && !txfAddress.getText().substring(0, 1).equals("1") && !txfAddress.getText().substring(0, 1).equals("3")){
+    		        			ONData onename = null;
+    		        			String onenameID = txfAddress.getText();
+    		        			try { 
+    		        				onename = OneName.getOneNameData(txfAddress.getText());
+    		        				txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");
+    		        				txfAddress.setText(onename.getBitcoinAddress());
+    		        			} catch (JSONException | NullPointerException | IOException e){
+    		        				txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #f06e6e;");
+    		        			}
+    		        			if (onename != null){
+    		        				VBox v = new VBox();
+    		        				Image avatar = null;
+    		        				try {avatar = OneName.downloadImage(onename.getAvatarURL());} 
+    		        				catch (IOException e) {e.printStackTrace();}
+    		        				ImageView avi = new ImageView(avatar);
+    		        				avi.setStyle("-fx-cursor: hand;");
+    		        				avi.setFitHeight(50);
+    		        				avi.setFitWidth(50);
+    		        				avi.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    		        					   @Override
+    		        					   public void handle(MouseEvent event) {
+    		        						   Main.instance.overlayUI("DisplayOneName.fxml");
+    		        						   OneNameControllerDisplay.loadOneName(onenameID);
+    		        					   }
+    		        				   });
+    		        				v.getChildren().add(avi);
+    		        				Label name = new Label(onename.getNameFormatted());
+    		        				v.getChildren().add(name);
+    		        				v.setAlignment(Pos.CENTER);
+    		        				oneNameAvi.getChildren().add(v);
+    		        				oneNameAvi.setMargin(v, new Insets(0,0,0,10));
+    		        			}
+    		        		}
+    		        		else {
+    		        			try {
+    		        				Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), txfAddress.getText().toString());
+    		        				txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");}
+    		        			catch (AddressFormatException e) {
+    		        				txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #f06e6e;");
+    		        			}
+    		        		}
+    		        	}
+    		        	else {
+    		        		try {
+    		        			Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), txfAddress.getText().toString());
+    		        			txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");}
+    		        		catch (AddressFormatException e) {
+    		        			txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #f06e6e;");
+    		        		}
+    		        	}
     		        }
     		    }
     		});
@@ -290,6 +344,7 @@ public class SendTxHelper {
     		b.getChildren().add(cbCurrency);
     		main.getChildren().add(b);
     		this.getChildren().add(main);
+    		this.getChildren().add(oneNameAvi);
     	}
     	
     	public boolean validate()
