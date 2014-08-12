@@ -3,6 +3,7 @@ package wallettemplate;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import com.google.bitcoin.wallet.DeterministicSeed;
@@ -11,10 +12,15 @@ import com.google.common.base.Joiner;
 import authenticator.Authenticator;
 import authenticator.db.settingsDB;
 import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
+import wallettemplate.startup.StartupController;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.TextFieldValidator;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -23,12 +29,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 public class SettingsController  extends BaseUI{
 	@FXML private AnchorPane SettingsApp;
 	@FXML private Button btnDone;
 	@FXML private Button btnRestore;
+	@FXML private Button btnBackup;
 	@FXML private Button btnChange;
 	@FXML private Button btnShowSeed;
 	@FXML private Pane settingspane;
@@ -151,6 +160,36 @@ public class SettingsController  extends BaseUI{
 
 	public void exit(ActionEvent event) {
 		overlayUi.done();
+    }
+	
+	public static Stage backupPane;
+	@SuppressWarnings("restriction")
+	public void launchBackup(ActionEvent event) {
+		if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
+		{
+			informationalAlert("Please Unlock Your Wallet",
+ 					 "In the main window, unlock your wallet to back it up.");
+			return;
+		}
+		
+		Parent root;
+        try {
+        	StartupController.appParams = Authenticator.getApplicationParams();
+        	URL location = getClass().getResource("/wallettemplate/startup/walletstartup.fxml");
+        	FXMLLoader loader = new FXMLLoader(location);
+            root = loader.load();
+            backupPane = new Stage();
+            backupPane.setTitle("Backup");
+            backupPane.initStyle(StageStyle.UNDECORATED);
+            Scene scene1 = new Scene(root, 607, 400);
+            final String file1 = TextFieldValidator.class.getResource("GUI.css").toString();
+            scene1.getStylesheets().add(file1);  // Add CSS that we need.
+            backupPane.setScene(scene1);
+            StartupController controller =	loader.getController();
+            DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(Authenticator.AUTHENTICATOR_PW);
+            controller.setBackMode(seed);
+            backupPane.show();
+        } catch (IOException | EmptyWalletPasswordException e) {e.printStackTrace();}
     }
 	
 	@FXML protected void showSeed(ActionEvent event){

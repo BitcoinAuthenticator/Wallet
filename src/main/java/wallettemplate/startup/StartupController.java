@@ -32,6 +32,7 @@ import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
 
 import wallettemplate.Main;
+import wallettemplate.SettingsController;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.startup.backup.PaperWalletController;
@@ -68,6 +69,7 @@ import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.wallet.DeterministicSeed;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -208,18 +210,18 @@ public class StartupController  extends BaseUI{
 
 	 public void initialize() {
 		 super.initialize(StartupController.class);
-		 assert(appParams != null);
-		 
-		 // set testnet checkbox
-		 if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
-			 chkTestNet.setSelected(false);
-			 params = MainNetParams.get();
+		 if(appParams != null){
+			// set testnet checkbox
+			 if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
+				 chkTestNet.setSelected(false);
+				 params = MainNetParams.get();
+			 }
+			 else{
+				 chkTestNet.setSelected(true);
+				 params = TestNet3Params.get();
+			 }
+			 chkTestNet.setDisable(true);
 		 }
-		 else{
-			 chkTestNet.setSelected(true);
-			 params = TestNet3Params.get();
-		 }
-		 chkTestNet.setDisable(true);
 		 
 		 btnSSS.setPadding(new Insets(-4,0,0,0));
 		 //
@@ -309,8 +311,7 @@ public class StartupController  extends BaseUI{
 		 lblClose.setOnMousePressed(new EventHandler<MouseEvent>(){
 			 @Override
 			 public void handle(MouseEvent t) {
-				 com.sun.javafx.application.PlatformImpl.tkExit();
-				 Platform.exit();
+				 handleExitButtonPressed();
 			 }
 		 });
 		 btnContinue2.setStyle("-fx-background-color: #badb93;");
@@ -592,7 +593,7 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void printPaperWallet(ActionEvent event) throws IOException{
 		 PaperWalletController c = new PaperWalletController();
-		 c.createPaperWallet(mnemonic, walletSeed, Utils.currentTimeSeconds());
+		 c.createPaperWallet(mnemonic, walletSeed, walletSeed.getCreationTimeSeconds());
 	 }
 	 
 	 @FXML protected void openSSS(ActionEvent event){
@@ -665,6 +666,30 @@ public class StartupController  extends BaseUI{
 		 btnContinue3.setStyle("-fx-background-color: #95d946;");
 		 btnDone.setStyle("-fx-background-color: #95d946; -fx-text-fill: white;");
 	 } 
+	 
+	//##############################
+	 //
+	 //		Backup
+	 //
+	 //##############################
+	 
+	 private boolean backupMode;
+	 public void setBackMode(DeterministicSeed seed){
+		 backupMode = true;
+		 
+		 walletSeed = seed;
+		 List<String> mnemoniclst = walletSeed.getMnemonicCode();
+		 mnemonic = Joiner.on(" ").join(mnemoniclst);
+		 lblSeed.setText(mnemonic);
+		 
+		 MainPane.setVisible(false);
+		 CreateAccountPane.setVisible(false);
+		 BackupNewWalletPane.setVisible(true);
+		 
+		 btnBack2.setVisible(false);
+		 btnContinue2.setVisible(false);
+		 ckSeed.setVisible(false);
+	 }
 	 
 	 //##############################
 	 //
@@ -1039,6 +1064,21 @@ public class StartupController  extends BaseUI{
 			return false;
 		
 		return true;
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 private void handleExitButtonPressed(){
+		 if(!backupMode){
+			 com.sun.javafx.application.PlatformImpl.tkExit();
+			 Platform.exit();
+		 }
+		 else
+			 SettingsController.backupPane.close();
 	 }
 	
 }
