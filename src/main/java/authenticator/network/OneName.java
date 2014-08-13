@@ -33,6 +33,7 @@ import wallettemplate.Main;
 public class OneName {
 	
 	public static ONData getOneNameData(String onename) throws JSONException, IOException {
+		System.out.println("searching for onename !!");
 		//Bitcoin Address
 		JSONObject json = readJsonFromUrl("https://onename.io/" + onename + ".json");
 	   	JSONObject bitcoin = json.getJSONObject("bitcoin");
@@ -180,6 +181,33 @@ public class OneName {
 		out.flush();
 		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
 		return new javafx.scene.image.Image(in);
+	}
+	
+	
+	public static class ONData {
+
+		private String nameFormatted;
+		private String bitcoinAddress;
+		private URL aviURL;
+		
+		public ONData(String name, String addr, URL avi){
+			this.nameFormatted = name;
+			this.bitcoinAddress = addr;
+			this.aviURL = avi;
+		}
+		
+		public String getNameFormatted(){
+			return nameFormatted;
+		}
+		
+		public String getBitcoinAddress(){
+			return bitcoinAddress;
+		}
+		
+		public URL getAvatarURL(){
+			return aviURL;
+		}
+		
 	}
 
 }
