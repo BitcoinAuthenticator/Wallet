@@ -32,13 +32,60 @@ import wallettemplate.Main;
 
 public class OneName {
 	
-	public static String getAddress(String onename) throws IOException, JSONException {
+	public static ONData getOneNameData(String onename) throws JSONException, IOException {
+		//Bitcoin Address
 		JSONObject json = readJsonFromUrl("https://onename.io/" + onename + ".json");
 	   	JSONObject bitcoin = json.getJSONObject("bitcoin");
 	   	String address = bitcoin.getString("address");
-	   	return address;
+	   	//Name Formatted
+	   	JSONObject name = json.getJSONObject("name");
+	   	String formatted = name.getString("formatted");
+	   	//Avatar
+	   	JSONObject avatar = json.getJSONObject("avatar");
+	    String imgURL = avatar.getString("url");
+	    BufferedImage image =null;
+	    URL url =new URL(imgURL);
+	   	return new ONData(formatted, address, url);
 	}
-
+	
+	public static Image downloadImage(URL url) throws IOException{
+		BufferedImage image = null;
+		try{image = ImageIO.read(url);}
+	    catch(IOException e){e.printStackTrace();}
+	    //Scale the image
+	    int imageWidth  = image.getWidth();
+	    int imageHeight = image.getHeight();
+	    int width;
+	    int height;
+	    if (imageWidth>imageHeight){
+	    	Double temp = (73/ (double)imageHeight)*(double)imageWidth;
+	        width = temp.intValue();
+	        height = 73;
+	    } 
+	    else {
+	        Double temp = (73/ (double) imageWidth)* (double) imageHeight;
+	       	width = 73;
+	       	height = temp.intValue();
+	    }
+	    BufferedImage scaledImage = new BufferedImage(width, height, image.getType());
+	    Graphics2D g = scaledImage.createGraphics();
+	    g.drawImage(image, 0, 0, width, height, null);
+	    g.dispose();
+	    //Crop the image
+	    int x,y;
+	    if (width>height){
+	        y=0;
+	       	x=(width-73)/2;
+	    }
+	    else {
+	    	x=0;
+	    	y=(height-73)/2;
+	    }
+	    BufferedImage croppedImage = scaledImage.getSubimage(x, y, 73, 73);
+	    Image avi = createImage(croppedImage);
+		return avi;
+	}
+	
 	/**Downloads the OneName avatar, scales and crops it.*/
 	public void getAvatar(Authenticator Auth, WalletOperation wallet,String onename) throws IOException, JSONException {
 		//Get the url for the image from the onename json

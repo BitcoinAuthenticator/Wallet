@@ -24,7 +24,7 @@ import javafx.scene.web.WebView;
 
 public class OneNameControllerDisplay  extends BaseUI{
 	@FXML private WebView webView;
-	WebEngine engine;
+	static WebEngine engine;
 	@FXML private Button done;
 	public Main.OverlayUI overlayUi;
 	 private double xOffset = 0;
@@ -34,7 +34,11 @@ public class OneNameControllerDisplay  extends BaseUI{
     public void initialize() {
     	super.initialize(OneNameControllerDisplay.class);
     	engine = webView.getEngine();
-		engine.load("https://onename.io/" + Authenticator.getWalletOperation().getOnename().getOnename());
+		loadOneName(Authenticator.getWalletOperation().getOnename().getOnename());
+    }
+    
+    public static void loadOneName(String onename){
+    	engine.load("https://onename.io/" + onename);
     }
     
     @FXML protected void drag1(MouseEvent event) {
