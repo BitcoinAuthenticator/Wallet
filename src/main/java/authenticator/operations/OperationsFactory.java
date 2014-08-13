@@ -104,7 +104,7 @@ public class OperationsFactory extends BASE{
 			Runnable animation,
 			Runnable animationAfterPairing){
 		return new BAOperation(ATOperationType.Pairing)
-					.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)	
+					.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")

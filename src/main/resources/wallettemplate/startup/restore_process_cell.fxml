@@ -39,7 +39,7 @@
 <children><Label text="Status: ">
 <HBox.margin>
 <Insets left="20.0" />
-</HBox.margin></Label><Label fx:id="lblStatus" text="Label">
+</HBox.margin></Label><Label fx:id="lblStatus" text="Label" wrapText="true">
 <HBox.margin>
 <Insets left="5.0" />
 </HBox.margin></Label>

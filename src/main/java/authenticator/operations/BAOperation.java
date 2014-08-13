@@ -115,7 +115,8 @@ public class BAOperation {
 	
 	public enum BANetworkRequirement{
 		NONE		 (0),
-		PORT_MAPPING (1 << 0);		// 1
+		PORT_MAPPING (1 << 0),	// 1
+		SOCKET		 (1 << 1);	// 2
 		
 		private int value;
 		BANetworkRequirement(int value) {

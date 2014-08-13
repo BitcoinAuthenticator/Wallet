@@ -48,6 +48,7 @@ import authenticator.Utils.EncodingUtils;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.operations.BAWalletRestorer;
 import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
+import authenticator.operations.OperationsUtils.PaperWalletQR;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
@@ -751,6 +752,7 @@ public class StartupController  extends BaseUI{
 	 @FXML protected void btnRestoreQR(ActionEvent event){
 		 MainRestorePane.setVisible(false);
 		 RestoreFromQRPane.setVisible(true);
+		 btnRestoreFromSeedFromQRContinue.setDisable(true);
 	 }
 	 
 	 @FXML protected void returnFromQRRestore(ActionEvent event){
@@ -758,26 +760,28 @@ public class StartupController  extends BaseUI{
 		 RestoreFromQRPane.setVisible(false);
 	 }
 	 
+	 Webcam webcam;
+	 JFrame camFrame;
 	 @FXML protected void startQRScan(ActionEvent event){
 		 btnStartWebCamQRScan.setText("Starting...");
 		 new Thread(){
 			 @Override
              public void run() {
-				 JFrame frame = new JFrame();
+				 camFrame  = new JFrame();
 				 
 				 Dimension size = WebcamResolution.QVGA.getSize();
-				 Webcam webcam = Webcam.getDefault();
+				 webcam = Webcam.getDefault();
 				 webcam.setViewSize(size);
 				 WebcamPanel panel = new WebcamPanel(webcam);
 				 
 				 Platform.runLater(new Runnable() {
 	                @Override
 	                public void run() {
-	                	frame.add(panel);
-	                	frame.pack();
+	                	camFrame.add(panel);
+	                	camFrame.pack();
 	                	
-	                	frame.setVisible(true);
-	                	frame.addWindowListener(new java.awt.event.WindowAdapter() {
+	                	camFrame.setVisible(true);
+	                	camFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 	                	    @Override
 	                	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 	                	    	webcam.close();
@@ -794,6 +798,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 private void tryAndReadQR(Webcam webcam){
+		 String qrDataString;
 		 do {
 				try {
 					Thread.sleep(100);
@@ -821,10 +826,35 @@ public class StartupController  extends BaseUI{
 				}
 
 				if (result != null) {
-					 System.out.println(result.getText());
+					 LOG.info("Data from QR {}",result.getText());
+					 qrDataString = result.getText();
+					 Platform.runLater(new Runnable() {
+			                @Override
+			                public void run() {
+			                	btnStartWebCamQRScan.setText("Processing ..");
+			                	
+			                }
+					 });
+					webcam.close();
+	                camFrame.setVisible(false);
+					break;
 				}
 
 			} while (true);
+		 
+		 PaperWalletQR paperWalletQR = new PaperWalletQR();
+		 PaperWalletQR.SeedQRData data = paperWalletQR.parseSeedQR(qrDataString);
+		 walletSeed = data.seed;
+		 mnemonic = Joiner.on(" ").join(walletSeed.getMnemonicCode());
+		 System.out.println(mnemonic);
+		 Platform.runLater(new Runnable() {
+             @Override
+             public void run() {
+             	btnStartWebCamQRScan.setText("");
+             	lblSeedFromQR.setText(mnemonic);
+             	btnRestoreFromSeedFromQRContinue.setDisable(false);
+             }
+		 });
 	 }
 	 
 	 @FXML protected void goRestoreFromQR(ActionEvent event){
