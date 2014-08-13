@@ -846,7 +846,7 @@ public class StartupController  extends BaseUI{
 		 PaperWalletQR.SeedQRData data = paperWalletQR.parseSeedQR(qrDataString);
 		 walletSeed = data.seed;
 		 mnemonic = Joiner.on(" ").join(walletSeed.getMnemonicCode());
-		 System.out.println(mnemonic);
+		 LOG.info("Restored seed from QR: " + mnemonic);
 		 Platform.runLater(new Runnable() {
              @Override
              public void run() {
@@ -858,7 +858,28 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void goRestoreFromQR(ActionEvent event){
-		 
+		 if(walletSeed != null){
+			 try {
+				createWallet(walletSeed);
+				RestoreFromQRPane.setVisible(false);
+				launchRestoreAccoutns(RestoreFromMnemonicPane);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Dialogs.create()
+		        .owner(Main.startup)
+		        .title("Error")
+		        .masthead("Cannot Restore from Mnemonic Seed")
+		        .message("Please try again")
+		        .showError();
+			}
+		 }
+		 else
+			 Dialogs.create()
+		        .owner(Main.startup)
+		        .title("Error")
+		        .masthead("Cannot Restore from Mnemonic Seed")
+		        .message("Please try again")
+		        .showError();
 	 }
 	 
 	 

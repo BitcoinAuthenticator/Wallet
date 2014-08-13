@@ -11,22 +11,30 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import wallettemplate.Main;
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
+import authenticator.BASE;
 import authenticator.Utils.EncodingUtils;
 
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.MnemonicCode;
+import com.google.bitcoin.crypto.MnemonicException.MnemonicChecksumException;
+import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
+import com.google.bitcoin.crypto.MnemonicException.MnemonicWordException;
 import com.google.bitcoin.wallet.DeterministicSeed;
-import com.subgraph.orchid.encoders.Hex;
+import com.google.common.base.Joiner;
 
-public class PaperWalletQR {
+import static com.google.bitcoin.core.Utils.HEX;
+
+public class PaperWalletQR extends BASE{
 	public PaperWalletQR(){
-		
+		super(PaperWalletQR.class);
 	}
 	
 	public BufferedImage generatePaperWallet(String mnemonic, DeterministicSeed seed, long creationTime) throws IOException{
@@ -50,14 +58,25 @@ public class PaperWalletQR {
 	
 	private String generateQRSeedDataString(DeterministicSeed seed, long creationTime)
 	{
-		String qrCodeData = "Seed=" + seed.toHexString() + 
-				  			"&Time=" + creationTime;
+		String qrCodeData = null;
+		MnemonicCode ms = null;
+		try {
+ 			ms = new MnemonicCode();
+ 			List<String> mnemonic = seed.getMnemonicCode();
+ 			byte[] entropy = ms.toEntropy(mnemonic);
+ 			String entropyHex = HEX.encode(entropy);
+ 			qrCodeData = "Seed=" + entropyHex + 
+		  			"&Time=" + creationTime;
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
+
 		
-		String h = seed.toHexString();
-		byte[] barrO = seed.getSecretBytes();
-		byte[] barr = Hex.decode(h.getBytes());
-		
-		DeterministicSeed s = new DeterministicSeed(barr, "", creationTime);
+		try {
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		
 		return qrCodeData;
 	}
@@ -72,11 +91,22 @@ public class PaperWalletQR {
 		public DeterministicSeed seed;
 		public long creationTime;
 		
-		public SeedQRData(String seedHex, String creationTimeStr){
+		public SeedQRData(String entropyHex, String creationTimeStr){
 			creationTime =  (long)Double.parseDouble(creationTimeStr);
-			byte[] seedArr = Hex.decode(seedHex.getBytes());//EncodingUtils.hexStringToByteArray(seedHex);
-			System.out.println("seed byte array size " + seedArr.length);
-			seed = new DeterministicSeed(seedArr, "", creationTime);
+			
+			// get mnemonic seed
+			MnemonicCode ms = null;
+			try {
+	 			ms = new MnemonicCode();
+	 			byte[] entropy = HEX.decode(entropyHex);
+	 			List<String> mnemonic = ms.toMnemonic(entropy);
+	 			seed = new DeterministicSeed(mnemonic, "", creationTime);
+	 			String mnemonicStr = Joiner.on(" ").join(seed.getMnemonicCode());
+	 			LOG.info("Restored seed from QR: " + mnemonicStr);
+	 		} catch (Exception e) {
+	 			e.printStackTrace();
+	 		}
+			
 		}
 	}
 	
