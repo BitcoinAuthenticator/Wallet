@@ -214,6 +214,7 @@ public class SendTxHelper {
     		VBox main = new VBox();
     		VBox cancel = new VBox();
     		VBox oneNameAvi = new VBox();
+    		oneNameAvi.setPrefWidth(150);
     		//Cancel
     		cancelLabel = new Label();
     		cancelLabel.setPadding(new Insets(0,5,0,0));
@@ -239,6 +240,7 @@ public class SendTxHelper {
     		    {
     		        if (!newPropertyValue){
     		        	if (Authenticator.getWalletOperation().getNetworkParams() == MainNetParams.get()){
+    		        		if (!oneNameAvi.getChildren().isEmpty()){oneNameAvi.getChildren().remove(0);}
     		        		if (!txfAddress.getText().equals("") && !txfAddress.getText().substring(0, 1).equals("1") && !txfAddress.getText().substring(0, 1).equals("3")){
     		        			ONData onename = null;
     		        			String onenameID = txfAddress.getText();
