@@ -846,7 +846,7 @@ public class StartupController  extends BaseUI{
 		 PaperWalletQR.SeedQRData data = paperWalletQR.parseSeedQR(qrDataString);
 		 walletSeed = data.seed;
 		 mnemonic = Joiner.on(" ").join(walletSeed.getMnemonicCode());
-		 LOG.info("Restored seed from QR: " + mnemonic);
+		 
 		 Platform.runLater(new Runnable() {
              @Override
              public void run() {

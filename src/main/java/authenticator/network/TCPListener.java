@@ -244,6 +244,7 @@ public class TCPListener extends BASE{
 							JSONObject jo = new JSONObject(new String(reqIdPayload));
 							requestID = jo.getString("requestID");
 							//
+							logAsInfo("Looking for pending request ID: " + requestID);
 							for(Object o:wallet.getPendingRequests()){
 								PendingRequest po = (PendingRequest)o;
 								if(po.getRequestID().equals(requestID))
@@ -253,7 +254,10 @@ public class TCPListener extends BASE{
 								}
 							}
 							//
-							if(pendingReq != null){ 
+							if(pendingReq == null){
+								logAsInfo("No Pending Request Found, aborting inbound operation");
+							}
+							else{
 								// Should we send something on connection ? 
 								if(pendingReq.getContract().getShouldSendPayloadOnConnection()){
 									byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().toByteArray();
@@ -326,9 +330,6 @@ public class TCPListener extends BASE{
 								
 								if(!pendingReq.getContract().getShouldLetPendingRequestHandleRemoval())
 									wallet.removePendingRequest(pendingReq);
-							}
-							else{ // pending request not found
-								logAsInfo("No Pending Request Found");
 							}
 						}
 						else{
