@@ -22,6 +22,7 @@ import authenticator.Utils.EncodingUtils;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.wallet.DeterministicSeed;
+import com.subgraph.orchid.encoders.Hex;
 
 public class PaperWalletQR {
 	public PaperWalletQR(){
@@ -51,22 +52,31 @@ public class PaperWalletQR {
 	{
 		String qrCodeData = "Seed=" + seed.toHexString() + 
 				  			"&Time=" + creationTime;
+		
+		String h = seed.toHexString();
+		byte[] barrO = seed.getSecretBytes();
+		byte[] barr = Hex.decode(h.getBytes());
+		
+		DeterministicSeed s = new DeterministicSeed(barr, "", creationTime);
+		
 		return qrCodeData;
 	}
 	
-	private SeedQRData parseSeedQR(String data){
+	public SeedQRData parseSeedQR(String data){
 		String seedStr = data.substring(data.indexOf("Seed=") + 5, data.indexOf("&Time="));
 		String creationTimeStr = data.substring(data.indexOf("&Time=") + 6, data.length());
 		return new SeedQRData(seedStr, creationTimeStr);
 	}
 	
-	static class SeedQRData{
+	public class SeedQRData{
 		public DeterministicSeed seed;
 		public long creationTime;
 		
 		public SeedQRData(String seedHex, String creationTimeStr){
 			creationTime =  (long)Double.parseDouble(creationTimeStr);
-			seed = new DeterministicSeed(EncodingUtils.hexStringToByteArray(seedHex), "", creationTime);
+			byte[] seedArr = Hex.decode(seedHex.getBytes());//EncodingUtils.hexStringToByteArray(seedHex);
+			System.out.println("seed byte array size " + seedArr.length);
+			seed = new DeterministicSeed(seedArr, "", creationTime);
 		}
 	}
 	

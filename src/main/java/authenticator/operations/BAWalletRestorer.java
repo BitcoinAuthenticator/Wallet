@@ -93,13 +93,16 @@ public class BAWalletRestorer extends BASE{
     DownloadListener downloadListener = new DownloadListener(){
 		@Override
 		 protected void progress(double pct, int blocksSoFar, Date date) {
+			if(pct < 100){
 			 listener.onStatusChange("Downloading Block Chain ... ");
 			 listener.onProgress(pct, blocksSoFar, date);
+			}
+			else
+				listener.onStatusChange("Finishing ... ");
 		 }
 		
 		 @Override
          protected void doneDownload() {
-			 listener.onStatusChange("Finishing ... ");
 			 endLoop();
 		 }
 	};
@@ -167,7 +170,7 @@ public class BAWalletRestorer extends BASE{
 	        		initBlockChainDownload(downloadListener);
 		        	endTsmp = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss").format(Calendar.getInstance().getTime());
 		        	
-		        	//System.out.println(this.toString());
+		        	//this.toString());
 		        				
 				} catch (Exception e) { e.printStackTrace(); }
 			}
@@ -189,21 +192,26 @@ public class BAWalletRestorer extends BASE{
 	 * at least 30 second and then fires the on done event
 	 */
 	private void endLoop(){
-		try {
-			while (true){
-				 didGetNewTx = false;
-				 Thread.sleep(30000);
-				 
-				 if(!didGetNewTx){
-					listener.onStatusChange("Finished !");
-					disposeOfRestorer(true);	
-					listener.onDiscoveryDone();
-					break;
-				 }				 
-			 }
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}		 
+		new Thread(){
+			@Override
+            public void run() {
+				try {
+					while (true){
+						 didGetNewTx = false;
+						 Thread.sleep(60000);
+						 						 
+						 if(!didGetNewTx){
+							listener.onStatusChange("Finished !");
+							disposeOfRestorer(true);	
+							listener.onDiscoveryDone();
+							break;
+						 }				 
+					 }
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 	
 	private void init() throws IOException{

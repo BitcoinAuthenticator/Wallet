@@ -147,6 +147,10 @@ public class TCPListener extends BASE{
 	    	@SuppressWarnings("static-access")
 			private void startup() throws TCPListenerCouldNotStartException{
 	    		forwardedPort = Integer.parseInt(args[0]);
+	    		/**
+	    		 * In any case, port forwarded manually/ upnp or not, get Ips and open socket.
+	    		 * 
+	    		 */
 	    		if(!isManuallyPortForwarded){
 	    			if(plugnplay != null)
 		    		{
@@ -165,18 +169,16 @@ public class TCPListener extends BASE{
 						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 					}
 	    		}
-	    		// TODO - check if is truly forwarded
-	    		else{
-	    			try {
-						vBANeworkInfo = new BANeworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
-						PORT_FORWARDED = true;
-					} catch (IOException e) {
-						e.printStackTrace();
-						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
-					}
-	    		}
+
+    			try {
+					vBANeworkInfo = new BANeworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
+					PORT_FORWARDED = true;
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+				}
 	    			    		
-	    		if(PORT_FORWARDED)
+	    		//if(PORT_FORWARDED)
     			try {
 					ss = new ServerSocket (forwardedPort);
 					ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
@@ -359,7 +361,7 @@ public class TCPListener extends BASE{
 							logAsInfo("Checking network requirements availability for outbound operation");
 							if(checkForOperationNetworkRequirements(op) == false )
 							{
-								op.OnExecutionError(new BAOperationNetworkRequirementsNotAvailableException("Port mapping not available"));
+								op.OnExecutionError(new BAOperationNetworkRequirementsNotAvailableException("Required Network requirements not available"));
 								break;
 							}
 									
@@ -391,6 +393,12 @@ public class TCPListener extends BASE{
 	public boolean checkForOperationNetworkRequirements(BAOperation op){
 		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.PORT_MAPPING.getValue()) > 0){
 			if(! PORT_FORWARDED || !SOCKET_OPERATIONAL){
+				return false;
+			}
+		}
+		
+		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.SOCKET.getValue()) > 0){
+			if(!SOCKET_OPERATIONAL){
 				return false;
 			}
 		}
