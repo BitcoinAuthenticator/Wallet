@@ -27,8 +27,8 @@
 }
 
 /* The main scrollbar **track** CSS class  */
-.scroll-bar:horizontal .track,
-.scroll-bar:vertical .track{
+.custom-scroll .scroll-bar:horizontal .track,
+.custom-scroll .scroll-bar:vertical .track{
     -fx-background-color: #d9e2e9;
     -fx-border-color:transparent;
     -fx-background-radius: 2em;
@@ -36,8 +36,8 @@
 }
 
 /* The increment and decrement button CSS class of scrollbar */
-.scroll-bar:horizontal .increment-button ,
-.scroll-bar:horizontal .decrement-button {
+.custom-scroll .scroll-bar:horizontal .increment-button ,
+.custom-scroll .scroll-bar:horizontal .decrement-button {
     -fx-background-color:white;
     -fx-border-color: transparent;
     -fx-background-radius: 0em;
@@ -46,74 +46,105 @@
 
 /* The increment and decrement button CSS class of scrollbar */
 
-.scroll-bar:vertical .increment-button ,
-.scroll-bar:vertical .decrement-button {
+.custom-scroll .scroll-bar:vertical .increment-button ,
+.custom-scroll .scroll-bar:vertical .decrement-button {
     -fx-background-color:white;
     -fx-border-color:transparent;
     -fx-background-radius: 0em;
     -fx-padding:0 6 0 0;
     }
 
-.scroll-bar .increment-arrow,
-.scroll-bar .decrement-arrow {
+.custom-scroll .scroll-bar .increment-arrow,
+.custom-scroll .scroll-bar .decrement-arrow {
     -fx-shape: " ";
     -fx-padding:0;
     -fx-background-color:white;
 }
 
-.scroll-bar {
+.custom-scroll .scroll-bar {
 	-fx-background-color: white;
 	-fx-padding: 0 5 0 0;
 }
 
 /* The main scrollbar **thumb** CSS class which we drag every time (movable) */
-.scroll-bar:horizontal .thumb,
-.scroll-bar:vertical .thumb {
+.custom-scroll .scroll-bar:horizontal .thumb,
+.custom-scroll .scroll-bar:vertical .thumb {
     -fx-background-color: #a1b6cb;
 	-fx-background-insets: 0, 0, 0;
 	-fx-background-radius: 2em;
 }
 
-///////////
-/* The main scrollbar **track** CSS class  */
+////////
+.onename .scroll-bar{
+ -fx-background-color: black;
+}
 .onename .scroll-bar:horizontal .track,
-.onename .scroll-bar:vertical .track{
-    -fx-background-color: black;
-    -fx-border-color:transparent;
+.onename .scroll-bar:vertical .track {
+ -fx-background-color: transparent;
+ -fx-border-color:transparent;
 }
-
-/* The increment and decrement button CSS class of scrollbar */
-.onename .scroll-bar:horizontal .increment-button ,
-.onename .scroll-bar:horizontal .decrement-button {
-    -fx-background-color:white;
-    -fx-border-color: transparent;
+.onename .scroll-bar:vertical .track-background,
+.onename .scroll-bar:horizontal .track-background {
+ -fx-background-color: transparent;
+ -fx-background-insets: 0;
 }
-
-/* The increment and decrement button CSS class of scrollbar */
-
-.onename .scroll-bar:vertical .increment-button ,
-.onename .scroll-bar:vertical .decrement-button {
-    -fx-background-color:white;
-    -fx-border-color:transparent;
-    }
-
-.onename .scroll-bar .increment-arrow,
-.onename .scroll-bar .decrement-arrow {
-    -fx-padding:0;
-    -fx-background-color: black;
+.onename .scroll-bar:horizontal .thumb {
+ -fx-background-color: rgb(211,211,211);
+ -fx-background-insets: 4 0 4 0;
+ -fx-background-radius: 2em;
 }
-
-.onename .scroll-bar {
-	-fx-background-color: black;
-}
-
-/* The main scrollbar **thumb** CSS class which we drag every time (movable) */
-.onename .scroll-bar:horizontal .thumb,
 .onename .scroll-bar:vertical .thumb {
-    -fx-background-color: white;
+ -fx-background-color: rgb(211,211,211);
+ -fx-background-insets: 0 4 0 4;
+ -fx-background-radius: 2em;
 }
-//////
-
+.onename .scroll-bar:horizontal .thumb:hover,
+.onename .scroll-bar:vertical .thumb:hover {
+ -fx-background-color: rgb(231,231,231);
+}
+.onename .scroll-bar:horizontal .thumb:pressed,
+.onename .scroll-bar:vertical .thumb:pressed {
+ -fx-background-color: rgb(255,255,255);
+}
+.onename .scroll-bar:vertical .increment-button, 
+.onename .scroll-bar:vertical .decrement-button {
+ -fx-background-color:transparent;
+ -fx-padding: 5;
+}
+.onename .scroll-bar:horizontal .increment-button, 
+.onename .scroll-bar:horizontal .decrement-button {
+ -fx-background-color:transparent;
+ -fx-padding: 5;
+}
+.onename .scroll-bar:horizontal .increment-arrow {
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-background-color: rgb(211,211,211);
+ -fx-padding: 0.25em;
+ -fx-rotate: -90;
+}
+.onename .scroll-bar:vertical .increment-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: 0;
+}
+.onename .scroll-bar:horizontal .decrement-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: 90;
+}
+.onename .scroll-bar:vertical .decrement-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: -180;
+}
+.onename .scroll-bar:vertical:focused,
+.onename .scroll-bar:horizontal:focused {
+ -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
+}
+////////
 
 .progress-bar .track {
 	-fx-background-color: #d9dee1;

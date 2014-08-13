@@ -3,14 +3,51 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="110.0" prefWidth="255.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.OneNameController">
+<AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="278.0" prefWidth="379.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.OneNameController">
   <children>
-    <TextField fx:id="txtOneName" layoutX="32.0" layoutY="44.0" prefWidth="200.0" />
-    <Label layoutX="32.0" layoutY="22.0" text="Enter OneName ID:" />
-    <Label layoutX="21.0" layoutY="47.0" text="+" />
-    <Button fx:id="btnOK" layoutX="87.0" layoutY="75.0" onAction="#onename" mnemonicParsing="false" prefWidth="81.0" text="OK" />
+    <Pane fx:id="ONPane" layoutX="1.0" layoutY="-3.0" prefHeight="284.0" prefWidth="377.0" style="-fx-background-color: white;">
+      <children>
+        <Pane fx:id="Pane2" layoutX="0.0" layoutY="45.0" prefHeight="234.0" prefWidth="377.0" visible="false">
+          <children>
+            <Label layoutX="14.0" layoutY="7.0" prefHeight="75.0" prefWidth="351.0" text="OneName can be thought of as a Bitcoin profile. When you create a profile, your data (including your Bitcoin address) are stored in a decentralized manner in the Namecoin block chain." wrapText="true" />
+            <Label layoutX="14.0" layoutY="76.0" prefHeight="45.0" prefWidth="349.0" text="Only you can modify your profile using your private key." wrapText="true" />
+            <Label layoutX="14.0" layoutY="121.0" prefHeight="52.1328125" prefWidth="335.0" text="When you use OneName, other people can send you a payment by entering your OneName instead of your Bitcoin Address" wrapText="true" />
+            <Button id="btnSignUp" layoutX="14.0" layoutY="186.0" mnemonicParsing="false" onAction="#onename" prefWidth="175.5" style="-fx-background-color: #50daca;" text="Sign Up" />
+            <Button id="btnBack" layoutX="190.0" layoutY="186.0" mnemonicParsing="false" onAction="#goBack" prefWidth="175.5" style="-fx-background-color: #50daca;" text="Back" />
+          </children>
+        </Pane>
+        <Pane fx:id="Pane1" layoutX="2.0" layoutY="44.0" prefHeight="234.0" prefWidth="377.0" visible="true">
+          <children>
+            <Button id="btnCancel" layoutX="190.0" layoutY="160.0" mnemonicParsing="false" onAction="#done" prefWidth="151.5" style="-fx-background-color: #50daca;" text="Cancel" />
+            <Label layoutX="39.0" layoutY="79.0" prefHeight="45.0" prefWidth="327.0" text="(optional) Enter your passphrase:                           We will store it encrypted with your wallet's seed." wrapText="true" />
+            <Button fx:id="btnOK" layoutX="38.0" layoutY="160.0" mnemonicParsing="false" onAction="#onename" prefWidth="151.5" style="-fx-background-color: #50daca;" text="OK" />
+            <TextField fx:id="txtOneName" layoutX="39.0" layoutY="45.0" prefWidth="303.0000999999975" />
+            <Label layoutX="38.0" layoutY="25.0" text="Enter OneName ID:" />
+            <Label layoutX="25.0" layoutY="48.0" text="+" />
+            <PasswordField layoutX="38.0" layoutY="124.0" prefWidth="304.0" />
+            <Label layoutX="48.0" layoutY="201.0" text="Don't have one?" />
+            <Hyperlink layoutX="165.0" layoutY="198.0" text="Click here to learn more" onAction="#learnMore"/>
+          </children>
+        </Pane>
+        <Pane layoutX="0.0" layoutY="0.0" prefHeight="45.0" prefWidth="379.0" style="-fx-background-color: black;">
+          <children>
+            <ImageView fitHeight="40.14705454362516" fitWidth="34.999996185302734" layoutX="31.0" layoutY="2.0" opacity="1.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@on_symbol.png" />
+              </image>
+            </ImageView>
+            <ImageView fitHeight="35.231673797261756" fitWidth="106.9999008178711" layoutX="140.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@on_script.png" />
+              </image>
+            </ImageView>
+          </children>
+        </Pane>
+      </children>
+    </Pane>
   </children>
 </AnchorPane>

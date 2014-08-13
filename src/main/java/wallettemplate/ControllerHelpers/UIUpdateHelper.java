@@ -289,6 +289,7 @@ public class UIUpdateHelper {
 	    			    	 v.setMargin(lblOverview, new Insets(10,0,10,15));
 	    			    	 lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
 	    			    	 ListView lvTx= new ListView();
+	    			    	 lvTx.getStyleClass().add("custom-scroll");
 	    			    	 v.setMargin(lvTx, new Insets(0,0,10,15));
 	    			    	 lvTx.setPrefSize(570, 270);
 	    			    	 ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();

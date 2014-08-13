@@ -172,7 +172,7 @@
     	-->
     <Pane fx:id="Pane6" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
       <children>
-        <WebView fx:id="browser" layoutX="10.0" layoutY="40.0" prefHeight="300.0" prefWidth="580.0" />
+        <WebView fx:id="browser" layoutX="10.0" layoutY="40.0" prefHeight="300.0" prefWidth="580.0" styleClass="custom-scroll" />
         <Button fx:id="btnDone" layoutX="247.0" layoutY="356.0" mnemonicParsing="false" onAction="#webFinished" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: #95d946; -fx-background-insets: 0, 0, 1, 2; -fx-text-fill: white;" text="Done" />
       </children>
     </Pane>
