@@ -1198,6 +1198,7 @@ public class Controller  extends BaseUI{
 		lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
 		ListView lvTx= new ListView();
 		lvTx.setStyle("-fx-background-color: transparent;");
+		lvTx.getStyleClass().add("custom-scroll");
 		v.setMargin(lvTx, new Insets(0,0,0,20));
 		lvTx.setPrefSize(560, 270);
 		ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
@@ -1936,14 +1937,16 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnOneName(MouseEvent event) {
-    	if(Authenticator.getWalletOperation().getOnename() != null)
+    	if(Authenticator.getWalletOperation().getOnename() != null){
     		Main.instance.overlayUI("DisplayOneName.fxml");
-    	else
+    	}
+    	else {
     		Dialogs.create()
 		        .owner(Main.stage)
 		        .title("Cannot display your OneName account")
 		        .message("Please press on your avatr picture on the overview tab to set your OneName account")
 		        .showWarning();
+    	}
     }
     
     public static Stage accountsAppStage;
