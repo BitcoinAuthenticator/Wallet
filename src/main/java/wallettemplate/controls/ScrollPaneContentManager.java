@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox;
 public class ScrollPaneContentManager extends VBox{
 	public ScrollPaneContentManager(){
 		super();
-		}
+	}
 
 	public ScrollPaneContentManager setScrollStyle(String style)
 	{

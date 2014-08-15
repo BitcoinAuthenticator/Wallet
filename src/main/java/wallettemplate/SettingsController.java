@@ -165,6 +165,7 @@ public class SettingsController  extends BaseUI{
 	public static Stage backupPane;
 	@SuppressWarnings("restriction")
 	public void launchBackup(ActionEvent event) {
+		if(Authenticator.getWalletOperation().isWalletEncrypted())
 		if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
 		{
 			informationalAlert("Please Unlock Your Wallet",

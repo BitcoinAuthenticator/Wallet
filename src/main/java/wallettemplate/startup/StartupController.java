@@ -1,5 +1,6 @@
 package wallettemplate.startup;
 
+import static com.google.bitcoin.core.Utils.HEX;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
 import java.awt.Desktop;
@@ -604,14 +605,37 @@ public class StartupController  extends BaseUI{
 		 SSSBackupPane.setVisible(true); 
 	 }
 	 
+	 List<Share> shares;
+	 byte[] mnemonicEntropy;
 	 @FXML protected void split(ActionEvent event) throws IOException{
-		 BipSSS sss = new BipSSS();
-		 List<Share> shares = sss.shard(EncodingUtils.hexStringToByteArray(walletSeed.toHexString()), 
-				 Integer.parseInt(txThreshold.getText().toString()), Integer.parseInt(txPieces.getText().toString()), EncodingFormat.SHORT, params);
-		 final ObservableList list = FXCollections.observableArrayList();
-		 for (Share share: shares){list.add(share.toString());}
-		 lvSSS.setItems(list);
+		 // get the mnemonic hex
+		 String qrCodeData = null;
+		 MnemonicCode ms = null;
+		 try {
+ 		 	ms = new MnemonicCode();
+ 			List<String> mnemonic = walletSeed.getMnemonicCode();
+ 			mnemonicEntropy = ms.toEntropy(mnemonic);
+ 			//String entropyHex = HEX.encode(entropy);
+ 			
+ 			BipSSS sss = new BipSSS();
+ 			shares = sss.shard(mnemonicEntropy, 
+ 					 Integer.parseInt(txThreshold.getText().toString()), Integer.parseInt(txPieces.getText().toString()), EncodingFormat.SHORT, params);
+ 			final ObservableList list = FXCollections.observableArrayList();
+ 			for (Share share: shares){list.add(share.toString());}
+ 			lvSSS.setItems(list);
+ 		 } catch (Exception e) {
+ 			e.printStackTrace();
+ 	     }
 		 
+	 }
+	 
+	 @FXML protected void testSSS(ActionEvent event){
+		 if(shares != null && shares.size() > 0 && mnemonicEntropy != null){
+			 TestSSSWindow w = new TestSSSWindow(shares, 
+					 mnemonicEntropy,
+					 Integer.parseInt(txThreshold.getText().toString()));
+			 w.show();
+		 }
 	 }
 	 
 	 @FXML protected void returntoBackupNewWalletPane(ActionEvent event){
