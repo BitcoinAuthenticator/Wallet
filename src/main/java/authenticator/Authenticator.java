@@ -109,6 +109,8 @@ public class Authenticator extends BASE{
 		}
 		
 		init2();
+		
+		Authenticator.getWalletOperation().moveFundsFromUnconfirmedToConfirmed(1, Coin.valueOf(40000));
 	}
 	
 	private void init(BAApplicationParameters appParams){

@@ -86,6 +86,7 @@ public class TestSSSWindow extends BaseUI{
 		}
 	}
 	
+	@SuppressWarnings("restriction")
 	private void addResult(boolean didPass, List<Share> shares){
 		String lblStr = didPass? "Passed !\n":"Failed !\n";
 		String piecesDesc = "Pieces: ";
