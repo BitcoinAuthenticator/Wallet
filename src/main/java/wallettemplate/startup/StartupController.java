@@ -1006,7 +1006,12 @@ public class StartupController  extends BaseUI{
 			 
 		  } catch (Exception e) {
 			e.printStackTrace();
-			// cannot combine share
+			Dialogs.create()
+		        .owner(Main.startup)
+		        .title("Error")
+		        .masthead("Cannot Restore from SSS Shares")
+		        .message("Please make sure you typed the correct share strings")
+		        .showError();
 		  }
 	 }
 	 
