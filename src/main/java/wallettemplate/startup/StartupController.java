@@ -44,6 +44,9 @@ import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.BipSSS.BipSSS;
 import authenticator.BipSSS.BipSSS.EncodingFormat;
+import authenticator.BipSSS.BipSSS.IncompatibleSharesException;
+import authenticator.BipSSS.BipSSS.InvalidContentTypeException;
+import authenticator.BipSSS.BipSSS.NotEnoughSharesException;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.exceptions.AccountWasNotFoundException;
@@ -56,6 +59,7 @@ import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Block;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.DownloadListener;
@@ -140,6 +144,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane MainRestorePane;
 	@FXML private Pane RestoreFromMnemonicPane;
 	@FXML private Pane RestoreFromQRPane;
+	@FXML private Pane RestoreFromSSSPane;
 	@FXML private Pane RestoreProcessPane;
 	@FXML private Pane RestoreAccountsPane;
 	@FXML private Pane LoadingPane;
@@ -158,6 +163,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnRestoreFromSeedContinue;
 	@FXML private Button btnBackFromSeedFromQRRestore;
 	@FXML private Button btnRestoreFromSeedFromQRContinue;
+	@FXML private Button btnBackFromSeedFromSSSRestore;
+	@FXML private Button btnRestoreFromSeedFromSSSContinue;
 	@FXML private Button btnCancelRestoreProcess;
 	@FXML private Button btnFinishRestoreProcess;
 	@FXML private Button btnBackFromAccountRestore;
@@ -188,10 +195,20 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnSSS;
 	@FXML private ProgressBar syncProgress;
 	@FXML private Label lblRestoreProcessStatus;
+	
 	@FXML private TextField lblSeedRestorer;
 	@FXML private DatePicker seedCreationDatePicker;
+	
 	@FXML private Label lblSeedFromQR;
 	@FXML private Button btnStartWebCamQRScan;
+	
+	@FXML private TextField txPiecesSSSRestore;
+	@FXML private TextField txThresholdSSSRestore;
+	@FXML private ScrollPane scrlSSSRestoreShares;
+	private ScrollPaneContentManager restoreSSSScrllContent;
+	@FXML private Label lblSeedFromSSS;
+	@FXML private Button btnRestoreSSSConbineShares;
+	
 	@FXML private ChoiceBox accountTypeBox;
 	@FXML private Label lblLoading;
 	@FXML private ScrollPane restoreProcessScrll;
@@ -277,6 +294,14 @@ public class StartupController  extends BaseUI{
 		 Label lblStartQRScan = AwesomeDude.createIconLabel(AwesomeIcon.QRCODE, "90");
 		 btnStartWebCamQRScan.setGraphic(lblStartQRScan);
 		 //
+		 Label labelackFromSeedSSSRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labelackFromSeedSSSRestore.setPadding(new Insets(0,6,0,0));
+		 btnBackFromSeedFromSSSRestore.setGraphic(labelackFromSeedSSSRestore);
+		 //
+		 Label labeRestoreFromSeedSSSContinue = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeRestoreFromSeedSSSContinue.setPadding(new Insets(0,6,0,0));
+		 btnRestoreFromSeedFromSSSContinue.setGraphic(labeRestoreFromSeedSSSContinue);
+		 //
 		 Label labelBackFromAccountRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelBackFromAccountRestore.setPadding(new Insets(0,6,0,0));
 		 btnBackFromAccountRestore.setGraphic(labelBackFromAccountRestore);
@@ -319,32 +344,58 @@ public class StartupController  extends BaseUI{
 		 btnContinue2.setStyle("-fx-background-color: #badb93;");
 		 lblSeed.setFont(Font.font(null, FontWeight.BOLD, 18));
 		 lblSeed.setPadding(new Insets(0,6,0,6));
+		 
+		 /**
+		  * SSS Backup validators 
+		  */
 		 txPieces.lengthProperty().addListener(new ChangeListener<Number>(){
              @Override
              public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
-                   if(newValue.intValue() > oldValue.intValue()){
-                       char ch = txPieces.getText().charAt(oldValue.intValue());  
-                       //Check if the new character is the number or other's
-                       if(!(ch >= '0' && ch <= '9')){       
-                            //if it's not number then just setText to previous one
-                            txPieces.setText(txPieces.getText().substring(0,txPieces.getText().length()-1)); 
-                       }
-                  }
+            	 StartupControllerHelper.SSSValidator(txPieces, observable, oldValue, newValue);
              }
 		 });
 		 txThreshold.lengthProperty().addListener(new ChangeListener<Number>(){
              @Override
              public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
-                   if(newValue.intValue() > oldValue.intValue()){
-                       char ch = txThreshold.getText().charAt(oldValue.intValue());  
-                       //Check if the new character is the number or other's
-                       if(!(ch >= '0' && ch <= '9')){       
-                            //if it's not number then just setText to previous one
-                            txThreshold.setText(txThreshold.getText().substring(0,txThreshold.getText().length()-1)); 
-                       }
-                  }
+            	 StartupControllerHelper.SSSValidator(txThreshold, observable, oldValue, newValue);
              }
 		 });
+		 
+		 /**
+		  * SSS Restore validators and listeners
+		  */
+		 
+		 txPiecesSSSRestore.lengthProperty().addListener(new ChangeListener<Number>(){
+             @Override
+             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
+            	 StartupControllerHelper.SSSValidator(txPiecesSSSRestore, observable, oldValue, newValue);
+             }
+		 });
+		 txPiecesSSSRestore.focusedProperty().addListener(new ChangeListener<Boolean>()
+		 {
+ 		    @Override
+ 		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+ 		    {
+ 		    	if(txThresholdSSSRestore.getText().length() > 0)
+ 		    		createSSSRestorePieces(Integer.parseInt(txThresholdSSSRestore.getText()));
+ 		    }
+		 });
+		 txThresholdSSSRestore.lengthProperty().addListener(new ChangeListener<Number>(){
+             @Override
+             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
+            	 StartupControllerHelper.SSSValidator(txThresholdSSSRestore, observable, oldValue, newValue);
+             }
+		 });
+		 txThresholdSSSRestore.focusedProperty().addListener(new ChangeListener<Boolean>()
+		 {
+ 		    @Override
+ 		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+ 		    {
+ 		    	if(txThresholdSSSRestore.getText().length() > 0)
+ 		    		createSSSRestorePieces(Integer.parseInt(txThresholdSSSRestore.getText()));
+ 		    }
+		 });
+		 
 		 final ContextMenu contextMenu2 = new ContextMenu();
 		 MenuItem item12 = new MenuItem("Copy");
 		 item12.setOnAction(new EventHandler<ActionEvent>() {
@@ -386,7 +437,7 @@ public class StartupController  extends BaseUI{
          rt.setCycleCount(10000);
          rt.play();
 	 }
-	 
+	 	 
 	 @FXML protected void drag1(MouseEvent event) {
 		 xOffset = event.getSceneX();
 		 yOffset = event.getSceneY();
@@ -767,7 +818,7 @@ public class StartupController  extends BaseUI{
 		 return new DeterministicSeed(mnemonicArr, "", unix);//reconstructSeedFromStringMnemonics(mnemonicArr, unix);
 	 }
 	 	 
-	//##############################
+	 //##############################
 	 //
 	 //		Restore from QR 
 	 //
@@ -906,6 +957,67 @@ public class StartupController  extends BaseUI{
 		        .showError();
 	 }
 	 
+	 //##############################
+	 //
+	 //		Restore from SSS 
+	 //
+	 //##############################
+	 
+	 @FXML protected void btnRestoreSSS(ActionEvent event){
+		 restoreSSSScrllContent = new ScrollPaneContentManager()
+			.setSpacingBetweenItems(20)
+			.setScrollStyle(scrlSSSRestoreShares.getStyle());
+		 scrlSSSRestoreShares.setContent(restoreSSSScrllContent);
+		 scrlSSSRestoreShares.setHbarPolicy(ScrollBarPolicy.NEVER);
+		 
+		 MainRestorePane.setVisible(false);
+		 RestoreFromSSSPane.setVisible(true);
+		 btnRestoreFromSeedFromSSSContinue.setDisable(true);
+	 }
+	 
+	 @FXML protected void returnFromSSSRestore(ActionEvent event){
+		 MainRestorePane.setVisible(true);
+		 RestoreFromSSSPane.setVisible(false);
+	 }
+	 
+	 @FXML protected void goRestoreFromSSS(ActionEvent event){
+		 RestoreFromSSSPane.setVisible(false);
+		 launchRestoreAccoutns(RestoreFromSSSPane);
+	 }
+	 
+	 @FXML protected void combineSSSShares(ActionEvent event){
+		 try {
+			 List<Share> shares = new ArrayList<Share>();
+			 for(Node n:restoreSSSScrllContent.getChildren()){
+				 SSSRestoreCell c = (SSSRestoreCell)n;
+				 String shareStr = c.getShareStr();
+				 Share s = Share.fromString(shareStr, params);
+				 shares.add(s);
+			 }
+			 
+			 // combine shares
+			 byte[] entropy = BipSSS.combineSeed(shares);
+			 MnemonicCode ms = new MnemonicCode();
+			 List<String> mnemonic = ms.toMnemonic(entropy);
+			 String mnemonicStr = Joiner.on(" ").join(mnemonic);
+			 lblSeedFromSSS.setText(mnemonicStr);
+			 
+			 btnRestoreFromSeedFromSSSContinue.setDisable(false);
+			 
+		  } catch (Exception e) {
+			e.printStackTrace();
+			// cannot combine share
+		  }
+	 }
+	 
+	 private void createSSSRestorePieces(int threshHold){
+		 for(int i=1; i <= threshHold; i++)
+		 {
+			 SSSRestoreCell c = new SSSRestoreCell();
+			 c.setLabel("Share #" + i);
+			 restoreSSSScrllContent.addItem(c);
+		 }
+	 }
 	 
 	 //##############################
 	 //

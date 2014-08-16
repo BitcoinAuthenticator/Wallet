@@ -137,10 +137,8 @@ public class BAWalletRestorer extends BASE{
 			@Override
 			public void run() {
 				directory = new File(".");
-		        //watchedKeys = new ArrayList<ECKey>();
-		        
-		        //params = TestNet3Params.get();
-				netParams = vAuthenticator.getWalletOperation().getNetworkParams();//MainNetParams.get();
+
+				netParams = vAuthenticator.getWalletOperation().getNetworkParams();
 		        
 		        if(usePreselectedAddresses)
 		        {
