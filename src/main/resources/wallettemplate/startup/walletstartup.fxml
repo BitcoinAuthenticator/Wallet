@@ -318,6 +318,27 @@
       	<Button fx:id="btnRestoreFromSeedFromSSSContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSSS" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       </children>
     </Pane>
+    
+    <Pane fx:id="RestoreFromSSSDatePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label layoutX="28.0" layoutY="40.0" text="Restore By Combining SSS Shares">
+          <font>
+            <Font size="18.0" />
+          </font>
+        </Label>
+        
+        <Label layoutX="45.0" layoutY="180.0" prefHeight="20.0" prefWidth="541.0" text="Seed Creation Time:" wrapText="true">
+        <font>
+            <Font size="16.0" />
+          </font>
+        </Label>
+        <DatePicker fx:id="seedSSSRestoreCreationDatePicker" layoutX="45.0" layoutY="210.0" prefHeight="35.0" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" />
+        
+        <Button fx:id="btnBackFromSeedFromSSSRestoreDatePicker" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromSSSRestoreDatePicker" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+      	<Button fx:id="btnRestoreFromSeedFromSSSContinueDatePicker" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSSSDatePicker" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+        
+        </children>
+    </Pane>
     <!--
     	
     	Restore accounts

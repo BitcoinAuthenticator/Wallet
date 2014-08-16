@@ -145,6 +145,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane RestoreFromMnemonicPane;
 	@FXML private Pane RestoreFromQRPane;
 	@FXML private Pane RestoreFromSSSPane;
+	@FXML private Pane RestoreFromSSSDatePane;
 	@FXML private Pane RestoreProcessPane;
 	@FXML private Pane RestoreAccountsPane;
 	@FXML private Pane LoadingPane;
@@ -165,6 +166,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnRestoreFromSeedFromQRContinue;
 	@FXML private Button btnBackFromSeedFromSSSRestore;
 	@FXML private Button btnRestoreFromSeedFromSSSContinue;
+	@FXML private Button btnBackFromSeedFromSSSRestoreDatePicker;
+	@FXML private Button btnRestoreFromSeedFromSSSContinueDatePicker;
 	@FXML private Button btnCancelRestoreProcess;
 	@FXML private Button btnFinishRestoreProcess;
 	@FXML private Button btnBackFromAccountRestore;
@@ -208,6 +211,7 @@ public class StartupController  extends BaseUI{
 	private ScrollPaneContentManager restoreSSSScrllContent;
 	@FXML private Label lblSeedFromSSS;
 	@FXML private Button btnRestoreSSSConbineShares;
+	@FXML private DatePicker seedSSSRestoreCreationDatePicker;
 	
 	@FXML private ChoiceBox accountTypeBox;
 	@FXML private Label lblLoading;
@@ -301,6 +305,14 @@ public class StartupController  extends BaseUI{
 		 Label labeRestoreFromSeedSSSContinue = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labeRestoreFromSeedSSSContinue.setPadding(new Insets(0,6,0,0));
 		 btnRestoreFromSeedFromSSSContinue.setGraphic(labeRestoreFromSeedSSSContinue);
+		 //
+		 Label labelackFromSeedSSSRestoreDatePicker = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labelackFromSeedSSSRestoreDatePicker.setPadding(new Insets(0,6,0,0));
+		 btnBackFromSeedFromSSSRestoreDatePicker.setGraphic(labelackFromSeedSSSRestoreDatePicker);
+		 //
+		 Label labeRestoreFromSeedSSSContinueDatePicker = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeRestoreFromSeedSSSContinueDatePicker.setPadding(new Insets(0,6,0,0));
+		 btnRestoreFromSeedFromSSSContinueDatePicker.setGraphic(labeRestoreFromSeedSSSContinueDatePicker);
 		 //
 		 Label labelBackFromAccountRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelBackFromAccountRestore.setPadding(new Insets(0,6,0,0));
@@ -784,7 +796,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void goRestoreFromSeed(ActionEvent event){
-		 DeterministicSeed seed = reconstructSeed();
+		 DeterministicSeed seed = reconstructSeed(lblSeedRestorer.getText(), seedCreationDatePicker.getValue());
 		 if(seed != null){
 			 try {
 				createWallet(seed);
@@ -809,10 +821,10 @@ public class StartupController  extends BaseUI{
 		        .showError();
 	 }
 	 
-	 private DeterministicSeed reconstructSeed(){
-		 String mnemonicStr = lblSeedRestorer.getText();
+	 private DeterministicSeed reconstructSeed(String mnemonicStr, LocalDate date){
+		 //String mnemonicStr = lblSeedRestorer.getText();
 		 List<String>mnemonicArr = Lists.newArrayList(Splitter.on(" ").split(mnemonicStr));
-		 LocalDate date = seedCreationDatePicker.getValue();
+		 //LocalDate date = seedCreationDatePicker.getValue();
 		 long unix = date.atStartOfDay().toEpochSecond(ZoneOffset.UTC);
 		 
 		 return new DeterministicSeed(mnemonicArr, "", unix);//reconstructSeedFromStringMnemonics(mnemonicArr, unix);
@@ -982,7 +994,36 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void goRestoreFromSSS(ActionEvent event){
 		 RestoreFromSSSPane.setVisible(false);
-		 launchRestoreAccoutns(RestoreFromSSSPane);
+		 RestoreFromSSSDatePane.setVisible(true);
+	 }
+	 
+	 @FXML protected void returnFromSSSRestoreDatePicker(ActionEvent event){
+		 RestoreFromSSSPane.setVisible(true);
+		 RestoreFromSSSDatePane.setVisible(false);
+	 }
+	 
+	 @FXML protected void goRestoreFromSSSDatePicker(ActionEvent event){
+		 LocalDate date = seedSSSRestoreCreationDatePicker.getValue();
+		 if(date != null){
+			 try {
+				 long unix = date.atStartOfDay().toEpochSecond(ZoneOffset.UTC);
+				 walletSeed = reconstructSeed(lblSeedFromSSS.getText(), date);
+				 createWallet(walletSeed);
+				 RestoreFromSSSDatePane.setVisible(false);		 
+				 launchRestoreAccoutns(RestoreFromSSSDatePane);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		 }
+		 else
+		 {
+			 Dialogs.create()
+		        .owner(Main.startup)
+		        .title("Error")
+		        .masthead("Please Choose Seed Creation time")
+		        .showError();
+		 }
 	 }
 	 
 	 @FXML protected void combineSSSShares(ActionEvent event){
