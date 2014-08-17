@@ -1,4 +1,4 @@
-package authenticator.network;
+package authenticator.Utils.OneName;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
@@ -25,35 +26,63 @@ import javax.imageio.ImageIO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.Response;
+
 import authenticator.Authenticator;
+import authenticator.Utils.EncodingUtils;
+import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.walletCore.WalletOperation;
 import wallettemplate.Main;
 
 public class OneName {
 	
-	public static ONData getOneNameData(String onename) throws JSONException, IOException {
-		System.out.println("searching for onename !!");
-		//Bitcoin Address
-		JSONObject json = readJsonFromUrl("https://onename.io/" + onename + ".json");
-	   	JSONObject bitcoin = json.getJSONObject("bitcoin");
-	   	String address = bitcoin.getString("address");
-	   	//Name Formatted
-	   	JSONObject name = json.getJSONObject("name");
-	   	String formatted = name.getString("formatted");
-	   	//Avatar
-	   	JSONObject avatar = json.getJSONObject("avatar");
-	    String imgURL = avatar.getString("url");
-	    BufferedImage image =null;
-	    URL url =new URL(imgURL);
-	   	return new ONData(formatted, address, url);
+	public static void getOneNameData(String onename, OneNameListener listener) throws IOException, JSONException {
+		EncodingUtils.readFromUrl("https://onename.io/" + onename + ".json", new AsyncCompletionHandler<Response>(){
+			@Override
+			public Response onCompleted(Response arg0) throws Exception {
+				String res = arg0.getResponseBody();
+				JSONObject json = new JSONObject(res);
+				
+				JSONObject bitcoin = json.getJSONObject("bitcoin");
+			   	String address = bitcoin.getString("address");
+			   	//Name Formatted
+			   	JSONObject name = json.getJSONObject("name");
+			   	String formatted = name.getString("formatted");
+			   	//Avatar
+			   	JSONObject avatar = json.getJSONObject("avatar");
+			    String imgURL = avatar.getString("url");
+			    BufferedImage image =null;
+			    URL url = new URL(imgURL);
+			    ONData ret = new ONData(formatted, address, url);
+				
+			    listener.getOneNameData(ret);
+			    
+				return null;
+			}
+		});
 	}
 	
-	public static Image downloadImage(URL url) throws IOException{
-		BufferedImage image = null;
-		try{image = ImageIO.read(url);}
-	    catch(IOException e){e.printStackTrace();}
-	    //Scale the image
+	public static void downloadAvatarImage(URL url, OneNameListener listener) throws IOException, JSONException{
+		EncodingUtils.readFromUrl(url.toString(), new AsyncCompletionHandler<Response>(){
+			@Override
+			public Response onCompleted(Response arg0) throws Exception {
+				byte[] res = arg0.getResponseBodyAsBytes();
+				InputStream in = new ByteArrayInputStream(res);
+				BufferedImage image = ImageIO.read(in);
+			    Image ret = prepareDownloadedAvatarImage(image);
+				
+			    listener.getOneNameAvatarImage(ret);
+				
+				return null;
+			}
+		});
+		
+	}
+	
+	private static Image prepareDownloadedAvatarImage(BufferedImage image) throws IOException{
+		//Scale the image
 	    int imageWidth  = image.getWidth();
 	    int imageHeight = image.getHeight();
 	    int width;
@@ -149,6 +178,7 @@ public class OneName {
 	    wallet.writeOnename(onb.build());
 	    Auth.fireonNewUserNamecoinIdentitySelection(onb.build());
 	}
+	
 	/**For reading the JSON*/
 	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();

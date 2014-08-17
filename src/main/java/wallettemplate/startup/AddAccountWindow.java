@@ -22,7 +22,7 @@ import wallettemplate.startup.StartupController.AddAccountListener;
 import wallettemplate.startup.StartupController.AddedAccountObject;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.TextFieldValidator;
-import authenticator.network.OneName;
+import authenticator.Utils.OneName.OneName;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;

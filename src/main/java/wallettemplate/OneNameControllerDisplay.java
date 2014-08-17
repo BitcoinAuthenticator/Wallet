@@ -8,7 +8,7 @@ import org.json.JSONException;
 import wallettemplate.controls.BitcoinAddressValidator;
 import wallettemplate.utils.BaseUI;
 import authenticator.Authenticator;
-import authenticator.network.OneName;
+import authenticator.Utils.OneName.OneName;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

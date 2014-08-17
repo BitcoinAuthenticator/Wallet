@@ -35,14 +35,15 @@ import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.OneNameControllerDisplay;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.controls.SendToCell;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
+import authenticator.Utils.OneName.OneName;
+import authenticator.Utils.OneName.OneName.ONData;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
-import authenticator.network.OneName;
-import authenticator.network.OneName.ONData;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
@@ -69,8 +70,9 @@ public class SendTxHelper {
     		return false;
     	for(Node n:scrlContent.getChildren())
     	{
-    		NewAddress na = (NewAddress)n;
-    		try {Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.txfAddress.getText().toString());}
+    		//NewAddress na = (NewAddress)n;
+    		SendToCell na = (SendToCell)n;
+    		try {Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.getAddress());}
     		catch (AddressFormatException e) {return false;}
     		
     	}
@@ -78,17 +80,18 @@ public class SendTxHelper {
     	Coin amount = Coin.ZERO;
     	for(Node n:scrlContent.getChildren())
     	{
-    		NewAddress na = (NewAddress)n;
+    		//NewAddress na = (NewAddress)n;
+    		SendToCell na = (SendToCell)n;
     		na.validate();
     		double a;
-			if (na.cbCurrency.getValue().toString().equals("BTC")){
-				a = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+			if (na.getSelectedCurrency().equals("BTC")){
+				a = na.getAmountValue();
 			}
 			else {
 				// TOOD - it is not async !
-				JSONObject json = EncodingUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.cbCurrency.getValue().toString() + "/");
+				JSONObject json = EncodingUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.getSelectedCurrency() + "/");
 				double last = json.getDouble("last");
-				a = (double) (Double.parseDouble(na.txfAmount.getText())/last)*100000000;
+				a = na.getAmountValue();
 			}
 			long satoshis = (long) a;
     		amount = amount.add(Coin.valueOf((long)a));
@@ -178,7 +181,7 @@ public class SendTxHelper {
 	 * @author alon
 	 *
 	 */
-	static public class NewAddress extends HBox {
+	/*static public class NewAddress extends HBox {
     	public TextField txfAddress;
     	public TextField txfAmount;
     	public ChoiceBox cbCurrency;
@@ -235,13 +238,43 @@ public class SendTxHelper {
     		//Validates the address or onename
     		txfAddress.focusedProperty().addListener(new ChangeListener<Boolean>()
     		{
+    			private boolean isOneName(String str){
+	        		if (!str.equals("") && !str.substring(0, 1).equals("1") && !str.substring(0, 1).equals("3"))
+	        			return true;
+	        		return false;
+    			}
+    			
+    			private void addAvatarImage(ONData onename, String onenameID){
+    				VBox v = new VBox();
+    				Image avatar = null;
+    				try {avatar = OneName.downloadImage(onename.getAvatarURL());} 
+    				catch (IOException e) {e.printStackTrace();}
+    				ImageView avi = new ImageView(avatar);
+    				avi.setStyle("-fx-cursor: hand;");
+    				avi.setFitHeight(50);
+    				avi.setFitWidth(50);
+    				avi.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    					   @Override
+    					   public void handle(MouseEvent event) {
+    						   Main.instance.overlayUI("DisplayOneName.fxml");
+    						   OneNameControllerDisplay.loadOneName(onenameID);
+    					   }
+    				   });
+    				v.getChildren().add(avi);
+    				Label name = new Label(onename.getNameFormatted());
+    				v.getChildren().add(name);
+    				v.setAlignment(Pos.CENTER);
+    				oneNameAvi.getChildren().add(v);
+    				oneNameAvi.setMargin(v, new Insets(0,0,0,10));
+    			}
+    			
     		    @Override
     		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
     		    {
     		        if (!newPropertyValue){
     		        	if (Authenticator.getWalletOperation().getNetworkParams() == MainNetParams.get()){
     		        		if (!oneNameAvi.getChildren().isEmpty()){oneNameAvi.getChildren().remove(0);}
-    		        		if (!txfAddress.getText().equals("") && !txfAddress.getText().substring(0, 1).equals("1") && !txfAddress.getText().substring(0, 1).equals("3")){
+    		        		if (isOneName(txfAddress.getText())){
     		        			ONData onename = null;
     		        			String onenameID = txfAddress.getText();
     		        			try { 
@@ -252,27 +285,7 @@ public class SendTxHelper {
     		        				txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #f06e6e;");
     		        			}
     		        			if (onename != null){
-    		        				VBox v = new VBox();
-    		        				Image avatar = null;
-    		        				try {avatar = OneName.downloadImage(onename.getAvatarURL());} 
-    		        				catch (IOException e) {e.printStackTrace();}
-    		        				ImageView avi = new ImageView(avatar);
-    		        				avi.setStyle("-fx-cursor: hand;");
-    		        				avi.setFitHeight(50);
-    		        				avi.setFitWidth(50);
-    		        				avi.setOnMouseClicked(new EventHandler<MouseEvent>() {
-    		        					   @Override
-    		        					   public void handle(MouseEvent event) {
-    		        						   Main.instance.overlayUI("DisplayOneName.fxml");
-    		        						   OneNameControllerDisplay.loadOneName(onenameID);
-    		        					   }
-    		        				   });
-    		        				v.getChildren().add(avi);
-    		        				Label name = new Label(onename.getNameFormatted());
-    		        				v.getChildren().add(name);
-    		        				v.setAlignment(Pos.CENTER);
-    		        				oneNameAvi.getChildren().add(v);
-    		        				oneNameAvi.setMargin(v, new Insets(0,0,0,10));
+    		        				addAvatarImage(onename, onenameID);
     		        			}
     		        		}
     		        		else {
@@ -364,5 +377,5 @@ public class SendTxHelper {
         		return false;
         	return true;
         }
-    }
+    }*/
 }

@@ -8,13 +8,13 @@ import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
+import authenticator.Utils.OneName.OneName;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
-import authenticator.network.OneName;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
@@ -121,9 +121,9 @@ import javafx.util.Duration;
 import wallettemplate.ControllerHelpers.SendTxHelper;
 import wallettemplate.ControllerHelpers.TableTx;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
-import wallettemplate.ControllerHelpers.SendTxHelper.NewAddress;
 import wallettemplate.ControllerHelpers.UIUpdateHelper;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.controls.SendToCell;
 import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
@@ -1109,22 +1109,23 @@ public class Controller  extends BaseUI{
     		Coin outAmount = Coin.valueOf(0);
         	for(Node n:scrlContent.getChildren())
         	{
-        		NewAddress na = (NewAddress)n;
+        		//NewAddress na = (NewAddress)n;
+        		SendToCell na = (SendToCell)n;
         		Address add;
         		
 				double amount;
-				if (na.cbCurrency.getValue().toString().equals("BTC")){
-					amount = (double) Double.parseDouble(na.txfAmount.getText())*100000000;
+				if (na.getSelectedCurrency().equals("BTC")){
+					amount = na.getAmountValue();
 				}
 				else {		
 					CurrencyConverterSingelton.CANNOT_EXECUTE_ASYNC_SO_CHECK_IS_READY();
-					amount = CurrencyConverterSingelton.USD.convertToBTC(Double.parseDouble(na.txfAmount.getText()));
+					amount = CurrencyConverterSingelton.USD.convertToBTC(na.getAmountValue());
 				}
 				long satoshis = (long) amount;
 				if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 					outAmount = outAmount.add(Coin.valueOf(satoshis));
-					OutputAddresses.add(na.txfAddress.getText());
-					to.put(na.txfAddress.getText(), Coin.valueOf(satoshis));
+					OutputAddresses.add(na.getAddress());
+					to.put(na.getAddress(), Coin.valueOf(satoshis));
 				}
 				else 
 					;//TODO        		
@@ -1487,7 +1488,10 @@ public class Controller  extends BaseUI{
         Method removeOutput;
 		try {
 			removeOutput = Controller.class.getMethod("removeOutput", parameterTypes);
-			NewAddress na = new SendTxHelper.NewAddress(scrlContent.getCount()).setCancelOnMouseClick(this,removeOutput);
+			//NewAddress na = new SendTxHelper.NewAddress(scrlContent.getCount()).setCancelOnMouseClick(this,removeOutput);
+			SendToCell na = new SendToCell(scrlContent.getCount());
+			na.initGUI();
+			na.setCancelOnMouseClick(this,removeOutput);
 			scrlContent.addItem(na);
 			scrlpane.setContent(scrlContent);
 		} catch (NoSuchMethodException | SecurityException e) {
@@ -1499,10 +1503,12 @@ public class Controller  extends BaseUI{
     	scrlContent.removeNodeAtIndex(index);
     	// TODO - make it better !
     	for(Node n:scrlContent.getChildren()){
-    		NewAddress na = (NewAddress)n;
-    		if(na.index < index)
+    		//NewAddress na = (NewAddress)n;
+    		SendToCell na = (SendToCell)n;
+    		if(na.getIndex() < index)
     			continue;
-    		na.index--;
+    		//na.index--;
+    		na.setIndex(na.getIndex() - 1);
     	}
     	scrlpane.setContent(scrlContent);
     }

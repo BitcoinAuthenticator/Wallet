@@ -7,7 +7,7 @@ import org.json.JSONException;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
-import authenticator.network.OneName;
+import authenticator.Utils.OneName.OneName;
 import javafx.animation.Animation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

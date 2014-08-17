@@ -39,7 +39,9 @@ public class EncodingUtils {
 	}
 	
 	
-	// DO NOT USE !!  here only for controller.java:convert usd to btc in tx send
+	/**
+	 *  DO NOT USE !!  here only for controller.java:convert usd to btc in tx send
+	 */
 	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException{
 		URL urladdr = new URL(url);
         URLConnection conn = urladdr.openConnection();
