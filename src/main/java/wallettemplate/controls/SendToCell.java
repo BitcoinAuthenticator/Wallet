@@ -133,6 +133,7 @@ public class SendToCell extends Region{
         	                					   }
         	                				   });
         	        						lblAvatarName.setText(onename.getNameFormatted());
+        	        						ivAvatar.setStyle("-fx-cursor: hand;");
         	        						
         	        						avatarBox.setVisible(true);
 	        							 }
@@ -147,6 +148,7 @@ public class SendToCell extends Region{
         		    @Override
         		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
         		    {
+        		    	String txfield = txfAddress.getText();
         		        if (!newPropertyValue){
         		        	if (Authenticator.getWalletOperation().getNetworkParams() == MainNetParams.get()){
         		        		if (isOneName(txfAddress.getText())){
@@ -170,7 +172,7 @@ public class SendToCell extends Region{
                              		        				txfAddress.setText(data.getBitcoinAddress());
                              		        				try {
                              		        					spinner.setProgress(50.0);
-																setAvatarImage(data, txfAddress.getText());
+																setAvatarImage(data, txfield);
 															} catch (Exception e) {
 																e.printStackTrace();
 															}
