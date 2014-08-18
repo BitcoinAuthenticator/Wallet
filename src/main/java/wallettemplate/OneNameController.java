@@ -51,4 +51,10 @@ public class OneNameController  extends BaseUI{
 		Pane2.setVisible(false);
 		Pane1.setVisible(true);
 	}
+	
+	@FXML protected void openapp(){
+		overlayUi.done();
+		Main.instance.overlayUI("DisplayOneName.fxml");
+		OneNameControllerDisplay.loadOneName("register");
+	}
 }
