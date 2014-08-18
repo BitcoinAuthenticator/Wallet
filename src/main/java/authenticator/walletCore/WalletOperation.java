@@ -3,7 +3,6 @@ package authenticator.walletCore;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BASE;
-import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
@@ -14,6 +13,7 @@ import authenticator.hierarchy.exceptions.IncorrectPathException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import authenticator.hierarchy.exceptions.NoUnusedKeyException;
+import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -1031,6 +1031,7 @@ public class WalletOperation extends BASE{
 		configFile.markAddressAsUsed(accountIdx, addIndx,type);
 		authenticatorWalletHierarchy.markAddressAsUsed(accountIdx, addIndx, type);
 		ATAddress add = getATAddreessFromAccount(accountIdx, type, addIndx);
+		Authenticator.fireOnAddressMarkedAsUsed(add);
 		this.LOG.info("Marked " + add.getAddressStr() + " as used.");
 	}
 

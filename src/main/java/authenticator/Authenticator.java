@@ -19,10 +19,11 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
 
-import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.Utils.SafeList;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
+import authenticator.listeners.BAGeneralEventsListener;
+import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.network.TCPListener;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
@@ -30,6 +31,7 @@ import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.walletCore.WalletOperation;
@@ -44,7 +46,7 @@ import authenticator.walletCore.WalletOperation;
  * 	  TCPListener.</li>
  * <li>{@link authenticator.walletCore.WalletOperation}</li>
  * <li>{@link authenticator.protobuf.ProtoConfig.ActiveAccountType} - Current active account. Will effect operations that depend on the active account</li>
- * <li>{@link authenticator.BAGeneralEventsListener} - General events listener for the authenticatro. For Example: a new paired Authenticator was added</li>
+ * <li>{@link authenticator.listeners.BAGeneralEventsListener} - General events listener for the authenticatro. For Example: a new paired Authenticator was added</li>
  * </ol>
  * <br>
  * @author alon
@@ -332,5 +334,10 @@ public class Authenticator extends BASE{
 			String str){
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAuthenticatorSigningResponse(tx, pairingID, pendingReq, answerType, str);
+	}
+	
+	public static void fireOnAddressMarkedAsUsed(ATAddress address){
+		for(BAGeneralEventsListener l:generalEventsListeners)
+			l.onAddressMarkedAsUsed(address);
 	}
 }

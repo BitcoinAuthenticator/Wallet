@@ -1,8 +1,6 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
-import authenticator.BAGeneralEventsListener;
-import authenticator.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.KeyUtils;
@@ -15,6 +13,9 @@ import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
+import authenticator.listeners.BAGeneralEventsAdapter;
+import authenticator.listeners.BAGeneralEventsListener;
+import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
@@ -380,7 +381,7 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
-    	Authenticator.addGeneralEventsListener(new AuthenticatorGeneralEvents());
+    	Authenticator.addGeneralEventsListener(vBAGeneralEventsAdapter);
     	
     	// lock 
       	locked = Authenticator.getWalletOperation().isWalletEncrypted();
@@ -410,7 +411,7 @@ public class Controller  extends BaseUI{
     	throttledUIUpdater.execute();
     }
     
-    public class AuthenticatorGeneralEvents implements BAGeneralEventsListener{
+    private BAGeneralEventsAdapter vBAGeneralEventsAdapter = new BAGeneralEventsAdapter(){
 		
 		@Override
 		public void onNewPairedAuthenticator() {
@@ -536,7 +537,17 @@ public class Controller  extends BaseUI{
 				});
 			
 		}
-    }
+		
+		@Override
+		public void onAddressMarkedAsUsed(ATAddress address) {
+			Platform.runLater(new Runnable() { 
+				  @Override
+				  public void run() {
+					  setReceiveAddresses();
+				  }
+				});
+		}
+    };
     
     public class ProgressBarUpdater extends DownloadListener {
         @Override
