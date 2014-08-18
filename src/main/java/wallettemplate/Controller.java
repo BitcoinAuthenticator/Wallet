@@ -89,6 +89,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TextArea;
@@ -253,13 +254,16 @@ public class Controller  extends BaseUI{
     	startSyncRotation();
         
         scrlContent = new ScrollPaneContentManager().setSpacingBetweenItems(15);
-        scrlpane.setFitToHeight(true);
-        scrlpane.setFitToWidth(true);
-        addOutput();
-        scrlpane.setContent(scrlContent);
+        //scrlpane.setFitToHeight(true);
+        //scrlpane.setFitToWidth(true);
         scrlpane.setStyle("-fx-border-color: #dae0e5; -fx-background: white;");
         scrlpane.setPadding(new Insets (5,0,0,5));
-        scrlpane.setFocusTraversable(false);
+        scrlpane.setHbarPolicy(ScrollBarPolicy.NEVER);
+        //scrlpane.setFocusTraversable(false);
+        //scrlContent.setStyle(scrlpane.getStyle());
+        scrlpane.setContent(scrlContent);
+        addOutput();
+        
         syncProgress.setProgress(-1);
         lblName.setFont(Font.font(null, FontWeight.BOLD, 15));
         lblConfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -1493,7 +1497,7 @@ public class Controller  extends BaseUI{
 			na.initGUI();
 			na.setCancelOnMouseClick(this,removeOutput);
 			scrlContent.addItem(na);
-			scrlpane.setContent(scrlContent);
+			//scrlpane.setContent(scrlContent);
 		} catch (NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
@@ -1510,7 +1514,7 @@ public class Controller  extends BaseUI{
     		//na.index--;
     		na.setIndex(na.getIndex() - 1);
     	}
-    	scrlpane.setContent(scrlContent);
+    	//scrlpane.setContent(scrlContent);
     }
     
     //#####################################

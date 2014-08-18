@@ -113,7 +113,6 @@ public class SendToCell extends Region{
         			}
         			
         			private void setAvatarImage(ONData onename, String onenameID) throws IOException, JSONException{
-        				VBox v = new VBox();
         				
         				OneName.downloadAvatarImage(onename.getAvatarURL(), new OneNameListenerAdapter(){
         					@Override
@@ -123,17 +122,19 @@ public class SendToCell extends Region{
 	        						 @Override
 	        						public void run() {
 	        							 if(img != null){
-	        								 ivAvatar.setImage(img);
-	        	        						ivAvatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	        	                					   @Override
-	        	                					   public void handle(MouseEvent event) {
-	        	                						   Main.instance.overlayUI("DisplayOneName.fxml");
-	        	                						   OneNameControllerDisplay.loadOneName(onenameID);
-	        	                					   }
-	        	                				   });
-	        	        						lblAvatarName.setText(onename.getNameFormatted());
-	        	        						
-	        	        						avatarBox.setVisible(true);
+	        								spinner.setProgress(70.0);
+	        								ivAvatar.setImage(img);
+	        								spinner.setProgress(100.0);
+        	        						ivAvatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        	                					   @Override
+        	                					   public void handle(MouseEvent event) {
+        	                						   Main.instance.overlayUI("DisplayOneName.fxml");
+        	                						   OneNameControllerDisplay.loadOneName(onenameID);
+        	                					   }
+        	                				   });
+        	        						lblAvatarName.setText(onename.getNameFormatted());
+        	        						
+        	        						avatarBox.setVisible(true);
 	        							 }
 	        							 loadingAvatarBox.setVisible(false);
 	        						 }
@@ -150,6 +151,11 @@ public class SendToCell extends Region{
         		        	if (Authenticator.getWalletOperation().getNetworkParams() == MainNetParams.get()){
         		        		if (isOneName(txfAddress.getText())){
         		        			try { 
+        		        				ivAvatar.setImage(null);
+        		        				avatarBox.setVisible(false);
+        		        				
+        		        				spinner.setProgress(0);
+        		        				
         		        				// start spinner
         		        				loadingAvatarBox.setVisible(true);
         		        				
@@ -163,6 +169,7 @@ public class SendToCell extends Region{
                 		        							txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");
                              		        				txfAddress.setText(data.getBitcoinAddress());
                              		        				try {
+                             		        					spinner.setProgress(50.0);
 																setAvatarImage(data, txfAddress.getText());
 															} catch (Exception e) {
 																e.printStackTrace();
