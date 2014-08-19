@@ -39,12 +39,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Region;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 
 public class SendToCell extends Region{	
@@ -134,8 +139,17 @@ public class SendToCell extends Region{
         	                				   });
         	        						lblAvatarName.setText(onename.getNameFormatted());
         	        						ivAvatar.setStyle("-fx-cursor: hand;");
-        	        						
         	        						avatarBox.setVisible(true);
+        	        						Rectangle clip = new Rectangle(ivAvatar.getFitWidth()-5, ivAvatar.getFitHeight());
+        	        						clip.setArcWidth(9);
+        	        						clip.setArcHeight(9);
+        	        						ivAvatar.setClip(clip);
+        	        						SnapshotParameters parameters = new SnapshotParameters();
+        	        						parameters.setFill(Color.TRANSPARENT);
+        	        						WritableImage image = ivAvatar.snapshot(parameters, null);
+        	        						ivAvatar.setClip(null);
+        	        						ivAvatar.setEffect(new DropShadow(03, Color.BLACK));
+        	        						ivAvatar.setImage(image);
 	        							 }
 	        							 loadingAvatarBox.setVisible(false);
 	        						 }
