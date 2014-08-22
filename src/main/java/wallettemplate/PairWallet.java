@@ -28,6 +28,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
@@ -39,6 +40,7 @@ public class PairWallet extends BaseUI{
 	@FXML private Button cancelBtn;
 	@FXML private Button doneBtn;
 	@FXML private Button runBtn;
+	@FXML private Button btnHelp;
 	@FXML private ProgressIndicator prgIndicator;
 	@FXML private TextField textfield;
 	@FXML private Label lblStatus;
@@ -152,7 +154,8 @@ public class PairWallet extends BaseUI{
     		qrBox.setVisible(true);
     }
     
-    private void handlePairingStage(PairingStage stage){
+    @SuppressWarnings("restriction")
+	private void handlePairingStage(PairingStage stage){
     	switch(stage){
 	    	case PAIRING_SETUP:
 	    		setProgressIndicator(0, "Setup ..");
@@ -175,8 +178,14 @@ public class PairWallet extends BaseUI{
 	    		
 	    		
 	    	case CONNECTION_TIMEOUT:
-	    		break;
 	    	case FAILED:
+	    		Platform.runLater(new Runnable() {
+	    			@Override
+	    	        public void run() {
+	    				prgIndicator.setProgress(0);
+	    				lblStatus.setText("Connection Timeout");
+	    	        }
+	    		});
 	    		break;
     	}
     }
@@ -212,6 +221,12 @@ public class PairWallet extends BaseUI{
     	{
     		// error 
     	}
+    }
+    
+    @FXML
+    public void help(ActionEvent event)
+    {
+    	
     }
     
     public void setListener(PairingWalletControllerListener l){
@@ -295,4 +310,38 @@ public class PairWallet extends BaseUI{
     	public void onFailed(Exception e);
     	public void closeWindow();
     }
+    
+    
+    
+    /**
+     * Button press + release GUI
+     */
+    
+    @FXML protected void btnPairPressed(MouseEvent event) {
+    	handleBlueButtonsPress(runBtn);
+    }
+    
+    @FXML protected void btnPairTxReleased(MouseEvent event) {
+    	handleBlueButtonsRelease(runBtn);
+    } 
+    
+    @FXML protected void btnDonePressed(MouseEvent event) {
+    	handleBlueButtonsPress(doneBtn);
+    }
+    
+    @FXML protected void btnDoneTxReleased(MouseEvent event) {
+    	handleBlueButtonsRelease(doneBtn);
+    } 
+  
+    
+    private void handleBlueButtonsPress(Button b){
+    	b.setStyle("-fx-background-color: #a1d2e7;");
+    }
+    
+    private void handleBlueButtonsRelease(Button b){
+    	b.setStyle("-fx-background-color: #199bd6;");
+    }
+    
+    /**/
+    
 }
