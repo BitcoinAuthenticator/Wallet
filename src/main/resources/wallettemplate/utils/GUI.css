@@ -171,6 +171,13 @@
 	-icons-color: white;
 }
 
+.cancel-button {
+	-fx-background-color: #6d6d6d;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+}
+
 .forward-button {
 	-fx-background-color: #95d946;
 	-fx-background-insets: 0, 0, 1, 2;

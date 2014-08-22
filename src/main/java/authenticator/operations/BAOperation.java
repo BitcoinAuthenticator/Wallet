@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import javax.annotation.Nullable;
 
 import authenticator.network.BANeworkInfo;
+import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 
 /**
@@ -15,7 +16,7 @@ import authenticator.protobuf.ProtoConfig.ATOperationType;
  */
 public class BAOperation {
 	private OperationActions mOperationActions;
-	private OnOperationUIUpdate listener;
+	private OperationListener listener;
 	private String operationDescription;
 	private ATOperationType mOperationType;
 	private BANetworkRequirement mATNetworkRequirement = BANetworkRequirement.NONE;
@@ -81,7 +82,7 @@ public class BAOperation {
 		return this;
 	}
 	
-	public BAOperation SetOperationUIUpdate(OnOperationUIUpdate listener)
+	public BAOperation SetOperationUIUpdate(OperationListener listener)
 	{
 		this.listener = listener;
 		return this;

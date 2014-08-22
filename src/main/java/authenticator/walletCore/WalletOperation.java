@@ -1207,7 +1207,7 @@ public class WalletOperation extends BASE{
 	 * @param nt
 	 * @throws IOException
 	 */
-	public void generatePairing(String authMpubkey, 
+	public PairedAuthenticator generatePairing(String authMpubkey, 
 			String authhaincode, 
 			String sharedAES, 
 			String GCM, 
@@ -1223,12 +1223,13 @@ public class WalletOperation extends BASE{
 			ATAccount a = completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount);
 			addNewAccountToConfigAndHierarchy(a);
 		}
-		writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
+		PairedAuthenticator ret = writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnNewPairedAuthenticator();
+		return ret;
 	}
 	
-	private void writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
-		configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, accountIndex);
+	private PairedAuthenticator writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
+		return configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, accountIndex);
 	}
 
 	/**

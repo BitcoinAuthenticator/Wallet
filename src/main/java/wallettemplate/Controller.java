@@ -17,9 +17,9 @@ import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.listeners.BAGeneralEventsListener;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.operations.BAOperation;
-import authenticator.operations.OnOperationUIUpdate;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
+import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
@@ -1448,7 +1448,7 @@ public class Controller  extends BaseUI{
     }
     	
     public boolean broadcast (Transaction tx, String to, String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
-    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, WALLET_PW,new OnOperationUIUpdate(){
+    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, WALLET_PW,new OperationListener(){
 			@Override
 			public void onBegin(String str) { }
 
@@ -1949,7 +1949,7 @@ public class Controller  extends BaseUI{
    	//#####################################
     
     @FXML protected void btnAppAuthenticator(MouseEvent event) {
-    	Main.instance.overlayUI("Pair_wallet.fxml");
+    	Main.instance.overlayUI("pairing/Pair_wallet.fxml");
     }
     
     @FXML protected void btnSettings(MouseEvent event) {

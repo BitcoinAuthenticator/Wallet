@@ -33,7 +33,7 @@ import authenticator.network.exceptions.TCPListenerCouldNotStartException;
 import authenticator.operations.BAOperation;
 import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.exceptions.BAOperationNetworkRequirementsNotAvailableException;
-import authenticator.operations.OnOperationUIUpdate;
+import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
@@ -295,7 +295,7 @@ public class TCPListener extends BASE{
 											pendingReq.getPayloadIncoming().toByteArray(),
 											pendingReq,
 											Authenticator.AUTHENTICATOR_PW);
-									op.SetOperationUIUpdate(new OnOperationUIUpdate(){
+									op.SetOperationUIUpdate(new OperationListener(){
 
 										@Override
 										public void onBegin(String str) { }

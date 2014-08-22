@@ -146,8 +146,8 @@ public class AddAccountWindow extends BaseUI{
     Stage pairWindow = null;
     @FXML protected void pair(ActionEvent event){
     	pairWindow = loadFXML(pairWindow, 
-    			getViewURL("/wallettemplate/pair_wallet.fxml"), 
-    			656, 340, 
+    			getViewURL("/wallettemplate/pairing/pair_wallet.fxml"), 
+    			510, 333, 
     			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
     			new PairingWalletControllerListener(){
 					@Override

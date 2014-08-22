@@ -18,7 +18,8 @@ import authenticator.Utils.EncodingUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANeworkInfo;
 import authenticator.network.UpNp;
-import authenticator.operations.OnOperationUIUpdate;
+import authenticator.operations.listeners.OperationListener;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.walletCore.WalletOperation;
 
 /**
@@ -39,20 +40,23 @@ public class PairingProtocol {
    * 
    * @param {@link java.net.ServerSocket} ss
    * @param args
-   * @param {@link authenticator.operations.OnOperationUIUpdate} listener
+   * @param {@link authenticator.operations.listeners.OperationListener} listener
    * @throws Exception
    */
   public void run (WalletOperation wallet,
 		  ServerSocket ss,
 		  BANeworkInfo netInfo,
 		  String[] args, 
-		  OnOperationUIUpdate listener, 
+		  OperationListener opListener,
+		  PairingStageUpdater statusListener,
 		  Runnable displayQRAnimation, 
 		  Runnable animationAfterPairing) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[2];
-
+	  
+	  postUIStatusUpdate(statusListener, PairingStage.PAIRING_SETUP);
+	  
 	  //UpNp plugnplay = new UpNp();
 	  String ip = netInfo.EXTERNAL_IP;//plugnplay.getExternalIP();
 	  String localip = netInfo.INTERNAL_IP;//plugnplay.getLocalIP().substring(1);
@@ -69,7 +73,7 @@ public class PairingProtocol {
 	  
 	  //Display a QR code for the user to scan
 	  PairingQRCode PairingQR = new PairingQRCode(ip, localip, walletType, key, Integer.parseInt(args[3]));
-	  Socket socket = dispalyQRAnListenForCommunication(ss, listener,displayQRAnimation, animationAfterPairing);
+	  Socket socket = dispalyQRAnListenForCommunication(ss, statusListener,displayQRAnimation, animationAfterPairing);
 	  if(socket == null)
 		  return;
 	  
@@ -78,10 +82,10 @@ public class PairingProtocol {
 	  int keysize = in.readInt();
 	  byte[] cipherKeyBytes = new byte[keysize];
 	  in.read(cipherKeyBytes);
-	  String payload = decipherDataFromAuthenticator(cipherKeyBytes, listener, sharedsecret);
+	  String payload = decipherDataFromAuthenticator(cipherKeyBytes, statusListener, sharedsecret);
     
 	  // Verify HMAC
-	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, listener);
+	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, statusListener);
 	 
 	  if (jsonObject != null){
 		//Parse the received json object
@@ -91,23 +95,26 @@ public class PairingProtocol {
 		  String GCM = (String) jsonObject.get("gcmID");
 		  Integer accID = args[1].length() == 0? null:Integer.parseInt(args[1]);
 		  //Save to file
-		  wallet.generatePairing(mPubKey, 
-				  chaincode, 
-				  key, 
-				  GCM, 
-				  pairingID, 
-				  args[0], 
-				  accID,
-				  NetworkType.fromString(args[2]));
+		  PairedAuthenticator  obj = wallet.generatePairing(mPubKey, 
+															  chaincode, 
+															  key, 
+															  GCM, 
+															  pairingID, 
+															  args[0], 
+															  accID,
+															  NetworkType.fromString(args[2]));
+		  
+		  postUIStatusUpdate(statusListener, PairingStage.FINISHED);
+		  statusListener.pairingData(obj);
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");
-		  postUIStatusUpdate(listener,"Message authentication code is invalid");
+		  postUIStatusUpdate(statusListener, PairingStage.FAILED);
 	  }
 
   }
   
-  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, OnOperationUIUpdate listener, Runnable displayQRAnimation, Runnable animationAfterPairing){
+  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, PairingStageUpdater listener, Runnable displayQRAnimation, Runnable animationAfterPairing){
 	  //DisplayQR QR = new DisplayQR();
 	  //QR.displayQR();   
 	  
@@ -115,19 +122,20 @@ public class PairingProtocol {
 		  displayQRAnimation.run();
 	  
 	  System.out.println("Listening for connection (20 sec timeout) ...");
-	  postUIStatusUpdate(listener, "Listening for connection (20 sec timeout) ...");
-	  postUIStatusUpdate(listener, "Scan the QR code to pair the wallet with the Authenticator");
+	  postUIStatusUpdate(listener, PairingStage.WAITING_FOR_SCAN);
+//	  postUIStatusUpdate(listener, "Listening for connection (20 sec timeout) ...");
+//	  postUIStatusUpdate(listener, "Scan the QR code to pair the wallet with the Authenticator");
 	  try {
 		ss.setSoTimeout( 20000 );
 		Socket socket = ss.accept();
 		//QR.CloseWindow();
 		System.out.println("Connected to Alice");
-	    postUIStatusUpdate(listener,"Connected to Alice");		 
+	    postUIStatusUpdate(listener, PairingStage.CONNECTED);		 
 		  
 		  return socket;
 	} catch (IOException e) {
 		System.out.println("Connection timedout");
-		postUIStatusUpdate(listener,"Connection timedout");
+		postUIStatusUpdate(listener, PairingStage.CONNECTION_TIMEOUT);
 	}
 	finally{
 		 if(animationAfterPairing != null)
@@ -138,21 +146,20 @@ public class PairingProtocol {
 	  
   }
   
-  public String decipherDataFromAuthenticator(byte[] cipherKeyBytes, OnOperationUIUpdate listener, SecretKey sharedsecret) throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException{
-	  postUIStatusUpdate(listener,"Decrypting message ...");
+  public String decipherDataFromAuthenticator(byte[] cipherKeyBytes, PairingStageUpdater listener, SecretKey sharedsecret) throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException{
+	  postUIStatusUpdate(listener, PairingStage.DECRYPTING_MESSAGE);
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
 	  String payload = EncodingUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
 	  return payload;
   }
   
-  public JSONObject parseAndVerifyPayload(String payload, SecretKey sharedsecret, OnOperationUIUpdate listener) throws NoSuchAlgorithmException, InvalidKeyException, ParseException{
+  public JSONObject parseAndVerifyPayload(String payload, SecretKey sharedsecret, PairingStageUpdater listener) throws NoSuchAlgorithmException, InvalidKeyException, ParseException{
 	  byte[] testpayload = EncodingUtils.hexStringToByteArray(payload.substring(0,payload.length()-64));
 	  byte[] hash = EncodingUtils.hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
 	  Mac mac = Mac.getInstance("HmacSHA256");
 	  mac.init(sharedsecret);
 	  byte[] macbytes = mac.doFinal(testpayload);
-	  postUIStatusUpdate(listener,"Parsing message ...");
 	  if (Arrays.equals(macbytes, hash)){
 		//Parse the received json object
 		  String strJson = new String(testpayload);
@@ -167,10 +174,11 @@ public class PairingProtocol {
 		  				  			 "chaincode: " +  chaincode + "\n" +
 		  				  			 "gcmRegId: " +  GCM + "\n" + 
 		  				  			 "pairing ID: " + pairingID);
-		  postUIStatusUpdate(listener,"Received Master Public Key: " + mPubKey + "\n" +
-		  			 "chaincode: " +  chaincode + "\n" +
-		  			 "gcmRegId: " +  GCM + "\n" + 
-		  			 "pairing ID: " + pairingID);
+		  
+//		  postUIStatusUpdate(listener,"Received Master Public Key: " + mPubKey + "\n" +
+//		  			 "chaincode: " +  chaincode + "\n" +
+//		  			 "gcmRegId: " +  GCM + "\n" + 
+//		  			 "pairing ID: " + pairingID);
 		  
 		  return  jsonObject;
 	  }
@@ -179,10 +187,26 @@ public class PairingProtocol {
 	  
   }
   
-  public  void postUIStatusUpdate(OnOperationUIUpdate listener, String str)
+  public  void postUIStatusUpdate(PairingStageUpdater listener, PairingStage stage)
   {
 	  if(listener != null)
-		  listener.statusReport(str);
+		  listener.onPairingStageChanged(stage);
   }
   
+  public interface PairingStageUpdater{
+	  public void onPairingStageChanged(PairingStage stage);
+	  public void pairingData(PairedAuthenticator data);
+  }
+  
+  public enum PairingStage{
+	  PAIRING_SETUP,
+	  PAIRING_STARTED,
+	  WAITING_FOR_SCAN,
+	  CONNECTED,
+	  DECRYPTING_MESSAGE,
+	  FINISHED,
+	  
+	  CONNECTION_TIMEOUT,
+	  FAILED;
+  }
 }
