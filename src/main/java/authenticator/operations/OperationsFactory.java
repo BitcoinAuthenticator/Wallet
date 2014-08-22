@@ -68,8 +68,10 @@ import authenticator.db.walletDB;
 import authenticator.network.BANeworkInfo;
 import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.OperationsUtils.PairingProtocol;
+import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
+import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
@@ -102,7 +104,8 @@ public class OperationsFactory extends BASE{
 			@Nullable Integer accountID,
 			NetworkType networkType, 
 			Runnable animation,
-			Runnable animationAfterPairing){
+			Runnable animationAfterPairing,
+			PairingStageUpdater statusListener){
 		return new BAOperation(ATOperationType.Pairing)
 					.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
@@ -113,31 +116,38 @@ public class OperationsFactory extends BASE{
 						int timeout = 5;
 						ServerSocket socket = null;
 						@Override
-						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
+						public void PreExecution(OperationListener listenerUI, String[] args)  throws Exception { }
 
 						@SuppressWarnings("static-access")
 						@Override
-						public void Execute(OnOperationUIUpdate listenerUI,
+						public void Execute(OperationListener listenerUI,
 								ServerSocket ss, BANeworkInfo netInfo,
-								String[] args, OnOperationUIUpdate listener)
+								String[] args, OperationListener listener)
 								throws Exception {
 							timeout = ss.getSoTimeout();
 							 ss.setSoTimeout(0);
 							 socket = ss;
 							 PairingProtocol pair = new PairingProtocol();
-							 pair.run(wallet,ss,netInfo, args,listener,animation, animationAfterPairing); 
+							 pair.run(wallet,
+									 ss,
+									 netInfo, 
+									 args,
+									 listener,
+									 statusListener,
+									 animation, 
+									 animationAfterPairing); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(timeout);
 						}
 
 						@Override
-						public void PostExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception {
+						public void PostExecution(OperationListener listenerUI, String[] args)  throws Exception {
 							// TODO Auto-generated method stub
 							
 						}
 
 						@Override
-						public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) {
+						public void OnExecutionError(OperationListener listenerUI, Exception e) {
 							try {socket.setSoTimeout(timeout); } catch(Exception e1) {}
 							listenerUI.onError(e, null);
 						}
@@ -183,14 +193,14 @@ public class OperationsFactory extends BASE{
 					//
 					
 					@Override
-					public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception {
+					public void PreExecution(OperationListener listenerUI, String[] args) throws Exception {
 					
 					}
 
 					@Override
-					public void Execute(OnOperationUIUpdate listenerUI,
+					public void Execute(OperationListener listenerUI,
 							ServerSocket ss, BANeworkInfo netInfo,
-							String[] args, OnOperationUIUpdate listener) throws Exception {
+							String[] args, OperationListener listener) throws Exception {
 						//
 						if (!onlyComplete){
 							byte[] cypherBytes = SignProtocol.prepareTX(wallet, WALLET_PW, tx,pairingID);
@@ -314,10 +324,10 @@ public class OperationsFactory extends BASE{
 					}
 
 					@Override
-					public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
+					public void PostExecution(OperationListener listenerUI, String[] args) throws Exception { }
 
 					@Override
-					public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { 
+					public void OnExecutionError(OperationListener listenerUI, Exception e) { 
 						try { wallet.removePendingRequest(pendigReq); } catch (IOException e1) { e1.printStackTrace(); }
 						if(listenerUI != null)
 							listenerUI.onError(e, null);
@@ -349,12 +359,12 @@ public class OperationsFactory extends BASE{
 					.SetFinishedMsg("Finished IPs updates")
 					.SetOperationAction(new OperationActions(){
 						@Override
-						public void PreExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
+						public void PreExecution(OperationListener listenerUI, String[] args)  throws Exception { }
 
 						@Override
-						public void Execute(OnOperationUIUpdate listenerUI,
+						public void Execute(OperationListener listenerUI,
 								ServerSocket ss, BANeworkInfo netInfo,
-								String[] args, OnOperationUIUpdate listener) throws Exception {
+								String[] args, OperationListener listener) throws Exception {
 							PairedAuthenticator po = wallet.getPairingObject(pairingID);
 							Dispacher disp;
 							disp = new Dispacher(null,null);
@@ -371,10 +381,10 @@ public class OperationsFactory extends BASE{
 						}
 
 						@Override
-						public void PostExecution(OnOperationUIUpdate listenerUI, String[] args)  throws Exception { }
+						public void PostExecution(OperationListener listenerUI, String[] args)  throws Exception { }
 
 						@Override
-						public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { 
+						public void OnExecutionError(OperationListener listenerUI, Exception e) { 
 							if(listenerUI != null)
 								listenerUI.onError(e, null);
 						}
@@ -392,14 +402,14 @@ public class OperationsFactory extends BASE{
 		.SetFinishedMsg("Tx Broadcast complete")
 		.SetOperationAction(new OperationActions(){
 			@Override
-			public void PreExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { 
+			public void PreExecution(OperationListener listenerUI, String[] args) throws Exception { 
 
 			}
 
 			@Override
-			public void Execute(OnOperationUIUpdate listenerUI,
+			public void Execute(OperationListener listenerUI,
 					ServerSocket ss, BANeworkInfo netInfo,
-					String[] args, OnOperationUIUpdate listener)
+					String[] args, OperationListener listener)
 					throws Exception {
 				try{
 					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
@@ -448,10 +458,10 @@ public class OperationsFactory extends BASE{
 			}
 
 			@Override
-			public void PostExecution(OnOperationUIUpdate listenerUI, String[] args) throws Exception { }
+			public void PostExecution(OperationListener listenerUI, String[] args) throws Exception { }
 
 			@Override
-			public void OnExecutionError(OnOperationUIUpdate listenerUI, Exception e) { 
+			public void OnExecutionError(OperationListener listenerUI, Exception e) { 
 				if(listenerUI != null)
 					listenerUI.onError(e, null);
 			}
