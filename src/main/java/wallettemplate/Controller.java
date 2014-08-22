@@ -181,7 +181,6 @@ public class Controller  extends BaseUI{
 	 @FXML private Button btnSend_grey;
 	 @FXML private Button btnReceive_white;
 	 @FXML private Button btnReceive_grey;
-	 @FXML private Button btnTransactions_white;
 	 @FXML private Button btnTransactions_grey;
 	 @FXML private Button btnApps_white;
 	 @FXML private Button btnApps_grey;
@@ -266,9 +265,9 @@ public class Controller  extends BaseUI{
         addOutput();
         
         syncProgress.setProgress(-1);
-        lblName.setFont(Font.font(null, FontWeight.BOLD, 15));
-        lblConfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
-        lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.BOLD, 14));
+        lblName.setFont(Font.font(null, FontWeight.NORMAL, 15));
+        lblConfirmedBalance.setFont(Font.font(null, FontWeight.NORMAL, 14));
+        lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.NORMAL, 14));
         createReceivePaneButtons();
         createSendButtons();
         
