@@ -1224,6 +1224,7 @@ public class WalletOperation extends BASE{
 			addNewAccountToConfigAndHierarchy(a);
 		}
 		PairedAuthenticator ret = writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
+		staticLogger.info("Generated new Pairing at account " + accountID);
 		Authenticator.fireOnNewPairedAuthenticator();
 		return ret;
 	}

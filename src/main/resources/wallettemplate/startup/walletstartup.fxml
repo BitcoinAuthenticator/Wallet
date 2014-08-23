@@ -48,22 +48,6 @@
     </Pane>
     <!--
     
-    	The create new first account in a new wallet.
-    	
-    	
-    	-->
-    <Pane fx:id="CreateAccountPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
-      <children>
-        <Hyperlink fx:id="hlpw" layoutX="59.0" layoutY="171.0" minHeight="23.1328125" onAction="#openWeb" prefHeight="23.1328125" prefWidth="302.0" text="Choosing Secure Passwords" />
-        <TextField fx:id="txAccount" layoutX="59.0" layoutY="64.0" prefHeight="27.1328125" prefWidth="481.0" promptText="Name your first account" />
-        <PasswordField fx:id="txPW1" layoutX="59.0" layoutY="117.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
-        <PasswordField fx:id="txPW2" layoutX="304.0" layoutY="117.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
-        <Button fx:id="btnBack1" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
-        <Button fx:id="btnContinue1" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toBackupNewWalletPane" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
-      </children>
-    </Pane>
-    <!--
-    
     	Backup the new wallet options
     	
     	
@@ -109,7 +93,7 @@
     	-->
     <Pane fx:id="ExplanationPane1" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
       <children>
-        <Label layoutX="14.0" layoutY="27.0" prefHeight="40.0" prefWidth="415.0" text="Set up 2-factor authentication">
+        <Label layoutX="14.0" layoutY="27.0" prefHeight="40.0" prefWidth="415.0" text="Create First Account">
           <font>
             <Font size="20.0" />
           </font>
@@ -163,14 +147,70 @@
           </children>
         </Pane>
         <Pane fx:id="BA4" layoutX="14.0" layoutY="67.0" prefHeight="246.0" prefWidth="560.0" visible="false" />
-        <Hyperlink fx:id="hlFinished" layoutX="471.0" layoutY="339.0" onAction="#finished" text="I will do it later" visible="false" />
+        <!--
+        	Last pane, create an account
+        -->
+        <Button fx:id="btnNewStandardAccount" onAction="#toCreateNewStandardAccount" contentDisplay="TOP" layoutX="78.0" layoutY="93.0" mnemonicParsing="false" prefHeight="179.0" prefWidth="179.0" text="Standard Account" textAlignment="CENTER" visible="false">
+          <graphic>
+            <ImageView fitHeight="114.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnNewWallet.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnNewAuthenticatorAccount"  onAction="#toCreateNewAuthenticatorAccount" contentDisplay="TOP" layoutX="350.0" layoutY="93.0" mnemonicParsing="false" prefHeight="179.0" prefWidth="179.0" text="Pair Authenticator" textAlignment="CENTER" visible="false">
+          <graphic>
+            <ImageView fitHeight="101.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnRestore.png" />
+            </ImageView>
+          </graphic>
+        </Button>
       </children>
     </Pane>
-   
+   <!--
+    
+    	Create first standard account
+    	
+    	
+    	-->
+    <Pane fx:id="CreateStandardAccountPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Hyperlink fx:id="hlpw" layoutX="59.0" layoutY="171.0" minHeight="23.1328125" onAction="#openWeb" prefHeight="23.1328125" prefWidth="302.0" text="Choosing Secure Passwords" />
+        <TextField fx:id="txAccount" layoutX="59.0" layoutY="64.0" prefHeight="27.1328125" prefWidth="481.0" promptText="Name your first account" />
+        <PasswordField fx:id="txPW1" layoutX="59.0" layoutY="117.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
+        <PasswordField fx:id="txPW2" layoutX="304.0" layoutY="117.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
+        <Button fx:id="btnBack1" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#backToExplanationPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinue1" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#completeNewStandardAccount" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
     <!--
+    
+    	Create first paired account
+    	
+    	
+    	-->
+    <Pane fx:id="CreatePairedAccountPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Button fx:id="btnBackFromNewPairedAccount" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#backToExplanationPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinueFromNewPairedAccount" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#completeNewAuthenticatorAccount" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    
     
     	-->
     <Pane fx:id="Pane6" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <WebView fx:id="browser" layoutX="10.0" layoutY="40.0" prefHeight="300.0" prefWidth="580.0" styleClass="custom-scroll" />
+        <Button fx:id="btnDone" layoutX="247.0" layoutY="356.0" mnemonicParsing="false" onAction="#webFinished" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: #95d946; -fx-background-insets: 0, 0, 1, 2; -fx-text-fill: white;" text="Done" />
+      </children>
+    </Pane>
+    <!--
+    
+    
+    
+    
+    	-->
+    <Pane fx:id="ReadyToStartWalletPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
       <children>
         <WebView fx:id="browser" layoutX="10.0" layoutY="40.0" prefHeight="300.0" prefWidth="580.0" styleClass="custom-scroll" />
         <Button fx:id="btnDone" layoutX="247.0" layoutY="356.0" mnemonicParsing="false" onAction="#webFinished" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: #95d946; -fx-background-insets: 0, 0, 1, 2; -fx-text-fill: white;" text="Done" />

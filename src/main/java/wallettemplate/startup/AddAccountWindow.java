@@ -183,6 +183,9 @@ public class AddAccountWindow extends BaseUI{
 						});
 						
 					}
+
+					@Override
+					public void onStarted() { }
     			});
     	pairWindow.show();
     }

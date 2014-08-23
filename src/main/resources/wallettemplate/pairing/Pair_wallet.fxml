@@ -10,15 +10,9 @@
 <children><VBox prefHeight="333.0" prefWidth="510.0">
 <children><StackPane prefHeight="333.0" prefWidth="551.0">
 <children><VBox prefHeight="200.0" prefWidth="100.0">
-<children><HBox alignment="CENTER_RIGHT" onMousePressed="#btnPairPressed" onMouseReleased="#btnPairTxReleased" prefHeight="6.0" prefWidth="510.0">
-<VBox.margin>
-<Insets />
-</VBox.margin>
-<padding>
-<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-</padding></HBox><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+<children><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
 <children>
-<ImageView fitHeight="64.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+<ImageView fitHeight="53.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
 	  <image>
 	    <Image url="@ic_numberone.png" />
 	  </image>
@@ -31,9 +25,9 @@
 </HBox.margin></TextField>
 </children>
 <padding>
-<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+<Insets left="10.0" right="10.0" />
 </padding></HBox><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-<children><ImageView fitHeight="64.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+<children><ImageView fitHeight="53.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
 <image>
 <Image url="@ic_numbertwo.png" />
 </image>
@@ -46,11 +40,26 @@
 </HBox.margin></Button>
 </children>
 <VBox.margin>
-<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+<Insets left="10.0" right="10.0" />
 </VBox.margin></HBox><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-<children><ImageView fitHeight="64.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+<children><ImageView fitHeight="53.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
 <image>
 <Image url="@ic_numberthree.png" />
+</image>
+</ImageView><ProgressIndicator fx:id="prgIndicator" progress="0.0">
+<padding>
+<Insets left="10.0" top="10.0" />
+</padding></ProgressIndicator><Label fx:id="lblStatus" prefHeight="16.0" prefWidth="318.0">
+<HBox.margin>
+<Insets left="20.0" top="20.0" />
+</HBox.margin></Label>
+</children>
+<VBox.margin>
+<Insets left="10.0" right="10.0" />
+</VBox.margin></HBox><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+<children><ImageView fitHeight="53.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+<image>
+<Image url="@ic_numberfour.png" />
 </image>
 </ImageView><Button fx:id="doneBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#done" onMousePressed="#btnDonePressed" onMouseReleased="#btnDoneTxReleased" styleClass="custom-button" text="Done">
 <HBox.margin>
@@ -58,18 +67,12 @@
 </HBox.margin></Button>
 </children>
 <VBox.margin>
-<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-</VBox.margin></HBox><HBox prefHeight="62.0" prefWidth="510.0">
-<children><HBox alignment="CENTER" prefHeight="41.0" prefWidth="403.0">
-<children><ProgressIndicator fx:id="prgIndicator" progress="0.0" /><Label fx:id="lblStatus">
-<HBox.margin>
-<Insets left="10.0" top="23.0" />
-</HBox.margin></Label>
-</children></HBox><HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+<Insets left="10.0" right="10.0" />
+</VBox.margin></HBox><HBox fx:id="windowControlBox" alignment="CENTER_RIGHT" prefHeight="34.0" prefWidth="510.0">
 <children>
-<Button fx:id="btnHelp" cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="27" mnemonicParsing="false" onAction="#help" prefHeight="20.0" prefWidth="27.0" style="-fx-background-color:transparent;">
+<Button fx:id="btnHelp" cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="20.0" mnemonicParsing="false" onAction="#help" prefHeight="9.0" prefWidth="27.0" style="-fx-background-color:transparent;">
   <graphic>
-    <ImageView fitHeight="20" fitWidth="27" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+    <ImageView fitHeight="19.0" fitWidth="22.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
       <image>
         <Image url="@btnHelp.png" />
       </image>
@@ -79,17 +82,19 @@
 <Insets right="15.0" />
 </HBox.margin>
 </Button>
-<Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancel" styleClass="cancel-button" text="Cancel" />
+<Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancel" styleClass="cancel-button" text="Cancel">
+<HBox.margin>
+<Insets right="20.0" />
+</HBox.margin></Button>
 </children></HBox>
-</children></HBox>
-</children></VBox><HBox fx:id="qrBox" alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" StackPane.alignment="TOP_RIGHT">
+</children></VBox><Pane fx:id="qrPane" prefHeight="200.0" prefWidth="200.0">
 <children>
-<ImageView fx:id="imgViewQR" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true">
+<ImageView fx:id="imgViewQR" fitHeight="239.0" fitWidth="239.0" layoutX="500.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
 	<HBox.margin>
-	<Insets bottom="10.0" left="10.0" right="10.0" top="45.0" />
+	<Insets bottom="10.0" left="10.0" right="10.0" top="25.0" />
 	</HBox.margin>
 </ImageView>
-</children></HBox>
+</children></Pane>
 </children></StackPane>
 </children></VBox>
 </children></AnchorPane>

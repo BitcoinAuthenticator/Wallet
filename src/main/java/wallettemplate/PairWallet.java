@@ -33,6 +33,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.HBox;
 
 public class PairWallet extends BaseUI{
@@ -45,8 +46,11 @@ public class PairWallet extends BaseUI{
 	@FXML private TextField textfield;
 	@FXML private Label lblStatus;
 	
-	@FXML private HBox qrBox;
+	@FXML private Pane qrPane;
 	@FXML private ImageView imgViewQR;
+	
+	@FXML private HBox windowControlBox;
+	
 	public Main.OverlayUI overlayUi;
     
     PairingWalletControllerListener listener;
@@ -57,7 +61,7 @@ public class PairWallet extends BaseUI{
     public void initialize() {
         super.initialize(PairWallet.class);
         doneBtn.setDisable(true);
-        qrBox.setVisible(false);
+        qrPane.setVisible(false);
     }
     
     @SuppressWarnings("restriction")
@@ -70,16 +74,15 @@ public class PairWallet extends BaseUI{
         }
 	}
     
+    @SuppressWarnings("restriction")
+	public void hideWondowControlBox(boolean state){
+    	windowControlBox.setVisible(!state);
+    }
+    
     private OperationListenerAdapter opListener = new OperationListenerAdapter(){
     	@SuppressWarnings("restriction")
 		@Override
 		public void onBegin(String str) {
-//			Platform.runLater(new Runnable() {
-//		        @Override
-//		        public void run() {
-//		        	textarea.appendText(str + "\n------------------------------------------------\n");
-//		        }
-//			});
 		}
     	
     	@SuppressWarnings("restriction")
@@ -90,12 +93,9 @@ public class PairWallet extends BaseUI{
 			Platform.runLater(new Runnable() {
 		        @Override
 		        public void run() {
-//		        	textarea.appendText("=============================\n" +
-//		        						str);
-//		        	
 		        	cancelBtn.setDisable(true);
 					doneBtn.setDisable(false);
-					qrBox.setVisible(false);
+					qrPane.setVisible(false);
 					Authenticator.fireOnNewPairedAuthenticator();
 		        }
 			});
@@ -109,10 +109,7 @@ public class PairWallet extends BaseUI{
 			Platform.runLater(new Runnable() {
 				@Override
 		        public void run() {
-					qrBox.setVisible(false);
-//		        	textarea.appendText("--------------------------\n" + 
-//		        						"Error: + " + e.toString() + "\n" + 
-//		        						e.getMessage());
+					qrPane.setVisible(false);
 					Dialogs.create()
 		        	        .owner(Main.stage)
 		        	        .title("Error !")
@@ -151,7 +148,7 @@ public class PairWallet extends BaseUI{
 		        .showInformation();   
     	}
     	else
-    		qrBox.setVisible(true);
+    		qrPane.setVisible(true);
     }
     
     @SuppressWarnings("restriction")
@@ -186,6 +183,9 @@ public class PairWallet extends BaseUI{
 	    				lblStatus.setText("Connection Timeout");
 	    	        }
 	    		});
+	    		
+	    		if( listener != null)
+					listener.onFailed(null);
 	    		break;
     	}
     }
@@ -208,6 +208,9 @@ public class PairWallet extends BaseUI{
     	
     	if(textfield.getText().length() > 0)
     	{
+    		if(listener != null)
+        		listener.onStarted();
+    		
     		// in case any messages are on 
     		if(hasParameters()){
     			String name = arrParams.get(0).toString();
@@ -265,7 +268,7 @@ public class PairWallet extends BaseUI{
 				      @Override public void run() {
 				    	
 				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
-				    	  move.setByX(-130.0);
+				    	  move.setByX(-250.0);
 				    	  move.setCycleCount(1);
 				    	  move.play();
 							//
@@ -294,7 +297,7 @@ public class PairWallet extends BaseUI{
 				      @Override public void run() {
 				    	
 				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
-				    	  move.setByX(130.0);
+				    	  move.setByX(250.0);
 				    	  move.setCycleCount(1);
 				    	  move.play();
 				    	  imgViewQR.setImage(null);
@@ -306,6 +309,7 @@ public class PairWallet extends BaseUI{
     }
     
     public interface PairingWalletControllerListener{
+    	public void onStarted();
     	public void onPairedWallet();
     	public void onFailed(Exception e);
     	public void closeWindow();
