@@ -153,14 +153,14 @@
         <Button fx:id="btnNewStandardAccount" onAction="#toCreateNewStandardAccount" contentDisplay="TOP" layoutX="78.0" layoutY="93.0" mnemonicParsing="false" prefHeight="179.0" prefWidth="179.0" text="Standard Account" textAlignment="CENTER" visible="false">
           <graphic>
             <ImageView fitHeight="114.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
-              <Image url="@btnNewWallet.png" />
+              <Image url="@/wallettemplate/pairing/btnStandardAccount.png" />
             </ImageView>
           </graphic>
         </Button>
         <Button fx:id="btnNewAuthenticatorAccount"  onAction="#toCreateNewAuthenticatorAccount" contentDisplay="TOP" layoutX="350.0" layoutY="93.0" mnemonicParsing="false" prefHeight="179.0" prefWidth="179.0" text="Pair Authenticator" textAlignment="CENTER" visible="false">
           <graphic>
-            <ImageView fitHeight="101.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
-              <Image url="@btnRestore.png" />
+            <ImageView fitHeight="114.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@/wallettemplate/pairing/btnPairedAccount.png" />
             </ImageView>
           </graphic>
         </Button>
