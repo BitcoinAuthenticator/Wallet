@@ -33,12 +33,15 @@ import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.Dialogs;
 
 import wallettemplate.Main;
+import wallettemplate.PairWallet;
+import wallettemplate.PairWallet.PairingWalletControllerListener;
 import wallettemplate.SettingsController;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.TextFieldValidator;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
@@ -104,6 +107,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -119,13 +123,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ChoiceBox;
@@ -136,7 +144,8 @@ import javafx.util.Duration;
 public class StartupController  extends BaseUI{
 	
 	@FXML private Pane MainPane;
-	@FXML private Pane CreateAccountPane;
+	@FXML private Pane CreateStandardAccountPane;
+	@FXML private Pane CreatePairedAccountPane;
 	@FXML private Pane BackupNewWalletPane;
 	@FXML private Pane ExplanationPane1;
 	@FXML private Pane Pane6;
@@ -160,6 +169,10 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnBack3;
 	@FXML private Button btnBack4;
 	@FXML private Button btnBack5;
+	@FXML private Button btnBackFromNewPairedAccount;
+	@FXML private Button btnContinueFromNewPairedAccount;
+	@FXML private Button btnNewStandardAccount;
+	@FXML private Button btnNewAuthenticatorAccount;
 	@FXML private Button btnBackFromSeedRestore;
 	@FXML private Button btnRestoreFromSeedContinue;
 	@FXML private Button btnBackFromSeedFromQRRestore;
@@ -193,7 +206,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane BA2;
 	@FXML private Pane BA3;
 	@FXML private Pane BA4;
-	@FXML private Hyperlink hlFinished;
+	//@FXML private Hyperlink hlFinished;
 	@FXML private ImageView imgSSS;
 	@FXML private Button btnSSS;
 	@FXML private ProgressBar syncProgress;
@@ -280,6 +293,14 @@ public class StartupController  extends BaseUI{
 		 labelback5.setPadding(new Insets(0,6,0,0));
 		 btnBack5.setGraphic(labelback5);
 		 //
+		 Label labelbtnBackFromNewPairedAccount = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labelbtnBackFromNewPairedAccount.setPadding(new Insets(0,6,0,0));
+		 btnBackFromNewPairedAccount.setGraphic(labelbtnBackFromNewPairedAccount);
+		 //
+		 Label labelbtnContinueFromNewPairedAccount = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labelbtnContinueFromNewPairedAccount.setPadding(new Insets(0,6,0,0));
+		 btnContinueFromNewPairedAccount.setGraphic(labelbtnContinueFromNewPairedAccount);		 
+		 //
 		 Label labelackFromSeedRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labelackFromSeedRestore.setPadding(new Insets(0,6,0,0));
 		 btnBackFromSeedRestore.setGraphic(labelackFromSeedRestore);
@@ -356,6 +377,21 @@ public class StartupController  extends BaseUI{
 		 btnContinue2.setStyle("-fx-background-color: #badb93;");
 		 lblSeed.setFont(Font.font(null, FontWeight.BOLD, 18));
 		 lblSeed.setPadding(new Insets(0,6,0,6));
+		 
+		 /**
+		  * Main backup pane
+		  */
+		 ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			 public void changed(ObservableValue<? extends Boolean> ov,
+					 Boolean old_val, Boolean new_val) {
+				 if (ckSeed.isSelected()){
+					 btnContinue2.setStyle("-fx-background-color: #95d946;");
+				 }
+				 else {
+					 btnContinue2.setStyle("-fx-background-color: #badb93;");
+				 }
+			 }
+		 });
 		 
 		 /**
 		  * SSS Backup validators 
@@ -490,27 +526,41 @@ public class StartupController  extends BaseUI{
 		 contextMenu.getItems().addAll(item1);
 		 lblSeed.setContextMenu(contextMenu);
 		 
+		 
+		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 Animation ani = GuiUtils.fadeOut(MainPane);
-		 GuiUtils.fadeIn(CreateAccountPane);
 		 MainPane.setVisible(false);
-		 CreateAccountPane.setVisible(true);
+		 LoadingPane.setVisible(true);
+		 auth.startAsync();
+		 auth.addListener(new Service.Listener() {
+				@Override public void running() {
+					Platform.runLater(new Runnable() { 
+						  @Override
+						  public void run() {
+							  BackupNewWalletPane.setVisible(true);
+							  LoadingPane.setVisible(false);
+						  }
+					});
+		         }
+			}, MoreExecutors.sameThreadExecutor());
+
 	 }
 	
 	 
 	 @FXML protected void toMainPane(ActionEvent event) {
 		 Animation ani = GuiUtils.fadeOut(MainRestorePane);
-		 Animation ani2 = GuiUtils.fadeOut(CreateAccountPane);
+		 Animation ani2 = GuiUtils.fadeOut(CreateStandardAccountPane);
 		 GuiUtils.fadeIn(MainPane);
-		 CreateAccountPane.setVisible(false);
+		 CreateStandardAccountPane.setVisible(false);
 		 MainRestorePane.setVisible(false);
 		 MainPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void toCreateAccountPane(ActionEvent event) {
 		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
-		 GuiUtils.fadeIn(CreateAccountPane);
+		 GuiUtils.fadeIn(CreateStandardAccountPane);
 		 BackupNewWalletPane.setVisible(false);
-		 CreateAccountPane.setVisible(true);
+		 CreateStandardAccountPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void toExplanationPane1(ActionEvent event) {
@@ -526,8 +576,8 @@ public class StartupController  extends BaseUI{
 		 ExplanationPane1.setVisible(true);
 	 }
 	 
-	 @FXML protected void finished(ActionEvent event){
-		 hlFinished.setDisable(true);
+	 private void finished(){
+		 //hlFinished.setDisable(true);
 		 auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
 					 Platform.runLater(() -> {
@@ -568,9 +618,12 @@ public class StartupController  extends BaseUI{
 			 BA3.setVisible(false);
 			 BA4.setVisible(true);
 			 Animation ani2 = GuiUtils.fadeOut(btnContinue3);
-			 GuiUtils.fadeIn(hlFinished);
+			 GuiUtils.fadeIn(btnNewStandardAccount);
+			 btnNewStandardAccount.setVisible(true);
+			 GuiUtils.fadeIn(btnNewAuthenticatorAccount);
+			 btnNewAuthenticatorAccount.setVisible(true);
 			 btnContinue3.setVisible(false);
-			 hlFinished.setVisible(true);
+			 //hlFinished.setVisible(true);
 		 } 
 	 }
 	 
@@ -581,41 +634,40 @@ public class StartupController  extends BaseUI{
 		 BackupNewWalletPane.setVisible(true);
 	 }
 	 
-	 @FXML protected void toBackupNewWalletPane(ActionEvent event) {
+	 private boolean validateNewAccountPane(){
 		 if (txAccount.getText().toString().equals("")){
 			 informationalAlert("Unfortunately, you messed up.",
 					 "You need to enter a name for your account");
+			 return false;
 		 }
 		 else if (!txPW1.getText().toString().equals(txPW2.getText().toString())){
 			 informationalAlert("Unfortunately, you messed up.",
 					 "Your passwords don't match");
+			 return false;
 		 }
 		 else if (txPW1.getText().toString().equals("") && txPW2.getText().toString().equals("")){
 			 informationalAlert("Unfortunately, you messed up.",
 					 "You need to enter a password");
+			 return false;
 		 }
-		 else {
+		 
+		 return true;
+	 }
+	 
+	 @FXML protected void toCreateNewStandardAccount(ActionEvent event) {
+		 ExplanationPane1.setVisible(false);
+		 CreateStandardAccountPane.setVisible(true);
+	 }
+	 
+	 @FXML protected void completeNewStandardAccount(ActionEvent event) {
+		 
+		 if(validateNewAccountPane()) {
 			 try {
 				encryptionPassword =  txPW2.getText();
 				 
 				createNewStandardAccount(txAccount.getText());
 				
-				ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
-					 public void changed(ObservableValue<? extends Boolean> ov,
-							 Boolean old_val, Boolean new_val) {
-						 if (ckSeed.isSelected()){
-							 btnContinue2.setStyle("-fx-background-color: #95d946;");
-						 }
-						 else {
-							 btnContinue2.setStyle("-fx-background-color: #badb93;");
-						 }
-					 }
-				 });
-				 Animation ani = GuiUtils.fadeOut(CreateAccountPane);
-				 GuiUtils.fadeIn(BackupNewWalletPane);
-				 CreateAccountPane.setVisible(false);
-				 BackupNewWalletPane.setVisible(true);
-				 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
+				finished();
 			} catch (Exception e) { 
 				e.printStackTrace();
 				
@@ -628,6 +680,70 @@ public class StartupController  extends BaseUI{
 			}
 			 
 		 }
+	 }
+	 
+	 Pane pairAuthenticatorPane;
+	 @FXML protected void toCreateNewAuthenticatorAccount(ActionEvent event) {
+		 ExplanationPane1.setVisible(false);
+		 CreatePairedAccountPane.setVisible(true);
+		 btnContinueFromNewPairedAccount.setDisable(true);
+		 
+		 try {
+			 pairAuthenticatorPane = null;
+			 URL location = getClass().getResource("/wallettemplate/pairing/Pair_wallet.fxml");
+	     	 FXMLLoader loader = new FXMLLoader(location);
+	     	 pairAuthenticatorPane = loader.load();
+	     	 PairWallet t = (PairWallet)loader.getController();
+	     	 t.hideWondowControlBox(true);
+	     	 t.setListener(new PairingWalletControllerListener(){
+
+				@Override
+				public void onPairedWallet() {
+					Platform.runLater(() -> {
+						btnContinueFromNewPairedAccount.setDisable(false);
+					});
+				}
+
+				@Override
+				public void onFailed(Exception e) {
+					Platform.runLater(() -> {
+						btnBackFromNewPairedAccount.setDisable(false);
+					});
+				}
+
+				@Override
+				public void closeWindow() { }
+
+				@Override
+				public void onStarted() {
+					Platform.runLater(() -> {
+						btnBackFromNewPairedAccount.setDisable(false);
+					});
+				}
+	     		 
+	     	 });
+	     	 pairAuthenticatorPane.setLayoutX(20);
+	     	 pairAuthenticatorPane.setLayoutY(30);
+	     	 CreatePairedAccountPane.getChildren().add(pairAuthenticatorPane);
+		 } catch (IOException e1) { e1.printStackTrace(); }
+	 }
+	 
+	 @FXML protected void completeNewAuthenticatorAccount(ActionEvent event) {
+		 try {
+			ATAccount acc = auth.getWalletOperation().getAllAccounts().get(0);
+			auth.getWalletOperation().setActiveAccount(acc.getIndex());
+			finished();
+		} catch (AccountWasNotFoundException e) {e.printStackTrace();}		 
+	 }
+	 
+	 @FXML protected void backToExplanationPane(ActionEvent event) {
+		 if(CreateStandardAccountPane.isVisible())
+			 CreateStandardAccountPane.setVisible(false);
+		 if(CreatePairedAccountPane.isVisible()){
+			 GuiUtils.fadeOut(pairAuthenticatorPane);
+			 CreatePairedAccountPane.setVisible(false);
+		 }
+		 ExplanationPane1.setVisible(true);
 	 }
 	 
 	 @FXML protected void saveWallet(ActionEvent event) throws IOException{
@@ -709,9 +825,9 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void openWeb(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(CreateAccountPane);
+		 Animation ani = GuiUtils.fadeOut(CreateStandardAccountPane);
 		 GuiUtils.fadeIn(Pane6);
-		 CreateAccountPane.setVisible(false);
+		 CreateStandardAccountPane.setVisible(false);
 		 Pane6.setVisible(true);
 		 browser.autosize();
 		 URL location = Main.class.getResource("passwords.html");
@@ -720,9 +836,9 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void webFinished(ActionEvent event){
 		 Animation ani = GuiUtils.fadeOut(Pane6);
-		 GuiUtils.fadeIn(CreateAccountPane);
+		 GuiUtils.fadeIn(CreateStandardAccountPane);
 		 Pane6.setVisible(false);
-		 CreateAccountPane.setVisible(true);
+		 CreateStandardAccountPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void btnBackPressed(MouseEvent event) {
@@ -771,7 +887,7 @@ public class StartupController  extends BaseUI{
 		 lblSeed.setText(mnemonic);
 		 
 		 MainPane.setVisible(false);
-		 CreateAccountPane.setVisible(false);
+		 CreateStandardAccountPane.setVisible(false);
 		 BackupNewWalletPane.setVisible(true);
 		 
 		 btnBack2.setVisible(false);
@@ -1277,14 +1393,6 @@ public class StartupController  extends BaseUI{
 		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }
-	 
-	 /*private DeterministicSeed reconstructSeedFromStringMnemonics(List<String> mnemonic, long creationTimeSeconds){
-		 if(validateSeedInputs(mnemonic, creationTimeSeconds) == false)
-			 return null;
-		 byte[] seed = MnemonicCode.toSeed(mnemonic, "");
-		 DeterministicSeed deterministicSeed = new DeterministicSeed(seed, "", creationTimeSeconds);
-		 return deterministicSeed;
-	 }*/
 	 
 	 private boolean validateSeedInputs(List<String> mnemonic, long creationTimeSeconds){
 		 if (mnemonic.size() <= 10)
