@@ -1507,6 +1507,10 @@ public class Controller  extends BaseUI{
             			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
             			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
             		}
+            		else {
+            			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
+            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            		}
             	}
             	stopAuthRotation();
             	txoverlay.done();
