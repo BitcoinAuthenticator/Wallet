@@ -187,10 +187,10 @@ public class SettingsController  extends BaseUI{
             scene1.getStylesheets().add(file1);  // Add CSS that we need.
             backupPane.setScene(scene1);
             StartupController controller =	loader.getController();
-            DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(Authenticator.AUTHENTICATOR_PW);
+            DeterministicSeed seed = Authenticator.getWalletOperation().mWalletWrapper.getWalletSeed();
             controller.setBackMode(seed);
             backupPane.show();
-        } catch (IOException | EmptyWalletPasswordException e) {e.printStackTrace();}
+        } catch (IOException e) {e.printStackTrace();}
     }
 	
 	@FXML protected void showSeed(ActionEvent event){

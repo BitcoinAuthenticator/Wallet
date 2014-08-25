@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 
 import wallettemplate.Main;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
+import authenticator.Utils.AuthenticatorCoinSelector;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
@@ -573,14 +574,12 @@ public class WalletOperation extends BASE{
 	 * @throws EmptyWalletPasswordException 
 	 */
 	public Transaction signStandardTxWithAddresses(Transaction tx, 
-			Map<String,ATAddress> keys, 
-			@Nullable String WALLET_PW) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, EmptyWalletPasswordException{
+			Map<String,ATAddress> keys) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, EmptyWalletPasswordException{
 		Map<String,ECKey> keys2 = new HashMap<String,ECKey> ();
 		for(String k:keys.keySet()){
 			ECKey addECKey = getPrivECKeyFromAccount(keys.get(k).getAccountIndex(), 
 					HierarchyAddressTypes.External, 
 					keys.get(k).getKeyIndex(),
-					WALLET_PW,
 					true);
 			keys2.put(k, addECKey);
 		}
@@ -728,13 +727,11 @@ public class WalletOperation extends BASE{
 	
 	public ECKey getPrivECKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
-			int addressKey, 
-			String WALLET_PW,
+			int addressKey,
 			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, EmptyWalletPasswordException{
 		DeterministicKey ret = getPrivKeyFromAccount(accountIndex,
 				type,
 				addressKey,
-				WALLET_PW,
 				iKnowAddressFromKeyIsNotWatched);
 		return new ECKey(ret.getPrivKeyBytes(), ret.getPubKey());
 	}
@@ -759,9 +756,8 @@ public class WalletOperation extends BASE{
 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
 			int addressKey, 
-			String WALLET_PW,
 			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, EmptyWalletPasswordException{
-		byte[] seed = getWalletSeedBytes(WALLET_PW);
+		byte[] seed = mWalletWrapper.getWalletSeed().getSecretBytes();
 		DeterministicKey ret = authenticatorWalletHierarchy.getPrivKeyFromAccount(seed, accountIndex, type, addressKey);
 		if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 			throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
@@ -1680,7 +1676,7 @@ public class WalletOperation extends BASE{
 	public ArrayList<TransactionOutput> selectOutputs(Coin value, ArrayList<TransactionOutput> candidates)
 	{
 		LinkedList<TransactionOutput> outs = new LinkedList<TransactionOutput> (candidates);
-		DefaultCoinSelector selector = new DefaultCoinSelector();
+		AuthenticatorCoinSelector selector = new AuthenticatorCoinSelector();
 		CoinSelection cs = selector.select(value, outs);
 		Collection<TransactionOutput> gathered = cs.gathered;
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>(gathered);
@@ -1734,37 +1730,6 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.isWalletEncrypted();
 	}
 	
-	/**
-	 * If pw is not null, will decrypt the wallet, get the seed and encrypt the wallet.
-	 * 
-	 * @param pw
-	 * @return
-	 * @throws EmptyWalletPasswordException 
-	 */
-	public DeterministicSeed getWalletSeed(@Nullable String pw) throws EmptyWalletPasswordException{
-		if(isWalletEncrypted() && (pw == null || pw.length() == 0))
-			return null;
-		DeterministicSeed ret;
-		if(isWalletEncrypted()){
-			decryptWallet(pw);
-			ret = mWalletWrapper.getWalletSeed();
-			encryptWallet(pw);
-		}
-		else
-			ret = mWalletWrapper.getWalletSeed();
-		return ret;
-	}
-	
-	/**
-	 * If pw is not null, will decrypt the wallet, get the seed and encrypt the wallet.
-	 * 
-	 * @param pw
-	 * @return
-	 * @throws EmptyWalletPasswordException 
-	 */
-	public byte[] getWalletSeedBytes(@Nullable String pw) throws EmptyWalletPasswordException{
-		return getWalletSeed(pw).getSecretBytes();
-	}
 	
 	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
 		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();

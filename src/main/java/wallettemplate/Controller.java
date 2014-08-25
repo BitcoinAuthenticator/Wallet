@@ -109,6 +109,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -182,6 +183,7 @@ public class Controller  extends BaseUI{
 	 @FXML private Button btnReceive_white;
 	 @FXML private Button btnReceive_grey;
 	 @FXML private Button btnTransactions_grey;
+	 @FXML private Button btnTransactions_white;
 	 @FXML private Button btnApps_white;
 	 @FXML private Button btnApps_grey;
 	 @FXML private Button btnLock;
@@ -240,7 +242,10 @@ public class Controller  extends BaseUI{
 	 TorListener listener = new TorListener();
 	 private boolean locked;
 	 private ThrottledRunnableExecutor throttledUIUpdater;
-	 
+	 Main.OverlayUI<Controller> txoverlay;
+	 Pane txoverlaypane;
+	 VBox successVbox;
+	 VBox authenticatorVbox;
 	 
 
 	//#####################################
@@ -388,9 +393,6 @@ public class Controller  extends BaseUI{
       	 * Read the comments in TCPListener#looper()
      	 */
       	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
-     	 if(Authenticator.getWalletOperation().isWalletEncrypted())
-     		 lockControl(null);
-      	
     	Platform.runLater(new Runnable() { 
 			 @Override
 			public void run() {
@@ -520,12 +522,20 @@ public class Controller  extends BaseUI{
 				  @Override
 				  public void run() {
 					    String notifStr = "";
-						if(answerType == AuthenticatorAnswerType.Authorized)
+						if(answerType == AuthenticatorAnswerType.Authorized){
 							notifStr = "Authenticator Authorized a Transaction:\n";
-						else if(answerType == AuthenticatorAnswerType.NotAuthorized)
-							notifStr = "Authenticator Refused To Sign a Transaction:\n";
-						else
-							return;
+							if (authenticatorVbox.isVisible()){
+								GuiUtils.fadeOut(authenticatorVbox);
+								GuiUtils.fadeIn(successVbox);
+								authenticatorVbox.setVisible(false);
+								successVbox.setVisible(true);
+							}
+						}
+							
+						else if (answerType == AuthenticatorAnswerType.NotAuthorized){
+							notifStr = "Authenticator Refused To Sign a Transaction:\n";}
+						else {
+							return;}
 						
 						Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
 				    	// Create a custom Notification without icon
@@ -856,15 +866,10 @@ public class Controller  extends BaseUI{
 	    */
 	   else 
 	   {
-		   //Authenticator.AUTHENTICATOR_PW="";
 		   if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
 			   displayLockDialog();
 		   else{
-			   try {
-				Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
-			} catch (EmptyWalletPasswordException e) {
-				e.printStackTrace();
-			}
+			   Authenticator.AUTHENTICATOR_PW="";
 			   locked = true;
 		   }
 		   updateLockIcon();
@@ -920,7 +925,7 @@ public class Controller  extends BaseUI{
 				   else {
 					   try{
 						   Authenticator.getWalletOperation().decryptWallet(pw.getText());
-						   //Authenticator.getWalletOperation().encryptWallet(pw.getText());
+						   Authenticator.getWalletOperation().encryptWallet(pw.getText());
 						   Authenticator.AUTHENTICATOR_PW = pw.getText();
 						   overlay.done();
 						   locked = false;
@@ -1202,11 +1207,11 @@ public class Controller  extends BaseUI{
     		Coin fee,
     		Coin leavingWallet){
     	//Display Transaction Overview
-    	Pane pane = new Pane();
-		final Main.OverlayUI<Controller> overlay = Main.instance.overlayUI(pane, Main.controller);
-		pane.setMaxSize(600, 360);
-		pane.setStyle("-fx-background-color: white;");
-		pane.setEffect(new DropShadow());
+    	txoverlaypane = new Pane();
+		txoverlay = Main.instance.overlayUI(txoverlaypane, Main.controller);
+		txoverlaypane.setMaxSize(600, 360);
+		txoverlaypane.setStyle("-fx-background-color: white;");
+		txoverlaypane.setEffect(new DropShadow());
 		VBox v = new VBox();
 		Label lblOverview = new Label("Transaction Overview");
 		v.setMargin(lblOverview, new Insets(10,0,10,20));
@@ -1326,7 +1331,8 @@ public class Controller  extends BaseUI{
 			password.setDisable(true);
 			password.setPromptText("Wallet is unlocked");
 		}
-		VBox successVbox = new VBox();
+		//success pane
+		successVbox = new VBox();
 		Image rocket = new Image(Main.class.getResource("rocket.png").toString());
 		ImageView img = new ImageView(rocket);
 		Label txid = new Label();
@@ -1367,16 +1373,64 @@ public class Controller  extends BaseUI{
 		successVbox.setPrefWidth(600);
 		successVbox.setPadding(new Insets(15,0,0,0));
 		successVbox.setMargin(lblTxid, new Insets(15,0,0,0));
-		successVbox.setMargin(btnContinue, new Insets(15,0,0,0));
-		pane.getChildren().add(successVbox);
+		successVbox.setMargin(btnContinue, new Insets(30,0,0,0));
+		txoverlaypane.getChildren().add(successVbox);
+		//Paired tx pane
+		authenticatorVbox = new VBox();
+		StackPane stk = new StackPane();
+		Image phone = new Image(Main.class.getResource("phone.png").toString());
+		ImageView imgphone = new ImageView(phone);
+		Image auth1 = new Image(Main.class.getResource("auth1.png").toString());
+		ImageView imglogo1 = new ImageView(auth1);
+		Image auth2 = new Image(Main.class.getResource("auth2.png").toString());
+		ImageView imglogo2 = new ImageView(auth2);
+		stk.getChildren().add(imgphone);
+		stk.getChildren().add(imglogo1);
+		stk.getChildren().add(imglogo2);
+		Button btnSave = new Button("Authorize Later");
+		Label authinstructions = new Label("The transaction has been sent to your phone for authorization");
+		btnSave.getStyleClass().add("custom-button");
+        btnSave.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	btnSave.setStyle("-fx-background-color: #a1d2e7;");
+            }
+        });
+        btnSave.setOnMouseReleased(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	btnSave.setStyle("-fx-background-color: #199bd6;");
+            }
+        });
+		authenticatorVbox.getChildren().add(stk);
+		authenticatorVbox.getChildren().add(authinstructions);
+		authenticatorVbox.getChildren().add(btnSave);
+		authenticatorVbox.setVisible(false);
+		authenticatorVbox.setAlignment(Pos.CENTER);
+		authenticatorVbox.setPrefWidth(600);
+		authenticatorVbox.setPadding(new Insets(15,0,0,0));
+		authenticatorVbox.setMargin(authinstructions, new Insets(15,0,0,0));
+		authenticatorVbox.setMargin(btnSave, new Insets(30,0,0,0));
+		txoverlaypane.getChildren().add(authenticatorVbox);
 		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
+            	String pw = "";
+            	if (Authenticator.AUTHENTICATOR_PW.equals("")){pw = password.getText();}
+            	else {pw = Authenticator.AUTHENTICATOR_PW;}
             	try {
-            		if(!checkIfPasswordDecryptsWallet(password.getText()))
+            		if(!checkIfPasswordDecryptsWallet(pw))
                 		return;
         			Animation ani = GuiUtils.fadeOut(v);
-        			GuiUtils.fadeIn(successVbox);
+        			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
+        				GuiUtils.fadeIn(authenticatorVbox);
+        				authenticatorVbox.setVisible(true);
+        				startAuthRotation(imglogo1);
+        			}
+        			else {
+        				GuiUtils.fadeIn(successVbox);
+        				successVbox.setVisible(true);
+        			}
         			String to = "";
         			if (OutputAddresses.size()==1){
         				if( Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
@@ -1392,10 +1446,10 @@ public class Controller  extends BaseUI{
         			else {to = "Multiple";}
         			v.setVisible(false);
         			if (broadcast(tx,to, Authenticator.AUTHENTICATOR_PW) == true) {
-        				successVbox.setVisible(true);
+        				
         			}
         			else {
-        				overlay.done();
+        				txoverlay.done();
                     	txMsgLabel.clear();
                     	scrlContent.clearAll(); addOutput();
                     	txFee.clear();
@@ -1424,15 +1478,38 @@ public class Controller  extends BaseUI{
 		v.getChildren().add(lblOverview);
 		v.getChildren().add(lvTx);
 		v.getChildren().add(h);
-		pane.getChildren().add(v);
+		txoverlaypane.getChildren().add(v);
 		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	/*if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-            		if (Authenticator.AUTHENTICATOR_PW.equals("")){Authenticator.getWalletOperation().encryptWallet(password.getText());}
-            		else {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);}
-            	}*/
-            	overlay.done();
+            	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
+            		if (Authenticator.AUTHENTICATOR_PW.equals("")){
+            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
+            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            		}
+            		else {
+            			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
+            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            		}
+            	}
+            	txoverlay.done();
+            	txMsgLabel.clear();
+            	scrlContent.clearAll(); addOutput();
+            	txFee.clear();
+            	
+            }
+        });
+		btnSave.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+            	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
+            		if (Authenticator.AUTHENTICATOR_PW.equals("")){
+            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
+            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            		}
+            	}
+            	stopAuthRotation();
+            	txoverlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();
             	txFee.clear();
@@ -1442,13 +1519,13 @@ public class Controller  extends BaseUI{
 		btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 				public void handle(MouseEvent event) {
-				overlay.done();
+				txoverlay.done();
 			}
 		});
     }
     	
     public boolean broadcast (Transaction tx, String to, String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
-    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, WALLET_PW,new OperationListener(){
+    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, new OperationListener(){
 			@Override
 			public void onBegin(String str) { }
 
@@ -2028,18 +2105,15 @@ public class Controller  extends BaseUI{
                 	}
     				else {
     					Authenticator.getWalletOperation().decryptWallet(password);
-    					Authenticator.getWalletOperation().encryptWallet(password);
-    					Authenticator.AUTHENTICATOR_PW = password;
     				}
     			}
     			else {
     				Authenticator.getWalletOperation().decryptWallet(Authenticator.AUTHENTICATOR_PW);
-    				Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);
     			}
     		}
     		catch(KeyCrypterException  e){
     			informationalAlert("Unfortunately, you messed up.",
-    					"Wrong wallet password");
+    					"Wrong password");
     			return false;
     		} 	
     	}
@@ -2091,6 +2165,17 @@ public class Controller  extends BaseUI{
     }
     private void stopSyncRotation(){
     	rt.stop();
+    }
+    
+    private RotateTransition rt2;
+    private void startAuthRotation(ImageView img){
+    	rt2 = new RotateTransition(Duration.millis(3000),img);
+    	rt2.setByAngle(360);
+    	rt2.setCycleCount(10000);
+        rt2.play();
+    }
+    private void stopAuthRotation(){
+    	rt2.stop();
     }
     
 }

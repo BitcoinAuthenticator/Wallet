@@ -183,8 +183,7 @@ public class OperationsFactory extends BASE{
 																 * will be used to remove the pending request
 																 * if necessary
 																 */
-																@Nullable PendingRequest pendigReq,
-																@Nullable String WALLET_PW){
+																@Nullable PendingRequest pendigReq){
 		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
@@ -203,7 +202,7 @@ public class OperationsFactory extends BASE{
 							String[] args, OperationListener listener) throws Exception {
 						//
 						if (!onlyComplete){
-							byte[] cypherBytes = SignProtocol.prepareTX(wallet, WALLET_PW, tx,pairingID);
+							byte[] cypherBytes = SignProtocol.prepareTX(wallet, tx,pairingID);
 							String reqID = SignProtocol.sendGCM(wallet, 
 									pairingID,
 									txLabel,
@@ -272,7 +271,6 @@ public class OperationsFactory extends BASE{
 								// Complete Signing and broadcast
 								PairedAuthenticator po = wallet.getPairingObject(pairingID);
 								SignProtocol.complete(wallet, 
-										WALLET_PW,
 										tx,
 										AuthSigs,
 										po);
@@ -395,8 +393,7 @@ public class OperationsFactory extends BASE{
 	static public BAOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, 
 			String to, 
 			WalletOperation wallet, 
-			Transaction tx, Map<String,ATAddress> keys,
-			@Nullable String WALLET_PW){
+			Transaction tx, Map<String,ATAddress> keys){
 		return new BAOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
@@ -412,7 +409,7 @@ public class OperationsFactory extends BASE{
 					String[] args, OperationListener listener)
 					throws Exception {
 				try{
-					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
+					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);
 					walletDB config = Authenticator.getWalletOperation().configFile;
 					if (!txLabel.isEmpty()){
 						try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}

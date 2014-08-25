@@ -116,7 +116,6 @@ public class SignTransactionTest {
 		Mockito.when(wallet.getPrivECKeyFromAccount(bAddress.getAccountIndex(),
 			bAddress.getType(),
 			bAddress.getKeyIndex(),
-			null,
 			true)).thenReturn(inKey);
 		
 		return inMock;
@@ -213,7 +212,7 @@ public class SignTransactionTest {
 		byte[] result = null;
 		try {
 			Transaction tx = preparePayToHashTransaction();
-			result = SignProtocol.prepareTX(wallet, null, tx, pairingID);
+			result = SignProtocol.prepareTX(wallet, tx, pairingID);
 			byte[] expected = EncodingUtils.hexStringToByteArray("93FBE01C0681D4E88405062FA3C8BEC20414591E006336D8731E643CD055AF750C3A0E478C5E8DC186D57F94FD310C454B40DF676A4531E5AC1B6744BE6DA1142AEB042C048123BD8579570D587CBC95EB2221BAA25FCE2359F61C73F2F2981C791C09D7A3636E67AAC922E4DF7870D32CCBD8AF4552838D24227243C60D2D358FA0768ECE3C025B81AA273ADB98CF92832FCA49E28AFFF7F22542565F5AA409EB785800C022059DA4E02BB66D923FF07E29B44B75E27860F798723760DC2D3E");//prepareTx();
 			// check expected output
 			assertTrue(Arrays.areEqual(result, expected));

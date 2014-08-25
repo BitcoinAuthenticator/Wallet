@@ -126,7 +126,7 @@ public class SendTxHelper {
 	 */
 	static public boolean broadcastTx (Transaction tx, 
 			String txLabel, 
-			String to, @Nullable String WALLET_PW, 
+			String to, 
 			OperationListener opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
 		// broadcast
 		walletDB config = Authenticator.getWalletOperation().configFile;
@@ -151,8 +151,7 @@ public class SendTxHelper {
 					to, 
 					Authenticator.getWalletOperation(),
 					tx,
-					keys,
-					WALLET_PW);
+					keys);
 		}
 		else{
 			String pairID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getPairingID();
@@ -163,8 +162,7 @@ public class SendTxHelper {
 					to,
 					false,
 					null,
-					null,
-					WALLET_PW);
+					null);
 		}
 		
 		// operation listeners

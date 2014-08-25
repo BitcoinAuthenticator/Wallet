@@ -34,6 +34,7 @@ import org.controlsfx.dialog.Dialogs;
 
 import wallettemplate.Main;
 import wallettemplate.SettingsController;
+import wallettemplate.PairWallet.PairingWalletControllerListener;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.startup.backup.PaperWalletController;
@@ -50,10 +51,16 @@ import authenticator.BipSSS.BipSSS.NotEnoughSharesException;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.exceptions.AccountWasNotFoundException;
+import authenticator.operations.BAOperation;
 import authenticator.operations.BAWalletRestorer;
+import authenticator.operations.OperationsFactory;
 import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
 import authenticator.operations.OperationsUtils.PaperWalletQR;
+import authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
+import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
+import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
 import com.github.sarxos.webcam.Webcam;
@@ -571,6 +578,7 @@ public class StartupController  extends BaseUI{
 			 GuiUtils.fadeIn(hlFinished);
 			 btnContinue3.setVisible(false);
 			 hlFinished.setVisible(true);
+			 //Pairing protocol goes here.
 		 } 
 	 }
 	 
@@ -1300,11 +1308,6 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 
-	 
-	 
-	 
-	 
-	 
 	 private void handleExitButtonPressed(){
 		 if(!backupMode){
 			 com.sun.javafx.application.PlatformImpl.tkExit();
@@ -1313,5 +1316,5 @@ public class StartupController  extends BaseUI{
 		 else
 			 SettingsController.backupPane.close();
 	 }
-	
+	 
 }

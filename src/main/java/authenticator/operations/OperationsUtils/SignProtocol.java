@@ -53,7 +53,7 @@ public class SignProtocol {
 	 * @return
 	 * @throws Exception
 	 */
-	static public byte[] prepareTX(WalletOperation wallet,@Nullable String WALLET_PW, Transaction tx,  String pairingID) throws Exception {
+	static public byte[] prepareTX(WalletOperation wallet, Transaction tx,  String pairingID) throws Exception {
 		//Create the payload
 		//PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
 		String formatedTx = EncodingUtils.getStringTransaction(tx);
@@ -67,7 +67,6 @@ public class SignProtocol {
 			ECKey pubkey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																	atAdd.getType(),
 																	atAdd.getKeyIndex(),
-																	WALLET_PW,
 																	true);
 			
 			pubKeysArr.add(pubkey.getPubKey());
@@ -95,15 +94,15 @@ public class SignProtocol {
 		//Encrypt the payload
 		Cipher cipher = null;
 		try {cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");} 
-		 catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
-		 catch (NoSuchPaddingException e) {e.printStackTrace();}
-		 try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
-		 catch (InvalidKeyException e) {e.printStackTrace();}
-		 byte[] cipherBytes = null;
-		 try {cipherBytes = cipher.doFinal(payload);} 
-		 catch (IllegalBlockSizeException e) {e.printStackTrace();} 
-		 catch (BadPaddingException e) {e.printStackTrace();}
-		 return cipherBytes;
+		catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
+		catch (NoSuchPaddingException e) {e.printStackTrace();}
+		try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
+		catch (InvalidKeyException e) {e.printStackTrace();}
+		byte[] cipherBytes = null;
+		try {cipherBytes = cipher.doFinal(payload);} 
+		catch (IllegalBlockSizeException e) {e.printStackTrace();} 
+		catch (BadPaddingException e) {e.printStackTrace();}
+		return cipherBytes;
 	}
 
 	/**
@@ -116,7 +115,7 @@ public class SignProtocol {
 	 * @throws UnableToCompleteTxSigningException
 	 */
 	@SuppressWarnings({ "static-access", "deprecation", "unused" })
-	static public void complete(WalletOperation wallet, @Nullable String WALLET_PW,Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws UnableToCompleteTxSigningException
+	static public void complete(WalletOperation wallet, Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws UnableToCompleteTxSigningException
 	 {
 		try{
 			//Prep the keys needed for signing
@@ -135,10 +134,12 @@ public class SignProtocol {
 				ECKey authKey = wallet.getPairedAuthenticatorKey(po, atAdd.getKeyIndex());
 				
 				//Wallet key
+				if (Authenticator.getWalletOperation().isWalletEncrypted()){
+					//Display dialog asking user to input password
+				}
 				ECKey walletKey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																					atAdd.getType(),
 																					atAdd.getKeyIndex(),
-																					WALLET_PW,
 																					true);
 				
 				// Create Program for the script
