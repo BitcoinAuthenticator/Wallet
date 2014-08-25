@@ -53,7 +53,10 @@ public class SignProtocol {
 	 * @return
 	 * @throws Exception
 	 */
-	static public byte[] prepareTX(WalletOperation wallet, Transaction tx,  String pairingID) throws Exception {
+	static public byte[] prepareTX(WalletOperation wallet, 
+			@Nullable String WALLET_PW, 
+			Transaction tx,  
+			String pairingID) throws Exception {
 		//Create the payload
 		//PairedAuthenticator  pairingObj = Authenticator.getWalletOperation().getPairingObject(pairingID);
 		String formatedTx = EncodingUtils.getStringTransaction(tx);
@@ -67,6 +70,7 @@ public class SignProtocol {
 			ECKey pubkey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																	atAdd.getType(),
 																	atAdd.getKeyIndex(),
+																	WALLET_PW,
 																	true);
 			
 			pubKeysArr.add(pubkey.getPubKey());
@@ -115,7 +119,11 @@ public class SignProtocol {
 	 * @throws UnableToCompleteTxSigningException
 	 */
 	@SuppressWarnings({ "static-access", "deprecation", "unused" })
-	static public void complete(WalletOperation wallet, Transaction tx, ArrayList<byte[]> AuthSigs, PairedAuthenticator po) throws UnableToCompleteTxSigningException
+	static public void complete(WalletOperation wallet, 
+			@Nullable String WALLET_PW,
+			Transaction tx, 
+			ArrayList<byte[]> AuthSigs, 
+			PairedAuthenticator po) throws UnableToCompleteTxSigningException
 	 {
 		try{
 			//Prep the keys needed for signing
@@ -140,6 +148,7 @@ public class SignProtocol {
 				ECKey walletKey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																					atAdd.getType(),
 																					atAdd.getKeyIndex(),
+																					WALLET_PW,
 																					true);
 				
 				// Create Program for the script

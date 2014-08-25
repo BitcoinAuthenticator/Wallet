@@ -11,7 +11,7 @@ import com.google.common.base.Joiner;
 
 import authenticator.Authenticator;
 import authenticator.db.settingsDB;
-import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
+import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.TextFieldValidator;
@@ -164,7 +164,7 @@ public class SettingsController  extends BaseUI{
 	
 	public static Stage backupPane;
 	@SuppressWarnings("restriction")
-	public void launchBackup(ActionEvent event) {
+	public void launchBackup(ActionEvent event) throws NoWalletPasswordException {
 		if(Authenticator.getWalletOperation().isWalletEncrypted())
 		if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
 		{
@@ -187,7 +187,7 @@ public class SettingsController  extends BaseUI{
             scene1.getStylesheets().add(file1);  // Add CSS that we need.
             backupPane.setScene(scene1);
             StartupController controller =	loader.getController();
-            DeterministicSeed seed = Authenticator.getWalletOperation().mWalletWrapper.getWalletSeed();
+            DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(null);
             controller.setBackMode(seed);
             backupPane.show();
         } catch (IOException e) {e.printStackTrace();}

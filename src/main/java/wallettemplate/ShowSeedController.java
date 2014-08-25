@@ -42,7 +42,7 @@ public class ShowSeedController  extends BaseUI{
 	public void initialize() {
     	super.initialize(ShowSeedController.class);
     	try {
-			DeterministicSeed seed = Authenticator.getWalletOperation().mWalletWrapper.getWalletSeed();
+			DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(null);
 			List<String> mnemonic = seed.getMnemonicCode();
 			String seedStr = Joiner.on(" ").join(mnemonic);
 			lblSeed.setText(seedStr);

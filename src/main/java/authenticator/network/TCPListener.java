@@ -293,7 +293,8 @@ public class TCPListener extends BASE{
 											null,
 											true,
 											pendingReq.getPayloadIncoming().toByteArray(),
-											pendingReq);
+											pendingReq, 
+											Authenticator.AUTHENTICATOR_PW);
 									op.SetOperationUIUpdate(new OperationListener(){
 
 										@Override

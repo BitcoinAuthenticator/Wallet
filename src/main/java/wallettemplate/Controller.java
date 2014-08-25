@@ -11,7 +11,7 @@ import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
-import authenticator.walletCore.exceptions.EmptyWalletPasswordException;
+import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.listeners.BAGeneralEventsListener;
@@ -931,7 +931,7 @@ public class Controller  extends BaseUI{
 						   locked = false;
 						   updateLockIcon();
 					   }
-					   catch(KeyCrypterException | EmptyWalletPasswordException  e){
+					   catch(KeyCrypterException | NoWalletPasswordException  e){
 						   informationalAlert("Unfortunately, you messed up.",
 								   "Wrong wallet password");
 						   return;
@@ -953,7 +953,7 @@ public class Controller  extends BaseUI{
 				   overlay.done();
 				   locked = true;
 				   updateLockIcon();
-				} catch (EmptyWalletPasswordException e) {
+				} catch (NoWalletPasswordException e) {
 					e.printStackTrace();
 				}
 				   
@@ -1485,11 +1485,11 @@ public class Controller  extends BaseUI{
             	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
             		if (Authenticator.AUTHENTICATOR_PW.equals("")){
             			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
-            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            			catch (NoWalletPasswordException e) {e.printStackTrace();}
             		}
             		else {
             			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
-            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            			catch (NoWalletPasswordException e) {e.printStackTrace();}
             		}
             	}
             	txoverlay.done();
@@ -1505,11 +1505,11 @@ public class Controller  extends BaseUI{
             	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
             		if (Authenticator.AUTHENTICATOR_PW.equals("")){
             			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
-            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            			catch (NoWalletPasswordException e) {e.printStackTrace();}
             		}
             		else {
             			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
-            			catch (EmptyWalletPasswordException e) {e.printStackTrace();}
+            			catch (NoWalletPasswordException e) {e.printStackTrace();}
             		}
             	}
             	stopAuthRotation();
@@ -1528,48 +1528,52 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public boolean broadcast (Transaction tx, String to, String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
-    	return SendTxHelper.broadcastTx(tx, txMsgLabel.getText(), to, new OperationListener(){
-			@Override
-			public void onBegin(String str) { }
-
-			@Override
-			public void statusReport(String report) {
-
-			}
-
-			@Override
-			public void onFinished(String str) {
-				/**
-				 * will notify user in AuthenticatorGeneralEvents#onBalanceChange
-				 */
-			}
-
-			@Override
-			public void onError(Exception e, Throwable t) {
-				Platform.runLater(new Runnable() {
-				      @Override public void run() {
-				    	  String desc = "";
-				    	  if(t != null){
-				    		  Throwable rootCause = Throwables.getRootCause(t);
-				    		  desc = rootCause.toString();
-				    		  t.printStackTrace();
-				    	  }
-				    	  if(e != null){
-				    		  desc = e.toString();
-				    		  e.printStackTrace();
-				    	  }
-				    	  //
-				    	  Dialogs.create()
-					        .owner(Main.stage)
-					        .title("Error")
-					        .masthead("Error broadcasting Tx")
-					        .message(desc)
-					        .showError();   
-				      }
-				    });
-			}
-		});
+    public boolean broadcast (Transaction tx, String to, @Nullable String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
+    	return SendTxHelper.broadcastTx(tx, 
+    			txMsgLabel.getText(), 
+    			to,
+    			WALLET_PW, 
+    			new OperationListener(){
+					@Override
+					public void onBegin(String str) { }
+		
+					@Override
+					public void statusReport(String report) {
+		
+					}
+		
+					@Override
+					public void onFinished(String str) {
+						/**
+						 * will notify user in AuthenticatorGeneralEvents#onBalanceChange
+						 */
+					}
+		
+					@Override
+					public void onError(Exception e, Throwable t) {
+						Platform.runLater(new Runnable() {
+						      @Override public void run() {
+						    	  String desc = "";
+						    	  if(t != null){
+						    		  Throwable rootCause = Throwables.getRootCause(t);
+						    		  desc = rootCause.toString();
+						    		  t.printStackTrace();
+						    	  }
+						    	  if(e != null){
+						    		  desc = e.toString();
+						    		  e.printStackTrace();
+						    	  }
+						    	  //
+						    	  Dialogs.create()
+							        .owner(Main.stage)
+							        .title("Error")
+							        .masthead("Error broadcasting Tx")
+							        .message(desc)
+							        .showError();   
+						      }
+						    });
+					}
+				});
     }	
     
     
@@ -2096,9 +2100,9 @@ public class Controller  extends BaseUI{
      * 
      * @param password
      * @return
-     * @throws EmptyWalletPasswordException 
+     * @throws NoWalletPasswordException 
      */
-	private boolean checkIfPasswordDecryptsWallet(String password) throws EmptyWalletPasswordException{
+	private boolean checkIfPasswordDecryptsWallet(String password) throws NoWalletPasswordException{
 		if(Authenticator.getWalletOperation().isWalletEncrypted()){
     		try{
     			if (Authenticator.AUTHENTICATOR_PW.equals("")){

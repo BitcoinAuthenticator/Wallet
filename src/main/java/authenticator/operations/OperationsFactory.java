@@ -167,10 +167,15 @@ public class OperationsFactory extends BASE{
 	 * <br><br>
 	 * <b>onlyComplete is True if should only complete the the deciphering of a received Authenticator signiture <b>
 	 * 
+	 * @param wallet
 	 * @param tx
 	 * @param pairingID
-	 * @param txMessage
+	 * @param txLabel
+	 * @param to
 	 * @param onlyComplete
+	 * @param authenticatorByteResponse
+	 * @param pendigReq
+	 * @param WALLET_PW
 	 * @return
 	 */
 	static public BAOperation SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(WalletOperation wallet, Transaction tx, 
@@ -183,7 +188,8 @@ public class OperationsFactory extends BASE{
 																 * will be used to remove the pending request
 																 * if necessary
 																 */
-																@Nullable PendingRequest pendigReq){
+																@Nullable PendingRequest pendigReq,
+																@Nullable String WALLET_PW){
 		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
@@ -202,7 +208,9 @@ public class OperationsFactory extends BASE{
 							String[] args, OperationListener listener) throws Exception {
 						//
 						if (!onlyComplete){
-							byte[] cypherBytes = SignProtocol.prepareTX(wallet, tx,pairingID);
+							byte[] cypherBytes = SignProtocol.prepareTX(wallet, 
+									WALLET_PW, tx,
+									pairingID);
 							String reqID = SignProtocol.sendGCM(wallet, 
 									pairingID,
 									txLabel,
@@ -271,6 +279,7 @@ public class OperationsFactory extends BASE{
 								// Complete Signing and broadcast
 								PairedAuthenticator po = wallet.getPairingObject(pairingID);
 								SignProtocol.complete(wallet, 
+										WALLET_PW,
 										tx,
 										AuthSigs,
 										po);
@@ -390,10 +399,21 @@ public class OperationsFactory extends BASE{
 					});
 	}
 
+	/**
+	 * 
+	 * @param txLabel
+	 * @param to
+	 * @param wallet
+	 * @param tx
+	 * @param keys
+	 * @param WALLET_PW
+	 * @return
+	 */
 	static public BAOperation BROADCAST_NORMAL_TRANSACTION(String txLabel, 
 			String to, 
 			WalletOperation wallet, 
-			Transaction tx, Map<String,ATAddress> keys){
+			Transaction tx, Map<String,ATAddress> keys,
+			@Nullable String WALLET_PW){
 		return new BAOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
@@ -409,7 +429,7 @@ public class OperationsFactory extends BASE{
 					String[] args, OperationListener listener)
 					throws Exception {
 				try{
-					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys);
+					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
 					walletDB config = Authenticator.getWalletOperation().configFile;
 					if (!txLabel.isEmpty()){
 						try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}
