@@ -166,7 +166,7 @@ public class SettingsController  extends BaseUI{
 	@SuppressWarnings("restriction")
 	public void launchBackup(ActionEvent event) throws NoWalletPasswordException {
 		if(Authenticator.getWalletOperation().isWalletEncrypted())
-		if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
+		if(Main.UI_ONLY_WALLET_PW == null || Main.UI_ONLY_WALLET_PW.length() == 0)
 		{
 			informationalAlert("Please Unlock Your Wallet",
  					 "In the main window, unlock your wallet to back it up.");
@@ -187,7 +187,7 @@ public class SettingsController  extends BaseUI{
             scene1.getStylesheets().add(file1);  // Add CSS that we need.
             backupPane.setScene(scene1);
             StartupController controller =	loader.getController();
-            DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(null);
+            DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(Main.UI_ONLY_WALLET_PW);
             controller.setBackMode(seed);
             backupPane.show();
         } catch (IOException e) {e.printStackTrace();}
@@ -202,7 +202,7 @@ public class SettingsController  extends BaseUI{
 				return;
 			}
 			
-			Authenticator.AUTHENTICATOR_PW = txfShowSeedPassword.getText();
+			Main.UI_ONLY_WALLET_PW = txfShowSeedPassword.getText();
 			
 		}
 		

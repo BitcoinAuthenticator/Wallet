@@ -240,7 +240,7 @@ public class Controller  extends BaseUI{
 	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
 	 TorListener listener = new TorListener();
-	 private boolean locked;
+	 
 	 private ThrottledRunnableExecutor throttledUIUpdater;
 	 Main.OverlayUI<Controller> txoverlay;
 	 Pane txoverlaypane;
@@ -357,7 +357,6 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the WalletAppKit
      */
     public void onBitcoinSetup() {
-    	bitcoin.wallet().freshReceiveAddress();
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	tor.addInitializationListener(listener);       
@@ -386,9 +385,9 @@ public class Controller  extends BaseUI{
      */
     public void onAuthenticatorSetup() {
     	Authenticator.addGeneralEventsListener(vBAGeneralEventsAdapter);
-    	
     	// lock 
-      	locked = Authenticator.getWalletOperation().isWalletEncrypted();
+      	updateLockIcon();
+      	
       	/**
       	 * Read the comments in TCPListener#looper()
      	 */
@@ -487,7 +486,7 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
-				  setAccountChoiceBox();
+				  updateUI();
 			  }
 			});
 		}
@@ -497,7 +496,7 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
-				  setAccountChoiceBox();
+				  updateUI();
 			  }
 			});
 		}
@@ -507,7 +506,7 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
-				  setAccountChoiceBox();
+				  updateUI();
 			  }
 			});
 			
@@ -552,7 +551,7 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
-					  setReceiveAddresses();
+					  updateUI();
 				  }
 				});
 		}
@@ -858,7 +857,7 @@ public class Controller  extends BaseUI{
 	   /**
 	    * decrypt
 	    */
-	   if (locked){
+	   if (Authenticator.getWalletOperation().isWalletEncrypted()){
 		   displayLockDialog();
 	   }
 	   /**
@@ -866,11 +865,13 @@ public class Controller  extends BaseUI{
 	    */
 	   else 
 	   {
-		   if(Authenticator.AUTHENTICATOR_PW == null || Authenticator.AUTHENTICATOR_PW.length() == 0)
+		   if(Main.UI_ONLY_WALLET_PW == null || Main.UI_ONLY_WALLET_PW.length() == 0)
 			   displayLockDialog();
 		   else{
-			   Authenticator.AUTHENTICATOR_PW="";
-			   locked = true;
+			   //Authenticator.AUTHENTICATOR_PW="";
+			   try {
+				Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);
+				} catch (NoWalletPasswordException e) { e.printStackTrace(); }
 		   }
 		   updateLockIcon();
 	   }
@@ -925,10 +926,9 @@ public class Controller  extends BaseUI{
 				   else {
 					   try{
 						   Authenticator.getWalletOperation().decryptWallet(pw.getText());
-						   Authenticator.getWalletOperation().encryptWallet(pw.getText());
-						   Authenticator.AUTHENTICATOR_PW = pw.getText();
+						   //Authenticator.getWalletOperation().encryptWallet(pw.getText());
+						   Main.UI_ONLY_WALLET_PW = pw.getText();
 						   overlay.done();
-						   locked = false;
 						   updateLockIcon();
 					   }
 					   catch(KeyCrypterException | NoWalletPasswordException  e){
@@ -948,14 +948,13 @@ public class Controller  extends BaseUI{
 					   return;
 				   }
 				   try {
-					Authenticator.getWalletOperation().encryptWallet(pw.getText());
-					Authenticator.AUTHENTICATOR_PW = pw.getText();
-				   overlay.done();
-				   locked = true;
-				   updateLockIcon();
-				} catch (NoWalletPasswordException e) {
-					e.printStackTrace();
-				}
+						Authenticator.getWalletOperation().encryptWallet(pw.getText());
+						Main.UI_ONLY_WALLET_PW = pw.getText();
+					    overlay.done();
+					    updateLockIcon();
+					} catch (NoWalletPasswordException e) {
+						e.printStackTrace();
+					}
 				   
 			   }
 		   }
@@ -963,7 +962,7 @@ public class Controller  extends BaseUI{
    }
    
    private void updateLockIcon(){
-	   if(locked){
+	   if(Authenticator.getWalletOperation().isWalletEncrypted()){
 		   Image imglocked = new Image(Main.class.getResource("btnLocked.png").toString());
 		   ImageView img = new ImageView(imglocked);
 		   btnLock.setGraphic(img);
@@ -1323,7 +1322,7 @@ public class Controller  extends BaseUI{
 		PasswordField password = new PasswordField();
 		password.setPrefWidth(350);
 		password.setStyle("-fx-border-color: #dae0e5; -fx-background-color: white; -fx-border-radius: 2;");
-		if (Authenticator.AUTHENTICATOR_PW.equals("")){
+		if (Main.UI_ONLY_WALLET_PW.equals("")){
 			password.setDisable(false);
 			password.setPromptText("Enter Password");
 			}
@@ -1415,12 +1414,20 @@ public class Controller  extends BaseUI{
 		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	String pw = "";
-            	if (Authenticator.AUTHENTICATOR_PW.equals("")){pw = password.getText();}
-            	else {pw = Authenticator.AUTHENTICATOR_PW;}
+//            	String pw = "";
+//            	if (Authenticator.AUTHENTICATOR_PW.equals("")){pw = password.getText();}
+//            	else {pw = Authenticator.AUTHENTICATOR_PW;}
+            	String pw = password.getText();
             	try {
-            		if(!checkIfPasswordDecryptsWallet(pw))
+            		if(Authenticator.getWalletOperation().isWalletEncrypted())
+            		if(!checkIfPasswordDecryptsWallet(pw)){
+            			informationalAlert("Unfortunately, you messed up.",
+            					"Wrong password");
                 		return;
+            		}
+            		else
+            			Main.UI_ONLY_WALLET_PW = pw;
+            		
         			Animation ani = GuiUtils.fadeOut(v);
         			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
         				GuiUtils.fadeIn(authenticatorVbox);
@@ -1445,7 +1452,7 @@ public class Controller  extends BaseUI{
         			}
         			else {to = "Multiple";}
         			v.setVisible(false);
-        			if (broadcast(tx,to, Authenticator.AUTHENTICATOR_PW) == true) {
+        			if (broadcast(tx,to, Main.UI_ONLY_WALLET_PW) == true) {
         				
         			}
         			else {
@@ -1482,16 +1489,16 @@ public class Controller  extends BaseUI{
 		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-            		if (Authenticator.AUTHENTICATOR_PW.equals("")){
-            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
-            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-            		}
-            		else {
-            			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
-            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-            		}
-            	}
+//            	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
+//            		if (Authenticator.AUTHENTICATOR_PW.equals("")){
+//            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
+//            			catch (NoWalletPasswordException e) {e.printStackTrace();}
+//            		}
+//            		else {
+//            			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
+//            			catch (NoWalletPasswordException e) {e.printStackTrace();}
+//            		}
+//            	}
             	txoverlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();
@@ -1503,12 +1510,12 @@ public class Controller  extends BaseUI{
             @Override
             public void handle(MouseEvent t) {
             	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-            		if (Authenticator.AUTHENTICATOR_PW.equals("")){
+            		if (Main.UI_ONLY_WALLET_PW.equals("")){
             			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
             			catch (NoWalletPasswordException e) {e.printStackTrace();}
             		}
             		else {
-            			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
+            			try {Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);} 
             			catch (NoWalletPasswordException e) {e.printStackTrace();}
             		}
             	}
@@ -2094,7 +2101,7 @@ public class Controller  extends BaseUI{
     }
     
     /**
-     * Will check if the given password or the chached Authenticator password can decrypt the wallet.<br>
+     * Will check if the given password can decrypt the wallet.<br>
      * If wallet is encrypted, at the end of the check will keep the wallet encrypted.<br>
      * If wallet is not encrypted or the password does decrypt the wallet, this will return true;
      * 
@@ -2105,23 +2112,10 @@ public class Controller  extends BaseUI{
 	private boolean checkIfPasswordDecryptsWallet(String password) throws NoWalletPasswordException{
 		if(Authenticator.getWalletOperation().isWalletEncrypted()){
     		try{
-    			if (Authenticator.AUTHENTICATOR_PW.equals("")){
-    				if (password.equals("")){
-                		informationalAlert("Unfortunately, you messed up.",
-           					 "You need to enter your password to decrypt your wallet.");
-                		return false;
-                	}
-    				else {
-    					Authenticator.getWalletOperation().decryptWallet(password);
-    				}
-    			}
-    			else {
-    				Authenticator.getWalletOperation().decryptWallet(Authenticator.AUTHENTICATOR_PW);
-    			}
+    			Authenticator.getWalletOperation().decryptWallet(password);
+    			Authenticator.getWalletOperation().encryptWallet(password);
     		}
     		catch(KeyCrypterException  e){
-    			informationalAlert("Unfortunately, you messed up.",
-    					"Wrong password");
     			return false;
     		} 	
     	}

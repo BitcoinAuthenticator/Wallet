@@ -53,7 +53,6 @@ import authenticator.walletCore.WalletOperation;
  *
  */
 public class Authenticator extends BASE{
-	public static String AUTHENTICATOR_PW = "";
 	private static TCPListener mTCPListener;
 	//private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
@@ -128,6 +127,13 @@ public class Authenticator extends BASE{
 			mTCPListener = new TCPListener(getWalletOperation(), 
 					mApplicationParams.getIsManuallyPortForwarded(),
 					new String[]{Integer.toString(getApplicationParams().getNetworkPort())});
+		
+//		Authenticator.getWalletOperation().updateBalaceNonBlocking(Authenticator.getWalletOperation().mWalletWrapper.getTrackedWallet(), new Runnable(){
+//			@Override
+//			public void run() {
+//				
+//			}
+//		});
 	}
 	
 	public static void disposeOfAuthenticator(){

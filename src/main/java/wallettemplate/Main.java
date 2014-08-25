@@ -62,6 +62,12 @@ public class Main extends BAApplication {
     public static Authenticator auth;
     public static Stage startup;
     public static BAApplicationParameters returnedParamsFromSetup;
+    
+	 /**
+	  * In order to make wallet encryption and decryption smoother, we keep
+	  * the wallet's password in memory (ONLY !!) so decryption won't prompt an "Enter password" dialog
+	  */
+	 public static String UI_ONLY_WALLET_PW = "";
 
     @Override
     public void start(Stage mainWindow) throws Exception {

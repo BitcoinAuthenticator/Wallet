@@ -294,7 +294,7 @@ public class TCPListener extends BASE{
 											true,
 											pendingReq.getPayloadIncoming().toByteArray(),
 											pendingReq, 
-											Authenticator.AUTHENTICATOR_PW);
+											null); // TODO - Issue #41 - or let user know to keep wallet decrypted or some other solution
 									op.SetOperationUIUpdate(new OperationListener(){
 
 										@Override
