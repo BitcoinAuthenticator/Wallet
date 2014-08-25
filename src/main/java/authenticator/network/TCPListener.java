@@ -71,6 +71,9 @@ public class TCPListener extends BASE{
 	private BANeworkInfo vBANeworkInfo;
 	private String[] args;
 	private ServerSocket ss = null;
+	
+	private BAOperation CURRENT_OUTBOUND_OPERATION = null;
+	
 	/**
 	 * Network Requirements flags
 	 */
@@ -368,8 +371,10 @@ public class TCPListener extends BASE{
 									
 							
 							logAsInfo("Executing Operation: " + op.getDescription());
+							CURRENT_OUTBOUND_OPERATION = op;
 							try{
 								op.run(ss, vBANeworkInfo);
+								CURRENT_OUTBOUND_OPERATION = null;
 							}
 							catch (Exception e)
 							{
@@ -462,6 +467,25 @@ public class TCPListener extends BASE{
 	    URL whatismyip = new URL("http://icanhazip.com");
 	    BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 	    return in.readLine();
+	}
+	
+	public void INTERRUPT_CURRENT_OUTBOUND_OPERATION(BAOperation op) throws IOException{
+		if(CURRENT_OUTBOUND_OPERATION == null)
+			return;
+		
+		
+		if(CURRENT_OUTBOUND_OPERATION.getOperationID().equals(op.getOperationID())){
+			logAsInfo("Interrupting Operation with ID " + op.getOperationID());
+			CURRENT_OUTBOUND_OPERATION.interruptOperation();
+			
+			// restore socket
+			SOCKET_OPERATIONAL = false;
+			ss = new ServerSocket (forwardedPort);
+			ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
+			SOCKET_OPERATIONAL = true;
+		}
+		else
+			logAsInfo("Operation Not Found: Cannot Interrupt Operation with ID " + op.getOperationID());
 	}
 	
 	//#####################################

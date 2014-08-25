@@ -1,6 +1,9 @@
 package authenticator.operations;
 
+import java.io.IOException;
+import java.math.BigInteger;
 import java.net.ServerSocket;
+import java.security.SecureRandom;
 
 import javax.annotation.Nullable;
 
@@ -15,29 +18,38 @@ import authenticator.protobuf.ProtoConfig.ATOperationType;
  *
  */
 public class BAOperation {
-	private OperationActions mOperationActions;
+	private String OPERATION_ID;
+	private BAOperationActions mOperationActions;
 	private OperationListener listener;
 	private String operationDescription;
 	private ATOperationType mOperationType;
 	private BANetworkRequirement mATNetworkRequirement = BANetworkRequirement.NONE;
 	private String[] args = null;
 	
+	private boolean CAN_CONTINUE_WITH_OPERAITON;
 	
 	public BAOperation(ATOperationType type)
 	{
-		mOperationType = type;
+		this(type, null, null, null, null);
 	}
 	
 	public BAOperation (ATOperationType type, 
 			BANetworkRequirement networkRequirements,
-			OperationActions action, 
+			BAOperationActions action, 
 			String desc,
 			String[] ar){
+		// operation id
+		SecureRandom random = new SecureRandom();
+		OPERATION_ID = new BigInteger(130, random).toString(32);
+		
+		// set params
 		mOperationType			 = type;
 		mATNetworkRequirement	 = networkRequirements;
 		mOperationActions 		 = action;
 		operationDescription 	 = desc;
 		args 					 = ar;
+		
+		CAN_CONTINUE_WITH_OPERAITON = true;
 	}
 	
 	/**
@@ -46,13 +58,32 @@ public class BAOperation {
 	 * @param netInfo
 	 * @throws Exception
 	 */
+	ServerSocket vServerSocket;
 	public void run(ServerSocket ss, @Nullable BANeworkInfo netInfo)  throws Exception 
 	{
+		vServerSocket = ss;
+		
+		if(!CAN_CONTINUE_WITH_OPERAITON)
+			return;
+		
 		if(this.listener != null)
 			this.listener.onBegin(beginMsg);
+		
+		if(!CAN_CONTINUE_WITH_OPERAITON)
+			return;
+		
 		mOperationActions.PreExecution(listener,args);
-		mOperationActions.Execute( listener, ss, netInfo, args, this.listener);
+		
+		if(!CAN_CONTINUE_WITH_OPERAITON)
+			return;
+		
+		mOperationActions.Execute( listener, vServerSocket, netInfo, args, this.listener);
+		
+		if(!CAN_CONTINUE_WITH_OPERAITON)
+			return;
+		
 		mOperationActions.PostExecution(listener, args);
+		
 		if(this.listener != null)
 			this.listener.onFinished(finishedMsg);
 	}
@@ -63,11 +94,30 @@ public class BAOperation {
 			this.listener.onError(e,null);
 	}
 	
+	/**
+	 * Will Interrupt operation execution flow, completes/ fails current {@link BAOperationActions Action}<br>
+	 * Will close the provided server socket in order to interrupt inbount communication listening 
+	 * 
+	 * @throws IOException
+	 */
+	public void interruptOperation() throws IOException{
+		CAN_CONTINUE_WITH_OPERAITON = true;
+		
+		/**
+		 * in case we stuck listening for incoming communication
+		 */
+		vServerSocket.close();
+	}
+	
 	//#####################################
 	//
 	// 		Getter and Setters
 	//
 	//#####################################
+	
+	public String getOperationID(){
+		return OPERATION_ID;
+	}
 	
 	public String getDescription() { return this.operationDescription; }
 	public BAOperation SetDescription(String desc)
@@ -76,7 +126,7 @@ public class BAOperation {
 		return this;
 	}
 	
-	public BAOperation SetOperationAction(OperationActions action)
+	public BAOperation SetOperationAction(BAOperationActions action)
 	{
 		this.mOperationActions = action;
 		return this;
@@ -126,4 +176,10 @@ public class BAOperation {
 	    public int getValue() { return this.value; }
 	}
 	
+	public interface BAOperationActions {
+		public void PreExecution(OperationListener listenerUI, String[] args)  throws Exception ;
+		public void Execute(OperationListener listenerUI, ServerSocket ss, BANeworkInfo netInfo, String[] args, OperationListener listener)  throws Exception ;
+		public void PostExecution(OperationListener listenerUI, String[] args)  throws Exception ;
+		public void OnExecutionError(OperationListener listenerUI, Exception e) ;
+	}
 }

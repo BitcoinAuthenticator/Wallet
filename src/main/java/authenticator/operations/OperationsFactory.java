@@ -67,6 +67,7 @@ import authenticator.Utils.EncodingUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANeworkInfo;
 import authenticator.operations.BAOperation.BANetworkRequirement;
+import authenticator.operations.BAOperation.BAOperationActions;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
 import authenticator.operations.OperationsUtils.SignProtocol;
@@ -112,7 +113,7 @@ public class OperationsFactory extends BASE{
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
 					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "blockchain", Integer.toString(networkType.getValue()) })
-					.SetOperationAction(new OperationActions(){
+					.SetOperationAction(new BAOperationActions(){
 						int timeout = 5;
 						ServerSocket socket = null;
 						@Override
@@ -193,7 +194,7 @@ public class OperationsFactory extends BASE{
 		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
-				.SetOperationAction(new OperationActions(){
+				.SetOperationAction(new BAOperationActions(){
 					//int timeout = 5;
 					//
 					
@@ -364,7 +365,7 @@ public class OperationsFactory extends BASE{
 					.SetDescription("Update Authenticator's wallet IPs")
 					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
 					.SetFinishedMsg("Finished IPs updates")
-					.SetOperationAction(new OperationActions(){
+					.SetOperationAction(new BAOperationActions(){
 						@Override
 						public void PreExecution(OperationListener listenerUI, String[] args)  throws Exception { }
 
@@ -417,7 +418,7 @@ public class OperationsFactory extends BASE{
 		return new BAOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")
-		.SetOperationAction(new OperationActions(){
+		.SetOperationAction(new BAOperationActions(){
 			@Override
 			public void PreExecution(OperationListener listenerUI, String[] args) throws Exception { 
 
