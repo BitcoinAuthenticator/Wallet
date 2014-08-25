@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 
 import javax.annotation.Nullable;
 
-import authenticator.network.BANeworkInfo;
+import authenticator.network.BANetworkInfo;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 
@@ -30,7 +30,7 @@ public class BAOperation {
 	
 	public BAOperation(ATOperationType type)
 	{
-		this(type, null, null, null, null);
+		this(type, BANetworkRequirement.NONE, null, null, null);
 	}
 	
 	public BAOperation (ATOperationType type, 
@@ -59,7 +59,7 @@ public class BAOperation {
 	 * @throws Exception
 	 */
 	ServerSocket vServerSocket;
-	public void run(ServerSocket ss, @Nullable BANeworkInfo netInfo)  throws Exception 
+	public void run(ServerSocket ss, @Nullable BANetworkInfo netInfo)  throws Exception 
 	{
 		vServerSocket = ss;
 		
@@ -178,7 +178,7 @@ public class BAOperation {
 	
 	public interface BAOperationActions {
 		public void PreExecution(OperationListener listenerUI, String[] args)  throws Exception ;
-		public void Execute(OperationListener listenerUI, ServerSocket ss, BANeworkInfo netInfo, String[] args, OperationListener listener)  throws Exception ;
+		public void Execute(OperationListener listenerUI, ServerSocket ss, BANetworkInfo netInfo, String[] args, OperationListener listener)  throws Exception ;
 		public void PostExecution(OperationListener listenerUI, String[] args)  throws Exception ;
 		public void OnExecutionError(OperationListener listenerUI, Exception e) ;
 	}

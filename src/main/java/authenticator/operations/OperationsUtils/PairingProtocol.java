@@ -16,7 +16,7 @@ import org.json.simple.parser.ParseException;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.walletDB;
-import authenticator.network.BANeworkInfo;
+import authenticator.network.BANetworkInfo;
 import authenticator.network.UpNp;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
@@ -45,7 +45,7 @@ public class PairingProtocol {
    */
   public void run (WalletOperation wallet,
 		  ServerSocket ss,
-		  BANeworkInfo netInfo,
+		  BANetworkInfo netInfo,
 		  String[] args, 
 		  OperationListener opListener,
 		  PairingStageUpdater statusListener,

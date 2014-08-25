@@ -163,6 +163,12 @@
           </children>
         </Pane>
         <Pane fx:id="BA4" layoutX="14.0" layoutY="67.0" prefHeight="246.0" prefWidth="560.0" visible="false" />
+        
+        
+        <!--
+        	final explanation pane, here user can pair an account for the first time
+        -->
+        <ImageView fx:id="ivFirstAccountPairingQR" fitHeight="200.0" fitWidth="200.0" layoutX="170.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true"/>
         <Hyperlink fx:id="hlFinished" layoutX="471.0" layoutY="339.0" onAction="#finished" text="I will do it later" visible="false" />
       </children>
     </Pane>

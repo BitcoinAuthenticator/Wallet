@@ -215,11 +215,9 @@ public class Authenticator extends BASE{
 		return mWalletOperation;
 	}
 	
-	//#####################################
-	//
-	//		Getters and Setters
-	//
-	//#####################################
+	public static TCPListener Net(){
+		return mTCPListener;
+	}
 	
 	/**
 	 * Get {@link authenticator.ui_helpers.BAApplication.BAApplicationParameters} object.<br>

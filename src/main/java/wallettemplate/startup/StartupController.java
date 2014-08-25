@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.swing.JFrame;
 
 import org.controlsfx.control.textfield.CustomTextField;
@@ -55,6 +57,7 @@ import authenticator.operations.BAOperation;
 import authenticator.operations.BAWalletRestorer;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.BAWalletRestorer.WalletRestoreListener;
+import authenticator.operations.OperationsUtils.PairingQRCode;
 import authenticator.operations.OperationsUtils.PaperWalletQR;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
@@ -94,6 +97,7 @@ import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
+import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
@@ -122,6 +126,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -227,10 +232,20 @@ public class StartupController  extends BaseUI{
 	@FXML private ScrollPane restoreAccountsScrll;
 	private ScrollPaneContentManager restoreAccountsScrllContent;
 	private DeterministicSeed walletSeed;
-	String encryptionPassword = null;
 	NetworkParameters params;
 	Authenticator auth;
 	Wallet wallet;
+	
+	/**
+	 *  CreateAccountPane variables.
+	 *  We keep them here because the user needs to decide at the end of the startup process at the end of
+	 *  the explanation pane if he wants that the created account should be paired or standard.
+	 */
+	@FXML private ImageView   ivFirstAccountPairingQR;
+	private String 			  encryptionPassword = null;
+	private String 			  firstAccountName;
+	private WalletAccountType firstAccountType = WalletAccountType.StandardAccount;
+	
 	
 	/**
 	 * Will be set before the Stage is launched so we could define the wallet files.
@@ -531,10 +546,72 @@ public class StartupController  extends BaseUI{
 		 GuiUtils.fadeIn(ExplanationPane1);
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
+		 
+		 auth.getWalletOperation().setTrackedWallet(wallet);
+		 auth.startAsync();
+		 auth.addListener(new Service.Listener() {
+				@Override public void running() {
+					Platform.runLater(new Runnable() { 
+						  @Override
+						  public void run() {
+							//prepare pairing
+							 playPairingOperation(firstAccountName, 
+									 auth.getApplicationParams().getBitcoinNetworkType(), 
+									 pairingQRAnimation(),
+									 new PairingStageUpdater(){
+										@Override
+										public void onPairingStageChanged(PairingStage stage) {
+											if(stage == PairingStage.FINISHED){
+												firstAccountType = WalletAccountType.AuthenticatorAccount;
+											}
+										}
+
+										@Override
+										public void pairingData(PairedAuthenticator data) {
+											try {
+												auth.getWalletOperation().setActiveAccount(data.getWalletAccountIndex());
+											} catch (AccountWasNotFoundException e) { e.printStackTrace(); }
+										}
+							 });
+						  }
+					});
+		         }
+			}, MoreExecutors.sameThreadExecutor());
+		 
+	 }
+	 
+	 private Runnable pairingQRAnimation()
+	 {
+		 return new Runnable(){
+				@Override
+				public void run() {
+					// set image 
+					File file;
+					try {
+						file = new File(new java.io.File( "." ).getCanonicalPath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
+						Image img = new Image(file.toURI().toString());
+						Platform.runLater(() -> {
+							ivFirstAccountPairingQR.setImage(img);
+						});
+					} catch (IOException e) { e.printStackTrace(); }
+				}
+			  };
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
 		 hlFinished.setDisable(true);
+		 
+		 // create the first account
+		 if(firstAccountType  == WalletAccountType.StandardAccount)
+			try {
+				auth.Net().INTERRUPT_CURRENT_OUTBOUND_OPERATION();
+				createNewStandardAccount(firstAccountName);
+			} catch (IOException | AccountWasNotFoundException e1) { e1.printStackTrace(); }
+		 else
+		 {
+			 // do nothing
+		 }
+		 
 		 auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
 					 Platform.runLater(() -> {
@@ -549,8 +626,7 @@ public class StartupController  extends BaseUI{
 					 });
 		         }
 			}, MoreExecutors.sameThreadExecutor());
-         auth.stopAsync();
-		 
+		 	auth.stopAsync();
 	 }
 	 
 	 @FXML protected void openPlayStore(ActionEvent event) throws IOException{
@@ -605,8 +681,8 @@ public class StartupController  extends BaseUI{
 		 else {
 			 try {
 				encryptionPassword =  txPW2.getText();
-				 
-				createNewStandardAccount(txAccount.getText());
+				firstAccountName = txAccount.getText();
+				//createNewStandardAccount(txAccount.getText());
 				
 				ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
 					 public void changed(ObservableValue<? extends Boolean> ov,
@@ -1279,6 +1355,25 @@ public class StartupController  extends BaseUI{
 		DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
 	    // set Authenticator wallet
 		auth = new Authenticator(masterPubKey, appParams);
+	}
+	
+	private void playPairingOperation(String pairName, NetworkType nt, Runnable animDisplay, PairingStageUpdater stageListener){
+		BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
+    			pairName, 
+    			null,
+    			nt,
+    			animDisplay, 
+    			null,
+    			stageListener);
+		
+		boolean result = auth.addOperation(op);
+    	if(!result){
+    		Dialogs.create()
+		        .owner(Main.stage)
+		        .title("Error !")
+		        .masthead("Could not add operation")
+		        .showInformation();   
+    	}
 	}
 	 
 	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException{

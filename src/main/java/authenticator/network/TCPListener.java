@@ -68,7 +68,7 @@ public class TCPListener extends BASE{
 	private UpNp plugnplay;
 	private boolean isManuallyPortForwarded;
 	private int forwardedPort;
-	private BANeworkInfo vBANeworkInfo;
+	private BANetworkInfo vBANeworkInfo;
 	private String[] args;
 	private ServerSocket ss = null;
 	
@@ -165,7 +165,7 @@ public class TCPListener extends BASE{
 						plugnplay.run(new String[]{args[0]});
 						if(plugnplay.isPortMapped(Integer.parseInt(args[0])) == true){
 							PORT_FORWARDED = true;
-							vBANeworkInfo = new BANeworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP());
+							vBANeworkInfo = new BANetworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP());
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -174,7 +174,7 @@ public class TCPListener extends BASE{
 	    		}
 
     			try {
-					vBANeworkInfo = new BANeworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
+					vBANeworkInfo = new BANetworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
 					PORT_FORWARDED = true;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -469,7 +469,10 @@ public class TCPListener extends BASE{
 	    return in.readLine();
 	}
 	
-	public void INTERRUPT_CURRENT_OUTBOUND_OPERATION(BAOperation op) throws IOException{
+	public void INTERRUPT_CURRENT_OUTBOUND_OPERATION() throws IOException{
+		INTERRUPT_OUTBOUND_OPERATION(CURRENT_OUTBOUND_OPERATION);
+	}
+	public void INTERRUPT_OUTBOUND_OPERATION(BAOperation op) throws IOException{
 		if(CURRENT_OUTBOUND_OPERATION == null)
 			return;
 		
@@ -486,6 +489,10 @@ public class TCPListener extends BASE{
 		}
 		else
 			logAsInfo("Operation Not Found: Cannot Interrupt Operation with ID " + op.getOperationID());
+	}
+	
+	public BANetworkInfo getNetworkInfo() {
+		return vBANeworkInfo;
 	}
 	
 	//#####################################

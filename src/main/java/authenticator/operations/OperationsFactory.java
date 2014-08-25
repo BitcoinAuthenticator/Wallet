@@ -65,7 +65,7 @@ import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.walletDB;
-import authenticator.network.BANeworkInfo;
+import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.BAOperation.BAOperationActions;
 import authenticator.operations.OperationsUtils.PairingProtocol;
@@ -104,9 +104,9 @@ public class OperationsFactory extends BASE{
 			String pairingName, 
 			@Nullable Integer accountID,
 			NetworkType networkType, 
-			Runnable animation,
-			Runnable animationAfterPairing,
-			PairingStageUpdater statusListener){
+			@Nullable Runnable animation,
+			@Nullable Runnable animationAfterPairing,
+			@Nullable PairingStageUpdater statusListener){
 		return new BAOperation(ATOperationType.Pairing)
 					.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
@@ -122,7 +122,7 @@ public class OperationsFactory extends BASE{
 						@SuppressWarnings("static-access")
 						@Override
 						public void Execute(OperationListener listenerUI,
-								ServerSocket ss, BANeworkInfo netInfo,
+								ServerSocket ss, BANetworkInfo netInfo,
 								String[] args, OperationListener listener)
 								throws Exception {
 							timeout = ss.getSoTimeout();
@@ -150,7 +150,8 @@ public class OperationsFactory extends BASE{
 						@Override
 						public void OnExecutionError(OperationListener listenerUI, Exception e) {
 							try {socket.setSoTimeout(timeout); } catch(Exception e1) {}
-							listenerUI.onError(e, null);
+							if(listenerUI != null)
+								listenerUI.onError(e, null);
 						}
 
 						
@@ -205,7 +206,7 @@ public class OperationsFactory extends BASE{
 
 					@Override
 					public void Execute(OperationListener listenerUI,
-							ServerSocket ss, BANeworkInfo netInfo,
+							ServerSocket ss, BANetworkInfo netInfo,
 							String[] args, OperationListener listener) throws Exception {
 						//
 						if (!onlyComplete){
@@ -371,7 +372,7 @@ public class OperationsFactory extends BASE{
 
 						@Override
 						public void Execute(OperationListener listenerUI,
-								ServerSocket ss, BANeworkInfo netInfo,
+								ServerSocket ss, BANetworkInfo netInfo,
 								String[] args, OperationListener listener) throws Exception {
 							PairedAuthenticator po = wallet.getPairingObject(pairingID);
 							Dispacher disp;
@@ -426,7 +427,7 @@ public class OperationsFactory extends BASE{
 
 			@Override
 			public void Execute(OperationListener listenerUI,
-					ServerSocket ss, BANeworkInfo netInfo,
+					ServerSocket ss, BANetworkInfo netInfo,
 					String[] args, OperationListener listener)
 					throws Exception {
 				try{

@@ -16,6 +16,7 @@ import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.PairingProtocol;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
+import authenticator.operations.OperationsUtils.PairingQRCode;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
@@ -271,7 +272,7 @@ public class PairWallet extends BaseUI{
 							//
 							File file;
 							try {
-								file = new File(new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCode.png");
+								file = new File(new java.io.File( "." ).getCanonicalPath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
 								Image img = new Image(file.toURI().toString());
 								imgViewQR.setImage(img);
 							} catch (IOException e) { e.printStackTrace();
