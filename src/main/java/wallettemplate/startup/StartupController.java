@@ -184,6 +184,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnFinishRestoreProcess;
 	@FXML private Button btnBackFromAccountRestore;
 	@FXML private Button btnAccountRestoreContinue;
+	@FXML private Button btnPlayStore;
 	@FXML private Label lblMinimize;
 	@FXML private Label lblClose;
 	@FXML private Button btnDone;
@@ -210,7 +211,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnSSS;
 	@FXML private ProgressBar syncProgress;
 	@FXML private Label lblRestoreProcessStatus;
-	
+	@FXML private Label lblScan;
 	@FXML private TextField lblSeedRestorer;
 	@FXML private DatePicker seedCreationDatePicker;
 	
@@ -563,6 +564,7 @@ public class StartupController  extends BaseUI{
 										public void onPairingStageChanged(PairingStage stage) {
 											if(stage == PairingStage.FINISHED){
 												firstAccountType = WalletAccountType.AuthenticatorAccount;
+												finishsetup();
 											}
 										}
 
@@ -599,7 +601,10 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
-		 hlFinished.setDisable(true);
+		 finishsetup();
+	 }
+	 
+	public void finishsetup(){
 		 
 		 // create the first account
 		 if(firstAccountType  == WalletAccountType.StandardAccount)
@@ -653,7 +658,9 @@ public class StartupController  extends BaseUI{
 			 Animation ani2 = GuiUtils.fadeOut(btnContinue3);
 			 GuiUtils.fadeIn(hlFinished);
 			 btnContinue3.setVisible(false);
+			 lblScan.setVisible(true);
 			 hlFinished.setVisible(true);
+			 btnPlayStore.setVisible(false);
 			 //Pairing protocol goes here.
 		 } 
 	 }

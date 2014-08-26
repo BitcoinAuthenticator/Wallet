@@ -11,6 +11,7 @@ import authenticator.Utils.OneName.OneName;
 import javafx.animation.Animation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
@@ -22,6 +23,10 @@ public class OneNameController  extends BaseUI{
 	@FXML private Pane Pane1;
 	@FXML private Pane Pane2;
 	public Main.OverlayUI overlayUi;
+	@FXML private Button btnOK;
+	@FXML private Button btnCancel;
+	@FXML private Button btnSignUp;
+	@FXML private Button btnBack;
 	
 	public void initialize(){
 		 //super(AccountsController.class);
@@ -57,4 +62,37 @@ public class OneNameController  extends BaseUI{
 		Main.instance.overlayUI("DisplayOneName.fxml");
 		OneNameControllerDisplay.loadOneName("register");
 	}
+	
+	@FXML protected void OKpressed(){
+		btnOK.setStyle("-fx-background-color: #57cbfb;");
+	}
+	@FXML protected void OKreleased(){
+		btnOK.setStyle("-fx-background-color: #4db2dc;");
+	}
+	@FXML protected void Cancelpressed(){
+		btnCancel.setStyle("-fx-background-color: #57cbfb;");
+	}
+	@FXML protected void Cancelreleased(){
+		btnCancel.setStyle("-fx-background-color: #4db2dc;");
+	}
+	@FXML protected void Backpressed(){
+		btnBack.setStyle("-fx-background-color: #57cbfb;");
+	}
+	@FXML protected void Backreleased(){
+		btnBack.setStyle("-fx-background-color: #4db2dc;");
+	}
+	@FXML protected void SignUppressed(){
+		btnSignUp.setStyle("-fx-background-color: #57cbfb;");
+	}
+	@FXML protected void SignUpreleased(){
+		btnSignUp.setStyle("-fx-background-color: #4db2dc;");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

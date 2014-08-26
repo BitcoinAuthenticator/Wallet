@@ -271,8 +271,8 @@ public class Controller  extends BaseUI{
         
         syncProgress.setProgress(-1);
         lblName.setFont(Font.font(null, FontWeight.NORMAL, 15));
-        lblConfirmedBalance.setFont(Font.font(null, FontWeight.NORMAL, 14));
-        lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.NORMAL, 14));
+        lblConfirmedBalance.setFont(Font.font(null, FontWeight.MEDIUM, 14));
+        lblUnconfirmedBalance.setFont(Font.font(null, FontWeight.MEDIUM, 14));
         createReceivePaneButtons();
         createSendButtons();
         
@@ -999,7 +999,7 @@ public class Controller  extends BaseUI{
 	public void setUserProfileAvatarAndName(Image img, String name) {
 		ivAvatar.setImage(img);
 		//
-		lblName.setText("Welcome back, " + name);
+		lblName.setText("Welcome back, " + name + " ");
 		lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
 		lblName.getText(), 0.0D));
 	}
@@ -2046,6 +2046,10 @@ public class Controller  extends BaseUI{
     
     @FXML protected void btnSettings(MouseEvent event) {
     	Main.instance.overlayUI("Settings.fxml");
+    }
+    
+    @FXML protected void btncoinjoin(MouseEvent event) {
+    	Main.instance.overlayUI("coinjoin.fxml");
     }
     
     @FXML protected void btnOneName(MouseEvent event) {

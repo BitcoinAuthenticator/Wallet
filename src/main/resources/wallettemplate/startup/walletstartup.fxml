@@ -80,7 +80,10 @@
             </ImageView>
           </graphic>
         </Button>
-        <Button fx:id="btnPaperWallet" contentDisplay="TOP" layoutX="228.0" layoutY="167.0" mnemonicParsing="false" onAction="#printPaperWallet" prefHeight="143.1328125" prefWidth="146.0" text="Print Paper Wallet" textAlignment="CENTER">
+        <Button fx:id="btnPaperWallet" contentDisplay="TOP" layoutX="228.0" layoutY="167.0" mnemonicParsing="false" onAction="#printPaperWallet" prefHeight="143.1328125" prefWidth="146.0" text="Create Paper Wallet" textAlignment="CENTER">
+           <font>
+            <Font size="12.5" />
+          </font>
           <graphic>
             <ImageView fitHeight="93.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
               <Image url="@btnPaperWallet.png" />
@@ -112,6 +115,11 @@
         <Label layoutX="14.0" layoutY="27.0" prefHeight="40.0" prefWidth="415.0" text="Set up 2-factor authentication">
           <font>
             <Font size="20.0" />
+          </font>
+        </Label>
+        <Label fx:id="lblScan" layoutX="14.0" layoutY="64.0" prefHeight="17.5" prefWidth="337.0" text="Scan the QR code with Bitcoin Authenticator" visible="false">
+          <font>
+            <Font size="15.0" />
           </font>
         </Label>
         <Button fx:id="btnPlayStore" layoutX="232.0" layoutY="325.0" minWidth="100.0" mnemonicParsing="false" onAction="#openPlayStore" prefWidth="125.0" style="-fx-cursor: hand; -fx-background-color: transparent;" text="" visible="true">
@@ -168,8 +176,8 @@
         <!--
         	final explanation pane, here user can pair an account for the first time
         -->
-        <ImageView fx:id="ivFirstAccountPairingQR" fitHeight="200.0" fitWidth="200.0" layoutX="170.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true"/>
-        <Hyperlink fx:id="hlFinished" layoutX="471.0" layoutY="339.0" onAction="#finished" text="I will do it later" visible="false" />
+        <ImageView fx:id="ivFirstAccountPairingQR" fitHeight="230.0" fitWidth="230.0" layoutX="185.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true"/>
+        <Hyperlink fx:id="hlFinished" layoutX="225.0" layoutY="330.0" onAction="#finished" text="I will set up 2FA later" visible="false" />
       </children>
     </Pane>
    
