@@ -229,7 +229,14 @@ public class WalletOperation extends BASE{
 		
 		@Override
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-				notifyBalanceUpdate(wallet,tx);
+			/**
+			 * the {com.google.bitcoin.wallet.DefaultCoinSelector} can only choose candidates if they
+			 * originated from the wallet, so this fix is so incoming tx (originated elsewhere)
+			 * could be spent if not confirmed	
+			 */
+			tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
+			
+			notifyBalanceUpdate(wallet,tx);
 		}        
     }
 	
@@ -417,6 +424,16 @@ public class WalletOperation extends BASE{
         @Override
         protected void doneDownload() {
         	setOperationalState(BAOperationState.READY_AND_OPERATIONAL);
+        	
+        	/**
+        	 * run an update of balances after we finished syncing
+        	 */
+        	updateBalaceNonBlocking(mWalletWrapper.trackedWallet, new Runnable(){
+				@Override
+				public void run() { 
+					notifyBalanceUpdate(mWalletWrapper.trackedWallet,null);
+				}
+    		});
         }
     }
 	
