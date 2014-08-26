@@ -313,26 +313,23 @@ public class Controller  extends BaseUI{
         									.setScrollStyle(scrlViewTxHistory.getStyle());
 		scrlViewTxHistory.setContent(scrlViewTxHistoryContentManager);
 		
-		//Receive address
-		/*AddressBox.valueProperty().addListener(new ChangeListener<String>() {
-    		@Override public void changed(ObservableValue ov, String t, String t1) {
-    			if(t1 != null && t1.length() > 0)
-    			if (t1.substring(0,1).equals(" ")){
-    				String newAdd = null;
-    				AddressBox.getItems().clear();
-    				for (int i=0; i<10; i++){
-					try {
-						newAdd = Authenticator.getWalletOperation()
-								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-								.getAddressStr();
-						AddressBox.getItems().add(0,newAdd);
-					} catch (Exception e) { e.printStackTrace(); }
-    				}
-    				AddressBox.setValue(AddressBox.getItems().get(0).toString());
-    				AddressBox.getItems().addAll("                                More");
-    			}
-    		}    
-    	});*/
+		throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
+			@Override
+			public void run() {
+				LOG.info("Updating UI");
+				 
+				 setReceiveAddresses();
+			 	 try {setTxPaneHistory();} 
+			 	 catch (Exception e1) {e1.printStackTrace();}
+			 	 
+		    	 try {setTxHistoryContent();} 
+		    	 catch (Exception e1) {e1.printStackTrace();}
+
+		    	 try {refreshBalanceLabel();} 
+		     	 catch (Exception e) {e.printStackTrace();}
+			}
+    	});
+    	throttledUIUpdater.start();
 
 		// accounts choice box
 		AccountBox.valueProperty().addListener(new ChangeListener<String>() {
@@ -359,25 +356,7 @@ public class Controller  extends BaseUI{
     public void onBitcoinSetup() {
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
-    	tor.addInitializationListener(listener);       
-    	
-    	throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
-			@Override
-			public void run() {
-				LOG.info("Updating UI");
-				 
-				 setReceiveAddresses();
-			 	 try {setTxPaneHistory();} 
-			 	 catch (Exception e1) {e1.printStackTrace();}
-			 	 
-		    	 try {setTxHistoryContent();} 
-		    	 catch (Exception e1) {e1.printStackTrace();}
-
-		    	 try {refreshBalanceLabel();} 
-		     	 catch (Exception e) {e.printStackTrace();}
-			}
-    	});
-    	throttledUIUpdater.start();
+    	tor.addInitializationListener(listener);           	
     }
     
     /**
