@@ -444,15 +444,21 @@ public class Controller  extends BaseUI{
 				Platform.runLater(new Runnable() { 
 					  @Override
 					  public void run() {
-							Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
-							// Create a custom Notification without icon
-							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received: " + 
-									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
-									"\n" + 
-									"Status: " + (confidence == ConfidenceType.PENDING? "Pending":"Confirmed"), logo);
-							
-							// Show the custom notification
-							Notifier.INSTANCE.notify(info);
+						  	Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
+				    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
+				    		if (exit.compareTo(Coin.ZERO) > 0){} //only show notification on coins received excluding change
+				    		else {
+				    			Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+				    			
+				    			// Create a custom Notification without icon
+				    			Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received: " + 
+				    					Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
+				    					"\n" + 
+				    					"Status: " + (confidence == ConfidenceType.PENDING? "Unconfirmed":"Confirmed"), logo);
+						
+				    			// Show the custom notification
+				    			Notifier.INSTANCE.notify(info);
+				    		}
 					  }
 					});
 			}
@@ -868,7 +874,7 @@ public class Controller  extends BaseUI{
 		   if(Main.UI_ONLY_WALLET_PW == null || Main.UI_ONLY_WALLET_PW.length() == 0)
 			   displayLockDialog();
 		   else{
-			   //Authenticator.AUTHENTICATOR_PW="";
+			   Main.UI_ONLY_WALLET_PW = "";
 			   try {
 				Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);
 				} catch (NoWalletPasswordException e) { e.printStackTrace(); }
@@ -926,7 +932,7 @@ public class Controller  extends BaseUI{
 				   else {
 					   try{
 						   Authenticator.getWalletOperation().decryptWallet(pw.getText());
-						   //Authenticator.getWalletOperation().encryptWallet(pw.getText());
+						   Authenticator.getWalletOperation().encryptWallet(pw.getText());
 						   Main.UI_ONLY_WALLET_PW = pw.getText();
 						   overlay.done();
 						   updateLockIcon();
@@ -1414,10 +1420,9 @@ public class Controller  extends BaseUI{
 		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-//            	String pw = "";
-//            	if (Authenticator.AUTHENTICATOR_PW.equals("")){pw = password.getText();}
-//            	else {pw = Authenticator.AUTHENTICATOR_PW;}
-            	String pw = password.getText();
+            	String pw = "";
+            	if (Main.UI_ONLY_WALLET_PW.equals("")){pw = password.getText();}
+            	else {pw = Main.UI_ONLY_WALLET_PW;}
             	try {
             		if(Authenticator.getWalletOperation().isWalletEncrypted())
             		if(!checkIfPasswordDecryptsWallet(pw)){
@@ -1425,9 +1430,6 @@ public class Controller  extends BaseUI{
             					"Wrong password");
                 		return;
             		}
-            		else
-            			Main.UI_ONLY_WALLET_PW = pw;
-            		
         			Animation ani = GuiUtils.fadeOut(v);
         			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
         				GuiUtils.fadeIn(authenticatorVbox);
@@ -1489,16 +1491,16 @@ public class Controller  extends BaseUI{
 		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-//            	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-//            		if (Authenticator.AUTHENTICATOR_PW.equals("")){
-//            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
-//            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-//            		}
-//            		else {
-//            			try {Authenticator.getWalletOperation().encryptWallet(Authenticator.AUTHENTICATOR_PW);} 
-//            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-//            		}
-//            	}
+           	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
+           		if (Main.UI_ONLY_WALLET_PW.equals("")){
+            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
+            			catch (NoWalletPasswordException e) {e.printStackTrace();}
+            		}
+            		else {
+           			try {Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);} 
+            			catch (NoWalletPasswordException e) {e.printStackTrace();}
+            		}
+            	}
             	txoverlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();
