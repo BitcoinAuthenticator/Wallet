@@ -76,6 +76,7 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
+import com.google.bitcoin.utils.Threading;
 import com.google.bitcoin.wallet.CoinSelection;
 import com.google.bitcoin.wallet.DefaultCoinSelector;
 import com.google.bitcoin.wallet.DeterministicSeed;
@@ -133,7 +134,7 @@ public class WalletOperation extends BASE{
 			mWalletWrapper.addEventListener(new WalletListener());
 		}
 		
-		peerGroup.addEventListener(new WalletDownloadListener());
+		peerGroup.addEventListener(new WalletDownloadListener(), Threading.SAME_THREAD);
 		
 		init(params, mpubkey);
 	}
@@ -202,8 +203,7 @@ public class WalletOperation extends BASE{
 		@Override
 		public void onWalletChanged(Wallet wallet) {
 			/**
-			 * While downloading the blockchain do not update balances, only after the blockchain is fully downloaded.
-			 * Incoming/ outgoing coins will be registered in onCoinsSent/ onCoinsReceived
+			 * used for confidence change UI update
 			 */
 			if(getOperationalState() == BAOperationState.READY_AND_OPERATIONAL)
     		updateBalaceNonBlocking(wallet, new Runnable(){
@@ -224,7 +224,12 @@ public class WalletOperation extends BASE{
     		 * If the Tx only sends coins, do update the balance from here.
     		 */
 			if(tx.getValueSentToMe(wallet).signum() == 0)
-				notifyBalanceUpdate(wallet,tx);
+				updateBalaceNonBlocking(wallet, new Runnable(){
+					@Override
+					public void run() { 
+						notifyBalanceUpdate(wallet,tx);
+					}
+	    		});
 		}
 		
 		@Override
@@ -236,7 +241,12 @@ public class WalletOperation extends BASE{
 			 */
 			tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
 			
-			notifyBalanceUpdate(wallet,tx);
+			updateBalaceNonBlocking(wallet, new Runnable(){
+				@Override
+				public void run() { 
+					notifyBalanceUpdate(wallet,tx);
+				}
+    		});
 		}        
     }
 	
@@ -414,6 +424,7 @@ public class WalletOperation extends BASE{
     	}
 	}
 	
+	
 	public class WalletDownloadListener extends DownloadListener {
         @Override
         protected void progress(double pct, int blocksSoFar, Date date) {
@@ -424,7 +435,7 @@ public class WalletOperation extends BASE{
         @Override
         protected void doneDownload() {
         	setOperationalState(BAOperationState.READY_AND_OPERATIONAL);
-        	
+
         	/**
         	 * run an update of balances after we finished syncing
         	 */
