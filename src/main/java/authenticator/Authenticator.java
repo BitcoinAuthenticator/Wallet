@@ -54,9 +54,9 @@ import authenticator.walletCore.WalletOperation;
  */
 public class Authenticator extends BASE{
 	private static TCPListener mTCPListener;
-	//private static SafeList pendingRequests;
 	private static WalletOperation mWalletOperation;
 	private static BAApplicationParameters mApplicationParams;
+	
 	// Listeners
 	private static List<BAGeneralEventsListener> generalEventsListeners;
 
@@ -143,7 +143,7 @@ public class Authenticator extends BASE{
 		generalEventsListeners = null;
 		mTCPListener = null;
 	}
-		
+	
 	//#####################################
 	//
 	//		TCPListener Control

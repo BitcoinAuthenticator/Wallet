@@ -240,7 +240,7 @@ public class Controller  extends BaseUI{
 	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
 	 TorListener listener = new TorListener();
-	 
+	 boolean locked = true;
 	 private ThrottledRunnableExecutor throttledUIUpdater;
 	 Main.OverlayUI<Controller> txoverlay;
 	 Pane txoverlaypane;
@@ -863,7 +863,7 @@ public class Controller  extends BaseUI{
 	   /**
 	    * decrypt
 	    */
-	   if (Authenticator.getWalletOperation().isWalletEncrypted()){
+	   if (locked){
 		   displayLockDialog();
 	   }
 	   /**
@@ -879,6 +879,7 @@ public class Controller  extends BaseUI{
 				Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);
 				} catch (NoWalletPasswordException e) { e.printStackTrace(); }
 		   }
+		   locked = true;
 		   updateLockIcon();
 	   }
 	   
@@ -935,6 +936,7 @@ public class Controller  extends BaseUI{
 						   Authenticator.getWalletOperation().encryptWallet(pw.getText());
 						   Main.UI_ONLY_WALLET_PW = pw.getText();
 						   overlay.done();
+						   locked = false;
 						   updateLockIcon();
 					   }
 					   catch(KeyCrypterException | NoWalletPasswordException  e){
@@ -968,7 +970,7 @@ public class Controller  extends BaseUI{
    }
    
    private void updateLockIcon(){
-	   if(Authenticator.getWalletOperation().isWalletEncrypted()){
+	   if(locked){
 		   Image imglocked = new Image(Main.class.getResource("btnLocked.png").toString());
 		   ImageView img = new ImageView(imglocked);
 		   btnLock.setGraphic(img);

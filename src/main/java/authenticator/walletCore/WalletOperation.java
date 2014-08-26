@@ -21,12 +21,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
@@ -53,6 +55,7 @@ import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
+import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -94,10 +97,11 @@ import com.google.common.collect.ImmutableList;
  */
 public class WalletOperation extends BASE{
 	
-	public static WalletWrapper mWalletWrapper;
-	private static BAHierarchy authenticatorWalletHierarchy;
-	public static walletDB configFile;
-	private static Logger staticLogger;
+	public  WalletWrapper mWalletWrapper;
+	private BAHierarchy authenticatorWalletHierarchy;
+	public  walletDB configFile;
+	private Logger staticLogger;
+	private BAOperationState operationalState;
 	private BAApplicationParameters AppParams;
 	
 	public WalletOperation(){ 
@@ -128,6 +132,8 @@ public class WalletOperation extends BASE{
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
 			mWalletWrapper.addEventListener(new WalletListener());
 		}
+		
+		peerGroup.addEventListener(new WalletDownloadListener());
 		
 		init(params, mpubkey);
 	}
@@ -178,6 +184,7 @@ public class WalletOperation extends BASE{
 			updateBalaceNonBlocking(mWalletWrapper.getTrackedWallet(), null);
 		}*/
 		
+		setOperationalState(BAOperationState.SYNCING);
 	}
 	
 	public BAApplicationParameters getApplicationParams(){
@@ -194,9 +201,11 @@ public class WalletOperation extends BASE{
 	public class WalletListener extends AbstractWalletEventListener {
 		@Override
 		public void onWalletChanged(Wallet wallet) {
-//			staticLogger.info("Updating balance, Received {}, Sent {}", 
-//    				tx.getValueSentToMe(wallet).toFriendlyString(),
-//    				tx.getValueSentFromMe(wallet).toFriendlyString());
+			/**
+			 * While downloading the blockchain do not update balances, only after the blockchain is fully downloaded.
+			 * Incoming/ outgoing coins will be registered in onCoinsSent/ onCoinsReceived
+			 */
+			if(getOperationalState() == BAOperationState.READY_AND_OPERATIONAL)
     		updateBalaceNonBlocking(wallet, new Runnable(){
 				@Override
 				public void run() { 
@@ -220,77 +229,15 @@ public class WalletOperation extends BASE{
 		
 		@Override
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-				notifyBalanceUpdate(wallet,tx);
-		}
-		
-//		private boolean isRequiringBalanceChange = true;
-//		
-//        @Override
-//        public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-//        	try {
-//        		/**
-//        		 * Run balance update onCoinsSent() only if we don't receive any coins.
-//        		 * The idea is that if we have a Tx that sends and receives coins to this wallet,
-//        		 * update only onCoinsReceived() so we won't send multiple update balance calls.
-//        		 * 
-//        		 * If the Tx only sends coins, do update the balance from here.
-//        		 */
-//        		if(tx.getValueSentToMe(wallet).signum() == 0){
-//        			staticLogger.info("Updating balance, Received {}, Sent {}", 
-//            				tx.getValueSentToMe(wallet).toFriendlyString(),
-//            				tx.getValueSentFromMe(wallet).toFriendlyString());
-//            		updateBalaceNonBlocking(wallet, new Runnable(){
-//    					@Override
-//    					public void run() {
-//    						notifyBalanceUpdate(wallet,tx);
-//    						isRequiringBalanceChange = true;
-//    					}
-//            		});
-//        		}
-//			} catch (Exception e) { e.printStackTrace(); }
-//        }
-//        
-//        @Override
-//        public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-//        	try {
-//        		staticLogger.info("Updating balance, Received {}, Sent {}", 
-//        				tx.getValueSentToMe(wallet).toFriendlyString(),
-//        				tx.getValueSentFromMe(wallet).toFriendlyString());
-//        		
-//        		/**
-//        		 * a fix to be able to spend unconfirmed Tx
-//        		 */
-//        		tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
-//        		
-//        		updateBalaceNonBlocking(wallet, new Runnable(){
-//					@Override
-//					public void run() {
-//						notifyBalanceUpdate(wallet,tx);
-//						isRequiringBalanceChange = true;
-//					}
-//        		});
-//				
-//			} catch (Exception e) { e.printStackTrace(); }
-//        }
-//        
-//        @Override
-//        public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
-//        	try {
-//        		if(isRequiringBalanceChange){
-//        			staticLogger.info("Updating balance, Received {}, Sent {}", 
-//            				tx.getValueSentToMe(wallet).toFriendlyString(),
-//            				tx.getValueSentFromMe(wallet).toFriendlyString());
-//        			isRequiringBalanceChange = false;
-//        			updateBalaceNonBlocking(wallet, new Runnable(){
-//    					@Override
-//    					public void run() {
-//    						notifyBalanceUpdate(wallet,tx);
-//    					}
-//            		});
-//        		}
-//			} catch (Exception e) { e.printStackTrace(); }
-//        }
-        
+			/**
+			 * the {com.google.bitcoin.wallet.DefaultCoinSelector} can only choose candidates if they
+			 * originated from the wallet, so this fix is so incoming tx (originated elsewhere)
+			 * could be spent if not confirmed	
+			 */
+			tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
+			
+			notifyBalanceUpdate(wallet,tx);
+		}        
     }
 	
 	private void notifyBalanceUpdate(Wallet wallet, Transaction tx){
@@ -466,6 +413,29 @@ public class WalletOperation extends BASE{
     		setUnConfirmedBalance(acc.getIndex(), Coin.valueOf(acc.getUnConfirmedBalance()));
     	}
 	}
+	
+	public class WalletDownloadListener extends DownloadListener {
+        @Override
+        protected void progress(double pct, int blocksSoFar, Date date) {
+        	if(pct < 1)
+        		setOperationalState(BAOperationState.SYNCING);
+        }
+
+        @Override
+        protected void doneDownload() {
+        	setOperationalState(BAOperationState.READY_AND_OPERATIONAL);
+        	
+        	/**
+        	 * run an update of balances after we finished syncing
+        	 */
+        	updateBalaceNonBlocking(mWalletWrapper.trackedWallet, new Runnable(){
+				@Override
+				public void run() { 
+					notifyBalanceUpdate(mWalletWrapper.trackedWallet,null);
+				}
+    		});
+        }
+    }
 	
 	//#####################################
 	//
@@ -1520,23 +1490,23 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 		
-		public static void addPendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+		public void addPendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
 			configFile.writeNewPendingRequest(req);
 		}
 		
-		public static void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+		public void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
 			staticLogger.info("Removed pending request: " + req.getRequestID());
 			configFile.removePendingRequest(req);
 		}
 		
-		public static int getPendingRequestSize(){
+		public int getPendingRequestSize(){
 			try {
 				return getPendingRequests().size();
 			} catch (FileNotFoundException e) { } catch (IOException e) { }
 			return 0;
 		}
 		
-		public static List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
+		public List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
 			return configFile.getPendingRequests();
 		}
 		
@@ -1906,6 +1876,48 @@ public class WalletOperation extends BASE{
     		}
     	}	
 		return filteredHistory;
+	}
+	
+	//#####################################
+	//
+	//		Operational State
+	//
+	//#####################################
+	
+	public BAOperationState getOperationalState(){
+		return operationalState;
+	}
+	
+	public void setOperationalState(BAOperationState value){
+		operationalState = value;
+		staticLogger.info("Changed Authenticator's operational state to " + BAOperationState.getStateString(value));
+	}
+	
+	public enum BAOperationState{
+		/**
+		 * Indicates the wallet cannot sync
+		 */
+		NOT_SYNCED,
+		/**
+		 * When wallet is booting and downloading the blockchain, this state is on
+		 */
+		SYNCING,
+		/**
+		 * Indicates the wallet is ready and operational
+		 */
+		READY_AND_OPERATIONAL;
+		
+		public static String getStateString(BAOperationState state){
+			switch(state){
+			case NOT_SYNCED:
+				return "Not Synced";
+			case SYNCING:
+				return "Syncing";
+			case READY_AND_OPERATIONAL:
+				return "Ready and Operational";
+			}
+			return null;
+		}
 	}
 }
 
