@@ -1405,19 +1405,25 @@ public class Controller  extends BaseUI{
             	if (Main.UI_ONLY_WALLET_PW.equals("")){pw = password.getText();}
             	else {pw = Main.UI_ONLY_WALLET_PW;}
             	try {
-            		if(Authenticator.getWalletOperation().isWalletEncrypted())
-            		if(!checkIfPasswordDecryptsWallet(pw)){
-            			informationalAlert("Unfortunately, you messed up.",
-            					"Wrong password");
-                		return;
-            		}
         			Animation ani = GuiUtils.fadeOut(v);
         			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
+        				if(Authenticator.getWalletOperation().isWalletEncrypted())
+                    		if(!checkIfPasswordDecryptsWallet(pw, false)){
+                    			informationalAlert("Unfortunately, you messed up.",
+                    					"Wrong password");
+                        		return;
+                    		}
         				GuiUtils.fadeIn(authenticatorVbox);
         				authenticatorVbox.setVisible(true);
         				startAuthRotation(imglogo1);
         			}
         			else {
+        				if(Authenticator.getWalletOperation().isWalletEncrypted())
+                    		if(!checkIfPasswordDecryptsWallet(pw,true)){
+                    			informationalAlert("Unfortunately, you messed up.",
+                    					"Wrong password");
+                        		return;
+                    		}
         				GuiUtils.fadeIn(successVbox);
         				successVbox.setVisible(true);
         			}
@@ -1436,7 +1442,18 @@ public class Controller  extends BaseUI{
         			else {to = "Multiple";}
         			v.setVisible(false);
         			if (broadcast(tx,to, Main.UI_ONLY_WALLET_PW) == true) {
-        				
+        				if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.StandardAccount){
+        					if(!Authenticator.getWalletOperation().isWalletEncrypted()){
+        		           		if (Main.UI_ONLY_WALLET_PW.equals("")){
+        		            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
+        		            			catch (NoWalletPasswordException e) {e.printStackTrace();}
+        		            		}
+        		            		else {
+        		           			try {Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);} 
+        		            			catch (NoWalletPasswordException e) {e.printStackTrace();}
+        		            		}
+        		            	}
+        				}	
         			}
         			else {
         				txoverlay.done();
@@ -1472,16 +1489,6 @@ public class Controller  extends BaseUI{
 		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-           	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-           		if (Main.UI_ONLY_WALLET_PW.equals("")){
-            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
-            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-            		}
-            		else {
-           			try {Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);} 
-            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-            		}
-            	}
             	txoverlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();
@@ -1492,16 +1499,6 @@ public class Controller  extends BaseUI{
 		btnSave.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-            		if (Main.UI_ONLY_WALLET_PW.equals("")){
-            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
-            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-            		}
-            		else {
-            			try {Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);} 
-            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-            		}
-            	}
             	stopAuthRotation();
             	txoverlay.done();
             	txMsgLabel.clear();
@@ -2096,11 +2093,11 @@ public class Controller  extends BaseUI{
      * @return
      * @throws NoWalletPasswordException 
      */
-	private boolean checkIfPasswordDecryptsWallet(String password) throws NoWalletPasswordException{
+	private boolean checkIfPasswordDecryptsWallet(String password, boolean leavedecrypted) throws NoWalletPasswordException{
 		if(Authenticator.getWalletOperation().isWalletEncrypted()){
     		try{
     			Authenticator.getWalletOperation().decryptWallet(password);
-    			Authenticator.getWalletOperation().encryptWallet(password);
+    			if (!leavedecrypted) Authenticator.getWalletOperation().encryptWallet(password);
     		}
     		catch(KeyCrypterException  e){
     			return false;
