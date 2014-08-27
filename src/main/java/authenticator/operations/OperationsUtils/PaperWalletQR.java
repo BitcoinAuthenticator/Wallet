@@ -116,11 +116,11 @@ public class PaperWalletQR extends BASE{
         DeterministicKey mpubkey = mprivkey.getPubOnly();
         imageBytes = QRCode
 			        .from(mpubkey.toString())
-			        .withSize(160, 160)
+			        .withSize(120, 120)
 			        .to(ImageType.PNG)
 			        .stream()
 			        .toByteArray();
-        Image qrMPubKey = new Image(new ByteArrayInputStream(imageBytes), 122,122, true, false);
+        Image qrMPubKey = new Image(new ByteArrayInputStream(imageBytes));
         return qrMPubKey;
 	}
 	
@@ -138,7 +138,7 @@ public class PaperWalletQR extends BASE{
         int x = (int) (qrSeed.getWidth()*.055), y = (int) (qrSeed.getHeight()*.055), w = (int) (qrSeed.getWidth()*.90), h = (int) (qrSeed.getHeight()*.90);
         BufferedImage b2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         b2.getGraphics().drawImage(b, 0, 0, w, h, x, y, x + w, y + h, null);
-        x = x = (int) (qrMPubKey.getWidth()*.055); y = (int) (qrMPubKey.getHeight()*.055); w = (int) (qrMPubKey.getWidth()*2); h = (int) (qrMPubKey.getHeight()*2);
+        x = x = (int) (qrMPubKey.getWidth()*.05); y = (int) (qrMPubKey.getHeight()*.05); w = (int) (qrMPubKey.getWidth()*.9); h = (int) (qrMPubKey.getHeight()*.9);
         BufferedImage c2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         c2.getGraphics().drawImage(c, 0, 0, w, h, x, y, x + w, y + h, null);
         
