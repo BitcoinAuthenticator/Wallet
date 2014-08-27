@@ -850,15 +850,16 @@ public class Controller  extends BaseUI{
 	    */
 	   else 
 	   {
-		   if(Main.UI_ONLY_WALLET_PW == null || Main.UI_ONLY_WALLET_PW.length() == 0)
-			   displayLockDialog();
+		   if(Main.UI_ONLY_WALLET_PW == null || Main.UI_ONLY_WALLET_PW.length() == 0) //this shouldn't be possible
+			   displayLockDialog(); 
 		   else{
-			   Main.UI_ONLY_WALLET_PW = "";
 			   try {
-				Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);
-				} catch (NoWalletPasswordException e) { e.printStackTrace(); }
+				   Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);
+				   Main.UI_ONLY_WALLET_PW = "";
+				   locked = true;
+			   } 
+			   catch (NoWalletPasswordException e) { e.printStackTrace(); }
 		   }
-		   locked = true;
 		   updateLockIcon();
 	   }
 	   
@@ -1401,29 +1402,23 @@ public class Controller  extends BaseUI{
 		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	String pw = "";
+            	String pw;
             	if (Main.UI_ONLY_WALLET_PW.equals("")){pw = password.getText();}
             	else {pw = Main.UI_ONLY_WALLET_PW;}
             	try {
+            		if(Authenticator.getWalletOperation().isWalletEncrypted())
+                		if(!checkIfPasswordDecryptsWallet(pw)){
+                			informationalAlert("Unfortunately, you messed up.",
+                					"Wrong password");
+                    		return;
+                		}
         			Animation ani = GuiUtils.fadeOut(v);
         			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
-        				if(Authenticator.getWalletOperation().isWalletEncrypted())
-                    		if(!checkIfPasswordDecryptsWallet(pw, false)){
-                    			informationalAlert("Unfortunately, you messed up.",
-                    					"Wrong password");
-                        		return;
-                    		}
         				GuiUtils.fadeIn(authenticatorVbox);
         				authenticatorVbox.setVisible(true);
         				startAuthRotation(imglogo1);
         			}
         			else {
-        				if(Authenticator.getWalletOperation().isWalletEncrypted())
-                    		if(!checkIfPasswordDecryptsWallet(pw,true)){
-                    			informationalAlert("Unfortunately, you messed up.",
-                    					"Wrong password");
-                        		return;
-                    		}
         				GuiUtils.fadeIn(successVbox);
         				successVbox.setVisible(true);
         			}
@@ -1441,19 +1436,8 @@ public class Controller  extends BaseUI{
         			}
         			else {to = "Multiple";}
         			v.setVisible(false);
-        			if (broadcast(tx,to, Main.UI_ONLY_WALLET_PW) == true) {
-        				if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.StandardAccount){
-        					if(!Authenticator.getWalletOperation().isWalletEncrypted()){
-        		           		if (Main.UI_ONLY_WALLET_PW.equals("")){
-        		            			try {Authenticator.getWalletOperation().encryptWallet(password.getText());} 
-        		            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-        		            		}
-        		            		else {
-        		           			try {Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);} 
-        		            			catch (NoWalletPasswordException e) {e.printStackTrace();}
-        		            		}
-        		            	}
-        				}	
+        			if (broadcast(tx,to,pw) == true) {
+        				
         			}
         			else {
         				txoverlay.done();
@@ -2093,11 +2077,11 @@ public class Controller  extends BaseUI{
      * @return
      * @throws NoWalletPasswordException 
      */
-	private boolean checkIfPasswordDecryptsWallet(String password, boolean leavedecrypted) throws NoWalletPasswordException{
+	private boolean checkIfPasswordDecryptsWallet(String password) throws NoWalletPasswordException{
 		if(Authenticator.getWalletOperation().isWalletEncrypted()){
     		try{
     			Authenticator.getWalletOperation().decryptWallet(password);
-    			if (!leavedecrypted) Authenticator.getWalletOperation().encryptWallet(password);
+    			Authenticator.getWalletOperation().encryptWallet(password);
     		}
     		catch(KeyCrypterException  e){
     			return false;
