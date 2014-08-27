@@ -138,7 +138,7 @@ public class PaperWalletQR extends BASE{
         int x = (int) (qrSeed.getWidth()*.055), y = (int) (qrSeed.getHeight()*.055), w = (int) (qrSeed.getWidth()*.90), h = (int) (qrSeed.getHeight()*.90);
         BufferedImage b2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         b2.getGraphics().drawImage(b, 0, 0, w, h, x, y, x + w, y + h, null);
-        x = x = (int) (qrSeed.getWidth()*.05); y = (int) (qrSeed.getHeight()*.05); w = (int) (qrMPubKey.getWidth()*.90); h = (int) (qrMPubKey.getHeight()*.9);
+        x = x = (int) (qrMPubKey.getWidth()*.055); y = (int) (qrMPubKey.getHeight()*.055); w = (int) (qrMPubKey.getWidth()*2); h = (int) (qrMPubKey.getHeight()*2);
         BufferedImage c2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         c2.getGraphics().drawImage(c, 0, 0, w, h, x, y, x + w, y + h, null);
         

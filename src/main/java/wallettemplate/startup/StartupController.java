@@ -124,6 +124,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -655,13 +656,13 @@ public class StartupController  extends BaseUI{
 			 GuiUtils.fadeIn(BA4);
 			 BA3.setVisible(false);
 			 BA4.setVisible(true);
+			 ivFirstAccountPairingQR.setVisible(true);
 			 Animation ani2 = GuiUtils.fadeOut(btnContinue3);
 			 GuiUtils.fadeIn(hlFinished);
 			 btnContinue3.setVisible(false);
 			 lblScan.setVisible(true);
 			 hlFinished.setVisible(true);
 			 btnPlayStore.setVisible(false);
-			 //Pairing protocol goes here.
 		 } 
 	 }
 	 

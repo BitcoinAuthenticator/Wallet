@@ -10,7 +10,7 @@
   <children>
     <Pane layoutX="0.0" layoutY="0.0" prefHeight="483.0" prefWidth="851.0" style="-fx-background-color: #211917;">
       <children>
-        <ImageView fitHeight="289.42016294243905" fitWidth="292.69972229003906" layoutX="279.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="289.42016294243905" fitWidth="292.69972229003906" layoutX="279.0" layoutY="43.0" onMousePressed="#close" pickOnBounds="true" preserveRatio="true">
           <image>
             <Image url="@coinjoin.png" />
           </image>
@@ -25,7 +25,7 @@
             <Font size="20.0" />
           </font>
         </Label>
-        <Label layoutX="334.0" layoutY="429.0" style="-fx-text-fill: white;" text="End of 2014">
+        <Label layoutX="345.0" layoutY="429.0" style="-fx-text-fill: white;" text="Early 2015">
           <font>
             <Font size="30.0" />
           </font>

@@ -343,7 +343,7 @@
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="113.0" onAction="#btncoinjoin" style="-fx-background-color:transparent;" text="CoinJoin" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="113.0" onMousePressed="#btncoinjoin" style="-fx-background-color:transparent;" text="CoinJoin" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
