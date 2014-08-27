@@ -654,7 +654,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Transaction signStandardTxWithAddresses(Transaction tx, 
 			Map<String,ATAddress> keys,
-			@Nullable String WALLET_PW) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, NoWalletPasswordException{
+			@Nullable BAPassword WALLET_PW) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, NoWalletPasswordException{
 		Map<String,ECKey> keys2 = new HashMap<String,ECKey> ();
 		for(String k:keys.keySet()){
 			ECKey addECKey = getPrivECKeyFromAccount(keys.get(k).getAccountIndex(), 
@@ -822,7 +822,7 @@ public class WalletOperation extends BASE{
 	public ECKey getPrivECKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
 			int addressKey,
-			@Nullable String WALLET_PW,
+			@Nullable BAPassword WALLET_PW,
 			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, NoWalletPasswordException{
 		DeterministicKey ret = getPrivKeyFromAccount(accountIndex,
 				type,
@@ -852,7 +852,7 @@ public class WalletOperation extends BASE{
 	public DeterministicKey getPrivKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
 			int addressKey, 
-			@Nullable String WALLET_PW,
+			@Nullable BAPassword WALLET_PW,
 			boolean iKnowAddressFromKeyIsNotWatched) throws KeyIndexOutOfRangeException, AddressFormatException, AddressNotWatchedByWalletException, NoWalletPasswordException{
 		byte[] seed = getWalletSeedBytes(WALLET_PW);
 		DeterministicKey ret = authenticatorWalletHierarchy.getPrivKeyFromAccount(seed, accountIndex, type, addressKey);
@@ -1506,7 +1506,17 @@ public class WalletOperation extends BASE{
 		}
 		
 		public void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
-			staticLogger.info("Removed pending request: " + req.getRequestID());
+			List<PendingRequest> l = new ArrayList<PendingRequest>();
+			l.add(req);
+			removePendingRequest(l);
+		}
+		
+		public void removePendingRequest(List<PendingRequest> req) throws FileNotFoundException, IOException{
+			String a = "";
+			for(PendingRequest pr:req)
+				a = a + pr.getRequestID() + "\n					";
+			
+			staticLogger.info("Removed pending requests: " + a);
 			configFile.removePendingRequest(req);
 		}
 		
@@ -1547,51 +1557,7 @@ public class WalletOperation extends BASE{
 			return pairingName + ": " + type + "  ---  " + op.getRequestID();
 		}
 		
-	//#####################################
-	//
-	//		Pending transactions 
-	//
-	//#####################################
-		/*public List<String> getPendingOutTx(int accountIdx){
-			return configFile.getPendingOutTx(accountIdx);
-		}
-		
-		public void addPendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			configFile.addPendingOutTx(accountIdx,txID);
-		}
-		
-		public void removePendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			configFile.removePendingOutTx(accountIdx,txID);
-		}
-		
-		public boolean isPendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			List<String> all = getPendingOutTx(accountIdx);
-			for(String tx:all)
-				if(tx.equals(txID))
-					return true;
-			return false;
-		}
-		
-		public List<String> getPendingInTx(int accountIdx){
-			return configFile.getPendingInTx(accountIdx);
-		}
-		
-		public void addPendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			configFile.addPendingInTx(accountIdx,txID);
-		}
-		
-		public void removePendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			configFile.removePendingInTx(accountIdx,txID);
-		}
-		
-		public boolean isPendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-			List<String> all = getPendingInTx(accountIdx);
-			for(String tx:all)
-				if(tx.equals(txID))
-					return true;
-			return false;
-		}*/
-		
+	
 	//#####################################
 	//
 	//		One name
@@ -1798,19 +1764,21 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.getTxValueSentFromMe(tx);
 	}
 	
-	public void decryptWallet(String password) throws NoWalletPasswordException{
-		if(password != null && password.length() > 0){
-			staticLogger.info("Decrypted wallet with password: " + password);
-			mWalletWrapper.decryptWallet(password);
+	public void decryptWallet(BAPassword password) throws NoWalletPasswordException{
+		if(isWalletEncrypted())
+		if(password.hasPassword()){
+			mWalletWrapper.decryptWallet(password.toString());
+			staticLogger.info("Decrypted wallet with password: " + password.toString());
 		}
 		else
 			throw new NoWalletPasswordException("Illegal Password");
 	}
 	
-	public void encryptWallet(String password) throws NoWalletPasswordException{
-		if(password != null && password.length() > 0){
-			staticLogger.info("Encrypted wallet with password: " + password);
-			mWalletWrapper.encryptWallet(password);
+	public void encryptWallet(BAPassword password) throws NoWalletPasswordException{
+		if(!isWalletEncrypted())
+		if(password.hasPassword()){
+			mWalletWrapper.encryptWallet(password.toString());
+			staticLogger.info("Encrypted wallet with password: " + password.toString());
 		}
 		else
 			throw new NoWalletPasswordException("Illegal Password");
@@ -1823,8 +1791,8 @@ public class WalletOperation extends BASE{
 	 * @return
 	 * @throws NoWalletPasswordException 
 	 */
-	public DeterministicSeed getWalletSeed(@Nullable String pw) throws NoWalletPasswordException{
-		if(isWalletEncrypted() && (pw == null || pw.length() == 0))
+	public DeterministicSeed getWalletSeed(@Nullable BAPassword pw) throws NoWalletPasswordException{
+		if(isWalletEncrypted() && !pw.hasPassword())
 				throw new NoWalletPasswordException("Wallet is encrypted, cannot get seed");
 		DeterministicSeed ret;
 		if(isWalletEncrypted()){
@@ -1844,7 +1812,7 @@ public class WalletOperation extends BASE{
 	 * @return
 	 * @throws NoWalletPasswordException 
 	 */
-	 public byte[] getWalletSeedBytes(@Nullable String pw) throws NoWalletPasswordException{
+	 public byte[] getWalletSeedBytes(@Nullable BAPassword pw) throws NoWalletPasswordException{
 	 		return getWalletSeed(pw).getSecretBytes();
 	 }
 	

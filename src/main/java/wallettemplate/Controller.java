@@ -9,6 +9,7 @@ import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingelt
 import authenticator.Utils.OneName.OneName;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
+import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
@@ -356,7 +357,8 @@ public class Controller  extends BaseUI{
     public void onBitcoinSetup() {
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
-    	tor.addInitializationListener(listener);           	
+    	tor.addInitializationListener(listener);          	
+    	
     }
     
     /**
@@ -364,7 +366,9 @@ public class Controller  extends BaseUI{
      */
     public void onAuthenticatorSetup() {
     	Authenticator.addGeneralEventsListener(vBAGeneralEventsAdapter);
+    	
     	// lock 
+    	locked = Authenticator.getWalletOperation().isWalletEncrypted();
       	updateLockIcon();
       	
       	/**
@@ -855,7 +859,7 @@ public class Controller  extends BaseUI{
 		   else{
 			   try {
 				   Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);
-				   Main.UI_ONLY_WALLET_PW = "";
+				   Main.UI_ONLY_WALLET_PW.cleanPassword();
 				   locked = true;
 			   } 
 			   catch (NoWalletPasswordException e) { e.printStackTrace(); }
@@ -912,9 +916,10 @@ public class Controller  extends BaseUI{
 				   }
 				   else {
 					   try{
-						   Authenticator.getWalletOperation().decryptWallet(pw.getText());
-						   Authenticator.getWalletOperation().encryptWallet(pw.getText());
-						   Main.UI_ONLY_WALLET_PW = pw.getText();
+						   BAPassword temp = new BAPassword(pw.getText());
+						   Authenticator.getWalletOperation().decryptWallet(temp);
+						   Authenticator.getWalletOperation().encryptWallet(temp);
+						   Main.UI_ONLY_WALLET_PW.setPassword(temp.toString());
 						   overlay.done();
 						   locked = false;
 						   updateLockIcon();
@@ -936,8 +941,9 @@ public class Controller  extends BaseUI{
 					   return;
 				   }
 				   try {
-						Authenticator.getWalletOperation().encryptWallet(pw.getText());
-						Main.UI_ONLY_WALLET_PW = pw.getText();
+					   BAPassword temp = new BAPassword(pw.getText());
+						Authenticator.getWalletOperation().encryptWallet(temp);
+						Main.UI_ONLY_WALLET_PW.setPassword(temp.toString());
 					    overlay.done();
 					    updateLockIcon();
 					} catch (NoWalletPasswordException e) {
@@ -1310,7 +1316,7 @@ public class Controller  extends BaseUI{
 		PasswordField password = new PasswordField();
 		password.setPrefWidth(350);
 		password.setStyle("-fx-border-color: #dae0e5; -fx-background-color: white; -fx-border-radius: 2;");
-		if (Main.UI_ONLY_WALLET_PW.equals("")){
+		if (!Main.UI_ONLY_WALLET_PW.hasPassword() || this.locked){
 			password.setDisable(false);
 			password.setPromptText("Enter Password");
 			}
@@ -1402,16 +1408,15 @@ public class Controller  extends BaseUI{
 		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	String pw;
-            	if (Main.UI_ONLY_WALLET_PW.equals("")){pw = password.getText();}
-            	else {pw = Main.UI_ONLY_WALLET_PW;}
             	try {
-            		if(Authenticator.getWalletOperation().isWalletEncrypted())
-                		if(!checkIfPasswordDecryptsWallet(pw)){
+            		if(locked)
+                		if(!checkIfPasswordDecryptsWallet(new BAPassword(password.getText()))){
                 			informationalAlert("Unfortunately, you messed up.",
                 					"Wrong password");
                     		return;
                 		}
+            		Main.UI_ONLY_WALLET_PW.setPassword(password.getText());
+            		
         			Animation ani = GuiUtils.fadeOut(v);
         			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
         				GuiUtils.fadeIn(authenticatorVbox);
@@ -1436,7 +1441,7 @@ public class Controller  extends BaseUI{
         			}
         			else {to = "Multiple";}
         			v.setVisible(false);
-        			if (broadcast(tx,to,pw) == true) {
+        			if (broadcast(tx,to,Main.UI_ONLY_WALLET_PW) == true) {
         				
         			}
         			else {
@@ -1499,7 +1504,7 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public boolean broadcast (Transaction tx, String to, @Nullable String WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
+    public boolean broadcast (Transaction tx, String to, @Nullable BAPassword WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
     	return SendTxHelper.broadcastTx(tx, 
     			txMsgLabel.getText(), 
     			to,
@@ -2077,13 +2082,13 @@ public class Controller  extends BaseUI{
      * @return
      * @throws NoWalletPasswordException 
      */
-	private boolean checkIfPasswordDecryptsWallet(String password) throws NoWalletPasswordException{
+	private boolean checkIfPasswordDecryptsWallet(BAPassword password){
 		if(Authenticator.getWalletOperation().isWalletEncrypted()){
     		try{
     			Authenticator.getWalletOperation().decryptWallet(password);
     			Authenticator.getWalletOperation().encryptWallet(password);
     		}
-    		catch(KeyCrypterException  e){
+    		catch(KeyCrypterException | NoWalletPasswordException  e){
     			return false;
     		} 	
     	}

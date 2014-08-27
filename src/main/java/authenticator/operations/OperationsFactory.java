@@ -79,6 +79,7 @@ import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
 public class OperationsFactory extends BASE{
@@ -94,16 +95,19 @@ public class OperationsFactory extends BASE{
 	 * 
 	 * @param wallet
 	 * @param pairingName
-	 * @param accountID - if != null will force the account ID
+	 * @param accountID
 	 * @param networkType
+	 * @param timeout - for the operation, in miliseconds (0 for no timeout)
 	 * @param animation
 	 * @param animationAfterPairing
+	 * @param statusListener
 	 * @return
 	 */
 	static public BAOperation PAIRING_OPERATION(WalletOperation wallet,
 			String pairingName, 
 			@Nullable Integer accountID,
 			NetworkType networkType, 
+			int timeout,
 			@Nullable Runnable animation,
 			@Nullable Runnable animationAfterPairing,
 			@Nullable PairingStageUpdater statusListener){
@@ -114,7 +118,7 @@ public class OperationsFactory extends BASE{
 					.SetFinishedMsg("Finished pairing")
 					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "blockchain", Integer.toString(networkType.getValue()) })
 					.SetOperationAction(new BAOperationActions(){
-						int timeout = 5;
+						int tempTimeout = 5;
 						ServerSocket socket = null;
 						@Override
 						public void PreExecution(OperationListener listenerUI, String[] args)  throws Exception { }
@@ -125,12 +129,13 @@ public class OperationsFactory extends BASE{
 								ServerSocket ss, BANetworkInfo netInfo,
 								String[] args, OperationListener listener)
 								throws Exception {
-							timeout = ss.getSoTimeout();
+							tempTimeout = ss.getSoTimeout();
 							 ss.setSoTimeout(0);
 							 socket = ss;
 							 PairingProtocol pair = new PairingProtocol();
 							 pair.run(wallet,
 									 ss,
+									 timeout,
 									 netInfo, 
 									 args,
 									 listener,
@@ -138,7 +143,7 @@ public class OperationsFactory extends BASE{
 									 animation, 
 									 animationAfterPairing); 
 							 //Return to previous timeout
-							 ss.setSoTimeout(timeout);
+							 ss.setSoTimeout(tempTimeout);
 						}
 
 						@Override
@@ -191,7 +196,7 @@ public class OperationsFactory extends BASE{
 																 * if necessary
 																 */
 																@Nullable PendingRequest pendigReq,
-																@Nullable String WALLET_PW){
+																@Nullable BAPassword WALLET_PW){
 		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
 				.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
@@ -415,7 +420,7 @@ public class OperationsFactory extends BASE{
 			String to, 
 			WalletOperation wallet, 
 			Transaction tx, Map<String,ATAddress> keys,
-			@Nullable String WALLET_PW){
+			@Nullable BAPassword WALLET_PW){
 		return new BAOperation(ATOperationType.BroadcastNormalTx)
 		.SetDescription("Send normal bitcoin Tx")
 		.SetFinishedMsg("Tx Broadcast complete")

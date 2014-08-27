@@ -25,6 +25,7 @@ import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.listeners.BAGeneralEventsListener;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.network.TCPListener;
+import authenticator.network.TCPListener.TCPListenerExecutionDataBinder;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol;
@@ -128,12 +129,6 @@ public class Authenticator extends BASE{
 					mApplicationParams.getIsManuallyPortForwarded(),
 					new String[]{Integer.toString(getApplicationParams().getNetworkPort())});
 		
-//		Authenticator.getWalletOperation().updateBalaceNonBlocking(Authenticator.getWalletOperation().mWalletWrapper.getTrackedWallet(), new Runnable(){
-//			@Override
-//			public void run() {
-//				
-//			}
-//		});
 	}
 	
 	public static void disposeOfAuthenticator(){
@@ -215,10 +210,6 @@ public class Authenticator extends BASE{
 		return mWalletOperation;
 	}
 	
-	public static TCPListener Net(){
-		return mTCPListener;
-	}
-	
 	/**
 	 * Get {@link authenticator.ui_helpers.BAApplication.BAApplicationParameters} object.<br>
 	 * Object is populated when the wallet is luanched.
@@ -233,6 +224,14 @@ public class Authenticator extends BASE{
 	public Authenticator setApplicationParams(BAApplicationParameters params){
 		mApplicationParams = params;
 		return this;
+	}
+	
+	public static TCPListener Net(){
+		return mTCPListener;
+	}
+	
+	public void setTCPListenerDataBinder(TCPListenerExecutionDataBinder binder){
+		mTCPListener.setExecutionDataBinder(binder);
 	}
 	
 	//#####################################

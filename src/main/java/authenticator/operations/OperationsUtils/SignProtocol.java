@@ -29,6 +29,7 @@ import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
+import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
 import com.google.bitcoin.core.ECKey;
@@ -54,7 +55,7 @@ public class SignProtocol {
 	 * @throws Exception
 	 */
 	static public byte[] prepareTX(WalletOperation wallet, 
-			@Nullable String WALLET_PW, 
+			@Nullable BAPassword WALLET_PW, 
 			Transaction tx,  
 			String pairingID) throws Exception {
 		//Create the payload
@@ -120,7 +121,7 @@ public class SignProtocol {
 	 */
 	@SuppressWarnings({ "static-access", "deprecation", "unused" })
 	static public void complete(WalletOperation wallet, 
-			@Nullable String WALLET_PW,
+			@Nullable BAPassword WALLET_PW,
 			Transaction tx, 
 			ArrayList<byte[]> AuthSigs, 
 			PairedAuthenticator po) throws UnableToCompleteTxSigningException

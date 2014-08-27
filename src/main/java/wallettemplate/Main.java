@@ -6,6 +6,8 @@ import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
+import authenticator.network.TCPListener;
+import authenticator.walletCore.BAPassword;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -67,13 +69,15 @@ public class Main extends BAApplication {
 	  * In order to make wallet encryption and decryption smoother, we keep
 	  * the wallet's password in memory (ONLY !!) so decryption won't prompt an "Enter password" dialog
 	  */
-	 public static String UI_ONLY_WALLET_PW = "";
+	 public static BAPassword UI_ONLY_WALLET_PW;
 
     @Override
     public void start(Stage mainWindow) throws Exception {
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
+        
+        UI_ONLY_WALLET_PW = new BAPassword();
         
         if(super.BAInit())
 	        try {
@@ -186,6 +190,12 @@ public class Main extends BAApplication {
         
         walletDB config = new walletDB(BAApplication.ApplicationParams.getAppName());
     	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params, config.getHierarchyPubKey());
+    	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
+    		@Override
+    		public BAPassword getWalletPassword() {
+    			return Main.UI_ONLY_WALLET_PW;
+    		}
+    	});
     	auth.startAsync();
     	controller.onAuthenticatorSetup();
     

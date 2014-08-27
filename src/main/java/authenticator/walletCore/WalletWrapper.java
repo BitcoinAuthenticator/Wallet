@@ -223,11 +223,11 @@ public class WalletWrapper extends BASE{
 	//
 	//#####################################
 	
-	public void decryptWallet(String password){
+	public void decryptWallet(String password) throws IllegalStateException{
 		trackedWallet.decrypt(password);
 	}
 	
-	public void encryptWallet(String password){
+	public void encryptWallet(String password) throws IllegalStateException{
 		trackedWallet.encrypt(password);
 	}
 	

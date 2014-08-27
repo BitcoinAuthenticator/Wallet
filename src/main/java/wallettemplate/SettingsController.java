@@ -202,7 +202,7 @@ public class SettingsController  extends BaseUI{
 				return;
 			}
 			
-			Main.UI_ONLY_WALLET_PW = txfShowSeedPassword.getText();
+			Main.UI_ONLY_WALLET_PW.setPassword(txfShowSeedPassword.getText());
 			
 		}
 		

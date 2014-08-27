@@ -131,6 +131,7 @@ public class PairWallet extends BaseUI{
     			pairName, 
     			accountID,
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
+    			20000,
     			animDisplay, 
     			animAfterPairing,
     			new PairingStageUpdater(){

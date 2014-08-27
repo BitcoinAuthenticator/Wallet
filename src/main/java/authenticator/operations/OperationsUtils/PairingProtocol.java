@@ -38,13 +38,20 @@ public class PairingProtocol {
    * <li>NetworkType - 1 for main net, 0 for testnet</li>
    * </ol>
    * 
-   * @param {@link java.net.ServerSocket} ss
+   * @param wallet
+   * @param ss
+   * @param timeout - in miliseconds  (0 for no timeout)
+   * @param netInfo
    * @param args
-   * @param {@link authenticator.operations.listeners.OperationListener} listener
+   * @param opListener
+   * @param statusListener
+   * @param displayQRAnimation
+   * @param animationAfterPairing
    * @throws Exception
    */
   public void run (WalletOperation wallet,
 		  ServerSocket ss,
+		  int timeout,
 		  BANetworkInfo netInfo,
 		  String[] args, 
 		  OperationListener opListener,
@@ -73,7 +80,11 @@ public class PairingProtocol {
 	  
 	  //Display a QR code for the user to scan
 	  PairingQRCode PairingQR = new PairingQRCode(ip, localip, walletType, key, Integer.parseInt(args[3]));
-	  Socket socket = dispalyQRAnListenForCommunication(ss, statusListener,displayQRAnimation, animationAfterPairing);
+	  Socket socket = dispalyQRAnListenForCommunication(ss, 
+			  timeout, 
+			  statusListener,
+			  displayQRAnimation, 
+			  animationAfterPairing);
 	  if(socket == null)
 		  return;
 	  
@@ -114,19 +125,30 @@ public class PairingProtocol {
 
   }
   
-  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, PairingStageUpdater listener, Runnable displayQRAnimation, Runnable animationAfterPairing){
+  /**
+   * 
+   * @param ss
+   * @param timeout - in miliseconds
+   * @param listener
+   * @param displayQRAnimation
+   * @param animationAfterPairing
+   * @return
+   */
+  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, 
+		  int timeout,
+		  PairingStageUpdater listener, 
+		  Runnable displayQRAnimation, 
+		  Runnable animationAfterPairing){
 	  //DisplayQR QR = new DisplayQR();
 	  //QR.displayQR();   
 	  
 	  if(displayQRAnimation != null)
 		  displayQRAnimation.run();
 	  
-	  System.out.println("Listening for connection (20 sec timeout) ...");
+	  System.out.println("Listening for connection ("  + timeout + " sec timeout) ...");
 	  postUIStatusUpdate(listener, PairingStage.WAITING_FOR_SCAN);
-//	  postUIStatusUpdate(listener, "Listening for connection (20 sec timeout) ...");
-//	  postUIStatusUpdate(listener, "Scan the QR code to pair the wallet with the Authenticator");
 	  try {
-		ss.setSoTimeout( 20000 );
+		ss.setSoTimeout( timeout );
 		Socket socket = ss.accept();
 		//QR.CloseWindow();
 		System.out.println("Connected to Alice");

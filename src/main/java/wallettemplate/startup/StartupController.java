@@ -1369,6 +1369,7 @@ public class StartupController  extends BaseUI{
     			pairName, 
     			null,
     			nt,
+    			0,
     			animDisplay, 
     			null,
     			stageListener);

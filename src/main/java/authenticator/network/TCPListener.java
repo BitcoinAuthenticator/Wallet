@@ -39,6 +39,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
 /**
@@ -62,8 +63,9 @@ import authenticator.walletCore.WalletOperation;
  */
 public class TCPListener extends BASE{
 	final int LOOPER_BLOCKING_TIMEOUT = 3000;
+	
 	private Socket socket;
-	private static ConcurrentLinkedQueue<BAOperation> operationsQueue;
+	private ConcurrentLinkedQueue<BAOperation> operationsQueue;
 	private Thread listenerThread;
 	private UpNp plugnplay;
 	private boolean isManuallyPortForwarded;
@@ -73,6 +75,17 @@ public class TCPListener extends BASE{
 	private ServerSocket ss = null;
 	
 	private BAOperation CURRENT_OUTBOUND_OPERATION = null;
+	
+	/**
+	 * Data binder
+	 */
+	private TCPListenerExecutionDataBinder dataBinder = new DataBinderAdapter();
+	public class DataBinderAdapter implements TCPListenerExecutionDataBinder{
+		@Override
+		public BAPassword getWalletPassword() {
+			return new BAPassword();
+		}
+	}
 	
 	/**
 	 * Network Requirements flags
@@ -86,6 +99,8 @@ public class TCPListener extends BASE{
 	 * Flags
 	 */
 	private boolean shouldStopListener;
+	
+	public TCPListener(){ super(TCPListener.class); }
 	
 	/**
 	 * args:<br>
@@ -297,7 +312,7 @@ public class TCPListener extends BASE{
 											true,
 											pendingReq.getPayloadIncoming().toByteArray(),
 											pendingReq, 
-											null); // TODO - Issue #41 - or let user know to keep wallet decrypted or some other solution
+											dataBinder.getWalletPassword());
 									op.SetOperationUIUpdate(new OperationListener(){
 
 										@Override
@@ -493,6 +508,28 @@ public class TCPListener extends BASE{
 	
 	public BANetworkInfo getNetworkInfo() {
 		return vBANeworkInfo;
+	}
+	
+	//#####################################
+	//
+	//		Data Binder
+	//
+	//#####################################
+	
+	/**
+	 * An interface that implements necessary methods that get critical data to the listener at runtime.<br>
+	 * This interface is critical for the correct operation and execution of a {@link authenticator.operations.BAOperation BAOperation}.<br>
+	 * <b>Failing to implement this listener could cause operations to crash on execution</b>
+	 * 
+	 * @author Alon Muroch
+	 *
+	 */
+	public interface TCPListenerExecutionDataBinder{
+		public BAPassword getWalletPassword();
+	}
+	
+	public void setExecutionDataBinder(TCPListenerExecutionDataBinder b){
+		dataBinder = b;
 	}
 	
 	//#####################################
