@@ -300,13 +300,13 @@ public final class ProtoSettings {
     com.google.protobuf.ByteString
         getTrustedPeerIPBytes();
 
-    // optional float bloomFilterFalsePositiveRate = 10;
+    // optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
      */
     boolean hasBloomFilterFalsePositiveRate();
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
      */
     float getBloomFilterFalsePositiveRate();
   }
@@ -677,17 +677,17 @@ public final class ProtoSettings {
       }
     }
 
-    // optional float bloomFilterFalsePositiveRate = 10;
+    // optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];
     public static final int BLOOMFILTERFALSEPOSITIVERATE_FIELD_NUMBER = 10;
     private float bloomFilterFalsePositiveRate_;
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
      */
     public boolean hasBloomFilterFalsePositiveRate() {
       return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
      */
     public float getBloomFilterFalsePositiveRate() {
       return bloomFilterFalsePositiveRate_;
@@ -703,7 +703,7 @@ public final class ProtoSettings {
       connectOnLocalHost_ = false;
       connectToTrustedPeer_ = false;
       trustedPeerIP_ = "";
-      bloomFilterFalsePositiveRate_ = 0F;
+      bloomFilterFalsePositiveRate_ = 0.0005F;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -930,7 +930,7 @@ public final class ProtoSettings {
         bitField0_ = (bitField0_ & ~0x00000080);
         trustedPeerIP_ = "";
         bitField0_ = (bitField0_ & ~0x00000100);
-        bloomFilterFalsePositiveRate_ = 0F;
+        bloomFilterFalsePositiveRate_ = 0.0005F;
         bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
@@ -1494,22 +1494,22 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional float bloomFilterFalsePositiveRate = 10;
-      private float bloomFilterFalsePositiveRate_ ;
+      // optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];
+      private float bloomFilterFalsePositiveRate_ = 0.0005F;
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
        */
       public boolean hasBloomFilterFalsePositiveRate() {
         return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
        */
       public float getBloomFilterFalsePositiveRate() {
         return bloomFilterFalsePositiveRate_;
       }
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
        */
       public Builder setBloomFilterFalsePositiveRate(float value) {
         bitField0_ |= 0x00000200;
@@ -1518,11 +1518,11 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 10;</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 10 [default = 0.0005];</code>
        */
       public Builder clearBloomFilterFalsePositiveRate() {
         bitField0_ = (bitField0_ & ~0x00000200);
-        bloomFilterFalsePositiveRate_ = 0F;
+        bloomFilterFalsePositiveRate_ = 0.0005F;
         onChanged();
         return this;
       }
@@ -1553,7 +1553,7 @@ public final class ProtoSettings {
   static {
     java.lang.String[] descriptorData = {
       "\n\024configSettings.proto\022\026authenticator.pr" +
-      "otobuf\"\375\002\n\016ConfigSettings\022>\n\013accountUnit" +
+      "otobuf\"\205\003\n\016ConfigSettings\022>\n\013accountUnit" +
       "\030\001 \001(\0162#.authenticator.protobuf.BitcoinU" +
       "nit:\004Bits\022\030\n\rdecimalPoints\030\002 \001(\005:\0012\022 \n\023l" +
       "ocalCurrencySymbol\030\003 \001(\t:\003USD\022<\n\010languag" +
@@ -1561,11 +1561,11 @@ public final class ProtoSettings {
       "es:\007English\022\031\n\ndefaultFee\030\005 \001(\005:\00510000\022\021" +
       "\n\003TOR\030\006 \001(\010:\004true\022!\n\022connectOnLocalHost\030" +
       "\007 \001(\010:\005false\022#\n\024connectToTrustedPeer\030\010 \001" +
-      "(\010:\005false\022\025\n\rtrustedPeerIP\030\t \001(\t\022$\n\034bloo",
-      "mFilterFalsePositiveRate\030\n \001(\002*=\n\013Bitcoi" +
-      "nUnit\022\007\n\003BTC\020\000\022\010\n\004Bits\020\001\022\r\n\tMillibits\020\002\022" +
-      "\014\n\010NanoBits\020\003*\030\n\tLanguages\022\013\n\007English\020\000B" +
-      "\017B\rProtoSettings"
+      "(\010:\005false\022\025\n\rtrustedPeerIP\030\t \001(\t\022,\n\034bloo",
+      "mFilterFalsePositiveRate\030\n \001(\002:\0060.0005*=" +
+      "\n\013BitcoinUnit\022\007\n\003BTC\020\000\022\010\n\004Bits\020\001\022\r\n\tMill" +
+      "ibits\020\002\022\014\n\010NanoBits\020\003*\030\n\tLanguages\022\013\n\007En" +
+      "glish\020\000B\017B\rProtoSettings"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

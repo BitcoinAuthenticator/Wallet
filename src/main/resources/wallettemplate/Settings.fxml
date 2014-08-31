@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="SettingsApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.SettingsController">
+<AnchorPane fx:id="SettingsApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.SettingsController">
   <children>
     <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="55.0" prefWidth="850.0" style="-fx-background-color: #d2cece;">
       <children>
@@ -15,7 +15,8 @@
           <image>
             <Image url="@btnSettings.png" />
           </image>
-        </ImageView><Button fx:id="btnBackup" layoutX="495.0" layoutY="10.0" mnemonicParsing="false" onAction="#launchBackup" style="-fx-background-color: #b3b1b1;" text="Backup" />
+        </ImageView>
+        <Button fx:id="btnBackup" layoutX="495.0" layoutY="10.0" mnemonicParsing="false" onAction="#launchBackup" style="-fx-background-color: #b3b1b1;" text="Backup" />
         <Button fx:id="btnDone" layoutX="721.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #b3b1b1;" text="Save &amp; Close" />
         <Button fx:id="btnRestore" layoutX="579.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Restore Defaults" />
       </children>
@@ -36,7 +37,7 @@
             </Label>
             <ChoiceBox fx:id="cbBitcoinUnit" layoutX="14.0" layoutY="39.0" styleClass="choice-box-settings">
               <items>
-              <FXCollections fx:factory="observableArrayList">
+                <FXCollections fx:factory="observableArrayList">
                   <String fx:value="bits" />
                   <String fx:value="BTC" />
                   <String fx:value="mBTC" />
@@ -59,7 +60,7 @@
             </ChoiceBox>
           </children>
         </Pane>
-        <Pane id="displayPane" layoutX="14.0" layoutY="155.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;" visible="true">
+        <Pane id="displayPane" layoutX="14.0" layoutY="156.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;" visible="true">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Local Currency" />
             <ChoiceBox fx:id="cbCurrency" layoutX="14.0" layoutY="39.0" prefWidth="94.0" styleClass="choice-box-settings">
@@ -240,19 +241,19 @@
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Security" />
             <Label layoutX="15.0" layoutY="42.0" text="Enter Your Current Password" />
-            <TextField fx:id="txfShowSeedPassword" layoutX="15.0" layoutY="67.0" prefWidth="240.0" />
+            <PasswordField fx:id="txfShowSeedPassword" layoutX="15.0" layoutY="67.0" prefWidth="240.0" />
             <Button fx:id="btnShowSeed" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" onAction="#showSeed" style="-fx-background-color: #b3b1b1;" text="Show Seed" />
             <Label font="$x1" layoutX="15.0" layoutY="142.0" text="Change your Password" />
             <Label layoutX="15.0" layoutY="169.0" text="Enter your current password" />
-            <TextField layoutX="15.0" layoutY="186.0" prefWidth="240.0" />
+            <PasswordField layoutX="15.0" layoutY="186.0" prefWidth="240.0" />
             <Label layoutX="15.0" layoutY="222.0" text="Enter your new password" />
-            <TextField layoutX="15.0" layoutY="245.0" prefWidth="239.0" />
+            <PasswordField layoutX="15.0" layoutY="245.0" prefWidth="239.0" />
             <Label layoutX="15.0" layoutY="273.0" text="Repeat password" />
-            <TextField layoutX="14.0" layoutY="295.0" prefWidth="240.0" />
+            <PasswordField layoutX="14.0" layoutY="295.0" prefWidth="240.0" />
             <Button fx:id="btnChange" layoutX="15.0" layoutY="327.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Change password" />
           </children>
         </Pane>
-        <Pane layoutX="14.0" layoutY="228.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">
+        <Pane layoutX="14.0" layoutY="229.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="10.0" text="Language" />
             <ChoiceBox fx:id="cbLanguage" layoutX="14.0" layoutY="35.0" prefWidth="138.0" styleClass="choice-box-settings">
@@ -264,13 +265,13 @@
             </ChoiceBox>
           </children>
         </Pane>
-        <Pane layoutX="14.0" layoutY="303.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">
+        <Pane layoutX="14.0" layoutY="302.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="10.0" text="Default Transaction Fee" />
             <TextField fx:id="txFee" layoutX="14.0" layoutY="34.0" prefWidth="111.0" />
           </children>
         </Pane>
-        <Pane layoutX="285.0" layoutY="14.0" prefHeight="208.0" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
+        <Pane layoutX="285.0" layoutY="14.0" prefHeight="207.1328125" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Network" />
             <CheckBox fx:id="ckTor" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" text="Connect through Tor" />
@@ -279,7 +280,7 @@
             <TextField fx:id="txPeerIP" layoutX="14.0" layoutY="157.0" prefWidth="200.0" promptText="Peer IP Address" />
           </children>
         </Pane>
-        <Pane layoutX="285.0" layoutY="228.0" prefHeight="142.0" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
+        <Pane layoutX="285.0" layoutY="229.0" prefHeight="142.0" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Slider fx:id="slBloom" layoutX="14.0" layoutY="72.0" prefWidth="240.0" showTickLabels="true" showTickMarks="true" />
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Bloom Filtering" />
