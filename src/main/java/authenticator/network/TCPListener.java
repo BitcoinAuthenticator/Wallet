@@ -273,6 +273,10 @@ public class TCPListener extends BASE{
 							}
 							//
 							if(pendingReq == null){
+								
+								CannotProcessRequestPayload p = new CannotProcessRequestPayload();
+								outStream.writeInt(p.getPayloadSize());
+								outStream.write(p.toBytes());
 								logAsInfo("No Pending Request Found, aborting inbound operation");
 							}
 							else{

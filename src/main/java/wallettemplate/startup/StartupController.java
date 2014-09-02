@@ -247,6 +247,7 @@ public class StartupController  extends BaseUI{
 	private String 			  encryptionPassword = null;
 	private String 			  firstAccountName;
 	private WalletAccountType firstAccountType = WalletAccountType.StandardAccount;
+	private boolean 		  shouldCreateNewAccountOnFinish = false;
 	
 	
 	/**
@@ -432,6 +433,7 @@ public class StartupController  extends BaseUI{
  		    }
 		 });
 		 
+		 
 		 final ContextMenu contextMenu2 = new ContextMenu();
 		 MenuItem item12 = new MenuItem("Copy");
 		 item12.setOnAction(new EventHandler<ActionEvent>() {
@@ -444,6 +446,20 @@ public class StartupController  extends BaseUI{
 		 });
 		 contextMenu2.getItems().addAll(item12);
 		 lvSSS.setContextMenu(contextMenu2);
+		 
+		 // seed mnemonic context menu
+		 final ContextMenu contextMenu = new ContextMenu();
+		 MenuItem item1 = new MenuItem("Copy");
+		 item1.setOnAction(new EventHandler<ActionEvent>() {
+			 public void handle(ActionEvent e) {
+				 Clipboard clipboard = Clipboard.getSystemClipboard();
+				 ClipboardContent content = new ClipboardContent();
+				 content.putString(lblSeed.getText().toString());
+				 clipboard.setContent(content);
+			 }
+		 });
+		 contextMenu.getItems().addAll(item1);
+		 lblSeed.setContextMenu(contextMenu);
 		 
 		 // accounts restore
 		 accountTypeBox.getItems().clear();
@@ -492,27 +508,17 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
-
+		 
 		 createWallet(null);
 		 createAuthenticatorObject();
+		 
+		 shouldCreateNewAccountOnFinish = true;
 		 
 		 // update params in main
 		 Main.returnedParamsFromSetup = appParams;
 		 
 		 for (String word : walletSeed.getMnemonicCode()){mnemonic = mnemonic + word + " ";}
 		 lblSeed.setText(mnemonic);
-		 final ContextMenu contextMenu = new ContextMenu();
-		 MenuItem item1 = new MenuItem("Copy");
-		 item1.setOnAction(new EventHandler<ActionEvent>() {
-			 public void handle(ActionEvent e) {
-				 Clipboard clipboard = Clipboard.getSystemClipboard();
-				 ClipboardContent content = new ClipboardContent();
-				 content.putString(lblSeed.getText().toString());
-				 clipboard.setContent(content);
-			 }
-		 });
-		 contextMenu.getItems().addAll(item1);
-		 lblSeed.setContextMenu(contextMenu);
 		 
 		 Animation ani = GuiUtils.fadeOut(MainPane);
 		 GuiUtils.fadeIn(CreateAccountPane);
@@ -522,6 +528,7 @@ public class StartupController  extends BaseUI{
 	
 	 
 	 @FXML protected void toMainPane(ActionEvent event) {
+		 shouldCreateNewAccountOnFinish = false;
 		 Animation ani = GuiUtils.fadeOut(MainRestorePane);
 		 Animation ani2 = GuiUtils.fadeOut(CreateAccountPane);
 		 GuiUtils.fadeIn(MainPane);
@@ -607,16 +614,19 @@ public class StartupController  extends BaseUI{
 	 
 	public void finishsetup(){
 		 
-		 // create the first account
-		 if(firstAccountType  == WalletAccountType.StandardAccount)
-			try {
-				auth.Net().INTERRUPT_CURRENT_OUTBOUND_OPERATION();
-				createNewStandardAccount(firstAccountName);
-			} catch (IOException | AccountWasNotFoundException e1) { e1.printStackTrace(); }
-		 else
-		 {
-			 // do nothing
-		 }
+		if(shouldCreateNewAccountOnFinish) {
+			// create the first account
+			 if(firstAccountType  == WalletAccountType.StandardAccount)
+				try {
+					auth.Net().INTERRUPT_CURRENT_OUTBOUND_OPERATION();
+					createNewStandardAccount(firstAccountName);
+				} catch (IOException | AccountWasNotFoundException e1) { e1.printStackTrace(); }
+			 else
+			 {
+				 // do nothing
+			 }
+			 
+		}
 		 
 		 auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
@@ -633,6 +643,7 @@ public class StartupController  extends BaseUI{
 		         }
 			}, MoreExecutors.sameThreadExecutor());
 		 	auth.stopAsync();
+		 	
 	 }
 	 
 	 @FXML protected void openPlayStore(ActionEvent event) throws IOException{
@@ -1327,7 +1338,7 @@ public class StartupController  extends BaseUI{
 	  
 	 @FXML protected void finishRestoreProcess(ActionEvent event){
 		 RestoreProcessPane.setVisible(false);
-		 displayExplanationPane();
+		 finishsetup();
 	 }
 	 
 	//##############################

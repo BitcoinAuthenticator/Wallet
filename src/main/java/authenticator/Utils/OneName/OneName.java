@@ -117,7 +117,7 @@ public class OneName {
 	}
 	
 	/**Downloads the OneName avatar, scales and crops it.*/
-	public void getAvatar(Authenticator Auth, WalletOperation wallet,String onename) throws IOException, JSONException {
+	public boolean getAvatar(Authenticator Auth, WalletOperation wallet,String onename) throws IOException, JSONException {
 		//Get the url for the image from the onename json
 		JSONObject json = readJsonFromUrl("https://onename.io/" + onename + ".json");
 	   	JSONObject avatar = json.getJSONObject("avatar");
@@ -127,56 +127,63 @@ public class OneName {
 	    //Download the image
 	    BufferedImage image =null;
 	    URL url =new URL(imgURL);
-	    try{image = ImageIO.read(url);}
-	    catch(IOException e){e.printStackTrace();}
-	    //Scale the image
-	    int imageWidth  = image.getWidth();
-	    int imageHeight = image.getHeight();
-	    int width;
-	    int height;
-	    if (imageWidth>imageHeight){
-	    	Double temp = (73/ (double)imageHeight)*(double)imageWidth;
-	        width = temp.intValue();
-	        height = 73;
-	    } 
-	    else {
-	        Double temp = (73/ (double) imageWidth)* (double) imageHeight;
-	       	width = 73;
-	       	height = temp.intValue();
+	    try{
+	    	image = ImageIO.read(url);
+	    	
+	    	//Scale the image
+		    int imageWidth  = image.getWidth();
+		    int imageHeight = image.getHeight();
+		    int width;
+		    int height;
+		    if (imageWidth>imageHeight){
+		    	Double temp = (73/ (double)imageHeight)*(double)imageWidth;
+		        width = temp.intValue();
+		        height = 73;
+		    } 
+		    else {
+		        Double temp = (73/ (double) imageWidth)* (double) imageHeight;
+		       	width = 73;
+		       	height = temp.intValue();
+		    }
+		    BufferedImage scaledImage = new BufferedImage(width, height, image.getType());
+		    Graphics2D g = scaledImage.createGraphics();
+		    g.drawImage(image, 0, 0, width, height, null);
+		    g.dispose();
+		    //Crop the image
+		    int x,y;
+		    if (width>height){
+		        y=0;
+		       	x=(width-73)/2;
+		    }
+		    else {
+		    	x=0;
+		    	y=(height-73)/2;
+		    }
+		    
+		    // Save image
+		    //Image img = createImage(croppedImage);
+		    String imgPath = "";
+		    try {
+		        // retrieve image
+		    	BufferedImage croppedImage = scaledImage.getSubimage(x, y, 73, 73);
+		        File outputfile = new File("cached_resources/oneAvatar.png");
+		        ImageIO.write(croppedImage, "png", outputfile);
+		        imgPath = outputfile.getAbsolutePath();
+		    } catch (IOException e) {  e.printStackTrace(); }
+		    
+		    AuthenticatorConfiguration.ConfigOneNameProfile.Builder onb = AuthenticatorConfiguration.ConfigOneNameProfile.newBuilder();
+		    onb.setOnename(onename);
+		    onb.setOnenameFormatted(formattedname);
+		    onb.setOnenameAvatarURL(imgURL);
+		    onb.setOnenameAvatarFilePath(imgPath);
+		    wallet.writeOnename(onb.build());
+		    Auth.fireonNewUserNamecoinIdentitySelection(onb.build());
 	    }
-	    BufferedImage scaledImage = new BufferedImage(width, height, image.getType());
-	    Graphics2D g = scaledImage.createGraphics();
-	    g.drawImage(image, 0, 0, width, height, null);
-	    g.dispose();
-	    //Crop the image
-	    int x,y;
-	    if (width>height){
-	        y=0;
-	       	x=(width-73)/2;
+	    catch(IOException e){
+	    	e.printStackTrace();
+	    	return false;
 	    }
-	    else {
-	    	x=0;
-	    	y=(height-73)/2;
-	    }
-	    
-	    // Save image
-	    //Image img = createImage(croppedImage);
-	    String imgPath = "";
-	    try {
-	        // retrieve image
-	    	BufferedImage croppedImage = scaledImage.getSubimage(x, y, 73, 73);
-	        File outputfile = new File("cached_resources/oneAvatar.png");
-	        ImageIO.write(croppedImage, "png", outputfile);
-	        imgPath = outputfile.getAbsolutePath();
-	    } catch (IOException e) {  e.printStackTrace(); }
-	    
-	    AuthenticatorConfiguration.ConfigOneNameProfile.Builder onb = AuthenticatorConfiguration.ConfigOneNameProfile.newBuilder();
-	    onb.setOnename(onename);
-	    onb.setOnenameFormatted(formattedname);
-	    onb.setOnenameAvatarURL(imgURL);
-	    onb.setOnenameAvatarFilePath(imgPath);
-	    wallet.writeOnename(onb.build());
-	    Auth.fireonNewUserNamecoinIdentitySelection(onb.build());
+	    return true;
 	}
 	
 	/**For reading the JSON*/
