@@ -14,6 +14,9 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
@@ -219,7 +222,8 @@ public class TCPListener extends BASE{
 	    	 * @throws FileNotFoundException
 	    	 * @throws IOException
 	    	 */
-	    	private void looper() throws FileNotFoundException, IOException{
+	    	@SuppressWarnings("unused")
+			private void looper() throws FileNotFoundException, IOException{
 	    		boolean isConnected;
 				sendUpdatedIPsToPairedAuthenticators();
 				while(true)
@@ -254,6 +258,15 @@ public class TCPListener extends BASE{
 							logAsInfo("Processing Pending Operation ...");
 							DataInputStream inStream = new DataInputStream(socket.getInputStream());
 							DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+							
+							/*
+							 * Send a pong message to confirm
+							 */
+							PongPayload pp = new PongPayload();
+							outStream.writeInt(pp.getPayloadSize());
+							outStream.write(pp.getBytes());
+							logAsInfo("Sent a pong answer");
+							
 							//get request ID
 							String requestID = "";
 							int keysize = inStream.readInt();
@@ -261,6 +274,7 @@ public class TCPListener extends BASE{
 							inStream.read(reqIdPayload);
 							JSONObject jo = new JSONObject(new String(reqIdPayload));
 							requestID = jo.getString("requestID");
+							String pairingID = jo.getString("pairingID");	
 							//
 							logAsInfo("Looking for pending request ID: " + requestID);
 							for(Object o:wallet.getPendingRequests()){
@@ -273,10 +287,10 @@ public class TCPListener extends BASE{
 							}
 							//
 							if(pendingReq == null){
-								
-								CannotProcessRequestPayload p = new CannotProcessRequestPayload();
+								SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+								CannotProcessRequestPayload p = new CannotProcessRequestPayload(secretkey);
 								outStream.writeInt(p.getPayloadSize());
-								outStream.write(p.toBytes());
+								outStream.write(p.toEncryptedBytes());
 								logAsInfo("No Pending Request Found, aborting inbound operation");
 							}
 							else{
@@ -359,7 +373,9 @@ public class TCPListener extends BASE{
 						}
 					}
 					catch(Exception e){
-						wallet.removePendingRequest(pendingReq);
+						if(pendingReq != null)
+							wallet.removePendingRequest(pendingReq);
+						e.printStackTrace();
 						logAsInfo("Error Occured while executing Inbound operation:\n"
 								+ e.toString());
 					}

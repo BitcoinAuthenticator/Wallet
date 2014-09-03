@@ -11,16 +11,21 @@ import org.json.JSONObject;
 import authenticator.crypto.CryptoUtils;
 import authenticator.crypto.CryptoUtils.CouldNotEncryptPayload;
 
-public class CannotProcessRequestPayload extends JSONObject{
+/**
+ * When receiving a request ID payload form the authenticator, this payload will be sent to confirm connection
+ * 
+ * @author Alon Muroch
+ *
+ */
+public class PongPayload extends JSONObject{
 	private byte[] payload;
-	private byte[] encryptedPayload;
 	
-	public CannotProcessRequestPayload(SecretKey secretKey) throws CouldNotEncryptPayload {
+	public PongPayload() throws CouldNotEncryptPayload{
 		
 		try {
-			put("CANNOT_PROCESS_REQUEST", "");
+			put("WELCOME_BACK_AUTHENTICATOR", "");
 			payload = this.toString().getBytes();
-			encryptedPayload = CryptoUtils.encryptPayloadWithChecksum(payload, secretKey);
+			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -28,13 +33,12 @@ public class CannotProcessRequestPayload extends JSONObject{
 		
 	}
 	
-	public byte[] toEncryptedBytes() {
-		return encryptedPayload;
+	public byte[] getBytes()  {
+		return payload;
 	}
 	
-	public int getPayloadSize() {
-		return encryptedPayload.length;
+	public int getPayloadSize() {			
+		return payload.length;
 	}
-	
 	
 }
