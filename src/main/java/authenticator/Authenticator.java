@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.annotation.Nullable;
+import javafx.scene.image.Image;
+
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.PeerGroup;
@@ -33,6 +36,7 @@ import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.walletCore.WalletOperation;
@@ -295,9 +299,9 @@ public class Authenticator extends BASE{
 			l.onNewPairedAuthenticator();
 	}
 	
-	public static void fireonNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile){
+	public static void fireonNewOneNameIdentitySelection(ConfigOneNameProfile profile, @Nullable Image profileImage){
 		for(BAGeneralEventsListener l:generalEventsListeners)
-			l.onNewUserNamecoinIdentitySelection(profile);
+			l.onNewOneNameIdentitySelection(profile, profileImage);
 	}
 	
 	public static void fireOnBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){

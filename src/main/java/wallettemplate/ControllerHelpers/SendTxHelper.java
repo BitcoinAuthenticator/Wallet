@@ -39,7 +39,6 @@ import wallettemplate.controls.SendToCell;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.OneName.OneName;
-import authenticator.Utils.OneName.OneName.ONData;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;

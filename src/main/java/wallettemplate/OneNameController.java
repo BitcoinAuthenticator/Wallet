@@ -1,5 +1,7 @@
 package wallettemplate;
 
+import static wallettemplate.utils.GuiUtils.informationalAlert;
+
 import java.io.IOException;
 
 import org.json.JSONException;
@@ -8,12 +10,17 @@ import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
 import authenticator.Utils.OneName.OneName;
+import authenticator.Utils.OneName.OneNameAdapter;
+import authenticator.Utils.OneName.OneNameListener;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import javafx.animation.Animation;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
@@ -33,14 +40,67 @@ public class OneNameController  extends BaseUI{
 		AnchorPane.setEffect(new DropShadow());
 	}
 	
-	@FXML protected void onename (ActionEvent event) throws IOException, JSONException{
-		OneName on = new OneName();
-		on.getAvatar(new Authenticator(), Authenticator.getWalletOperation(),txtOneName.getText());
-		overlayUi.done();
+	@FXML protected void onename (ActionEvent event){
+		setAllComponentsEnabled(false);
+		btnOK.setText("Loading");
+
+		OneName.getOneNameData(txtOneName.getText(), Authenticator.getWalletOperation(), new OneNameAdapter() {
+			@SuppressWarnings("restriction")
+			@Override
+			public void getOneNameData(ConfigOneNameProfile data) {
+				if(data == null) {
+					Platform.runLater(new Runnable() { 
+						  @Override
+						  public void run() {
+							  GuiUtils.informationalAlert("Could not find OneName User", "");
+							  btnOK.setText("Ok");
+							  setAllComponentsEnabled(true);
+						  }
+						});
+				}
+				else {
+					OneName.downloadAvatarImage(data, Authenticator.getWalletOperation(), new OneNameAdapter() {
+						@Override
+						public void getOneNameAvatarImage(ConfigOneNameProfile one, Image img) {
+							if(one == null || img == null) {
+								Platform.runLater(new Runnable() { 
+									  @Override
+									  public void run() {
+										  GuiUtils.informationalAlert("Could not download OneName Image", "");
+										  btnOK.setText("Ok");
+										  setAllComponentsEnabled(true);
+									  }
+									});
+							}
+							else
+								Authenticator.fireonNewOneNameIdentitySelection(one, img);
+							
+							Platform.runLater(new Runnable() { 
+							  @Override
+							  public void run() {
+								  btnOK.setText("Ok");
+								  btnCancel.setText("Done");
+								  btnCancel.setDisable(false);
+							  }
+							});
+						}
+					});
+				}
+			}
+		});		
 	}
 	
 	@FXML protected void done (){
 		overlayUi.done();
+	}
+	
+	@SuppressWarnings("restriction")
+	private void setAllComponentsEnabled(boolean value) {
+		//txtOneName.setDisable(!value);
+		btnOK.setDisable(!value);;
+		btnCancel.setDisable(!value);
+		//btnSignUp.setDisable(!value);
+		//btnBack.setDisable(!value);
 	}
 	
 	@FXML protected void learnMore(){

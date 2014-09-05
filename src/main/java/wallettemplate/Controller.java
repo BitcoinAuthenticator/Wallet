@@ -7,6 +7,7 @@ import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
 import authenticator.Utils.OneName.OneName;
+import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
@@ -25,6 +26,7 @@ import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
@@ -375,6 +377,8 @@ public class Controller  extends BaseUI{
       	 * Read the comments in TCPListener#looper()
      	 */
       	if(Authenticator.getWalletOperation().getPendingRequestSize() > 0)
+      		;//TODO
+      	
     	Platform.runLater(new Runnable() { 
 			 @Override
 			public void run() {
@@ -407,7 +411,7 @@ public class Controller  extends BaseUI{
 		}
 
 		@Override
-		public void onNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile) {
+		public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile, Image profileImage) {
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
@@ -973,21 +977,34 @@ public class Controller  extends BaseUI{
 	   }
    }
    
-   public void setupOneName(AuthenticatorConfiguration.ConfigOneNameProfile one){
-	   LOG.info("Setting oneName avatar image");
-	   // get image
-	   File imgFile = null;
-	   BufferedImage bimg = null;
-	   Image img = null;
-	   try {
-		    imgFile = new File(one.getOnenameAvatarFilePath());
-			bimg = ImageIO.read(imgFile);
-			img = OneName.createImage(bimg);
-	   } catch (Exception e) { // do nothing
+   public void setupOneName(ConfigOneNameProfile one){
+	   if(one != null) {
+		   LOG.info("Setting oneName avatar image");
+		   // get image
+		   File imgFile = null;
+		   BufferedImage bimg = null;
+		   Image img = null;
+		   try {
+			    imgFile = new File(one.getOnenameAvatarFilePath());
+			    if(imgFile.exists()) {
+			    	img = new Image(imgFile.toURI().toString());
+			    }
+			    else {
+			    	OneName.downloadAvatarImage(one, Authenticator.getWalletOperation(), new OneNameAdapter() {
+						@Override
+						public void getOneNameAvatarImage(ConfigOneNameProfile one, Image img) {
+							if(img != null && one != null)
+								   setUserProfileAvatarAndName(img,one.getOnenameFormatted());
+						}
+					});
+			    }
+				
+		   } catch (Exception e) { // do nothing
+		   }
+		   
+		   if(img != null && one != null)
+			   setUserProfileAvatarAndName(img,one.getOnenameFormatted());	   
 	   }
-	   
-	   if(img != null && one != null)
-		   setUserProfileAvatarAndName(img,one.getOnenameFormatted());	   
    }
    
 	public void setUserProfileAvatarAndName(Image img, String name) {

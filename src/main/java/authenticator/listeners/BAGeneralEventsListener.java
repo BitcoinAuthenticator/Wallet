@@ -1,6 +1,7 @@
 package authenticator.listeners;
 
 import javax.annotation.Nullable;
+import javafx.scene.image.Image;
 
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
@@ -8,6 +9,7 @@ import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 
 public interface BAGeneralEventsListener {
@@ -30,7 +32,7 @@ public interface BAGeneralEventsListener {
 	 * @param accountIndex
 	 */
 	public void onAccountBeenModified(int accountIndex);
-	public void onNewUserNamecoinIdentitySelection(AuthenticatorConfiguration.ConfigOneNameProfile profile);
+	public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile, @Nullable Image profileImage);
 	/**
 	 * Will update when:<br>
 	 * <ol>

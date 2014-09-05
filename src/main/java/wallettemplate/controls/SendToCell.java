@@ -20,9 +20,9 @@ import wallettemplate.OneNameControllerDisplay;
 import wallettemplate.Main.OverlayUI;
 import authenticator.Authenticator;
 import authenticator.Utils.OneName.OneName;
-import authenticator.Utils.OneName.OneName.ONData;
-import authenticator.Utils.OneName.OneNameListenerAdapter;
+import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -117,45 +117,47 @@ public class SendToCell extends Region{
     	        		return false;
         			}
         			
-        			private void setAvatarImage(ONData onename, String onenameID) throws IOException, JSONException{
+        			private void setAvatarImage(ConfigOneNameProfile onename, String onenameID) throws IOException, JSONException{
         				
-        				OneName.downloadAvatarImage(onename.getAvatarURL(), new OneNameListenerAdapter(){
-        					@Override
-        					public void getOneNameAvatarImage(Image img) {
-        						
-        						Platform.runLater(new Runnable() { 
-	        						 @Override
-	        						public void run() {
-	        							 if(img != null){
-	        								spinner.setProgress(70.0);
-	        								ivAvatar.setImage(img);
-	        								spinner.setProgress(100.0);
-        	        						ivAvatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        	                					   @Override
-        	                					   public void handle(MouseEvent event) {
-        	                						   Main.instance.overlayUI("DisplayOneName.fxml");
-        	                						   OneNameControllerDisplay.loadOneName(onenameID);
-        	                					   }
-        	                				   });
-        	        						lblAvatarName.setText(onename.getNameFormatted());
-        	        						ivAvatar.setStyle("-fx-cursor: hand;");
-        	        						avatarBox.setVisible(true);
-        	        						Rectangle clip = new Rectangle(ivAvatar.getFitWidth()-5, ivAvatar.getFitHeight());
-        	        						clip.setArcWidth(9);
-        	        						clip.setArcHeight(9);
-        	        						ivAvatar.setClip(clip);
-        	        						SnapshotParameters parameters = new SnapshotParameters();
-        	        						parameters.setFill(Color.TRANSPARENT);
-        	        						WritableImage image = ivAvatar.snapshot(parameters, null);
-        	        						ivAvatar.setClip(null);
-        	        						ivAvatar.setEffect(new DropShadow(03, Color.BLACK));
-        	        						ivAvatar.setImage(image);
-	        							 }
-	        							 loadingAvatarBox.setVisible(false);
-	        						 }
-        						});
-        						
-        					}
+        				OneName.downloadAvatarImage(onename,
+        						Authenticator.getWalletOperation(),
+        						new OneNameAdapter(){
+		        					@Override
+		        					public void getOneNameAvatarImage(ConfigOneNameProfile one, Image img) {
+		        						
+		        						Platform.runLater(new Runnable() { 
+			        						 @Override
+			        						public void run() {
+			        							 if(img != null){
+			        								spinner.setProgress(70.0);
+			        								ivAvatar.setImage(img);
+			        								spinner.setProgress(100.0);
+		        	        						ivAvatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		        	                					   @Override
+		        	                					   public void handle(MouseEvent event) {
+		        	                						   Main.instance.overlayUI("DisplayOneName.fxml");
+		        	                						   OneNameControllerDisplay.loadOneName(onenameID);
+		        	                					   }
+		        	                				   });
+		        	        						lblAvatarName.setText(one.getOnenameFormatted());
+		        	        						ivAvatar.setStyle("-fx-cursor: hand;");
+		        	        						avatarBox.setVisible(true);
+		        	        						Rectangle clip = new Rectangle(ivAvatar.getFitWidth()-5, ivAvatar.getFitHeight());
+		        	        						clip.setArcWidth(9);
+		        	        						clip.setArcHeight(9);
+		        	        						ivAvatar.setClip(clip);
+		        	        						SnapshotParameters parameters = new SnapshotParameters();
+		        	        						parameters.setFill(Color.TRANSPARENT);
+		        	        						WritableImage image = ivAvatar.snapshot(parameters, null);
+		        	        						ivAvatar.setClip(null);
+		        	        						ivAvatar.setEffect(new DropShadow(03, Color.BLACK));
+		        	        						ivAvatar.setImage(image);
+			        							 }
+			        							 loadingAvatarBox.setVisible(false);
+			        						 }
+		        						});
+		        						
+		        					}
         				});        				
         			}
         			
@@ -175,30 +177,32 @@ public class SendToCell extends Region{
         		        				// start spinner
         		        				loadingAvatarBox.setVisible(true);
         		        				
-        		        				OneName.getOneNameData(txfAddress.getText(), new OneNameListenerAdapter(){
-        		        					@Override
-        		        					public void getOneNameData(ONData data) {
-                		        				if (data != null){
-                		        					Platform.runLater(new Runnable() { 
-                		        						 @Override
-                		        						public void run() {
-                		        							txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");
-                             		        				txfAddress.setText(data.getBitcoinAddress());
-                             		        				try {
-                             		        					spinner.setProgress(50.0);
-																setAvatarImage(data, txfield);
-															} catch (Exception e) {
-																e.printStackTrace();
-															}
-                             		        				
-                             		        				
-                		        						}
-                		        				    }); 
-                    		        			}
-        		        					}
+        		        				OneName.getOneNameData(txfAddress.getText(),
+        		        						Authenticator.getWalletOperation(), 
+        		        						new OneNameAdapter(){
+		        		        					@Override
+		        		        					public void getOneNameData(ConfigOneNameProfile data) {
+		                		        				if (data != null){
+		                		        					Platform.runLater(new Runnable() { 
+		                		        						 @Override
+		                		        						public void run() {
+		                		        							txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");
+		                             		        				txfAddress.setText(data.getOnenameFormatted());
+		                             		        				try {
+		                             		        					spinner.setProgress(50.0);
+																		setAvatarImage(data, txfield);
+																	} catch (Exception e) {
+																		e.printStackTrace();
+																	}
+		                             		        				
+		                             		        				
+		                		        						}
+		                		        				    }); 
+		                    		        			}
+		        		        					}
         		        				});
         		        				
-        		        			} catch (JSONException | NullPointerException | IOException e){
+        		        			} catch (NullPointerException e){
         		        				txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #f06e6e;");
 
         		        			}
