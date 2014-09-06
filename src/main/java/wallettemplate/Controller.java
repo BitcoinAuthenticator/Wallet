@@ -22,6 +22,7 @@ import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
 import authenticator.operations.listeners.OperationListener;
+import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
@@ -1526,24 +1527,10 @@ public class Controller  extends BaseUI{
     			txMsgLabel.getText(), 
     			to,
     			WALLET_PW, 
-    			new OperationListener(){
+    			new OperationListenerAdapter(){
+					
 					@Override
-					public void onBegin(String str) { }
-		
-					@Override
-					public void statusReport(String report) {
-		
-					}
-		
-					@Override
-					public void onFinished(String str) {
-						/**
-						 * will notify user in AuthenticatorGeneralEvents#onBalanceChange
-						 */
-					}
-		
-					@Override
-					public void onError(Exception e, Throwable t) {
+					public void onError(BAOperation operation, Exception e, Throwable t) {
 						Platform.runLater(new Runnable() {
 						      @Override public void run() {
 						    	  String desc = "";

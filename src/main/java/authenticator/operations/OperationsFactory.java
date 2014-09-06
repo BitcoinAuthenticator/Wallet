@@ -111,8 +111,8 @@ public class OperationsFactory extends BASE{
 			@Nullable Runnable animation,
 			@Nullable Runnable animationAfterPairing,
 			@Nullable PairingStageUpdater statusListener){
-		return new BAOperation(ATOperationType.Pairing)
-					.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)	
+		BAOperation op = new BAOperation(ATOperationType.Pairing);
+					op.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
@@ -156,12 +156,11 @@ public class OperationsFactory extends BASE{
 						public void OnExecutionError(OperationListener listenerUI, Exception e) {
 							try {socket.setSoTimeout(timeout); } catch(Exception e1) {}
 							if(listenerUI != null)
-								listenerUI.onError(e, null);
+								listenerUI.onError(op, e, null);
 						}
 
-						
-						
 					});
+		return op;
 	}
 
 	/**
@@ -197,8 +196,8 @@ public class OperationsFactory extends BASE{
 																 */
 																@Nullable PendingRequest pendigReq,
 																@Nullable BAPassword WALLET_PW){
-		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx)
-				.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
+		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx);
+				op.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new BAOperationActions(){
 					//int timeout = 5;
@@ -313,7 +312,7 @@ public class OperationsFactory extends BASE{
 
 						                @Override
 						                public void onFailure(Throwable t) {
-						                	listenerUI.onError(null,t);
+						                	listenerUI.onError(op, null,t);
 						                }
 						            });
 								}
@@ -344,7 +343,7 @@ public class OperationsFactory extends BASE{
 					public void OnExecutionError(OperationListener listenerUI, Exception e) { 
 						try { wallet.removePendingRequest(pendigReq); } catch (IOException e1) { e1.printStackTrace(); }
 						if(listenerUI != null)
-							listenerUI.onError(e, null);
+							listenerUI.onError(op, e, null);
 					}
 					
 				});
@@ -366,8 +365,8 @@ public class OperationsFactory extends BASE{
 	 * @return
 	 */
 	static public BAOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
-		return new BAOperation(ATOperationType.updateIpAddressesForPreviousMessage)
-					.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
+		BAOperation op = new BAOperation(ATOperationType.updateIpAddressesForPreviousMessage);
+					op.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
 					.SetDescription("Update Authenticator's wallet IPs")
 					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
 					.SetFinishedMsg("Finished IPs updates")
@@ -400,10 +399,11 @@ public class OperationsFactory extends BASE{
 						@Override
 						public void OnExecutionError(OperationListener listenerUI, Exception e) { 
 							if(listenerUI != null)
-								listenerUI.onError(e, null);
+								listenerUI.onError(op, e, null);
 						}
 						
 					});
+			return op;
 	}
 
 	/**
@@ -421,74 +421,75 @@ public class OperationsFactory extends BASE{
 			WalletOperation wallet, 
 			Transaction tx, Map<String,ATAddress> keys,
 			@Nullable BAPassword WALLET_PW){
-		return new BAOperation(ATOperationType.BroadcastNormalTx)
-		.SetDescription("Send normal bitcoin Tx")
-		.SetFinishedMsg("Tx Broadcast complete")
-		.SetOperationAction(new BAOperationActions(){
-			@Override
-			public void PreExecution(OperationListener listenerUI, String[] args) throws Exception { 
-
-			}
-
-			@Override
-			public void Execute(OperationListener listenerUI,
-					ServerSocket ss, BANetworkInfo netInfo,
-					String[] args, OperationListener listener)
-					throws Exception {
-				try{
-					Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
-					walletDB config = Authenticator.getWalletOperation().configFile;
-					if (!txLabel.isEmpty()){
-						try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}
-						catch (IOException e) {e.printStackTrace();}
+		BAOperation op = new BAOperation(ATOperationType.BroadcastNormalTx);
+				op.SetDescription("Send normal bitcoin Tx")
+				.SetFinishedMsg("Tx Broadcast complete")
+				.SetOperationAction(new BAOperationActions(){
+					@Override
+					public void PreExecution(OperationListener listenerUI, String[] args) throws Exception { 
+		
 					}
-					if(signedTx == null){
-						listenerUI.onError(new ScriptException("Failed to sign Tx"), null);
-					}
-					else{
-						/**
-						 * Condition sending by is Test Mode
-						 */
-						if(wallet.getApplicationParams().getIsTestMode() == false){
-							SendResult result = wallet.pushTxWithWallet(signedTx);
-							Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
-				                @Override
-				                public void onSuccess(Transaction result) {
-				                	/**
+		
+					@Override
+					public void Execute(OperationListener listenerUI,
+							ServerSocket ss, BANetworkInfo netInfo,
+							String[] args, OperationListener listener)
+							throws Exception {
+						try{
+							Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
+							walletDB config = Authenticator.getWalletOperation().configFile;
+							if (!txLabel.isEmpty()){
+								try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}
+								catch (IOException e) {e.printStackTrace();}
+							}
+							if(signedTx == null){
+								listenerUI.onError(op, new ScriptException("Failed to sign Tx"), null);
+							}
+							else{
+								/**
+								 * Condition sending by is Test Mode
+								 */
+								if(wallet.getApplicationParams().getIsTestMode() == false){
+									SendResult result = wallet.pushTxWithWallet(signedTx);
+									Futures.addCallback(result.broadcastComplete, new FutureCallback<Transaction>() {
+						                @Override
+						                public void onSuccess(Transaction result) {
+						                	/**
+						                	 * No need for UI notification here, will be handled by AuthenticatorGeneralEvents#OnBalanceChanged
+						                	 */
+						                }
+		
+						                @Override
+						                public void onFailure(Throwable t) {
+						                	listenerUI.onError(op, null,t);
+						                }
+						            });
+								}
+								else{
+									wallet.disconnectInputs(tx.getInputs());
+									/**
 				                	 * No need for UI notification here, will be handled by AuthenticatorGeneralEvents#OnBalanceChanged
 				                	 */
-				                }
-
-				                @Override
-				                public void onFailure(Throwable t) {
-				                	listenerUI.onError(null,t);
-				                }
-				            });
+								}
+								
+							}
+							
 						}
-						else{
-							wallet.disconnectInputs(tx.getInputs());
-							/**
-		                	 * No need for UI notification here, will be handled by AuthenticatorGeneralEvents#OnBalanceChanged
-		                	 */
+						catch (Exception e){
+							if(listenerUI != null)
+								listenerUI.onError(op, e, null);
 						}
-						
 					}
-					
-				}
-				catch (Exception e){
-					if(listenerUI != null)
-						listenerUI.onError(e, null);
-				}
-			}
-
-			@Override
-			public void PostExecution(OperationListener listenerUI, String[] args) throws Exception { }
-
-			@Override
-			public void OnExecutionError(OperationListener listenerUI, Exception e) { 
-				if(listenerUI != null)
-					listenerUI.onError(e, null);
-			}
-		});
+		
+					@Override
+					public void PostExecution(OperationListener listenerUI, String[] args) throws Exception { }
+		
+					@Override
+					public void OnExecutionError(OperationListener listenerUI, Exception e) { 
+						if(listenerUI != null)
+							listenerUI.onError(op, e, null);
+					}
+				});
+		return op;
 	}
 }

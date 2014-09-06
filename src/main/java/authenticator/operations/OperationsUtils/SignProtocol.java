@@ -35,6 +35,7 @@ import authenticator.walletCore.WalletOperation;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
@@ -137,7 +138,10 @@ public class SignProtocol {
 			//Loop to create a signature for each input
 			int i = 0;							
 			for(TransactionInput in: tx.getInputs()){
-				String inAddress = in.getConnectedOutput().getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
+				TransactionOutput out = in.getConnectedOutput();
+				if(out == null)
+					throw new UnableToCompleteTxSigningException("Cannot find corresponding transaction outout for input:\n " + in.toString());
+				String inAddress = out.getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 				ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 				//Authenticator Key
 				ECKey authKey = wallet.getPairedAuthenticatorKey(po, atAdd.getKeyIndex());

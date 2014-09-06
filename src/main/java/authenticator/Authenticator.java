@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nullable;
+
 import javafx.scene.image.Image;
 
 import com.google.bitcoin.core.AddressFormatException;
@@ -32,6 +33,7 @@ import authenticator.network.TCPListener.TCPListenerExecutionDataBinder;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol;
+import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
@@ -169,6 +171,14 @@ public class Authenticator extends BASE{
 	
 	public static boolean areAllNetworkRequirementsAreFullyRunning(){
 		return mTCPListener.areAllNetworkRequirementsAreFullyRunning();
+	}
+	
+	/**
+	 * see {@link authenticator.network.TCPListener#longLivingOperationsListener TCPListener#longLivingOperationsListener}
+	 * @param listener
+	 */
+	public void setOperationsLongLivingListener(OperationListener listener) {
+		mTCPListener.setOperationListener(listener);
 	}
 	
 	//#####################################

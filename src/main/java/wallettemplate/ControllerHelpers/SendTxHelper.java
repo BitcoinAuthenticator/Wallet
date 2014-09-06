@@ -173,7 +173,7 @@ public class SendTxHelper {
 		if(Authenticator.checkForOperationNetworkRequirements(op) == true)
 			return Authenticator.addOperation(op);
 		else
-			opUpdateListener.onError(new Exception("Cannot add operation to queue, network requirements not available"), null);
+			opUpdateListener.onError(op, new Exception("Cannot add operation to queue, network requirements not available"), null);
 		return false;
     }	
 	
