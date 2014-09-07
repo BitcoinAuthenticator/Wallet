@@ -32,7 +32,7 @@ public class EncodingUtils {
 	  }
 
 	/**Reads JSON object from a URL*/
-	public static void readFromUrl(String url, AsyncCompletionHandler<Response> listener) throws IOException, JSONException { 
+	public static void readFromUrl(String url, AsyncCompletionHandler<Response> listener) throws IOException { 
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		asyncHttpClient.prepareGet(url).execute(listener);
 		

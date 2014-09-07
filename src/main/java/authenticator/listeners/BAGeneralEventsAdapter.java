@@ -1,5 +1,6 @@
 package authenticator.listeners;
 
+import javafx.scene.image.Image;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
@@ -35,12 +36,6 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 	}
 
 	@Override
-	public void onNewUserNamecoinIdentitySelection(ConfigOneNameProfile profile) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void onBalanceChanged(Transaction tx,
 			HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
 		// TODO Auto-generated method stub
@@ -57,6 +52,13 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 
 	@Override
 	public void onAddressMarkedAsUsed(ATAddress address) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile,
+			Image profileImage) {
 		// TODO Auto-generated method stub
 		
 	}

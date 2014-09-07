@@ -39,7 +39,6 @@ import wallettemplate.controls.SendToCell;
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
 import authenticator.Utils.OneName.OneName;
-import authenticator.Utils.OneName.OneName.ONData;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
@@ -174,7 +173,7 @@ public class SendTxHelper {
 		if(Authenticator.checkForOperationNetworkRequirements(op) == true)
 			return Authenticator.addOperation(op);
 		else
-			opUpdateListener.onError(new Exception("Cannot add operation to queue, network requirements not available"), null);
+			opUpdateListener.onError(op, new Exception("Cannot add operation to queue, network requirements not available"), null);
 		return false;
     }	
 	

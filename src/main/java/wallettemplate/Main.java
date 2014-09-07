@@ -7,6 +7,8 @@ import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
 import authenticator.network.TCPListener;
+import authenticator.operations.BAOperation;
+import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.walletCore.BAPassword;
 
 import com.google.bitcoin.core.AddressFormatException;
@@ -194,6 +196,18 @@ public class Main extends BAApplication {
     		@Override
     		public BAPassword getWalletPassword() {
     			return Main.UI_ONLY_WALLET_PW;
+    		}
+    	});
+    	auth.setOperationsLongLivingListener(new OperationListenerAdapter() {
+    		@Override
+    		public void onError(BAOperation operation, Exception e, Throwable t) {
+    			Platform.runLater(new Runnable() { 
+    				  @Override
+    				  public void run() {
+    					  informationalAlert("Error occured in recent wallet operation",
+              					e != null? e.toString():t.toString());
+    				  }
+    			 });
     		}
     	});
     	auth.startAsync();

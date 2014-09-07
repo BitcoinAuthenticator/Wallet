@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import wallettemplate.Main;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
 import authenticator.Utils.EncodingUtils;
+import authenticator.Utils.OneName.exceptions.CannotSetOneNameProfileException;
 import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
@@ -47,6 +48,7 @@ import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
@@ -1564,17 +1566,35 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 		
-		public AuthenticatorConfiguration.ConfigOneNameProfile getOnename(){
+		public ConfigOneNameProfile getOnename(){
 			try {
 				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
 				if(on.getOnename().length() == 0)
 					return null;
 				return on;
-			} catch (IOException e) { e.printStackTrace(); }
-			return null;
+			} 
+			catch (IOException e) {  return null; }
 		}
 		
-		public void writeOnename(AuthenticatorConfiguration.ConfigOneNameProfile one) throws FileNotFoundException, IOException{
+		public ConfigOneNameProfile setOneName(String onename, String formattedname, @Nullable String imgURL, @Nullable String imgPath) throws CannotSetOneNameProfileException  {
+			try {
+				ConfigOneNameProfile.Builder onb = ConfigOneNameProfile.newBuilder();
+			    onb.setOnename(onename);
+			    onb.setOnenameFormatted(formattedname);
+			    if(imgURL != null)
+			    	onb.setOnenameAvatarURL(imgURL);
+			    if(imgPath != null)
+			    	onb.setOnenameAvatarFilePath(imgPath);
+			    writeOnename(onb.build());
+			    return onb.build();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+				throw new CannotSetOneNameProfileException("Cannot se one name profile");
+			}
+		}
+				
+		private void writeOnename(ConfigOneNameProfile one) throws FileNotFoundException, IOException{
 			configFile.writeOnename(one);
 		}
 		

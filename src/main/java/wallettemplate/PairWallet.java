@@ -102,20 +102,10 @@ public class PairWallet extends BaseUI{
     }
     
     private OperationListenerAdapter opListener = new OperationListenerAdapter(){
-    	@SuppressWarnings("restriction")
-		@Override
-		public void onBegin(String str) {
-//			Platform.runLater(new Runnable() {
-//		        @Override
-//		        public void run() {
-//		        	textarea.appendText(str + "\n------------------------------------------------\n");
-//		        }
-//			});
-		}
     	
     	@SuppressWarnings("restriction")
 		@Override
-		public void onFinished(String str) {
+		public void onFinished(BAOperation operation, String str) {
 			if( listener != null)
 				listener.onPairedWallet();
 			Platform.runLater(new Runnable() {
@@ -131,7 +121,7 @@ public class PairWallet extends BaseUI{
     	
     	@SuppressWarnings("restriction")
 		@Override
-		public void onError(@Nullable Exception e, @Nullable Throwable t) {
+		public void onError(BAOperation operation, @Nullable Exception e, @Nullable Throwable t) {
 			if( listener != null)
 				listener.onFailed(e);
 			Platform.runLater(new Runnable() {

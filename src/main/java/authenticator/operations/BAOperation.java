@@ -67,7 +67,7 @@ public class BAOperation {
 			return;
 		
 		if(this.listener != null)
-			this.listener.onBegin(beginMsg);
+			this.listener.onBegin(this, beginMsg);
 		
 		if(!CAN_CONTINUE_WITH_OPERAITON)
 			return;
@@ -85,13 +85,13 @@ public class BAOperation {
 		mOperationActions.PostExecution(listener, args);
 		
 		if(this.listener != null)
-			this.listener.onFinished(finishedMsg);
+			this.listener.onFinished(this, finishedMsg);
 	}
 	
 	public void OnExecutionError(Exception e){
 		mOperationActions.OnExecutionError(listener ,e);
 		if(this.listener != null)
-			this.listener.onError(e,null);
+			this.listener.onError(this, e,null);
 	}
 	
 	/**
@@ -107,6 +107,10 @@ public class BAOperation {
 		 * in case we stuck listening for incoming communication
 		 */
 		vServerSocket.close();
+	}
+	
+	public OperationListener getOperationListener() {
+		return this.listener;
 	}
 	
 	//#####################################

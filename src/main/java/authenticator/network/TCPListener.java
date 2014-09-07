@@ -37,6 +37,7 @@ import authenticator.operations.BAOperation;
 import authenticator.operations.BAOperation.BANetworkRequirement;
 import authenticator.operations.exceptions.BAOperationNetworkRequirementsNotAvailableException;
 import authenticator.operations.listeners.OperationListener;
+import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.operations.OperationsFactory;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
@@ -76,6 +77,14 @@ public class TCPListener extends BASE{
 	private BANetworkInfo vBANeworkInfo;
 	private String[] args;
 	private ServerSocket ss = null;
+	
+	/**
+	 * No all operations will have a UI listener, specially those that are created by the system itself 
+	 * (like the operation created in a paired Tx signing with the Authenticator app.<br>
+	 * This long living listener will provide a default way to notify the UI of important information in 
+	 * case an operation specific listener was not found.
+	 */
+	private OperationListener longLivingOperationsListener;
 	
 	private BAOperation CURRENT_OUTBOUND_OPERATION = null;
 	
@@ -331,35 +340,6 @@ public class TCPListener extends BASE{
 											pendingReq.getPayloadIncoming().toByteArray(),
 											pendingReq, 
 											dataBinder.getWalletPassword());
-									op.SetOperationUIUpdate(new OperationListener(){
-
-										@Override
-										public void onBegin(String str) { }
-
-										@Override
-										public void statusReport( String report) { }
-
-										@SuppressWarnings("restriction")
-										@Override
-										public void onFinished( String str) { 
-											if(str != null)
-											Platform.runLater(new Runnable() {
-											      @Override public void run() {
-											    	  Dialogs.create()
-												        .owner(Main.stage)
-												        .title("New Info.")
-												        .masthead(null)
-												        .message(str)
-												        .showInformation();
-											      }
-											    });
-											
-										}
-
-										@Override
-										public void onError( Exception e, Throwable t) { }
-										
-									});
 									operationsQueue.add(op);
 									break;
 								}
@@ -413,10 +393,18 @@ public class TCPListener extends BASE{
 							}
 							catch (Exception e)
 							{
+								e.printStackTrace();
 								logAsInfo("Error Occured while executing Outbound operation:\n"
 										+ e.toString());
-								op.OnExecutionError(e);
-								e.printStackTrace();
+								
+								if(op.getOperationListener() != null)
+									op.OnExecutionError(e);
+								else
+									/*
+									 * we still need to notify user even if we don't have an operation listener 
+									 * (like in a paired account tx signing) 
+									 */
+									longLivingOperationsListener.onError(op, e, null); 
 							}
 						}
 					}
@@ -550,6 +538,20 @@ public class TCPListener extends BASE{
 	
 	public void setExecutionDataBinder(TCPListenerExecutionDataBinder b){
 		dataBinder = b;
+	}
+	
+	//#####################################
+	//
+	//	Long living operations listener
+	//
+	//#####################################
+	
+	/**
+	 * see {@link authenticator.network.TCPListener#longLivingOperationsListener TCPListener#longLivingOperationsListener}
+	 * @param listener
+	 */
+	public void setOperationListener(OperationListener listener) {
+		this.longLivingOperationsListener = listener;
 	}
 	
 	//#####################################
