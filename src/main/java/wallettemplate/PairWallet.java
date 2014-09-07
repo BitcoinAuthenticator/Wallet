@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.scene.image.Image;
@@ -21,34 +20,43 @@ import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.GuiUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 public class PairWallet extends BaseUI{
 	
 	@FXML private Button cancelBtn;
-	@FXML private Button doneBtn;
 	@FXML private Button runBtn;
 	@FXML private Button btnHelp;
 	@FXML private ProgressIndicator prgIndicator;
 	@FXML private TextField textfield;
 	@FXML private Label lblStatus;
-	
-	@FXML private HBox qrBox;
+	@FXML private Pane qrPane;
+	@FXML private Pane gcmPane;
+	@FXML private Hyperlink hlGCM;
+	@FXML private Pane pairPane;
+	@FXML private Label lblScan;
 	@FXML private ImageView imgViewQR;
 	public Main.OverlayUI overlayUi;
+	
+	private double xOffset = 0;
+	private double yOffset = 0;
     
     PairingWalletControllerListener listener;
     
@@ -57,8 +65,16 @@ public class PairWallet extends BaseUI{
     
     public void initialize() {
         super.initialize(PairWallet.class);
-        doneBtn.setDisable(true);
-        qrBox.setVisible(false);
+    }
+    
+    @FXML protected void drag1(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML protected void drag2(MouseEvent event) {
+    	Main.stage.setX(event.getScreenX() - xOffset);
+    	Main.stage.setY(event.getScreenY() - yOffset);
     }
     
     @SuppressWarnings("restriction")
@@ -70,6 +86,20 @@ public class PairWallet extends BaseUI{
         	textfield.setDisable(true);
         }
 	}
+    
+    @FXML protected void showGCM() {
+    	Animation ani = GuiUtils.fadeOut(pairPane);
+		GuiUtils.fadeIn(gcmPane);
+    	pairPane.setVisible(false);
+    	gcmPane.setVisible(true);
+    }
+    
+    @FXML protected void showPairing() {
+    	Animation ani = GuiUtils.fadeOut(gcmPane);
+		GuiUtils.fadeIn(pairPane);
+    	gcmPane.setVisible(false);
+    	pairPane.setVisible(true);
+    }
     
     private OperationListenerAdapter opListener = new OperationListenerAdapter(){
     	@SuppressWarnings("restriction")
@@ -94,9 +124,6 @@ public class PairWallet extends BaseUI{
 //		        	textarea.appendText("=============================\n" +
 //		        						str);
 //		        	
-		        	cancelBtn.setDisable(true);
-					doneBtn.setDisable(false);
-					qrBox.setVisible(false);
 					Authenticator.fireOnNewPairedAuthenticator();
 		        }
 			});
@@ -110,7 +137,6 @@ public class PairWallet extends BaseUI{
 			Platform.runLater(new Runnable() {
 				@Override
 		        public void run() {
-					qrBox.setVisible(false);
 //		        	textarea.appendText("--------------------------\n" + 
 //		        						"Error: + " + e.toString() + "\n" + 
 //		        						e.getMessage());
@@ -131,7 +157,7 @@ public class PairWallet extends BaseUI{
     			pairName, 
     			accountID,
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
-    			20000,
+    			60000,
     			animDisplay, 
     			animAfterPairing,
     			new PairingStageUpdater(){
@@ -152,8 +178,7 @@ public class PairWallet extends BaseUI{
 		        .masthead("Could not add operation")
 		        .showInformation();   
     	}
-    	else
-    		qrBox.setVisible(true);
+    	else{}
     }
     
     @SuppressWarnings("restriction")
@@ -265,9 +290,10 @@ public class PairWallet extends BaseUI{
 			public void run() {
 				Platform.runLater(new Runnable() {
 				      @Override public void run() {
-				    	
+				    	  pairPane.setVisible(false);
+				    	  qrPane.setVisible(true);
 				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
-				    	  move.setByX(-130.0);
+				    	  move.setByX(437.0);
 				    	  move.setCycleCount(1);
 				    	  move.play();
 							//
@@ -276,9 +302,8 @@ public class PairWallet extends BaseUI{
 								file = new File(new java.io.File( "." ).getCanonicalPath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
 								Image img = new Image(file.toURI().toString());
 								imgViewQR.setImage(img);
-							} catch (IOException e) { e.printStackTrace();
-							}
-							
+							} catch (IOException e) { e.printStackTrace();}
+							lblScan.setVisible(true);
 				      }
 				});
 			}
@@ -296,7 +321,7 @@ public class PairWallet extends BaseUI{
 				      @Override public void run() {
 				    	
 				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
-				    	  move.setByX(130.0);
+				    	  move.setByX(-447.0);
 				    	  move.setCycleCount(1);
 				    	  move.play();
 				    	  imgViewQR.setImage(null);
@@ -325,16 +350,7 @@ public class PairWallet extends BaseUI{
     
     @FXML protected void btnPairTxReleased(MouseEvent event) {
     	handleBlueButtonsRelease(runBtn);
-    } 
-    
-    @FXML protected void btnDonePressed(MouseEvent event) {
-    	handleBlueButtonsPress(doneBtn);
-    }
-    
-    @FXML protected void btnDoneTxReleased(MouseEvent event) {
-    	handleBlueButtonsRelease(doneBtn);
-    } 
-  
+    }  
     
     private void handleBlueButtonsPress(Button b){
     	b.setStyle("-fx-background-color: #a1d2e7;");

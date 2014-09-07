@@ -2010,7 +2010,7 @@ public class Controller  extends BaseUI{
    	//#####################################
     
     @FXML protected void btnAppAuthenticator(MouseEvent event) {
-    	Main.instance.overlayUI("pairing/Pair_wallet.fxml");
+    	Main.instance.overlayUI("pairing/BAApp.fxml");
     }
     
     @FXML protected void btnSettings(MouseEvent event) {

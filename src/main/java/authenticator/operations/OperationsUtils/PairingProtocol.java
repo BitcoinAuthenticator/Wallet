@@ -17,6 +17,7 @@ import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANetworkInfo;
+import authenticator.network.PongPayload;
 import authenticator.network.UpNp;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
@@ -88,8 +89,17 @@ public class PairingProtocol {
 	  if(socket == null)
 		  return;
 	  
-	  // Receive payload
+	  /*
+	   * Send data
+	   */
 	  DataInputStream in = new DataInputStream(socket.getInputStream());
+	  DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+	  // 1) send pong to authenticator
+	  PongPayload pp = new PongPayload();
+	  out.writeInt(pp.getPayloadSize());
+	  out.write(pp.getBytes());
+	  
+	  // 2) Receive payload
 	  int keysize = in.readInt();
 	  byte[] cipherKeyBytes = new byte[keysize];
 	  in.read(cipherKeyBytes);
