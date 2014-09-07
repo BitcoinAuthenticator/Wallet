@@ -38,6 +38,7 @@ import javafx.animation.TranslateTransition;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 public class PairWallet extends BaseUI{
 	
@@ -54,6 +55,8 @@ public class PairWallet extends BaseUI{
 	@FXML private Label lblScan;
 	@FXML private ImageView imgViewQR;
 	public Main.OverlayUI overlayUi;
+	@FXML private Button btnBack;
+	@FXML private Label lblInfo;
 	
 	private double xOffset = 0;
 	private double yOffset = 0;
@@ -111,9 +114,6 @@ public class PairWallet extends BaseUI{
 			Platform.runLater(new Runnable() {
 		        @Override
 		        public void run() {
-//		        	textarea.appendText("=============================\n" +
-//		        						str);
-//		        	
 					Authenticator.fireOnNewPairedAuthenticator();
 		        }
 			});
@@ -127,9 +127,6 @@ public class PairWallet extends BaseUI{
 			Platform.runLater(new Runnable() {
 				@Override
 		        public void run() {
-//		        	textarea.appendText("--------------------------\n" + 
-//		        						"Error: + " + e.toString() + "\n" + 
-//		        						e.getMessage());
 					Dialogs.create()
 		        	        .owner(Main.stage)
 		        	        .title("Error !")
@@ -309,12 +306,13 @@ public class PairWallet extends BaseUI{
 			public void run() {
 				Platform.runLater(new Runnable() {
 				      @Override public void run() {
-				    	
 				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
-				    	  move.setByX(-447.0);
+				    	  move.setByX(-437.0);
 				    	  move.setCycleCount(1);
 				    	  move.play();
 				    	  imgViewQR.setImage(null);
+				    	  pairPane.setVisible(true);
+				    	  qrPane.setVisible(false);
 				      }
 				});
 			}
@@ -335,20 +333,30 @@ public class PairWallet extends BaseUI{
      */
     
     @FXML protected void btnPairPressed(MouseEvent event) {
-    	handleBlueButtonsPress(runBtn);
+    	runBtn.setStyle("-fx-background-color: #d5d5d5;");
     }
     
-    @FXML protected void btnPairTxReleased(MouseEvent event) {
-    	handleBlueButtonsRelease(runBtn);
+    @FXML protected void btnPairReleased(MouseEvent event) {
+    	runBtn.setStyle("-fx-background-color: grey; -fx-text-fill: #e3e3e3;");
     }  
     
-    private void handleBlueButtonsPress(Button b){
-    	b.setStyle("-fx-background-color: #a1d2e7;");
+    @FXML protected void btnClosePressed(MouseEvent event) {
+    	cancelBtn.setStyle("-fx-background-color: #d5d5d5;");
     }
     
-    private void handleBlueButtonsRelease(Button b){
-    	b.setStyle("-fx-background-color: #199bd6;");
+    @FXML protected void btnCloseReleased(MouseEvent event) {
+    	cancelBtn.setStyle("-fx-background-color: grey; -fx-text-fill: #e3e3e3;");
+    }  
+    
+    @FXML protected void btnBackPressed(MouseEvent event) {
+    	btnBack.setStyle("-fx-background-color: #d5d5d5;");
     }
+    
+    @FXML protected void btnBackReleased(MouseEvent event) {
+    	btnBack.setStyle("-fx-background-color: grey; -fx-text-fill: #e3e3e3;");
+    }  
+    
+    
     
     /**/
     

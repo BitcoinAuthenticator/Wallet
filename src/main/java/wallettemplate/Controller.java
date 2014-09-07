@@ -162,7 +162,6 @@ import java.util.concurrent.CountDownLatch;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
-import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 import org.json.JSONObject;
