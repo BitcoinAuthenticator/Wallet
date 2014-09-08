@@ -297,10 +297,14 @@ public class TCPListener extends BASE{
 							//
 							if(pendingReq == null){
 								SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
-								CannotProcessRequestPayload p = new CannotProcessRequestPayload(secretkey);
+								CannotProcessRequestPayload p = new CannotProcessRequestPayload("Cannot find pending request\nPlease resend operation",
+										secretkey);
 								outStream.writeInt(p.getPayloadSize());
 								outStream.write(p.toEncryptedBytes());
 								logAsInfo("No Pending Request Found, aborting inbound operation");
+								
+								if(longLivingOperationsListener != null)
+									longLivingOperationsListener.onError(null, new Exception("Authenticator tried to complete a pending request but the request was not found, please try again"), null);
 							}
 							else{
 								// Should we send something on connection ? 
@@ -404,7 +408,8 @@ public class TCPListener extends BASE{
 									 * we still need to notify user even if we don't have an operation listener 
 									 * (like in a paired account tx signing) 
 									 */
-									longLivingOperationsListener.onError(op, e, null); 
+									if(longLivingOperationsListener != null)
+										longLivingOperationsListener.onError(op, e, null); 
 							}
 						}
 					}
