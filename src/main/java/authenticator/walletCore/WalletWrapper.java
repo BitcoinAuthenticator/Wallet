@@ -153,7 +153,7 @@ public class WalletWrapper extends BASE{
 	//
 	//#####################################
 	
-	public Wallet.SendResult broadcastTrabsactionFromWallet(Transaction tx) throws InsufficientMoneyException
+	public Wallet.SendResult broadcastTrabsactionFromWallet(Transaction tx)
 	{
 		trackedWallet.commitTx(tx);
 		TransactionBroadcaster tb;

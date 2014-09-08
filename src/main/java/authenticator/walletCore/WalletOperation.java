@@ -6,6 +6,7 @@ import authenticator.BASE;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import authenticator.walletCore.exceptions.CannotGetAccountUsedAddressesException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
@@ -459,10 +460,16 @@ public class WalletOperation extends BASE{
 	//#####################################
 	
 	/**Pushes the raw transaction 
+	 * @throws CannotBroadcastTransactionException 
 	 * @throws InsufficientMoneyException */
-	public SendResult pushTxWithWallet(Transaction tx) throws IOException, InsufficientMoneyException{
-		this.LOG.info("Broadcasting to network...");
-		return mWalletWrapper.broadcastTrabsactionFromWallet(tx);
+	public SendResult pushTxWithWallet(Transaction tx) throws CannotBroadcastTransactionException{
+		try {
+			this.LOG.info("Broadcasting to network...");
+			return mWalletWrapper.broadcastTrabsactionFromWallet(tx);
+		}
+		catch (Exception e) {
+			throw new CannotBroadcastTransactionException(e.toString());
+		}
 	}
 	
 	/**
