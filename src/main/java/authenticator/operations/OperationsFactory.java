@@ -81,6 +81,7 @@ import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 
 public class OperationsFactory extends BASE{
 	
@@ -341,7 +342,7 @@ public class OperationsFactory extends BASE{
 
 					@Override
 					public void OnExecutionError(OperationListener listenerUI, Exception e) { 
-						try { wallet.removePendingRequest(pendigReq); } catch (IOException e1) { e1.printStackTrace(); }
+						try { wallet.removePendingRequest(pendigReq); } catch (CannotRemovePendingRequestException e1) { e1.printStackTrace(); }
 						if(listenerUI != null)
 							listenerUI.onError(op, e, null);
 					}

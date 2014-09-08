@@ -9,6 +9,8 @@ import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import authenticator.walletCore.exceptions.CannotGetAccountUsedAddressesException;
+import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
+import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.HierarchyUtils;
@@ -1523,30 +1525,40 @@ public class WalletOperation extends BASE{
 			configFile.writeNewPendingRequest(req);
 		}
 		
-		public void removePendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
+		public void removePendingRequest(PendingRequest req) throws CannotRemovePendingRequestException{
 			List<PendingRequest> l = new ArrayList<PendingRequest>();
 			l.add(req);
 			removePendingRequest(l);
 		}
 		
-		public void removePendingRequest(List<PendingRequest> req) throws FileNotFoundException, IOException{
-			String a = "";
-			for(PendingRequest pr:req)
-				a = a + pr.getRequestID() + "\n					";
-			
-			staticLogger.info("Removed pending requests: " + a);
-			configFile.removePendingRequest(req);
+		public void removePendingRequest(List<PendingRequest> req) throws CannotRemovePendingRequestException {
+			try {
+				String a = "";
+				for(PendingRequest pr:req)
+					a = a + pr.getRequestID() + "\n					";
+				
+				staticLogger.info("Removed pending requests: " + a);
+				configFile.removePendingRequest(req);
+			}
+			catch(Exception e) {
+				throw new CannotRemovePendingRequestException(e.getMessage());
+			}
 		}
 		
 		public int getPendingRequestSize(){
 			try {
 				return getPendingRequests().size();
-			} catch (FileNotFoundException e) { } catch (IOException e) { }
+			} catch (CannotGetPendingRequestsException e) { }
 			return 0;
 		}
 		
-		public List<PendingRequest> getPendingRequests() throws FileNotFoundException, IOException{
-			return configFile.getPendingRequests();
+		public List<PendingRequest> getPendingRequests() throws CannotGetPendingRequestsException {
+			try {
+				return configFile.getPendingRequests();
+			}
+			catch(Exception e) {
+				throw new CannotGetPendingRequestsException(e.getMessage());
+			}
 		}
 		
 		public String pendingRequestToString(PendingRequest op) throws AccountWasNotFoundException{

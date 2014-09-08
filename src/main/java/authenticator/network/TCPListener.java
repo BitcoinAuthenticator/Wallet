@@ -45,6 +45,7 @@ import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 
 /**
  * <b>The heart of the wallet operation.</b><br>
@@ -358,7 +359,11 @@ public class TCPListener extends BASE{
 					}
 					catch(Exception e){
 						if(pendingReq != null)
-							wallet.removePendingRequest(pendingReq);
+							try {
+								wallet.removePendingRequest(pendingReq);
+							} catch (CannotRemovePendingRequestException e1) {
+								e1.printStackTrace();
+							}
 						e.printStackTrace();
 						logAsInfo("Error Occured while executing Inbound operation:\n"
 								+ e.toString());

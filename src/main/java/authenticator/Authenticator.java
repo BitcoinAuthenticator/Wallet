@@ -42,6 +42,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNa
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
 
 /**
  * <p>The main building block of the BitocinAuthenticator wallet.<br>
@@ -133,8 +134,7 @@ public class Authenticator extends BASE{
 		if(mTCPListener == null)
 			mTCPListener = new TCPListener(getWalletOperation(), 
 					mApplicationParams.getIsManuallyPortForwarded(),
-					new String[]{Integer.toString(getApplicationParams().getNetworkPort())});
-		
+					new String[]{Integer.toString(getApplicationParams().getNetworkPort())});		
 	}
 	
 	public static void disposeOfAuthenticator(){
@@ -188,14 +188,14 @@ public class Authenticator extends BASE{
 	//#####################################
 	
 	@SuppressWarnings("static-access")
-	public static void initPendingRequests() throws AccountWasNotFoundException{
+	public static void initPendingRequests() throws AccountWasNotFoundException {
 		List<PendingRequest> pending = new ArrayList<PendingRequest>();
 		String pendingStr = "No pending requests in wallet";
 		try {
 			pending = getWalletOperation().getPendingRequests();
 			if(pending.size() > 0)
 				pendingStr = "";
-		} catch (IOException e) { e.printStackTrace(); }
+		} catch (CannotGetPendingRequestsException e) { e.printStackTrace(); }
 		for(PendingRequest pr:pending){
 			//addPendingRequestToList(pr);
 			pendingStr += "Pending Request: " + getWalletOperation().pendingRequestToString(pr) + "\n";

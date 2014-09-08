@@ -4,6 +4,7 @@ option java_outer_classname="ProtoConfig";
 
 import "AuthWalletHierarchy.proto";
 import "configSettings.proto";
+import "google/protobuf/descriptor.proto";
 
 enum ATGCMMessageType{
 	SignTX 					= 2;

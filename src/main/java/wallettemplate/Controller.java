@@ -2001,7 +2001,7 @@ public class Controller  extends BaseUI{
    	//
    	//#####################################
     
-    public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
+    public void setTxPaneHistory() {
     	LOG.info("Updating Tx pane");
     	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription).execute();
     }

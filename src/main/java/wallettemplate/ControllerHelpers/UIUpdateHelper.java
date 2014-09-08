@@ -75,12 +75,10 @@ public class UIUpdateHelper extends BaseUI{
 		public ReceiveAddressesUpdater(ChoiceBox b){
 			box = b;
 		}
-		
-		@Override
-		void onPreExecute() { }
+
 
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 			
 	    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
 	    	addresses = new ArrayList<String>();
@@ -98,7 +96,7 @@ public class UIUpdateHelper extends BaseUI{
 		}
 
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			box.getItems().clear();
 			
 			for (String address : addresses){
@@ -107,8 +105,19 @@ public class UIUpdateHelper extends BaseUI{
 			box.setValue(addresses.get(0));
 		}
 
+
 		@Override
-		void progressCallback(Object... params) { }
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		protected void progressCallback(Object... params) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	public static class  TxPaneHistoryUpdater extends AsyncTask{
@@ -127,11 +136,11 @@ public class UIUpdateHelper extends BaseUI{
 		}
 		
 		@Override
-		void onPreExecute() { }
+		protected void onPreExecute() { }
 
 		@SuppressWarnings({ "restriction", "unchecked" })
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 			try {
 				getTxData();
 			} catch (Exception e) { e.printStackTrace(); }
@@ -276,7 +285,7 @@ public class UIUpdateHelper extends BaseUI{
 
 		@SuppressWarnings("restriction")
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			txTable.setItems(txdata);
 	    	txTable.setEditable(true);
 	    	txTable.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -534,7 +543,7 @@ public class UIUpdateHelper extends BaseUI{
 		}
 
 		@Override
-		void progressCallback(Object... params) { }
+		protected void progressCallback(Object... params) { }
 		
 	}
 
@@ -548,7 +557,7 @@ public class UIUpdateHelper extends BaseUI{
 		}
 		
 		@Override
-		void onPreExecute() {
+		protected void onPreExecute() {
 			if(scrlViewTxHistoryContentManager.getCount() == 0)
 			Platform.runLater(new Runnable() {
 	            @Override
@@ -559,7 +568,7 @@ public class UIUpdateHelper extends BaseUI{
 		}
 
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 	    	try {
 				txAll = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 			} catch (Exception e) { e.printStackTrace(); }
@@ -643,7 +652,7 @@ public class UIUpdateHelper extends BaseUI{
 		}
 
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			scrlViewTxHistoryContentManager.clearAll();
 			if (txAll.size()==0){
 				showNoTxHistory();
@@ -671,7 +680,7 @@ public class UIUpdateHelper extends BaseUI{
 		}
 
 		@Override
-		void progressCallback(Object... params) { }
+		protected void progressCallback(Object... params) { }
 		
 	}
 
@@ -688,10 +697,10 @@ public class UIUpdateHelper extends BaseUI{
 		}
 		
 		@Override
-		void onPreExecute() { }
+		protected void onPreExecute() { }
 
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 			unconfirmed = Coin.ZERO;
 			confirmed = Coin.ZERO;
 	    	try {
@@ -702,7 +711,7 @@ public class UIUpdateHelper extends BaseUI{
 		}
 
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			lblConfirmedBalance.setText(confirmed.toFriendlyString());
 	        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString());
 	        
@@ -752,7 +761,7 @@ public class UIUpdateHelper extends BaseUI{
 	    }
 
 		@Override
-		void progressCallback(Object... params) { }
+		protected void progressCallback(Object... params) { }
 		
 	}
 }

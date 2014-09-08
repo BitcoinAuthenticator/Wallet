@@ -286,7 +286,7 @@ public class walletDB extends dbBase{
 	}
 
 	@SuppressWarnings("static-access")
-	public void removePendingRequest(List<PendingRequest> req) throws FileNotFoundException, IOException{
+	public void removePendingRequest(List<PendingRequest> req) throws FileNotFoundException, IOException {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<PendingRequest> all = getPendingRequests();
 		auth.getConfigAuthenticatorWalletBuilder().clearPendingRequests();
