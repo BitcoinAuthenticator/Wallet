@@ -291,10 +291,8 @@ public class OperationsFactory extends BASE{
 										AuthSigs,
 										po);
 								staticLooger.info("Signed Tx - " + EncodingUtils.getStringTransaction(tx));
-								walletDB config = Authenticator.getWalletOperation().configFile;
 								if (pendigReq.hasTxLabel() && pendigReq.hasTxDestinationDescription()){
-									try {config.writeNextSavedTxData(tx.getHashAsString(), pendigReq.getTxDestinationDescription(), pendigReq.getTxLabel());}
-									catch (IOException e) {e.printStackTrace();}
+									wallet.writeNextSavedTxData(tx.getHashAsString(), pendigReq.getTxDestinationDescription(), pendigReq.getTxLabel());
 								}
 								/**
 								 * Condition sending by is Test Mode
@@ -438,10 +436,8 @@ public class OperationsFactory extends BASE{
 							throws Exception {
 						try{
 							Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
-							walletDB config = Authenticator.getWalletOperation().configFile;
 							if (!txLabel.isEmpty()){
-								try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}
-								catch (IOException e) {e.printStackTrace();}
+								wallet.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);
 							}
 							if(signedTx == null){
 								listenerUI.onError(op, new ScriptException("Failed to sign Tx"), null);

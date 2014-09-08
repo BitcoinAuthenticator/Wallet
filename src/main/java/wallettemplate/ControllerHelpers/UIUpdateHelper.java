@@ -234,7 +234,6 @@ public class UIUpdateHelper extends BaseUI{
 		@SuppressWarnings({ "deprecation", "restriction" })
 		private void getTxData() throws CannotGetAccountFilteredTransactionsException{
 			ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-	    	config = Authenticator.getWalletOperation().configFile;
 	    	savedTXIDs = config.getSavedTxidList();
 	    	txdata = FXCollections.observableArrayList();
 	    	for (Transaction tx : history){
@@ -576,8 +575,7 @@ public class UIUpdateHelper extends BaseUI{
 	    	if (txAll.size()==0)
 	    		return;
 	    	
-	    	walletDB config = Authenticator.getWalletOperation().configFile;
-	    	ArrayList<String> savedTXIDs = config.getSavedTxidList();
+	    	ArrayList<String> savedTXIDs = Authenticator.getWalletOperation().getSavedTxidList();
 	    	int size = txAll.size();
 	    	int n;
 	    	if (size < 10) {n=size;}
@@ -605,7 +603,7 @@ public class UIUpdateHelper extends BaseUI{
 	    		l2.setFont(Font.font(11));
 	    		for (int a=0; a<savedTXIDs.size(); a++){
 	    			if (savedTXIDs.get(a).equals(txAll.get(i).getHashAsString())){
-	    				if(!config.getSavedDescription(a).equals("")){txid = config.getSavedDescription(a);}
+	    				if(!Authenticator.getWalletOperation().getSavedDescription(a).equals("")){txid = Authenticator.getWalletOperation().getSavedDescription(a);}
 	    			}
 	    		}
 	    		if (txid.length()>20){txid = txid.substring(0, 20) + "...";}

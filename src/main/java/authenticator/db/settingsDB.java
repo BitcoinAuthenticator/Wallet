@@ -52,8 +52,9 @@ public class settingsDB extends dbBase{
 	}
 
 	private synchronized void writeSettingsFile(ConfigSettings.Builder settings) throws IOException{
-		FileOutputStream output = new FileOutputStream(filePath);  
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		
+		FileOutputStream output = new FileOutputStream(filePath);  
 		auth.setConfigSettings(settings.build());
 		auth.build().writeDelimitedTo(output);          
 		output.close();

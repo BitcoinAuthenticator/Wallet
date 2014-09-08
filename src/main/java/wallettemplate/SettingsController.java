@@ -28,6 +28,7 @@ import authenticator.protobuf.ProtoSettings.Languages;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
+import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import wallettemplate.ControllerHelpers.AsyncTask;
 import wallettemplate.startup.StartupController;
@@ -123,24 +124,22 @@ public class SettingsController  extends BaseUI{
 	private String strFee;
 	private double falsePositiveRate;
 	private double fee;
-	settingsDB set;
 
 	// Called by FXMLLoader
     @SuppressWarnings("restriction")
-	public void initialize() throws IOException {        	
-    	set = new settingsDB(Authenticator.getWalletOperation().getApplicationParams().getAppName());
-    	String unit = set.getAccountUnit().toString();
+	public void initialize() {        	
+    	String unit = Authenticator.getWalletOperation().getAccountUnitFromSettings().toString();
     	if (unit.equals("BTC")){this.strBitcoinUnit="BTC";}
     	else if (unit.equals("Bits")){this.strBitcoinUnit="bits";}
     	else if (unit.equals("Millibits")){this.strBitcoinUnit="mBTC";}
     	else {this.strBitcoinUnit="µBTC";}
-    	this.intDecimal = set.getDecimalPoint();
-    	this.strCurrency = set.getLocalCurrencySymbol();
-    	this.strLanguage = set.getLanguage().toString();
-    	this.useTor = set.getIsUsingTOR();
-    	this.localHost = set.getIsConnectingToLocalHost();
-    	this.TrustedPeer = set.getIsConnectingToTrustedPeer();
-    	this.falsePositiveRate = set.getBloomFilterFalsePositiveRate();
+    	this.intDecimal = Authenticator.getWalletOperation().getDecimalPointFromSettings();
+    	this.strCurrency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
+    	this.strLanguage = Authenticator.getWalletOperation().getLanguageFromSettings().toString();
+    	this.useTor = Authenticator.getWalletOperation().getIsUsingTORFromSettings();
+    	this.localHost = Authenticator.getWalletOperation().getIsConnectingToLocalHostFromSettings();
+    	this.TrustedPeer = Authenticator.getWalletOperation().getIsConnectingToTrustedPeerFromSettings();
+    	this.falsePositiveRate = Authenticator.getWalletOperation().getBloomFilterFalsePositiveRateFromSettings();
     	Tooltip.install(slBloom, new Tooltip(String.valueOf(slBloom.getValue())));
     	super.initialize(SettingsController.class);
     	cbBitcoinUnit.setValue(strBitcoinUnit);
@@ -151,8 +150,7 @@ public class SettingsController  extends BaseUI{
   	    		strCurrency = cbCurrency.getItems().get((Integer) number2).toString();
   	      }
   	    });
-    	try {fee = (double) set.getDefaultFee();} 
-  	    catch (IOException e) {e.printStackTrace();}
+    	fee = (double) Authenticator.getWalletOperation().getDefaultFeeFromSettings();
     	//Still need to round decimal values in the prompt text.
     	cbBitcoinUnit.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
     	      @Override
@@ -219,7 +217,7 @@ public class SettingsController  extends BaseUI{
 		 });
     	ckTrustedPeer.setSelected(TrustedPeer);
     	if (TrustedPeer) {
-    		txPeerIP.setText(set.getTrustedPeerIP());
+    		txPeerIP.setText(Authenticator.getWalletOperation().getTrustedPeerIPFromSettings());
     		txPeerIP.setDisable(false);
     		ckTor.setDisable(false);
     		ckLocalHost.setSelected(false);
@@ -328,21 +326,28 @@ public class SettingsController  extends BaseUI{
     	Main.stage.setY(event.getScreenY() - yOffset);
     }
 
-	public void exit(ActionEvent event) throws IOException {
+	public void exit(ActionEvent event) throws CannotWriteToConfigurationFileException {
 		overlayUi.done();
-		set.setAccountUnit(BitcoinUnit.Bits);
-		if (strBitcoinUnit.equals("BTC")){set.setAccountUnit(BitcoinUnit.BTC);}
-    	else if (strBitcoinUnit.equals("bits")){set.setAccountUnit(BitcoinUnit.Bits);}
-    	else if (strBitcoinUnit.equals("mBTC")){set.setAccountUnit(BitcoinUnit.Millibits);}
-    	else {set.setAccountUnit(BitcoinUnit.NanoBits);}
-		set.setDecimalPoint(intDecimal);
-		set.setLocalCurrencySymbol(strCurrency);
-		set.setLanguage(Languages.English);
-		set.setIsUsingTOR(useTor);
-		set.setIsConnectingToLocalHost(localHost);
-		if (TrustedPeer){set.setIsConnectingToTrustedPeer(true, peerIP);}
-		else {set.setNotConnectingToTrustedPeer();}
-		set.setBloomFilterFalsePositiveRate((float)slBloom.getValue());
+		// bitcoin units
+		Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.Bits);
+		if (strBitcoinUnit.equals("BTC")){Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.BTC);}
+    	else if (strBitcoinUnit.equals("bits")){Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.Bits);}
+    	else if (strBitcoinUnit.equals("mBTC")){Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.Millibits);}
+    	else {Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.NanoBits);}
+		
+		Authenticator.getWalletOperation().setDecimalPointInSettings(intDecimal);
+		
+		Authenticator.getWalletOperation().setLocalCurrencySymbolInSettings(strCurrency);
+		
+		Authenticator.getWalletOperation().setLanguageInSettings(Languages.English);
+		
+		Authenticator.getWalletOperation().setIsUsingTORInSettings(useTor);
+		
+		Authenticator.getWalletOperation().setIsConnectingToLocalHostInSettings(localHost);
+		
+		Authenticator.getWalletOperation().setIsConnectingToTrustedPeerInSettings(TrustedPeer, peerIP);
+
+		Authenticator.getWalletOperation().setBloomFilterFalsePositiveRateInSettings((float)slBloom.getValue());
     }
 	
 	public static Stage backupPane;

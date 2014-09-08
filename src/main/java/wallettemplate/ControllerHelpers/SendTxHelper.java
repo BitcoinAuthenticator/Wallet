@@ -43,6 +43,7 @@ import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
@@ -130,10 +131,10 @@ public class SendTxHelper {
 			@Nullable BAPassword WALLET_PW,
 			OperationListener opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
 		// broadcast
-		walletDB config = Authenticator.getWalletOperation().configFile;
 		if (!txLabel.isEmpty()){
-			try {config.writeNextSavedTxData(tx.getHashAsString(), "", txLabel);}
-			catch (IOException e) {e.printStackTrace();}
+			try {
+				Authenticator.getWalletOperation().writeNextSavedTxData(tx.getHashAsString(), "", txLabel);
+			} catch (CannotWriteToConfigurationFileException e) {e.printStackTrace(); }
 		}
 		BAOperation op = null;
 		if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount){

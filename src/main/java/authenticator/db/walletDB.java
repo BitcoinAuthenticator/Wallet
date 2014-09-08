@@ -48,7 +48,6 @@ public class walletDB extends dbBase{
 		try{ auth.mergeDelimitedFrom(new FileInputStream(filePath)); }
 		catch(Exception e)
 		{ 
-			//throw new CouldNotOpenConfigFileException("Could not open config file");
 			e.printStackTrace();
 		}
 		

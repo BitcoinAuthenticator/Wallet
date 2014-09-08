@@ -11,6 +11,7 @@ import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsE
 import authenticator.walletCore.exceptions.CannotGetAccountUsedAddressesException;
 import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
+import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.HierarchyUtils;
@@ -57,6 +58,8 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNa
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.protobuf.ProtoSettings.BitcoinUnit;
+import authenticator.protobuf.ProtoSettings.Languages;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
@@ -107,7 +110,8 @@ public class WalletOperation extends BASE{
 	
 	public  WalletWrapper mWalletWrapper;
 	private BAHierarchy authenticatorWalletHierarchy;
-	public  walletDB configFile;
+	private  walletDB configFile;
+	private  settingsDB settingsFile;
 	private Logger staticLogger;
 	private BAOperationState operationalState;
 	private BAApplicationParameters AppParams;
@@ -150,6 +154,7 @@ public class WalletOperation extends BASE{
 		mWalletWrapper = null;
 		authenticatorWalletHierarchy = null;
 		configFile = null;
+		settingsFile = null;
 		staticLogger = null;
 	}
 	
@@ -165,6 +170,9 @@ public class WalletOperation extends BASE{
 				//byte[] seed = BAHierarchy.generateMnemonicSeed();
 				configFile.initConfigFile(mpubkey);
 			}
+		}
+		if(settingsFile == null) {
+			settingsFile = new settingsDB(params.getAppName());
 		}
 		if(authenticatorWalletHierarchy == null)
 		{
@@ -1868,6 +1876,27 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.isWalletEncrypted();
 	}
 	
+	//#####################################
+	//
+	//		Tx history
+	//
+	//#####################################
+	
+	public void writeNextSavedTxData(String txid, String toFrom, String description) throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.writeNextSavedTxData(txid, toFrom, description);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public ArrayList<String> getSavedTxidList(){
+		return configFile.getSavedTxidList();
+	}
+	
+	public String getSavedDescription (int index) {
+		return configFile.getSavedDescription(index);
+	}
 	
 	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws CannotGetAccountFilteredTransactionsException {
 		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();
@@ -1950,6 +1979,167 @@ public class WalletOperation extends BASE{
 				return "Ready and Operational";
 			}
 			return null;
+		}
+	}
+	
+	//#####################################
+	//
+	//		Settings config
+	//
+	//#####################################
+	
+	public BitcoinUnit getAccountUnitFromSettings() {
+		try {
+			return settingsFile.getAccountUnit();
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	public void setAccountUnitInSettings(BitcoinUnit value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setAccountUnit(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public int getDecimalPointFromSettings() {
+		try {
+			return settingsFile.getDecimalPoint();
+		} catch (IOException e) {
+			return 0;
+		}
+	}
+	
+	public void setDecimalPointInSettings(int value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setDecimalPoint(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public String getLocalCurrencySymbolFromSettings() {
+		try {
+			return settingsFile.getLocalCurrencySymbol();
+		} catch (IOException e) {
+			return "";
+		}
+	}
+	
+	public void setLocalCurrencySymbolInSettings(String value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setLocalCurrencySymbol(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public Languages getLanguageFromSettings() {
+		try {
+			return settingsFile.getLanguage();
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	public void setLanguageInSettings(Languages value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setLanguage(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public boolean getIsUsingTORFromSettings() {
+		try {
+			return settingsFile.getIsUsingTOR();
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public void setIsUsingTORInSettings(boolean value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setIsUsingTOR(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public boolean getIsConnectingToLocalHostFromSettings() {
+		try {
+			return settingsFile.getIsConnectingToLocalHost();
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public void setIsConnectingToLocalHostInSettings(boolean value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setIsConnectingToLocalHost(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public boolean getIsConnectingToTrustedPeerFromSettings() {
+		try {
+			return settingsFile.getIsConnectingToTrustedPeer();
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public void setIsConnectingToTrustedPeerInSettings(boolean value, @Nullable String peerIP) throws CannotWriteToConfigurationFileException {
+		try {
+			if(value)
+				settingsFile.setIsConnectingToTrustedPeer(value, peerIP);
+			else
+				settingsFile.setNotConnectingToTrustedPeer();
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public String getTrustedPeerIPFromSettings() {
+		try {
+			return settingsFile.getTrustedPeerIP();
+		} catch (IOException e) {
+			return "";
+		}
+	}
+	
+	public double getBloomFilterFalsePositiveRateFromSettings() {
+		try {
+			return settingsFile.getBloomFilterFalsePositiveRate();
+		} catch (IOException e) {
+			return 0.0;
+		}
+	}
+	
+	public void setBloomFilterFalsePositiveRateInSettings(double value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setBloomFilterFalsePositiveRate((float)value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public double getDefaultFeeFromSettings() {
+		try {
+			return settingsFile.getDefaultFee();
+		} catch (IOException e) {
+			return 0.0;
+		}
+	}
+	
+	public void setDefaultFeeInSettings(int value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setDefaultFee(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
 	}
 }
