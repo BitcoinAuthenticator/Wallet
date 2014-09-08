@@ -6,6 +6,8 @@ import authenticator.BASE;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
+import authenticator.walletCore.exceptions.CannotGetAccountUsedAddressesException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.HierarchyUtils;
@@ -1059,6 +1061,7 @@ public class WalletOperation extends BASE{
 	 * @param accountIndex
 	 * @param addressesType
 	 * @return
+	 * @throws CannotGetAccountUsedAddressesException 
 	 * @throws NoSuchAlgorithmException
 	 * @throws JSONException
 	 * @throws AddressFormatException
@@ -1066,20 +1069,26 @@ public class WalletOperation extends BASE{
 	 * @throws AddressNotWatchedByWalletException
 	 * @throws AccountWasNotFoundException 
 	 */
-	public ArrayList<ATAddress> getAccountUsedAddresses(int accountIndex, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
+	public ArrayList<ATAddress> getAccountUsedAddresses(int accountIndex, HierarchyAddressTypes addressesType) throws CannotGetAccountUsedAddressesException{
 		ArrayList<ATAddress> ret = new ArrayList<ATAddress>();
-		ATAccount acc = getAccount(accountIndex);
-		if(addressesType == HierarchyAddressTypes.External){
-			List<Integer> used = acc.getUsedExternalKeysList();
-			for(Integer i:used){
-				ATAddress a = getATAddreessFromAccount(accountIndex,addressesType, i);
-				ret.add(a);
+		try {
+			ATAccount acc = getAccount(accountIndex);
+			if(addressesType == HierarchyAddressTypes.External){
+				List<Integer> used = acc.getUsedExternalKeysList();
+				for(Integer i:used){
+					ATAddress a = getATAddreessFromAccount(accountIndex,addressesType, i);
+					ret.add(a);
+				}
 			}
 		}
+		catch(Exception e) {
+			throw new CannotGetAccountUsedAddressesException("Canont get used addresses");
+		}
+		
 		return ret;
 	}
 	
-	public ArrayList<String> getAccountUsedAddressesString(int accountIndex, HierarchyAddressTypes addressesType) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
+	public ArrayList<String> getAccountUsedAddressesString(int accountIndex, HierarchyAddressTypes addressesType) throws CannotGetAccountUsedAddressesException {
 		ArrayList<ATAddress> addresses = getAccountUsedAddresses(accountIndex, addressesType);
 		ArrayList<String> ret = new ArrayList<String>();
 		for(ATAddress add: addresses)
@@ -1841,39 +1850,45 @@ public class WalletOperation extends BASE{
 	}
 	
 	
-	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
+	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws CannotGetAccountFilteredTransactionsException {
 		ArrayList<Transaction> filteredHistory = new ArrayList<Transaction>();
-		ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
-		//ArrayList<String> usedInternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.Internal);
-		Set<Transaction> fullTxSet = mWalletWrapper.trackedWallet.getTransactions(false);
-    	for (Transaction tx : fullTxSet){
-    		for (int a=0; a<tx.getInputs().size(); a++){
-    			if (tx.getInput(a).getConnectedOutput()!=null){
-    				String address = tx.getInput(a).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-    				for (String addr : usedExternalAddressList){
-    					if (addr.equals(address)){
-    						if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
-    					}
-    				}
-    				/*for (String addr : usedInternalAddressList){
-    					if (addr.equals(address)){
-    						if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
-    					}
-    				}*/
-    			}
-    			//We need to do the same thing here for internal addresses
-    			
-    		}
-    		for (int b=0; b<tx.getOutputs().size(); b++){
-    			String address = tx.getOutput(b).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
-    			for (String addr : usedExternalAddressList){
-    				if (addr.equals(address)){
-    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
-    				}
-    			}
-    			//Same thing here, we need to check internal addresses as well.
-    		}
-    	}	
+		try {
+			ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
+			//ArrayList<String> usedInternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.Internal);
+			Set<Transaction> fullTxSet = mWalletWrapper.trackedWallet.getTransactions(false);
+	    	for (Transaction tx : fullTxSet){
+	    		for (int a=0; a<tx.getInputs().size(); a++){
+	    			if (tx.getInput(a).getConnectedOutput()!=null){
+	    				String address = tx.getInput(a).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+	    				for (String addr : usedExternalAddressList){
+	    					if (addr.equals(address)){
+	    						if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+	    					}
+	    				}
+	    				/*for (String addr : usedInternalAddressList){
+	    					if (addr.equals(address)){
+	    						if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+	    					}
+	    				}*/
+	    			}
+	    			//We need to do the same thing here for internal addresses
+	    			
+	    		}
+	    		for (int b=0; b<tx.getOutputs().size(); b++){
+	    			String address = tx.getOutput(b).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+	    			for (String addr : usedExternalAddressList){
+	    				if (addr.equals(address)){
+	    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
+	    				}
+	    			}
+	    			//Same thing here, we need to check internal addresses as well.
+	    		}
+	    	}	
+		}
+		catch (Exception e) {
+			throw new CannotGetAccountFilteredTransactionsException("Cannot filter account's transactions");
+		}
+		
 		return filteredHistory;
 	}
 	

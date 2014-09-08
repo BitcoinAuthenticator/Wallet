@@ -13,6 +13,7 @@ import org.json.JSONException;
 import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.utils.BaseUI;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
@@ -27,6 +28,7 @@ import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
+import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,7 +62,12 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-public class UIUpdateHelper {
+public class UIUpdateHelper extends BaseUI{
+	
+	public UIUpdateHelper() {
+		super(UIUpdateHelper.class);
+	}
+	
 	public static class ReceiveAddressesUpdater extends AsyncTask{
 		ChoiceBox box;
 		ArrayList<String> addresses;
@@ -215,47 +222,55 @@ public class UIUpdateHelper {
 			 */
 		}
 		
-		private void getTxData() throws Exception{
+		@SuppressWarnings({ "deprecation", "restriction" })
+		private void getTxData() throws CannotGetAccountFilteredTransactionsException{
 			ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 	    	config = Authenticator.getWalletOperation().configFile;
 	    	savedTXIDs = config.getSavedTxidList();
 	    	txdata = FXCollections.observableArrayList();
 	    	for (Transaction tx : history){
-	    		Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
-	    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
-	    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
-	    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
-	    		ImageView arrow = null;
-	    		Text amount = new Text();
-	    		String toFrom = "multiple";
-	    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
-	    			arrow = new ImageView(out);
-	    			amount.setFill(Paint.valueOf("#f06e6e"));
-	    			amount.setText(exit.subtract(enter).toFriendlyString());
+	    		try {
+	    			Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
+		    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
+		    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
+		    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
+		    		ImageView arrow = null;
+		    		Text amount = new Text();
+		    		String toFrom = "multiple";
+		    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
+		    			arrow = new ImageView(out);
+		    			amount.setFill(Paint.valueOf("#f06e6e"));
+		    			amount.setText(exit.subtract(enter).toFriendlyString());
+		    		}
+		    		else { // i only received coins
+		    			arrow = new ImageView(in);
+		    			amount.setText(enter.toFriendlyString());
+		    			amount.setFill(Paint.valueOf("#98d947"));
+		    			if (tx.getInputs().size()==1){
+		    				toFrom = tx.getInput(0).getFromAddress().toString();
+		    			}
+		    		}
+		    		String desc = tx.getHashAsString();
+		    		String date = tx.getUpdateTime().toLocaleString();
+		    		for (int i=0; i<savedTXIDs.size(); i++){
+		    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
+		    				desc = config.getSavedDescription(i);
+		    			}
+		    		}
+		    		for (int i=0; i<savedTXIDs.size(); i++){
+		    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
+		    				toFrom = config.getSavedToFrom(i);
+		    			}
+		    		}
+		    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
+		    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
+		    		txdata.add(transaction);
 	    		}
-	    		else { // i only received coins
-	    			arrow = new ImageView(in);
-	    			amount.setText(enter.toFriendlyString());
-	    			amount.setFill(Paint.valueOf("#98d947"));
-	    			if (tx.getInputs().size()==1){
-	    				toFrom = tx.getInput(0).getFromAddress().toString();
-	    			}
+	    		catch (Exception e) {
+	    			// If in any case one transaction throws an exception, continue with the Tx iteration.
+	    			e.printStackTrace();
+	    			System.out.println("TX: " + tx.toString());
 	    		}
-	    		String desc = tx.getHashAsString();
-	    		String date = tx.getUpdateTime().toLocaleString();
-	    		for (int i=0; i<savedTXIDs.size(); i++){
-	    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-	    				desc = config.getSavedDescription(i);
-	    			}
-	    		}
-	    		for (int i=0; i<savedTXIDs.size(); i++){
-	    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-	    				toFrom = config.getSavedToFrom(i);
-	    			}
-	    		}
-	    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
-	    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
-	    		txdata.add(transaction);
 	    	}
 		}
 
