@@ -81,7 +81,7 @@ public class AddAccountWindow extends BaseUI{
 				}
 				catch (Exception e){ }
 				controller.setParams(param);
-				controller.updateUIBecauseForParams();
+				controller.updateUIForParams();
 			}
 			final String file = TextFieldValidator.class.getResource("GUI.css").toString();
 	        scene.getStylesheets().add(file); 
@@ -146,8 +146,8 @@ public class AddAccountWindow extends BaseUI{
     Stage pairWindow = null;
     @FXML protected void pair(ActionEvent event){
     	pairWindow = loadFXML(pairWindow, 
-    			getViewURL("/wallettemplate/pairing/pair_wallet.fxml"), 
-    			510, 333, 
+    			getViewURL("/wallettemplate/pairing/BAApp.fxml"), 
+    			850, 484, 
     			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
     			new PairingWalletControllerListener(){
 					@Override

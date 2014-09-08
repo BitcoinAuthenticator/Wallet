@@ -82,7 +82,7 @@ public class PairWallet extends BaseUI{
     
     @SuppressWarnings("restriction")
 	@Override
-    public void updateUIBecauseForParams(){
+    public void updateUIForParams(){
     	if(hasParameters()){
         	textfield.setText(arrParams.get(0).toString());
         	textfield.setEditable(false);
@@ -313,6 +313,10 @@ public class PairWallet extends BaseUI{
 				    	  imgViewQR.setImage(null);
 				    	  pairPane.setVisible(true);
 				    	  qrPane.setVisible(false);
+				    	  
+				    	  runBtn.setDisable(true);
+				    	  btnBack.setDisable(true);
+				    	  cancelBtn.setText("Done");
 				      }
 				});
 			}

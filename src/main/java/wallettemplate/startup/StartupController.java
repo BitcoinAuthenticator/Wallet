@@ -1243,7 +1243,6 @@ public class StartupController  extends BaseUI{
 		 node.setVisible(false);
 		 previousNode = node;
 		 LoadingPane.setVisible(true);
-		 auth.startAsync();
 		 auth.addListener(new Service.Listener() {
 				@Override public void running() {
 					Platform.runLater(new Runnable() { 
@@ -1255,6 +1254,7 @@ public class StartupController  extends BaseUI{
 					});
 		         }
 			}, MoreExecutors.sameThreadExecutor());
+		 auth.startAsync();
 	 }
 	 
 	 public static interface AddAccountListener{
