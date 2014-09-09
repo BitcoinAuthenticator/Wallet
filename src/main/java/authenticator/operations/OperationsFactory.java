@@ -235,24 +235,8 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");							
-						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
-						    String message = EncodingUtils.bytesToHex(cipher.doFinal(authenticatorByteResponse));
-						    String sig = message.substring(0,message.length()-64);
-						    String HMAC = message.substring(message.length()-64,message.length());
-						    byte[] testsig = EncodingUtils.hexStringToByteArray(sig);
-						    byte[] hash = EncodingUtils.hexStringToByteArray(HMAC);
-						    //Calculate the HMAC of the message and verify it is valid
-						    Mac mac = Mac.getInstance("HmacSHA256");
-							mac.init(secretkey);
-							byte[] macbytes = mac.doFinal(testsig);
-							if (Arrays.equals(macbytes, hash)){
-								staticLooger.info("Received Response: " + EncodingUtils.bytesToHex(testsig));
-							}
-							else {
-								staticLooger.info("Message authentication code is invalid");
-							}
+							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
 							
 							//Break apart the signature array sent over from the authenticator
 							//String sigstr = BAUtils.bytesToHex(testsig);
