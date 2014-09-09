@@ -14,7 +14,7 @@ import authenticator.Authenticator;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.OneName.OneName;
 import authenticator.db.exceptions.AccountWasNotFoundException;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;

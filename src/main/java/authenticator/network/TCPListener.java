@@ -39,7 +39,7 @@ import authenticator.operations.exceptions.BAOperationNetworkRequirementsNotAvai
 import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.operations.OperationsFactory;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;

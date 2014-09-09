@@ -4,7 +4,6 @@ option java_outer_classname="ProtoConfig";
 
 import "AuthWalletHierarchy.proto";
 import "configSettings.proto";
-import "google/protobuf/descriptor.proto";
 
 enum ATGCMMessageType{
 	SignTX 					= 2;
@@ -33,6 +32,22 @@ message ATAddress{
 	required string addressStr			= 3;
 	optional bool isUsed				= 4; 
 	optional HierarchyAddressTypes type	= 5;
+}
+
+message ATAccount {
+	required int32 index					= 1;
+	repeated int32 usedExternalKeys 		= 2;
+	repeated int32 usedInternalKeys 		= 3; 
+	//
+	required sint64 confirmedBalance		= 4;
+	required sint64 unConfirmedBalance		= 5;
+	//
+	required int32 networkType				= 6; // 1 for main net, 0 for testnet
+	//
+	required WalletAccountType accountType	= 7;
+	//
+	required string accountName				= 8;
+	//
 }
 
 //
@@ -110,31 +125,10 @@ message AuthenticatorConfiguration{
 		optional string onenameAvatarFilePath	= 4;
 	}
 
-	message ATAccount {
-		required int32 index					= 1;
-		//required int32 lastExternalIndex		= 2;
-		repeated int32 usedExternalKeys 		= 3;
-		//required int32 lastInternalIndex		= 4;
-		repeated int32 usedInternalKeys 		= 5; 
-		//
-		required sint64 confirmedBalance		= 6;
-		required sint64 unConfirmedBalance		= 7;
-		//
-		//repeated string pendingOutTx			= 8; // pending spend Tx
-		//repeated string pendingInTx				= 9; // pending receive Tx
-		//
-		required int32 networkType				= 10; // 1 for main net, 0 for testnet
-		//
-		required WalletAccountType accountType	= 11;
-		//
-		required string accountName				= 12;
-		//
-	}
 
 	message Hierarchy{
 		required bytes hierarchyMasterPublicKey		 	= 1;
 		required bytes hierarchyChaincode               = 2;
-		//required int32 hierarchyNextAvailableAccountID 	= 3;
 	}
 	
 	message SavedTX {

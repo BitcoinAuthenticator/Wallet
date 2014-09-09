@@ -21,7 +21,6 @@ import wallettemplate.Main.OverlayUI;
 import authenticator.Authenticator;
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;

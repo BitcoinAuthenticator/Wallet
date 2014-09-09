@@ -24,9 +24,9 @@ import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswer
 import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;

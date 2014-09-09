@@ -36,7 +36,6 @@ import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;

@@ -34,8 +34,8 @@ import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;

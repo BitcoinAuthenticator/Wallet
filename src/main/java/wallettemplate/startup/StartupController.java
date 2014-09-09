@@ -62,7 +62,7 @@ import authenticator.operations.OperationsUtils.PaperWalletQR;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
 import authenticator.operations.listeners.OperationListenerAdapter;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
