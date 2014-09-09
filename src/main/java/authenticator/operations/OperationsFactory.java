@@ -64,6 +64,7 @@ import authenticator.BASE;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
+import authenticator.crypto.CryptoUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation.BANetworkRequirement;
@@ -234,7 +235,7 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");							
 						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
 						    String message = EncodingUtils.bytesToHex(cipher.doFinal(authenticatorByteResponse));
@@ -252,6 +253,7 @@ public class OperationsFactory extends BASE{
 							else {
 								staticLooger.info("Message authentication code is invalid");
 							}
+							
 							//Break apart the signature array sent over from the authenticator
 							//String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = null;
@@ -316,7 +318,7 @@ public class OperationsFactory extends BASE{
 						            });
 								}
 								else{
-									wallet.disconnectInputs(tx.getInputs());
+									//wallet.disconnectInputs(tx.getInputs());
 									Authenticator.fireOnAuthenticatorSigningResponse(tx, 
 											pairingID, 
 											pendigReq, 
@@ -463,7 +465,7 @@ public class OperationsFactory extends BASE{
 						            });
 								}
 								else{
-									wallet.disconnectInputs(tx.getInputs());
+									//wallet.disconnectInputs(tx.getInputs());
 									/**
 				                	 * No need for UI notification here, will be handled by AuthenticatorGeneralEvents#OnBalanceChanged
 				                	 */

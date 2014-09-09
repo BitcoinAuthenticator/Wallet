@@ -153,7 +153,7 @@ public class WalletWrapper extends BASE{
 	//
 	//#####################################
 	
-	public Wallet.SendResult broadcastTrabsactionFromWallet(Transaction tx)
+	public Wallet.SendResult broadcastTransactionFromWallet(Transaction tx)
 	{
 		trackedWallet.commitTx(tx);
 		TransactionBroadcaster tb;
@@ -167,9 +167,9 @@ public class WalletWrapper extends BASE{
 		return trackedWallet.findKeyFromPubHash(pubkeyHash);
 	}
 	
-	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException{
-		return trackedWallet.sendCoins(req);
-	}
+//	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException{
+//		return trackedWallet.sendCoins(req);
+//	}
 	
 	//#####################################
 	//

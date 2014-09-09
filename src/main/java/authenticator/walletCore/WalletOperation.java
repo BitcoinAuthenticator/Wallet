@@ -475,7 +475,7 @@ public class WalletOperation extends BASE{
 	public SendResult pushTxWithWallet(Transaction tx) throws CannotBroadcastTransactionException{
 		try {
 			this.LOG.info("Broadcasting to network...");
-			return mWalletWrapper.broadcastTrabsactionFromWallet(tx);
+			return mWalletWrapper.broadcastTransactionFromWallet(tx);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -1737,32 +1737,53 @@ public class WalletOperation extends BASE{
     	this.LOG.info("Added {} addresses to watch", addresses.size());
 	}
     
-	public void connectInputs(List<TransactionInput> inputs)
+    /**
+     * Searches for a TransactionOutput hash and returns that TransactionOutput.<br>
+     * If not found will return null
+     * 
+     * @param parentTransactionOutpointHash
+     * @return
+     */
+    public TransactionOutput findTransactionOutpointByHash(String parentTransactionOutpointHash, long index)
 	{
 		assert(mWalletWrapper != null);
 		List<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
-		for(TransactionOutput out:unspentOutputs)
-			for(TransactionInput in:inputs){
-				String hashIn = in.getOutpoint().getHash().toString();
-				String hashOut = out.getParentTransaction().getHash().toString();
-				if(hashIn.equals(hashOut)){
-					in.connect(out);
-					break;
-				}
+		for(TransactionOutput out:unspentOutputs) {
+			String hashOut = out.getParentTransaction().getHashAsString();
+			if(hashOut.equals(parentTransactionOutpointHash) && out.getIndex() == index){
+				return out;
 			}
+		}
+		
+		return null;
 	}
+    
+//	public void connectInputs(List<TransactionInput> inputs)
+//	{
+//		assert(mWalletWrapper != null);
+//		List<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
+//		for(TransactionOutput out:unspentOutputs)
+//			for(TransactionInput in:inputs){
+//				String hashIn = in.getOutpoint().getHash().toString();
+//				String hashOut = out.getParentTransaction().getHash().toString();
+//				if(hashIn.equals(hashOut)){
+//					in.connect(out);
+//					break;
+//				}
+//			}
+//	}
+//	
+//	public void disconnectInputs(List<TransactionInput> inputs){
+//		for(TransactionInput input:inputs)
+//			input.disconnect();
+//	}
 	
-	public void disconnectInputs(List<TransactionInput> inputs){
-		for(TransactionInput input:inputs)
-			input.disconnect();
-	}
-	
-	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException
-	{
-		assert(mWalletWrapper != null);
-		this.LOG.info("Sent Tx: " + req.tx.getHashAsString());
-		return mWalletWrapper.sendCoins(req);
-	}
+//	public SendResult sendCoins(Wallet.SendRequest req) throws InsufficientMoneyException
+//	{
+//		assert(mWalletWrapper != null);
+//		this.LOG.info("Sent Tx: " + req.tx.getHashAsString());
+//		return mWalletWrapper.sendCoins(req);
+//	}
 	
 	public void addEventListener(WalletEventListener listener)
 	{

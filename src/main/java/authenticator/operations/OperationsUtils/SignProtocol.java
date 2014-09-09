@@ -36,6 +36,7 @@ import authenticator.walletCore.WalletOperation;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -136,24 +137,20 @@ public class SignProtocol {
 			byte[] key = EncodingUtils.hexStringToByteArray(po.getMasterPublicKey());
 			byte[] chain = EncodingUtils.hexStringToByteArray(po.getChainCode());
 			
-			// we rebuild the Tx from a raw string so we need to reconnect the inputs
-			wallet.connectInputs(tx.getInputs());
-			
 			//Loop to create a signature for each input
 			int i = 0;							
-			for(TransactionInput in: tx.getInputs()){
-				TransactionOutput out = in.getConnectedOutput();
+			for(TransactionInput in: tx.getInputs())  {
+				// We search the TransactionOutput because we build the Tx from raw hex data, not parent Tx is set.
+				TransactionOutPoint txOp = in.getOutpoint();
+				TransactionOutput out = wallet.findTransactionOutpointByHash(txOp.getHash().toString(), txOp.getIndex()); 
 				if(out == null)
 					throw new UnableToCompleteTxSigningException("Cannot find corresponding transaction outout for input:\n " + in.toString());
+				
 				String inAddress = out.getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 				ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 				//Authenticator Key
 				ECKey authKey = wallet.getPairedAuthenticatorKey(po, atAdd.getKeyIndex());
 				
-				//Wallet key
-				if (Authenticator.getWalletOperation().isWalletEncrypted()){
-					//Display dialog asking user to input password
-				}
 				ECKey walletKey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																					atAdd.getType(),
 																					atAdd.getKeyIndex(),
@@ -171,14 +168,13 @@ public class SignProtocol {
 				List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
 				Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, scriptpubkey);
 
-
 				in.setScriptSig(inputScript);
 				
 				i++;
 			}
 		}
 		catch (Exception e){
-			wallet.disconnectInputs(tx.getInputs());
+			//wallet.disconnectInputs(tx.getInputs());
 			e.printStackTrace();
 			throw new UnableToCompleteTxSigningException("Unable to finish transaction signing");
 		}

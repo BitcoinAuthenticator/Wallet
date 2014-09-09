@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -55,6 +56,43 @@ public class CryptoUtils {
 		}
 	}
 	
+	static public byte[] decryptPayloadWithChecksum(byte[] encryptedPayload, SecretKey secretkey) throws CannotDecryptMessageException {
+		try {
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+		    cipher.init(Cipher.DECRYPT_MODE, secretkey);
+		    String message = EncodingUtils.bytesToHex(cipher.doFinal(encryptedPayload));
+		    String sig = message.substring(0,message.length()-64);
+		    String HMAC = message.substring(message.length()-64,message.length());
+		    byte[] testsig = EncodingUtils.hexStringToByteArray(sig);
+		    byte[] hash = EncodingUtils.hexStringToByteArray(HMAC);
+		    //Calculate the HMAC of the message and verify it is valid
+		    Mac mac = Mac.getInstance("HmacSHA256");
+			mac.init(secretkey);
+			byte[] macbytes = mac.doFinal(testsig);
+			if (Arrays.equals(macbytes, hash)){
+				//staticLooger.info("Received Response: " + EncodingUtils.bytesToHex(testsig));
+				return testsig;
+			}
+			else {
+				throw new ChecksumIncorrectException("");
+			}
+		}
+		catch(Exception e) {
+			throw new CannotDecryptMessageException(e.toString());
+		}
+	}
+	
+	static public class ChecksumIncorrectException extends Exception {
+		public ChecksumIncorrectException(String str) {
+			super (str);
+		}
+	}
+	
+	static public class CannotDecryptMessageException extends Exception {
+		public CannotDecryptMessageException(String str) {
+			super (str);
+		}
+	}
 	
 	static public class CouldNotEncryptPayload extends Exception {
 		public CouldNotEncryptPayload(String str) {
