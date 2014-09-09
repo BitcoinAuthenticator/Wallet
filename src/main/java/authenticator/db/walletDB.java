@@ -22,6 +22,7 @@ import authenticator.protobuf.ProtoConfig;
 import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
+import authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
@@ -73,12 +74,8 @@ public class walletDB extends dbBase{
         return false;
 	}
 
-	public void initConfigFile(DeterministicKey mpubkey) throws IOException{
+	public void initConfigFile() throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		byte[] pubkey = mpubkey.getPubKey();
-		byte[] chaincode = mpubkey.getChainCode();
-		auth.getConfigHierarchyBuilder().setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
-		auth.getConfigHierarchyBuilder().setHierarchyChaincode(ByteString.copyFrom(chaincode));
 		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
 		ConfigSettings.Builder b = ConfigSettings.newBuilder();
 		auth.setConfigSettings(b);
@@ -317,21 +314,26 @@ public class walletDB extends dbBase{
 		writeConfigFile(auth);
 	}
 	
-	public void writeHierarchyPubKey(DeterministicKey mpubkey) throws IOException{
-		byte[] pubkey = mpubkey.getPubKey();
-		byte[] chaincode = mpubkey.getChainCode();
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigHierarchyBuilder().setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
-		auth.getConfigHierarchyBuilder().setHierarchyChaincode(ByteString.copyFrom(chaincode));
-		writeConfigFile(auth);
-	}
+//	public void writeAccountHierarchyPubKey(int accountIdx, DeterministicKey mpubkey) throws AccountWasNotFoundException, IOException{
+//		ATAccount acc = getAccount(accountIdx);
+//		ATAccount.Builder b = ATAccount.newBuilder(acc);
+//		
+//		byte[] pubkey = mpubkey.getPubKey();
+//		byte[] chaincode = mpubkey.getChainCode();
+//		ATAccountHierarchy.Builder hb = ATAccountHierarchy.newBuilder();
+//		hb.setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
+//		hb.setHierarchyChaincode(ByteString.copyFrom(chaincode));
+//		
+//		b.setAccountHierarchy(hb.build());
+//		updateAccount(b.build());
+//	}
 	
-	public DeterministicKey getHierarchyPubKey(){
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		byte[] mpubkey = auth.getConfigHierarchy().getHierarchyMasterPublicKey().toByteArray();
-		byte[] chaincode = auth.getConfigHierarchy().getHierarchyChaincode().toByteArray();
-		DeterministicKey key = HDKeyDerivation.createMasterPubKeyFromBytes(mpubkey, chaincode);
-		return key;
+	public ATAccountAddressHierarchy geAccountHierarchy(int accountIdx, HierarchyAddressTypes type) throws AccountWasNotFoundException {
+		ATAccount acc = getAccount(accountIdx);
+		if(type == HierarchyAddressTypes.External)
+			return acc.getAccountExternalHierarchy();
+		else
+			return acc.getAccountInternalHierarchy();
 	}
 	
 	public void writeNextSavedTxData(String txid, String toFrom, String description) throws IOException{
@@ -374,66 +376,5 @@ public class walletDB extends dbBase{
 	public String getSavedToFrom (int index) {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigSavedTXData(index).getToFrom();
-	}
-
- 	/*public List<String> getPendingOutTx(int accountIdx){
- 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return getAccount(accountIdx).getPendingOutTxList();
- 	}
-
- 	public void addPendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-		ATAccount acc = getAccount(accountIdx);
-		ATAccount.Builder b = ATAccount.newBuilder(acc);
-		b.addPendingOutTx(txID);
-		updateAccount(b.build());
- 	}
-
-
- 	public void removePendingOutTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
- 		List<String> all = getPendingOutTx(accountIdx);
-		ATAccount acc = getAccount(accountIdx);
-		ATAccount.Builder b = ATAccount.newBuilder(acc);
-		b.clearPendingOutTx();
- 		for(int i=0;i < all.size(); i++)
- 			if(!all.get(i).equals(txID))
-				b.addPendingOutTx(all.get(i));
-		updateAccount(b.build());
- 	}
-
-
- 	public List<String> getPendingInTx(int accountIdx){
- 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return getAccount(accountIdx).getPendingInTxList();
- 	}
-
-
- 	public void addPendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
-		ATAccount acc = getAccount(accountIdx);
-		ATAccount.Builder b = ATAccount.newBuilder(acc);
-		b.addPendingInTx(txID);
-		updateAccount(b.build());
- 	}
-
-
- 	public void removePendingInTx(int accountIdx, String txID) throws FileNotFoundException, IOException{
- 		List<String> all = getPendingInTx(accountIdx);
-		ATAccount acc = getAccount(accountIdx);
-		ATAccount.Builder b = ATAccount.newBuilder(acc);
-		b.clearPendingInTx();
- 		for(int i=0;i < all.size(); i++)
- 			if(!all.get(i).equals(txID))
-				b.addPendingInTx(all.get(i));
-		updateAccount(b.build());
- 	}*/
-
-	/*public int getHierarchyNextAvailableAccountID(){
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		return auth.getConfigHierarchy().getHierarchyNextAvailableAccountID();
-	}
-
-	public void writeHierarchyNextAvailableAccountID(int i) throws IOException{
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		auth.getConfigHierarchyBuilder().setHierarchyNextAvailableAccountID(i);
-		writeConfigFile(auth);
-	}*/
+	} 
 }

@@ -11,8 +11,17 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.common.collect.ImmutableList;
 
 public class HierarchyUtils {
-	public static ChildNumber getKeyIndexFromPath(ImmutableList<ChildNumber> path) throws IncorrectPathException{
-     	if(path.size() < 5)
+	
+	/**
+	 * If the path is full (following BIP 44) than will check for path correctness
+	 * 
+	 * @param path
+	 * @param isFullPath
+	 * @return
+	 * @throws IncorrectPathException
+	 */
+	public static ChildNumber getKeyIndexFromPath(ImmutableList<ChildNumber> path, boolean isFullPath) throws IncorrectPathException{
+     	if(isFullPath && path.size() < 5)
      		throw new IncorrectPathException("Cannot parse key path, incorrect path.");
 		
 		return path.get(path.size() - 1);

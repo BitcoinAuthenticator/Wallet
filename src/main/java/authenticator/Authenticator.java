@@ -82,7 +82,7 @@ public class Authenticator extends BASE{
 		init(appParams);
 		if(mWalletOperation == null){
 			try {
-				mWalletOperation = new WalletOperation(appParams, mpubkey);
+				mWalletOperation = new WalletOperation(appParams);
 			} catch (IOException e) { e.printStackTrace(); }
 			
 			try {
@@ -104,13 +104,13 @@ public class Authenticator extends BASE{
 	 * @throws IOException
 	 * @throws AccountWasNotFoundException 
 	 */
-	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams, DeterministicKey mpubkey) throws IOException, AccountWasNotFoundException
+	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) throws IOException, AccountWasNotFoundException
 	{
 		super(Authenticator.class);
 		init(appParams);
 		if(mWalletOperation == null){
 			try {
-				mWalletOperation = new WalletOperation(wallet,peerGroup,appParams, mpubkey);
+				mWalletOperation = new WalletOperation(wallet,peerGroup,appParams);
 			} catch (IOException e) { e.printStackTrace(); }
 			
 			initPendingRequests();

@@ -6,6 +6,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import javax.annotation.Nullable;
 import javax.crypto.*;
 
 import org.json.simple.JSONObject;
@@ -21,6 +22,7 @@ import authenticator.network.PongPayload;
 import authenticator.network.UpNp;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
+import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
 /**
@@ -58,7 +60,8 @@ public class PairingProtocol {
 		  OperationListener opListener,
 		  PairingStageUpdater statusListener,
 		  Runnable displayQRAnimation, 
-		  Runnable animationAfterPairing) throws Exception {
+		  Runnable animationAfterPairing,
+		  @Nullable BAPassword walletPW) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[2];
@@ -123,7 +126,8 @@ public class PairingProtocol {
 															  pairingID, 
 															  args[0], 
 															  accID,
-															  NetworkType.fromString(args[2]));
+															  NetworkType.fromString(args[2]),
+															  walletPW);
 		  
 		  postUIStatusUpdate(statusListener, PairingStage.FINISHED);
 		  statusListener.pairingData(obj);

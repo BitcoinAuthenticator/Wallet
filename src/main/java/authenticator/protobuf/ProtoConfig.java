@@ -1220,6 +1220,43 @@ public final class ProtoConfig {
      */
     com.google.protobuf.ByteString
         getAccountNameBytes();
+
+    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+     *
+     * <pre>
+     * </pre>
+     */
+    boolean hasAccountExternalHierarchy();
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+     *
+     * <pre>
+     * </pre>
+     */
+    authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getAccountExternalHierarchy();
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+     *
+     * <pre>
+     * </pre>
+     */
+    authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder getAccountExternalHierarchyOrBuilder();
+
+    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+     */
+    boolean hasAccountInternalHierarchy();
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+     */
+    authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getAccountInternalHierarchy();
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+     */
+    authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder getAccountInternalHierarchyOrBuilder();
   }
   /**
    * Protobuf type {@code authenticator.protobuf.ATAccount}
@@ -1350,6 +1387,32 @@ public final class ProtoConfig {
               accountName_ = input.readBytes();
               break;
             }
+            case 74: {
+              authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000040) == 0x00000040)) {
+                subBuilder = accountExternalHierarchy_.toBuilder();
+              }
+              accountExternalHierarchy_ = input.readMessage(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(accountExternalHierarchy_);
+                accountExternalHierarchy_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000040;
+              break;
+            }
+            case 82: {
+              authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
+                subBuilder = accountInternalHierarchy_.toBuilder();
+              }
+              accountInternalHierarchy_ = input.readMessage(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(accountInternalHierarchy_);
+                accountInternalHierarchy_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000080;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -1393,6 +1456,505 @@ public final class ProtoConfig {
     @java.lang.Override
     public com.google.protobuf.Parser<ATAccount> getParserForType() {
       return PARSER;
+    }
+
+    public interface ATAccountAddressHierarchyOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // required bytes hierarchyKey = 1;
+      /**
+       * <code>required bytes hierarchyKey = 1;</code>
+       */
+      boolean hasHierarchyKey();
+      /**
+       * <code>required bytes hierarchyKey = 1;</code>
+       */
+      com.google.protobuf.ByteString getHierarchyKey();
+
+      // required bytes hierarchyChaincode = 2;
+      /**
+       * <code>required bytes hierarchyChaincode = 2;</code>
+       */
+      boolean hasHierarchyChaincode();
+      /**
+       * <code>required bytes hierarchyChaincode = 2;</code>
+       */
+      com.google.protobuf.ByteString getHierarchyChaincode();
+    }
+    /**
+     * Protobuf type {@code authenticator.protobuf.ATAccount.ATAccountAddressHierarchy}
+     */
+    public static final class ATAccountAddressHierarchy extends
+        com.google.protobuf.GeneratedMessage
+        implements ATAccountAddressHierarchyOrBuilder {
+      // Use ATAccountAddressHierarchy.newBuilder() to construct.
+      private ATAccountAddressHierarchy(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private ATAccountAddressHierarchy(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final ATAccountAddressHierarchy defaultInstance;
+      public static ATAccountAddressHierarchy getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public ATAccountAddressHierarchy getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ATAccountAddressHierarchy(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                hierarchyKey_ = input.readBytes();
+                break;
+              }
+              case 18: {
+                bitField0_ |= 0x00000002;
+                hierarchyChaincode_ = input.readBytes();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.class, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<ATAccountAddressHierarchy> PARSER =
+          new com.google.protobuf.AbstractParser<ATAccountAddressHierarchy>() {
+        public ATAccountAddressHierarchy parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ATAccountAddressHierarchy(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ATAccountAddressHierarchy> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      // required bytes hierarchyKey = 1;
+      public static final int HIERARCHYKEY_FIELD_NUMBER = 1;
+      private com.google.protobuf.ByteString hierarchyKey_;
+      /**
+       * <code>required bytes hierarchyKey = 1;</code>
+       */
+      public boolean hasHierarchyKey() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bytes hierarchyKey = 1;</code>
+       */
+      public com.google.protobuf.ByteString getHierarchyKey() {
+        return hierarchyKey_;
+      }
+
+      // required bytes hierarchyChaincode = 2;
+      public static final int HIERARCHYCHAINCODE_FIELD_NUMBER = 2;
+      private com.google.protobuf.ByteString hierarchyChaincode_;
+      /**
+       * <code>required bytes hierarchyChaincode = 2;</code>
+       */
+      public boolean hasHierarchyChaincode() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required bytes hierarchyChaincode = 2;</code>
+       */
+      public com.google.protobuf.ByteString getHierarchyChaincode() {
+        return hierarchyChaincode_;
+      }
+
+      private void initFields() {
+        hierarchyKey_ = com.google.protobuf.ByteString.EMPTY;
+        hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        if (!hasHierarchyKey()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasHierarchyChaincode()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, hierarchyKey_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, hierarchyChaincode_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, hierarchyKey_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, hierarchyChaincode_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code authenticator.protobuf.ATAccount.ATAccountAddressHierarchy}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.class, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder.class);
+        }
+
+        // Construct using authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          hierarchyKey_ = com.google.protobuf.ByteString.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+        }
+
+        public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getDefaultInstanceForType() {
+          return authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+        }
+
+        public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy build() {
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy buildPartial() {
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy result = new authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.hierarchyKey_ = hierarchyKey_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.hierarchyChaincode_ = hierarchyChaincode_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy) {
+            return mergeFrom((authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy other) {
+          if (other == authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance()) return this;
+          if (other.hasHierarchyKey()) {
+            setHierarchyKey(other.getHierarchyKey());
+          }
+          if (other.hasHierarchyChaincode()) {
+            setHierarchyChaincode(other.getHierarchyChaincode());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasHierarchyKey()) {
+            
+            return false;
+          }
+          if (!hasHierarchyChaincode()) {
+            
+            return false;
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // required bytes hierarchyKey = 1;
+        private com.google.protobuf.ByteString hierarchyKey_ = com.google.protobuf.ByteString.EMPTY;
+        /**
+         * <code>required bytes hierarchyKey = 1;</code>
+         */
+        public boolean hasHierarchyKey() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>required bytes hierarchyKey = 1;</code>
+         */
+        public com.google.protobuf.ByteString getHierarchyKey() {
+          return hierarchyKey_;
+        }
+        /**
+         * <code>required bytes hierarchyKey = 1;</code>
+         */
+        public Builder setHierarchyKey(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          hierarchyKey_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required bytes hierarchyKey = 1;</code>
+         */
+        public Builder clearHierarchyKey() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          hierarchyKey_ = getDefaultInstance().getHierarchyKey();
+          onChanged();
+          return this;
+        }
+
+        // required bytes hierarchyChaincode = 2;
+        private com.google.protobuf.ByteString hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
+        /**
+         * <code>required bytes hierarchyChaincode = 2;</code>
+         */
+        public boolean hasHierarchyChaincode() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>required bytes hierarchyChaincode = 2;</code>
+         */
+        public com.google.protobuf.ByteString getHierarchyChaincode() {
+          return hierarchyChaincode_;
+        }
+        /**
+         * <code>required bytes hierarchyChaincode = 2;</code>
+         */
+        public Builder setHierarchyChaincode(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          hierarchyChaincode_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required bytes hierarchyChaincode = 2;</code>
+         */
+        public Builder clearHierarchyChaincode() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          hierarchyChaincode_ = getDefaultInstance().getHierarchyChaincode();
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ATAccount.ATAccountAddressHierarchy)
+      }
+
+      static {
+        defaultInstance = new ATAccountAddressHierarchy(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:authenticator.protobuf.ATAccount.ATAccountAddressHierarchy)
     }
 
     private int bitField0_;
@@ -1592,6 +2154,59 @@ public final class ProtoConfig {
       }
     }
 
+    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;
+    public static final int ACCOUNTEXTERNALHIERARCHY_FIELD_NUMBER = 9;
+    private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy_;
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+     *
+     * <pre>
+     * </pre>
+     */
+    public boolean hasAccountExternalHierarchy() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+     *
+     * <pre>
+     * </pre>
+     */
+    public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getAccountExternalHierarchy() {
+      return accountExternalHierarchy_;
+    }
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+     *
+     * <pre>
+     * </pre>
+     */
+    public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder getAccountExternalHierarchyOrBuilder() {
+      return accountExternalHierarchy_;
+    }
+
+    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;
+    public static final int ACCOUNTINTERNALHIERARCHY_FIELD_NUMBER = 10;
+    private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy_;
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+     */
+    public boolean hasAccountInternalHierarchy() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getAccountInternalHierarchy() {
+      return accountInternalHierarchy_;
+    }
+    /**
+     * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+     */
+    public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder getAccountInternalHierarchyOrBuilder() {
+      return accountInternalHierarchy_;
+    }
+
     private void initFields() {
       index_ = 0;
       usedExternalKeys_ = java.util.Collections.emptyList();
@@ -1601,6 +2216,8 @@ public final class ProtoConfig {
       networkType_ = 0;
       accountType_ = authenticator.protobuf.ProtoConfig.WalletAccountType.StandardAccount;
       accountName_ = "";
+      accountExternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+      accountInternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1628,6 +2245,22 @@ public final class ProtoConfig {
         return false;
       }
       if (!hasAccountName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasAccountExternalHierarchy()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasAccountInternalHierarchy()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getAccountExternalHierarchy().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getAccountInternalHierarchy().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1661,6 +2294,12 @@ public final class ProtoConfig {
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(8, getAccountNameBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeMessage(9, accountExternalHierarchy_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeMessage(10, accountInternalHierarchy_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1712,6 +2351,14 @@ public final class ProtoConfig {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(8, getAccountNameBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, accountExternalHierarchy_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, accountInternalHierarchy_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1821,6 +2468,8 @@ public final class ProtoConfig {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getAccountExternalHierarchyFieldBuilder();
+          getAccountInternalHierarchyFieldBuilder();
         }
       }
       private static Builder create() {
@@ -1845,6 +2494,18 @@ public final class ProtoConfig {
         bitField0_ = (bitField0_ & ~0x00000040);
         accountName_ = "";
         bitField0_ = (bitField0_ & ~0x00000080);
+        if (accountExternalHierarchyBuilder_ == null) {
+          accountExternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+        } else {
+          accountExternalHierarchyBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        if (accountInternalHierarchyBuilder_ == null) {
+          accountInternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+        } else {
+          accountInternalHierarchyBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
 
@@ -1907,6 +2568,22 @@ public final class ProtoConfig {
           to_bitField0_ |= 0x00000020;
         }
         result.accountName_ = accountName_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        if (accountExternalHierarchyBuilder_ == null) {
+          result.accountExternalHierarchy_ = accountExternalHierarchy_;
+        } else {
+          result.accountExternalHierarchy_ = accountExternalHierarchyBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        if (accountInternalHierarchyBuilder_ == null) {
+          result.accountInternalHierarchy_ = accountInternalHierarchy_;
+        } else {
+          result.accountInternalHierarchy_ = accountInternalHierarchyBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1963,6 +2640,12 @@ public final class ProtoConfig {
           accountName_ = other.accountName_;
           onChanged();
         }
+        if (other.hasAccountExternalHierarchy()) {
+          mergeAccountExternalHierarchy(other.getAccountExternalHierarchy());
+        }
+        if (other.hasAccountInternalHierarchy()) {
+          mergeAccountInternalHierarchy(other.getAccountInternalHierarchy());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -1989,6 +2672,22 @@ public final class ProtoConfig {
           return false;
         }
         if (!hasAccountName()) {
+          
+          return false;
+        }
+        if (!hasAccountExternalHierarchy()) {
+          
+          return false;
+        }
+        if (!hasAccountInternalHierarchy()) {
+          
+          return false;
+        }
+        if (!getAccountExternalHierarchy().isInitialized()) {
+          
+          return false;
+        }
+        if (!getAccountInternalHierarchy().isInitialized()) {
           
           return false;
         }
@@ -2440,6 +3139,267 @@ public final class ProtoConfig {
         accountName_ = value;
         onChanged();
         return this;
+      }
+
+      // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;
+      private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder> accountExternalHierarchyBuilder_;
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public boolean hasAccountExternalHierarchy() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getAccountExternalHierarchy() {
+        if (accountExternalHierarchyBuilder_ == null) {
+          return accountExternalHierarchy_;
+        } else {
+          return accountExternalHierarchyBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public Builder setAccountExternalHierarchy(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy value) {
+        if (accountExternalHierarchyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          accountExternalHierarchy_ = value;
+          onChanged();
+        } else {
+          accountExternalHierarchyBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public Builder setAccountExternalHierarchy(
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder builderForValue) {
+        if (accountExternalHierarchyBuilder_ == null) {
+          accountExternalHierarchy_ = builderForValue.build();
+          onChanged();
+        } else {
+          accountExternalHierarchyBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public Builder mergeAccountExternalHierarchy(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy value) {
+        if (accountExternalHierarchyBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+              accountExternalHierarchy_ != authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance()) {
+            accountExternalHierarchy_ =
+              authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.newBuilder(accountExternalHierarchy_).mergeFrom(value).buildPartial();
+          } else {
+            accountExternalHierarchy_ = value;
+          }
+          onChanged();
+        } else {
+          accountExternalHierarchyBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public Builder clearAccountExternalHierarchy() {
+        if (accountExternalHierarchyBuilder_ == null) {
+          accountExternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+          onChanged();
+        } else {
+          accountExternalHierarchyBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder getAccountExternalHierarchyBuilder() {
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return getAccountExternalHierarchyFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder getAccountExternalHierarchyOrBuilder() {
+        if (accountExternalHierarchyBuilder_ != null) {
+          return accountExternalHierarchyBuilder_.getMessageOrBuilder();
+        } else {
+          return accountExternalHierarchy_;
+        }
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
+       *
+       * <pre>
+       * </pre>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder> 
+          getAccountExternalHierarchyFieldBuilder() {
+        if (accountExternalHierarchyBuilder_ == null) {
+          accountExternalHierarchyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder>(
+                  accountExternalHierarchy_,
+                  getParentForChildren(),
+                  isClean());
+          accountExternalHierarchy_ = null;
+        }
+        return accountExternalHierarchyBuilder_;
+      }
+
+      // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;
+      private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder> accountInternalHierarchyBuilder_;
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public boolean hasAccountInternalHierarchy() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getAccountInternalHierarchy() {
+        if (accountInternalHierarchyBuilder_ == null) {
+          return accountInternalHierarchy_;
+        } else {
+          return accountInternalHierarchyBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public Builder setAccountInternalHierarchy(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy value) {
+        if (accountInternalHierarchyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          accountInternalHierarchy_ = value;
+          onChanged();
+        } else {
+          accountInternalHierarchyBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public Builder setAccountInternalHierarchy(
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder builderForValue) {
+        if (accountInternalHierarchyBuilder_ == null) {
+          accountInternalHierarchy_ = builderForValue.build();
+          onChanged();
+        } else {
+          accountInternalHierarchyBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public Builder mergeAccountInternalHierarchy(authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy value) {
+        if (accountInternalHierarchyBuilder_ == null) {
+          if (((bitField0_ & 0x00000200) == 0x00000200) &&
+              accountInternalHierarchy_ != authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance()) {
+            accountInternalHierarchy_ =
+              authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.newBuilder(accountInternalHierarchy_).mergeFrom(value).buildPartial();
+          } else {
+            accountInternalHierarchy_ = value;
+          }
+          onChanged();
+        } else {
+          accountInternalHierarchyBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000200;
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public Builder clearAccountInternalHierarchy() {
+        if (accountInternalHierarchyBuilder_ == null) {
+          accountInternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
+          onChanged();
+        } else {
+          accountInternalHierarchyBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
+        return this;
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder getAccountInternalHierarchyBuilder() {
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return getAccountInternalHierarchyFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      public authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder getAccountInternalHierarchyOrBuilder() {
+        if (accountInternalHierarchyBuilder_ != null) {
+          return accountInternalHierarchyBuilder_.getMessageOrBuilder();
+        } else {
+          return accountInternalHierarchy_;
+        }
+      }
+      /**
+       * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder> 
+          getAccountInternalHierarchyFieldBuilder() {
+        if (accountInternalHierarchyBuilder_ == null) {
+          accountInternalHierarchyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder>(
+                  accountInternalHierarchy_,
+                  getParentForChildren(),
+                  isClean());
+          accountInternalHierarchy_ = null;
+        }
+        return accountInternalHierarchyBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:authenticator.protobuf.ATAccount)
@@ -6097,81 +7057,87 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder();
 
-    // required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;
+    // repeated .authenticator.protobuf.ATAccount configAccounts = 6;
     /**
-     * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-     */
-    boolean hasConfigHierarchy();
-    /**
-     * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-     */
-    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy getConfigHierarchy();
-    /**
-     * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-     */
-    authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.HierarchyOrBuilder getConfigHierarchyOrBuilder();
-
-    // repeated .authenticator.protobuf.ATAccount configAccounts = 7;
-    /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     java.util.List<authenticator.protobuf.ProtoConfig.ATAccount> 
         getConfigAccountsList();
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     authenticator.protobuf.ProtoConfig.ATAccount getConfigAccounts(int index);
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     int getConfigAccountsCount();
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     java.util.List<? extends authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> 
         getConfigAccountsOrBuilderList();
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     authenticator.protobuf.ProtoConfig.ATAccountOrBuilder getConfigAccountsOrBuilder(
         int index);
 
-    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;
+    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> 
         getConfigSavedTXDataList();
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index);
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     int getConfigSavedTXDataCount();
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
         getConfigSavedTXDataOrBuilderList();
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
         int index);
 
-    // required .authenticator.protobuf.ConfigSettings configSettings = 9;
+    // required .authenticator.protobuf.ConfigSettings configSettings = 8;
     /**
-     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
     boolean hasConfigSettings();
     /**
-     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
     authenticator.protobuf.ProtoSettings.ConfigSettings getConfigSettings();
     /**
-     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
     authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder getConfigSettingsOrBuilder();
   }
@@ -6266,37 +7232,24 @@ public final class ProtoConfig {
               break;
             }
             case 50: {
-              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000008) == 0x00000008)) {
-                subBuilder = configHierarchy_.toBuilder();
-              }
-              configHierarchy_ = input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(configHierarchy_);
-                configHierarchy_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000008;
-              break;
-            }
-            case 58: {
-              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
                 configAccounts_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ATAccount>();
-                mutable_bitField0_ |= 0x00000010;
+                mutable_bitField0_ |= 0x00000008;
               }
               configAccounts_.add(input.readMessage(authenticator.protobuf.ProtoConfig.ATAccount.PARSER, extensionRegistry));
               break;
             }
-            case 66: {
-              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+            case 58: {
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
                 configSavedTXData_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX>();
-                mutable_bitField0_ |= 0x00000020;
+                mutable_bitField0_ |= 0x00000010;
               }
               configSavedTXData_.add(input.readMessage(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.PARSER, extensionRegistry));
               break;
             }
-            case 74: {
+            case 66: {
               authenticator.protobuf.ProtoSettings.ConfigSettings.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000010) == 0x00000010)) {
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
                 subBuilder = configSettings_.toBuilder();
               }
               configSettings_ = input.readMessage(authenticator.protobuf.ProtoSettings.ConfigSettings.PARSER, extensionRegistry);
@@ -6304,7 +7257,7 @@ public final class ProtoConfig {
                 subBuilder.mergeFrom(configSettings_);
                 configSettings_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000008;
               break;
             }
           }
@@ -6315,10 +7268,10 @@ public final class ProtoConfig {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
           configAccounts_ = java.util.Collections.unmodifiableList(configAccounts_);
         }
-        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
           configSavedTXData_ = java.util.Collections.unmodifiableList(configSavedTXData_);
         }
         this.unknownFields = unknownFields.build();
@@ -9250,505 +10203,6 @@ public final class ProtoConfig {
       // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile)
     }
 
-    public interface HierarchyOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
-
-      // required bytes hierarchyMasterPublicKey = 1;
-      /**
-       * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-       */
-      boolean hasHierarchyMasterPublicKey();
-      /**
-       * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-       */
-      com.google.protobuf.ByteString getHierarchyMasterPublicKey();
-
-      // required bytes hierarchyChaincode = 2;
-      /**
-       * <code>required bytes hierarchyChaincode = 2;</code>
-       */
-      boolean hasHierarchyChaincode();
-      /**
-       * <code>required bytes hierarchyChaincode = 2;</code>
-       */
-      com.google.protobuf.ByteString getHierarchyChaincode();
-    }
-    /**
-     * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.Hierarchy}
-     */
-    public static final class Hierarchy extends
-        com.google.protobuf.GeneratedMessage
-        implements HierarchyOrBuilder {
-      // Use Hierarchy.newBuilder() to construct.
-      private Hierarchy(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-        super(builder);
-        this.unknownFields = builder.getUnknownFields();
-      }
-      private Hierarchy(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-      private static final Hierarchy defaultInstance;
-      public static Hierarchy getDefaultInstance() {
-        return defaultInstance;
-      }
-
-      public Hierarchy getDefaultInstanceForType() {
-        return defaultInstance;
-      }
-
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
-      @java.lang.Override
-      public final com.google.protobuf.UnknownFieldSet
-          getUnknownFields() {
-        return this.unknownFields;
-      }
-      private Hierarchy(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        initFields();
-        int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
-              case 10: {
-                bitField0_ |= 0x00000001;
-                hierarchyMasterPublicKey_ = input.readBytes();
-                break;
-              }
-              case 18: {
-                bitField0_ |= 0x00000002;
-                hierarchyChaincode_ = input.readBytes();
-                break;
-              }
-            }
-          }
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(this);
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this);
-        } finally {
-          this.unknownFields = unknownFields.build();
-          makeExtensionsImmutable();
-        }
-      }
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder.class);
-      }
-
-      public static com.google.protobuf.Parser<Hierarchy> PARSER =
-          new com.google.protobuf.AbstractParser<Hierarchy>() {
-        public Hierarchy parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Hierarchy(input, extensionRegistry);
-        }
-      };
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<Hierarchy> getParserForType() {
-        return PARSER;
-      }
-
-      private int bitField0_;
-      // required bytes hierarchyMasterPublicKey = 1;
-      public static final int HIERARCHYMASTERPUBLICKEY_FIELD_NUMBER = 1;
-      private com.google.protobuf.ByteString hierarchyMasterPublicKey_;
-      /**
-       * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-       */
-      public boolean hasHierarchyMasterPublicKey() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-       */
-      public com.google.protobuf.ByteString getHierarchyMasterPublicKey() {
-        return hierarchyMasterPublicKey_;
-      }
-
-      // required bytes hierarchyChaincode = 2;
-      public static final int HIERARCHYCHAINCODE_FIELD_NUMBER = 2;
-      private com.google.protobuf.ByteString hierarchyChaincode_;
-      /**
-       * <code>required bytes hierarchyChaincode = 2;</code>
-       */
-      public boolean hasHierarchyChaincode() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required bytes hierarchyChaincode = 2;</code>
-       */
-      public com.google.protobuf.ByteString getHierarchyChaincode() {
-        return hierarchyChaincode_;
-      }
-
-      private void initFields() {
-        hierarchyMasterPublicKey_ = com.google.protobuf.ByteString.EMPTY;
-        hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
-      }
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
-
-        if (!hasHierarchyMasterPublicKey()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-        if (!hasHierarchyChaincode()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getSerializedSize();
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeBytes(1, hierarchyMasterPublicKey_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeBytes(2, hierarchyChaincode_);
-        }
-        getUnknownFields().writeTo(output);
-      }
-
-      private int memoizedSerializedSize = -1;
-      public int getSerializedSize() {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(1, hierarchyMasterPublicKey_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(2, hierarchyChaincode_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSerializedSize = size;
-        return size;
-      }
-
-      private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-
-      public static Builder newBuilder() { return Builder.create(); }
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy prototype) {
-        return newBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() { return newBuilder(this); }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.Hierarchy}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.HierarchyOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.class, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder.class);
-        }
-
-        // Construct using authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          super(parent);
-          maybeForceBuilderInitialization();
-        }
-        private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          }
-        }
-        private static Builder create() {
-          return new Builder();
-        }
-
-        public Builder clear() {
-          super.clear();
-          hierarchyMasterPublicKey_ = com.google.protobuf.ByteString.EMPTY;
-          bitField0_ = (bitField0_ & ~0x00000001);
-          hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          return this;
-        }
-
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor;
-        }
-
-        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy getDefaultInstanceForType() {
-          return authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
-        }
-
-        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy build() {
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy buildPartial() {
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy result = new authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          result.hierarchyMasterPublicKey_ = hierarchyMasterPublicKey_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.hierarchyChaincode_ = hierarchyChaincode_;
-          result.bitField0_ = to_bitField0_;
-          onBuilt();
-          return result;
-        }
-
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy) {
-            return mergeFrom((authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy other) {
-          if (other == authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance()) return this;
-          if (other.hasHierarchyMasterPublicKey()) {
-            setHierarchyMasterPublicKey(other.getHierarchyMasterPublicKey());
-          }
-          if (other.hasHierarchyChaincode()) {
-            setHierarchyChaincode(other.getHierarchyChaincode());
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          return this;
-        }
-
-        public final boolean isInitialized() {
-          if (!hasHierarchyMasterPublicKey()) {
-            
-            return false;
-          }
-          if (!hasHierarchyChaincode()) {
-            
-            return false;
-          }
-          return true;
-        }
-
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-        private int bitField0_;
-
-        // required bytes hierarchyMasterPublicKey = 1;
-        private com.google.protobuf.ByteString hierarchyMasterPublicKey_ = com.google.protobuf.ByteString.EMPTY;
-        /**
-         * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-         */
-        public boolean hasHierarchyMasterPublicKey() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-         */
-        public com.google.protobuf.ByteString getHierarchyMasterPublicKey() {
-          return hierarchyMasterPublicKey_;
-        }
-        /**
-         * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-         */
-        public Builder setHierarchyMasterPublicKey(com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-          hierarchyMasterPublicKey_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>required bytes hierarchyMasterPublicKey = 1;</code>
-         */
-        public Builder clearHierarchyMasterPublicKey() {
-          bitField0_ = (bitField0_ & ~0x00000001);
-          hierarchyMasterPublicKey_ = getDefaultInstance().getHierarchyMasterPublicKey();
-          onChanged();
-          return this;
-        }
-
-        // required bytes hierarchyChaincode = 2;
-        private com.google.protobuf.ByteString hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
-        /**
-         * <code>required bytes hierarchyChaincode = 2;</code>
-         */
-        public boolean hasHierarchyChaincode() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>required bytes hierarchyChaincode = 2;</code>
-         */
-        public com.google.protobuf.ByteString getHierarchyChaincode() {
-          return hierarchyChaincode_;
-        }
-        /**
-         * <code>required bytes hierarchyChaincode = 2;</code>
-         */
-        public Builder setHierarchyChaincode(com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-          hierarchyChaincode_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>required bytes hierarchyChaincode = 2;</code>
-         */
-        public Builder clearHierarchyChaincode() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          hierarchyChaincode_ = getDefaultInstance().getHierarchyChaincode();
-          onChanged();
-          return this;
-        }
-
-        // @@protoc_insertion_point(builder_scope:authenticator.protobuf.AuthenticatorConfiguration.Hierarchy)
-      }
-
-      static {
-        defaultInstance = new Hierarchy(true);
-        defaultInstance.initFields();
-      }
-
-      // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.Hierarchy)
-    }
-
     public interface SavedTXOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
 
@@ -10619,117 +11073,115 @@ public final class ProtoConfig {
       return configOneNameProfile_;
     }
 
-    // required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;
-    public static final int CONFIGHIERARCHY_FIELD_NUMBER = 6;
-    private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy configHierarchy_;
-    /**
-     * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-     */
-    public boolean hasConfigHierarchy() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy getConfigHierarchy() {
-      return configHierarchy_;
-    }
-    /**
-     * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-     */
-    public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.HierarchyOrBuilder getConfigHierarchyOrBuilder() {
-      return configHierarchy_;
-    }
-
-    // repeated .authenticator.protobuf.ATAccount configAccounts = 7;
-    public static final int CONFIGACCOUNTS_FIELD_NUMBER = 7;
+    // repeated .authenticator.protobuf.ATAccount configAccounts = 6;
+    public static final int CONFIGACCOUNTS_FIELD_NUMBER = 6;
     private java.util.List<authenticator.protobuf.ProtoConfig.ATAccount> configAccounts_;
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     public java.util.List<authenticator.protobuf.ProtoConfig.ATAccount> getConfigAccountsList() {
       return configAccounts_;
     }
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     public java.util.List<? extends authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> 
         getConfigAccountsOrBuilderList() {
       return configAccounts_;
     }
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     public int getConfigAccountsCount() {
       return configAccounts_.size();
     }
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     public authenticator.protobuf.ProtoConfig.ATAccount getConfigAccounts(int index) {
       return configAccounts_.get(index);
     }
     /**
-     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+     * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+     *
+     * <pre>
+     *required Hierarchy 					ConfigHierarchy						= 6;
+     * </pre>
      */
     public authenticator.protobuf.ProtoConfig.ATAccountOrBuilder getConfigAccountsOrBuilder(
         int index) {
       return configAccounts_.get(index);
     }
 
-    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;
-    public static final int CONFIGSAVEDTXDATA_FIELD_NUMBER = 8;
+    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;
+    public static final int CONFIGSAVEDTXDATA_FIELD_NUMBER = 7;
     private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_;
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> getConfigSavedTXDataList() {
       return configSavedTXData_;
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     public java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
         getConfigSavedTXDataOrBuilderList() {
       return configSavedTXData_;
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     public int getConfigSavedTXDataCount() {
       return configSavedTXData_.size();
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index) {
       return configSavedTXData_.get(index);
     }
     /**
-     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+     * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
     public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
         int index) {
       return configSavedTXData_.get(index);
     }
 
-    // required .authenticator.protobuf.ConfigSettings configSettings = 9;
-    public static final int CONFIGSETTINGS_FIELD_NUMBER = 9;
+    // required .authenticator.protobuf.ConfigSettings configSettings = 8;
+    public static final int CONFIGSETTINGS_FIELD_NUMBER = 8;
     private authenticator.protobuf.ProtoSettings.ConfigSettings configSettings_;
     /**
-     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
     public boolean hasConfigSettings() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
     public authenticator.protobuf.ProtoSettings.ConfigSettings getConfigSettings() {
       return configSettings_;
     }
     /**
-     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+     * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
     public authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
       return configSettings_;
@@ -10739,7 +11191,6 @@ public final class ProtoConfig {
       configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
       configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
       configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
-      configHierarchy_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
       configAccounts_ = java.util.Collections.emptyList();
       configSavedTXData_ = java.util.Collections.emptyList();
       configSettings_ = authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
@@ -10749,10 +11200,6 @@ public final class ProtoConfig {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasConfigHierarchy()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       if (!hasConfigSettings()) {
         memoizedIsInitialized = 0;
         return false;
@@ -10774,10 +11221,6 @@ public final class ProtoConfig {
           memoizedIsInitialized = 0;
           return false;
         }
-      }
-      if (!getConfigHierarchy().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
       }
       for (int i = 0; i < getConfigAccountsCount(); i++) {
         if (!getConfigAccounts(i).isInitialized()) {
@@ -10807,17 +11250,14 @@ public final class ProtoConfig {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(5, configOneNameProfile_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(6, configHierarchy_);
-      }
       for (int i = 0; i < configAccounts_.size(); i++) {
-        output.writeMessage(7, configAccounts_.get(i));
+        output.writeMessage(6, configAccounts_.get(i));
       }
       for (int i = 0; i < configSavedTXData_.size(); i++) {
-        output.writeMessage(8, configSavedTXData_.get(i));
+        output.writeMessage(7, configSavedTXData_.get(i));
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeMessage(9, configSettings_);
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(8, configSettings_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10840,21 +11280,17 @@ public final class ProtoConfig {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, configOneNameProfile_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, configHierarchy_);
-      }
       for (int i = 0; i < configAccounts_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, configAccounts_.get(i));
+          .computeMessageSize(6, configAccounts_.get(i));
       }
       for (int i = 0; i < configSavedTXData_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, configSavedTXData_.get(i));
+          .computeMessageSize(7, configSavedTXData_.get(i));
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, configSettings_);
+          .computeMessageSize(8, configSettings_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -10967,7 +11403,6 @@ public final class ProtoConfig {
           getConfigActiveAccountFieldBuilder();
           getConfigAuthenticatorWalletFieldBuilder();
           getConfigOneNameProfileFieldBuilder();
-          getConfigHierarchyFieldBuilder();
           getConfigAccountsFieldBuilder();
           getConfigSavedTXDataFieldBuilder();
           getConfigSettingsFieldBuilder();
@@ -10997,21 +11432,15 @@ public final class ProtoConfig {
           configOneNameProfileBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
-        if (configHierarchyBuilder_ == null) {
-          configHierarchy_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
-        } else {
-          configHierarchyBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000008);
         if (configAccountsBuilder_ == null) {
           configAccounts_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
         } else {
           configAccountsBuilder_.clear();
         }
         if (configSavedTXDataBuilder_ == null) {
           configSavedTXData_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000010);
         } else {
           configSavedTXDataBuilder_.clear();
         }
@@ -11020,7 +11449,7 @@ public final class ProtoConfig {
         } else {
           configSettingsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -11073,34 +11502,26 @@ public final class ProtoConfig {
         } else {
           result.configOneNameProfile_ = configOneNameProfileBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        if (configHierarchyBuilder_ == null) {
-          result.configHierarchy_ = configHierarchy_;
-        } else {
-          result.configHierarchy_ = configHierarchyBuilder_.build();
-        }
         if (configAccountsBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
             configAccounts_ = java.util.Collections.unmodifiableList(configAccounts_);
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000008);
           }
           result.configAccounts_ = configAccounts_;
         } else {
           result.configAccounts_ = configAccountsBuilder_.build();
         }
         if (configSavedTXDataBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          if (((bitField0_ & 0x00000010) == 0x00000010)) {
             configSavedTXData_ = java.util.Collections.unmodifiableList(configSavedTXData_);
-            bitField0_ = (bitField0_ & ~0x00000020);
+            bitField0_ = (bitField0_ & ~0x00000010);
           }
           result.configSavedTXData_ = configSavedTXData_;
         } else {
           result.configSavedTXData_ = configSavedTXDataBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000010;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000008;
         }
         if (configSettingsBuilder_ == null) {
           result.configSettings_ = configSettings_;
@@ -11132,14 +11553,11 @@ public final class ProtoConfig {
         if (other.hasConfigOneNameProfile()) {
           mergeConfigOneNameProfile(other.getConfigOneNameProfile());
         }
-        if (other.hasConfigHierarchy()) {
-          mergeConfigHierarchy(other.getConfigHierarchy());
-        }
         if (configAccountsBuilder_ == null) {
           if (!other.configAccounts_.isEmpty()) {
             if (configAccounts_.isEmpty()) {
               configAccounts_ = other.configAccounts_;
-              bitField0_ = (bitField0_ & ~0x00000010);
+              bitField0_ = (bitField0_ & ~0x00000008);
             } else {
               ensureConfigAccountsIsMutable();
               configAccounts_.addAll(other.configAccounts_);
@@ -11152,7 +11570,7 @@ public final class ProtoConfig {
               configAccountsBuilder_.dispose();
               configAccountsBuilder_ = null;
               configAccounts_ = other.configAccounts_;
-              bitField0_ = (bitField0_ & ~0x00000010);
+              bitField0_ = (bitField0_ & ~0x00000008);
               configAccountsBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getConfigAccountsFieldBuilder() : null;
@@ -11165,7 +11583,7 @@ public final class ProtoConfig {
           if (!other.configSavedTXData_.isEmpty()) {
             if (configSavedTXData_.isEmpty()) {
               configSavedTXData_ = other.configSavedTXData_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000010);
             } else {
               ensureConfigSavedTXDataIsMutable();
               configSavedTXData_.addAll(other.configSavedTXData_);
@@ -11178,7 +11596,7 @@ public final class ProtoConfig {
               configSavedTXDataBuilder_.dispose();
               configSavedTXDataBuilder_ = null;
               configSavedTXData_ = other.configSavedTXData_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000010);
               configSavedTXDataBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getConfigSavedTXDataFieldBuilder() : null;
@@ -11195,10 +11613,6 @@ public final class ProtoConfig {
       }
 
       public final boolean isInitialized() {
-        if (!hasConfigHierarchy()) {
-          
-          return false;
-        }
         if (!hasConfigSettings()) {
           
           return false;
@@ -11220,10 +11634,6 @@ public final class ProtoConfig {
             
             return false;
           }
-        }
-        if (!getConfigHierarchy().isInitialized()) {
-          
-          return false;
         }
         for (int i = 0; i < getConfigAccountsCount(); i++) {
           if (!getConfigAccounts(i).isInitialized()) {
@@ -11646,130 +12056,13 @@ public final class ProtoConfig {
         return configOneNameProfileBuilder_;
       }
 
-      // required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;
-      private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy configHierarchy_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.HierarchyOrBuilder> configHierarchyBuilder_;
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public boolean hasConfigHierarchy() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy getConfigHierarchy() {
-        if (configHierarchyBuilder_ == null) {
-          return configHierarchy_;
-        } else {
-          return configHierarchyBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public Builder setConfigHierarchy(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy value) {
-        if (configHierarchyBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          configHierarchy_ = value;
-          onChanged();
-        } else {
-          configHierarchyBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000008;
-        return this;
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public Builder setConfigHierarchy(
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder builderForValue) {
-        if (configHierarchyBuilder_ == null) {
-          configHierarchy_ = builderForValue.build();
-          onChanged();
-        } else {
-          configHierarchyBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000008;
-        return this;
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public Builder mergeConfigHierarchy(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy value) {
-        if (configHierarchyBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              configHierarchy_ != authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance()) {
-            configHierarchy_ =
-              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.newBuilder(configHierarchy_).mergeFrom(value).buildPartial();
-          } else {
-            configHierarchy_ = value;
-          }
-          onChanged();
-        } else {
-          configHierarchyBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000008;
-        return this;
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public Builder clearConfigHierarchy() {
-        if (configHierarchyBuilder_ == null) {
-          configHierarchy_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.getDefaultInstance();
-          onChanged();
-        } else {
-          configHierarchyBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000008);
-        return this;
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder getConfigHierarchyBuilder() {
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return getConfigHierarchyFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.HierarchyOrBuilder getConfigHierarchyOrBuilder() {
-        if (configHierarchyBuilder_ != null) {
-          return configHierarchyBuilder_.getMessageOrBuilder();
-        } else {
-          return configHierarchy_;
-        }
-      }
-      /**
-       * <code>required .authenticator.protobuf.AuthenticatorConfiguration.Hierarchy ConfigHierarchy = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.HierarchyOrBuilder> 
-          getConfigHierarchyFieldBuilder() {
-        if (configHierarchyBuilder_ == null) {
-          configHierarchyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Hierarchy.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.HierarchyOrBuilder>(
-                  configHierarchy_,
-                  getParentForChildren(),
-                  isClean());
-          configHierarchy_ = null;
-        }
-        return configHierarchyBuilder_;
-      }
-
-      // repeated .authenticator.protobuf.ATAccount configAccounts = 7;
+      // repeated .authenticator.protobuf.ATAccount configAccounts = 6;
       private java.util.List<authenticator.protobuf.ProtoConfig.ATAccount> configAccounts_ =
         java.util.Collections.emptyList();
       private void ensureConfigAccountsIsMutable() {
-        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
           configAccounts_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.ATAccount>(configAccounts_);
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000008;
          }
       }
 
@@ -11777,7 +12070,11 @@ public final class ProtoConfig {
           authenticator.protobuf.ProtoConfig.ATAccount, authenticator.protobuf.ProtoConfig.ATAccount.Builder, authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> configAccountsBuilder_;
 
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public java.util.List<authenticator.protobuf.ProtoConfig.ATAccount> getConfigAccountsList() {
         if (configAccountsBuilder_ == null) {
@@ -11787,7 +12084,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public int getConfigAccountsCount() {
         if (configAccountsBuilder_ == null) {
@@ -11797,7 +12098,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.ATAccount getConfigAccounts(int index) {
         if (configAccountsBuilder_ == null) {
@@ -11807,7 +12112,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder setConfigAccounts(
           int index, authenticator.protobuf.ProtoConfig.ATAccount value) {
@@ -11824,7 +12133,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder setConfigAccounts(
           int index, authenticator.protobuf.ProtoConfig.ATAccount.Builder builderForValue) {
@@ -11838,7 +12151,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder addConfigAccounts(authenticator.protobuf.ProtoConfig.ATAccount value) {
         if (configAccountsBuilder_ == null) {
@@ -11854,7 +12171,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder addConfigAccounts(
           int index, authenticator.protobuf.ProtoConfig.ATAccount value) {
@@ -11871,7 +12192,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder addConfigAccounts(
           authenticator.protobuf.ProtoConfig.ATAccount.Builder builderForValue) {
@@ -11885,7 +12210,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder addConfigAccounts(
           int index, authenticator.protobuf.ProtoConfig.ATAccount.Builder builderForValue) {
@@ -11899,7 +12228,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder addAllConfigAccounts(
           java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.ATAccount> values) {
@@ -11913,12 +12246,16 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder clearConfigAccounts() {
         if (configAccountsBuilder_ == null) {
           configAccounts_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
           onChanged();
         } else {
           configAccountsBuilder_.clear();
@@ -11926,7 +12263,11 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public Builder removeConfigAccounts(int index) {
         if (configAccountsBuilder_ == null) {
@@ -11939,14 +12280,22 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.ATAccount.Builder getConfigAccountsBuilder(
           int index) {
         return getConfigAccountsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.ATAccountOrBuilder getConfigAccountsOrBuilder(
           int index) {
@@ -11956,7 +12305,11 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public java.util.List<? extends authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> 
            getConfigAccountsOrBuilderList() {
@@ -11967,14 +12320,22 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.ATAccount.Builder addConfigAccountsBuilder() {
         return getConfigAccountsFieldBuilder().addBuilder(
             authenticator.protobuf.ProtoConfig.ATAccount.getDefaultInstance());
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public authenticator.protobuf.ProtoConfig.ATAccount.Builder addConfigAccountsBuilder(
           int index) {
@@ -11982,7 +12343,11 @@ public final class ProtoConfig {
             index, authenticator.protobuf.ProtoConfig.ATAccount.getDefaultInstance());
       }
       /**
-       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 7;</code>
+       * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
+       *
+       * <pre>
+       *required Hierarchy 					ConfigHierarchy						= 6;
+       * </pre>
        */
       public java.util.List<authenticator.protobuf.ProtoConfig.ATAccount.Builder> 
            getConfigAccountsBuilderList() {
@@ -11995,7 +12360,7 @@ public final class ProtoConfig {
           configAccountsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               authenticator.protobuf.ProtoConfig.ATAccount, authenticator.protobuf.ProtoConfig.ATAccount.Builder, authenticator.protobuf.ProtoConfig.ATAccountOrBuilder>(
                   configAccounts_,
-                  ((bitField0_ & 0x00000010) == 0x00000010),
+                  ((bitField0_ & 0x00000008) == 0x00000008),
                   getParentForChildren(),
                   isClean());
           configAccounts_ = null;
@@ -12003,13 +12368,13 @@ public final class ProtoConfig {
         return configAccountsBuilder_;
       }
 
-      // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;
+      // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;
       private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_ =
         java.util.Collections.emptyList();
       private void ensureConfigSavedTXDataIsMutable() {
-        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
           configSavedTXData_ = new java.util.ArrayList<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX>(configSavedTXData_);
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000010;
          }
       }
 
@@ -12017,7 +12382,7 @@ public final class ProtoConfig {
           authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> configSavedTXDataBuilder_;
 
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> getConfigSavedTXDataList() {
         if (configSavedTXDataBuilder_ == null) {
@@ -12027,7 +12392,7 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public int getConfigSavedTXDataCount() {
         if (configSavedTXDataBuilder_ == null) {
@@ -12037,7 +12402,7 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getConfigSavedTXData(int index) {
         if (configSavedTXDataBuilder_ == null) {
@@ -12047,7 +12412,7 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder setConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
@@ -12064,7 +12429,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder setConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
@@ -12078,7 +12443,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder addConfigSavedTXData(authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
         if (configSavedTXDataBuilder_ == null) {
@@ -12094,7 +12459,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder addConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX value) {
@@ -12111,7 +12476,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder addConfigSavedTXData(
           authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
@@ -12125,7 +12490,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder addConfigSavedTXData(
           int index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder builderForValue) {
@@ -12139,7 +12504,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder addAllConfigSavedTXData(
           java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> values) {
@@ -12153,12 +12518,12 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder clearConfigSavedTXData() {
         if (configSavedTXDataBuilder_ == null) {
           configSavedTXData_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000010);
           onChanged();
         } else {
           configSavedTXDataBuilder_.clear();
@@ -12166,7 +12531,7 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public Builder removeConfigSavedTXData(int index) {
         if (configSavedTXDataBuilder_ == null) {
@@ -12179,14 +12544,14 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder getConfigSavedTXDataBuilder(
           int index) {
         return getConfigSavedTXDataFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
           int index) {
@@ -12196,7 +12561,7 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public java.util.List<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder> 
            getConfigSavedTXDataOrBuilderList() {
@@ -12207,14 +12572,14 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder addConfigSavedTXDataBuilder() {
         return getConfigSavedTXDataFieldBuilder().addBuilder(
             authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance());
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder addConfigSavedTXDataBuilder(
           int index) {
@@ -12222,7 +12587,7 @@ public final class ProtoConfig {
             index, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.getDefaultInstance());
       }
       /**
-       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 8;</code>
+       * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
        */
       public java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder> 
            getConfigSavedTXDataBuilderList() {
@@ -12235,7 +12600,7 @@ public final class ProtoConfig {
           configSavedTXDataBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder>(
                   configSavedTXData_,
-                  ((bitField0_ & 0x00000020) == 0x00000020),
+                  ((bitField0_ & 0x00000010) == 0x00000010),
                   getParentForChildren(),
                   isClean());
           configSavedTXData_ = null;
@@ -12243,18 +12608,18 @@ public final class ProtoConfig {
         return configSavedTXDataBuilder_;
       }
 
-      // required .authenticator.protobuf.ConfigSettings configSettings = 9;
+      // required .authenticator.protobuf.ConfigSettings configSettings = 8;
       private authenticator.protobuf.ProtoSettings.ConfigSettings configSettings_ = authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoSettings.ConfigSettings, authenticator.protobuf.ProtoSettings.ConfigSettings.Builder, authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder> configSettingsBuilder_;
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public boolean hasConfigSettings() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public authenticator.protobuf.ProtoSettings.ConfigSettings getConfigSettings() {
         if (configSettingsBuilder_ == null) {
@@ -12264,7 +12629,7 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public Builder setConfigSettings(authenticator.protobuf.ProtoSettings.ConfigSettings value) {
         if (configSettingsBuilder_ == null) {
@@ -12276,11 +12641,11 @@ public final class ProtoConfig {
         } else {
           configSettingsBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public Builder setConfigSettings(
           authenticator.protobuf.ProtoSettings.ConfigSettings.Builder builderForValue) {
@@ -12290,15 +12655,15 @@ public final class ProtoConfig {
         } else {
           configSettingsBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public Builder mergeConfigSettings(authenticator.protobuf.ProtoSettings.ConfigSettings value) {
         if (configSettingsBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
               configSettings_ != authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance()) {
             configSettings_ =
               authenticator.protobuf.ProtoSettings.ConfigSettings.newBuilder(configSettings_).mergeFrom(value).buildPartial();
@@ -12309,11 +12674,11 @@ public final class ProtoConfig {
         } else {
           configSettingsBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public Builder clearConfigSettings() {
         if (configSettingsBuilder_ == null) {
@@ -12322,19 +12687,19 @@ public final class ProtoConfig {
         } else {
           configSettingsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public authenticator.protobuf.ProtoSettings.ConfigSettings.Builder getConfigSettingsBuilder() {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000020;
         onChanged();
         return getConfigSettingsFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       public authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder getConfigSettingsOrBuilder() {
         if (configSettingsBuilder_ != null) {
@@ -12344,7 +12709,7 @@ public final class ProtoConfig {
         }
       }
       /**
-       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 9;</code>
+       * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoSettings.ConfigSettings, authenticator.protobuf.ProtoSettings.ConfigSettings.Builder, authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder> 
@@ -12382,6 +12747,11 @@ public final class ProtoConfig {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -12417,11 +12787,6 @@ public final class ProtoConfig {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -12435,73 +12800,76 @@ public final class ProtoConfig {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014config.proto\022\026authenticator.protobuf\032\031" +
-      "AuthWalletHierarchy.proto\032\024configSetting" +
-      "s.proto\"\224\001\n\tATAddress\022\024\n\014accountIndex\030\001 " +
-      "\001(\005\022\020\n\010keyIndex\030\002 \001(\005\022\022\n\naddressStr\030\003 \002(" +
-      "\t\022\016\n\006isUsed\030\004 \001(\010\022;\n\004type\030\005 \001(\0162-.authen" +
-      "ticator.protobuf.HierarchyAddressTypes\"\356" +
-      "\001\n\tATAccount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExter" +
-      "nalKeys\030\002 \003(\005\022\030\n\020usedInternalKeys\030\003 \003(\005\022" +
-      "\030\n\020confirmedBalance\030\004 \002(\022\022\032\n\022unConfirmed" +
-      "Balance\030\005 \002(\022\022\023\n\013networkType\030\006 \002(\005\022>\n\013ac",
-      "countType\030\007 \002(\0162).authenticator.protobuf" +
-      ".WalletAccountType\022\023\n\013accountName\030\010 \002(\t\"" +
-      "\262\001\n\023PairedAuthenticator\022\017\n\007aes_key\030\001 \002(\t" +
-      "\022\031\n\021master_public_key\030\002 \002(\t\022\022\n\nchain_cod" +
-      "e\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t\022" +
-      "\017\n\007testnet\030\006 \002(\010\022\016\n\006keys_n\030\007 \002(\005\022\032\n\022wall" +
-      "etAccountIndex\030\n \002(\005\"\334\003\n\016PendingRequest\022" +
-      "\021\n\tpairingID\030\001 \002(\t\022\021\n\trequestID\030\002 \002(\t\022>\n" +
-      "\roperationType\030\003 \002(\0162\'.authenticator.pro" +
-      "tobuf.ATOperationType\022\r\n\005rawTx\030\004 \001(\t\022\017\n\007",
-      "txLabel\030\005 \001(\t\022 \n\030txDestinationDescriptio" +
-      "n\030\006 \001(\t\022\027\n\017payloadIncoming\030\007 \001(\014\022\'\n\037payl" +
-      "oadToSendInCaseOfConnection\030\010 \001(\014\022A\n\010con" +
-      "tract\030\t \002(\0132/.authenticator.protobuf.Pen" +
-      "dingRequest.Contract\032\234\001\n\010Contract\022%\n\035Sho" +
-      "uldSendPayloadOnConnection\030\001 \001(\010\022;\n3Shou" +
-      "ldReceivePayloadAfterSendingPayloadOnCon" +
-      "nection\030\002 \001(\010\022,\n$ShouldLetPendingRequest" +
-      "HandleRemoval\030\003 \001(\010\"\326\t\n\032AuthenticatorCon" +
-      "figuration\022c\n\023configActiveAccount\030\001 \001(\0132",
-      "F.authenticator.protobuf.AuthenticatorCo" +
-      "nfiguration.ConfigActiveAccount\022o\n\031confi" +
-      "gAuthenticatorWallet\030\002 \001(\0132L.authenticat" +
-      "or.protobuf.AuthenticatorConfiguration.C" +
-      "onfigAuthenticatorWallet\022e\n\024configOneNam" +
-      "eProfile\030\005 \001(\0132G.authenticator.protobuf." +
-      "AuthenticatorConfiguration.ConfigOneName" +
-      "Profile\022U\n\017ConfigHierarchy\030\006 \002(\0132<.authe" +
-      "nticator.protobuf.AuthenticatorConfigura" +
-      "tion.Hierarchy\0229\n\016configAccounts\030\007 \003(\0132!",
-      ".authenticator.protobuf.ATAccount\022U\n\021con" +
-      "figSavedTXData\030\010 \003(\0132:.authenticator.pro" +
-      "tobuf.AuthenticatorConfiguration.SavedTX" +
-      "\022>\n\016configSettings\030\t \002(\0132&.authenticator" +
-      ".protobuf.ConfigSettings\032\231\001\n\023ConfigActiv" +
-      "eAccount\022H\n\023pairedAuthenticator\030\001 \001(\0132+." +
-      "authenticator.protobuf.PairedAuthenticat" +
-      "or\0228\n\ractiveAccount\030\002 \002(\0132!.authenticato" +
-      "r.protobuf.ATAccount\032\260\001\n\031ConfigAuthentic" +
-      "atorWallet\022\016\n\006paired\030\001 \001(\010\022B\n\rpairedWall",
-      "ets\030\002 \003(\0132+.authenticator.protobuf.Paire" +
-      "dAuthenticator\022?\n\017pendingRequests\030\003 \003(\0132" +
-      "&.authenticator.protobuf.PendingRequest\032" +
-      "z\n\024ConfigOneNameProfile\022\017\n\007onename\030\001 \002(\t" +
-      "\022\030\n\020onenameFormatted\030\002 \001(\t\022\030\n\020onenameAva" +
-      "tarURL\030\003 \001(\t\022\035\n\025onenameAvatarFilePath\030\004 " +
-      "\001(\t\032I\n\tHierarchy\022 \n\030hierarchyMasterPubli" +
-      "cKey\030\001 \002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014\032<" +
-      "\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t\022" +
-      "\023\n\013description\030\003 \001(\t*;\n\020ATGCMMessageType",
-      "\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs\020" +
-      "\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n\n\006Un" +
-      "pair\020\001\022#\n\037SignAndBroadcastAuthenticatorT" +
-      "x\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#updateIpAd" +
-      "dressesForPreviousMessage\020\004*B\n\021WalletAcc" +
-      "ountType\022\023\n\017StandardAccount\020\000\022\030\n\024Authent" +
-      "icatorAccount\020\001B\rB\013ProtoConfig"
+      "\n\014config.proto\022\026authenticator.protobuf\032\021" +
+      "BAHierarchy.proto\032\024configSettings.proto\"" +
+      "\224\001\n\tATAddress\022\024\n\014accountIndex\030\001 \001(\005\022\020\n\010k" +
+      "eyIndex\030\002 \001(\005\022\022\n\naddressStr\030\003 \002(\t\022\016\n\006isU" +
+      "sed\030\004 \001(\010\022;\n\004type\030\005 \001(\0162-.authenticator." +
+      "protobuf.HierarchyAddressTypes\"\373\003\n\tATAcc" +
+      "ount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExternalKeys\030" +
+      "\002 \003(\005\022\030\n\020usedInternalKeys\030\003 \003(\005\022\030\n\020confi" +
+      "rmedBalance\030\004 \002(\022\022\032\n\022unConfirmedBalance\030" +
+      "\005 \002(\022\022\023\n\013networkType\030\006 \002(\005\022>\n\013accountTyp",
+      "e\030\007 \002(\0162).authenticator.protobuf.WalletA" +
+      "ccountType\022\023\n\013accountName\030\010 \002(\t\022]\n\030accou" +
+      "ntExternalHierarchy\030\t \002(\0132;.authenticato" +
+      "r.protobuf.ATAccount.ATAccountAddressHie" +
+      "rarchy\022]\n\030accountInternalHierarchy\030\n \002(\013" +
+      "2;.authenticator.protobuf.ATAccount.ATAc" +
+      "countAddressHierarchy\032M\n\031ATAccountAddres" +
+      "sHierarchy\022\024\n\014hierarchyKey\030\001 \002(\014\022\032\n\022hier" +
+      "archyChaincode\030\002 \002(\014\"\262\001\n\023PairedAuthentic" +
+      "ator\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_public_k",
+      "ey\030\002 \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GCM\030\004 \002(" +
+      "\t\022\021\n\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 \002(\010\022\016\n" +
+      "\006keys_n\030\007 \002(\005\022\032\n\022walletAccountIndex\030\n \002(" +
+      "\005\"\334\003\n\016PendingRequest\022\021\n\tpairingID\030\001 \002(\t\022" +
+      "\021\n\trequestID\030\002 \002(\t\022>\n\roperationType\030\003 \002(" +
+      "\0162\'.authenticator.protobuf.ATOperationTy" +
+      "pe\022\r\n\005rawTx\030\004 \001(\t\022\017\n\007txLabel\030\005 \001(\t\022 \n\030tx" +
+      "DestinationDescription\030\006 \001(\t\022\027\n\017payloadI" +
+      "ncoming\030\007 \001(\014\022\'\n\037payloadToSendInCaseOfCo" +
+      "nnection\030\010 \001(\014\022A\n\010contract\030\t \002(\0132/.authe",
+      "nticator.protobuf.PendingRequest.Contrac" +
+      "t\032\234\001\n\010Contract\022%\n\035ShouldSendPayloadOnCon" +
+      "nection\030\001 \001(\010\022;\n3ShouldReceivePayloadAft" +
+      "erSendingPayloadOnConnection\030\002 \001(\010\022,\n$Sh" +
+      "ouldLetPendingRequestHandleRemoval\030\003 \001(\010" +
+      "\"\264\010\n\032AuthenticatorConfiguration\022c\n\023confi" +
+      "gActiveAccount\030\001 \001(\0132F.authenticator.pro" +
+      "tobuf.AuthenticatorConfiguration.ConfigA" +
+      "ctiveAccount\022o\n\031configAuthenticatorWalle" +
+      "t\030\002 \001(\0132L.authenticator.protobuf.Authent",
+      "icatorConfiguration.ConfigAuthenticatorW" +
+      "allet\022e\n\024configOneNameProfile\030\005 \001(\0132G.au" +
+      "thenticator.protobuf.AuthenticatorConfig" +
+      "uration.ConfigOneNameProfile\0229\n\016configAc" +
+      "counts\030\006 \003(\0132!.authenticator.protobuf.AT" +
+      "Account\022U\n\021configSavedTXData\030\007 \003(\0132:.aut" +
+      "henticator.protobuf.AuthenticatorConfigu" +
+      "ration.SavedTX\022>\n\016configSettings\030\010 \002(\0132&" +
+      ".authenticator.protobuf.ConfigSettings\032\231" +
+      "\001\n\023ConfigActiveAccount\022H\n\023pairedAuthenti",
+      "cator\030\001 \001(\0132+.authenticator.protobuf.Pai" +
+      "redAuthenticator\0228\n\ractiveAccount\030\002 \002(\0132" +
+      "!.authenticator.protobuf.ATAccount\032\260\001\n\031C" +
+      "onfigAuthenticatorWallet\022\016\n\006paired\030\001 \001(\010" +
+      "\022B\n\rpairedWallets\030\002 \003(\0132+.authenticator." +
+      "protobuf.PairedAuthenticator\022?\n\017pendingR" +
+      "equests\030\003 \003(\0132&.authenticator.protobuf.P" +
+      "endingRequest\032z\n\024ConfigOneNameProfile\022\017\n" +
+      "\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(\t" +
+      "\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAva",
+      "tarFilePath\030\004 \001(\t\032<\n\007SavedTX\022\014\n\004txid\030\001 \002" +
+      "(\t\022\016\n\006toFrom\030\002 \001(\t\022\023\n\013description\030\003 \001(\t*" +
+      ";\n\020ATGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027Updat" +
+      "ePendingRequestIPs\020\004*\217\001\n\017ATOperationType" +
+      "\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroa" +
+      "dcastAuthenticatorTx\020\002\022\025\n\021BroadcastNorma" +
+      "lTx\020\003\022\'\n#updateIpAddressesForPreviousMes" +
+      "sage\020\004*B\n\021WalletAccountType\022\023\n\017StandardA" +
+      "ccount\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013Pr" +
+      "otoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12519,7 +12887,13 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_ATAccount_descriptor,
-              new java.lang.String[] { "Index", "UsedExternalKeys", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "NetworkType", "AccountType", "AccountName", });
+              new java.lang.String[] { "Index", "UsedExternalKeys", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "NetworkType", "AccountType", "AccountName", "AccountExternalHierarchy", "AccountInternalHierarchy", });
+          internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor =
+            internal_static_authenticator_protobuf_ATAccount_descriptor.getNestedTypes().get(0);
+          internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor,
+              new java.lang.String[] { "HierarchyKey", "HierarchyChaincode", });
           internal_static_authenticator_protobuf_PairedAuthenticator_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
@@ -12543,7 +12917,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
-              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigHierarchy", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", });
+              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
@@ -12562,14 +12936,8 @@ public final class ProtoConfig {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor,
               new java.lang.String[] { "Onename", "OnenameFormatted", "OnenameAvatarURL", "OnenameAvatarFilePath", });
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor =
-            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_AuthenticatorConfiguration_Hierarchy_descriptor,
-              new java.lang.String[] { "HierarchyMasterPublicKey", "HierarchyChaincode", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
-            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(4);
+            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor,

@@ -13,6 +13,7 @@ import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.listeners.BAGeneralEventsAdapter;
@@ -1521,7 +1522,7 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public boolean broadcast (Transaction tx, String to, @Nullable BAPassword WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
+    public boolean broadcast (Transaction tx, String to, @Nullable BAPassword WALLET_PW) throws CannotGetAddressException {
     	return SendTxHelper.broadcastTx(tx, 
     			txMsgLabel.getText(), 
     			to,

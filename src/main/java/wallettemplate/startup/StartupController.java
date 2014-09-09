@@ -62,9 +62,12 @@ import authenticator.operations.OperationsUtils.PaperWalletQR;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
 import authenticator.operations.listeners.OperationListenerAdapter;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
+import authenticator.walletCore.exceptions.NoWalletPasswordException;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
@@ -620,7 +623,7 @@ public class StartupController  extends BaseUI{
 				try {
 					auth.Net().INTERRUPT_CURRENT_OUTBOUND_OPERATION();
 					createNewStandardAccount(firstAccountName);
-				} catch (IOException | AccountWasNotFoundException e1) { e1.printStackTrace(); }
+				} catch (IOException | AccountWasNotFoundException | NoWalletPasswordException e1) { e1.printStackTrace(); }
 			 else
 			 {
 				 // do nothing
@@ -1212,10 +1215,19 @@ public class StartupController  extends BaseUI{
 				
 				try {
 					if(type == WalletAccountType.StandardAccount){
+						ATAccountAddressHierarchy ext = auth.getWalletOperation().getAccountAddressHierarchy(acc.accountAccountID, 
+								HierarchyAddressTypes.External, 
+								null);
+				 		ATAccountAddressHierarchy intr = auth.getWalletOperation().getAccountAddressHierarchy(acc.accountAccountID, 
+				 				HierarchyAddressTypes.Internal, 
+				 				null);
+						
 						ATAccount newAcc = auth.getWalletOperation().completeAccountObject(appParams.getBitcoinNetworkType(),
 								acc.accountAccountID, 
 								acc.accountName, 
-								WalletAccountType.StandardAccount);
+								WalletAccountType.StandardAccount,
+								ext,
+								intr);
 						auth.getWalletOperation().addNewAccountToConfigAndHierarchy(newAcc);
 					}
 					else
@@ -1227,7 +1239,7 @@ public class StartupController  extends BaseUI{
 					if(restoreAccountsScrllContent.getCount() == 1)
 						auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
 					
-				} catch (IOException | AccountWasNotFoundException e) {
+				} catch (IOException | AccountWasNotFoundException | NoWalletPasswordException e) {
 					e.printStackTrace();
 				}
 			}
@@ -1384,7 +1396,8 @@ public class StartupController  extends BaseUI{
     			0,
     			animDisplay, 
     			null,
-    			stageListener);
+    			stageListener,
+    			null);
 		
 		boolean result = auth.addOperation(op);
     	if(!result){
@@ -1396,8 +1409,8 @@ public class StartupController  extends BaseUI{
     	}
 	}
 	 
-	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException{
-		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
+	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException, NoWalletPasswordException{
+		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName, null);
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }
 	 

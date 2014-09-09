@@ -43,6 +43,7 @@ import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.operations.BAOperation;
@@ -118,18 +119,14 @@ public class SendTxHelper {
 	 * @param WALLET_PW
 	 * @param opUpdateListener
 	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws AddressWasNotFoundException
-	 * @throws JSONException
-	 * @throws AddressFormatException
-	 * @throws KeyIndexOutOfRangeException
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotGetAddressException 
+
 	 */
 	static public boolean broadcastTx (Transaction tx, 
 			String txLabel, 
 			String to, 
 			@Nullable BAPassword WALLET_PW,
-			OperationListener opUpdateListener) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
+			OperationListener opUpdateListener) throws CannotGetAddressException{
 		// broadcast
 		if (!txLabel.isEmpty()){
 			try {

@@ -2,7 +2,7 @@ package authenticator.protobuf;
 
 option java_outer_classname="ProtoConfig";
 
-import "AuthWalletHierarchy.proto";
+import "BAHierarchy.proto";
 import "configSettings.proto";
 
 enum ATGCMMessageType{
@@ -35,19 +35,26 @@ message ATAddress{
 }
 
 message ATAccount {
-	required int32 index					= 1;
-	repeated int32 usedExternalKeys 		= 2;
-	repeated int32 usedInternalKeys 		= 3; 
+	message ATAccountAddressHierarchy{
+		required bytes hierarchyKey					 	= 1;
+		required bytes hierarchyChaincode               = 2;
+	}
+
+	required int32 					index								= 1;
+	repeated int32 					usedExternalKeys 					= 2;
+	repeated int32 					usedInternalKeys 					= 3; 
 	//
-	required sint64 confirmedBalance		= 4;
-	required sint64 unConfirmedBalance		= 5;
+	required sint64 				confirmedBalance					= 4;
+	required sint64 				unConfirmedBalance					= 5;
 	//
-	required int32 networkType				= 6; // 1 for main net, 0 for testnet
+	required int32 					networkType							= 6; // 1 for main net, 0 for testnet
 	//
-	required WalletAccountType accountType	= 7;
+	required WalletAccountType 		accountType							= 7;
 	//
-	required string accountName				= 8;
+	required string 				accountName							= 8;
 	//
+	required ATAccountAddressHierarchy 	accountExternalHierarchy		= 9;
+	required ATAccountAddressHierarchy 	accountInternalHierarchy		= 10;
 }
 
 //
@@ -124,12 +131,6 @@ message AuthenticatorConfiguration{
 		optional string onenameAvatarURL 		= 3;
 		optional string onenameAvatarFilePath	= 4;
 	}
-
-
-	message Hierarchy{
-		required bytes hierarchyMasterPublicKey		 	= 1;
-		required bytes hierarchyChaincode               = 2;
-	}
 	
 	message SavedTX {
 		required string txid           = 1;
@@ -141,8 +142,8 @@ message AuthenticatorConfiguration{
 	optional ConfigAuthenticatorWallet 	configAuthenticatorWallet			= 2;
 	//optional ConfigAddressBook 		configAddressBook 					= 4;
 	optional ConfigOneNameProfile 		configOneNameProfile				= 5;
-	required Hierarchy 					ConfigHierarchy						= 6;
-	repeated ATAccount 					configAccounts						= 7;
-	repeated SavedTX 					configSavedTXData                   = 8;	
-	required ConfigSettings 			configSettings						= 9;
+	//required Hierarchy 					ConfigHierarchy						= 6;
+	repeated ATAccount 					configAccounts						= 6;
+	repeated SavedTX 					configSavedTXData                   = 7;	
+	required ConfigSettings 			configSettings						= 8;
 }

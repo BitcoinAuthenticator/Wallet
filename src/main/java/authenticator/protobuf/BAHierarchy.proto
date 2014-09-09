@@ -12,7 +12,7 @@ enum HierarchyCoinTypes{
 
 enum HierarchyAddressTypes{
 	External	 			= 0; // external
-	//Internal				= 1; // internal / change
+	Internal				= 1; // internal / change
 }
 
 enum HierarchyPrefixedAccountIndex{

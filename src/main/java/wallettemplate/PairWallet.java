@@ -1,5 +1,7 @@
 package wallettemplate;
 
+import static wallettemplate.utils.GuiUtils.informationalAlert;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -140,6 +142,12 @@ public class PairWallet extends BaseUI{
     
     private void runPairing(String pairName, @Nullable Integer accountID) throws IOException
     {    	    	
+    	if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
+    		informationalAlert("The wallet is locked",
+					"Please unlock the wallet to continue");
+    		return ;
+    	}
+    	
     	BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			accountID,
@@ -155,7 +163,8 @@ public class PairWallet extends BaseUI{
 
 					@Override
 					public void pairingData(PairedAuthenticator data) { }
-    			}).SetOperationUIUpdate(opListener);
+    			},
+    			Main.UI_ONLY_WALLET_PW).SetOperationUIUpdate(opListener);
     	
     	boolean result = Authenticator.addOperation(op);
     	if(!result){

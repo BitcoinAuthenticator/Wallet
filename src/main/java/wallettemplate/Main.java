@@ -190,8 +190,7 @@ public class Main extends BAApplication {
          * Authenticator Operation Setup
          */
         
-        walletDB config = new walletDB(BAApplication.ApplicationParams.getAppName());
-    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params, config.getHierarchyPubKey());
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params);
     	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
     		@Override
     		public BAPassword getWalletPassword() {

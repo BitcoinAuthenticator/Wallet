@@ -112,7 +112,8 @@ public class OperationsFactory extends BASE{
 			int timeout,
 			@Nullable Runnable animation,
 			@Nullable Runnable animationAfterPairing,
-			@Nullable PairingStageUpdater statusListener){
+			@Nullable PairingStageUpdater statusListener,
+			@Nullable BAPassword walletPW){
 		BAOperation op = new BAOperation(ATOperationType.Pairing);
 					op.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
@@ -143,7 +144,8 @@ public class OperationsFactory extends BASE{
 									 listener,
 									 statusListener,
 									 animation, 
-									 animationAfterPairing); 
+									 animationAfterPairing,
+									 walletPW); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(tempTimeout);
 						}
