@@ -478,6 +478,7 @@ public class WalletOperation extends BASE{
 			return mWalletWrapper.broadcastTrabsactionFromWallet(tx);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new CannotBroadcastTransactionException(e.toString());
 		}
 	}
@@ -1890,12 +1891,24 @@ public class WalletOperation extends BASE{
 		}
 	}
 	
+	public void writeSavedTxData(int x, String txid, String toFrom, String description) throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.writeSavedTxData(x, txid, toFrom, description);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
 	public ArrayList<String> getSavedTxidList(){
 		return configFile.getSavedTxidList();
 	}
 	
 	public String getSavedDescription (int index) {
 		return configFile.getSavedDescription(index);
+	}
+	
+	public String getSavedToFrom (int index) {
+		return configFile.getSavedToFrom(index);
 	}
 	
 	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws CannotGetAccountFilteredTransactionsException {

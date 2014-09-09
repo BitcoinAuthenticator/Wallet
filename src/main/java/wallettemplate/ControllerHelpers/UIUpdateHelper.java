@@ -29,6 +29,7 @@ import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
+import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -123,7 +124,6 @@ public class UIUpdateHelper extends BaseUI{
 	public static class  TxPaneHistoryUpdater extends AsyncTask{
 		ObservableList<TableTx> txdata;
 		ArrayList<String> savedTXIDs;
-		walletDB config;
 		//
 		TableView txTable;
 		TableColumn colToFrom;
@@ -162,21 +162,24 @@ public class UIUpdateHelper extends BaseUI{
 		        	                t.getTablePosition().getRow())
 		        	                ).getToFrom();
 		    	            if (savedTXIDs.size()==0){
-		    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            	catch (IOException e) {e.printStackTrace();}
+		    	            	try {
+									Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);
+								} catch (CannotWriteToConfigurationFileException e) {
+									e.printStackTrace();
+								}
 		    	            }
 		    	            else {
 		    	            	if (savedTXIDs.contains(txid)){
 		    	            		for (int i=0; i<savedTXIDs.size(); i++){
 		    	            			if (savedTXIDs.get(i).equals(txid)){
-		    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
-		    	            				catch (IOException e) {e.printStackTrace();}
+		    	            				try {Authenticator.getWalletOperation().writeSavedTxData(i, txid, toFrom, desc);} 
+		    	            				catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            			}
 		    	            		}
 		    	            	}
 		    	            	else {
-		    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            		catch (IOException e) {e.printStackTrace();}
+		    	            		try {Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);} 
+		    	            		catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            	}   
 		    	            }
 		    	        }
@@ -203,21 +206,21 @@ public class UIUpdateHelper extends BaseUI{
 		        	                t.getTablePosition().getRow())
 		        	                ).getToFrom();
 		    	            if (savedTXIDs.size()==0){
-		    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            	catch (IOException e) {e.printStackTrace();}
+		    	            	try {Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);} 
+		    	            	catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            }
 		    	            else {
 		    	            	if (savedTXIDs.contains(txid)){
 		    	            		for (int i=0; i<savedTXIDs.size(); i++){
 		    	            			if (savedTXIDs.get(i).equals(txid)){
-		    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
-		    	            				catch (IOException e) {e.printStackTrace();}
+		    	            				try {Authenticator.getWalletOperation().writeSavedTxData(i, txid, toFrom, desc);} 
+		    	            				catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            			}
 		    	            		}
 		    	            	}
 		    	            	else {
-		    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            		catch (IOException e) {e.printStackTrace();}
+		    	            		try {Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);} 
+		    	            		catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            	}   
 		    	            }
 		    	            //try {setTxHistoryContent();} 
@@ -234,7 +237,7 @@ public class UIUpdateHelper extends BaseUI{
 		@SuppressWarnings({ "deprecation", "restriction" })
 		private void getTxData() throws CannotGetAccountFilteredTransactionsException{
 			ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-	    	savedTXIDs = config.getSavedTxidList();
+	    	savedTXIDs = Authenticator.getWalletOperation().getSavedTxidList();
 	    	txdata = FXCollections.observableArrayList();
 	    	for (Transaction tx : history){
 	    		try {
@@ -262,12 +265,12 @@ public class UIUpdateHelper extends BaseUI{
 		    		String date = tx.getUpdateTime().toLocaleString();
 		    		for (int i=0; i<savedTXIDs.size(); i++){
 		    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-		    				desc = config.getSavedDescription(i);
+		    				desc = Authenticator.getWalletOperation().getSavedDescription(i);
 		    			}
 		    		}
 		    		for (int i=0; i<savedTXIDs.size(); i++){
 		    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-		    				toFrom = config.getSavedToFrom(i);
+		    				toFrom = Authenticator.getWalletOperation().getSavedToFrom(i);
 		    			}
 		    		}
 		    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
