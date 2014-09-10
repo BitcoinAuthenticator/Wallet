@@ -448,21 +448,25 @@ public class WalletOperation extends BASE{
         protected void progress(double pct, int blocksSoFar, Date date) {
         	if(pct < 1)
         		setOperationalState(BAOperationState.SYNCING);
+        	else
+        	{
+        		setOperationalState(BAOperationState.READY_AND_OPERATIONAL);
+        		
+        		/**
+            	 * run an update of balances after we finished syncing
+            	 */
+            	updateBalaceNonBlocking(mWalletWrapper.trackedWallet, new Runnable(){
+    				@Override
+    				public void run() { 
+    					notifyBalanceUpdate(mWalletWrapper.trackedWallet,null);
+    				}
+        		});
+        	}
         }
 
         @Override
         protected void doneDownload() {
         	setOperationalState(BAOperationState.READY_AND_OPERATIONAL);
-
-        	/**
-        	 * run an update of balances after we finished syncing
-        	 */
-        	updateBalaceNonBlocking(mWalletWrapper.trackedWallet, new Runnable(){
-				@Override
-				public void run() { 
-					notifyBalanceUpdate(mWalletWrapper.trackedWallet,null);
-				}
-    		});
         }
     }
 	
@@ -744,6 +748,15 @@ public class WalletOperation extends BASE{
 		//writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
 		addNewAccountToConfigAndHierarchy(b);
  		return b;
+ 	}
+ 	
+ 	/**
+ 	 * Return the next available hierarchy account index, doesn't create or do anything besides that
+ 	 * 
+ 	 * @return
+ 	 */
+ 	public int whatIsTheNextAvailableAccountIndex() {
+ 		return authenticatorWalletHierarchy.whatIsTheNextAvailableAccountIndex();
  	}
  	
  	/**

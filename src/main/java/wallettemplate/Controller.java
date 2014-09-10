@@ -1427,13 +1427,14 @@ public class Controller  extends BaseUI{
             @Override
             public void handle(MouseEvent t) {
             	try {
-            		if(locked)
+            		if(locked) {
                 		if(!checkIfPasswordDecryptsWallet(new BAPassword(password.getText()))){
                 			informationalAlert("Unfortunately, you messed up.",
                 					"Wrong password");
                     		return;
                 		}
-            		Main.UI_ONLY_WALLET_PW.setPassword(password.getText());
+                		Main.UI_ONLY_WALLET_PW.setPassword(password.getText());
+            		}
             		
         			Animation ani = GuiUtils.fadeOut(v);
         			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){

@@ -92,28 +92,6 @@ public class SignProtocol {
 		
 		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
 		return CryptoUtils.encryptPayloadWithChecksum(jsonBytes, secretkey);
-		
-//		Mac mac = Mac.getInstance("HmacSHA256");
-//		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
-//		mac.init(secretkey);
-//		byte[] macbytes = mac.doFinal(jsonBytes);
-//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-//		outputStream.write(jsonBytes);
-//		outputStream.write(macbytes);
-//		byte payload[] = outputStream.toByteArray( );
-//		
-//		//Encrypt the payload
-//		Cipher cipher = null;
-//		try {cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");} 
-//		catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
-//		catch (NoSuchPaddingException e) {e.printStackTrace();}
-//		try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
-//		catch (InvalidKeyException e) {e.printStackTrace();}
-//		byte[] cipherBytes = null;
-//		try {cipherBytes = cipher.doFinal(payload);} 
-//		catch (IllegalBlockSizeException e) {e.printStackTrace();} 
-//		catch (BadPaddingException e) {e.printStackTrace();}
-//		return cipherBytes;
 	}
 
 	/**

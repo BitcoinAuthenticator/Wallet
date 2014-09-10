@@ -127,6 +127,10 @@ import com.google.protobuf.ByteString;
  		getAccountTracker(accountIndex).setKeyAsUsed(keyIndex, type);
  	}
  	
+ 	public int whatIsTheNextAvailableAccountIndex() {
+ 		return nextAvailableAccount;
+ 	}
+ 	
  	public AccountTracker generateNewAccount(){
 		int index = this.nextAvailableAccount;
 		

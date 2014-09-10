@@ -1,8 +1,10 @@
 package authenticator.operations.OperationsUtils;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
@@ -26,8 +28,28 @@ import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
 /**
- * This is the wallet side of the Pairing Protocol. It uses UpNp to map a port on the router if there is one,
- * opens a port for Alice, displays a QR code for the user to scan, and receives the master public key and chaincode.
+ * <b>Pairing Protocol</b><br>
+ * <ol>
+ * <li>Generate a secret AES key that will be used in all encrypted communications</li>
+ * <li>Generate the Authenticator's pairing index by hashing (SHA2) this wallet's seed + the account index and taking the right most 31 bits, H(Seed | Index)</li>
+ * <li>Display a QR for the pairing</li>
+ * <li>On connection from the Authenticator, send a pong message letting it know its connected with the wallet</li>
+ * <li>Receive the encrypted pairing payload that can be:
+ * 	<ol>
+ * 		<li>pairing parameters:
+ * 			<ol>
+ * 				<li>Master public key</li>
+ * 				<li>chain code</li>
+ * 				<li>Pairing ID</li>
+ * 				<li>GCM registration id</li>
+ * 			</ol>
+ * 		</li>
+ * 	</ol>
+ * </li>
+ * <li>Create a paired account</li>
+ * <li>Fire a new paired account event</li>
+ * 
+ * </ol>
  */
 public class PairingProtocol {
 	
@@ -81,9 +103,14 @@ public class PairingProtocol {
       SecretKey sharedsecret = kgen.generateKey();
       byte[] raw = sharedsecret.getEncoded();
       String key = EncodingUtils.bytesToHex(raw);
-	  
+      
+      // generate Authenticator's account number
+      byte[] seed = wallet.getWalletSeedBytes(walletPW);
+      Integer accID = args[1].length() == 0? wallet.whatIsTheNextAvailableAccountIndex():Integer.parseInt(args[1]);
+	  byte[] authWalletIndex = generateAuthenticatorsWalletIndex(seed, accID);
+      
 	  //Display a QR code for the user to scan
-	  PairingQRCode PairingQR = new PairingQRCode(ip, localip, walletType, key, Integer.parseInt(args[3]));
+	  PairingQRCode PairingQR = new PairingQRCode(ip, localip, walletType, key, Integer.parseInt(args[3]), authWalletIndex);
 	  Socket socket = dispalyQRAnListenForCommunication(ss, 
 			  timeout, 
 			  statusListener,
@@ -111,13 +138,12 @@ public class PairingProtocol {
 	  // Verify HMAC
 	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, statusListener);
 	 
-	  if (jsonObject != null){
+	  if (jsonObject != null){ 
 		//Parse the received json object
 		  String mPubKey = (String) jsonObject.get("mpubkey");
 		  String chaincode = (String) jsonObject.get("chaincode");
 		  String pairingID = (String) jsonObject.get("pairID");
 		  String GCM = (String) jsonObject.get("gcmID");
-		  Integer accID = args[1].length() == 0? null:Integer.parseInt(args[1]);
 		  //Save to file
 		  PairedAuthenticator  obj = wallet.generatePairing(mPubKey, 
 															  chaincode, 
@@ -209,18 +235,25 @@ public class PairingProtocol {
 		  System.out.println("Received Master Public Key: " + mPubKey + "\n" +
 		  				  			 "chaincode: " +  chaincode + "\n" +
 		  				  			 "gcmRegId: " +  GCM + "\n" + 
-		  				  			 "pairing ID: " + pairingID);
-		  
-//		  postUIStatusUpdate(listener,"Received Master Public Key: " + mPubKey + "\n" +
-//		  			 "chaincode: " +  chaincode + "\n" +
-//		  			 "gcmRegId: " +  GCM + "\n" + 
-//		  			 "pairing ID: " + pairingID);
-		  
+		  				  			 "pairing ID: " + pairingID);		  
 		  return  jsonObject;
 	  }
 	
 	  return null;
 	  
+  }
+  
+  private byte[] generateAuthenticatorsWalletIndex(byte[] seed, int walletIndex) {
+	MessageDigest md = null;
+	try {md = MessageDigest.getInstance("SHA-256");}
+	catch(NoSuchAlgorithmException e) {e.printStackTrace();} 
+	byte[] digest = md.digest((EncodingUtils.bytesToHex(seed) + "_" + Integer.toString(walletIndex)).getBytes());
+	byte[] complete = new BigInteger(1, digest).toString(16).getBytes();
+	// copy the right most 31 bits
+	byte[] ret = new byte[4];
+	System.arraycopy(complete, complete.length - 5, ret, 0, 4);
+
+	return ret;
   }
   
   public  void postUIStatusUpdate(PairingStageUpdater listener, PairingStage stage)

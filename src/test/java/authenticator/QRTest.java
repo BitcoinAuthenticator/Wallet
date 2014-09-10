@@ -38,7 +38,7 @@ public class QRTest {
 		String key = EncodingUtils.bytesToHex(raw);
 	      
 		PairingQRCode qr = new PairingQRCode();
-		String qrData = qr.generateQRDataString(ip, localIP, wallettype, key, networkType);
+		String qrData = qr.generateQRDataString(ip, localIP, wallettype, key, networkType, new byte[31]);
 		// hint map
 		Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
 	    hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);

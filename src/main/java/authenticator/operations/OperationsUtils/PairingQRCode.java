@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import authenticator.Utils.EncodingUtils;
 import authenticator.network.BANetworkInfo;
 
 import com.google.zxing.BarcodeFormat;
@@ -49,17 +50,18 @@ public class PairingQRCode {
  * @throws NotFoundException
  */
   public PairingQRCode(){}
-  public PairingQRCode (BANetworkInfo ni, String wallettype, String key, int networkType) throws NotFoundException, WriterException, IOException{
-	  this(ni.EXTERNAL_IP, ni.INTERNAL_IP, wallettype, key, networkType);
+  public PairingQRCode (BANetworkInfo ni, String wallettype, String key, int networkType, byte[] authWalletIndex) throws NotFoundException, WriterException, IOException{
+	  this(ni.EXTERNAL_IP, ni.INTERNAL_IP, wallettype, key, networkType, authWalletIndex);
   }
-  public PairingQRCode (String ip, String localip, String wallettype, String key, int networkType) throws WriterException, IOException,
+  public PairingQRCode (String ip, String localip, String wallettype, String key, int networkType, byte[] authWalletIndex) throws WriterException, IOException,
       NotFoundException {
 	  // Build the string to display in the QR.
 	  String qrCodeData = generateQRDataString(ip,
 											  localip,
 											  wallettype,
 											  key,
-											  networkType);
+											  networkType,
+											  authWalletIndex);
 	  
 	  String filePath = new java.io.File( "." ).getCanonicalPath() + QR_IMAGE_RELATIVE_PATH;
 	  String charset = "UTF-8"; // or "ISO-8859-1"
@@ -88,12 +90,13 @@ public class PairingQRCode {
 	  }
   }
   
-  public String generateQRDataString(String ip, String localip, String wallettype, String key, int networkType){
+  public String generateQRDataString(String ip, String localip, String wallettype, String key, int networkType, byte[] authWalletIndex){
 	  String qrCodeData = "AESKey=" + key + 
 			  "&PublicIP=" + ip + 
 			  "&LocalIP=" + localip + 
 			  "&WalletType=" + wallettype +
-			  "&NetworkType=" + networkType;
+			  "&NetworkType=" + networkType +
+			  "&index=" + EncodingUtils.bytesToHex(authWalletIndex);
 	  return qrCodeData;
   }
 
