@@ -446,7 +446,7 @@ public class WalletOperation extends BASE{
 	public class WalletDownloadListener extends DownloadListener {
         @Override
         protected void progress(double pct, int blocksSoFar, Date date) {
-        	if(pct < 1)
+        	if(pct < 100)
         		setOperationalState(BAOperationState.SYNCING);
         	else
         	{
