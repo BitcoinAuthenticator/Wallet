@@ -356,4 +356,9 @@ public class Authenticator extends BASE{
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAddressMarkedAsUsed(address);
 	}
+	
+	public static void fireOnBlockchainDownloadChange(float progress){
+		for(BAGeneralEventsListener l:generalEventsListeners)
+			l.onBlockchainDownloadChange(progress);
+	}
 }

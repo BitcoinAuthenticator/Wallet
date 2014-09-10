@@ -10,6 +10,7 @@ import authenticator.network.TCPListener;
 import authenticator.operations.BAOperation;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.walletCore.BAPassword;
+import authenticator.walletCore.WalletOperation;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -171,25 +172,23 @@ public class Main extends BAApplication {
 
         // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen
         // or progress widget to keep the user engaged whilst we initialise, but we don't.
+        bitcoin.setDownloadListener(new WalletOperation().getDownloadEvenListener());
         bitcoin.setAutoSave(true);
-        bitcoin.setDownloadListener(controller.progressBarUpdater())
-               .setBlockingStartup(false)
+        bitcoin.setBlockingStartup(false)
                .setUserAgent(params.getAppName(), "1.0");
-        bitcoin.startAsync();
+    	bitcoin.startAsync();
         bitcoin.awaitRunning();
         // Don't make the user wait for confirmations for now, as the intention is they're sending it their own money!
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         bitcoin.wallet().setKeychainLookaheadSize(0);
-        
         System.out.println(bitcoin.wallet());
-        
         controller.onBitcoinSetup();
+        
         
         /**
          * Authenticator Operation Setup
          */
-        
     	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params);
     	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
     		@Override
@@ -209,9 +208,18 @@ public class Main extends BAApplication {
     			 });
     		}
     	});
+    	
+    	/*
+    	 * Start bitcoin and authenticator
+    	 */
+        
     	auth.startAsync();
     	controller.onAuthenticatorSetup();
     
+    	
+    	/*
+    	 * stage close event
+    	 */
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     		@SuppressWarnings("static-access")
 			@Override

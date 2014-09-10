@@ -11,6 +11,7 @@ import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
+import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.CannotGetAddressException;
@@ -549,37 +550,66 @@ public class Controller  extends BaseUI{
 				  }
 				});
 		}
-    };
-    
-    public class ProgressBarUpdater extends DownloadListener {
-        @Override
-        protected void progress(double pct, int blocksSoFar, Date date) {
-        	Platform.runLater(new Runnable() { 
+		
+		@Override
+		public void onBlockchainDownloadChange(float progress) {
+			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
 				     lblStatus.setText("Synchronizing Blockchain");
 				  }
 				});
-            super.progress(pct, blocksSoFar, date);
-            Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
-        }
 
-        @Override
-        protected void doneDownload() {
-            super.doneDownload();
-            Platform.runLater(new Runnable(){
-				@Override
-				public void run() {
-					 readyToGoAnimation(1, null);
-				}
-	        });
-           
-        }
-    }
+            Platform.runLater(() -> syncProgress.setProgress(progress));
 
-    public ProgressBarUpdater progressBarUpdater() {
-        return new ProgressBarUpdater();
-    }
+            if(progress == 1.0f) {
+            	/**
+            	 * run an update of balances after we finished syncing
+            	 */
+            	Authenticator.getWalletOperation().updateBalaceNonBlocking(Authenticator.getWalletOperation().mWalletWrapper.trackedWallet, new Runnable(){
+    				@Override
+    				public void run() { 
+    					Platform.runLater(new Runnable(){
+    						@Override
+    						public void run() {
+    							 readyToGoAnimation(1, null);
+    						}
+    			        });
+    				}
+        		});
+				
+			}
+		}
+    };
+    
+//    public class ProgressBarUpdater extends DownloadListener {
+//        @Override
+//        protected void progress(double pct, int blocksSoFar, Date date) {
+//        	Platform.runLater(new Runnable() { 
+//				  @Override
+//				  public void run() {
+//				     lblStatus.setText("Synchronizing Blockchain");
+//				  }
+//				});
+//            super.progress(pct, blocksSoFar, date);
+//            Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
+//        }
+//
+//        @Override
+//        protected void doneDownload() {
+//            Platform.runLater(new Runnable(){
+//				@Override
+//				public void run() {
+//					 readyToGoAnimation(1, null);
+//				}
+//	        });
+//           
+//        }
+//    }
+//
+//    public ProgressBarUpdater progressBarUpdater() {
+//        return new ProgressBarUpdater();
+//    }
     
     public class TorListener implements TorInitializationListener {
 

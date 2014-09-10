@@ -113,11 +113,11 @@ public class WalletOperation extends BASE{
 	
 	public  WalletWrapper mWalletWrapper;
 	private BAHierarchy authenticatorWalletHierarchy;
-	private  walletDB configFile;
-	private  settingsDB settingsFile;
-	private Logger staticLogger;
+	private walletDB configFile;
+	private settingsDB settingsFile;
 	private BAOperationState operationalState;
 	private BAApplicationParameters AppParams;
+	private static WalletDownloadListener blockChainDownloadListener;
 	
 	public WalletOperation(){ 
 		super(WalletOperation.class);
@@ -147,9 +147,7 @@ public class WalletOperation extends BASE{
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
 			mWalletWrapper.addEventListener(new WalletListener());
 		}
-		
-		peerGroup.addEventListener(new WalletDownloadListener(), Threading.SAME_THREAD);
-		
+			
 		init(params);
 	}
 	
@@ -158,11 +156,9 @@ public class WalletOperation extends BASE{
 		authenticatorWalletHierarchy = null;
 		configFile = null;
 		settingsFile = null;
-		staticLogger = null;
 	}
 	
 	private void init(BAApplicationParameters params) throws IOException{
-		staticLogger = this.LOG;
 		AppParams = params;
 		if(configFile == null){
 			configFile = new walletDB(params.getAppName());
@@ -282,7 +278,9 @@ public class WalletOperation extends BASE{
 			Authenticator.fireOnBalanceChanged(null, null, null);
     }
 	
+	@SuppressWarnings("unused")
 	public void updateBalaceNonBlocking(Wallet wallet, Runnable completionBlock){
+		int s = 2;
 		new Thread(){
 			@Override
 			public void run() {
@@ -442,31 +440,26 @@ public class WalletOperation extends BASE{
     	}
 	}
 	
+	public WalletDownloadListener getDownloadEvenListener() {
+		if (blockChainDownloadListener == null)
+			blockChainDownloadListener = new WalletDownloadListener();
+		return blockChainDownloadListener;
+	}
 	
 	public class WalletDownloadListener extends DownloadListener {
         @Override
         protected void progress(double pct, int blocksSoFar, Date date) {
+        	Authenticator.fireOnBlockchainDownloadChange((float)(pct / 100.0));
+        	
         	if(pct < 100)
         		setOperationalState(BAOperationState.SYNCING);
-        	else
-        	{
-        		setOperationalState(BAOperationState.READY_AND_OPERATIONAL);
-        		
-        		/**
-            	 * run an update of balances after we finished syncing
-            	 */
-            	updateBalaceNonBlocking(mWalletWrapper.trackedWallet, new Runnable(){
-    				@Override
-    				public void run() { 
-    					notifyBalanceUpdate(mWalletWrapper.trackedWallet,null);
-    				}
-        		});
-        	}
         }
 
         @Override
         protected void doneDownload() {
+        	super.doneDownload();
         	setOperationalState(BAOperationState.READY_AND_OPERATIONAL);
+        	Authenticator.fireOnBlockchainDownloadChange(1.0f);        	
         }
     }
 	
@@ -716,7 +709,7 @@ public class WalletOperation extends BASE{
 	
 	public void setHierarchyKeyLookAhead(int value){
 		authenticatorWalletHierarchy.setKeyLookAhead(value);
-		staticLogger.info("Set hierarchy key look ahead value to {}", value);
+		LOG.info("Set hierarchy key look ahead value to {}", value);
 	}
 	
 	//#####################################
@@ -793,9 +786,9 @@ public class WalletOperation extends BASE{
  	 */
  	public void addNewAccountToConfigAndHierarchy(ATAccount b) throws IOException{
  		configFile.addAccount(b);
- 	    staticLogger.info("Generated new account at index, " + b.getIndex());
+ 		LOG.info("Generated new account at index, " + b.getIndex());
  	    authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
-		staticLogger.info("Added an account at index, " + b.getIndex() + " to hierarchy");
+ 	    LOG.info("Added an account at index, " + b.getIndex() + " to hierarchy");
  	}
  	
  	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName, @Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException{
@@ -1072,7 +1065,7 @@ public class WalletOperation extends BASE{
 		if(po != null)
 			removePairingObject(po.getPairingID());
 		configFile.removeAccount(index);
-		staticLogger.info("Removed account at index, " + index);
+		LOG.info("Removed account at index, " + index);
 		Authenticator.fireOnAccountDeleted(index);
 	}
 	
@@ -1438,7 +1431,7 @@ public class WalletOperation extends BASE{
 	public Coin addToConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getConfirmedBalance(accountIdx);
 		Coin ret = setConfirmedBalance(accountIdx, old.add(amount));
-		staticLogger.info("Added " + amount.toFriendlyString() + " to confirmed balance. Account: " + accountIdx );
+		LOG.info("Added " + amount.toFriendlyString() + " to confirmed balance. Account: " + accountIdx );
 		return ret;
 	}
 	
@@ -1453,7 +1446,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getConfirmedBalance(accountIdx);
-		staticLogger.info("Subtracting " + amount.toFriendlyString() + " from confirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
+		LOG.info("Subtracting " + amount.toFriendlyString() + " from confirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
 		assert(old.compareTo(amount) >= 0);
 		Coin ret = setConfirmedBalance(accountIdx, old.subtract(amount));
 		return ret;
@@ -1471,7 +1464,7 @@ public class WalletOperation extends BASE{
 	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws IOException, AccountWasNotFoundException{
 		long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
 		Coin ret = Coin.valueOf(balance);
-		staticLogger.info("Set " + ret.toFriendlyString() + " in confirmed balance. Account: " + accountIdx);
+		LOG.info("Set " + ret.toFriendlyString() + " in confirmed balance. Account: " + accountIdx);
 		return ret;
 	}
 	
@@ -1492,7 +1485,7 @@ public class WalletOperation extends BASE{
 	public Coin addToUnConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getUnConfirmedBalance(accountIdx);
 		Coin ret = setUnConfirmedBalance(accountIdx, old.add(amount));
-		staticLogger.info("Added " + amount.toFriendlyString() + " to unconfirmed balance. Account: " + accountIdx );
+		LOG.info("Added " + amount.toFriendlyString() + " to unconfirmed balance. Account: " + accountIdx );
 		return ret;
 	}
 	
@@ -1507,7 +1500,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin old = getUnConfirmedBalance(accountIdx);
-		staticLogger.info("Subtracting " + amount.toFriendlyString() + " from unconfirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
+		LOG.info("Subtracting " + amount.toFriendlyString() + " from unconfirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
 		assert(old.compareTo(amount) >= 0);
 		Coin ret = setUnConfirmedBalance(accountIdx, old.subtract(amount));
 		return ret;
@@ -1525,7 +1518,7 @@ public class WalletOperation extends BASE{
 	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws IOException, AccountWasNotFoundException{
 		long balance = configFile.writeUnConfirmedBalace(accountIdx, newBalance.longValue());
 		Coin ret = Coin.valueOf(balance);
-		staticLogger.info("Set " + ret.toFriendlyString() + " in unconfirmed balance. Account: " + accountIdx);
+		LOG.info("Set " + ret.toFriendlyString() + " in unconfirmed balance. Account: " + accountIdx);
 		return ret;
 	}
 	
@@ -1541,7 +1534,7 @@ public class WalletOperation extends BASE{
 	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
-		staticLogger.info("Moving " + amount.toFriendlyString() + 
+		LOG.info("Moving " + amount.toFriendlyString() + 
 				" from unconfirmed(" + beforeUnconf.toFriendlyString() 
 				+") to confirmed(" + beforeConfirmed.toFriendlyString() + ") balance. Account: " + accountId );
 		assert(beforeUnconf.compareTo(amount) >= 0);
@@ -1567,7 +1560,7 @@ public class WalletOperation extends BASE{
 	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws IOException, AccountWasNotFoundException{
 		Coin beforeConfirmed = getConfirmedBalance(accountId);
 		Coin beforeUnconf = getUnConfirmedBalance(accountId);
-		staticLogger.info("Moving " + amount.toFriendlyString() + 
+		LOG.info("Moving " + amount.toFriendlyString() + 
 				" from confirmed(" + beforeConfirmed.toFriendlyString() 
 				+") to unconfirmed(" + beforeUnconf.toFriendlyString() + ") balance. Account: " + accountId );
 		assert(beforeConfirmed.compareTo(amount) >= 0);
@@ -1603,7 +1596,7 @@ public class WalletOperation extends BASE{
 				for(PendingRequest pr:req)
 					a = a + pr.getRequestID() + "\n					";
 				
-				staticLogger.info("Removed pending requests: " + a);
+				LOG.info("Removed pending requests: " + a);
 				configFile.removePendingRequest(req);
 			}
 			catch(Exception e) {
@@ -1876,7 +1869,7 @@ public class WalletOperation extends BASE{
 		if(isWalletEncrypted())
 		if(password.hasPassword()){
 			mWalletWrapper.decryptWallet(password.toString());
-			staticLogger.info("Decrypted wallet with password: " + password.toString());
+			LOG.info("Decrypted wallet with password: " + password.toString());
 		}
 		else
 			throw new NoWalletPasswordException("Illegal Password");
@@ -1886,7 +1879,7 @@ public class WalletOperation extends BASE{
 		if(!isWalletEncrypted())
 		if(password.hasPassword()){
 			mWalletWrapper.encryptWallet(password.toString());
-			staticLogger.info("Encrypted wallet with password: " + password.toString());
+			LOG.info("Encrypted wallet with password: " + password.toString());
 		}
 		else
 			throw new NoWalletPasswordException("Illegal Password");
@@ -2016,7 +2009,7 @@ public class WalletOperation extends BASE{
 	
 	public void setOperationalState(BAOperationState value){
 		operationalState = value;
-		staticLogger.info("Changed Authenticator's operational state to " + BAOperationState.getStateString(value));
+		LOG.info("Changed Authenticator's operational state to " + BAOperationState.getStateString(value));
 	}
 	
 	public enum BAOperationState{
@@ -2035,12 +2028,12 @@ public class WalletOperation extends BASE{
 		
 		public static String getStateString(BAOperationState state){
 			switch(state){
-			case NOT_SYNCED:
-				return "Not Synced";
-			case SYNCING:
-				return "Syncing";
-			case READY_AND_OPERATIONAL:
-				return "Ready and Operational";
+				case NOT_SYNCED:
+					return "Not Synced";
+				case SYNCING:
+					return "Syncing";
+				case READY_AND_OPERATIONAL:
+					return "Ready and Operational";
 			}
 			return null;
 		}

@@ -63,4 +63,10 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 		
 	}
 
+	@Override
+	public void onBlockchainDownloadChange(float progress) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

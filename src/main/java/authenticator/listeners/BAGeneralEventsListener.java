@@ -73,4 +73,12 @@ public interface BAGeneralEventsListener {
 	 * @param address
 	 */
 	public void onAddressMarkedAsUsed(ATAddress address);
+	
+	/**
+	 * will pass a value between 0 and 1 indicating the download progress.<br>
+	 * Will pass 1 when finished.
+	 * @param progress
+	 */
+	public void onBlockchainDownloadChange(float progress);
+
 }
