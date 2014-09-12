@@ -93,7 +93,7 @@ public class OneName {
 						BufferedImage croppedImage = cropDownloadedAvatarImage(bimage);
 						
 						// save and set image path
-						String imagePath = saveImage(croppedImage, "oneAvatar.png");
+						String imagePath = saveImage(croppedImage, Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath(),"oneAvatar.png");
 						ConfigOneNameProfile oneRet = wallet.setOneName(one.getOnename(), 
 								one.getOnenameFormatted(), 
 								one.getOnenameAvatarURL(), 
@@ -123,10 +123,10 @@ public class OneName {
 		
 	}
 	
-	private static String saveImage(BufferedImage img, String fileName) throws CannotSetOneNameProfileException{
+	private static String saveImage(BufferedImage img, String filePath, String fileName) throws CannotSetOneNameProfileException{
 		 try {
 			 ByteArrayOutputStream out = new ByteArrayOutputStream();
-			 File outputfile = new File("cached_resources/" + fileName);//oneAvatar.png");
+			 File outputfile = new File(filePath + "cached_resources/" + fileName);//oneAvatar.png");
 			 ImageIO.write(img, "png", outputfile);
 			 return outputfile.getAbsolutePath();
 		    } catch (IOException e) {  

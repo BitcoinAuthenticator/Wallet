@@ -167,7 +167,7 @@
                                 <!-- Make the JavaApplicationStub in the Mac application bundle executable
                                  (it loses its 'x' permission after the copy) -->
                                 <chmod
-                                file="${basedir}/target/BTCAuthenticator.app/Contents/MacOS/JavaApplicationStub"
+                                file="${basedir}/target/BTCAuthenticator.app/Contents/MacOS/universalJavaApplicationStub"
                                 perm="777" />
                                 
                                 <copy
@@ -188,7 +188,7 @@
                                 <!-- Make the JavaAppLauncher in the MultiBit app (it loses its
                                  'x' permission after the copy) -->
                                 <chmod
-                                file="${basedir}/target/BTCAuthenticator-mac/BTCAuthenticator.app/Contents/MacOS/JavaApplicationStub"
+                                file="${basedir}/target/BTCAuthenticator-mac/BTCAuthenticator.app/Contents/MacOS/universalJavaApplicationStub"
                                 perm="777" />
                                 
                                 <!-- Sign the Mac app -->

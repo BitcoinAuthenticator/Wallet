@@ -161,7 +161,7 @@ public class WalletOperation extends BASE{
 	private void init(BAApplicationParameters params) throws IOException{
 		AppParams = params;
 		if(configFile == null){
-			configFile = new walletDB(params.getAppName());
+			configFile = new walletDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
 			/**
 			 * Check to see if a config file exists, if not, initialize
 			 */
@@ -171,7 +171,7 @@ public class WalletOperation extends BASE{
 			}
 		}
 		if(settingsFile == null) {
-			settingsFile = new settingsDB(params.getAppName());
+			settingsFile = new settingsDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
 		}
 		if(authenticatorWalletHierarchy == null)
 		{

@@ -3,6 +3,7 @@ package wallettemplate;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.BAApplicationParameters.WrongOperatingSystemException;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
@@ -82,26 +83,29 @@ public class Main extends BAApplication {
         
         UI_ONLY_WALLET_PW = new BAPassword();
         
-        if(super.BAInit())
+        
 	        try {
-	            init(mainWindow);
-	        } catch (Throwable t) {
+	        	if(super.BAInit())
+	            	init(mainWindow);
+	        	else
+	            	Runtime.getRuntime().exit(0);
+	        } catch (Exception t) {
 	            // Nicer message for the case where the block store file is locked.
-	            if (Throwables.getRootCause(t) instanceof BlockStoreException) {
+	            if (t instanceof BlockStoreException) {
 	                GuiUtils.informationalAlert("Already running", "This application is already running and cannot be started twice.");
-	            } else {
-	                throw t;
-	            }
+	            } 
+	            
+	            // in case couldnt find the right OS
+	            else if(t instanceof WrongOperatingSystemException)
+	            	GuiUtils.informationalAlert("Error", "Could not find an appropriate OS");
+	            
+	            else 
+	            	throw t;
 	        }
-        else
-        	Runtime.getRuntime().exit(0);
     }
 
     @SuppressWarnings("restriction")
 	private void init(Stage mainWindow) throws Exception {
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            //AquaFx.style();
-        }
               
         // Load the GUI. The Controller class will be automagically created and wired up.
         mainWindow.initStyle(StageStyle.UNDECORATED);
@@ -118,7 +122,7 @@ public class Main extends BAApplication {
         mainWindow.setScene(scene);
         stage = mainWindow;
         
-        String filePath1 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + ".wallet";
+        String filePath1 = ApplicationParams.getApplicationDataFolderAbsolutePath() + ApplicationParams.getAppName() + ".wallet";
         File f1 = new File(filePath1);
         if(!f1.exists()) { 
         	Parent root;
@@ -166,7 +170,7 @@ public class Main extends BAApplication {
         }
         else if(params.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
-        	bitcoin = new WalletAppKit(np, new File("."), params.getAppName());
+        	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
         	bitcoin.useTor();
         }
 

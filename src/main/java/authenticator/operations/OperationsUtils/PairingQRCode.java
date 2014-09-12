@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
 import authenticator.network.BANetworkInfo;
 
@@ -34,7 +35,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
  */
 public class PairingQRCode {
 	
-	public static final String QR_IMAGE_RELATIVE_PATH = "/cached_resources/PairingQRCode.png"; 
+	public static final String QR_IMAGE_RELATIVE_PATH = "cached_resources/PairingQRCode.png"; 
 	
 /**
  * 
@@ -63,7 +64,7 @@ public class PairingQRCode {
 											  networkType,
 											  authWalletIndex);
 	  
-	  String filePath = new java.io.File( "." ).getCanonicalPath() + QR_IMAGE_RELATIVE_PATH;
+	  String filePath = Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath() + QR_IMAGE_RELATIVE_PATH;
 	  String charset = "UTF-8"; // or "ISO-8859-1"
 	  Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
 	  hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);

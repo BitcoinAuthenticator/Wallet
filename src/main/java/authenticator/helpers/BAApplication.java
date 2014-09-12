@@ -6,6 +6,7 @@ import java.util.Map;
 
 import wallettemplate.Main;
 import authenticator.BAApplicationParameters;
+import authenticator.BAApplicationParameters.WrongOperatingSystemException;
 
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
@@ -34,8 +35,9 @@ public class BAApplication extends Application{
     /**
      * Must be called on start()
      * @param appName
+     * @throws WrongOperatingSystemException 
      */
-    public boolean BAInit(){
+    public boolean BAInit() throws WrongOperatingSystemException{
     	ApplicationParams = new BAApplicationParameters(getParameters().getNamed(),getParameters().getRaw());
     	return ApplicationParams.getShouldLaunchProgram();
     }
@@ -50,14 +52,4 @@ public class BAApplication extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		
 	}
-
-	//######################
-    //
-    //	Application Params
-    //
-    //######################
-	
-	
-	
-	
 }

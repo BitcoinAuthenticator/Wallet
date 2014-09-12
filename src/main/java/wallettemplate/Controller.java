@@ -1024,8 +1024,15 @@ public class Controller  extends BaseUI{
 			    	OneName.downloadAvatarImage(one, Authenticator.getWalletOperation(), new OneNameAdapter() {
 						@Override
 						public void getOneNameAvatarImage(ConfigOneNameProfile one, Image img) {
-							if(img != null && one != null)
-								   setUserProfileAvatarAndName(img,one.getOnenameFormatted());
+							if(img != null && one != null) {
+								Platform.runLater(new Runnable() { 
+									  @Override
+									  public void run() {
+										  setUserProfileAvatarAndName(img,one.getOnenameFormatted());
+									  }
+								});
+							}
+								   
 						}
 					});
 			    }

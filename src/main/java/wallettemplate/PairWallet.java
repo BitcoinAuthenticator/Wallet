@@ -294,11 +294,10 @@ public class PairWallet extends BaseUI{
 				    	  move.play();
 							//
 							File file;
-							try {
-								file = new File(new java.io.File( "." ).getCanonicalPath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
-								Image img = new Image(file.toURI().toString());
-								imgViewQR.setImage(img);
-							} catch (IOException e) { e.printStackTrace();}
+							file = new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath() + 
+									PairingQRCode.QR_IMAGE_RELATIVE_PATH);
+							Image img = new Image(file.toURI().toString());
+							imgViewQR.setImage(img);
 							lblScan.setVisible(true);
 				      }
 				});

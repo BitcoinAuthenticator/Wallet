@@ -19,8 +19,8 @@ import authenticator.protobuf.ProtoSettings.Languages;
 
 public class settingsDB extends dbBase{
 
-	public settingsDB(String appName) throws IOException {
-		super(appName);
+	public settingsDB(String filePath) throws IOException {
+		super(filePath);
 	}
 	
 	//#####################################

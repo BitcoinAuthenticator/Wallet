@@ -600,13 +600,11 @@ public class StartupController  extends BaseUI{
 				public void run() {
 					// set image 
 					File file;
-					try {
-						file = new File(new java.io.File( "." ).getCanonicalPath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
-						Image img = new Image(file.toURI().toString());
-						Platform.runLater(() -> {
-							ivFirstAccountPairingQR.setImage(img);
-						});
-					} catch (IOException e) { e.printStackTrace(); }
+					file = new File(appParams.getApplicationDataFolderAbsolutePath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
+					Image img = new Image(file.toURI().toString());
+					Platform.runLater(() -> {
+						ivFirstAccountPairingQR.setImage(img);
+					});
 				}
 			  };
 	 }
@@ -1360,7 +1358,7 @@ public class StartupController  extends BaseUI{
 	 //##############################
 	 
 	 private void createWallet(@Nullable DeterministicSeed seed) throws IOException{
-		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
+		 String filePath = appParams.getApplicationDataFolderAbsolutePath() + appParams.getAppName() + ".wallet";
 		 File f = new File(filePath);
 		 assert(f.exists() == false);
 		 if(seed == null){

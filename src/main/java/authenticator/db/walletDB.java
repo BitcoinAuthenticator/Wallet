@@ -40,8 +40,8 @@ import wallettemplate.Main;
 
 public class walletDB extends dbBase{
 
-	public walletDB(String appName) throws IOException{
-		super(appName);
+	public walletDB(String filePath) throws IOException{
+		super(filePath);
 	}
 
 	private synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
