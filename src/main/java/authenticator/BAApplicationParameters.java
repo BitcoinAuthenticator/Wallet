@@ -188,7 +188,7 @@ public class BAApplicationParameters{
 		return this.APPLICATION_DATA_FOLDER;
 	}
 	/**
-	 * With an '/' at the end
+	 * With an '/'
 	 * @return
 	 */
 	public String getApplicationDataFolderAbsolutePath(){
