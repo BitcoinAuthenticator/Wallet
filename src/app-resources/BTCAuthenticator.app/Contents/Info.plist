@@ -11,7 +11,7 @@
 	<key>CFBundleAllowMixedLocalizations</key>
 	<string>true</string>
 	<key>CFBundleExecutable</key>
-	<string>JavaApplicationStub</string>
+	<string>universalJavaApplicationStub</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundlePackageType</key>
@@ -48,7 +48,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Shell</string>
 			<key>CFBundleURLIconFile</key>
-			<string>multibit.icns</string>
+			<string>BTCAuthenticator.icns</string>
 			<key>CFBundleURLName</key>
 			<string>org.multibit.bitcoin.url</string>
 			<key>CFBundleURLSchemes</key>
