@@ -21,9 +21,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleIconFile</key>
-	<string>multibit.icns</string>
+	<string>BTCAuthenticator.icns</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright MultiBit developers 2013</string>
+	<string>Copyright BTCAuthenticator developers 2014</string>
 	<key>CFBundleGetInfoString</key>
 	<string>BTCAuthenticator, © 2013 Bitcoin Authenticator developers</string>
 	<key>CFBundleDisplayName</key>
@@ -33,9 +33,7 @@
 		<key>WorkingDirectory</key>
 		<string>$APP_PACKAGE/Contents/Resources/Java</string>
 		<key>MainClass</key>
-		<string>org.bitcoinj.wallettemplate.Main</string>
-		<key>JVMVersion</key>
-		<string>1.6+</string>
+		<string>wallettemplate.Main</string>
 		<key>ClassPath</key>
 		<string>$JAVAROOT/BTCAuthenticator-exe-full.jar</string>
 		<key>Properties</key>
