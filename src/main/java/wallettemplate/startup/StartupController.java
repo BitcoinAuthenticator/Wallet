@@ -559,6 +559,8 @@ public class StartupController  extends BaseUI{
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
 		 
+		 hlFinished.setDisable(true);
+		 
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
 		 auth.addListener(new Service.Listener() {
@@ -566,7 +568,7 @@ public class StartupController  extends BaseUI{
 					Platform.runLater(new Runnable() { 
 						  @Override
 						  public void run() {
-							  hlFinished.setDisable(true);
+							  
 							  
 							//prepare pairing
 							 playPairingOperation(firstAccountName, 
