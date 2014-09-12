@@ -159,7 +159,7 @@ public class Main extends BAApplication {
         NetworkParameters np = null;
         if(params.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();
-        	bitcoin = new WalletAppKit(np, new File("."), params.getAppName());
+        	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
             // Checkpoints are block headers that ship inside our app: for a new user, we pick the last header
             // in the checkpoints file and then download the rest from the network. It makes things much faster.
             // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the

@@ -566,6 +566,8 @@ public class StartupController  extends BaseUI{
 					Platform.runLater(new Runnable() { 
 						  @Override
 						  public void run() {
+							  hlFinished.setDisable(true);
+							  
 							//prepare pairing
 							 playPairingOperation(firstAccountName, 
 									 auth.getApplicationParams().getBitcoinNetworkType(), 
@@ -604,6 +606,7 @@ public class StartupController  extends BaseUI{
 					Image img = new Image(file.toURI().toString());
 					Platform.runLater(() -> {
 						ivFirstAccountPairingQR.setImage(img);
+						hlFinished.setDisable(false);
 					});
 				}
 			  };
