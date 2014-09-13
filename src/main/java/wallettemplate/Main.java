@@ -46,6 +46,7 @@ import wallettemplate.utils.TextFieldValidator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -164,7 +165,10 @@ public class Main extends BAApplication {
             // in the checkpoints file and then download the rest from the network. It makes things much faster.
             // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
             // last months worth or more (takes a few seconds).
-            bitcoin.setCheckpoints(Main.class.getResourceAsStream("checkpoints"));
+        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints");
+        	if(inCheckpint == null)
+        		throw new IOException();
+            bitcoin.setCheckpoints(inCheckpint);
             // As an example!
             bitcoin.useTor();
         }

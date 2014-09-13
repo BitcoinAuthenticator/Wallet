@@ -567,9 +567,7 @@ public class StartupController  extends BaseUI{
 				@Override public void running() {
 					Platform.runLater(new Runnable() { 
 						  @Override
-						  public void run() {
-							  
-							  
+						  public void run() {							  
 							//prepare pairing
 							 playPairingOperation(firstAccountName, 
 									 auth.getApplicationParams().getBitcoinNetworkType(), 

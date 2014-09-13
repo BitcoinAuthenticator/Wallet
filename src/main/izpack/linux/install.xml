@@ -16,7 +16,7 @@
         The meaning of the tags should be natural ...
     -->
     <info>
-        <appname>MultiBit</appname>
+        <appname>BTCAuthenticator</appname>
         <appsubpath>BTCAuthenticator-${project.version}</appsubpath>
         <appversion>${project.version}</appversion>
         <url>https://bitcoinauthenticator.org/</url>
@@ -71,7 +71,7 @@
         <pack name="MultiBit" required="yes">
             <description>Bitcoin Authenticator Wallet install files.</description>
             <file src="readme.txt" targetdir="$INSTALL_PATH"/>
-            <file src="multibit-exe.jar" targetdir="$INSTALL_PATH"/>
+            <file src="BTCAuthenticator-exe-full.jar" targetdir="$INSTALL_PATH"/>
         </pack>
     </packs>
 </installation>

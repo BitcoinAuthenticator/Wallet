@@ -155,6 +155,34 @@
                 </executions>
             </plugin>
             
+            <!-- Produce linux IzPack installer from contents of linux staging directory -->
+            <plugin>
+                <groupId>org.codehaus.izpack</groupId>
+                <artifactId>izpack-maven-plugin</artifactId>
+                <version>1.0-alpha-5</version>
+                <executions>
+                    <execution>
+                        <id>create-linux-installer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>izpack</goal>
+                        </goals>
+                        <configuration>
+                            <izpackBasedir>${staging.linux.dir}</izpackBasedir>
+                            <installerFile>target/${project.build.finalName}-${project.version}-linux.jar
+                            </installerFile>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-standalone-compiler</artifactId>
+                        <version>4.3.4</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            
             <!-- Build a Mac DMG -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
