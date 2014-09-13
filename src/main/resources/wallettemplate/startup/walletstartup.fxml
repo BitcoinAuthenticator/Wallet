@@ -176,6 +176,7 @@
         <!--
         	final explanation pane, here user can pair an account for the first time
         -->
+        <Label fx:id="lblLoadginQR" font="$x1" layoutX="230.0" layoutY="200.0" prefWidth="234.0" visible="false" text="Loading Pairing QR ..." />
         <ImageView fx:id="ivFirstAccountPairingQR" fitHeight="230.0" fitWidth="230.0" layoutX="185.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true" visible="false"/>
         <Hyperlink fx:id="hlFinished" layoutX="225.0" layoutY="335.0" onAction="#finished" text="I will set up 2FA later" visible="false" />
       </children>

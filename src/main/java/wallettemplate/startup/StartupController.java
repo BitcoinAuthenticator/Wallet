@@ -211,6 +211,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane BA3;
 	@FXML private Pane BA4;
 	@FXML private Hyperlink hlFinished;
+	@FXML private Label lblLoadginQR;
 	@FXML private ImageView imgSSS;
 	@FXML private Button btnSSS;
 	@FXML private ProgressBar syncProgress;
@@ -678,6 +679,8 @@ public class StartupController  extends BaseUI{
 			 lblScan.setVisible(true);
 			 hlFinished.setVisible(true);
 			 btnPlayStore.setVisible(false);
+			 btnBack5.setDisable(true);
+			 lblLoadginQR.setVisible(true);
 		 } 
 	 }
 	 
