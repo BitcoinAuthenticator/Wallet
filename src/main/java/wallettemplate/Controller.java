@@ -645,39 +645,15 @@ public class Controller  extends BaseUI{
     	
     	@Override
         public void onPeerConnected(Peer peer, int peerCount) {
-    		if (peerCount>0 & peerCount<6){
-    			btnConnection1.setVisible(true);
-    			if (peerCount==1) {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peer"));}
-    			else {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peers"));}
-    			btnConnection2.setVisible(false);
-    			btnConnection3.setVisible(false);
-    			btnConnection0.setVisible(false);
-    		}
-    		if (peerCount>6 & peerCount<10){
-    			btnConnection1.setVisible(false);
-    			btnConnection2.setVisible(true);
-    			Tooltip.install(btnConnection2, new Tooltip("Connected to " + peerCount + " peers"));
-    			btnConnection3.setVisible(false);
-    			btnConnection0.setVisible(false);
-    		}
-    		if (peerCount>9){
-    			btnConnection1.setVisible(false);
-    			btnConnection2.setVisible(false);
-    			btnConnection3.setVisible(true);
-    			Tooltip.install(btnConnection3, new Tooltip("Connected to " + peerCount + " peers"));
-    			btnConnection0.setVisible(false);
-    		}
-    		if (peerCount==0){
-    			btnConnection1.setVisible(false);
-    			btnConnection2.setVisible(false);
-    			btnConnection3.setVisible(false);
-    			btnConnection0.setVisible(true);
-    			Tooltip.install(btnConnection0, new Tooltip("Not connected"));
-    		}
+    		setToolTip(peerCount);
         }
 
         @Override
         public void onPeerDisconnected(Peer peer, int peerCount) {
+        	setToolTip(peerCount);
+        }
+        
+        private void setToolTip(int peerCount) {
         	if (peerCount>0 & peerCount<6){
     			btnConnection1.setVisible(true);
     			if (peerCount==1) {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peer"));}

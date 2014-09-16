@@ -164,10 +164,7 @@ public class Main extends BAApplication {
         if(params.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();
         	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
-            // Checkpoints are block headers that ship inside our app: for a new user, we pick the last header
-            // in the checkpoints file and then download the rest from the network. It makes things much faster.
-            // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
-            // last months worth or more (takes a few seconds).
+        	
         	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints");
         	if(inCheckpint == null)
         		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
@@ -179,23 +176,22 @@ public class Main extends BAApplication {
         	np = TestNet3Params.get();
         	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
         	
-        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
-        	if(inCheckpint == null)
-        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
-            bitcoin.setCheckpoints(inCheckpint);
+//        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
+//        	if(inCheckpint == null)
+//        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
+//            bitcoin.setCheckpoints(inCheckpint);
             
         	bitcoin.useTor();
         }
 
-        // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen
-        // or progress widget to keep the user engaged whilst we initialise, but we don't.
+        
         bitcoin.setDownloadListener(new WalletOperation().getDownloadEvenListener());
         bitcoin.setAutoSave(true);
         bitcoin.setBlockingStartup(false)
                .setUserAgent(params.getAppName(), "1.0");
     	bitcoin.startAsync();
         bitcoin.awaitRunning();
-        // Don't make the user wait for confirmations for now, as the intention is they're sending it their own money!
+
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         bitcoin.wallet().setKeychainLookaheadSize(0);
