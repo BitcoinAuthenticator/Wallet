@@ -303,29 +303,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                    </execution>
-                    
-                    <!-- Produce a Win32 exe from the multibit-exe.jar (no Maven plugin
-                     for JSmooth so drop down to ant) -->
-                    <execution>
-                        <id>jsmooth-installer2exe-exe</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <path id="jsmooth-classpathref">
-                                    <pathelement path="src/main/jsmooth/lib/jsmoothgen.jar" />
-                                    <pathelement path="src/main/jsmooth/lib/jsmoothgen-ant.jar" />
-                                </path>
-                                <taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen"
-                                classpathref="jsmooth-classpathref" />
-                                <jsmoothgen project="src/main/jsmooth/exe.jsmooth"
-                                skeletonroot="src/main/jsmooth/skeletons" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
+                    </execution>                    
                 </executions>
                 <dependencies>
                     <dependency>
