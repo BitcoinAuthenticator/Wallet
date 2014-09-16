@@ -13,6 +13,7 @@ import org.json.JSONException;
 import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;
+import wallettemplate.utils.BaseUI;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
@@ -27,6 +28,8 @@ import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
+import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
+import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,7 +63,12 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-public class UIUpdateHelper {
+public class UIUpdateHelper extends BaseUI{
+	
+	public UIUpdateHelper() {
+		super(UIUpdateHelper.class);
+	}
+	
 	public static class ReceiveAddressesUpdater extends AsyncTask{
 		ChoiceBox box;
 		ArrayList<String> addresses;
@@ -68,12 +76,10 @@ public class UIUpdateHelper {
 		public ReceiveAddressesUpdater(ChoiceBox b){
 			box = b;
 		}
-		
-		@Override
-		void onPreExecute() { }
+
 
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 			
 	    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
 	    	addresses = new ArrayList<String>();
@@ -91,7 +97,7 @@ public class UIUpdateHelper {
 		}
 
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			box.getItems().clear();
 			
 			for (String address : addresses){
@@ -100,14 +106,24 @@ public class UIUpdateHelper {
 			box.setValue(addresses.get(0));
 		}
 
+
 		@Override
-		void progressCallback(Object... params) { }
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		protected void progressCallback(Object... params) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
 	public static class  TxPaneHistoryUpdater extends AsyncTask{
 		ObservableList<TableTx> txdata;
 		ArrayList<String> savedTXIDs;
-		walletDB config;
 		//
 		TableView txTable;
 		TableColumn colToFrom;
@@ -120,11 +136,11 @@ public class UIUpdateHelper {
 		}
 		
 		@Override
-		void onPreExecute() { }
+		protected void onPreExecute() { }
 
 		@SuppressWarnings({ "restriction", "unchecked" })
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 			try {
 				getTxData();
 			} catch (Exception e) { e.printStackTrace(); }
@@ -146,21 +162,24 @@ public class UIUpdateHelper {
 		        	                t.getTablePosition().getRow())
 		        	                ).getToFrom();
 		    	            if (savedTXIDs.size()==0){
-		    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            	catch (IOException e) {e.printStackTrace();}
+		    	            	try {
+									Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);
+								} catch (CannotWriteToConfigurationFileException e) {
+									e.printStackTrace();
+								}
 		    	            }
 		    	            else {
 		    	            	if (savedTXIDs.contains(txid)){
 		    	            		for (int i=0; i<savedTXIDs.size(); i++){
 		    	            			if (savedTXIDs.get(i).equals(txid)){
-		    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
-		    	            				catch (IOException e) {e.printStackTrace();}
+		    	            				try {Authenticator.getWalletOperation().writeSavedTxData(i, txid, toFrom, desc);} 
+		    	            				catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            			}
 		    	            		}
 		    	            	}
 		    	            	else {
-		    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            		catch (IOException e) {e.printStackTrace();}
+		    	            		try {Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);} 
+		    	            		catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            	}   
 		    	            }
 		    	        }
@@ -187,21 +206,21 @@ public class UIUpdateHelper {
 		        	                t.getTablePosition().getRow())
 		        	                ).getToFrom();
 		    	            if (savedTXIDs.size()==0){
-		    	            	try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            	catch (IOException e) {e.printStackTrace();}
+		    	            	try {Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);} 
+		    	            	catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            }
 		    	            else {
 		    	            	if (savedTXIDs.contains(txid)){
 		    	            		for (int i=0; i<savedTXIDs.size(); i++){
 		    	            			if (savedTXIDs.get(i).equals(txid)){
-		    	            				try {config.writeSavedTxData(i, txid, toFrom, desc);} 
-		    	            				catch (IOException e) {e.printStackTrace();}
+		    	            				try {Authenticator.getWalletOperation().writeSavedTxData(i, txid, toFrom, desc);} 
+		    	            				catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            			}
 		    	            		}
 		    	            	}
 		    	            	else {
-		    	            		try {config.writeNextSavedTxData(txid, toFrom, desc);} 
-		    	            		catch (IOException e) {e.printStackTrace();}
+		    	            		try {Authenticator.getWalletOperation().writeNextSavedTxData(txid, toFrom, desc);} 
+		    	            		catch (CannotWriteToConfigurationFileException e) {e.printStackTrace();}
 		    	            	}   
 		    	            }
 		    	            //try {setTxHistoryContent();} 
@@ -215,53 +234,60 @@ public class UIUpdateHelper {
 			 */
 		}
 		
-		private void getTxData() throws Exception{
+		@SuppressWarnings({ "deprecation", "restriction" })
+		private void getTxData() throws CannotGetAccountFilteredTransactionsException{
 			ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-	    	config = Authenticator.getWalletOperation().configFile;
-	    	savedTXIDs = config.getSavedTxidList();
+	    	savedTXIDs = Authenticator.getWalletOperation().getSavedTxidList();
 	    	txdata = FXCollections.observableArrayList();
 	    	for (Transaction tx : history){
-	    		Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
-	    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
-	    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
-	    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
-	    		ImageView arrow = null;
-	    		Text amount = new Text();
-	    		String toFrom = "multiple";
-	    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
-	    			arrow = new ImageView(out);
-	    			amount.setFill(Paint.valueOf("#f06e6e"));
-	    			amount.setText(exit.subtract(enter).toFriendlyString());
+	    		try {
+	    			Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
+		    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
+		    		Image in = new Image(Main.class.getResourceAsStream("in.png"));
+		    		Image out = new Image(Main.class.getResourceAsStream("out.png"));
+		    		ImageView arrow = null;
+		    		Text amount = new Text();
+		    		String toFrom = "multiple";
+		    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
+		    			arrow = new ImageView(out);
+		    			amount.setFill(Paint.valueOf("#f06e6e"));
+		    			amount.setText(exit.subtract(enter).toFriendlyString());
+		    		}
+		    		else { // i only received coins
+		    			arrow = new ImageView(in);
+		    			amount.setText(enter.toFriendlyString());
+		    			amount.setFill(Paint.valueOf("#98d947"));
+		    			if (tx.getInputs().size()==1){
+		    				toFrom = tx.getInput(0).getFromAddress().toString();
+		    			}
+		    		}
+		    		String desc = tx.getHashAsString();
+		    		String date = tx.getUpdateTime().toLocaleString();
+		    		for (int i=0; i<savedTXIDs.size(); i++){
+		    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
+		    				desc = Authenticator.getWalletOperation().getSavedDescription(i);
+		    			}
+		    		}
+		    		for (int i=0; i<savedTXIDs.size(); i++){
+		    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
+		    				toFrom = Authenticator.getWalletOperation().getSavedToFrom(i);
+		    			}
+		    		}
+		    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
+		    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
+		    		txdata.add(transaction);
 	    		}
-	    		else { // i only received coins
-	    			arrow = new ImageView(in);
-	    			amount.setText(enter.toFriendlyString());
-	    			amount.setFill(Paint.valueOf("#98d947"));
-	    			if (tx.getInputs().size()==1){
-	    				toFrom = tx.getInput(0).getFromAddress().toString();
-	    			}
+	    		catch (Exception e) {
+	    			// If in any case one transaction throws an exception, continue with the Tx iteration.
+	    			e.printStackTrace();
+	    			System.out.println("TX: " + tx.toString());
 	    		}
-	    		String desc = tx.getHashAsString();
-	    		String date = tx.getUpdateTime().toLocaleString();
-	    		for (int i=0; i<savedTXIDs.size(); i++){
-	    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-	    				desc = config.getSavedDescription(i);
-	    			}
-	    		}
-	    		for (int i=0; i<savedTXIDs.size(); i++){
-	    			if (savedTXIDs.get(i).equals(tx.getHashAsString())){
-	    				toFrom = config.getSavedToFrom(i);
-	    			}
-	    		}
-	    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
-	    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
-	    		txdata.add(transaction);
 	    	}
 		}
 
 		@SuppressWarnings("restriction")
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			txTable.setItems(txdata);
 	    	txTable.setEditable(true);
 	    	txTable.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -519,7 +545,7 @@ public class UIUpdateHelper {
 		}
 
 		@Override
-		void progressCallback(Object... params) { }
+		protected void progressCallback(Object... params) { }
 		
 	}
 
@@ -533,7 +559,7 @@ public class UIUpdateHelper {
 		}
 		
 		@Override
-		void onPreExecute() {
+		protected void onPreExecute() {
 			if(scrlViewTxHistoryContentManager.getCount() == 0)
 			Platform.runLater(new Runnable() {
 	            @Override
@@ -544,7 +570,7 @@ public class UIUpdateHelper {
 		}
 
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 	    	try {
 				txAll = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 			} catch (Exception e) { e.printStackTrace(); }
@@ -552,8 +578,7 @@ public class UIUpdateHelper {
 	    	if (txAll.size()==0)
 	    		return;
 	    	
-	    	walletDB config = Authenticator.getWalletOperation().configFile;
-	    	ArrayList<String> savedTXIDs = config.getSavedTxidList();
+	    	ArrayList<String> savedTXIDs = Authenticator.getWalletOperation().getSavedTxidList();
 	    	int size = txAll.size();
 	    	int n;
 	    	if (size < 10) {n=size;}
@@ -581,7 +606,7 @@ public class UIUpdateHelper {
 	    		l2.setFont(Font.font(11));
 	    		for (int a=0; a<savedTXIDs.size(); a++){
 	    			if (savedTXIDs.get(a).equals(txAll.get(i).getHashAsString())){
-	    				if(!config.getSavedDescription(a).equals("")){txid = config.getSavedDescription(a);}
+	    				if(!Authenticator.getWalletOperation().getSavedDescription(a).equals("")){txid = Authenticator.getWalletOperation().getSavedDescription(a);}
 	    			}
 	    		}
 	    		if (txid.length()>20){txid = txid.substring(0, 20) + "...";}
@@ -628,7 +653,7 @@ public class UIUpdateHelper {
 		}
 
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			scrlViewTxHistoryContentManager.clearAll();
 			if (txAll.size()==0){
 				showNoTxHistory();
@@ -656,7 +681,7 @@ public class UIUpdateHelper {
 		}
 
 		@Override
-		void progressCallback(Object... params) { }
+		protected void progressCallback(Object... params) { }
 		
 	}
 
@@ -673,10 +698,10 @@ public class UIUpdateHelper {
 		}
 		
 		@Override
-		void onPreExecute() { }
+		protected void onPreExecute() { }
 
 		@Override
-		void doInBackground() {
+		protected void doInBackground() {
 			unconfirmed = Coin.ZERO;
 			confirmed = Coin.ZERO;
 	    	try {
@@ -687,7 +712,7 @@ public class UIUpdateHelper {
 		}
 
 		@Override
-		void onPostExecute() {
+		protected void onPostExecute() {
 			lblConfirmedBalance.setText(confirmed.toFriendlyString());
 	        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString());
 	        
@@ -737,7 +762,7 @@ public class UIUpdateHelper {
 	    }
 
 		@Override
-		void progressCallback(Object... params) { }
+		protected void progressCallback(Object... params) { }
 		
 	}
 }

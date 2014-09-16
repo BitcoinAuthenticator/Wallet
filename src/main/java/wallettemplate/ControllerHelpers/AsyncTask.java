@@ -10,16 +10,16 @@ public abstract class AsyncTask {
 
     private boolean daemon = true;
     
-    abstract void onPreExecute();
+    abstract protected void onPreExecute();
 
-    abstract void doInBackground();
+    abstract protected void doInBackground();
 
     /**
      * This method runs on the UI thread
      */
-    abstract void onPostExecute();
+    abstract protected void onPostExecute();
     
-    abstract void progressCallback(Object... params);
+    abstract protected void progressCallback(Object... params);
     
     public void publishProgress(final Object... params) {
         Platform.runLater(new Runnable() {

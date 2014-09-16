@@ -13,6 +13,7 @@ import authenticator.hierarchy.exceptions.NoUnusedKeyException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyPurpose;
+import authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
 
 import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicHierarchy;
@@ -20,6 +21,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.MnemonicCode;
 import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
+import com.google.protobuf.ByteString;
  
  /**
   * This class handles the key hierarchy for the Authenticator wallet.<br>
@@ -32,68 +34,38 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
   */
  public class BAHierarchy{
 	static public int keyLookAhead = 10; 
- 	
- 	DeterministicHierarchy hierarchy;
- 	DeterministicKey rootKey;
+ 	 	
  	List<AccountTracker> accountTracker;
  	int nextAvailableAccount;
  	HierarchyCoinTypes typeBitcoin;
  	
  	@SuppressWarnings("static-access")
  	public BAHierarchy(){}
- 	public BAHierarchy(DeterministicKey masterkey, HierarchyCoinTypes coinType){
+ 	public BAHierarchy(HierarchyCoinTypes coinType){
  		typeBitcoin = coinType;
- 		HDKeyDerivation HDKey = null;
-     	// purpose level
-     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,false); // is not harden
-     	DeterministicKey purpose = HDKey.deriveChildKey(masterkey,purposeIndex);
-     	// coin level
-     	ChildNumber coinIndex = new ChildNumber(coinType.getNumber(),false); // is not harden
-     	DeterministicKey coin = HDKey.deriveChildKey(purpose,coinIndex);
-     	
-     	//put root
-     	setRoot(coin);
  	}
- 	public BAHierarchy setRoot(DeterministicKey rootKey) {
- 		this.rootKey = rootKey;
- 		hierarchy = new DeterministicHierarchy(rootKey);
- 		return this;
- 	}
- 		
- 	/**
- 	 * DEPICATED
- 	 * 
- 	 * @param accountByNumberOfKeys:<br>
-
-	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[0]</b> - account id<br>
-	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[1]</b> - external chain<br>
-	 * &nbsp;&nbsp;&nbsp;&nbsp;<b>Integer[2]</b> - internal chain
- 	 */
-	/*public void buildWalletHierarchyForStartup(List<Integer[]> accountByNumberOfKeys, int nextAvailableAccount){
-		this.nextAvailableAccount = nextAvailableAccount;
- 		accountsHeightsUsed = new ArrayList<ChildNumber[]>();
- 		for(int i=0;i < accountByNumberOfKeys.size(); i++){
- 			Integer[] cnt = accountByNumberOfKeys.get(i);
-			ChildNumber acc = new ChildNumber(cnt[0],false);
-			ChildNumber Ext = new ChildNumber(cnt[1],false); 
-			ChildNumber Int = new ChildNumber(cnt[2],false);
-			accountsHeightsUsed.add(new ChildNumber[]{acc,Ext,Int});
- 		}
- 	}*/
  	
  	public void buildWalletHierarchyForStartup(List<AccountTracker> tracker){
  		this.accountTracker = tracker;
  		calculateNextAvailableAccountIndex();
  	}
  	
- 	private void calculateNextAvailableAccountIndex(){
- 		int highestAccountIdx = 0;
- 		for(AccountTracker acc: accountTracker){
- 			if(acc.getAccountIndex() > highestAccountIdx)
- 				highestAccountIdx = acc.getAccountIndex();
- 		}
+ 	//###############################
+ 	//
+ 	//		API
+ 	//
+ 	//###############################
+ 	
+ 	public ATAccountAddressHierarchy generateAccountAddressHierarchy(byte[] seed, int accountIdx, HierarchyAddressTypes type) {
+ 		DeterministicKey addressType = generatePathUntilAccountsAddress(seed, accountIdx, type);
  		
- 		nextAvailableAccount = highestAccountIdx + 1;
+ 		ATAccountAddressHierarchy.Builder ret = ATAccountAddressHierarchy.newBuilder();
+ 		byte[] pubkey = addressType.getPubKey();
+		byte[] chaincode = addressType.getChainCode();
+ 		ret.setHierarchyKey(ByteString.copyFrom(pubkey));
+ 		ret.setHierarchyChaincode(ByteString.copyFrom(chaincode));
+ 		
+ 		return ret.build();
  	}
  	
  	/**
@@ -109,67 +81,54 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  	 * @throws NoAccountCouldBeFoundException 
  	 * @throws KeyIndexOutOfRangeException 
  	 */
- 	public DeterministicKey getNextPubKey(int accountIndex, HierarchyAddressTypes type) throws NoUnusedKeyException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException{
-  	   AccountTracker tracker = getAccountTracker(accountIndex); //this.accountTracker.get(getAccountPlace(accountIndex));
-  	   ChildNumber indx = type == HierarchyAddressTypes.External? tracker.getUnusedExternalKey(): tracker.getUnusedInternalKey();
-  	   DeterministicKey ret = getPubKeyFromAccount(accountIndex, type, indx);// hierarchy.deriveChild(p, false, true, indx);	
- 	    
+ 	public DeterministicKey getNextPubKey(int accountIndex, HierarchyAddressTypes type, ATAccountAddressHierarchy H) throws NoUnusedKeyException, NoAccountCouldBeFoundException, KeyIndexOutOfRangeException{
+  	   AccountTracker tracker = getAccountTracker(accountIndex); 
+  	   int indx = type == HierarchyAddressTypes.External? tracker.getUnusedExternalKey().getI(): tracker.getUnusedInternalKey().getI();
+  	   DeterministicKey ret = getPubKeyFromAccount(accountIndex, type, indx, H);	
  	   return ret;
  	}
  	
  	public DeterministicKey getPrivKeyFromAccount(byte[] seed, int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
  		return getPrivKeyFromAccount(seed, accountIndex, type, addressKey.num());
  	}
+ 	
  	@SuppressWarnings("static-access")
-	public DeterministicKey getPrivKeyFromAccount(byte[] seed, int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
+	public DeterministicKey getPrivKeyFromAccount(byte[] seed, int accountIdx, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
  		if(addressKey > Math.pow(2, 31)) throw new KeyIndexOutOfRangeException("Key index out of range");
+ 		
  		HDKeyDerivation HDKey = null;
-
- 		DeterministicKey masterkey = HDKey.createMasterPrivateKey(seed);//Authenticator.getWalletOperation().mWalletWrapper.trackedWallet.getKeyChainSeed().getSecretBytes());
-     	// purpose level
-     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE,false); // is not harden
-     	DeterministicKey purpose = HDKey.deriveChildKey(masterkey,purposeIndex);
-     	// coin level
-     	ChildNumber coinIndex = new ChildNumber(typeBitcoin.getNumber(),false); // is not harden
-     	DeterministicKey coin = HDKey.deriveChildKey(purpose,coinIndex);
- 		DeterministicHierarchy temp = new DeterministicHierarchy(coin);
- 		// root
- 		List<ChildNumber> p = new ArrayList<ChildNumber>(coin.getPath());
- 		// account
- 		ChildNumber account = new ChildNumber(accountIndex,false);
-  	    p.add(account);
-  	    // address type
-  	    ChildNumber addressType = new ChildNumber(type.getNumber(),false); // TODO - also savings addresses
-  	    p.add(addressType);
-  	    // address
-  	    ChildNumber ind = new ChildNumber(addressKey,false);
- 	    
- 	    DeterministicKey ret = temp.deriveChild(p, false, true, ind);	    
- 		return ret;
+ 		
+ 		//path
+ 		DeterministicKey addressType = this.generatePathUntilAccountsAddress(seed, accountIdx, type);
+     	//address
+     	ChildNumber addressIndex = new ChildNumber(addressKey, false); // is not harden
+     	DeterministicKey address = HDKey.deriveChildKey(addressType, addressIndex);
+ 		 
+ 		return address;
  	}
  	
- 	public DeterministicKey getPubKeyFromAccount(int accountIndex, HierarchyAddressTypes type, ChildNumber addressKey) throws KeyIndexOutOfRangeException{
- 		return getPubKeyFromAccount(accountIndex, type, addressKey.num());
- 	}
- 	public DeterministicKey getPubKeyFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws KeyIndexOutOfRangeException{
+ 	public DeterministicKey getPubKeyFromAccount(int accountIndex, 
+ 			HierarchyAddressTypes type, 
+ 			int addressKey,
+ 			ATAccountAddressHierarchy H) throws KeyIndexOutOfRangeException{
  		if(addressKey > Math.pow(2, 31)) throw new KeyIndexOutOfRangeException("Key index out of range");
- 		//root
- 		List<ChildNumber> p = new ArrayList<ChildNumber>(rootKey.getPath());
- 		// account
- 		ChildNumber account = new ChildNumber(accountIndex,false);
-  	    p.add(account);
-  	    // address type
-  	    ChildNumber addressType = new ChildNumber(type.getNumber(),false); // TODO - also savings addresses
-  	    p.add(addressType);
-  	    // address
+ 		
+ 		HDKeyDerivation HDKey = null;
+ 		
+ 		DeterministicKey addressTypeHDKey = HDKeyDerivation.createMasterPubKeyFromBytes(H.getHierarchyKey().toByteArray(), 
+ 				H.getHierarchyChaincode().toByteArray());
   	    ChildNumber ind = new ChildNumber(addressKey,false);
  	    
- 	    DeterministicKey ret = hierarchy.deriveChild(p, false, true, ind);	    
+ 	    DeterministicKey ret = HDKey.deriveChildKey(addressTypeHDKey, ind);	    
  		return ret;
  	}
  	
  	public void markAddressAsUsed(int accountIndex, int keyIndex, HierarchyAddressTypes type) throws NoAccountCouldBeFoundException{
  		getAccountTracker(accountIndex).setKeyAsUsed(keyIndex, type);
+ 	}
+ 	
+ 	public int whatIsTheNextAvailableAccountIndex() {
+ 		return nextAvailableAccount;
  	}
  	
  	public AccountTracker generateNewAccount(){
@@ -186,7 +145,51 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
 		calculateNextAvailableAccountIndex();
 		return at;
  	}
-	
+ 	
+ 	public void setKeyLookAhead(int value){
+		keyLookAhead = value;
+		for(AccountTracker a:accountTracker)
+		{
+			a.setKeylookahead(value);
+		}
+	}
+ 	
+ 	//###############################
+ 	//
+ 	//		Private
+ 	//
+ 	//###############################
+ 	
+ 	private void calculateNextAvailableAccountIndex(){
+ 		int highestAccountIdx = 0;
+ 		for(AccountTracker acc: accountTracker){
+ 			if(acc.getAccountIndex() > highestAccountIdx)
+ 				highestAccountIdx = acc.getAccountIndex();
+ 		}
+ 		
+ 		nextAvailableAccount = highestAccountIdx + 1;
+ 	}
+ 	
+ 	private DeterministicKey generatePathUntilAccountsAddress(byte[] seed, int accountIdx, HierarchyAddressTypes type) {
+ 		HDKeyDerivation HDKey = null;
+
+ 		DeterministicKey masterkey = HDKey.createMasterPrivateKey(seed);
+     	// purpose level
+     	ChildNumber purposeIndex = new ChildNumber(HierarchyPurpose.Bip43_VALUE, true); // is harden
+     	DeterministicKey purpose = HDKey.deriveChildKey(masterkey,purposeIndex);
+     	// coin level
+     	ChildNumber coinIndex = new ChildNumber(typeBitcoin.getNumber(), true); // is harden
+     	DeterministicKey coin = HDKey.deriveChildKey(purpose,coinIndex);
+ 		//account
+     	ChildNumber accountIndex = new ChildNumber(accountIdx, true); // is harden
+     	DeterministicKey account = HDKey.deriveChildKey(coin, accountIndex);
+     	//address type
+     	ChildNumber addressTypeIndex = new ChildNumber(type.getNumber(), false); // is not harden
+     	DeterministicKey addressType = HDKey.deriveChildKey(account, addressTypeIndex);
+     	
+     	return addressType;
+ 	}
+ 		
 	private AccountTracker getAccountTracker(int accountIndex) throws NoAccountCouldBeFoundException{
 		for(int i=0;i<this.accountTracker.size();i++){
 			/*ChildNumber[] x = accountsHeightsUsed.get(i);
@@ -201,44 +204,6 @@ import com.google.bitcoin.crypto.MnemonicException.MnemonicLengthException;
  		}
 		throw new NoAccountCouldBeFoundException("Could not find account");
  	}
-	
-	public void setKeyLookAhead(int value){
-		keyLookAhead = value;
-		for(AccountTracker a:accountTracker)
-		{
-			a.setKeylookahead(value);
-		}
-	}
- 	
- 	/**
- 	 * This method implements BIP39 to generate a 512 bit seed from 128 bit checksummed entropy. The seed and the
- 	 * mnemonic encoded entropy are saved to internal storage.
- 	 */
- 	/*public static byte[] generateMnemonicSeed(){
- 		//Generate 128 bits entropy.
-         SecureRandom secureRandom = null;
- 		try {
- 			secureRandom = SecureRandom.getInstance("SHA1PRNG");
- 		} catch (NoSuchAlgorithmException e) {
- 			e.printStackTrace();
- 		}
- 		byte[] bytes = new byte[16];
- 		secureRandom.nextBytes(bytes);
- 		MnemonicCode ms = null;
- 		try {
- 			ms = new MnemonicCode();
- 		} catch (IOException e) {
- 			e.printStackTrace();
- 		}
- 		List<String> mnemonic = null;
- 		try {
- 		mnemonic = ms.toMnemonic(bytes);
- 		} catch (MnemonicLengthException e) {
- 			e.printStackTrace();
- 		}
- 		byte[] seed = MnemonicCode.toSeed(mnemonic, "");	
- 		return seed;		
- 	}*/
  
 	public class AccountTracker{
 		private int accountIndex;

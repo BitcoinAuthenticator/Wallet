@@ -64,6 +64,7 @@ import authenticator.BASE;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
+import authenticator.crypto.CryptoUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation.BANetworkRequirement;
@@ -81,6 +82,7 @@ import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 
 public class OperationsFactory extends BASE{
 	
@@ -110,7 +112,8 @@ public class OperationsFactory extends BASE{
 			int timeout,
 			@Nullable Runnable animation,
 			@Nullable Runnable animationAfterPairing,
-			@Nullable PairingStageUpdater statusListener){
+			@Nullable PairingStageUpdater statusListener,
+			@Nullable BAPassword walletPW){
 		BAOperation op = new BAOperation(ATOperationType.Pairing);
 					op.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)	
 					.SetDescription("Pair Wallet With an Authenticator Device")
@@ -141,7 +144,8 @@ public class OperationsFactory extends BASE{
 									 listener,
 									 statusListener,
 									 animation, 
-									 animationAfterPairing); 
+									 animationAfterPairing,
+									 walletPW); 
 							 //Return to previous timeout
 							 ss.setSoTimeout(tempTimeout);
 						}
@@ -234,23 +238,8 @@ public class OperationsFactory extends BASE{
 						else{
 							//Decrypt the response
 							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
-						    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-						    cipher.init(Cipher.DECRYPT_MODE, secretkey);
-						    String message = EncodingUtils.bytesToHex(cipher.doFinal(authenticatorByteResponse));
-						    String sig = message.substring(0,message.length()-64);
-						    String HMAC = message.substring(message.length()-64,message.length());
-						    byte[] testsig = EncodingUtils.hexStringToByteArray(sig);
-						    byte[] hash = EncodingUtils.hexStringToByteArray(HMAC);
-						    //Calculate the HMAC of the message and verify it is valid
-						    Mac mac = Mac.getInstance("HmacSHA256");
-							mac.init(secretkey);
-							byte[] macbytes = mac.doFinal(testsig);
-							if (Arrays.equals(macbytes, hash)){
-								staticLooger.info("Received Response: " + EncodingUtils.bytesToHex(testsig));
-							}
-							else {
-								staticLooger.info("Message authentication code is invalid");
-							}
+							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
+							
 							//Break apart the signature array sent over from the authenticator
 							//String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = null;
@@ -290,10 +279,8 @@ public class OperationsFactory extends BASE{
 										AuthSigs,
 										po);
 								staticLooger.info("Signed Tx - " + EncodingUtils.getStringTransaction(tx));
-								walletDB config = Authenticator.getWalletOperation().configFile;
 								if (pendigReq.hasTxLabel() && pendigReq.hasTxDestinationDescription()){
-									try {config.writeNextSavedTxData(tx.getHashAsString(), pendigReq.getTxDestinationDescription(), pendigReq.getTxLabel());}
-									catch (IOException e) {e.printStackTrace();}
+									wallet.writeNextSavedTxData(tx.getHashAsString(), pendigReq.getTxDestinationDescription(), pendigReq.getTxLabel());
 								}
 								/**
 								 * Condition sending by is Test Mode
@@ -317,7 +304,7 @@ public class OperationsFactory extends BASE{
 						            });
 								}
 								else{
-									wallet.disconnectInputs(tx.getInputs());
+									//wallet.disconnectInputs(tx.getInputs());
 									Authenticator.fireOnAuthenticatorSigningResponse(tx, 
 											pairingID, 
 											pendigReq, 
@@ -341,7 +328,7 @@ public class OperationsFactory extends BASE{
 
 					@Override
 					public void OnExecutionError(OperationListener listenerUI, Exception e) { 
-						try { wallet.removePendingRequest(pendigReq); } catch (IOException e1) { e1.printStackTrace(); }
+						try { wallet.removePendingRequest(pendigReq); } catch (CannotRemovePendingRequestException e1) { e1.printStackTrace(); }
 						if(listenerUI != null)
 							listenerUI.onError(op, e, null);
 					}
@@ -437,10 +424,8 @@ public class OperationsFactory extends BASE{
 							throws Exception {
 						try{
 							Transaction signedTx = wallet.signStandardTxWithAddresses(tx, keys, WALLET_PW);
-							walletDB config = Authenticator.getWalletOperation().configFile;
 							if (!txLabel.isEmpty()){
-								try {config.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);}
-								catch (IOException e) {e.printStackTrace();}
+								wallet.writeNextSavedTxData(signedTx.getHashAsString(), to, txLabel);
 							}
 							if(signedTx == null){
 								listenerUI.onError(op, new ScriptException("Failed to sign Tx"), null);
@@ -466,7 +451,7 @@ public class OperationsFactory extends BASE{
 						            });
 								}
 								else{
-									wallet.disconnectInputs(tx.getInputs());
+									//wallet.disconnectInputs(tx.getInputs());
 									/**
 				                	 * No need for UI notification here, will be handled by AuthenticatorGeneralEvents#OnBalanceChanged
 				                	 */

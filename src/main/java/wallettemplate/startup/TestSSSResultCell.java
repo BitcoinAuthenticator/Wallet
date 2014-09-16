@@ -11,7 +11,6 @@ import com.google.bitcoin.core.Coin;
 import wallettemplate.Main;
 import wallettemplate.Main.OverlayUI;
 import authenticator.Utils.OneName.OneName;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;

@@ -11,8 +11,10 @@ import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
+import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
+import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.listeners.BAGeneralEventsAdapter;
@@ -24,9 +26,9 @@ import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswer
 import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
@@ -548,37 +550,66 @@ public class Controller  extends BaseUI{
 				  }
 				});
 		}
-    };
-    
-    public class ProgressBarUpdater extends DownloadListener {
-        @Override
-        protected void progress(double pct, int blocksSoFar, Date date) {
-        	Platform.runLater(new Runnable() { 
+		
+		@Override
+		public void onBlockchainDownloadChange(float progress) {
+			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
 				     lblStatus.setText("Synchronizing Blockchain");
 				  }
 				});
-            super.progress(pct, blocksSoFar, date);
-            Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
-        }
 
-        @Override
-        protected void doneDownload() {
-            super.doneDownload();
-            Platform.runLater(new Runnable(){
-				@Override
-				public void run() {
-					 readyToGoAnimation(1, null);
-				}
-	        });
-           
-        }
-    }
+            Platform.runLater(() -> syncProgress.setProgress(progress));
 
-    public ProgressBarUpdater progressBarUpdater() {
-        return new ProgressBarUpdater();
-    }
+            if(progress == 1.0f) {
+            	/**
+            	 * run an update of balances after we finished syncing
+            	 */
+            	Authenticator.getWalletOperation().updateBalaceNonBlocking(Authenticator.getWalletOperation().mWalletWrapper.trackedWallet, new Runnable(){
+    				@Override
+    				public void run() { 
+    					Platform.runLater(new Runnable(){
+    						@Override
+    						public void run() {
+    							 readyToGoAnimation(1, null);
+    						}
+    			        });
+    				}
+        		});
+				
+			}
+		}
+    };
+    
+//    public class ProgressBarUpdater extends DownloadListener {
+//        @Override
+//        protected void progress(double pct, int blocksSoFar, Date date) {
+//        	Platform.runLater(new Runnable() { 
+//				  @Override
+//				  public void run() {
+//				     lblStatus.setText("Synchronizing Blockchain");
+//				  }
+//				});
+//            super.progress(pct, blocksSoFar, date);
+//            Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
+//        }
+//
+//        @Override
+//        protected void doneDownload() {
+//            Platform.runLater(new Runnable(){
+//				@Override
+//				public void run() {
+//					 readyToGoAnimation(1, null);
+//				}
+//	        });
+//           
+//        }
+//    }
+//
+//    public ProgressBarUpdater progressBarUpdater() {
+//        return new ProgressBarUpdater();
+//    }
     
     public class TorListener implements TorInitializationListener {
 
@@ -614,39 +645,15 @@ public class Controller  extends BaseUI{
     	
     	@Override
         public void onPeerConnected(Peer peer, int peerCount) {
-    		if (peerCount>0 & peerCount<6){
-    			btnConnection1.setVisible(true);
-    			if (peerCount==1) {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peer"));}
-    			else {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peers"));}
-    			btnConnection2.setVisible(false);
-    			btnConnection3.setVisible(false);
-    			btnConnection0.setVisible(false);
-    		}
-    		if (peerCount>6 & peerCount<10){
-    			btnConnection1.setVisible(false);
-    			btnConnection2.setVisible(true);
-    			Tooltip.install(btnConnection2, new Tooltip("Connected to " + peerCount + " peers"));
-    			btnConnection3.setVisible(false);
-    			btnConnection0.setVisible(false);
-    		}
-    		if (peerCount>9){
-    			btnConnection1.setVisible(false);
-    			btnConnection2.setVisible(false);
-    			btnConnection3.setVisible(true);
-    			Tooltip.install(btnConnection3, new Tooltip("Connected to " + peerCount + " peers"));
-    			btnConnection0.setVisible(false);
-    		}
-    		if (peerCount==0){
-    			btnConnection1.setVisible(false);
-    			btnConnection2.setVisible(false);
-    			btnConnection3.setVisible(false);
-    			btnConnection0.setVisible(true);
-    			Tooltip.install(btnConnection0, new Tooltip("Not connected"));
-    		}
+    		setToolTip(peerCount);
         }
 
         @Override
         public void onPeerDisconnected(Peer peer, int peerCount) {
+        	setToolTip(peerCount);
+        }
+        
+        private void setToolTip(int peerCount) {
         	if (peerCount>0 & peerCount<6){
     			btnConnection1.setVisible(true);
     			if (peerCount==1) {Tooltip.install(btnConnection1, new Tooltip("Connected to " + peerCount + " peer"));}
@@ -993,8 +1000,15 @@ public class Controller  extends BaseUI{
 			    	OneName.downloadAvatarImage(one, Authenticator.getWalletOperation(), new OneNameAdapter() {
 						@Override
 						public void getOneNameAvatarImage(ConfigOneNameProfile one, Image img) {
-							if(img != null && one != null)
-								   setUserProfileAvatarAndName(img,one.getOnenameFormatted());
+							if(img != null && one != null) {
+								Platform.runLater(new Runnable() { 
+									  @Override
+									  public void run() {
+										  setUserProfileAvatarAndName(img,one.getOnenameFormatted());
+									  }
+								});
+							}
+								   
 						}
 					});
 			    }
@@ -1426,13 +1440,14 @@ public class Controller  extends BaseUI{
             @Override
             public void handle(MouseEvent t) {
             	try {
-            		if(locked)
+            		if(locked) {
                 		if(!checkIfPasswordDecryptsWallet(new BAPassword(password.getText()))){
                 			informationalAlert("Unfortunately, you messed up.",
                 					"Wrong password");
                     		return;
                 		}
-            		Main.UI_ONLY_WALLET_PW.setPassword(password.getText());
+                		Main.UI_ONLY_WALLET_PW.setPassword(password.getText());
+            		}
             		
         			Animation ani = GuiUtils.fadeOut(v);
         			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
@@ -1521,7 +1536,7 @@ public class Controller  extends BaseUI{
 		});
     }
     	
-    public boolean broadcast (Transaction tx, String to, @Nullable BAPassword WALLET_PW) throws NoSuchAlgorithmException, AddressWasNotFoundException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AccountWasNotFoundException {
+    public boolean broadcast (Transaction tx, String to, @Nullable BAPassword WALLET_PW) throws CannotGetAddressException {
     	return SendTxHelper.broadcastTx(tx, 
     			txMsgLabel.getText(), 
     			to,
@@ -2001,7 +2016,7 @@ public class Controller  extends BaseUI{
    	//
    	//#####################################
     
-    public void setTxPaneHistory() throws NoSuchAlgorithmException, JSONException, AddressFormatException, KeyIndexOutOfRangeException, AddressNotWatchedByWalletException, AccountWasNotFoundException{
+    public void setTxPaneHistory() {
     	LOG.info("Updating Tx pane");
     	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription).execute();
     }

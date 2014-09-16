@@ -9,5 +9,5 @@ public interface OperationListener {
 	public void onBegin(BAOperation operation, String str);
 	public void statusReport(BAOperation operation, String report);
 	public void onFinished(BAOperation operation, String str);
-	public void onError(BAOperation operation, @Nullable Exception e, @Nullable Throwable t);
+	public void onError(@Nullable BAOperation operation, @Nullable Exception e, @Nullable Throwable t);
 }

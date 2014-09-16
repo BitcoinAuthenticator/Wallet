@@ -32,7 +32,7 @@ public class BaseUI {
 		arrParams = param;
 	}
 	
-	public void updateUIBecauseForParams(){
+	public void updateUIForParams(){
 		
 	}
 	

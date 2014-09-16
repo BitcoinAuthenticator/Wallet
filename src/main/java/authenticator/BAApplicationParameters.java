@@ -1,5 +1,7 @@
 package authenticator;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +24,10 @@ public class BAApplicationParameters{
 	
 	String APP_NAME = "AuthenticatorWallet";
 	
-	public BAApplicationParameters(Map<String, String> params, List<String> raw){
+	OS_TYPE osType;
+	String APPLICATION_DATA_FOLDER ;
+	
+	public BAApplicationParameters(Map<String, String> params, List<String> raw) throws WrongOperatingSystemException{
 		InitializeApplicationFlags(params, raw);
 	}
 	
@@ -30,8 +35,9 @@ public class BAApplicationParameters{
 	 * 
 	 * @param params
 	 * @return True: if should continue with UI and Application load. False: if not, for any reason.. for example if user asked only --help
+	 * @throws WrongOperatingSystemException 
 	 */
-	public void InitializeApplicationFlags(Map<String, String> params, List<String> raw){
+	public void InitializeApplicationFlags(Map<String, String> params, List<String> raw) throws WrongOperatingSystemException{
 		boolean returnValue = true;
 		// Help
 		if(params.containsKey("help") || raw.contains("-help") || raw.contains("--help")){
@@ -88,6 +94,24 @@ public class BAApplicationParameters{
 		}
 		else
 			setAppName(APP_NAME);
+		
+		//Application data folder
+		osType =  OS_TYPE.operationSystemFromString(System.getProperty("os.name"));
+		String tmp = System.getProperty("user.home");
+		switch(osType) {
+		case WINDOWS:
+			tmp += "";
+			break;
+		case LINUX:
+			tmp += "";
+			break;
+		case OSX:
+			tmp += "/Library/Application Support/";
+			break;
+		}
+		
+		setApplicationDataFolderPath(tmp);
+		setAllNecessaryApplicationDataSubFolders();
 		
 		shouldLaunchProgram = returnValue;
 	}
@@ -156,6 +180,42 @@ public class BAApplicationParameters{
 	
 	public boolean getShouldLaunchProgram(){ return shouldLaunchProgram; }
 	
+	/**
+	 * Without the application folder itself, just the path
+	 * @param value
+	 */
+	public String getApplicationDataFolderPath(){
+		return this.APPLICATION_DATA_FOLDER;
+	}
+	/**
+	 * The full application's data folder 
+	 * With an '/'
+	 * @return
+	 */
+	public String getApplicationDataFolderAbsolutePath(){
+		return this.getApplicationDataFolderPath() + APP_NAME + "/";
+	}
+	/**
+	 * Without the folder itself
+	 * @param value
+	 */
+	public void setApplicationDataFolderPath(String value){
+		APPLICATION_DATA_FOLDER = value;
+	}
+	private void setAllNecessaryApplicationDataSubFolders() {
+		// check the app folder exists 
+		File f1 = new File(getApplicationDataFolderAbsolutePath());
+		if (!(f1.exists() && f1.isDirectory())) {
+		   f1.mkdir();
+		}
+		
+		// check cached_resources exists
+		File f2 = new File(getApplicationDataFolderAbsolutePath() + "cached_resources");
+		if (!(f2.exists() && f2.isDirectory())) {
+		   f2.mkdir();
+		}
+	}
+	
 	public enum NetworkType{
 		TEST_NET (0),
 		MAIN_NET (1);
@@ -181,5 +241,46 @@ public class BAApplicationParameters{
 				return MAIN_NET;
 	    	}
 	    }
+	}
+	
+	public enum OS_TYPE {
+		WINDOWS,
+		LINUX,
+		OSX;
+		
+		public static OS_TYPE operationSystemFromString(String OS) throws WrongOperatingSystemException {
+			if(isWindows(OS))
+				return OS_TYPE.WINDOWS;
+			if(isLinux(OS))
+				return OS_TYPE.LINUX;
+			if(isMac(OS))
+				return OS_TYPE.OSX;
+			throw new WrongOperatingSystemException();
+			
+		}
+		
+		public static boolean isWindows(String OS) {
+			 
+			return (OS.indexOf("win") >= 0 || OS.indexOf("Win") >= 0);
+	 
+		}
+	 
+		public static boolean isMac(String OS) {
+	 
+			return (OS.indexOf("mac") >= 0 || OS.indexOf("Mac") >= 0);
+	 
+		}
+	 
+		public static boolean isLinux(String OS) {
+	 
+			return (OS.indexOf("linux") >= 0 || OS.indexOf("Linux") >= 0);
+	 
+		}
+	}
+	
+	public static class WrongOperatingSystemException extends Exception {
+		public WrongOperatingSystemException() {
+			super();
+		}
 	}
 }

@@ -3,16 +3,20 @@ package wallettemplate;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.BAApplicationParameters.WrongOperatingSystemException;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
 import authenticator.network.TCPListener;
+import authenticator.network.TrustedPeerNodes;
 import authenticator.operations.BAOperation;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.walletCore.BAPassword;
+import authenticator.walletCore.WalletOperation;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.PeerAddress;
 import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
@@ -44,7 +48,10 @@ import wallettemplate.utils.TextFieldValidator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -74,54 +81,56 @@ public class Main extends BAApplication {
 	 public static BAPassword UI_ONLY_WALLET_PW;
 
     @Override
-    public void start(Stage mainWindow) throws Exception {
+    public void start(Stage mainWindow) {
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
         
         UI_ONLY_WALLET_PW = new BAPassword();
         
-        if(super.BAInit())
+        
 	        try {
-	            init(mainWindow);
-	        } catch (Throwable t) {
+	        	if(super.BAInit())
+	            	init(mainWindow);
+	        	else
+	            	Runtime.getRuntime().exit(0);
+	        } catch (Exception t) {
 	            // Nicer message for the case where the block store file is locked.
-	            if (Throwables.getRootCause(t) instanceof BlockStoreException) {
+	            if (t instanceof BlockStoreException) {
 	                GuiUtils.informationalAlert("Already running", "This application is already running and cannot be started twice.");
-	            } else {
-	                throw t;
-	            }
+	            } 
+	            
+	            // in case couldnt find the right OS
+	            else if(t instanceof WrongOperatingSystemException)
+	            	GuiUtils.informationalAlert("Error", "Could not find an appropriate OS");
+	            
+	            else 
+	            	Runtime.getRuntime().exit(0);
 	        }
-        else
-        	Runtime.getRuntime().exit(0);
     }
 
     @SuppressWarnings("restriction")
-	private void init(Stage mainWindow) throws Exception {
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            //AquaFx.style();
-        }
-              
-        // Load the GUI. The Controller class will be automagically created and wired up.
-        mainWindow.initStyle(StageStyle.UNDECORATED);
-        URL location = getClass().getResource("gui.fxml");
-        FXMLLoader loader = new FXMLLoader(location);
-		mainUI = (AnchorPane) loader.load();
-        controller = loader.getController();
-        // Configure the window with a StackPane so we can overlay things on top of the main UI.
-        uiStack = new StackPane(mainUI);
-        mainWindow.setTitle(BAApplication.ApplicationParams.getAppName());
-        final Scene scene = new Scene(uiStack, 850, 483);
-        final String file = TextFieldValidator.class.getResource("GUI.css").toString();
-        scene.getStylesheets().add(file);  // Add CSS that we need.
-        mainWindow.setScene(scene);
-        stage = mainWindow;
-        
-        String filePath1 = new java.io.File( "." ).getCanonicalPath() + "/" + ApplicationParams.getAppName() + ".wallet";
-        File f1 = new File(filePath1);
-        if(!f1.exists()) { 
-        	Parent root;
-            try {
+	private void init(Stage mainWindow) {
+    	try {
+    		// Load the GUI. The Controller class will be automagically created and wired up.
+            mainWindow.initStyle(StageStyle.UNDECORATED);
+            URL location = getClass().getResource("gui.fxml");
+            FXMLLoader loader = new FXMLLoader(location);
+    		mainUI = (AnchorPane) loader.load();
+            controller = loader.getController();
+            // Configure the window with a StackPane so we can overlay things on top of the main UI.
+            uiStack = new StackPane(mainUI);
+            mainWindow.setTitle(BAApplication.ApplicationParams.getAppName());
+            final Scene scene = new Scene(uiStack, 850, 483);
+            final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+            scene.getStylesheets().add(file);  // Add CSS that we need.
+            mainWindow.setScene(scene);
+            stage = mainWindow;
+            
+            String filePath1 = ApplicationParams.getApplicationDataFolderAbsolutePath() + ApplicationParams.getAppName() + ".wallet";
+            File f1 = new File(filePath1);
+            if(!f1.exists()) { 
+            	Parent root;
             	StartupController.appParams = ApplicationParams;
                 root = FXMLLoader.load(Main.class.getResource("/wallettemplate/startup/walletstartup.fxml"));
                 startup = new Stage();
@@ -132,12 +141,17 @@ public class Main extends BAApplication {
                 scene1.getStylesheets().add(file1);  // Add CSS that we need.
                 startup.setScene(scene1);
                 startup.show();
-            } catch (IOException e) {e.printStackTrace();}
-        } else {finishLoading();}
+            } else {finishLoading();}
+        } 
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		throw new CouldNotIinitializeWalletException("Could Not initialize wallet"); 
+    	}
     }
     
     @SuppressWarnings("restriction")
-	public static void finishLoading() throws IOException, AccountWasNotFoundException{
+	public static void finishLoading(){
+    	boolean isStartingForTheFirstTime = returnedParamsFromSetup == null? false: true;;
     	/**
     	 * If we get returned params from startup, use that
     	 */
@@ -154,44 +168,51 @@ public class Main extends BAApplication {
         NetworkParameters np = null;
         if(params.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();
-        	bitcoin = new WalletAppKit(np, new File("."), params.getAppName());
-            // Checkpoints are block headers that ship inside our app: for a new user, we pick the last header
-            // in the checkpoints file and then download the rest from the network. It makes things much faster.
-            // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
-            // last months worth or more (takes a few seconds).
-            bitcoin.setCheckpoints(Main.class.getResourceAsStream("checkpoints"));
+        	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
+        	
+        	if(isStartingForTheFirstTime) {
+				bitcoin.setPeerNodes(TrustedPeerNodes.MAIN_NET());
+				System.out.println("Downloading blockchain for the first time using known trusted and fast nodes");
+        	}
+        	
+        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints");
+        	if(inCheckpint == null)
+        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
+            bitcoin.setCheckpoints(inCheckpint);
             // As an example!
             bitcoin.useTor();
         }
         else if(params.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
-        	bitcoin = new WalletAppKit(np, new File("."), params.getAppName());
+        	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
+        	
+        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
+        	if(inCheckpint == null)
+        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
+            bitcoin.setCheckpoints(inCheckpint);
+            
         	bitcoin.useTor();
         }
 
-        // Now configure and start the appkit. This will take a second or two - we could show a temporary splash screen
-        // or progress widget to keep the user engaged whilst we initialise, but we don't.
+        
+        bitcoin.setDownloadListener(new WalletOperation().getDownloadEvenListener());
         bitcoin.setAutoSave(true);
-        bitcoin.setDownloadListener(controller.progressBarUpdater())
-               .setBlockingStartup(false)
+        bitcoin.setBlockingStartup(false)
                .setUserAgent(params.getAppName(), "1.0");
-        bitcoin.startAsync();
+    	bitcoin.startAsync();
         bitcoin.awaitRunning();
-        // Don't make the user wait for confirmations for now, as the intention is they're sending it their own money!
+
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         bitcoin.wallet().setKeychainLookaheadSize(0);
-        
         System.out.println(bitcoin.wallet());
-        
         controller.onBitcoinSetup();
+        
         
         /**
          * Authenticator Operation Setup
          */
-        
-        walletDB config = new walletDB(BAApplication.ApplicationParams.getAppName());
-    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params, config.getHierarchyPubKey());
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params);
     	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
     		@Override
     		public BAPassword getWalletPassword() {
@@ -210,9 +231,18 @@ public class Main extends BAApplication {
     			 });
     		}
     	});
+    	
+    	/*
+    	 * Start bitcoin and authenticator
+    	 */
+        
     	auth.startAsync();
     	controller.onAuthenticatorSetup();
     
+    	
+    	/*
+    	 * stage close event
+    	 */
     	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
     		@SuppressWarnings("static-access")
 			@Override
@@ -372,6 +402,12 @@ public class Main extends BAApplication {
     @Override
     public void stop() throws Exception {
       
+    }
+    
+    private static class CouldNotIinitializeWalletException extends RuntimeException {
+    	public CouldNotIinitializeWalletException(String msg) {
+    		super(msg);
+    	}
     }
 
     @SuppressWarnings("restriction")

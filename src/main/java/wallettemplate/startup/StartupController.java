@@ -62,9 +62,12 @@ import authenticator.operations.OperationsUtils.PaperWalletQR;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
 import authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
 import authenticator.operations.listeners.OperationListenerAdapter;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
+import authenticator.walletCore.exceptions.NoWalletPasswordException;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
@@ -208,6 +211,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane BA3;
 	@FXML private Pane BA4;
 	@FXML private Hyperlink hlFinished;
+	@FXML private Label lblLoadginQR;
 	@FXML private ImageView imgSSS;
 	@FXML private Button btnSSS;
 	@FXML private ProgressBar syncProgress;
@@ -556,13 +560,15 @@ public class StartupController  extends BaseUI{
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
 		 
+		 hlFinished.setDisable(true);
+		 
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
 		 auth.addListener(new Service.Listener() {
 				@Override public void running() {
 					Platform.runLater(new Runnable() { 
 						  @Override
-						  public void run() {
+						  public void run() {							  
 							//prepare pairing
 							 playPairingOperation(firstAccountName, 
 									 auth.getApplicationParams().getBitcoinNetworkType(), 
@@ -597,13 +603,12 @@ public class StartupController  extends BaseUI{
 				public void run() {
 					// set image 
 					File file;
-					try {
-						file = new File(new java.io.File( "." ).getCanonicalPath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
-						Image img = new Image(file.toURI().toString());
-						Platform.runLater(() -> {
-							ivFirstAccountPairingQR.setImage(img);
-						});
-					} catch (IOException e) { e.printStackTrace(); }
+					file = new File(appParams.getApplicationDataFolderAbsolutePath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
+					Image img = new Image(file.toURI().toString());
+					Platform.runLater(() -> {
+						ivFirstAccountPairingQR.setImage(img);
+						hlFinished.setDisable(false);
+					});
 				}
 			  };
 	 }
@@ -620,7 +625,7 @@ public class StartupController  extends BaseUI{
 				try {
 					auth.Net().INTERRUPT_CURRENT_OUTBOUND_OPERATION();
 					createNewStandardAccount(firstAccountName);
-				} catch (IOException | AccountWasNotFoundException e1) { e1.printStackTrace(); }
+				} catch (IOException | AccountWasNotFoundException | NoWalletPasswordException e1) { e1.printStackTrace(); }
 			 else
 			 {
 				 // do nothing
@@ -636,9 +641,7 @@ public class StartupController  extends BaseUI{
 							Main.stage.show();
 							if(encryptionPassword != null && encryptionPassword.length() > 0)
 								wallet.encrypt(encryptionPassword);
-							try {
-								Main.finishLoading();
-							} catch (IOException | AccountWasNotFoundException e) { e.printStackTrace(); }
+							Main.finishLoading();
 					 });
 		         }
 			}, MoreExecutors.sameThreadExecutor());
@@ -674,6 +677,8 @@ public class StartupController  extends BaseUI{
 			 lblScan.setVisible(true);
 			 hlFinished.setVisible(true);
 			 btnPlayStore.setVisible(false);
+			 btnBack5.setDisable(true);
+			 lblLoadginQR.setVisible(true);
 		 } 
 	 }
 	 
@@ -1212,10 +1217,19 @@ public class StartupController  extends BaseUI{
 				
 				try {
 					if(type == WalletAccountType.StandardAccount){
+						ATAccountAddressHierarchy ext = auth.getWalletOperation().getAccountAddressHierarchy(acc.accountAccountID, 
+								HierarchyAddressTypes.External, 
+								null);
+				 		ATAccountAddressHierarchy intr = auth.getWalletOperation().getAccountAddressHierarchy(acc.accountAccountID, 
+				 				HierarchyAddressTypes.Internal, 
+				 				null);
+						
 						ATAccount newAcc = auth.getWalletOperation().completeAccountObject(appParams.getBitcoinNetworkType(),
 								acc.accountAccountID, 
 								acc.accountName, 
-								WalletAccountType.StandardAccount);
+								WalletAccountType.StandardAccount,
+								ext,
+								intr);
 						auth.getWalletOperation().addNewAccountToConfigAndHierarchy(newAcc);
 					}
 					else
@@ -1227,7 +1241,7 @@ public class StartupController  extends BaseUI{
 					if(restoreAccountsScrllContent.getCount() == 1)
 						auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
 					
-				} catch (IOException | AccountWasNotFoundException e) {
+				} catch (IOException | AccountWasNotFoundException | NoWalletPasswordException e) {
 					e.printStackTrace();
 				}
 			}
@@ -1243,7 +1257,6 @@ public class StartupController  extends BaseUI{
 		 node.setVisible(false);
 		 previousNode = node;
 		 LoadingPane.setVisible(true);
-		 auth.startAsync();
 		 auth.addListener(new Service.Listener() {
 				@Override public void running() {
 					Platform.runLater(new Runnable() { 
@@ -1255,6 +1268,7 @@ public class StartupController  extends BaseUI{
 					});
 		         }
 			}, MoreExecutors.sameThreadExecutor());
+		 auth.startAsync();
 	 }
 	 
 	 public static interface AddAccountListener{
@@ -1348,7 +1362,7 @@ public class StartupController  extends BaseUI{
 	 //##############################
 	 
 	 private void createWallet(@Nullable DeterministicSeed seed) throws IOException{
-		 String filePath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
+		 String filePath = appParams.getApplicationDataFolderAbsolutePath() + appParams.getAppName() + ".wallet";
 		 File f = new File(filePath);
 		 assert(f.exists() == false);
 		 if(seed == null){
@@ -1384,7 +1398,8 @@ public class StartupController  extends BaseUI{
     			0,
     			animDisplay, 
     			null,
-    			stageListener);
+    			stageListener,
+    			null);
 		
 		boolean result = auth.addOperation(op);
     	if(!result){
@@ -1396,8 +1411,8 @@ public class StartupController  extends BaseUI{
     	}
 	}
 	 
-	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException{
-		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName);
+	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException, NoWalletPasswordException{
+		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName, null);
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }
 	 

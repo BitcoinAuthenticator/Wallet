@@ -1,5 +1,7 @@
 package wallettemplate;
 
+import static wallettemplate.utils.GuiUtils.informationalAlert;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -82,7 +84,7 @@ public class PairWallet extends BaseUI{
     
     @SuppressWarnings("restriction")
 	@Override
-    public void updateUIBecauseForParams(){
+    public void updateUIForParams(){
     	if(hasParameters()){
         	textfield.setText(arrParams.get(0).toString());
         	textfield.setEditable(false);
@@ -140,6 +142,12 @@ public class PairWallet extends BaseUI{
     
     private void runPairing(String pairName, @Nullable Integer accountID) throws IOException
     {    	    	
+    	if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
+    		informationalAlert("The wallet is locked",
+					"Please unlock the wallet to continue");
+    		return ;
+    	}
+    	
     	BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			accountID,
@@ -155,7 +163,8 @@ public class PairWallet extends BaseUI{
 
 					@Override
 					public void pairingData(PairedAuthenticator data) { }
-    			}).SetOperationUIUpdate(opListener);
+    			},
+    			Main.UI_ONLY_WALLET_PW).SetOperationUIUpdate(opListener);
     	
     	boolean result = Authenticator.addOperation(op);
     	if(!result){
@@ -285,11 +294,10 @@ public class PairWallet extends BaseUI{
 				    	  move.play();
 							//
 							File file;
-							try {
-								file = new File(new java.io.File( "." ).getCanonicalPath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
-								Image img = new Image(file.toURI().toString());
-								imgViewQR.setImage(img);
-							} catch (IOException e) { e.printStackTrace();}
+							file = new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath() + 
+									PairingQRCode.QR_IMAGE_RELATIVE_PATH);
+							Image img = new Image(file.toURI().toString());
+							imgViewQR.setImage(img);
 							lblScan.setVisible(true);
 				      }
 				});
@@ -313,6 +321,10 @@ public class PairWallet extends BaseUI{
 				    	  imgViewQR.setImage(null);
 				    	  pairPane.setVisible(true);
 				    	  qrPane.setVisible(false);
+				    	  
+				    	  runBtn.setDisable(true);
+				    	  btnBack.setDisable(true);
+				    	  cancelBtn.setText("Done");
 				      }
 				});
 			}

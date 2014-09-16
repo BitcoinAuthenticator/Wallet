@@ -23,7 +23,6 @@ import wallettemplate.startup.StartupController.AddedAccountObject;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.TextFieldValidator;
 import authenticator.Utils.OneName.OneName;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -81,7 +80,7 @@ public class AddAccountWindow extends BaseUI{
 				}
 				catch (Exception e){ }
 				controller.setParams(param);
-				controller.updateUIBecauseForParams();
+				controller.updateUIForParams();
 			}
 			final String file = TextFieldValidator.class.getResource("GUI.css").toString();
 	        scene.getStylesheets().add(file); 
@@ -146,8 +145,8 @@ public class AddAccountWindow extends BaseUI{
     Stage pairWindow = null;
     @FXML protected void pair(ActionEvent event){
     	pairWindow = loadFXML(pairWindow, 
-    			getViewURL("/wallettemplate/pairing/pair_wallet.fxml"), 
-    			510, 333, 
+    			getViewURL("/wallettemplate/pairing/BAApp.fxml"), 
+    			850, 484, 
     			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
     			new PairingWalletControllerListener(){
 					@Override

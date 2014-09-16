@@ -28,14 +28,16 @@ import org.json.JSONException;
 
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
+import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.BASE;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
+import authenticator.network.TrustedPeerNodes;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
@@ -125,7 +127,7 @@ public class BAWalletRestorer extends BASE{
      *	Flags
      */
     boolean useTor = false;
-    boolean usePreselectedAddresses = false;
+    boolean usePreselectedAddresses = true;
     
 	public BAWalletRestorer(Authenticator auth,WalletRestoreListener l) {      
 		super (BAWalletRestorer.class);
@@ -136,26 +138,14 @@ public class BAWalletRestorer extends BASE{
 		mainThread = new Thread(){
 			@Override
 			public void run() {
-				directory = new File(".");
+				directory = new File(auth.getApplicationParams().getApplicationDataFolderAbsolutePath());
 
 				netParams = vAuthenticator.getWalletOperation().getNetworkParams();
 		        
 		        if(usePreselectedAddresses)
 		        {
-		        	try {
-		        		peerAddresses = new PeerAddress[]{
-		                		new PeerAddress(InetAddress.getByName("riker.plan99.net")),
-		                		// IPV6
-		                		new PeerAddress(InetAddress.getByName("InductiveSoul.US")),
-		                		new PeerAddress(InetAddress.getByName("caffeinator.net")),
-		                		new PeerAddress(InetAddress.getByName("messier.bzfx.net")),
-		                		// IPV4
-		                		new PeerAddress(InetAddress.getByName("bitcoin.coinprism.com")),
-		                		new PeerAddress(InetAddress.getByName("btcnode1.evolyn.net")),
-		                		new PeerAddress(InetAddress.getByName("InductiveSoul.US")),
-		                	};
-					} catch (UnknownHostException e) {
-						e.printStackTrace();
+		        	if(auth.getApplicationParams().getBitcoinNetworkType() != NetworkType.TEST_NET) {
+						peerAddresses = TrustedPeerNodes.MAIN_NET();
 					}
 		        }
 		        try {
@@ -170,6 +160,7 @@ public class BAWalletRestorer extends BASE{
 		        	
 		        	//this.toString());
 		        				
+		        	System.out.println(toString());
 				} catch (Exception e) { e.printStackTrace(); }
 			}
 		};
@@ -252,7 +243,7 @@ public class BAWalletRestorer extends BASE{
                 vPeerGroup.addPeerDiscovery(new DnsDiscovery(netParams));
             }
 	        
-	        vWalletFile = new File(directory, vBAApplicationParameters.getAppName() + ".wallet");
+	        vWalletFile = new File(directory + vBAApplicationParameters.getAppName() + ".wallet");
 	        if(!vWalletFile.exists())
 	        	vWallet.saveToFile(vWalletFile);
 	    	        
@@ -380,43 +371,6 @@ public class BAWalletRestorer extends BASE{
     }
     
     private void disposeOfRestorer(boolean blocking){
-    	/*if(!blocking){
-    		vPeerGroup.stopAsync();
-            vPeerGroup.addListener(new Service.Listener(){
-            	@Override public void terminated(State from) {
-            		try {
-            	    	vWallet.saveToFile(vWalletFile);
-            	        vStore.close();
-
-            	        vPeerGroup = null;
-            	        vWallet = null;
-            	        vStore = null;
-            	        vChain = null;
-            	        notifyStopped();
-                    }catch (IOException | BlockStoreException e) {
-            			e.printStackTrace();
-            			notifyStopped();
-            		}
-            	}
-            }, MoreExecutors.sameThreadExecutor());
-    	}
-    	else{
-    		vPeerGroup.stopAsync();
-    		vPeerGroup.awaitTerminated();
-    		try {
-    	    	vWallet.saveToFile(vWalletFile);
-    	        vStore.close();
-
-    	        vPeerGroup = null;
-    	        vWallet = null;
-    	        vStore = null;
-    	        vChain = null;
-    	        notifyStopped();
-            }catch (IOException | BlockStoreException e) {
-    			e.printStackTrace();
-    			notifyStopped();
-    		}
-    	}*/
     	
     	try {
     		vPeerGroup.stopAsync();

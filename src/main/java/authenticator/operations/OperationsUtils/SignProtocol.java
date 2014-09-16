@@ -23,6 +23,7 @@ import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.EncodingUtils;
 import authenticator.walletCore.exceptions.UnableToCompleteTxSigningException;
+import authenticator.crypto.CryptoUtils;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
@@ -35,6 +36,7 @@ import authenticator.walletCore.WalletOperation;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -88,27 +90,8 @@ public class SignProtocol {
 						;
 		byte[] jsonBytes = signMsgPayload.serializeToBytes();
 		
-		Mac mac = Mac.getInstance("HmacSHA256");
 		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
-		mac.init(secretkey);
-		byte[] macbytes = mac.doFinal(jsonBytes);
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-		outputStream.write(jsonBytes);
-		outputStream.write(macbytes);
-		byte payload[] = outputStream.toByteArray( );
-		
-		//Encrypt the payload
-		Cipher cipher = null;
-		try {cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");} 
-		catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
-		catch (NoSuchPaddingException e) {e.printStackTrace();}
-		try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
-		catch (InvalidKeyException e) {e.printStackTrace();}
-		byte[] cipherBytes = null;
-		try {cipherBytes = cipher.doFinal(payload);} 
-		catch (IllegalBlockSizeException e) {e.printStackTrace();} 
-		catch (BadPaddingException e) {e.printStackTrace();}
-		return cipherBytes;
+		return CryptoUtils.encryptPayloadWithChecksum(jsonBytes, secretkey);
 	}
 
 	/**
@@ -132,24 +115,20 @@ public class SignProtocol {
 			byte[] key = EncodingUtils.hexStringToByteArray(po.getMasterPublicKey());
 			byte[] chain = EncodingUtils.hexStringToByteArray(po.getChainCode());
 			
-			// we rebuild the Tx from a raw string so we need to reconnect the inputs
-			wallet.connectInputs(tx.getInputs());
-			
 			//Loop to create a signature for each input
 			int i = 0;							
-			for(TransactionInput in: tx.getInputs()){
-				TransactionOutput out = in.getConnectedOutput();
+			for(TransactionInput in: tx.getInputs())  {
+				// We search the TransactionOutput because we build the Tx from raw hex data, not parent Tx is set.
+				TransactionOutPoint txOp = in.getOutpoint();
+				TransactionOutput out = wallet.findTransactionOutpointByHash(txOp.getHash().toString(), txOp.getIndex()); 
 				if(out == null)
 					throw new UnableToCompleteTxSigningException("Cannot find corresponding transaction outout for input:\n " + in.toString());
+				
 				String inAddress = out.getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 				ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
 				//Authenticator Key
 				ECKey authKey = wallet.getPairedAuthenticatorKey(po, atAdd.getKeyIndex());
 				
-				//Wallet key
-				if (Authenticator.getWalletOperation().isWalletEncrypted()){
-					//Display dialog asking user to input password
-				}
 				ECKey walletKey = wallet.getPrivECKeyFromAccount(atAdd.getAccountIndex(),
 																					atAdd.getType(),
 																					atAdd.getKeyIndex(),
@@ -159,7 +138,6 @@ public class SignProtocol {
 				// Create Program for the script
 				List<ECKey> keys = ImmutableList.of(authKey, walletKey);
 				Script scriptpubkey = ScriptBuilder.createMultiSigOutputScript(2,keys);
-				//byte[] program = scriptpubkey.getProgram();
 				
 				//Create P2SH
 				// IMPORTANT - AuthSigs and the signiture we create here should refer to the same input !!
@@ -167,28 +145,14 @@ public class SignProtocol {
 				TransactionSignature sig2 = tx.calculateSignature(i, walletKey, scriptpubkey, Transaction.SigHash.ALL, false);
 				List<TransactionSignature> sigs = ImmutableList.of(sig1, sig2);
 				Script inputScript = ScriptBuilder.createP2SHMultiSigInputScript(sigs, scriptpubkey);
-				
-				//TransactionInput input = inputs.get(i);
-				//input.setScriptSig(inputScript);
+
 				in.setScriptSig(inputScript);
 				
-				//check signature
-				/*try{
-					in.getScriptSig().correctlySpends(tx, i, scriptpubkey, true);
-				} catch (ScriptException e) {
-					// disconnect input to not get the wallet to crash on startup
-					// Caused by bitcoinj WalletProtobufSerializer.java:585
-					// Exception: UnreadableWalletException
-					Authenticator.getWalletOperation().disconnectInputs(tx.getInputs());
-		            throw e;
-		        }*/
-			
-				//break;
 				i++;
 			}
 		}
 		catch (Exception e){
-			wallet.disconnectInputs(tx.getInputs());
+			//wallet.disconnectInputs(tx.getInputs());
 			e.printStackTrace();
 			throw new UnableToCompleteTxSigningException("Unable to finish transaction signing");
 		}

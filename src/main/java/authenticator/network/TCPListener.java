@@ -39,12 +39,13 @@ import authenticator.operations.exceptions.BAOperationNetworkRequirementsNotAvai
 import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.operations.OperationsFactory;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 
 /**
  * <b>The heart of the wallet operation.</b><br>
@@ -297,10 +298,14 @@ public class TCPListener extends BASE{
 							//
 							if(pendingReq == null){
 								SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
-								CannotProcessRequestPayload p = new CannotProcessRequestPayload(secretkey);
+								CannotProcessRequestPayload p = new CannotProcessRequestPayload("Cannot find pending request\nPlease resend operation",
+										secretkey);
 								outStream.writeInt(p.getPayloadSize());
 								outStream.write(p.toEncryptedBytes());
 								logAsInfo("No Pending Request Found, aborting inbound operation");
+								
+								if(longLivingOperationsListener != null)
+									longLivingOperationsListener.onError(null, new Exception("Authenticator tried to complete a pending request but the request was not found, please try again"), null);
 							}
 							else{
 								// Should we send something on connection ? 
@@ -354,7 +359,11 @@ public class TCPListener extends BASE{
 					}
 					catch(Exception e){
 						if(pendingReq != null)
-							wallet.removePendingRequest(pendingReq);
+							try {
+								wallet.removePendingRequest(pendingReq);
+							} catch (CannotRemovePendingRequestException e1) {
+								e1.printStackTrace();
+							}
 						e.printStackTrace();
 						logAsInfo("Error Occured while executing Inbound operation:\n"
 								+ e.toString());
@@ -404,7 +413,8 @@ public class TCPListener extends BASE{
 									 * we still need to notify user even if we don't have an operation listener 
 									 * (like in a paired account tx signing) 
 									 */
-									longLivingOperationsListener.onError(op, e, null); 
+									if(longLivingOperationsListener != null)
+										longLivingOperationsListener.onError(op, e, null); 
 							}
 						}
 					}

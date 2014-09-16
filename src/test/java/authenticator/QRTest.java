@@ -18,6 +18,8 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import authenticator.BAApplicationParameters.OS_TYPE;
+import authenticator.BAApplicationParameters.WrongOperatingSystemException;
 import authenticator.Utils.EncodingUtils;
 import authenticator.operations.OperationsUtils.PairingQRCode;
 
@@ -38,10 +40,16 @@ public class QRTest {
 		String key = EncodingUtils.bytesToHex(raw);
 	      
 		PairingQRCode qr = new PairingQRCode();
-		String qrData = qr.generateQRDataString(ip, localIP, wallettype, key, networkType);
+		String qrData = qr.generateQRDataString(ip, localIP, wallettype, key, networkType, new byte[31]);
 		// hint map
 		Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
 	    hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+	    //create tmp folder
+	    File f1 = new File(new java.io.File( "." ).getCanonicalPath() + "/cached_resources/");
+		if (!(f1.exists() && f1.isDirectory())) {
+		   f1.mkdir();
+		}
+		
 	    //
 		qr.createQRCode(qrData, 
 				new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCodeTEST.png", 
@@ -58,6 +66,8 @@ public class QRTest {
 		// Dispose of file 
 		File file = new File(new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCodeTEST.png");
 		file.delete();
+		
+		f1.delete();
 	}
 
 }

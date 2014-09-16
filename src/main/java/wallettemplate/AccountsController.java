@@ -1,5 +1,7 @@
 package wallettemplate;
 
+import static wallettemplate.utils.GuiUtils.informationalAlert;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -14,8 +16,9 @@ import authenticator.Authenticator;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.OneName.OneName;
 import authenticator.db.exceptions.AccountWasNotFoundException;
-import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount;
+import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -179,9 +182,14 @@ public class AccountsController  extends BaseUI{
 		}
 	}
 	
-	@FXML protected void addAccount(ActionEvent event){
+	@FXML protected void addAccount(ActionEvent event) throws NoWalletPasswordException{
+		if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
+			informationalAlert("Your wallet is locked",
+					"Please unlock the wallet to add an account");
+			return;
+		}
 		try {
-			ATAccount newAcc = Authenticator.getWalletOperation().generateNewStandardAccount(NetworkType.MAIN_NET, "XXX");
+			ATAccount newAcc = Authenticator.getWalletOperation().generateNewStandardAccount(NetworkType.MAIN_NET, "XXX", Main.UI_ONLY_WALLET_PW);
 			setupContent();
 		
 		} catch (IOException e) {
