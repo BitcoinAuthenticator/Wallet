@@ -178,6 +178,12 @@ public class Main extends BAApplication {
         else if(params.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
         	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
+        	
+        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
+        	if(inCheckpint == null)
+        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
+            bitcoin.setCheckpoints(inCheckpint);
+            
         	bitcoin.useTor();
         }
 
