@@ -186,10 +186,10 @@ public class Main extends BAApplication {
         	np = TestNet3Params.get();
         	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
         	
-//        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
-//        	if(inCheckpint == null)
-//        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
-//            bitcoin.setCheckpoints(inCheckpint);
+        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
+        	if(inCheckpint == null)
+        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
+            bitcoin.setCheckpoints(inCheckpint);
             
         	bitcoin.useTor();
         }
