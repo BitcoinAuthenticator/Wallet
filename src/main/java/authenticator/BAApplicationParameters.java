@@ -181,13 +181,14 @@ public class BAApplicationParameters{
 	public boolean getShouldLaunchProgram(){ return shouldLaunchProgram; }
 	
 	/**
-	 * Without the folder itself
+	 * Without the application folder itself, just the path
 	 * @param value
 	 */
 	public String getApplicationDataFolderPath(){
 		return this.APPLICATION_DATA_FOLDER;
 	}
 	/**
+	 * The full application's data folder 
 	 * With an '/'
 	 * @return
 	 */
