@@ -77,7 +77,7 @@ public class Main extends BAApplication {
 	 public static BAPassword UI_ONLY_WALLET_PW;
 
     @Override
-    public void start(Stage mainWindow) throws Exception {
+    public void start(Stage mainWindow) {
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
@@ -101,33 +101,32 @@ public class Main extends BAApplication {
 	            	GuiUtils.informationalAlert("Error", "Could not find an appropriate OS");
 	            
 	            else 
-	            	throw t;
+	            	Runtime.getRuntime().exit(0);
 	        }
     }
 
     @SuppressWarnings("restriction")
-	private void init(Stage mainWindow) throws Exception {
-              
-        // Load the GUI. The Controller class will be automagically created and wired up.
-        mainWindow.initStyle(StageStyle.UNDECORATED);
-        URL location = getClass().getResource("gui.fxml");
-        FXMLLoader loader = new FXMLLoader(location);
-		mainUI = (AnchorPane) loader.load();
-        controller = loader.getController();
-        // Configure the window with a StackPane so we can overlay things on top of the main UI.
-        uiStack = new StackPane(mainUI);
-        mainWindow.setTitle(BAApplication.ApplicationParams.getAppName());
-        final Scene scene = new Scene(uiStack, 850, 483);
-        final String file = TextFieldValidator.class.getResource("GUI.css").toString();
-        scene.getStylesheets().add(file);  // Add CSS that we need.
-        mainWindow.setScene(scene);
-        stage = mainWindow;
-        
-        String filePath1 = ApplicationParams.getApplicationDataFolderAbsolutePath() + ApplicationParams.getAppName() + ".wallet";
-        File f1 = new File(filePath1);
-        if(!f1.exists()) { 
-        	Parent root;
-            try {
+	private void init(Stage mainWindow) {
+    	try {
+    		// Load the GUI. The Controller class will be automagically created and wired up.
+            mainWindow.initStyle(StageStyle.UNDECORATED);
+            URL location = getClass().getResource("gui.fxml");
+            FXMLLoader loader = new FXMLLoader(location);
+    		mainUI = (AnchorPane) loader.load();
+            controller = loader.getController();
+            // Configure the window with a StackPane so we can overlay things on top of the main UI.
+            uiStack = new StackPane(mainUI);
+            mainWindow.setTitle(BAApplication.ApplicationParams.getAppName());
+            final Scene scene = new Scene(uiStack, 850, 483);
+            final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+            scene.getStylesheets().add(file);  // Add CSS that we need.
+            mainWindow.setScene(scene);
+            stage = mainWindow;
+            
+            String filePath1 = ApplicationParams.getApplicationDataFolderAbsolutePath() + ApplicationParams.getAppName() + ".wallet";
+            File f1 = new File(filePath1);
+            if(!f1.exists()) { 
+            	Parent root;
             	StartupController.appParams = ApplicationParams;
                 root = FXMLLoader.load(Main.class.getResource("/wallettemplate/startup/walletstartup.fxml"));
                 startup = new Stage();
@@ -138,12 +137,16 @@ public class Main extends BAApplication {
                 scene1.getStylesheets().add(file1);  // Add CSS that we need.
                 startup.setScene(scene1);
                 startup.show();
-            } catch (IOException e) {e.printStackTrace();}
-        } else {finishLoading();}
+            } else {finishLoading();}
+        } 
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		throw new CouldNotIinitializeWalletException("Could Not initialize wallet"); 
+    	}
     }
     
     @SuppressWarnings("restriction")
-	public static void finishLoading() throws IOException, AccountWasNotFoundException{
+	public static void finishLoading(){
     	/**
     	 * If we get returned params from startup, use that
     	 */
@@ -167,7 +170,7 @@ public class Main extends BAApplication {
             // last months worth or more (takes a few seconds).
         	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints");
         	if(inCheckpint == null)
-        		throw new IOException();
+        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
             bitcoin.setCheckpoints(inCheckpint);
             // As an example!
             bitcoin.useTor();
@@ -387,6 +390,12 @@ public class Main extends BAApplication {
     @Override
     public void stop() throws Exception {
       
+    }
+    
+    private static class CouldNotIinitializeWalletException extends RuntimeException {
+    	public CouldNotIinitializeWalletException(String msg) {
+    		super(msg);
+    	}
     }
 
     @SuppressWarnings("restriction")

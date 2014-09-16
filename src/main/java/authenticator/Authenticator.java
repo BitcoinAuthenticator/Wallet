@@ -104,19 +104,23 @@ public class Authenticator extends BASE{
 	 * @throws IOException
 	 * @throws AccountWasNotFoundException 
 	 */
-	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) throws IOException, AccountWasNotFoundException
-	{
+	public Authenticator(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters appParams) {
 		super(Authenticator.class);
-		init(appParams);
-		if(mWalletOperation == null){
-			try {
+		try {
+			init(appParams);
+			if(mWalletOperation == null){
 				mWalletOperation = new WalletOperation(wallet,peerGroup,appParams);
-			} catch (IOException e) { e.printStackTrace(); }
+				
+				initPendingRequests();
+			}
 			
-			initPendingRequests();
+			init2();	
 		}
-		
-		init2();		
+		catch (Exception e) { 
+			e.printStackTrace(); 
+			throw new RuntimeException("Could not instantiate Authenticator");
+		}
+			
 	}
 	
 	private void init(BAApplicationParameters appParams){

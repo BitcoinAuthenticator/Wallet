@@ -69,6 +69,24 @@
                             <outputDirectory>${staging.linux.dir}</outputDirectory>
                         </configuration>
                     </execution>
+                    
+                    <!-- Put izPack2app into windows staging dir for production of windows installer later -->
+                    <execution>
+                        <id>unpack-shared-resources-ipack2app-windows</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <includeGroupIds>org.codehaus.izpack</includeGroupIds>
+                            <includeArtifactIds>izpack-standalone-compiler
+                            </includeArtifactIds>
+                            <classifier>izpack2app</classifier>
+                            <type>zip</type>
+                            <excludeTransitive>true</excludeTransitive>
+                            <outputDirectory>${staging.windows.dir}</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <!-- Produce staging directory with all resources used in creation of
@@ -88,6 +106,35 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/izpack/linux</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>install.xml</include>
+                                        <include>readme.txt</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>BTCAuthenticator-exe-full.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    
+                    <!-- Produce staging directory with all resources used in creation of
+                     the windows IzPack installer -->
+                    <execution>
+                        <id>copy-resources-to-staging-windows</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${staging.windows.dir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/izpack/windows</directory>
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>install.xml</include>
@@ -257,6 +304,28 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    
+                    <!-- Produce a Win32 exe from the multibit-exe.jar (no Maven plugin
+                     for JSmooth so drop down to ant) -->
+                    <execution>
+                        <id>jsmooth-installer2exe-exe</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <path id="jsmooth-classpathref">
+                                    <pathelement path="src/main/jsmooth/lib/jsmoothgen.jar" />
+                                    <pathelement path="src/main/jsmooth/lib/jsmoothgen-ant.jar" />
+                                </path>
+                                <taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen"
+                                classpathref="jsmooth-classpathref" />
+                                <jsmoothgen project="src/main/jsmooth/exe.jsmooth"
+                                skeletonroot="src/main/jsmooth/skeletons" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>
@@ -383,6 +452,7 @@
         
         <!-- Location of staging directory for creation of linux IzPack installer -->
         <staging.linux.dir>${project.build.directory}/staging.linux</staging.linux.dir>
-        
+        <!-- Location of staging directory for creation of windows IzPack installer -->
+        <staging.windows.dir>${project.build.directory}/staging.windows</staging.windows.dir>
     </properties>
 </project>

@@ -641,9 +641,7 @@ public class StartupController  extends BaseUI{
 							Main.stage.show();
 							if(encryptionPassword != null && encryptionPassword.length() > 0)
 								wallet.encrypt(encryptionPassword);
-							try {
-								Main.finishLoading();
-							} catch (IOException | AccountWasNotFoundException e) { e.printStackTrace(); }
+							Main.finishLoading();
 					 });
 		         }
 			}, MoreExecutors.sameThreadExecutor());
