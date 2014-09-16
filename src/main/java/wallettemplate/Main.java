@@ -8,6 +8,7 @@ import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
 import authenticator.network.TCPListener;
+import authenticator.network.TrustedPeerNodes;
 import authenticator.operations.BAOperation;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.walletCore.BAPassword;
@@ -15,6 +16,7 @@ import authenticator.walletCore.WalletOperation;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.PeerAddress;
 import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
@@ -47,7 +49,9 @@ import wallettemplate.utils.TextFieldValidator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -147,6 +151,7 @@ public class Main extends BAApplication {
     
     @SuppressWarnings("restriction")
 	public static void finishLoading(){
+    	boolean isStartingForTheFirstTime = returnedParamsFromSetup == null? false: true;;
     	/**
     	 * If we get returned params from startup, use that
     	 */
@@ -164,6 +169,11 @@ public class Main extends BAApplication {
         if(params.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();
         	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
+        	
+        	if(isStartingForTheFirstTime) {
+				bitcoin.setPeerNodes(TrustedPeerNodes.MAIN_NET());
+				System.out.println("Downloading blockchain for the first time using known trusted and fast nodes");
+        	}
         	
         	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints");
         	if(inCheckpint == null)
