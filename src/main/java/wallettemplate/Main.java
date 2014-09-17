@@ -95,13 +95,7 @@ public class Main extends BAApplication {
 	        	else
 	            	Runtime.getRuntime().exit(0);
 	        } catch (Exception t) {
-	            // Nicer message for the case where the block store file is locked.
-	            if (t instanceof BlockStoreException) {
-	                GuiUtils.informationalAlert("Already running", "This application is already running and cannot be started twice.");
-	            } 
-	            
-	            // in case couldnt find the right OS
-	            else if(t instanceof WrongOperatingSystemException)
+	            if(t instanceof WrongOperatingSystemException)
 	            	GuiUtils.informationalAlert("Error", "Could not find an appropriate OS");
 	            
 	            else 
@@ -195,16 +189,27 @@ public class Main extends BAApplication {
         }
 
         
+        // check single wallet instance
+        try {
+			if (bitcoin.isChainFileLocked()) {
+			    informationalAlert("Already running", "This application is already running and cannot be started twice.");
+			    Platform.exit();
+			    return;
+			}
+		} catch (IOException e1) { 
+			throw new CouldNotIinitializeWalletException("Could Not verify a single wallet instance");
+		}
+        
         bitcoin.setDownloadListener(new WalletOperation().getDownloadEvenListener());
         bitcoin.setAutoSave(true);
         bitcoin.setBlockingStartup(false)
                .setUserAgent(params.getAppName(), "1.0");
-    	bitcoin.startAsync();
-        bitcoin.awaitRunning();
-
         bitcoin.wallet().allowSpendingUnconfirmedTransactions();
         bitcoin.peerGroup().setMaxConnections(11);
         bitcoin.wallet().setKeychainLookaheadSize(0);
+        bitcoin.startAsync();
+        bitcoin.awaitRunning();
+        
         System.out.println(bitcoin.wallet());
         controller.onBitcoinSetup();
         
