@@ -580,6 +580,9 @@ public class StartupController  extends BaseUI{
 												firstAccountType = WalletAccountType.AuthenticatorAccount;
 												finishsetup();
 											}
+											else if(stage == PairingStage.FAILED) {
+												 GuiUtils.informationalAlert("Error !", "We could not create the pairing QR code, please restart wallet.");
+											}
 										}
 
 										@Override
