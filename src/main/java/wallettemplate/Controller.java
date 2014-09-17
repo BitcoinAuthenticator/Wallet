@@ -587,7 +587,7 @@ public class Controller  extends BaseUI{
 		@Override
 		public void initializationProgress(String message, int percent) {
 			Platform.runLater(() -> {
-				lblStatus.setText("Initialising Tor:" + message);
+				lblStatus.setText("Initialising Tor: " + message);
 				syncProgress.setProgress(percent / 100.0);
             });			
 		}

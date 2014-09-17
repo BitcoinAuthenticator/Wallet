@@ -153,30 +153,19 @@ public class Main extends BAApplication {
     	
     	// Make log output concise.
         BriefLogFormatter.init();
-        // Tell bitcoinj to run event handlers on the JavaFX UI thread. This keeps things simple and means
-        // we cannot forget to switch threads when adding event handlers. Unfortunately, the DownloadListener
-        // we give to the app kit is currently an exception and runs on a library thread. It'll get fixed in
-        // a future version.
         Threading.USER_THREAD = Platform::runLater;
-        // Create the app kit. It won't do any heavyweight initialization until after we start it.
+
         NetworkParameters np = null;
         InputStream inCheckpint = null;
         if(AppParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();        	
-//        	if(isStartingForTheFirstTime) {
-//				bitcoin.setPeerNodes(TrustedPeerNodes.MAIN_NET());
-//				System.out.println("Downloading blockchain for the first time using known trusted and fast nodes");
-//        	}
-        	
+
         	inCheckpint = Main.class.getResourceAsStream("checkpoints");
-        	
         }
         else if(AppParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
         	
-        	
         	inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
-        	
         }
 
         
