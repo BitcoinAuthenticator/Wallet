@@ -149,7 +149,7 @@ public class Main extends BAApplication {
     	/**
     	 * If we get returned params from startup, use that
     	 */
-    	BAApplicationParameters params = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
+    	BAApplicationParameters AppParams = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
     	
     	// Make log output concise.
         BriefLogFormatter.init();
@@ -160,34 +160,69 @@ public class Main extends BAApplication {
         Threading.USER_THREAD = Platform::runLater;
         // Create the app kit. It won't do any heavyweight initialization until after we start it.
         NetworkParameters np = null;
-        if(params.getBitcoinNetworkType() == NetworkType.MAIN_NET){
-        	np = MainNetParams.get();
-        	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
+        InputStream inCheckpint = null;
+        if(AppParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
+        	np = MainNetParams.get();        	
+//        	if(isStartingForTheFirstTime) {
+//				bitcoin.setPeerNodes(TrustedPeerNodes.MAIN_NET());
+//				System.out.println("Downloading blockchain for the first time using known trusted and fast nodes");
+//        	}
         	
-        	if(isStartingForTheFirstTime) {
-				bitcoin.setPeerNodes(TrustedPeerNodes.MAIN_NET());
-				System.out.println("Downloading blockchain for the first time using known trusted and fast nodes");
-        	}
+        	inCheckpint = Main.class.getResourceAsStream("checkpoints");
         	
-        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints");
-        	if(inCheckpint == null)
-        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
-            bitcoin.setCheckpoints(inCheckpint);
-            // As an example!
-            bitcoin.useTor();
         }
-        else if(params.getBitcoinNetworkType() == NetworkType.TEST_NET){
+        else if(AppParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
-        	bitcoin = new WalletAppKit(np, new File(params.getApplicationDataFolderAbsolutePath()), params.getAppName());
         	
-        	InputStream inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
-        	if(inCheckpint == null)
-        		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
-            bitcoin.setCheckpoints(inCheckpint);
-            
-        	bitcoin.useTor();
+        	
+        	inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
+        	
         }
 
+        
+        bitcoin = new WalletAppKit(np, new File(AppParams.getApplicationDataFolderAbsolutePath()), AppParams.getAppName()){
+            @Override
+            protected void onSetupCompleted() {
+                // Don't make the user wait for confirmations for now, as the intention is they're sending it
+                // their own money!
+            	bitcoin.peerGroup().setMaxConnections(11);
+                bitcoin.wallet().setKeychainLookaheadSize(0);
+                bitcoin.wallet().allowSpendingUnconfirmedTransactions();
+                bitcoin.peerGroup().setBloomFilterFalsePositiveRate(0.00001);
+                System.out.println(bitcoin.wallet());
+                Platform.runLater(controller::onBitcoinSetup);
+                
+                /**
+                 * Authenticator Setup
+                 */
+            	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), AppParams);
+            	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
+            		@Override
+            		public BAPassword getWalletPassword() {
+            			return Main.UI_ONLY_WALLET_PW;
+            		}
+            	});
+            	auth.setOperationsLongLivingListener(new OperationListenerAdapter() {
+            		@Override
+            		public void onError(BAOperation operation, Exception e, Throwable t) {
+            			Platform.runLater(new Runnable() { 
+            				  @Override
+            				  public void run() {
+            					  informationalAlert("Error occured in recent wallet operation",
+                      					e != null? e.toString():t.toString());
+            				  }
+            			 });
+            		}
+            	});
+            	
+            	/*
+            	 * Start bitcoin and authenticator
+            	 */
+                
+            	auth.startAsync();
+            	Platform.runLater(() -> controller.onAuthenticatorSetup());
+            }
+        };
         
         // check single wallet instance
         try {
@@ -200,50 +235,19 @@ public class Main extends BAApplication {
 			throw new CouldNotIinitializeWalletException("Could Not verify a single wallet instance");
 		}
         
+        // check we loaded checkpoints
+        if(inCheckpint == null)
+    		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
+        bitcoin.setCheckpoints(inCheckpint);
+        
+    	bitcoin.useTor();
+        
         bitcoin.setDownloadListener(new WalletOperation().getDownloadEvenListener());
         bitcoin.setAutoSave(true);
         bitcoin.setBlockingStartup(false)
-               .setUserAgent(params.getAppName(), "1.0");
-        bitcoin.wallet().allowSpendingUnconfirmedTransactions();
-        bitcoin.peerGroup().setMaxConnections(11);
-        bitcoin.wallet().setKeychainLookaheadSize(0);
-        bitcoin.startAsync();
-        bitcoin.awaitRunning();
+               .setUserAgent(AppParams.getAppName(), "1.0");
+        bitcoin.startAsync();      
         
-        System.out.println(bitcoin.wallet());
-        controller.onBitcoinSetup();
-        
-        
-        /**
-         * Authenticator Operation Setup
-         */
-    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), params);
-    	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
-    		@Override
-    		public BAPassword getWalletPassword() {
-    			return Main.UI_ONLY_WALLET_PW;
-    		}
-    	});
-    	auth.setOperationsLongLivingListener(new OperationListenerAdapter() {
-    		@Override
-    		public void onError(BAOperation operation, Exception e, Throwable t) {
-    			Platform.runLater(new Runnable() { 
-    				  @Override
-    				  public void run() {
-    					  informationalAlert("Error occured in recent wallet operation",
-              					e != null? e.toString():t.toString());
-    				  }
-    			 });
-    		}
-    	});
-    	
-    	/*
-    	 * Start bitcoin and authenticator
-    	 */
-        
-    	auth.startAsync();
-    	controller.onAuthenticatorSetup();
-    
     	
     	/*
     	 * stage close event
