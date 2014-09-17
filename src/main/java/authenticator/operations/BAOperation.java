@@ -100,13 +100,15 @@ public class BAOperation {
 	 * 
 	 * @throws IOException
 	 */
-	public void interruptOperation() throws IOException{
+	public void interruptOperation(){
 		CAN_CONTINUE_WITH_OPERAITON = true;
 		
 		/**
 		 * in case we stuck listening for incoming communication
 		 */
-		vServerSocket.close();
+		try {
+			vServerSocket.close();
+		} catch (IOException doNothing) { }
 	}
 	
 	public OperationListener getOperationListener() {

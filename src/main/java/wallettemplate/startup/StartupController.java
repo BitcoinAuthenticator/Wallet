@@ -581,7 +581,7 @@ public class StartupController  extends BaseUI{
 												finishsetup();
 											}
 											else if(stage == PairingStage.FAILED) {
-												 GuiUtils.informationalAlert("Error !", "We could not create the pairing QR code, please restart wallet.");
+												Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "We could not create the pairing QR code, please restart wallet."));
 											}
 										}
 
@@ -1403,6 +1403,13 @@ public class StartupController  extends BaseUI{
     			null,
     			stageListener,
     			null);
+		
+		op.SetOperationUIUpdate(new OperationListenerAdapter() {
+			@Override
+			public void onError(BAOperation operation, Exception e, Throwable t) {
+				Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "We could not create the pairing QR code, please restart wallet."));
+			}
+		});
 		
 		boolean result = auth.addOperation(op);
     	if(!result){

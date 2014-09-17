@@ -556,11 +556,10 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
-				     lblStatus.setText("Synchronizing Blockchain");
+				     lblStatus.setText("Synchronizing Blockchain (" + String.format("%d",(long)(progress * 100)) + " %)");
+				     syncProgress.setProgress(progress);
 				  }
 				});
-
-            Platform.runLater(() -> syncProgress.setProgress(progress));
 
             if(progress == 1.0f) {
             	/**
