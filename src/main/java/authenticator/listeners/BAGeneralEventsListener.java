@@ -81,4 +81,9 @@ public interface BAGeneralEventsListener {
 	 */
 	public void onBlockchainDownloadChange(float progress);
 
+	/**
+	 * Called whenever the UI changed the settings. This call should be handled by you in your UI implementation.<br>
+	 * Call {@link authenticator.Authenticator#fireOnWalletSettingsChange fireOnWalletSettingsChange}
+	 */
+	public void onWalletSettingsChange();
 }

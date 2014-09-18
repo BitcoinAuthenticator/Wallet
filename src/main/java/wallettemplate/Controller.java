@@ -556,11 +556,10 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
-				     lblStatus.setText("Synchronizing Blockchain");
+				     lblStatus.setText("Synchronizing Blockchain (" + String.format("%d",(long)(progress * 100)) + " %)");
+				     syncProgress.setProgress(progress);
 				  }
 				});
-
-            Platform.runLater(() -> syncProgress.setProgress(progress));
 
             if(progress == 1.0f) {
             	/**
@@ -580,41 +579,21 @@ public class Controller  extends BaseUI{
 				
 			}
 		}
+		
+		@Override
+		public void onWalletSettingsChange() {
+			Platform.runLater(() -> updateUI());
+		}
     };
-    
-//    public class ProgressBarUpdater extends DownloadListener {
-//        @Override
-//        protected void progress(double pct, int blocksSoFar, Date date) {
-//        	Platform.runLater(new Runnable() { 
-//				  @Override
-//				  public void run() {
-//				     lblStatus.setText("Synchronizing Blockchain");
-//				  }
-//				});
-//            super.progress(pct, blocksSoFar, date);
-//            Platform.runLater(() -> syncProgress.setProgress(pct / 100.0));
-//        }
-//
-//        @Override
-//        protected void doneDownload() {
-//            Platform.runLater(new Runnable(){
-//				@Override
-//				public void run() {
-//					 readyToGoAnimation(1, null);
-//				}
-//	        });
-//           
-//        }
-//    }
-//
-//    public ProgressBarUpdater progressBarUpdater() {
-//        return new ProgressBarUpdater();
-//    }
     
     public class TorListener implements TorInitializationListener {
 
 		@Override
 		public void initializationProgress(String message, int percent) {
+			Platform.runLater(() -> {
+				lblStatus.setText("Initialising Tor: " + message);
+				syncProgress.setProgress(percent / 100.0);
+            });			
 		}
 
 		@Override
@@ -623,6 +602,7 @@ public class Controller  extends BaseUI{
 				  @Override
 				  public void run() {
 					 lblStatus.setText("Connecting To Network");
+					 syncProgress.setProgress(0 / 100.0);
 				     btnTor_grey.setVisible(false);
 				     btnTor_color.setVisible(true);
 				     Tooltip.install(btnTor_color, new Tooltip("Connected to Tor"));

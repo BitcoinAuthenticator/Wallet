@@ -69,4 +69,10 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 		
 	}
 
+	@Override
+	public void onWalletSettingsChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

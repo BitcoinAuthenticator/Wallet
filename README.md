@@ -34,8 +34,10 @@ $mvn clean package
 ##### Protobuf class
 From the Protobuf folder(/src/main/java/authenticator/protobuf):
  ```
-$ protoc <Proto File>.proto --java_out=../../
+$ protoc <Proto File>.proto --java_out=../../ --proto_path=./ --proto_path=<protobuf-install-directory>
  ```
+
+For protobuf-install-directory see [this](http://stackoverflow.com/questions/20069295/importing-google-protobuf-descriptor-proto-in-java-protocol-buffers)
 
 ##### Executable Jar
  ```
@@ -51,18 +53,5 @@ $ mvn clean compile assembly:single
 ```
 Run -> Run Configurations -> arguments -> add -ea in VM Arguments
 ```
-
-#### TODO
-1. Testing Testing Testing !
-2. Transaction list Pane
-3. Currency conversions from bitcoin
-4. Smart input selection
-5. Smart fee calculation
-6. Improve command line parameters for various functionalities
-7. Basic RPC
-8. mixing
-9. Integrate with [OneName](https://onename.io)
-10. Discover scheme for the key hierarchy
-
 
 If you have any questions feel free to contact us: ctpacia@gmail.com (Chris Pacia), alonmuroch@gmail.com (Alon Muroch).

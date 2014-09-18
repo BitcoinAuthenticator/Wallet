@@ -147,7 +147,8 @@ public class OperationsFactory extends BASE{
 									 animationAfterPairing,
 									 walletPW); 
 							 //Return to previous timeout
-							 ss.setSoTimeout(tempTimeout);
+							 if(!ss.isClosed())
+								 ss.setSoTimeout(tempTimeout);
 						}
 
 						@Override

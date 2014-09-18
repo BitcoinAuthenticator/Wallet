@@ -265,12 +265,12 @@
             </Button>
           </children>
         </HBox>
-        <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="105.0" style="-fx-text-fill: #98d947;" text="0.000000 BTC">
+        <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="150.0" style="-fx-text-fill: #98d947;" text="0.000000 BTC">
           <font>
             <Font size="14.0" fx:id="x2" />
           </font>
         </Label>
-        <Label fx:id="lblUnconfirmedBalance" font="$x2" layoutX="68.0" layoutY="227.0" style="-fx-text-fill: #f06e6e;" text="0.000000 BTC" />
+        <Label fx:id="lblUnconfirmedBalance" font="$x2" layoutX="68.0" layoutY="227.0" prefWidth="150.0"  style="-fx-text-fill: #f06e6e;" text="0.000000 BTC" />
       </children>
     </Pane>
     <!-- 
@@ -412,15 +412,15 @@
     	
     	
     -->
-    <Pane fx:id="SyncPane" layoutX="18.0" layoutY="431.0" prefHeight="38.0" prefWidth="564.0" visible="true">
+    <Pane fx:id="SyncPane" layoutX="18.0" layoutY="423.0" prefHeight="50.0" prefWidth="564.0" visible="true">
       <children>
-        <Label fx:id="lblStatus" font="$x2" layoutX="20.0" layoutY="6.0" prefHeight="25.0" prefWidth="250.0" style="-fx-font-weight: SEMI_BOLD;" text="        Initializing Tor" textFill="#6e86a0" />
-        <ImageView fx:id="ivSync" fitHeight="24.0" fitWidth="24.0" layoutX="540.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+        <Label fx:id="lblStatus" font="$x2" layoutX="0.0" layoutY="0.0" prefHeight="25.0" prefWidth="500.0" style="-fx-font-weight: SEMI_BOLD;" text="        Initializing Tor" textFill="#6e86a0" />
+        <ImageView fx:id="ivSync" fitHeight="24.0" fitWidth="24.0" layoutX="320.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
           <image>
             <Image url="@ivSync.png" />
           </image>
         </ImageView>
-        <ProgressBar fx:id="syncProgress" layoutX="231.0" layoutY="6.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
+        <ProgressBar fx:id="syncProgress" layoutX="0.0" layoutY="27.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
       </children>
     </Pane>
     <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0">
