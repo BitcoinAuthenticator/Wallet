@@ -103,7 +103,7 @@ public class BAApplicationParameters{
 			tmp += "";
 			break;
 		case LINUX:
-			tmp += "";
+			tmp += "/";
 			break;
 		case OSX:
 			tmp += "/Library/Application Support/";

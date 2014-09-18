@@ -591,7 +591,7 @@ public class Controller  extends BaseUI{
 		@Override
 		public void initializationProgress(String message, int percent) {
 			Platform.runLater(() -> {
-				lblStatus.setText("Initialising Tor: " + message);
+				lblStatus.setText(message);
 				syncProgress.setProgress(percent / 100.0);
             });			
 		}
@@ -601,8 +601,8 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
-					 lblStatus.setText("Connecting To Network");
-					 syncProgress.setProgress(0 / 100.0);
+					 lblStatus.setText("Connecting To Peers...");
+					 syncProgress.setProgress(0);
 				     btnTor_grey.setVisible(false);
 				     btnTor_color.setVisible(true);
 				     Tooltip.install(btnTor_color, new Tooltip("Connected to Tor"));
@@ -625,11 +625,13 @@ public class Controller  extends BaseUI{
     	
     	@Override
         public void onPeerConnected(Peer peer, int peerCount) {
+    		lblStatus.setText("Connecting To Peers (" + peerCount + ")"); 
     		setToolTip(peerCount);
         }
 
         @Override
         public void onPeerDisconnected(Peer peer, int peerCount) {
+        	lblStatus.setText("Connecting To Peers (" + peerCount + ")");
         	setToolTip(peerCount);
         }
         
