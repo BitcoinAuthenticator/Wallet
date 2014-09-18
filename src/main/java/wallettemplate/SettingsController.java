@@ -17,10 +17,12 @@ import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.wallet.DeterministicSeed;
 import com.google.common.base.Joiner;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
 import authenticator.Authenticator;
 import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
+import authenticator.protobuf.ProtoSettings;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
@@ -34,6 +36,7 @@ import wallettemplate.ControllerHelpers.AsyncTask;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.TextFieldValidator;
+import wallettemplate.utils.TextUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -113,7 +116,7 @@ public class SettingsController  extends BaseUI{
 	public Main.OverlayUI overlayUi;
 	private double xOffset = 0;
 	private double yOffset = 0;
-	private String strBitcoinUnit;
+	//private String strBitcoinUnit;
 	private int intDecimal;
 	private String strCurrency;
 	private String strLanguage;
@@ -128,11 +131,7 @@ public class SettingsController  extends BaseUI{
 	// Called by FXMLLoader
     @SuppressWarnings("restriction")
 	public void initialize() {        	
-    	String unit = Authenticator.getWalletOperation().getAccountUnitFromSettings().toString();
-    	if (unit.equals("BTC")){this.strBitcoinUnit="BTC";}
-    	else if (unit.equals("Bits")){this.strBitcoinUnit="bits";}
-    	else if (unit.equals("Millibits")){this.strBitcoinUnit="mBTC";}
-    	else {this.strBitcoinUnit="µBTC";}
+    	
     	this.intDecimal = Authenticator.getWalletOperation().getDecimalPointFromSettings();
     	this.strCurrency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
     	this.strLanguage = Authenticator.getWalletOperation().getLanguageFromSettings().toString();
@@ -142,7 +141,14 @@ public class SettingsController  extends BaseUI{
     	this.falsePositiveRate = Authenticator.getWalletOperation().getBloomFilterFalsePositiveRateFromSettings();
     	Tooltip.install(slBloom, new Tooltip(String.valueOf(slBloom.getValue())));
     	super.initialize(SettingsController.class);
-    	cbBitcoinUnit.setValue(strBitcoinUnit);
+    	
+    	String unit = Authenticator
+    			.getWalletOperation()
+    			.getAccountUnitFromSettings()
+    			.getValueDescriptor()
+    			.getOptions()
+    			.getExtension(ProtoSettings.bitcoinUnitName);
+    	cbBitcoinUnit.setValue(unit);
     	cbCurrency.setValue(strCurrency);
     	cbCurrency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
   	      @Override
@@ -155,22 +161,16 @@ public class SettingsController  extends BaseUI{
     	cbBitcoinUnit.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
     	      @Override
     	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-    	    		if ((Integer) number2 == 1){
-    	    			strBitcoinUnit="BTC";
-    	   				txFee.setPromptText(fee/100000000 + " BTC");
-    	    		}
-    	    		else if ((Integer) number2 == 0){
-    	    			strBitcoinUnit="bits";
-    	    			txFee.setPromptText(fee/100 + " bits");
-    	    		}
-    	    		else if ((Integer) number2 == 2){
-    	    			strBitcoinUnit="mBTC";
-    	    			txFee.setPromptText(fee/100000 + " mBTC");
-    	    			}
-    	    		else {
-    	    			strBitcoinUnit="µBTC";
-    	    			txFee.setPromptText(fee/100 + " µBTC");
-    	    		}
+    	    		Coin c = Coin.valueOf((long)fee);
+    	    		BitcoinUnit u ;
+    	    	  	if ((Integer) number2 == 0)
+    	    	  		u = BitcoinUnit.BTC;
+    	    		else if ((Integer) number2 == 1)
+    	    			u = BitcoinUnit.Millibits;
+    	    		else
+    	    			u = BitcoinUnit.Microbits;
+    	    	  	
+    	    	  	txFee.setPromptText(TextUtils.coinAmountTextDisplay(c, u));
     	      }
     	    });
     	cbDecimal.setValue(String.valueOf(intDecimal));
@@ -180,11 +180,9 @@ public class SettingsController  extends BaseUI{
     	    		intDecimal = Integer.parseInt(cbCurrency.getItems().get((Integer) number2).toString());
     	      }
     	    });
+    	
     	cbLanguage.setValue(strLanguage);
-    	if (this.strBitcoinUnit.equals("BTC")){txFee.setPromptText(fee/100000000 + " BTC");}
-    	else if (this.strBitcoinUnit.equals("bits")){txFee.setPromptText(fee/100 + " bits");}
-    	else if (this.strBitcoinUnit.equals("mBTC")){txFee.setPromptText(fee/100000 + " mBTC");}
-    	else {txFee.setPromptText(fee/100 + "µBTC");}
+    	
     	ckTor.setSelected(useTor);
     	ckTor.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			 public void changed(ObservableValue<? extends Boolean> ov,
@@ -328,12 +326,13 @@ public class SettingsController  extends BaseUI{
 
 	public void exit(ActionEvent event) throws CannotWriteToConfigurationFileException {
 		overlayUi.done();
-		// bitcoin units
-		Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.Bits);
-		if (strBitcoinUnit.equals("BTC")){Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.BTC);}
-    	else if (strBitcoinUnit.equals("bits")){Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.Bits);}
-    	else if (strBitcoinUnit.equals("mBTC")){Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.Millibits);}
-    	else {Authenticator.getWalletOperation().setAccountUnitInSettings(BitcoinUnit.NanoBits);}
+		
+		//String strV = (String)cbBitcoinUnit.getSelectionModel().getSelectedItem();
+		EnumValueDescriptor desc = BitcoinUnit
+				.getDescriptor()
+				.findValueByNumber(cbBitcoinUnit.getSelectionModel().getSelectedIndex());
+		BitcoinUnit carmodel =   BitcoinUnit.valueOf(desc);
+		Authenticator.getWalletOperation().setAccountUnitInSettings(carmodel);
 		
 		Authenticator.getWalletOperation().setDecimalPointInSettings(intDecimal);
 		
@@ -348,6 +347,8 @@ public class SettingsController  extends BaseUI{
 		Authenticator.getWalletOperation().setIsConnectingToTrustedPeerInSettings(TrustedPeer, peerIP);
 
 		Authenticator.getWalletOperation().setBloomFilterFalsePositiveRateInSettings((float)slBloom.getValue());
+		
+		Authenticator.fireOnWalletSettingsChange();
     }
 	
 	public static Stage backupPane;

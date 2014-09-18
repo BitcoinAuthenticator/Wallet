@@ -43,7 +43,6 @@
             <ChoiceBox fx:id="cbBitcoinUnit" layoutX="14.0" layoutY="39.0" styleClass="choice-box-settings">
               <items>
                 <FXCollections fx:factory="observableArrayList">
-                  <String fx:value="bits" />
                   <String fx:value="BTC" />
                   <String fx:value="mBTC" />
                   <String fx:value="µBTC" />

@@ -7,6 +7,7 @@ public final class ProtoSettings {
   private ProtoSettings() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
+    registry.add(authenticator.protobuf.ProtoSettings.bitcoinUnitName);
   }
   /**
    * Protobuf enum {@code authenticator.protobuf.BitcoinUnit}
@@ -18,17 +19,13 @@ public final class ProtoSettings {
      */
     BTC(0, 0),
     /**
-     * <code>Bits = 1;</code>
+     * <code>Millibits = 1;</code>
      */
-    Bits(1, 1),
+    Millibits(1, 1),
     /**
-     * <code>Millibits = 2;</code>
+     * <code>Microbits = 2;</code>
      */
-    Millibits(2, 2),
-    /**
-     * <code>NanoBits = 3;</code>
-     */
-    NanoBits(3, 3),
+    Microbits(2, 2),
     ;
 
     /**
@@ -36,17 +33,13 @@ public final class ProtoSettings {
      */
     public static final int BTC_VALUE = 0;
     /**
-     * <code>Bits = 1;</code>
+     * <code>Millibits = 1;</code>
      */
-    public static final int Bits_VALUE = 1;
+    public static final int Millibits_VALUE = 1;
     /**
-     * <code>Millibits = 2;</code>
+     * <code>Microbits = 2;</code>
      */
-    public static final int Millibits_VALUE = 2;
-    /**
-     * <code>NanoBits = 3;</code>
-     */
-    public static final int NanoBits_VALUE = 3;
+    public static final int Microbits_VALUE = 2;
 
 
     public final int getNumber() { return value; }
@@ -54,9 +47,8 @@ public final class ProtoSettings {
     public static BitcoinUnit valueOf(int value) {
       switch (value) {
         case 0: return BTC;
-        case 1: return Bits;
-        case 2: return Millibits;
-        case 3: return NanoBits;
+        case 1: return Millibits;
+        case 2: return Microbits;
         default: return null;
       }
     }
@@ -184,13 +176,13 @@ public final class ProtoSettings {
   public interface ConfigSettingsOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
+    // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];
     /**
-     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
      */
     boolean hasAccountUnit();
     /**
-     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
      */
     authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit();
 
@@ -463,17 +455,17 @@ public final class ProtoSettings {
     }
 
     private int bitField0_;
-    // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
+    // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];
     public static final int ACCOUNTUNIT_FIELD_NUMBER = 1;
     private authenticator.protobuf.ProtoSettings.BitcoinUnit accountUnit_;
     /**
-     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
      */
     public boolean hasAccountUnit() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+     * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
      */
     public authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit() {
       return accountUnit_;
@@ -694,7 +686,7 @@ public final class ProtoSettings {
     }
 
     private void initFields() {
-      accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.Bits;
+      accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.BTC;
       decimalPoints_ = 2;
       localCurrencySymbol_ = "USD";
       language_ = authenticator.protobuf.ProtoSettings.Languages.English;
@@ -912,7 +904,7 @@ public final class ProtoSettings {
 
       public Builder clear() {
         super.clear();
-        accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.Bits;
+        accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.BTC;
         bitField0_ = (bitField0_ & ~0x00000001);
         decimalPoints_ = 2;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1077,22 +1069,22 @@ public final class ProtoSettings {
       }
       private int bitField0_;
 
-      // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];
-      private authenticator.protobuf.ProtoSettings.BitcoinUnit accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.Bits;
+      // optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];
+      private authenticator.protobuf.ProtoSettings.BitcoinUnit accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.BTC;
       /**
-       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
        */
       public boolean hasAccountUnit() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
        */
       public authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit() {
         return accountUnit_;
       }
       /**
-       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
        */
       public Builder setAccountUnit(authenticator.protobuf.ProtoSettings.BitcoinUnit value) {
         if (value == null) {
@@ -1104,11 +1096,11 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = Bits];</code>
+       * <code>optional .authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
        */
       public Builder clearAccountUnit() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.Bits;
+        accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.BTC;
         onChanged();
         return this;
       }
@@ -1538,6 +1530,17 @@ public final class ProtoSettings {
     // @@protoc_insertion_point(class_scope:authenticator.protobuf.ConfigSettings)
   }
 
+  public static final int BITCOIN_UNIT_NAME_FIELD_NUMBER = 50000;
+  /**
+   * <code>extend .google.protobuf.EnumValueOptions { ... }</code>
+   */
+  public static final
+    com.google.protobuf.GeneratedMessage.GeneratedExtension<
+      com.google.protobuf.DescriptorProtos.EnumValueOptions,
+      java.lang.String> bitcoinUnitName = com.google.protobuf.GeneratedMessage
+          .newFileScopedGeneratedExtension(
+        java.lang.String.class,
+        null);
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_ConfigSettings_descriptor;
   private static
@@ -1553,19 +1556,22 @@ public final class ProtoSettings {
   static {
     java.lang.String[] descriptorData = {
       "\n\024configSettings.proto\022\026authenticator.pr" +
-      "otobuf\"\205\003\n\016ConfigSettings\022>\n\013accountUnit" +
-      "\030\001 \001(\0162#.authenticator.protobuf.BitcoinU" +
-      "nit:\004Bits\022\030\n\rdecimalPoints\030\002 \001(\005:\0012\022 \n\023l" +
-      "ocalCurrencySymbol\030\003 \001(\t:\003USD\022<\n\010languag" +
-      "e\030\004 \001(\0162!.authenticator.protobuf.Languag" +
-      "es:\007English\022\031\n\ndefaultFee\030\005 \001(\005:\00510000\022\021" +
-      "\n\003TOR\030\006 \001(\010:\004true\022!\n\022connectOnLocalHost\030" +
-      "\007 \001(\010:\005false\022#\n\024connectToTrustedPeer\030\010 \001" +
-      "(\010:\005false\022\025\n\rtrustedPeerIP\030\t \001(\t\022,\n\034bloo",
-      "mFilterFalsePositiveRate\030\n \001(\002:\0060.0005*=" +
-      "\n\013BitcoinUnit\022\007\n\003BTC\020\000\022\010\n\004Bits\020\001\022\r\n\tMill" +
-      "ibits\020\002\022\014\n\010NanoBits\020\003*\030\n\tLanguages\022\013\n\007En" +
-      "glish\020\000B\017B\rProtoSettings"
+      "otobuf\032 google/protobuf/descriptor.proto" +
+      "\"\204\003\n\016ConfigSettings\022=\n\013accountUnit\030\001 \001(\016" +
+      "2#.authenticator.protobuf.BitcoinUnit:\003B" +
+      "TC\022\030\n\rdecimalPoints\030\002 \001(\005:\0012\022 \n\023localCur" +
+      "rencySymbol\030\003 \001(\t:\003USD\022<\n\010language\030\004 \001(\016" +
+      "2!.authenticator.protobuf.Languages:\007Eng" +
+      "lish\022\031\n\ndefaultFee\030\005 \001(\005:\00510000\022\021\n\003TOR\030\006" +
+      " \001(\010:\004true\022!\n\022connectOnLocalHost\030\007 \001(\010:\005" +
+      "false\022#\n\024connectToTrustedPeer\030\010 \001(\010:\005fal",
+      "se\022\025\n\rtrustedPeerIP\030\t \001(\t\022,\n\034bloomFilter" +
+      "FalsePositiveRate\030\n \001(\002:\0060.0005*R\n\013Bitco" +
+      "inUnit\022\020\n\003BTC\020\000\032\007\202\265\030\003BTC\022\027\n\tMillibits\020\001\032" +
+      "\010\202\265\030\004mBTC\022\030\n\tMicrobits\020\002\032\t\202\265\030\005\302\265BTC*\030\n\tL" +
+      "anguages\022\013\n\007English\020\000:>\n\021bitcoin_unit_na" +
+      "me\022!.google.protobuf.EnumValueOptions\030\320\206" +
+      "\003 \001(\tB\017B\rProtoSettings"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1578,12 +1584,19 @@ public final class ProtoSettings {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_ConfigSettings_descriptor,
               new java.lang.String[] { "AccountUnit", "DecimalPoints", "LocalCurrencySymbol", "Language", "DefaultFee", "TOR", "ConnectOnLocalHost", "ConnectToTrustedPeer", "TrustedPeerIP", "BloomFilterFalsePositiveRate", });
-          return null;
+          bitcoinUnitName.internalInit(descriptor.getExtensions().get(0));
+          com.google.protobuf.ExtensionRegistry registry =
+            com.google.protobuf.ExtensionRegistry.newInstance();
+          registry.add(authenticator.protobuf.ProtoSettings.bitcoinUnitName);
+          registry.add(authenticator.protobuf.ProtoSettings.bitcoinUnitName);
+          registry.add(authenticator.protobuf.ProtoSettings.bitcoinUnitName);
+          return registry;
         }
       };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.protobuf.DescriptorProtos.getDescriptor(),
         }, assigner);
   }
 

@@ -365,4 +365,9 @@ public class Authenticator extends BASE{
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onBlockchainDownloadChange(progress);
 	}
+	
+	public static void fireOnWalletSettingsChange(){
+		for(BAGeneralEventsListener l:generalEventsListeners)
+			l.onWalletSettingsChange();
+	}
 }

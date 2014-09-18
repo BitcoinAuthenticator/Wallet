@@ -579,6 +579,11 @@ public class Controller  extends BaseUI{
 				
 			}
 		}
+		
+		@Override
+		public void onWalletSettingsChange() {
+			Platform.runLater(() -> updateUI());
+		}
     };
     
     public class TorListener implements TorInitializationListener {

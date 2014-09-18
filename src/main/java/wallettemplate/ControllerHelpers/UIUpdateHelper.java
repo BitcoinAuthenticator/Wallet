@@ -14,6 +14,7 @@ import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.TextUtils;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
@@ -27,6 +28,7 @@ import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.protobuf.ProtoConfig.ATAddress;
+import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
@@ -713,8 +715,9 @@ public class UIUpdateHelper extends BaseUI{
 
 		@Override
 		protected void onPostExecute() {
-			lblConfirmedBalance.setText(confirmed.toFriendlyString());
-	        lblUnconfirmedBalance.setText(unconfirmed.toFriendlyString());
+			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
+			lblConfirmedBalance.setText(TextUtils.coinAmountTextDisplay(confirmed, u));
+	        lblUnconfirmedBalance.setText(TextUtils.coinAmountTextDisplay(unconfirmed, u));
 	        
 	        new CurrencyConverterSingelton(new CurrencyConverterSingelton.CurrencyConverterListener(){
 				@Override

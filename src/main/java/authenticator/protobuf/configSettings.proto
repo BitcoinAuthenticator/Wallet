@@ -2,11 +2,17 @@ package authenticator.protobuf;
 
 option java_outer_classname="ProtoSettings";
 
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.EnumValueOptions {
+  optional string bitcoin_unit_name = 50000;
+  // Be sure to read the docs about choosing the number here.
+}
+
 enum BitcoinUnit{
-	BTC 		= 0;
-	Bits 		= 1;
-	Millibits 	= 2;
-	NanoBits 	= 3;
+	BTC 		= 0 [(bitcoin_unit_name) = "BTC"];
+	Millibits 	= 1 [(bitcoin_unit_name) = "mBTC"];
+	Microbits 	= 2 [(bitcoin_unit_name) = "µBTC"];
 }
 
 enum Languages{
@@ -14,7 +20,7 @@ enum Languages{
 }
 
 message ConfigSettings{
-	optional BitcoinUnit	 accountUnit 						= 1 [default = Bits];
+	optional BitcoinUnit	 accountUnit 						= 1 [default = BTC];
 	optional int32 			 decimalPoints 						= 2 [default = 2];
 	optional string 		 localCurrencySymbol				= 3 [default = "USD"];
 	optional Languages 		 language							= 4 [default = English];
