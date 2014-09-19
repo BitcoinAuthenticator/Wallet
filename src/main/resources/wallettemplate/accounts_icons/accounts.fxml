@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <Pane id="accountPane" layoutX="0.0" layoutY="1.0" prefHeight="484.0" prefWidth="850.0" style="-fx-background-color: #ecf0f1;">
+      <children>
+        <Label layoutX="585.0" layoutY="438.0" prefHeight="21.1328125" prefWidth="216.0" style="-fx-text-fill: #4b698f;" text="Total Balance:">
+          <font>
+            <Font size="16.0" fx:id="x1" />
+          </font>
+        </Label>
+        <ScrollPane content="$null" layoutX="336.0" layoutY="91.0" prefHeight="330.0" prefWidth="465.0" style="-fx-background-radius: 8; -fx-background-color: white;&#10;" />
+        <Label layoutX="23.0" layoutY="91.0" prefHeight="54.0" prefWidth="313.0" style="-fx-text-fill: #4b698f;" text="To create a new account enter an account name below:" wrapText="true" />
+        <TextField layoutX="23.0" layoutY="145.0" prefHeight="29.1328125" prefWidth="216.0" promptText="Account Name" />
+        <Button layoutX="239.0" layoutY="145.0" mnemonicParsing="false" prefHeight="27.532912499997472" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Create" />
+        <Label layoutX="23.0" layoutY="227.0" style="-fx-text-fill: #4b698f;" text="Manage Existing Accounts:" />
+        <Button disable="true" layoutX="23.0" layoutY="257.0" mnemonicParsing="false" prefHeight="29.132904052734375" prefWidth="141.0" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Rename" />
+        <Button disable="true" layoutX="168.0" layoutY="257.0" mnemonicParsing="false" prefHeight="29.1328125" prefWidth="141.0" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Delete" />
+        <Label font="$x1" layoutX="712.0" layoutY="438.0" prefHeight="21.1328125" style="-fx-text-fill: #98d947;" text="Label" />
+        <TextField layoutX="23.0" layoutY="356.0" prefHeight="29.0" prefWidth="216.0" promptText="Enter a new name" visible="false" />
+        <Button cancelButton="false" layoutX="239.0" layoutY="356.0" mnemonicParsing="false" prefHeight="27.532912499997472" prefWidth="66.0" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="OK" visible="false" />
+      </children>
+    </Pane>
+    <Pane id="dragPane" layoutX="0.0" layoutY="0.0" prefHeight="58.999900000002526" prefWidth="850.0" style="-fx-background-color: white;">
+      <children>
+        <ImageView fitHeight="54.0" fitWidth="54.0" layoutX="13.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="file:/home/chris/workspace/BitcoinAuthWallet/src/main/resources/wallettemplate/btnAccounts.png" />
+          </image>
+        </ImageView>
+        <Button layoutX="771.0" layoutY="16.0" mnemonicParsing="false" prefHeight="29.1328125" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Close" />
+      </children>
+    </Pane>
+  </children>
+</AnchorPane>
