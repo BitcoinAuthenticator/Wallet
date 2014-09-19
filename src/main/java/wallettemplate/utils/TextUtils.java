@@ -54,7 +54,7 @@ public class TextUtils {
 	 */
 	public static String coinAmountTextDisplay(Coin coin, BitcoinUnit unit) {
 		double i = satoshiesToBitcoinUnit(coin.value, unit);
-		return Double.toString(i) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
+		return String.format( "%.4f", i ) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
 	}
 	
 	/**

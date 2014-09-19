@@ -25,6 +25,7 @@ import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
+import authenticator.protobuf.ProtoSettings;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
@@ -215,11 +216,7 @@ public class Controller  extends BaseUI{
 	 @FXML public ChoiceBox AddressBox;
 	 @FXML private TextField txMsgLabel;
 	 @FXML private TextField txFee;
-	 /**
-	  * to hold the fee for UI reasons. 
-	  * Holds current fee in satoshies
-	  */
-	 private double fee = -1; 
+	 @FXML private Label lblFeeUnitName;
 	 @FXML private Button btnConnection0;
 	 @FXML private Button btnConnection1;
 	 @FXML private Button btnConnection2;
@@ -1077,37 +1074,24 @@ public class Controller  extends BaseUI{
 					setFeeTipText();
             }
         });
-		txFee.focusedProperty().addListener(new ChangeListener<Boolean>()
-    			{
-					@Override
-					public void changed(ObservableValue<? extends Boolean> arg0,Boolean arg1, Boolean arg2) {
-						BitcoinUnit unit = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-						try {
-							fee = Double.parseDouble(txFee.getText());
-							fee = TextUtils.bitcoinUnitToSatoshies(fee, unit);
-						}
-						catch(Exception e) {
-							fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
-						}
-						
-						Coin c = Coin.valueOf((long)fee);				    	
-				    	String strFee = TextUtils.coinAmountTextDisplay(c, unit);
-				    	txFee.clear();
-				    	txFee.setPromptText(strFee);
-					}
-    			});
     }
     
-    private void setFeeTipText() {
-    	fee = -1;
-    	 
+    private void setFeeTipText() {    	 
     	LOG.info("Updating fee text box");
     	double fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
-    	Coin c = Coin.valueOf((long)fee);
     	BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-    	
-    	String strFee = TextUtils.coinAmountTextDisplay(c, u);
+    	double printableFee = TextUtils.satoshiesToBitcoinUnit(fee, u);
+    	String strFee = String.format( "%.4f", printableFee );
     	txFee.setPromptText(strFee);
+    	
+    	// set unit name
+    	BitcoinUnit unit = Authenticator
+    			.getWalletOperation()
+    			.getAccountUnitFromSettings();
+		String unitStr = unit.getValueDescriptor()
+    			.getOptions()
+    			.getExtension(ProtoSettings.bitcoinUnitName);
+		lblFeeUnitName.setText(unitStr);
     }
     
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {
@@ -1143,9 +1127,12 @@ public class Controller  extends BaseUI{
     {
     	// fee
     	Coin cFee = Coin.ZERO;
-		if (fee == -1){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
-        else 
+		if (txFee.getText().length() == 0){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+        else {
+        	double fee = Double.parseDouble(txFee.getText());
+        	fee = TextUtils.bitcoinUnitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
         	cFee = Coin.valueOf((long)fee);
+        }
     	try {
 			return SendTxHelper.ValidateTx(scrlContent, cFee);
 		} catch (Exception e) { 
@@ -1199,9 +1186,12 @@ public class Controller  extends BaseUI{
         	try{
 //        		get fee
             	Coin cFee = Coin.ZERO;
-        		if (fee == -1){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
-                else 
+        		if (txFee.getText().length() == 0){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+                else {
+                	double fee = Double.parseDouble(txFee.getText());
+                	fee = TextUtils.bitcoinUnitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
                 	cFee = Coin.valueOf((long)fee);
+                }
         	
         		ArrayList<TransactionOutput> outputs = Authenticator
         				.getWalletOperation()
