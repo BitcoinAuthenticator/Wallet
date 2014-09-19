@@ -215,6 +215,11 @@ public class Controller  extends BaseUI{
 	 @FXML public ChoiceBox AddressBox;
 	 @FXML private TextField txMsgLabel;
 	 @FXML private TextField txFee;
+	 /**
+	  * to hold the fee for UI reasons. 
+	  * Holds current fee in satoshies
+	  */
+	 private double fee = -1; 
 	 @FXML private Button btnConnection0;
 	 @FXML private Button btnConnection1;
 	 @FXML private Button btnConnection2;
@@ -1066,16 +1071,37 @@ public class Controller  extends BaseUI{
 						   //if it's not number then just setText to previous one
 						  setFeeTipText(); 
 						  return;
-						  //txFee.setText(txFee.getText().substring(0,txFee.getText().length()-1)); 
 					  }
 				}
 				else
 					setFeeTipText();
             }
         });
+		txFee.focusedProperty().addListener(new ChangeListener<Boolean>()
+    			{
+					@Override
+					public void changed(ObservableValue<? extends Boolean> arg0,Boolean arg1, Boolean arg2) {
+						BitcoinUnit unit = Authenticator.getWalletOperation().getAccountUnitFromSettings();
+						try {
+							fee = Double.parseDouble(txFee.getText());
+							fee = TextUtils.bitcoinUnitToSatoshies(fee, unit);
+						}
+						catch(Exception e) {
+							fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
+						}
+						
+						Coin c = Coin.valueOf((long)fee);				    	
+				    	String strFee = TextUtils.coinAmountTextDisplay(c, unit);
+				    	txFee.clear();
+				    	txFee.setPromptText(strFee);
+					}
+    			});
     }
     
     private void setFeeTipText() {
+    	fee = -1;
+    	 
+    	LOG.info("Updating fee text box");
     	double fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
     	Coin c = Coin.valueOf((long)fee);
     	BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
@@ -1104,7 +1130,9 @@ public class Controller  extends BaseUI{
     	btnClearSendPane.setStyle("-fx-background-color: #d7d4d4;");
     	txMsgLabel.clear();
     	scrlContent.clearAll(); addOutput();
+    	
     	txFee.clear();
+    	this.setFeeTipText();
     }
     
     @FXML protected void btnClearSendPaneReleased(MouseEvent event) {
@@ -1114,15 +1142,12 @@ public class Controller  extends BaseUI{
     private boolean ValidateTx()
     {
     	// fee
-    	Coin fee = Coin.ZERO;
-		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+    	Coin cFee = Coin.ZERO;
+		if (fee == -1){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
         else 
-        {
-        	double f = (double) Double.parseDouble(txFee.getText())*100000000;
-        	fee = Coin.valueOf((long)f);
-        }
+        	cFee = Coin.valueOf((long)fee);
     	try {
-			return SendTxHelper.ValidateTx(scrlContent, fee);
+			return SendTxHelper.ValidateTx(scrlContent, cFee);
 		} catch (Exception e) { 
 			e.printStackTrace();
 			return false;
@@ -1173,18 +1198,15 @@ public class Controller  extends BaseUI{
         	
         	try{
 //        		get fee
-            	Coin fee = Coin.ZERO;
-        		if (txFee.getText().equals("")){fee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+            	Coin cFee = Coin.ZERO;
+        		if (fee == -1){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
                 else 
-                {
-                	double f = (double) Double.parseDouble(txFee.getText())*100000000;
-                	fee = Coin.valueOf((long)f);
-                }
+                	cFee = Coin.valueOf((long)fee);
         	
         		ArrayList<TransactionOutput> outputs = Authenticator
         				.getWalletOperation()
         				.selectOutputsFromAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex(),
-        						outAmount.add(fee));
+        						outAmount.add(cFee));
         		
         		String changeaddr = Authenticator.getWalletOperation()
     								.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
@@ -1192,7 +1214,7 @@ public class Controller  extends BaseUI{
         		   
         		// complete Tx
         		tx = Authenticator.getWalletOperation()
-        				.mkUnsignedTxWithSelectedInputs(outputs, to, fee, changeaddr);
+        				.mkUnsignedTxWithSelectedInputs(outputs, to, cFee, changeaddr);
     						
     			//
     			displayTxOverview(tx,
@@ -1200,7 +1222,7 @@ public class Controller  extends BaseUI{
     					tx.getOutputs(),
     					changeaddr, 
     					outAmount, 
-    					fee, 
+    					cFee, 
     					Authenticator.getWalletOperation().getTxValueSentFromMe(tx).subtract(Authenticator.getWalletOperation().getTxValueSentToMe(tx)));
         	}
         	catch(Exception e){
@@ -1477,7 +1499,10 @@ public class Controller  extends BaseUI{
         				txoverlay.done();
                     	txMsgLabel.clear();
                     	scrlContent.clearAll(); addOutput();
+                    	
                     	txFee.clear();
+                    	setFeeTipText();
+                    	
                     	// Notify user
                     	Dialogs.create()
         		        .owner(Main.stage)
@@ -1511,7 +1536,7 @@ public class Controller  extends BaseUI{
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();
             	txFee.clear();
-            	
+            	setFeeTipText();
             }
         });
 		btnSave.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -1522,7 +1547,7 @@ public class Controller  extends BaseUI{
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addOutput();
             	txFee.clear();
-            	
+            	setFeeTipText();
             }
         });
 		btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {

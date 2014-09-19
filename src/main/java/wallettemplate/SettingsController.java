@@ -116,7 +116,8 @@ public class SettingsController  extends BaseUI{
 	public Main.OverlayUI overlayUi;
 	private double xOffset = 0;
 	private double yOffset = 0;
-	//private String strBitcoinUnit;
+	
+	private BitcoinUnit unit;
 	private int intDecimal;
 	private String strCurrency;
 	private String strLanguage;
@@ -142,13 +143,15 @@ public class SettingsController  extends BaseUI{
     	Tooltip.install(slBloom, new Tooltip(String.valueOf(slBloom.getValue())));
     	super.initialize(SettingsController.class);
     	
-    	String unit = Authenticator
+    	unit = Authenticator
     			.getWalletOperation()
-    			.getAccountUnitFromSettings()
-    			.getValueDescriptor()
-    			.getOptions()
-    			.getExtension(ProtoSettings.bitcoinUnitName);
-    	cbBitcoinUnit.setValue(unit);
+    			.getAccountUnitFromSettings();
+    	String unitStr = unit.getValueDescriptor()
+			    			.getOptions()
+			    			.getExtension(ProtoSettings.bitcoinUnitName);
+    	cbBitcoinUnit.setValue(unitStr);
+    	
+    	
     	cbCurrency.setValue(strCurrency);
     	cbCurrency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
   	      @Override
@@ -156,21 +159,44 @@ public class SettingsController  extends BaseUI{
   	    		strCurrency = cbCurrency.getItems().get((Integer) number2).toString();
   	      }
   	    });
-    	fee = (double) Authenticator.getWalletOperation().getDefaultFeeFromSettings();
+    	
+    	fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
+    	Coin c = Coin.valueOf((long)fee);				    	
+    	String strFee = TextUtils.coinAmountTextDisplay(c, unit);
+    	txFee.setPromptText(strFee);
+       	txFee.focusedProperty().addListener(new ChangeListener<Boolean>()
+    			{
+					@Override
+					public void changed(ObservableValue<? extends Boolean> arg0,Boolean arg1, Boolean arg2) {
+						try {
+							fee = Double.parseDouble(txFee.getText());
+							fee = TextUtils.bitcoinUnitToSatoshies(fee, unit);
+						}
+						catch(Exception e) {
+							fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
+						}
+						
+						Coin c = Coin.valueOf((long)fee);				    	
+				    	String strFee = TextUtils.coinAmountTextDisplay(c, unit);
+				    	txFee.clear();
+				    	txFee.setPromptText(strFee);
+					}
+    			});
+    	
+    	
     	//Still need to round decimal values in the prompt text.
     	cbBitcoinUnit.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
     	      @Override
     	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
     	    		Coin c = Coin.valueOf((long)fee);
-    	    		BitcoinUnit u ;
     	    	  	if ((Integer) number2 == 0)
-    	    	  		u = BitcoinUnit.BTC;
+    	    	  		unit = BitcoinUnit.BTC;
     	    		else if ((Integer) number2 == 1)
-    	    			u = BitcoinUnit.Millibits;
+    	    			unit = BitcoinUnit.Millibits;
     	    		else
-    	    			u = BitcoinUnit.Microbits;
+    	    			unit = BitcoinUnit.Microbits;
     	    	  	
-    	    	  	txFee.setPromptText(TextUtils.coinAmountTextDisplay(c, u));
+    	    	  	txFee.setPromptText(TextUtils.coinAmountTextDisplay(c, unit));
     	      }
     	    });
     	cbDecimal.setValue(String.valueOf(intDecimal));
@@ -333,6 +359,8 @@ public class SettingsController  extends BaseUI{
 				.findValueByNumber(cbBitcoinUnit.getSelectionModel().getSelectedIndex());
 		BitcoinUnit carmodel =   BitcoinUnit.valueOf(desc);
 		Authenticator.getWalletOperation().setAccountUnitInSettings(carmodel);
+		
+		Authenticator.getWalletOperation().setDefaultFeeInSettings((int)fee);
 		
 		Authenticator.getWalletOperation().setDecimalPointInSettings(intDecimal);
 		

@@ -45,11 +45,25 @@ public class TextUtils {
 	    return d;
 	}
 	
+	/**
+	 * Coin is the amount in sathosies
+	 * 
+	 * @param coin
+	 * @param unit
+	 * @return
+	 */
 	public static String coinAmountTextDisplay(Coin coin, BitcoinUnit unit) {
 		double i = satoshiesToBitcoinUnit(coin.value, unit);
 		return Double.toString(i) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
 	}
 	
+	/**
+	 * convert an amount represented by a unit to satoshies, e.g. 100 mBits will become 10,000,000 satoshies, 
+	 * 
+	 * @param in
+	 * @param unit
+	 * @return
+	 */
 	public static double bitcoinUnitToSatoshies(double in, BitcoinUnit unit) {
 		switch(unit) {
 			case BTC:
@@ -66,6 +80,13 @@ public class TextUtils {
 		return in;
 	}
 	
+	/**
+	 * convert an amount in satoshies to unit amount, e.g. 10,000,000 satoshies to 100 mBits.
+	 * 
+	 * @param in
+	 * @param unit
+	 * @return
+	 */
 	public static double satoshiesToBitcoinUnit(double in, BitcoinUnit unit) {
 		switch(unit) {
 			case BTC:
