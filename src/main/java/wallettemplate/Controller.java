@@ -33,6 +33,7 @@ import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNa
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 
 import com.google.bitcoin.core.AbstractBlockChain;
 import com.google.bitcoin.core.AbstractPeerEventListener;
@@ -137,6 +138,7 @@ import wallettemplate.utils.AlertWindowController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
+import wallettemplate.utils.TextUtils;
 
 import java.awt.Color;
 import java.awt.Desktop;
@@ -332,6 +334,8 @@ public class Controller  extends BaseUI{
 
 		    	 try {refreshBalanceLabel();} 
 		     	 catch (Exception e) {e.printStackTrace();}
+		    	 
+		    	 Platform.runLater(() -> setFeeTipText());
 			}
     	});
     	throttledUIUpdater.start();
@@ -1024,7 +1028,7 @@ public class Controller  extends BaseUI{
     }
     
     @SuppressWarnings("static-access")
-	public void refreshBalanceLabel() throws JSONException, IOException, AccountWasNotFoundException {
+	private void refreshBalanceLabel() throws JSONException, IOException, AccountWasNotFoundException {
     	LOG.info("Refreshing balance");
     	new UIUpdateHelper.BalanceUpdater(lblConfirmedBalance, lblUnconfirmedBalance).execute();
     }
@@ -1032,7 +1036,7 @@ public class Controller  extends BaseUI{
     
     
     @SuppressWarnings("unused")
-	public void setTxHistoryContent() throws Exception{
+    private void setTxHistoryContent() throws Exception{
     	LOG.info("Setting Tx History in Overview Pane");
     	new UIUpdateHelper.TxHistoryContentUpdater(scrlViewTxHistoryContentManager).execute();
     }
@@ -1055,16 +1059,29 @@ public class Controller  extends BaseUI{
 		txFee.lengthProperty().addListener(new ChangeListener<Number>(){
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) { 
-                  if(newValue.intValue() > oldValue.intValue()){
-                      char ch = txFee.getText().charAt(oldValue.intValue());  
-                      //Check if the new character is the number or other's
-                      if(!(ch >= '0' && ch <= '9') && ch != '.'){       
-                           //if it's not number then just setText to previous one
-                           txFee.setText(txFee.getText().substring(0,txFee.getText().length()-1)); 
-                      }
-                 }
+				if(newValue.longValue() > oldValue.longValue()){
+				      char ch = txFee.getText().charAt(oldValue.intValue());  
+				      //Check if the new character is the number or other's
+					  if(!(ch >= '0' && ch <= '9') && ch != '.'){       
+						   //if it's not number then just setText to previous one
+						  setFeeTipText(); 
+						  return;
+						  //txFee.setText(txFee.getText().substring(0,txFee.getText().length()-1)); 
+					  }
+				}
+				else
+					setFeeTipText();
             }
         });
+    }
+    
+    private void setFeeTipText() {
+    	double fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
+    	Coin c = Coin.valueOf((long)fee);
+    	BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
+    	
+    	String strFee = TextUtils.coinAmountTextDisplay(c, u);
+    	txFee.setPromptText(strFee);
     }
     
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {

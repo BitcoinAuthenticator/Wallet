@@ -2187,7 +2187,7 @@ public class WalletOperation extends BASE{
 	public double getDefaultFeeFromSettings() {
 		try {
 			return settingsFile.getDefaultFee();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return 0.0;
 		}
 	}

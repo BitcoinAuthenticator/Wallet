@@ -46,19 +46,39 @@ public class TextUtils {
 	}
 	
 	public static String coinAmountTextDisplay(Coin coin, BitcoinUnit unit) {
-		double i = coin.value;
+		double i = satoshiesToBitcoinUnit(coin.value, unit);
+		return Double.toString(i) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
+	}
+	
+	public static double bitcoinUnitToSatoshies(double in, BitcoinUnit unit) {
 		switch(unit) {
 			case BTC:
-				i /= 100000000;
+				in *= 100000000;
 				break;
 			case Millibits:
-				i /= 100000;
+				in *= 100000;
 				break;
 			case Microbits:
-				i /= 100;
+				in *= 100;
 				break;
 		}
 		
-		return Double.toString(i) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
+		return in;
+	}
+	
+	public static double satoshiesToBitcoinUnit(double in, BitcoinUnit unit) {
+		switch(unit) {
+			case BTC:
+				in /= 100000000;
+				break;
+			case Millibits:
+				in /= 100000;
+				break;
+			case Microbits:
+				in /= 100;
+				break;
+		}
+		
+		return in;
 	}
 }
