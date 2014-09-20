@@ -79,6 +79,13 @@ public class Main extends BAApplication {
 	  * the wallet's password in memory (ONLY !!) so decryption won't prompt an "Enter password" dialog
 	  */
 	 public static BAPassword UI_ONLY_WALLET_PW;
+	 
+	 /**
+	  * As seen in {@link wallettemplate.Main#UI_ONLY_WALLET_PW UI_ONLY_WALLET_PW}, the wallet's lock
+	  * is merely a UI thing cause we keep it locked all the time.<br>
+	  * This boolean represents the UI's wallet encrypted state
+	  */
+	 public static boolean UI_ONLY_IS_WALLET_LOCKED = true;
 
     @Override
     public void start(Stage mainWindow) {

@@ -249,7 +249,7 @@ public class Controller  extends BaseUI{
 	 public static Stage stage;
 	 public Main.OverlayUI overlayUi;
 	 TorListener listener = new TorListener();
-	 boolean locked = true;
+	 
 	 private ThrottledRunnableExecutor throttledUIUpdater;
 	 Main.OverlayUI<Controller> txoverlay;
 	 Pane txoverlaypane;
@@ -378,7 +378,7 @@ public class Controller  extends BaseUI{
     	Authenticator.addGeneralEventsListener(vBAGeneralEventsAdapter);
     	
     	// lock 
-    	locked = Authenticator.getWalletOperation().isWalletEncrypted();
+    	Main.UI_ONLY_IS_WALLET_LOCKED = Authenticator.getWalletOperation().isWalletEncrypted();
       	updateLockIcon();
       	
       	/**
@@ -845,7 +845,7 @@ public class Controller  extends BaseUI{
 	   /**
 	    * decrypt
 	    */
-	   if (locked){
+	   if (Main.UI_ONLY_IS_WALLET_LOCKED){
 		   displayLockDialog();
 	   }
 	   /**
@@ -859,7 +859,7 @@ public class Controller  extends BaseUI{
 			   try {
 				   Authenticator.getWalletOperation().encryptWallet(Main.UI_ONLY_WALLET_PW);
 				   Main.UI_ONLY_WALLET_PW.cleanPassword();
-				   locked = true;
+				   Main.UI_ONLY_IS_WALLET_LOCKED = true;
 			   } 
 			   catch (NoWalletPasswordException e) { e.printStackTrace(); }
 		   }
@@ -920,7 +920,7 @@ public class Controller  extends BaseUI{
 						   Authenticator.getWalletOperation().encryptWallet(temp);
 						   Main.UI_ONLY_WALLET_PW.setPassword(temp.toString());
 						   overlay.done();
-						   locked = false;
+						   Main.UI_ONLY_IS_WALLET_LOCKED = false;
 						   updateLockIcon();
 					   }
 					   catch(KeyCrypterException | NoWalletPasswordException  e){
@@ -955,7 +955,7 @@ public class Controller  extends BaseUI{
    }
    
    private void updateLockIcon(){
-	   if(locked){
+	   if(Main.UI_ONLY_IS_WALLET_LOCKED){
 		   Image imglocked = new Image(Main.class.getResource("btnLocked.png").toString());
 		   ImageView img = new ImageView(imglocked);
 		   btnLock.setGraphic(img);
@@ -1358,7 +1358,7 @@ public class Controller  extends BaseUI{
 		PasswordField password = new PasswordField();
 		password.setPrefWidth(350);
 		password.setStyle("-fx-border-color: #dae0e5; -fx-background-color: white; -fx-border-radius: 2;");
-		if (!Main.UI_ONLY_WALLET_PW.hasPassword() || this.locked){
+		if (!Main.UI_ONLY_WALLET_PW.hasPassword() || Main.UI_ONLY_IS_WALLET_LOCKED){
 			password.setDisable(false);
 			password.setPromptText("Enter Password");
 			}
@@ -1451,7 +1451,7 @@ public class Controller  extends BaseUI{
             @Override
             public void handle(MouseEvent t) {
             	try {
-            		if(locked) {
+            		if(Main.UI_ONLY_IS_WALLET_LOCKED) {
                 		if(!checkIfPasswordDecryptsWallet(new BAPassword(password.getText()))){
                 			informationalAlert("Unfortunately, you messed up.",
                 					"Wrong password");
