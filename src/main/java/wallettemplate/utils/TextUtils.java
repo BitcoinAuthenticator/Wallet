@@ -2,6 +2,7 @@ package wallettemplate.utils;
 
 import java.math.BigInteger;
 
+import authenticator.Authenticator;
 import authenticator.protobuf.ProtoSettings;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 
@@ -54,7 +55,9 @@ public class TextUtils {
 	 */
 	public static String coinAmountTextDisplay(Coin coin, BitcoinUnit unit) {
 		double i = satoshiesToBitcoinUnit(coin.value, unit);
-		return String.format( "%.4f", i ) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
+		String dp = Integer.toString(Authenticator.getWalletOperation().getDecimalPointFromSettings());
+		
+		return String.format( "%." + dp +"f", i ) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
 	}
 	
 	/**

@@ -203,7 +203,7 @@ public class SettingsController  extends BaseUI{
     	cbDecimal.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
     	      @Override
     	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-    	    		intDecimal = Integer.parseInt(cbCurrency.getItems().get((Integer) number2).toString());
+    	    		intDecimal = Integer.parseInt(cbDecimal.getItems().get((Integer) number2).toString());
     	      }
     	    });
     	
