@@ -43,6 +43,7 @@ import javax.annotation.Nullable;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.spongycastle.crypto.InvalidCipherTextException;
 
 import wallettemplate.Main;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
@@ -86,6 +87,7 @@ import com.google.bitcoin.core.Wallet.ExceededMaxTransactionSize;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
@@ -1868,7 +1870,12 @@ public class WalletOperation extends BASE{
 	public void decryptWallet(BAPassword password) throws NoWalletPasswordException{
 		if(isWalletEncrypted())
 		if(password.hasPassword()){
-			mWalletWrapper.decryptWallet(password.toString());
+			try {
+				mWalletWrapper.decryptWallet(password.toString());
+			}
+			catch(KeyCrypterException returnException) { 
+				throw new NoWalletPasswordException("Illegal Password");
+			}
 			LOG.info("Decrypted wallet with password: " + password.toString());
 		}
 		else

@@ -15,6 +15,7 @@ import wallettemplate.controls.BitcoinAddressValidator;
 import wallettemplate.utils.BaseUI;
 import authenticator.Authenticator;
 import authenticator.Utils.OneName.OneName;
+import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,13 +43,14 @@ public class ShowSeedController  extends BaseUI{
 	public void initialize() {
     	super.initialize(ShowSeedController.class);
     	try {
-			DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(null);
+			DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(Main.UI_ONLY_WALLET_PW);
 			List<String> mnemonic = seed.getMnemonicCode();
 			String seedStr = Joiner.on(" ").join(mnemonic);
 			lblSeed.setText(seedStr);
-		} catch (Exception e) {
+		} catch (NoWalletPasswordException e) {
 			informationalAlert("Unfortunately, you messed up.",
  					 "You need to enter the correct password.");
+			return;
 		}
     	
     	// right click copy context menu

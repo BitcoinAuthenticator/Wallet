@@ -411,7 +411,7 @@ public class SettingsController  extends BaseUI{
     }
 	
 	@FXML protected void showSeed(ActionEvent event){
-		if(Authenticator.getWalletOperation().isWalletEncrypted()){
+		if(Main.UI_ONLY_IS_WALLET_LOCKED) {
 			if(txfShowSeedPassword.getText().length() == 0)
 			{
 				informationalAlert("Unfortunately, you messed up.",

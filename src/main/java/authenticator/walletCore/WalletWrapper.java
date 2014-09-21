@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.spongycastle.crypto.InvalidCipherTextException;
+
 import authenticator.BASE;
 
 import com.google.bitcoin.core.Address;
@@ -28,6 +30,7 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.CoinSelection;
 import com.google.bitcoin.wallet.DefaultCoinSelector;
@@ -223,11 +226,11 @@ public class WalletWrapper extends BASE{
 	//
 	//#####################################
 	
-	public void decryptWallet(String password) throws IllegalStateException{
+	public void decryptWallet(String password) throws KeyCrypterException {
 		trackedWallet.decrypt(password);
 	}
 	
-	public void encryptWallet(String password) throws IllegalStateException{
+	public void encryptWallet(String password) {
 		trackedWallet.encrypt(password);
 	}
 	
