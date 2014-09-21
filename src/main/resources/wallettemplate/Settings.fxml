@@ -249,12 +249,12 @@
             <Button fx:id="btnShowSeed" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" onAction="#showSeed" style="-fx-background-color: #b3b1b1;" text="Show Seed" />
             <Label font="$x1" layoutX="15.0" layoutY="142.0" text="Change your Password" />
             <Label layoutX="15.0" layoutY="169.0" text="Enter your current password" />
-            <PasswordField layoutX="15.0" layoutY="186.0" prefWidth="240.0" />
+            <PasswordField fx:id="changePWOriginal" layoutX="15.0" layoutY="186.0" prefWidth="240.0" />
             <Label layoutX="15.0" layoutY="222.0" text="Enter your new password" />
-            <PasswordField layoutX="15.0" layoutY="245.0" prefWidth="239.0" />
+            <PasswordField fx:id="changePWNewFirst" layoutX="15.0" layoutY="245.0" prefWidth="239.0" />
             <Label layoutX="15.0" layoutY="273.0" text="Repeat password" />
-            <PasswordField layoutX="14.0" layoutY="295.0" prefWidth="240.0" />
-            <Button fx:id="btnChange" layoutX="15.0" layoutY="327.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Change password" />
+            <PasswordField fx:id="changePWNewSecond" layoutX="14.0" layoutY="295.0" prefWidth="240.0" />
+            <Button fx:id="btnChange" layoutX="15.0" layoutY="327.0" mnemonicParsing="false" onAction="#changePassword" style="-fx-background-color: #b3b1b1;" text="Change password" />
           </children>
         </Pane>
         <Pane layoutX="14.0" layoutY="229.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">

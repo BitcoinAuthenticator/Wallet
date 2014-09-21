@@ -42,4 +42,11 @@ public class BAPassword{
 			return pw.length();
 		return 0;
 	}
+	
+	public boolean compareTo(String other) {
+		if(this.hasPassword())
+			return this.toString().equals(other);
+		
+		return false;
+	}
 }

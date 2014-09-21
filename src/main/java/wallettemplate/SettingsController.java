@@ -27,6 +27,7 @@ import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import authenticator.protobuf.ProtoSettings.Languages;
+import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
@@ -93,8 +94,12 @@ public class SettingsController  extends BaseUI{
 	@FXML private Button btnDone;
 	@FXML private Button btnRestore;
 	@FXML private Button btnBackup;
-	@FXML private Button btnChange;
 	@FXML private Button btnShowSeed;
+
+	@FXML private Button btnChange;
+	@FXML private PasswordField changePWOriginal;
+	@FXML private TextField changePWNewFirst;
+	@FXML private TextField changePWNewSecond;
 	
 	@FXML private ChoiceBox cbCurrency;
 	@FXML private ChoiceBox cbDecimal;
@@ -458,6 +463,76 @@ public class SettingsController  extends BaseUI{
 			informationalAlert("Cannot delete selected",
 					"Try again");
 		}
+	}
+	
+	@FXML protected void changePassword(ActionEvent event){
+		if(Main.UI_ONLY_WALLET_PW.hasPassword()) {
+			if(Main.UI_ONLY_WALLET_PW.compareTo(changePWOriginal.getText())) {
+				changePassword(changePWOriginal.getText(), 
+						changePWNewFirst.getText(), 
+						changePWNewSecond.getText());
+			}
+		}
+		
+		else if(Authenticator.getWalletOperation().isWalletEncrypted()) {
+			BAPassword pw = new BAPassword(changePWOriginal.getText());
+			try {
+				Authenticator.getWalletOperation().decryptWallet(pw);
+				Authenticator.getWalletOperation().encryptWallet(pw);
+				
+				changePassword(changePWOriginal.getText(), 
+						changePWNewFirst.getText(), 
+						changePWNewSecond.getText());
+			} catch (NoWalletPasswordException e) {
+				informationalAlert("Unfortunately, you messed up.",
+	 					 "You need to enter the correct original password.");
+			}
+		}
+		else {
+			changePassword(changePWOriginal.getText(), 
+					changePWNewFirst.getText(), 
+					changePWNewSecond.getText());
+		}
+	}
+	
+	private void changePassword(String original, String pw1, String pw2) {
+		try {
+			//check both passwrods match
+			if(!pw1.equals(pw2)) {
+				informationalAlert("Unfortunately, you messed up.",
+						 "New passwords do not match.");
+				return;
+			}
+				
+			// decrypt wallet
+			if(Authenticator.getWalletOperation().isWalletEncrypted()) {
+				BAPassword originalPW = new BAPassword(original);
+				Authenticator.getWalletOperation().decryptWallet(originalPW);
+			}
+			
+			// encrypt with new password
+			BAPassword newPW = new BAPassword(pw1);
+			Authenticator.getWalletOperation().encryptWallet(newPW);
+			
+			// set to locked
+			Main.UI_ONLY_IS_WALLET_LOCKED = true;	
+			
+			informationalAlert("Success !",
+					 "Changed to new password");
+		}
+		catch (Exception e) {
+			informationalAlert("Unfortunately, we messed up.",
+					 "Cannot change password.");
+			
+			// make sure wallet is encrypted with original PW
+			if(!Authenticator.getWalletOperation().isWalletEncrypted()) {
+				BAPassword originalPW = new BAPassword(original);
+				try {
+					Authenticator.getWalletOperation().decryptWallet(originalPW);
+				} catch (NoWalletPasswordException e1) { e1.printStackTrace(); }
+			}
+		}
+		
 	}
 	
 	//################################
