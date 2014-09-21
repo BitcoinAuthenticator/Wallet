@@ -5,6 +5,11 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
+import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.WalletOperation.BAOperationState;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * An Application parameters specific to the wallet object.<br>
  * Is initialized when wallet is launched.
@@ -19,6 +24,8 @@ public class BAApplicationParameters{
 	boolean shouldLaunchProgram = false;
 	boolean shouldPrintTCPListenerInfoToConsole;
 	boolean isManuallyPortForwarded = false;
+	
+	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
 	
 	int NETWORK_PORT = 1234;
 	
@@ -113,10 +120,27 @@ public class BAApplicationParameters{
 		setApplicationDataFolderPath(tmp);
 		setAllNecessaryApplicationDataSubFolders();
 		
+		
+		/*
+		 * Settings from file
+		 */
+		WalletOperation wo = new WalletOperation(this);
+		shouldConnectWithTOR = wo.getIsUsingTORFromSettings();
+		shouldConnectToLocalHost = wo.getIsConnectingToLocalHostFromSettings();
+		shouldConnectToTrustedPeer = wo.getIsConnectingToTrustedPeerFromSettings();
+		if(shouldConnectToTrustedPeer)
+			trustedPeerIP = wo.getTrustedPeerIPFromSettings();
+		bloomFilterFalsePositiveRate = wo.getBloomFilterFalsePositiveRateFromSettings();
+		wo.dispose();
+		
 		shouldLaunchProgram = returnValue;
 	}
 	
 	private void PrintHelp(){
+		System.out.println(helpString());
+	}
+	
+	private String helpString() {
 		String[][] help = {
 				{"Parameters Available For This Wallet",""},{"",""},
 				
@@ -128,14 +152,15 @@ public class BAApplicationParameters{
 				{"--port"				,"Port Number, default is 1234"}
 		};
 		
+		String ret = "";
 		for (String[] kv : help) {
 			if(kv[0].length() >0)
-		        System.out.println(
-		            String.format("%-30s: %10s", kv[0], kv[1])
-		        );
-			else
-				System.out.println("\n");
+				ret += String.format("%-30s: %10s\n", kv[0], kv[1]);
+			else	
+				ret += "\n";
 	    }
+		
+		return ret;
 	}
 	
 	public NetworkType getBitcoinNetworkType(){ 
@@ -215,6 +240,77 @@ public class BAApplicationParameters{
 		   f2.mkdir();
 		}
 	}
+	
+	public BAOperationState getOperationalState() {
+		return operationalState;
+	}
+	
+	public void setOperationalState(BAOperationState newState) {
+		operationalState = newState;
+	}
+	
+	/*
+	 * 
+	 * The methods below are used only on initial wallet setup to retrieve settings from the 
+	 * config file. After the wallet is started those methods will not be available, the variables should
+	 * be retrieved from WalletOperation
+	 * 
+	 */
+	boolean shouldConnectWithTOR = true;
+	boolean shouldConnectToLocalHost = false;
+	double  bloomFilterFalsePositiveRate = 0.00001;
+	boolean shouldConnectToTrustedPeer = false;
+	String trustedPeerIP = null;
+	
+	public boolean getShouldConnectWithTOR() {
+		checkState(getOperationalState() != BAOperationState.NOT_SYNCED,"Please retreive variable through WalletOperation");
+		return this.shouldConnectWithTOR;
+	}
+	
+	public boolean getShouldConnectToLocalHost() {
+		checkState(getOperationalState() != BAOperationState.NOT_SYNCED,"Please retreive variable through WalletOperation");
+		return this.shouldConnectToLocalHost;
+	}
+	
+	public boolean getShouldConnectToTrustedPeer() {
+		checkState(getOperationalState() != BAOperationState.NOT_SYNCED,"Please retreive variable through WalletOperation");
+		return this.shouldConnectToTrustedPeer;
+	}
+	
+	public String getTrustedPeer() {
+		checkState(getOperationalState() != BAOperationState.NOT_SYNCED,"Please retreive variable through WalletOperation");
+		checkState(getShouldConnectToTrustedPeer() == true, "Not connecting through trusted peer");
+		return this.trustedPeerIP;
+	}
+	
+	public double getBloomFilterFalsePositiveRate() {
+		checkState(getOperationalState() != BAOperationState.NOT_SYNCED,"Please retreive variable through WalletOperation");
+		return this.bloomFilterFalsePositiveRate;
+	}
+	
+	/*
+	 * general
+	 */
+	@Override
+	public String toString() {
+		return "Help:" + "\n" + helpString() + "\n" +
+	
+			   "Application Parameter values: \n" + 
+			   String.format("%-30s: %10s\n", "testermode", (isTestMode? "True":"False")) + 
+			   String.format("%-30s: %10s\n","testnet", (bitcoinNetworkType == NetworkType.TEST_NET? "True":"False")) +
+			   String.format("%-30s: %10s\n", "debuglistener", (shouldPrintTCPListenerInfoToConsole? "True":"False")) +
+			   String.format("%-30s: %10s\n", "portforwarding", (isManuallyPortForwarded? "True":"False")) +
+			   String.format("%-30s: %10s\n", "port", NETWORK_PORT) +
+			   "\n\nApplication Defaults:\n"			+
+			   String.format("%-30s: %10s\n", "TOR", (shouldConnectWithTOR? "True":"False")) +
+			   String.format("%-30s: %10s\n", "Connect to localhost", (shouldConnectToLocalHost? "True":"False")) +
+			   String.format("%-30s: %10s\n", "Connect to trusted peer", (shouldConnectToTrustedPeer? "True":"False") + ", IP: " + trustedPeerIP) +
+			   String.format("%-30s: %10s\n", "BloomFilter FalsePositive", String.format( "%.6f", bloomFilterFalsePositiveRate ));
+	}
+	
+	/*
+	 *	Enums 
+	 */
 	
 	public enum NetworkType{
 		TEST_NET (0),

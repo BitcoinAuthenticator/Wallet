@@ -81,9 +81,7 @@ public class Authenticator extends BASE{
 		super(Authenticator.class);
 		init(appParams);
 		if(mWalletOperation == null){
-			try {
-				mWalletOperation = new WalletOperation(appParams);
-			} catch (IOException e) { e.printStackTrace(); }
+			mWalletOperation = new WalletOperation(appParams);
 			
 			try {
 				initPendingRequests();

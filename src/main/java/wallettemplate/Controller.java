@@ -367,7 +367,8 @@ public class Controller  extends BaseUI{
     public void onBitcoinSetup() {
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
-    	tor.addInitializationListener(listener);          	
+    	if(tor != null)
+    		tor.addInitializationListener(listener);          	
     	
     }
     

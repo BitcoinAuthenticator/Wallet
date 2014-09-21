@@ -106,6 +106,7 @@ public class SettingsController  extends BaseUI{
 	@FXML private ChoiceBox cbBitcoinUnit;
 	@FXML private ChoiceBox cbLanguage;
 	@FXML private Slider slBloom;
+	@FXML private Label lblBloomFilterRate;
 	@FXML private CheckBox ckTor;
 	@FXML private CheckBox ckLocalHost;
 	@FXML private CheckBox ckTrustedPeer;
@@ -129,14 +130,14 @@ public class SettingsController  extends BaseUI{
 	private boolean useTor;
 	private boolean localHost;
 	private boolean TrustedPeer;
-	private String peerIP;
 	private String strFee;
 	private double falsePositiveRate;
 	private double fee;
 
 	// Called by FXMLLoader
     @SuppressWarnings("restriction")
-	public void initialize() {        	
+	public void initialize() {     
+    	super.initialize(SettingsController.class);
     	
     	this.intDecimal = Authenticator.getWalletOperation().getDecimalPointFromSettings();
     	this.strCurrency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
@@ -145,8 +146,9 @@ public class SettingsController  extends BaseUI{
     	this.localHost = Authenticator.getWalletOperation().getIsConnectingToLocalHostFromSettings();
     	this.TrustedPeer = Authenticator.getWalletOperation().getIsConnectingToTrustedPeerFromSettings();
     	this.falsePositiveRate = Authenticator.getWalletOperation().getBloomFilterFalsePositiveRateFromSettings();
+    	
     	Tooltip.install(slBloom, new Tooltip(String.valueOf(slBloom.getValue())));
-    	super.initialize(SettingsController.class);
+    	this.lblBloomFilterRate.setText(String.format( "%.5f", falsePositiveRate ));
     	
     	unit = Authenticator
     			.getWalletOperation()
@@ -261,7 +263,15 @@ public class SettingsController  extends BaseUI{
     		ckLocalHost.setDisable(true);
     		ckLocalHost.setSelected(false);
     	}
+    	
     	slBloom.setValue(falsePositiveRate);
+    	slBloom.valueProperty().addListener((observable, oldValue, newValue) -> {
+    		falsePositiveRate = ((double)newValue / 100000);
+    		lblBloomFilterRate.setText(String.format( "%.5f", falsePositiveRate ));
+    	});
+    	
+    	
+    	
     	if (!ckTrustedPeer.isSelected()){txPeerIP.setDisable(true);}
     	else {txPeerIP.setDisable(false);}
     	ckTrustedPeer.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -377,9 +387,9 @@ public class SettingsController  extends BaseUI{
 		
 		Authenticator.getWalletOperation().setIsConnectingToLocalHostInSettings(localHost);
 		
-		Authenticator.getWalletOperation().setIsConnectingToTrustedPeerInSettings(TrustedPeer, peerIP);
+		Authenticator.getWalletOperation().setIsConnectingToTrustedPeerInSettings(TrustedPeer, txPeerIP.getText());
 
-		Authenticator.getWalletOperation().setBloomFilterFalsePositiveRateInSettings((float)slBloom.getValue());
+		Authenticator.getWalletOperation().setBloomFilterFalsePositiveRateInSettings(falsePositiveRate);
 		
 		Authenticator.fireOnWalletSettingsChange();
     }

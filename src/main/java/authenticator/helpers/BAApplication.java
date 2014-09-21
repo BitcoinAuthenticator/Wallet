@@ -52,4 +52,9 @@ public class BAApplication extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		
 	}
+	
+	@Override
+	public String toString() {
+		return ApplicationParams.toString();
+	}
 }

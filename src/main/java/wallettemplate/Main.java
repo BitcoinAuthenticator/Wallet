@@ -97,8 +97,10 @@ public class Main extends BAApplication {
         
         
 	        try {
-	        	if(super.BAInit())
+	        	if(super.BAInit()) {
+	        		System.out.println(toString());
 	            	init(mainWindow);
+	        	}
 	        	else
 	            	Runtime.getRuntime().exit(0);
 	        } catch (Exception t) {
@@ -184,39 +186,14 @@ public class Main extends BAApplication {
             	bitcoin.peerGroup().setMaxConnections(11);
                 bitcoin.wallet().setKeychainLookaheadSize(0);
                 bitcoin.wallet().allowSpendingUnconfirmedTransactions();
-                bitcoin.peerGroup().setBloomFilterFalsePositiveRate(0.00001);
+                bitcoin.peerGroup().setBloomFilterFalsePositiveRate(AppParams.getBloomFilterFalsePositiveRate());
                 System.out.println(bitcoin.wallet());
                 Platform.runLater(controller::onBitcoinSetup);
                 
                 /**
                  * Authenticator Setup
                  */
-            	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), AppParams);
-            	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
-            		@Override
-            		public BAPassword getWalletPassword() {
-            			return Main.UI_ONLY_WALLET_PW;
-            		}
-            	});
-            	auth.setOperationsLongLivingListener(new OperationListenerAdapter() {
-            		@Override
-            		public void onError(BAOperation operation, Exception e, Throwable t) {
-            			Platform.runLater(new Runnable() { 
-            				  @Override
-            				  public void run() {
-            					  informationalAlert("Error occured in recent wallet operation",
-                      					e != null? e.toString():t.toString());
-            				  }
-            			 });
-            		}
-            	});
-            	
-            	/*
-            	 * Start bitcoin and authenticator
-            	 */
-                
-            	auth.startAsync();
-            	Platform.runLater(() -> controller.onAuthenticatorSetup());
+                startAuthenticator(AppParams);
             }
         };
         
@@ -236,7 +213,19 @@ public class Main extends BAApplication {
     		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
         bitcoin.setCheckpoints(inCheckpint);
         
-    	bitcoin.useTor();
+        if(AppParams.getShouldConnectWithTOR())
+        	bitcoin.useTor();
+        
+        if(AppParams.getShouldConnectToLocalHost())
+        	bitcoin.connectToLocalHost();
+        
+        if(AppParams.getShouldConnectToTrustedPeer()) {
+        	try {
+				bitcoin.setPeerNodes(new PeerAddress[] { new PeerAddress(InetAddress.getByName(AppParams.getTrustedPeer())) });
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+        }
         
         bitcoin.setDownloadListener(new WalletOperation().getDownloadEvenListener());
         bitcoin.setAutoSave(true);
@@ -248,28 +237,7 @@ public class Main extends BAApplication {
     	/*
     	 * stage close event
     	 */
-    	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-    		@SuppressWarnings("static-access")
-			@Override
-    		public void handle(WindowEvent e) {
-    			Action response = null;
-    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0){
-    				response = Dialogs.create()
-            	        .owner(stage)
-            	        .title("Warning !")
-            	        .masthead("Pending Requests/ Operations")
-            	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
-            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-            	        .showConfirm();
-    			}
-    			
-	        	// Or no conditioning needed or user pressed Ok
-	        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-	        		handleStopRequest();
-	        	}
-	        	
-    		}
-    	});
+        hockCloseEvent(stage);
         	
         // start UI
         stage.show();
@@ -339,7 +307,63 @@ public class Main extends BAApplication {
 		 });
 		Runtime.getRuntime().exit(0);
 	}
+    
+    @SuppressWarnings("restriction")
+	private static void hockCloseEvent(Stage stage) {
+    	stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+    		@SuppressWarnings("static-access")
+			@Override
+    		public void handle(WindowEvent e) {
+    			Action response = null;
+    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0){
+    				response = Dialogs.create()
+            	        .owner(stage)
+            	        .title("Warning !")
+            	        .masthead("Pending Requests/ Operations")
+            	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
+            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+            	        .showConfirm();
+    			}
+    			
+	        	// Or no conditioning needed or user pressed Ok
+	        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
+	        		handleStopRequest();
+	        	}
+	        	
+    		}
+    	});
+    }
 
+    private static void startAuthenticator(BAApplicationParameters AppParams) {
+    	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), AppParams);
+    	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
+    		@Override
+    		public BAPassword getWalletPassword() {
+    			return Main.UI_ONLY_WALLET_PW;
+    		}
+    	});
+    	auth.setOperationsLongLivingListener(new OperationListenerAdapter() {
+    		@SuppressWarnings("restriction")
+			@Override
+    		public void onError(BAOperation operation, Exception e, Throwable t) {
+    			Platform.runLater(new Runnable() { 
+    				  @Override
+    				  public void run() {
+    					  informationalAlert("Error occured in recent wallet operation",
+              					e != null? e.toString():t.toString());
+    				  }
+    			 });
+    		}
+    	});
+    	
+    	/*
+    	 * Start bitcoin and authenticator
+    	 */
+        
+    	auth.startAsync();
+    	Platform.runLater(() -> controller.onAuthenticatorSetup());
+    }
+    
     public class OverlayUI<T> {
         public Node ui;
         public T controller;

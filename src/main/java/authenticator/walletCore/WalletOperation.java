@@ -117,8 +117,7 @@ public class WalletOperation extends BASE{
 	private BAHierarchy authenticatorWalletHierarchy;
 	private walletDB configFile;
 	private settingsDB settingsFile;
-	private BAOperationState operationalState;
-	private BAApplicationParameters AppParams;
+	private static BAApplicationParameters AppParams;
 	private static WalletDownloadListener blockChainDownloadListener;
 	
 	public WalletOperation(){ 
@@ -131,7 +130,7 @@ public class WalletOperation extends BASE{
 	 * @param params
 	 * @throws IOException
 	 */
-	public WalletOperation(BAApplicationParameters params) throws IOException{
+	public WalletOperation(BAApplicationParameters params){
 		super(WalletOperation.class);
 		init(params);
 	}
@@ -143,7 +142,7 @@ public class WalletOperation extends BASE{
 	 * @param peerGroup
 	 * @throws IOException
 	 */
-	public WalletOperation(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters params) throws IOException{
+	public WalletOperation(Wallet wallet, PeerGroup peerGroup, BAApplicationParameters params){
 		super(WalletOperation.class);
 		if(mWalletWrapper == null){
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
@@ -158,50 +157,52 @@ public class WalletOperation extends BASE{
 		authenticatorWalletHierarchy = null;
 		configFile = null;
 		settingsFile = null;
+		AppParams = null;
+		blockChainDownloadListener = null;
 	}
 	
-	private void init(BAApplicationParameters params) throws IOException{
-		AppParams = params;
-		if(configFile == null){
-			configFile = new walletDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
-			/**
-			 * Check to see if a config file exists, if not, initialize
-			 */
-			if(!configFile.checkConfigFile()){
-				//byte[] seed = BAHierarchy.generateMnemonicSeed();
-				configFile.initConfigFile();
+	private void init(BAApplicationParameters params) {
+		try {
+			AppParams = params;
+			if(configFile == null){
+				configFile = new walletDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
+				/**
+				 * Check to see if a config file exists, if not, initialize
+				 */
+				if(!configFile.checkConfigFile()){
+					//byte[] seed = BAHierarchy.generateMnemonicSeed();
+					configFile.initConfigFile();
+				}
 			}
-		}
-		if(settingsFile == null) {
-			settingsFile = new settingsDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
-		}
-		if(authenticatorWalletHierarchy == null)
-		{
-			//byte[] seed = configFile.getHierarchySeed();
-			authenticatorWalletHierarchy = new BAHierarchy(HierarchyCoinTypes.CoinBitcoin);
-			/**
-			 * Load num of keys generated in every account to get 
-			 * the next fresh key
-			 */
-			List<BAHierarchy.AccountTracker> accountTrackers = new ArrayList<BAHierarchy.AccountTracker>();
-			List<ATAccount> allAccount = getAllAccounts();
-			for(ATAccount acc:allAccount){
-				BAHierarchy.AccountTracker at =   new BAHierarchy().new AccountTracker(acc.getIndex(), 
-						BAHierarchy.keyLookAhead,
-						acc.getUsedExternalKeysList(), 
-						acc.getUsedInternalKeysList());
+			if(settingsFile == null) {
+				settingsFile = new settingsDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
+			}
+			if(authenticatorWalletHierarchy == null)
+			{
+				//byte[] seed = configFile.getHierarchySeed();
+				authenticatorWalletHierarchy = new BAHierarchy(HierarchyCoinTypes.CoinBitcoin);
+				/**
+				 * Load num of keys generated in every account to get 
+				 * the next fresh key
+				 */
+				List<BAHierarchy.AccountTracker> accountTrackers = new ArrayList<BAHierarchy.AccountTracker>();
+				List<ATAccount> allAccount = getAllAccounts();
+				for(ATAccount acc:allAccount){
+					BAHierarchy.AccountTracker at =   new BAHierarchy().new AccountTracker(acc.getIndex(), 
+							BAHierarchy.keyLookAhead,
+							acc.getUsedExternalKeysList(), 
+							acc.getUsedInternalKeysList());
+					
+					accountTrackers.add(at);
+				}
 				
-				accountTrackers.add(at);
+				authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
 			}
 			
-			authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
+			setOperationalState(BAOperationState.SYNCING);
+		}catch(Exception e) {
+			throw new RuntimeException(e.toString());
 		}
-		
-		/*if(mWalletWrapper != null){
-			updateBalaceNonBlocking(mWalletWrapper.getTrackedWallet(), null);
-		}*/
-		
-		setOperationalState(BAOperationState.SYNCING);
 	}
 	
 	public BAApplicationParameters getApplicationParams(){
@@ -2011,11 +2012,11 @@ public class WalletOperation extends BASE{
 	//#####################################
 	
 	public BAOperationState getOperationalState(){
-		return operationalState;
+		return AppParams.getOperationalState();
 	}
 	
 	public void setOperationalState(BAOperationState value){
-		operationalState = value;
+		AppParams.setOperationalState(value);
 		LOG.info("Changed Authenticator's operational state to " + BAOperationState.getStateString(value));
 	}
 	

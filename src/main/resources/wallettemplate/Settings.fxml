@@ -287,8 +287,16 @@
         <Pane layoutX="285.0" layoutY="229.0" prefHeight="142.0" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Slider fx:id="slBloom" layoutX="14.0" layoutY="72.0" prefWidth="240.0" showTickLabels="true" showTickMarks="true" />
-            <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Bloom Filtering" />
-            <Label layoutX="14.0" layoutY="52.0" text="False positive rate" />
+            <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Bloom Filtering" /><HBox layoutY="45.0" prefHeight="26.0" prefWidth="269.0">
+<children>
+            <Label layoutX="14.0" layoutY="52.0" text="False positive rate">
+<HBox.margin>
+<Insets right="5.0" />
+</HBox.margin></Label><Label fx:id="lblBloomFilterRate" layoutX="14.0" layoutY="52.0" text="XXX" />
+</children>
+<padding>
+<Insets left="10.0" right="10.0" />
+</padding></HBox>
             <Hyperlink layoutX="14.0" layoutY="113.0" text="What is this?" />
           </children>
         </Pane><Pane layoutX="14.0" layoutY="375.0" prefHeight="55.0" prefWidth="205.0">
