@@ -19,7 +19,7 @@
         </ImageView>
         <Button fx:id="btnBackup" layoutX="495.0" layoutY="10.0" mnemonicParsing="false" onAction="#launchBackup" style="-fx-background-color: #b3b1b1;" text="Backup" />
         <Button fx:id="btnDone" layoutX="721.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #b3b1b1;" text="Save &amp; Close" />
-        <Button fx:id="btnRestore" layoutX="579.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Restore Defaults" />
+        <Button fx:id="btnRestore" layoutX="579.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #b3b1b1;" text="Restore Defaults" /><Button fx:id="btnDeleteWallet" layoutX="50.0" layoutY="10.0" mnemonicParsing="false" onAction="#deleteWallet" style="-fx-background-color: #eb0303;" text="Delete Wallet" textFill="#f5f5f5" />
       </children>
 <padding>
 <Insets right="10.0" top="10.0" />
@@ -28,11 +28,6 @@
 <children>
     <Pane fx:id="settingspane" layoutX="-1.0" layoutY="41.0" prefHeight="442.0" prefWidth="851.0" style=" -fx-background-color: #d2cece;">
       <children>
-        <ImageView fitHeight="581.0" fitWidth="581.0" layoutX="150.0" layoutY="-7.0" opacity="0.6" pickOnBounds="true" preserveRatio="true">
-          <image>
-            <Image url="@cogs.png" />
-          </image>
-        </ImageView>
         <Pane layoutX="14.0" layoutY="14.0" prefHeight="136.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;" visible="true">
           <children>
             <Label layoutX="14.0" layoutY="16.0" text="Bitcoin Unit">
@@ -241,7 +236,7 @@
             </ChoiceBox>
           </children>
         </Pane>
-        <Pane layoutX="566.0" layoutY="14.0" prefHeight="415.0" prefWidth="269.0" style="-fx-border-color: #7c7b7b;">
+        <Pane layoutX="566.0" layoutY="14.0" prefHeight="358.0" prefWidth="269.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Security" />
             <Label layoutX="15.0" layoutY="42.0" text="Enter Your Current Password" />

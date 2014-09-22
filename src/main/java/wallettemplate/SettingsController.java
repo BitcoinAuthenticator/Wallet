@@ -2,6 +2,7 @@ package wallettemplate;
 
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,7 +10,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.Transaction;
@@ -113,6 +119,8 @@ public class SettingsController  extends BaseUI{
 	@FXML private TextField txFee;
 	@FXML private TextField txPeerIP;
 	@FXML private PasswordField txfShowSeedPassword;
+	
+	@FXML private Button btnDeleteWallet;
 	
 	@FXML private TableView tblViewPendingRequests;
 	@FXML private TableColumn colRequestID;
@@ -543,6 +551,47 @@ public class SettingsController  extends BaseUI{
 			}
 		}
 		
+	}
+	
+	@FXML protected void deleteWallet(ActionEvent event){
+		Action response = Dialogs.create()
+    	        .owner(Controller.accountsAppStage)
+    	        .title("Warning !")
+    	        .masthead("You are about to delete your wallet !!!\n"
+    	        		+ "Deleting the wallet will cause you to loose all related data and the ability to access your coins\n\n"
+    	        		+ "Are you sure your wallet is backed up and you wish to continue ?\n")
+    	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+    	        .showConfirm();
+		
+		if(response == Dialog.Actions.YES) {
+			if(deleteDirectory(new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath()))) {
+				informationalAlert("Deleted wallet",
+						 "Will shut down.");
+				
+				Runtime.getRuntime().exit(0);
+			}
+			else
+				informationalAlert("Failed !",
+						 "Could not delete wallet");
+			
+		}
+	}
+	
+	public static boolean deleteDirectory(File directory) {
+	    if(directory.exists()){
+	        File[] files = directory.listFiles();
+	        if(null!=files){
+	            for(int i=0; i<files.length; i++) {
+	                if(files[i].isDirectory()) {
+	                    deleteDirectory(files[i]);
+	                }
+	                else {
+	                    files[i].delete();
+	                }
+	            }
+	        }
+	    }
+	    return(directory.delete());
 	}
 	
 	//################################
