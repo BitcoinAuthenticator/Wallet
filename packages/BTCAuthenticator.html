@@ -1,0 +1,42 @@
+<html><head>
+  <SCRIPT src="http://java.com/js/dtjava.js"></SCRIPT>
+<script>
+    function launchApplication(jnlpfile) {
+        dtjava.launch(            {
+                url : 'BTCAuthenticator.jnlp'
+            },
+            {
+                javafx : '2.2+'
+            },
+            {}
+        );
+        return false;
+    }
+</script>
+
+<script>
+    function javafxEmbed() {
+        dtjava.embed(
+            {
+                url : 'BTCAuthenticator.jnlp',
+                placeholder : 'javafx-app-placeholder',
+                width : 0,
+                height : 0
+            },
+            {
+                javafx : '2.2+'
+            },
+            {}
+        );
+    }
+    <!-- Embed FX application into web page once page is loaded -->
+    dtjava.addOnloadCallback(javafxEmbed);
+</script>
+
+</head><body>
+<h2>Test page for <b>BTCAuthenticator</b></h2>
+  <b>Webstart:</b> <a href='BTCAuthenticator.jnlp' onclick="return launchApplication('BTCAuthenticator.jnlp');">click to launch this app as webstart</a><br><hr><br>
+
+  <!-- Applet will be inserted here -->
+  <div id='javafx-app-placeholder'></div>
+</body></html>
