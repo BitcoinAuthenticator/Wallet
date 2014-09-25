@@ -16,17 +16,6 @@
         
         
         <plugins>
-            <!-- Compiler Plugin-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -55,7 +44,7 @@
                                     <mainClass>wallettemplate.Main</mainClass>
                                 </transformer>
                             </transformers>
-                            <outputFile>target/wallettemplate-app</outputFile>
+                            <outputFile>target/wallettemplate-app.jar</outputFile>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>bundled</shadedClassifierName>
                         </configuration>
@@ -174,12 +163,8 @@
     
     <!-- Properties -->
     <properties>
-        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        
-        <!-- Location of staging directory for creation of linux IzPack installer -->
-        <staging.linux.dir>${project.build.directory}/staging.linux</staging.linux.dir>
-        <!-- Location of staging directory for creation of windows IzPack installer -->
-        <staging.windows.dir>${project.build.directory}/staging.windows</staging.windows.dir>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 </project>

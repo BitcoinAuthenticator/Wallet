@@ -39,9 +39,14 @@ $ protoc <Proto File>.proto --java_out=../../ --proto_path=./ --proto_path=<prot
 
 For protobuf-install-directory see [this](http://stackoverflow.com/questions/20069295/importing-google-protobuf-descriptor-proto-in-java-protocol-buffers)
 
-##### Executable Jar
+##### Native Installer (Make sure you run <u>$ mvn clean package</u> before)
+1. Set jh  
  ```
-$ mvn clean compile assembly:single
+$ jh=$JAVA_HOME/../JavaVirtualMachines/<JDK Version>/Contents/Home/Bin
+ ```
+2. Build:  
+```
+$ $jh/bin/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
  ```
 
 #### Importing Into Eclipse 
