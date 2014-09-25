@@ -27,6 +27,7 @@ import authenticator.Utils.SafeList;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.listeners.BAGeneralEventsListener;
+import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.network.TCPListener;
 import authenticator.network.TCPListener.TCPListenerExecutionDataBinder;
@@ -305,9 +306,9 @@ public class Authenticator extends BASE{
 		generalEventsListeners.add(listener);
 	}
 	
-	public static void fireOnNewPairedAuthenticator(){
+	public static void fireOnAccountsModified(AccountModificationType type, int accountIndex){
 		for(BAGeneralEventsListener l:generalEventsListeners)
-			l.onNewPairedAuthenticator();
+			l.onAccountsModified(type, accountIndex);
 	}
 	
 	public static void fireonNewOneNameIdentitySelection(ConfigOneNameProfile profile, @Nullable Image profileImage){
@@ -318,31 +319,6 @@ public class Authenticator extends BASE{
 	public static void fireOnBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onBalanceChanged(tx, howBalanceChanged, confidence);
-	}
-	
-	public static void fireOnNewStandardAccountAdded(){
-		for(BAGeneralEventsListener l:generalEventsListeners)
-			l.onNewStandardAccountAdded();
-	}
-
-	public static void fireOnAccountDeleted(int accountIndex){
-		for(BAGeneralEventsListener l:generalEventsListeners)
-			l.onAccountDeleted(accountIndex);
-	}
-
-	public static void fireOnAccountBeenModified(int accountIndex){
-		/**
-		 * update in case the active account was updated
-		 */
-		if(getWalletOperation().getActiveAccount().getActiveAccount().getIndex() == accountIndex)
-			try {
-				getWalletOperation().setActiveAccount(accountIndex);
-			} catch (AccountWasNotFoundException e) {
-				e.printStackTrace();
-			}
-
-		for(BAGeneralEventsListener l:generalEventsListeners)
-			l.onAccountBeenModified(accountIndex);
 	}
 	
 	public static void fireOnAuthenticatorSigningResponse(Transaction tx, 

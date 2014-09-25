@@ -21,6 +21,7 @@ import authenticator.hierarchy.exceptions.IncorrectPathException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import authenticator.hierarchy.exceptions.NoUnusedKeyException;
+import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 
 import java.io.FileNotFoundException;
@@ -796,7 +797,7 @@ public class WalletOperation extends BASE{
  	
  	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName, @Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException{
 		ATAccount ret = generateNewAccount(nt, accountName, WalletAccountType.StandardAccount, walletPW);
-		Authenticator.fireOnNewStandardAccountAdded();
+		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, ret.getIndex());
 		return ret;
 	}
 
@@ -1069,7 +1070,7 @@ public class WalletOperation extends BASE{
 			removePairingObject(po.getPairingID());
 		configFile.removeAccount(index);
 		LOG.info("Removed account at index, " + index);
-		Authenticator.fireOnAccountDeleted(index);
+		Authenticator.fireOnAccountsModified(AccountModificationType.AccountDeleted, index);
 	}
 	
 	public ATAccount getAccountByName(String name){
@@ -1177,13 +1178,19 @@ public class WalletOperation extends BASE{
 		return ret;
 	}
 
-	public ATAccount setAccountName(String newName, int index) throws IOException, AccountWasNotFoundException{
+	public ATAccount setAccountName(String newName, int index) throws CannotWriteToConfigurationFileException {
 		assert(newName.length() > 0);
-		ATAccount.Builder b = ATAccount.newBuilder(getAccount(index));
-		b.setAccountName(newName);
-		configFile.updateAccount(b.build());
-		Authenticator.fireOnAccountBeenModified(index);
-		return b.build();
+		try {
+			ATAccount.Builder b = ATAccount.newBuilder(getAccount(index));
+			b.setAccountName(newName);
+			updateAccount(b.build());
+			
+			return b.build();
+		}
+		catch(Exception e) {
+			throw new CannotWriteToConfigurationFileException(e.toString());
+		}
+		
 	}
 	
 	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws CannotWriteToConfigurationFileException {
@@ -1204,6 +1211,18 @@ public class WalletOperation extends BASE{
 	
 	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex) throws AccountWasNotFoundException{
 		return configFile.isUsedAddress(accountIndex, addressType, keyIndex);
+	}
+	
+	private void updateAccount(ATAccount acc) throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.updateAccount(acc);
+			LOG.info("Updated accoutn: " + acc.toString());
+			Authenticator.fireOnAccountsModified(AccountModificationType.AccountBeenModified, acc.getIndex());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.toString());
+		}
+		
 	}
 	
 	//#####################################
@@ -1389,7 +1408,7 @@ public class WalletOperation extends BASE{
 			addNewAccountToConfigAndHierarchy(a);
 		}
 		PairedAuthenticator ret = writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
-		Authenticator.fireOnNewPairedAuthenticator();
+		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, accountID);
 		return ret;
 	}
 	
@@ -1725,6 +1744,7 @@ public class WalletOperation extends BASE{
 			}
 			try {
 				writeActiveAccount(b1.build());
+				Authenticator.fireOnAccountsModified(AccountModificationType.ActiveAccountChanged, accountIdx);
 				return acc;
 			} catch (IOException e) { e.printStackTrace(); }
 			return null;

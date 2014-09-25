@@ -18,6 +18,7 @@ import authenticator.Utils.OneName.OneName;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -162,7 +163,7 @@ public class AccountsController  extends BaseUI{
 							cell.setAccount(t);
 							cell.updateUI();
 							cell.setSettingsClose();
-						} catch (IOException | AccountWasNotFoundException e) { 
+						} catch (CannotWriteToConfigurationFileException e) { 
 							e.printStackTrace(); 
 							Dialogs.create()
 					        .owner(Controller.accountsAppStage)

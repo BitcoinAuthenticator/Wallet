@@ -113,12 +113,6 @@ public class PairWallet extends BaseUI{
 		public void onFinished(BAOperation operation, String str) {
 			if( listener != null)
 				listener.onPairedWallet();
-			Platform.runLater(new Runnable() {
-		        @Override
-		        public void run() {
-					Authenticator.fireOnNewPairedAuthenticator();
-		        }
-			});
 		}
     	
     	@SuppressWarnings("restriction")

@@ -19,6 +19,7 @@ import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.listeners.BAGeneralEventsListener;
+import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
@@ -408,17 +409,17 @@ public class Controller  extends BaseUI{
     }
     
     private BAGeneralEventsAdapter vBAGeneralEventsAdapter = new BAGeneralEventsAdapter(){
+    	
+    	@Override
+    	public void onAccountsModified(AccountModificationType type, int accountIndex) {
+    		Platform.runLater(() -> { 
+    			if(type != AccountModificationType.ActiveAccountChanged )
+    				setAccountChoiceBox();
+    			
+    			updateUI();
+    		});
+    	}
 		
-		@Override
-		public void onNewPairedAuthenticator() {
-			Platform.runLater(new Runnable() { 
-			  @Override
-			  public void run() {
-				  setAccountChoiceBox();
-			  }
-			});
-		}
-
 		@Override
 		public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile, Image profileImage) {
 			Platform.runLater(new Runnable() { 
@@ -481,37 +482,6 @@ public class Controller  extends BaseUI{
 			}
 			
 			updateUI();
-		}
-
-		@Override
-		public void onNewStandardAccountAdded() {
-			Platform.runLater(new Runnable() { 
-			  @Override
-			  public void run() {
-				  updateUI();
-			  }
-			});
-		}
-
-		@Override
-		public void onAccountDeleted(int accountIndex) {
-			Platform.runLater(new Runnable() { 
-			  @Override
-			  public void run() {
-				  updateUI();
-			  }
-			});
-		}
-
-		@Override
-		public void onAccountBeenModified(int accountIndex) {
-			Platform.runLater(new Runnable() { 
-			  @Override
-			  public void run() {
-				  updateUI();
-			  }
-			});
-			
 		}
 
 		@Override
@@ -802,7 +772,8 @@ public class Controller  extends BaseUI{
    
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
-	   if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.AuthenticatorAccount){
+	   ATAccount active = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount();
+	   if (active.getAccountType() == WalletAccountType.AuthenticatorAccount){
 		   if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
 			   Platform.runLater(new Runnable() { 
 				   @Override
@@ -822,9 +793,11 @@ public class Controller  extends BaseUI{
 	   all = Authenticator.getWalletOperation().getAllAccounts();
 	   
 	   AccountBox.getItems().clear();
+	   AccountBox.setValue(active.getAccountName());
 	   for(ATAccount acc:all){
 		   AccountBox.getItems().add(acc.getAccountName());
 	   }
+	   
 	   AccountBox.setTooltip(new Tooltip("Select active account"));
 	   
 	   AccountBox.setValue(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountName());
@@ -2011,30 +1984,6 @@ public class Controller  extends BaseUI{
 	private void setReceiveAddresses(){
     	LOG.info("Updating received addresses");
     	new UIUpdateHelper.ReceiveAddressesUpdater(AddressBox).execute();
-    	
-    	/*Platform.runLater(new Runnable() { 
-			  @Override
-			  public void run() {
-				AddressBox.getItems().clear();
-		    	int accountIdx = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
-		    	ArrayList<String> add = new ArrayList<String>();
-				try {
-					for (int i=0; i<10; i++){
-						ATAddress newAdd = Authenticator.getWalletOperation()
-									.getNextExternalAddress(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex())
-									;
-						String newAddStr = newAdd.getAddressStr();
-						add.add(newAddStr);	
-					}
-						
-					for (String address : add){
-			    		AddressBox.getItems().add(address);
-			    	}
-					AddressBox.setValue(add.get(0));
-				} catch (NoSuchAlgorithmException | JSONException
-						| AddressFormatException e) { e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
-			  }
-		});*/
     }       
     
     //#####################################
