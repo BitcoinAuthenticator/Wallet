@@ -16,5 +16,6 @@ PairingQRCode.png
 bin/
 gen/
 target/
+packages/
 proguard/
 /target/
