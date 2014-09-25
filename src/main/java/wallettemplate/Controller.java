@@ -1652,6 +1652,10 @@ public class Controller  extends BaseUI{
     	labelClear.setPadding(new Insets(0,0,0,3));
     	btnClearReceivePane.setGraphic(labelClear);
     	btnClearReceivePane.setFont(Font.font(null, FontWeight.NORMAL, 14));  
+    	
+    	/*
+    	 * Copy address button
+    	 */
     	Button btnCopy = new Button();
         ReceiveHBox.setMargin(btnCopy, new Insets(14,0,0,4));
         btnCopy.setFont(new Font("Arial", 18));
@@ -1679,6 +1683,10 @@ public class Controller  extends BaseUI{
                 clipboard.setContent(content);
             }
         });
+        
+        /*
+         * Display address QR button
+         */
         Button btnQR = new Button();
         ReceiveHBox.setMargin(btnQR, new Insets(14,0,0,3));
         btnQR.setFont(new Font("Arial", 18));
@@ -1728,6 +1736,10 @@ public class Controller  extends BaseUI{
                 });
             }
         });
+        
+        /*
+         * Copy public key button
+         */
         Button btnKey = new Button();
         btnKey.setFont(new Font("Arial", 18));
         Tooltip.install(btnKey, new Tooltip("Copy public key to clipboard"));
