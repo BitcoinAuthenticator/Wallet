@@ -50,6 +50,12 @@
                                     </excludes>
                                 </filter>
                             </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>wallettemplate.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                            <outputFile>target/wallettemplate-app</outputFile>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>bundled</shadedClassifierName>
                         </configuration>

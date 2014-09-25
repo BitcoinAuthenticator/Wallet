@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="BTCAuthenticator.jnlp">
   <information>
-    <title>“BTCAuthenticator”</title>
+    <title>Sample JavaFX Application</title>
     <vendor>Unknown vendor</vendor>
     <description>Sample JavaFX 2.0 application.</description>
     <offline-allowed/>
@@ -11,7 +11,6 @@
   </resources>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="BTCAuthenticator.jar" size="1490200" download="eager" />
   </resources>
   <applet-desc  width="0" height="0" main-class="com.javafx.main.NoJavaFXFallback"  name="BTCAuthenticator" >
     <param name="requiredFXVersion" value="2.2+"/>
