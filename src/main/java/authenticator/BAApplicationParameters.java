@@ -294,7 +294,7 @@ public class BAApplicationParameters{
 	@Override
 	public String toString() {
 		return "Help:" + "\n" + helpString() + "\n" +
-			   "Wallet Data Folder Path: " + getApplicationDataFolderAbsolutePath() +
+			   "Wallet Data Folder Path: " + getApplicationDataFolderAbsolutePath() + "\n" +
 			   "Application Parameter values: \n" + 
 			   String.format("%-30s: %10s\n", "testermode", (isTestMode? "True":"False")) + 
 			   String.format("%-30s: %10s\n","testnet", (bitcoinNetworkType == NetworkType.TEST_NET? "True":"False")) +
