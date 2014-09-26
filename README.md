@@ -56,7 +56,7 @@ $ $jh/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCA
 <br>
 Build (Windows): 
 ```
-c:\<Path to project> %jh%/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
+c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
  ```
 
 #### Importing Into Eclipse 
