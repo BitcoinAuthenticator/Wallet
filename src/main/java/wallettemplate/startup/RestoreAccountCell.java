@@ -40,9 +40,9 @@ public class RestoreAccountCell extends Region{
         this.loadFXML();
         this.setSnapToPixel(true);
         if(type == WalletAccountType.StandardAccount)
-        	ivLogo.setImage(new Image(File.separator + "wallettemplate" + File.separator + "bitcoin_logo_plain_small.png"));
+        	ivLogo.setImage(new Image("/wallettemplate/bitcoin_logo_plain_small.png"));
         else
-        	ivLogo.setImage(new Image(File.separator + "wallettemplate" + File.separator + "authenticator_logo_plain_small.png"));
+        	ivLogo.setImage(new Image("wallettemplate/authenticator_logo_plain_small.png"));
       }
 	
 	public String getAccountTypeName() { return lblAccountType.getText(); }
@@ -75,7 +75,7 @@ public class RestoreAccountCell extends Region{
     }
 	
 	private String getViewPath() {
-        return "startup" + File.separator + "restore_account_cell.fxml";
+        return "startup/restore_account_cell.fxml";
     }
 
     private URL getViewURL() {

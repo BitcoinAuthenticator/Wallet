@@ -126,7 +126,7 @@ public class PaperWalletQR extends BASE{
 	}
 	
 	private BufferedImage completePaperWallet(String mnemonic, Image qrSeed, Image qrMPubKey) throws IOException{
-        URL location = Main.class.getResource(File.separator + "wallettemplate" + File.separator + "startup" + File.separator + "PaperWallet.png");
+        URL location = Main.class.getResource("/wallettemplate/startup/PaperWallet.png");
         BufferedImage a = ImageIO.read(location);
         BufferedImage b = SwingFXUtils.fromFXImage(qrSeed, null);
         BufferedImage c = SwingFXUtils.fromFXImage(qrMPubKey, null);

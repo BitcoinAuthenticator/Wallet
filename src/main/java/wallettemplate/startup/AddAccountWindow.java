@@ -95,9 +95,9 @@ public class AddAccountWindow extends BaseUI{
 	
 	private String getViewPath(WalletAccountType type) {
 		if (type == WalletAccountType.StandardAccount)
-			return "startup" + File.separator + "AddStandardAccount.fxml";
+			return "startup/AddStandardAccount.fxml";
 		else
-			return "startup" + File.separator + "AddPairedAccount.fxml";
+			return "startup/AddPairedAccount.fxml";
     }
 
     private URL getViewURL(String path) {
@@ -146,7 +146,7 @@ public class AddAccountWindow extends BaseUI{
     Stage pairWindow = null;
     @FXML protected void pair(ActionEvent event){
     	pairWindow = loadFXML(pairWindow, 
-    			getViewURL(File.separator + "wallettemplate" + File.separator + "pairing" + File.separator + "BAApp.fxml"),
+    			getViewURL("/wallettemplate/pairing/BAApp.fxml"),
     			850, 484, 
     			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
     			new PairingWalletControllerListener(){

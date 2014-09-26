@@ -56,7 +56,7 @@ public class TestSSSCell extends Region{
     }
 	
 	private String getViewPath() {
-        return "startup" + File.separator + "TestSSSCell.fxml";
+        return "startup/TestSSSCell.fxml";
     }
 
     private URL getViewURL() {

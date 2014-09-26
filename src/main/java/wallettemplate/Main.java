@@ -135,7 +135,7 @@ public class Main extends BAApplication {
             if(!f1.exists()) { 
             	Parent root;
             	StartupController.appParams = ApplicationParams;
-                root = FXMLLoader.load(Main.class.getResource(File.separator + "wallettemplate" + File.separator + "startup" + File.separator + "walletstartup.fxml"));
+                root = FXMLLoader.load(Main.class.getResource("/wallettemplate/startup/walletstartup.fxml"));
                 startup = new Stage();
                 startup.setTitle("Setup");
                 startup.initStyle(StageStyle.UNDECORATED);

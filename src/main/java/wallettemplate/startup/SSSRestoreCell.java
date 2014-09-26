@@ -52,7 +52,7 @@ public class SSSRestoreCell extends Region{
     }
 	
 	private String getViewPath() {
-        return "startup" + File.separator + "SSSRestoreCell.fxml";
+        return "startup/SSSRestoreCell.fxml";
     }
 
     private URL getViewURL() {
