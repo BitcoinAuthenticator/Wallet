@@ -59,11 +59,6 @@
             <id>gcm-server-repository</id>
             <url>https://raw.github.com/slorber/gcm-server-repository/master/releases/</url>
         </repository>
-        <!-- for bug fixing in sarox webcam capture -->
-        <repository>
-            <id>SarXos Repository</id>
-            <url>http://www.sarxos.pl/repo/maven2</url>
-        </repository>
     </repositories>
     
     <dependencies>
@@ -93,11 +88,6 @@
          QR Dependencies
          -->
         <dependency>
-            <groupId>com.github.sarxos</groupId>
-            <artifactId>webcam-capture</artifactId>
-            <version>0.3.10-RC6</version>
-        </dependency>
-        <dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>javase</artifactId>
 			<version>2.1</version>
@@ -113,7 +103,12 @@
             <artifactId>bitcoinj</artifactId>
             <version>0.12-SNAPSHOT</version>
         </dependency>
-        
+        <!-- WebCam-->
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>0.3.10</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
