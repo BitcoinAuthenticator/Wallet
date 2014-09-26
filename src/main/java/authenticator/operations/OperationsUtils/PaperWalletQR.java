@@ -100,7 +100,7 @@ public class PaperWalletQR extends BASE{
 	 			ms = new MnemonicCode();
 	 			byte[] entropy = HEX.decode(entropyHex);
 	 			List<String> mnemonic = ms.toMnemonic(entropy);
-	 			seed = new DeterministicSeed(mnemonic, "", creationTime);
+	 			seed = new DeterministicSeed(mnemonic, null,"", creationTime);
 	 			String mnemonicStr = Joiner.on(" ").join(seed.getMnemonicCode());
 	 			LOG.info("Restored seed from QR: " + mnemonicStr);
 	 		} catch (Exception e) {

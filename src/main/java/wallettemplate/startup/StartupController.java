@@ -938,7 +938,7 @@ public class StartupController  extends BaseUI{
 		 //LocalDate date = seedCreationDatePicker.getValue();
 		 long unix = date.atStartOfDay().toEpochSecond(ZoneOffset.UTC);
 		 
-		 return new DeterministicSeed(mnemonicArr, "", unix);//reconstructSeedFromStringMnemonics(mnemonicArr, unix);
+		 return new DeterministicSeed(mnemonicArr, null,"", unix);//reconstructSeedFromStringMnemonics(mnemonicArr, unix);
 	 }
 	 	 
 	 //##############################

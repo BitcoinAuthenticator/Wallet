@@ -696,7 +696,7 @@ public class WalletOperation extends BASE{
 			in.setScriptSig(inputScript);
 			
 			try {
-				in.getScriptSig().correctlySpends(tx, index, connectedOutput.getScriptPubKey(), false);
+				in.getScriptSig().correctlySpends(tx, (long)index, connectedOutput.getScriptPubKey());
 			} catch (ScriptException e) {
 	            return null;
 	        }
