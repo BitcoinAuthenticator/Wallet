@@ -218,7 +218,7 @@ public class BAWalletRestorer extends BASE{
 			vStore = new SPVBlockStore(netParams, new File(directory, vAuthenticator.getApplicationParams().getAppName() + ".spvchain"));
 			
 			if(netParams == MainNetParams.get()) 
-				setCheckpoints(getClass().getResourceAsStream("/wallettemplate/checkpoints"));
+				setCheckpoints(getClass().getResourceAsStream(File.separator + "wallettemplate" + File.separator + "checkpoints"));
 			if (checkpoints != null) {
 	            // Ugly hack! We have to create the wallet once here to learn the earliest key time, and then throw it
 	            // away. The reason is that wallet extensions might need access to peergroups/chains/etc so we have to

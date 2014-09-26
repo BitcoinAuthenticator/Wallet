@@ -107,13 +107,13 @@ public class BAApplicationParameters{
 		String tmp = System.getProperty("user.home");
 		switch(osType) {
 		case WINDOWS:
-			tmp = System.getenv("APPDATA") + "\\";
+			tmp = System.getenv("APPDATA") + File.separator;
 			break;
 		case LINUX:
-			tmp += "/";
+			tmp += File.separator;
 			break;
 		case OSX:
-			tmp += "/Library/Application Support/";
+			tmp += File.separator + "Library" + File.separator + "Application Support" + File.separator + "";
 			break;
 		}
 		
@@ -214,11 +214,11 @@ public class BAApplicationParameters{
 	}
 	/**
 	 * The full application's data folder 
-	 * With an '/'
+	 * With an path seperator at the end
 	 * @return
 	 */
 	public String getApplicationDataFolderAbsolutePath(){
-		return this.getApplicationDataFolderPath() + APP_NAME + "/";
+		return this.getApplicationDataFolderPath() + APP_NAME + File.separator;
 	}
 	/**
 	 * Without the folder itself

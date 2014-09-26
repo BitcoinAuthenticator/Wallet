@@ -35,7 +35,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
  */
 public class PairingQRCode {
 	
-	public static final String QR_IMAGE_RELATIVE_PATH = "cached_resources/PairingQRCode.png"; 
+	public static final String QR_IMAGE_RELATIVE_PATH = "cached_resources" + File.separator + "PairingQRCode.png"; 
 	
 /**
  * 

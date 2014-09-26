@@ -416,7 +416,7 @@ public class SettingsController  extends BaseUI{
 		Parent root;
         try {
         	StartupController.appParams = Authenticator.getApplicationParams();
-        	URL location = getClass().getResource("/wallettemplate/startup/walletstartup.fxml");
+        	URL location = getClass().getResource(File.separator + "wallettemplate" + File.separator + "startup" + File.separator + "walletstartup.fxml");
         	FXMLLoader loader = new FXMLLoader(location);
             root = loader.load();
             backupPane = new Stage();

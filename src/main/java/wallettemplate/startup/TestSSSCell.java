@@ -1,6 +1,7 @@
 package wallettemplate.startup;
 
 import java.awt.Button;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -55,7 +56,7 @@ public class TestSSSCell extends Region{
     }
 	
 	private String getViewPath() {
-        return "startup/TestSSSCell.fxml";
+        return "startup" + File.separator + "TestSSSCell.fxml";
     }
 
     private URL getViewURL() {

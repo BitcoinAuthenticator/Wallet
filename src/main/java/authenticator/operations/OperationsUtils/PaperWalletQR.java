@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -125,7 +126,7 @@ public class PaperWalletQR extends BASE{
 	}
 	
 	private BufferedImage completePaperWallet(String mnemonic, Image qrSeed, Image qrMPubKey) throws IOException{
-        URL location = Main.class.getResource("/wallettemplate/startup/PaperWallet.png");
+        URL location = Main.class.getResource(File.separator + "wallettemplate" + File.separator + "startup" + File.separator + "PaperWallet.png");
         BufferedImage a = ImageIO.read(location);
         BufferedImage b = SwingFXUtils.fromFXImage(qrSeed, null);
         BufferedImage c = SwingFXUtils.fromFXImage(qrMPubKey, null);

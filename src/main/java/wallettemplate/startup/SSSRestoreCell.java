@@ -1,6 +1,7 @@
 package wallettemplate.startup;
 
 import java.awt.Button;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -51,7 +52,7 @@ public class SSSRestoreCell extends Region{
     }
 	
 	private String getViewPath() {
-        return "startup/SSSRestoreCell.fxml";
+        return "startup" + File.separator + "SSSRestoreCell.fxml";
     }
 
     private URL getViewURL() {

@@ -1,6 +1,7 @@
 package wallettemplate.controls;
 
 import java.awt.Button;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -50,9 +51,9 @@ public class DisplayAccountCell extends Region{
         updateUI();
         
         if(imgSettingsOpen == null)
-        	imgSettingsOpen = new Image(Main.class.getResourceAsStream("display_accounts/closeSettingsWindow.png"));
+        	imgSettingsOpen = new Image(Main.class.getResourceAsStream("display_accounts" + File.separator + "closeSettingsWindow.png"));
         if(imgSettingsClose == null)
-        	imgSettingsClose = new Image(Main.class.getResourceAsStream("display_accounts/btnSettingsSmall.png"));
+        	imgSettingsClose = new Image(Main.class.getResourceAsStream("display_accounts" + File.separator + "btnSettingsSmall.png"));
         
         
     }
@@ -128,7 +129,7 @@ public class DisplayAccountCell extends Region{
     }
 	
 	private String getViewPath() {
-        return "display_accounts/account_cell.fxml";
+        return "display_accounts" + File.separator + "account_cell.fxml";
     }
 
     private URL getViewURL() {

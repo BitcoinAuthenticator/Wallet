@@ -2004,7 +2004,7 @@ public class Controller  extends BaseUI{
    	//#####################################
     
     @FXML protected void btnAppAuthenticator(MouseEvent event) {
-    	Main.instance.overlayUI("pairing/BAApp.fxml");
+    	Main.instance.overlayUI("pairing" + File.separator + "BAApp.fxml");
     }
     
     @FXML protected void btnSettings(MouseEvent event) {
@@ -2031,7 +2031,7 @@ public class Controller  extends BaseUI{
     public static Stage accountsAppStage;
     @FXML protected void btnAccounts(MouseEvent event) {
         try {
-        	URL location = getClass().getResource("display_accounts/display_accounts.fxml");
+        	URL location = getClass().getResource("display_accounts" + File.separator + "display_accounts.fxml");
         	FXMLLoader loader = new FXMLLoader(location);
         	accountsAppStage = new Stage();
         	accountsAppStage.setTitle("Accounts");

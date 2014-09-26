@@ -1,6 +1,7 @@
 package wallettemplate.startup;
 
 import java.awt.Button;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -94,9 +95,9 @@ public class AddAccountWindow extends BaseUI{
 	
 	private String getViewPath(WalletAccountType type) {
 		if (type == WalletAccountType.StandardAccount)
-			return "startup/AddStandardAccount.fxml";
+			return "startup" + File.separator + "AddStandardAccount.fxml";
 		else
-			return "startup/AddPairedAccount.fxml";
+			return "startup" + File.separator + "AddPairedAccount.fxml";
     }
 
     private URL getViewURL(String path) {
@@ -145,7 +146,7 @@ public class AddAccountWindow extends BaseUI{
     Stage pairWindow = null;
     @FXML protected void pair(ActionEvent event){
     	pairWindow = loadFXML(pairWindow, 
-    			getViewURL("/wallettemplate/pairing/BAApp.fxml"), 
+    			getViewURL(File.separator + "wallettemplate" + File.separator + "pairing" + File.separator + "BAApp.fxml"),
     			850, 484, 
     			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
     			new PairingWalletControllerListener(){

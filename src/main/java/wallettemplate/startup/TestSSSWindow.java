@@ -1,6 +1,7 @@
 package wallettemplate.startup;
 
 import java.awt.Button;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -97,9 +98,9 @@ public class TestSSSWindow extends BaseUI{
 		TestSSSResultCell c = new TestSSSResultCell();
 		c.setResult(lblStr);
 		if(didPass)
-        	c.setIcon(new Image("/wallettemplate/startup/success_icon.png"));
+        	c.setIcon(new Image(File.separator + "wallettemplate" + File.separator + "startup" + File.separator + "success_icon.png"));
         else
-        	c.setIcon(new Image("/wallettemplate/startup/failed_icon.png"));
+        	c.setIcon(new Image(File.separator + "wallettemplate" + File.separator + "startup" + File.separator + "failed_icon.png"));
 		contentManagerResults.addItem(c);
 	}
 	
@@ -122,7 +123,7 @@ public class TestSSSWindow extends BaseUI{
     }
 	
 	private String getViewPath() {
-		return "startup/TestSSS.fxml";
+		return "startup" + File.separator + "TestSSS.fxml";
     }
 
     private URL getViewURL(String path) {
