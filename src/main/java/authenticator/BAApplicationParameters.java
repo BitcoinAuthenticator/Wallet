@@ -294,14 +294,14 @@ public class BAApplicationParameters{
 	@Override
 	public String toString() {
 		return "Help:" + "\n" + helpString() + "\n" +
-	
+			   "Wallet Data Folder Path: " + getApplicationDataFolderAbsolutePath() +
 			   "Application Parameter values: \n" + 
 			   String.format("%-30s: %10s\n", "testermode", (isTestMode? "True":"False")) + 
 			   String.format("%-30s: %10s\n","testnet", (bitcoinNetworkType == NetworkType.TEST_NET? "True":"False")) +
 			   String.format("%-30s: %10s\n", "debuglistener", (shouldPrintTCPListenerInfoToConsole? "True":"False")) +
 			   String.format("%-30s: %10s\n", "portforwarding", (isManuallyPortForwarded? "True":"False")) +
 			   String.format("%-30s: %10s\n", "port", NETWORK_PORT) +
-			   "\n\nApplication Defaults:\n"			+
+			   "\nApplication Defaults:\n"			+
 			   String.format("%-30s: %10s\n", "TOR", (shouldConnectWithTOR? "True":"False")) +
 			   String.format("%-30s: %10s\n", "Connect to localhost", (shouldConnectToLocalHost? "True":"False")) +
 			   String.format("%-30s: %10s\n", "Connect to trusted peer", (shouldConnectToTrustedPeer? "True":"False") + ", IP: " + trustedPeerIP) +
