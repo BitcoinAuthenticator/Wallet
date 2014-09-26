@@ -107,7 +107,7 @@ public class BAApplicationParameters{
 		String tmp = System.getProperty("user.home");
 		switch(osType) {
 		case WINDOWS:
-			tmp = System.getenv("APPDATA");
+			tmp = System.getenv("APPDATA") + "\\";
 			break;
 		case LINUX:
 			tmp += "/";
