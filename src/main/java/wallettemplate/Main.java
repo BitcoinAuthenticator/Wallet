@@ -229,6 +229,7 @@ public class Main extends BAApplication {
         
         bitcoin.setDownloadListener(new WalletOperation().getDownloadEvenListener());
         bitcoin.setAutoSave(true);
+        bitcoin.setAutoStop(true);
         bitcoin.setBlockingStartup(false)
                .setUserAgent(AppParams.getAppName(), "1.0");
         bitcoin.startAsync();      
