@@ -273,12 +273,12 @@ public class Main extends BAApplication {
 			public void run() {
 				/**
 				 * the wallet kit has a weird bug that it doesn't shut down.
-				 * if it takes more than 30 seconds force shut it down
+				 * if it takes more than 10 seconds force shut it down
 				 */
 				int cnt = 0;
 				while(true){
 					// fix for a bug, if bitcoin is not shutting down   OR
-					if(cnt > 30 										||
+					if(cnt > 10 										||
 					//  auth not initiated  OR			 auth initiated and terminated             											AND
 					((auth == null 			|| (auth != null && auth.state() == com.google.common.util.concurrent.Service.State.TERMINATED)) &&
 					//			bitcoin is terminated
