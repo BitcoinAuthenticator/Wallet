@@ -9,6 +9,7 @@ import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
@@ -28,31 +29,40 @@ public class CryptoUtils {
 	 */
 	static public byte[] encryptPayloadWithChecksum(byte[] rawPayload, SecretKey secretkey) throws CouldNotEncryptPayload {
 		try {
+			byte payload[] = payloadWithChecksum(rawPayload, secretkey);
+			
+			//Encrypt the payload
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, secretkey);
+			byte[] cipherBytes = cipher.doFinal(payload);
+			return cipherBytes;
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			throw new CouldNotEncryptPayload("Couldn't encrypt payload");
+		}
+	}
+	
+	/**
+	 * HmacSHA256 checksum is performed on the raw payload, return a concatenated array of both.
+	 * 
+	 * @param rawPayload
+	 * @param secretkey
+	 * @return
+	 */
+	static public byte[] payloadWithChecksum(byte[] rawPayload, SecretKey secretkey) {
+		try {
 			Mac mac = Mac.getInstance("HmacSHA256");
 			mac.init(secretkey);
 			byte[] macbytes = mac.doFinal(rawPayload);
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			
-				outputStream.write(rawPayload);
-				outputStream.write(macbytes);
+			outputStream.write(rawPayload);
+			outputStream.write(macbytes);
 			
-			byte payload[] = outputStream.toByteArray( );
-			
-			//Encrypt the payload
-			Cipher cipher = null;
-			try {cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");} 
-			catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
-			catch (NoSuchPaddingException e) {e.printStackTrace();}
-			try {cipher.init(Cipher.ENCRYPT_MODE, secretkey);} 
-			catch (InvalidKeyException e) {e.printStackTrace();}
-			byte[] cipherBytes = null;
-			try {cipherBytes = cipher.doFinal(payload);} 
-			catch (IllegalBlockSizeException e) {e.printStackTrace();} 
-			catch (BadPaddingException e) {e.printStackTrace();}
-			return cipherBytes;
-		} catch (IOException | InvalidKeyException | NoSuchAlgorithmException e1) {
-			e1.printStackTrace();
-			throw new CouldNotEncryptPayload("Couldn't encrypt payload");
+			return outputStream.toByteArray( );
+		}
+		catch(Exception e) {
+			return null;
 		}
 	}
 	
@@ -79,6 +89,21 @@ public class CryptoUtils {
 		}
 		catch(Exception e) {
 			throw new CannotDecryptMessageException(e.toString());
+		}
+	}
+	
+	static public SecretKey generateNewSecretAESKey() {
+		try {
+			//Generate 256 bit key.
+			KeyGenerator kgen = KeyGenerator.getInstance("AES");
+			kgen.init(256);
+			
+			// Generate the secret key specs.
+			SecretKey sharedsecret = kgen.generateKey();
+			return sharedsecret;
+		}
+		catch(NoSuchAlgorithmException e) {
+			return null;
 		}
 	}
 	

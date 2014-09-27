@@ -18,6 +18,7 @@ import org.json.simple.parser.ParseException;
 
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.EncodingUtils;
+import authenticator.crypto.CryptoUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANetworkInfo;
 import authenticator.network.PongPayload;
@@ -90,17 +91,10 @@ public class PairingProtocol {
 	  
 	  postUIStatusUpdate(statusListener, PairingStage.PAIRING_SETUP);
 	  
-	  //UpNp plugnplay = new UpNp();
-	  String ip = netInfo.EXTERNAL_IP;//plugnplay.getExternalIP();
-	  String localip = netInfo.INTERNAL_IP;//plugnplay.getLocalIP().substring(1);
+	  String ip = netInfo.EXTERNAL_IP;
+	  String localip = netInfo.INTERNAL_IP;
 	  
-	  //Generate 256 bit key.
-	  KeyGenerator kgen = KeyGenerator.getInstance("AES");
-      kgen.init(256);
-
-      // Generate the secret key specs.
-      //sharedsecret = kgen.generateKey();
-      SecretKey sharedsecret = kgen.generateKey();
+	  SecretKey sharedsecret = CryptoUtils.generateNewSecretAESKey();
       byte[] raw = sharedsecret.getEncoded();
       String key = EncodingUtils.bytesToHex(raw);
       
