@@ -132,7 +132,7 @@ public class Authenticator extends BASE{
 		new OperationsFactory(); // to instantiate various things		
 	}
 	
-	public void init2(){
+	private void init2(){
 		if(mTCPListener == null)
 			mTCPListener = new TCPListener(getWalletOperation(), 
 					mApplicationParams.getIsManuallyPortForwarded(),
@@ -255,7 +255,7 @@ public class Authenticator extends BASE{
 	//		Service Functions
 	//
 	//#####################################
-	
+		
 	@SuppressWarnings("static-access")
 	@Override
 	protected void doStart() {
@@ -274,7 +274,7 @@ public class Authenticator extends BASE{
 		catch (Exception e) { e.printStackTrace(); }
 	}
 
-	public void finishStartup(){
+	private void finishStartup(){
 		notifyStarted();
 	}
 	
