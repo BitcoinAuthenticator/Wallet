@@ -4,6 +4,7 @@ import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.BAApplicationParameters.WrongOperatingSystemException;
+import authenticator.Utils.EncodingUtils;
 import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.helpers.BAApplication;
@@ -11,6 +12,7 @@ import authenticator.network.TCPListener;
 import authenticator.network.TrustedPeerNodes;
 import authenticator.operations.BAOperation;
 import authenticator.operations.listeners.OperationListenerAdapter;
+import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
@@ -29,6 +31,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
+import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.Response;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -46,6 +50,7 @@ import wallettemplate.startup.StartupController;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +65,7 @@ import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import static wallettemplate.utils.GuiUtils.*;
 
@@ -144,6 +150,9 @@ public class Main extends BAApplication {
                 scene1.getStylesheets().add(file1);  // Add CSS that we need.
                 startup.setScene(scene1);
                 startup.show();
+                versionCheck();
+               
+                
             } else {finishLoading();}
         } 
     	catch (Exception e) {
@@ -242,6 +251,7 @@ public class Main extends BAApplication {
         	
         // start UI
         stage.show();
+        versionCheck();
     }
     
     @SuppressWarnings("restriction")
@@ -444,4 +454,31 @@ public class Main extends BAApplication {
 	public static void main(String[] args) {
         launch(args);
     }
+    
+    public static void versionCheck(){
+    	try {
+			EncodingUtils.readFromUrl("https://www.bitcoinauthenticator.org/version.json", new AsyncCompletionHandler<Response>(){
+				@Override
+				public Response onCompleted(Response arg0) throws Exception {
+					try {
+						String res = arg0.getResponseBody();
+						JSONObject json = new JSONObject(res);
+						String version = json.getString("current");
+						if (!version.equals("0.1.0")){
+							 informationalAlert("A new version is available!",
+									   "You can download it at bitcoinauthenticator.org");
+						}
+					   	
+					}
+					catch(Exception e) {
+					}
+				    
+					return null;
+				}
+			});
+		}
+		catch(IOException e) {
+		}
+    }
+    
 }

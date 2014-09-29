@@ -167,7 +167,7 @@
               </image>
             </ImageView>
             <Label font="$x1" layoutX="262.0" layoutY="28.0" prefWidth="234.0" text="How It Works" />
-            <Label alignment="TOP_LEFT" layoutX="262.0" layoutY="56.0" prefHeight="197.0" prefWidth="274.0" text="When paired with Bitcoin Authenticator, your wallet will generate multi-signature addresses which require two keys sign a transaction. One set of keys will be kept in this wallet. The other on your Android mobile device. When you make a transaction from this wallet, your mobile device will prompt you for authorization. If one of your devices is compromised, your bitcoins are still safe." wrapText="true" />
+            <Label alignment="TOP_LEFT" layoutX="262.0" layoutY="56.0" prefHeight="197.0" prefWidth="274.0" text="When paired with Bitcoin Authenticator, your wallet will generate multi-signature addresses which require two keys to sign a transaction. One set of keys will be kept in this wallet. The other on your Android mobile device. When you make a transaction from this wallet, your mobile device will prompt you for authorization. If one of your devices is compromised, your bitcoins are still safe." wrapText="true" />
           </children>
         </Pane>
         <Pane fx:id="BA4" layoutX="14.0" layoutY="67.0" prefHeight="246.0" prefWidth="560.0" visible="false" />
