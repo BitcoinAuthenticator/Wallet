@@ -51,20 +51,29 @@ public class OneName {
 						
 						JSONObject bitcoin = json.getJSONObject("bitcoin");
 					   	String address = bitcoin.getString("address");
+					   	
+					   	//TODO - get facebook, twitter, github data
+					   						   	
+					   	
 					   	//Name Formatted
 					   	JSONObject name = json.getJSONObject("name");
 					   	String formatted = name.getString("formatted");
 					   	//Avatar
 					   	JSONObject avatar = json.getJSONObject("avatar");
 					    String imgURL = avatar.getString("url");
-					    BufferedImage image =null;
-					    URL url = new URL(imgURL);
 					    
-					    //ONData ret = new ONData(formatted, address, url);
+					    // build return object
+					    ConfigOneNameProfile.Builder onb = ConfigOneNameProfile.newBuilder();
+					    onb.setOnename(onename);
+					    onb.setOnenameFormatted(formatted);
+					    onb.setBitcoinAddress(address);
+					    if(imgURL != null)
+					    	onb.setOnenameAvatarURL(imgURL);
 					    
-					    ConfigOneNameProfile ret = wallet.setOneName(onename, formatted, imgURL, null);
+					    
+					    //ConfigOneNameProfile ret = wallet.setOneName(onename, formatted, imgURL, null);
 						
-					    listener.getOneNameData(ret);
+					    listener.getOneNameData(onb.build());
 					}
 					catch(Exception e) {
 						e.printStackTrace();
@@ -93,18 +102,20 @@ public class OneName {
 						BufferedImage croppedImage = cropDownloadedAvatarImage(bimage);
 						
 						// save and set image path
-						String imagePath = saveImage(croppedImage, Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath(),"oneAvatar.png");
-						ConfigOneNameProfile oneRet = wallet.setOneName(one.getOnename(), 
-								one.getOnenameFormatted(), 
-								one.getOnenameAvatarURL(), 
-								imagePath);
+						String fileName = "oneAvatar_" + one.getOnename() + ".png";
+						String imagePath = saveImage(croppedImage, 
+								Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath(),fileName);
+						
+						ConfigOneNameProfile one = wallet.getOnename();
+						ConfigOneNameProfile.Builder b = ConfigOneNameProfile.newBuilder(one);
+						b.setOnenameAvatarFilePath(imagePath);
 						
 						File file = new File(imagePath);
 					    @SuppressWarnings("restriction")
 						Image image = new Image(file.toURI().toString());
 					    
 					    
-					    listener.getOneNameAvatarImage(oneRet, image);
+					    listener.getOneNameAvatarImage(b.build(), image);
 						
 					}
 					catch(Exception e) {
@@ -134,14 +145,6 @@ public class OneName {
 		    	throw new CannotSetOneNameProfileException("Failed to save one name avatar image");
 		    }
 	}
-	
-//	public static javafx.scene.image.Image createImage(BufferedImage image) throws IOException {
-//		ByteArrayOutputStream out = new ByteArrayOutputStream();
-//		ImageIO.write((RenderedImage) image, "png", out);
-//		out.flush();
-//		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-//		return new javafx.scene.image.Image(in);
-//	}
 	
 	private static BufferedImage cropDownloadedAvatarImage(BufferedImage image) throws IOException{
 		//Scale the image

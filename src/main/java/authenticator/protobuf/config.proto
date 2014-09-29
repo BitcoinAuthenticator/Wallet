@@ -130,6 +130,8 @@ message AuthenticatorConfiguration{
 		optional string onenameFormatted	   	= 2;
 		optional string onenameAvatarURL 		= 3;
 		optional string onenameAvatarFilePath	= 4;
+		
+		optional string bitcoinAddress			= 5;
 	}
 	
 	message SavedTX {

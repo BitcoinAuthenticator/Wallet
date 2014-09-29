@@ -74,7 +74,10 @@ public class SendTxHelper {
     	{
     		//NewAddress na = (NewAddress)n;
     		SendToCell na = (SendToCell)n;
-    		try {Address outAddr = new Address(Authenticator.getWalletOperation().getNetworkParams(), na.getAddress());}
+    		try {
+    			String addString = na.getAddress();
+    			new Address(Authenticator.getWalletOperation().getNetworkParams(), addString);
+    		}
     		catch (AddressFormatException e) {return false;}
     		
     	}

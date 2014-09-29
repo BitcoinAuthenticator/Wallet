@@ -119,7 +119,7 @@ public class OperationsFactory extends BASE{
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "hive", Integer.toString(networkType.getValue()) })
+					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "blockchain", Integer.toString(networkType.getValue()) })
 					.SetOperationAction(new BAOperationActions(){
 						int tempTimeout = 5;
 						ServerSocket socket = null;

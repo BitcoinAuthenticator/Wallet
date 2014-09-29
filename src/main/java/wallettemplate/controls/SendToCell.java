@@ -18,6 +18,7 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 import wallettemplate.Main;
 import wallettemplate.OneNameControllerDisplay;
 import wallettemplate.Main.OverlayUI;
+import wallettemplate.utils.GuiUtils;
 import authenticator.Authenticator;
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
@@ -65,6 +66,9 @@ public class SendToCell extends Region{
 	@FXML private ProgressIndicator spinner;
 		
 	private int index;
+	
+	private boolean isAddressFromOneName = false;
+	private ConfigOneNameProfile oneNameData;
 	
 	@SuppressWarnings("restriction")
 	public SendToCell(int index) {
@@ -182,11 +186,13 @@ public class SendToCell extends Region{
 		        		        					@Override
 		        		        					public void getOneNameData(ConfigOneNameProfile data) {
 		                		        				if (data != null){
+		                		        					oneNameData = data;
 		                		        					Platform.runLater(new Runnable() { 
 		                		        						 @Override
 		                		        						public void run() {
 		                		        							txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");
 		                             		        				txfAddress.setText(data.getOnenameFormatted());
+		                             		        				isAddressFromOneName = true;
 		                             		        				try {
 		                             		        					spinner.setProgress(50.0);
 																		setAvatarImage(data, txfield);
@@ -198,6 +204,11 @@ public class SendToCell extends Region{
 		                		        						}
 		                		        				    }); 
 		                    		        			}
+		                		        				else
+		                		        					Platform.runLater(() -> {
+		                		        						GuiUtils.informationalAlert("Could not download OneName profile", "");
+		                		        					});
+		                		        					
 		        		        					}
         		        				});
         		        				
@@ -208,6 +219,7 @@ public class SendToCell extends Region{
         		        			
         		        		}
         		        		else {
+        		        			isAddressFromOneName = false;
         		        			try {
         		        				new Address(Authenticator.getWalletOperation().getNetworkParams(), txfAddress.getText().toString());
         		        				txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");}
@@ -217,6 +229,7 @@ public class SendToCell extends Region{
         		        		}
         		        	}
         		        	else {
+        		        		isAddressFromOneName = false;
         		        		try {
         		        			new Address(Authenticator.getWalletOperation().getNetworkParams(), txfAddress.getText().toString());
         		        			txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");}
@@ -231,7 +244,7 @@ public class SendToCell extends Region{
 	
 	public boolean validate()
     {
-    	if(txfAddress.getText().length() == 0)
+    	if(getAddress().length() == 0)
     		return false;
     	if(txfAmount.getText().length() == 0)
     		return false;
@@ -262,8 +275,12 @@ public class SendToCell extends Region{
 		return this;
 	}
 	
+	@SuppressWarnings("restriction")
 	public String getAddress(){
-		return txfAddress.getText();
+		if(this.isAddressFromOneName)
+			return this.oneNameData.getBitcoinAddress();
+		else
+			return txfAddress.getText();
 	}
 	
 	@SuppressWarnings("restriction")

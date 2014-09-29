@@ -59,33 +59,50 @@ public class OneNameController  extends BaseUI{
 						});
 				}
 				else {
-					OneName.downloadAvatarImage(data, Authenticator.getWalletOperation(), new OneNameAdapter() {
-						@Override
-						public void getOneNameAvatarImage(ConfigOneNameProfile one, Image img) {
-							if(one == null || img == null) {
-								Platform.runLater(new Runnable() { 
-									  @Override
-									  public void run() {
-										  GuiUtils.informationalAlert("Could not download OneName Image", "");
-										  btnOK.setText("Ok");
-										  setAllComponentsEnabled(true);
-									  }
-									});
-							}
-							else
-								Authenticator.fireonNewOneNameIdentitySelection(one, img);
-							
-							Platform.runLater(new Runnable() { 
-							  @Override
-							  public void run() {
-								  btnOK.setText("Ok");
-								  btnCancel.setText("Done");
-								  btnCancel.setDisable(false);
-							  }
-							});
-						}
-					});
+					downloadImage(data);
 				}
+			}
+			
+			private void downloadImage(ConfigOneNameProfile data) {
+				OneName.downloadAvatarImage(data, Authenticator.getWalletOperation(), new OneNameAdapter() {
+					@SuppressWarnings("restriction")
+					@Override
+					public void getOneNameAvatarImage(ConfigOneNameProfile one, Image img) {
+						if(one == null || img == null) {
+							Platform.runLater(new Runnable() { 
+								  @Override
+								  public void run() {
+									  GuiUtils.informationalAlert("Could not download OneName Image", "");
+									  btnOK.setText("Ok");
+									  setAllComponentsEnabled(true);
+								  }
+								});
+						}
+						else {
+							//write one name profile
+							try {
+								Authenticator.getWalletOperation().writeOnename(one);
+							} catch (IOException e) {
+								e.printStackTrace();
+								Platform.runLater(() -> {
+									GuiUtils.informationalAlert("Could not save OneName profile", "");
+									btnOK.setText("Ok");
+									setAllComponentsEnabled(true);
+								});
+							}
+							Authenticator.fireonNewOneNameIdentitySelection(one, img);
+						}
+						
+						Platform.runLater(new Runnable() { 
+						  @Override
+						  public void run() {
+							  btnOK.setText("Ok");
+							  btnCancel.setText("Done");
+							  btnCancel.setDisable(false);
+						  }
+						});
+					}
+				});
 			}
 		});		
 	}

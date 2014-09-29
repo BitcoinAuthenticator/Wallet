@@ -9282,6 +9282,21 @@ public final class ProtoConfig {
        */
       com.google.protobuf.ByteString
           getOnenameAvatarFilePathBytes();
+
+      // optional string bitcoinAddress = 5;
+      /**
+       * <code>optional string bitcoinAddress = 5;</code>
+       */
+      boolean hasBitcoinAddress();
+      /**
+       * <code>optional string bitcoinAddress = 5;</code>
+       */
+      java.lang.String getBitcoinAddress();
+      /**
+       * <code>optional string bitcoinAddress = 5;</code>
+       */
+      com.google.protobuf.ByteString
+          getBitcoinAddressBytes();
     }
     /**
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile}
@@ -9352,6 +9367,11 @@ public final class ProtoConfig {
               case 34: {
                 bitField0_ |= 0x00000008;
                 onenameAvatarFilePath_ = input.readBytes();
+                break;
+              }
+              case 42: {
+                bitField0_ |= 0x00000010;
+                bitcoinAddress_ = input.readBytes();
                 break;
               }
             }
@@ -9578,11 +9598,55 @@ public final class ProtoConfig {
         }
       }
 
+      // optional string bitcoinAddress = 5;
+      public static final int BITCOINADDRESS_FIELD_NUMBER = 5;
+      private java.lang.Object bitcoinAddress_;
+      /**
+       * <code>optional string bitcoinAddress = 5;</code>
+       */
+      public boolean hasBitcoinAddress() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional string bitcoinAddress = 5;</code>
+       */
+      public java.lang.String getBitcoinAddress() {
+        java.lang.Object ref = bitcoinAddress_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            bitcoinAddress_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>optional string bitcoinAddress = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getBitcoinAddressBytes() {
+        java.lang.Object ref = bitcoinAddress_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          bitcoinAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
       private void initFields() {
         onename_ = "";
         onenameFormatted_ = "";
         onenameAvatarURL_ = "";
         onenameAvatarFilePath_ = "";
+        bitcoinAddress_ = "";
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -9612,6 +9676,9 @@ public final class ProtoConfig {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           output.writeBytes(4, getOnenameAvatarFilePathBytes());
         }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeBytes(5, getBitcoinAddressBytes());
+        }
         getUnknownFields().writeTo(output);
       }
 
@@ -9636,6 +9703,10 @@ public final class ProtoConfig {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBytesSize(4, getOnenameAvatarFilePathBytes());
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(5, getBitcoinAddressBytes());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -9761,6 +9832,8 @@ public final class ProtoConfig {
           bitField0_ = (bitField0_ & ~0x00000004);
           onenameAvatarFilePath_ = "";
           bitField0_ = (bitField0_ & ~0x00000008);
+          bitcoinAddress_ = "";
+          bitField0_ = (bitField0_ & ~0x00000010);
           return this;
         }
 
@@ -9805,6 +9878,10 @@ public final class ProtoConfig {
             to_bitField0_ |= 0x00000008;
           }
           result.onenameAvatarFilePath_ = onenameAvatarFilePath_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.bitcoinAddress_ = bitcoinAddress_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -9839,6 +9916,11 @@ public final class ProtoConfig {
           if (other.hasOnenameAvatarFilePath()) {
             bitField0_ |= 0x00000008;
             onenameAvatarFilePath_ = other.onenameAvatarFilePath_;
+            onChanged();
+          }
+          if (other.hasBitcoinAddress()) {
+            bitField0_ |= 0x00000010;
+            bitcoinAddress_ = other.bitcoinAddress_;
             onChanged();
           }
           this.mergeUnknownFields(other.getUnknownFields());
@@ -10188,6 +10270,80 @@ public final class ProtoConfig {
   }
   bitField0_ |= 0x00000008;
           onenameAvatarFilePath_ = value;
+          onChanged();
+          return this;
+        }
+
+        // optional string bitcoinAddress = 5;
+        private java.lang.Object bitcoinAddress_ = "";
+        /**
+         * <code>optional string bitcoinAddress = 5;</code>
+         */
+        public boolean hasBitcoinAddress() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        /**
+         * <code>optional string bitcoinAddress = 5;</code>
+         */
+        public java.lang.String getBitcoinAddress() {
+          java.lang.Object ref = bitcoinAddress_;
+          if (!(ref instanceof java.lang.String)) {
+            java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                .toStringUtf8();
+            bitcoinAddress_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>optional string bitcoinAddress = 5;</code>
+         */
+        public com.google.protobuf.ByteString
+            getBitcoinAddressBytes() {
+          java.lang.Object ref = bitcoinAddress_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            bitcoinAddress_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>optional string bitcoinAddress = 5;</code>
+         */
+        public Builder setBitcoinAddress(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          bitcoinAddress_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string bitcoinAddress = 5;</code>
+         */
+        public Builder clearBitcoinAddress() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          bitcoinAddress_ = getDefaultInstance().getBitcoinAddress();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional string bitcoinAddress = 5;</code>
+         */
+        public Builder setBitcoinAddressBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+          bitcoinAddress_ = value;
           onChanged();
           return this;
         }
@@ -12835,7 +12991,7 @@ public final class ProtoConfig {
       "nection\030\001 \001(\010\022;\n3ShouldReceivePayloadAft" +
       "erSendingPayloadOnConnection\030\002 \001(\010\022,\n$Sh" +
       "ouldLetPendingRequestHandleRemoval\030\003 \001(\010" +
-      "\"\264\010\n\032AuthenticatorConfiguration\022c\n\023confi" +
+      "\"\315\010\n\032AuthenticatorConfiguration\022c\n\023confi" +
       "gActiveAccount\030\001 \001(\0132F.authenticator.pro" +
       "tobuf.AuthenticatorConfiguration.ConfigA" +
       "ctiveAccount\022o\n\031configAuthenticatorWalle" +
@@ -12857,19 +13013,19 @@ public final class ProtoConfig {
       "\022B\n\rpairedWallets\030\002 \003(\0132+.authenticator." +
       "protobuf.PairedAuthenticator\022?\n\017pendingR" +
       "equests\030\003 \003(\0132&.authenticator.protobuf.P" +
-      "endingRequest\032z\n\024ConfigOneNameProfile\022\017\n" +
-      "\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(\t" +
-      "\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAva",
-      "tarFilePath\030\004 \001(\t\032<\n\007SavedTX\022\014\n\004txid\030\001 \002" +
-      "(\t\022\016\n\006toFrom\030\002 \001(\t\022\023\n\013description\030\003 \001(\t*" +
-      ";\n\020ATGCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027Updat" +
-      "ePendingRequestIPs\020\004*\217\001\n\017ATOperationType" +
-      "\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroa" +
-      "dcastAuthenticatorTx\020\002\022\025\n\021BroadcastNorma" +
-      "lTx\020\003\022\'\n#updateIpAddressesForPreviousMes" +
-      "sage\020\004*B\n\021WalletAccountType\022\023\n\017StandardA" +
-      "ccount\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013Pr" +
-      "otoConfig"
+      "endingRequest\032\222\001\n\024ConfigOneNameProfile\022\017" +
+      "\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(" +
+      "\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAv",
+      "atarFilePath\030\004 \001(\t\022\026\n\016bitcoinAddress\030\005 \001" +
+      "(\t\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 " +
+      "\001(\t\022\023\n\013description\030\003 \001(\t*;\n\020ATGCMMessage" +
+      "Type\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequest" +
+      "IPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n" +
+      "\n\006Unpair\020\001\022#\n\037SignAndBroadcastAuthentica" +
+      "torTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#update" +
+      "IpAddressesForPreviousMessage\020\004*B\n\021Walle" +
+      "tAccountType\022\023\n\017StandardAccount\020\000\022\030\n\024Aut" +
+      "henticatorAccount\020\001B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12935,7 +13091,7 @@ public final class ProtoConfig {
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor,
-              new java.lang.String[] { "Onename", "OnenameFormatted", "OnenameAvatarURL", "OnenameAvatarFilePath", });
+              new java.lang.String[] { "Onename", "OnenameFormatted", "OnenameAvatarURL", "OnenameAvatarFilePath", "BitcoinAddress", });
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
             internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
           internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new

@@ -1684,27 +1684,10 @@ public class WalletOperation extends BASE{
 			} 
 			catch (IOException e) {  return null; }
 		}
-		
-		public ConfigOneNameProfile setOneName(String onename, String formattedname, @Nullable String imgURL, @Nullable String imgPath) throws CannotSetOneNameProfileException  {
-			try {
-				ConfigOneNameProfile.Builder onb = ConfigOneNameProfile.newBuilder();
-			    onb.setOnename(onename);
-			    onb.setOnenameFormatted(formattedname);
-			    if(imgURL != null)
-			    	onb.setOnenameAvatarURL(imgURL);
-			    if(imgPath != null)
-			    	onb.setOnenameAvatarFilePath(imgPath);
-			    writeOnename(onb.build());
-			    return onb.build();
-			}
-			catch(IOException e) {
-				e.printStackTrace();
-				throw new CannotSetOneNameProfileException("Cannot se one name profile");
-			}
-		}
 				
-		private void writeOnename(ConfigOneNameProfile one) throws FileNotFoundException, IOException{
+		public void writeOnename(ConfigOneNameProfile one) throws FileNotFoundException, IOException{
 			configFile.writeOnename(one);
+			LOG.info("Set new OneName profile: " + one.toString());
 		}
 		
 	//#####################################

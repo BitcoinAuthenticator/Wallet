@@ -15,7 +15,7 @@ Bitcoin Authenticator is a P2P bitcoin wallet and [android application](https://
 1. Install Java 8
 2. [Eclipse Luna, Support for java 8](http://www.eclipse.org/home/index.php) (Obviously, only if you work with eclipse)
 
-#### Building
+## Building
 
 #####With Maven
 1. Clone the project:<br>
@@ -31,33 +31,13 @@ Bitcoin Authenticator is a P2P bitcoin wallet and [android application](https://
 $mvn clean package
  ```
 
-##### Protobuf class
+#### Protobuf class
 From the Protobuf folder(/src/main/java/authenticator/protobuf):
  ```
-$ protoc <Proto File>.proto --java_out=../../ --proto_path=./ --proto_path=<protobuf-install-directory>
+$ protoc <Proto File>.proto --java_out=../../ --proto_path=./ --proto_path=<system-include-directory, e.g., OSX is /usr/local/include/>
  ```
 
 For protobuf-install-directory see [this](http://stackoverflow.com/questions/20069295/importing-google-protobuf-descriptor-proto-in-java-protocol-buffers)
-
-##### Native Installer (Make sure you run <u>$ mvn clean package</u> before)
-1. Set jh  (OSX/ Linux):  
- ```
-$ jh=$JAVA_HOME/bin
- ```
-<br>
-Set jh (Windows):  
- ```
-c:\<Path to project> set jh=%JAVA_HOME%/bin
- ```
-2. Build (OSX/ Linux): 
-```
-$ $jh/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
- ```
-<br>
-Build (Windows): 
-```
-c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
- ```
 
 #### Importing Into Eclipse 
 1. In Eclipse:
@@ -69,4 +49,31 @@ c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -out
 Run -> Run Configurations -> arguments -> add -ea in VM Arguments
 ```
 
-If you have any questions feel free to contact us: ctpacia@gmail.com (Chris Pacia), alonmuroch@gmail.com (Alon Muroch).
+## Native Installer
+1. build: <br>
+ ```
+$mvn clean package
+ ```
+2. Set jh  (OSX/ Linux):  
+ ```
+$ jh=$JAVA_HOME/bin
+ ```
+<br>
+Set jh (Windows):  
+ ```
+c:\<Path to project> set jh=%JAVA_HOME%/bin
+ ```
+3. Build (OSX/ Linux): 
+```
+$ $jh/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
+ ```
+<br>
+Build (Windows): 
+```
+c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
+ ```
+
+## Contacts
+If you have any questions feel free to contact us: 
+<br><b>ctpacia@gmail.com (Chris Pacia)
+<br>alonmuroch@gmail.com (Alon Muroch)</b>
