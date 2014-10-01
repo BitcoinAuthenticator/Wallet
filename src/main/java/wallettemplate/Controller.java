@@ -2002,6 +2002,9 @@ public class Controller  extends BaseUI{
    	//	Apps Pane
    	//
    	//#####################################
+    @FXML protected void btnNotImplementedYet(MouseEvent event) {
+    	Main.instance.overlayUI("not_implemented_yet/NotImplementedYetScreen.fxml");
+    }
     
     @FXML protected void btnAppAuthenticator(MouseEvent event) {
     	Main.instance.overlayUI("pairing/BAApp.fxml");

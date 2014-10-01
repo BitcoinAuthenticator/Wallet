@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.NotImplementedYetController">
+<children><Pane prefHeight="484.0" prefWidth="850.0">
+<children><StackPane prefHeight="484.0" prefWidth="850.0">
+<children>
+<ImageView fitHeight="484.0" fitWidth="850.0" pickOnBounds="true" preserveRatio="true">
+	<image>
+	  <Image url="@greycity.jpg" />
+	</image>
+</ImageView>
+<VBox prefHeight="200.0" prefWidth="100.0">
+<children>
+<VBox alignment="CENTER_RIGHT" prefHeight="41.0" prefWidth="850.0">
+	<children>
+	<Label fx:id="lblClose" prefHeight="20.0" prefWidth="20.0">
+            <graphic>
+              <ImageView fitHeight="20.0" fitWidth="20.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@close.png" />
+                </image>
+              </ImageView>
+            </graphic>
+<VBox.margin>
+<Insets right="15.0" />
+</VBox.margin>
+          </Label>
+	</children>
+</VBox><VBox alignment="CENTER" prefHeight="177.0" prefWidth="850.0">
+<children>
+<ImageView fitHeight="92.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+	<HBox.margin>
+	<Insets left="20.0" top="40.0" />
+	</HBox.margin>
+	<image>
+	  <Image url="@/wallettemplate/authenticator_logo_plain_big.png" />
+	</image>
+</ImageView><Label alignment="CENTER" prefHeight="39.0" prefWidth="849.0" text="Coming Soon .." textFill="#656262">
+<font>
+<Font size="32.0" />
+</font>
+<VBox.margin>
+<Insets top="10.0" />
+</VBox.margin></Label>
+</children>
+<HBox.margin>
+<Insets left="80.0" />
+</HBox.margin></VBox>
+</children></VBox>
+</children></StackPane>
+</children></Pane>
+</children>
+</AnchorPane>
