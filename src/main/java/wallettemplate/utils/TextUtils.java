@@ -6,7 +6,7 @@ import authenticator.Authenticator;
 import authenticator.protobuf.ProtoSettings;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 
-import com.google.bitcoin.core.Coin;
+import org.bitcoinj.core.Coin;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;

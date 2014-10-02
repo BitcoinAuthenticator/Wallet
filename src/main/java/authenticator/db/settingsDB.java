@@ -7,9 +7,9 @@ import java.io.IOException;
 
 import wallettemplate.Main;
 
-import com.google.bitcoin.core.PeerGroup;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.crypto.DeterministicKey;
+import org.bitcoinj.core.PeerGroup;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.crypto.DeterministicKey;
 import com.google.protobuf.ByteString;
 
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;

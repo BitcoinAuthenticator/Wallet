@@ -6,8 +6,8 @@ import java.util.List;
 import authenticator.hierarchy.exceptions.IncorrectPathException;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyPurpose;
 
-import com.google.bitcoin.crypto.ChildNumber;
-import com.google.bitcoin.crypto.DeterministicKey;
+import org.bitcoinj.crypto.ChildNumber;
+import org.bitcoinj.crypto.DeterministicKey;
 import com.google.common.collect.ImmutableList;
 
 public class HierarchyUtils {

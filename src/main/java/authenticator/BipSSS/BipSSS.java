@@ -13,13 +13,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Base58;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.core.Sha256Hash;
-import com.google.bitcoin.core.Utils;
-import com.google.bitcoin.crypto.DeterministicKey;
+import org.bitcoinj.core.AddressFormatException;
+
+import org.bitcoinj.core.Base58;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.core.Utils;
+import org.bitcoinj.crypto.DeterministicKey;
 import com.google.common.base.Preconditions;
 
 

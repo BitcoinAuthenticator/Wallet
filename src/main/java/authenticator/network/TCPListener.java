@@ -24,8 +24,8 @@ import org.controlsfx.dialog.Dialogs;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 import com.google.protobuf.ByteString;
 
 import wallettemplate.Main;

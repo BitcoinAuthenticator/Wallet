@@ -3,8 +3,8 @@ package authenticator.listeners;
 import javax.annotation.Nullable;
 import javafx.scene.image.Image;
 
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.ProtoConfig.ATAddress;

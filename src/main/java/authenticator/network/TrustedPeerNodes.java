@@ -3,7 +3,7 @@ package authenticator.network;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import com.google.bitcoin.core.PeerAddress;
+import org.bitcoinj.core.PeerAddress;
 
 public class TrustedPeerNodes {
 	private static String[] MAIN_NET = new String[]{

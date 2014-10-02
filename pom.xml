@@ -99,8 +99,8 @@
         </dependency>
         <!--      bitcoinj      -->
         <dependency>
-            <groupId>com.google</groupId>
-            <artifactId>bitcoinj</artifactId>
+            <groupId>org.bitcoinj</groupId>
+            <artifactId>bitcoinj-core</artifactId>
             <version>0.12-SNAPSHOT</version>
         </dependency>
         <!-- WebCam-->

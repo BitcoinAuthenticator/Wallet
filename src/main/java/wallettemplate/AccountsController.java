@@ -41,7 +41,7 @@ import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
-import com.google.bitcoin.core.Transaction;
+import org.bitcoinj.core.Transaction;
 
 public class AccountsController  extends BaseUI{
 	@FXML public ScrollPane scrlPane;

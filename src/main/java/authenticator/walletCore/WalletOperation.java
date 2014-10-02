@@ -66,36 +66,36 @@ import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import authenticator.protobuf.ProtoSettings.Languages;
 
-import com.google.bitcoin.core.AbstractWalletEventListener;
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Coin;
-import com.google.bitcoin.core.DownloadListener;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.InsufficientMoneyException;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.core.PeerGroup;
-import com.google.bitcoin.core.ScriptException;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionConfidence;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.TransactionInput;
-import com.google.bitcoin.core.TransactionOutput;
-import com.google.bitcoin.core.Utils;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.WalletEventListener;
-import com.google.bitcoin.core.Wallet.ExceededMaxTransactionSize;
-import com.google.bitcoin.core.Wallet.SendResult;
-import com.google.bitcoin.crypto.DeterministicKey;
-import com.google.bitcoin.crypto.HDKeyDerivation;
-import com.google.bitcoin.crypto.KeyCrypterException;
-import com.google.bitcoin.crypto.TransactionSignature;
-import com.google.bitcoin.script.Script;
-import com.google.bitcoin.script.ScriptBuilder;
-import com.google.bitcoin.utils.Threading;
-import com.google.bitcoin.wallet.CoinSelection;
-import com.google.bitcoin.wallet.DefaultCoinSelector;
-import com.google.bitcoin.wallet.DeterministicSeed;
+import org.bitcoinj.core.AbstractWalletEventListener;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.DownloadListener;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.InsufficientMoneyException;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.PeerGroup;
+import org.bitcoinj.core.ScriptException;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionConfidence;
+import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
+import org.bitcoinj.core.TransactionInput;
+import org.bitcoinj.core.TransactionOutput;
+import org.bitcoinj.core.Utils;
+import org.bitcoinj.core.Wallet;
+import org.bitcoinj.core.WalletEventListener;
+import org.bitcoinj.core.Wallet.ExceededMaxTransactionSize;
+import org.bitcoinj.core.Wallet.SendResult;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDKeyDerivation;
+import org.bitcoinj.crypto.KeyCrypterException;
+import org.bitcoinj.crypto.TransactionSignature;
+import org.bitcoinj.script.Script;
+import org.bitcoinj.script.ScriptBuilder;
+import org.bitcoinj.utils.Threading;
+import org.bitcoinj.wallet.CoinSelection;
+import org.bitcoinj.wallet.DefaultCoinSelector;
+import org.bitcoinj.wallet.DeterministicSeed;
 import com.google.common.collect.ImmutableList;
 
 
@@ -253,7 +253,7 @@ public class WalletOperation extends BASE{
 		@Override
         public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
 			/**
-			 * the {com.google.bitcoin.wallet.DefaultCoinSelector} can only choose candidates if they
+			 * the {org.bitcoinj.wallet.DefaultCoinSelector} can only choose candidates if they
 			 * originated from the wallet, so this fix is so incoming tx (originated elsewhere)
 			 * could be spent if not confirmed	
 			 */

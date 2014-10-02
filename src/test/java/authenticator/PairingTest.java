@@ -28,10 +28,10 @@ import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.bitcoin.core.Utils;
-import com.google.bitcoin.crypto.DeterministicKey;
-import com.google.bitcoin.crypto.HDKeyDerivation;
-import com.google.bitcoin.wallet.DeterministicSeed;
+import org.bitcoinj.core.Utils;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDKeyDerivation;
+import org.bitcoinj.wallet.DeterministicSeed;
 
 import authenticator.Utils.EncodingUtils;
 import authenticator.hierarchy.BAHierarchy;

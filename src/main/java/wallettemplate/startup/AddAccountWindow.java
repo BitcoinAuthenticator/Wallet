@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
-import com.google.bitcoin.core.Coin;
+import org.bitcoinj.core.Coin;
 
 import wallettemplate.Controller;
 import wallettemplate.Main;

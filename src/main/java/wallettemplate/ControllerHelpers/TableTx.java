@@ -1,6 +1,6 @@
 package wallettemplate.ControllerHelpers;
 
-import com.google.bitcoin.core.Transaction;
+import org.bitcoinj.core.Transaction;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

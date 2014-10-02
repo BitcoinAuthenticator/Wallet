@@ -8,10 +8,10 @@ import wallettemplate.Main;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.WrongOperatingSystemException;
 
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.kits.WalletAppKit;
-import com.google.bitcoin.params.MainNetParams;
-import com.google.bitcoin.params.TestNet3Params;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.kits.WalletAppKit;
+import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.params.TestNet3Params;
 
 import javafx.application.Application;
 import javafx.application.Platform;

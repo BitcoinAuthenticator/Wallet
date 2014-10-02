@@ -21,7 +21,7 @@ import authenticator.BipSSS.BipSSS.Share;
 import authenticator.BipSSS.SSSUtils;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 
-import com.google.bitcoin.core.Coin;
+import org.bitcoinj.core.Coin;
 
 import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;

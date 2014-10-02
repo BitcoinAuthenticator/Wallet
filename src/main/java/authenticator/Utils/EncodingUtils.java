@@ -13,8 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.crypto.DeterministicKey;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.crypto.DeterministicKey;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;

@@ -8,7 +8,7 @@ import java.util.List;
 import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
-import com.google.bitcoin.wallet.DeterministicSeed;
+import org.bitcoinj.wallet.DeterministicSeed;
 import com.google.common.base.Joiner;
 
 import wallettemplate.controls.BitcoinAddressValidator;

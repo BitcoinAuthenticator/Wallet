@@ -7,7 +7,7 @@ import java.net.URL;
 
 import org.json.JSONException;
 
-import com.google.bitcoin.core.Coin;
+import org.bitcoinj.core.Coin;
 
 import wallettemplate.Main;
 import wallettemplate.Main.OverlayUI;
