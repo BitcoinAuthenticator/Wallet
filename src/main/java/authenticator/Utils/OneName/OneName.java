@@ -106,7 +106,6 @@ public class OneName {
 						String imagePath = saveImage(croppedImage, 
 								Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath(),fileName);
 						
-						ConfigOneNameProfile one = wallet.getOnename();
 						ConfigOneNameProfile.Builder b = ConfigOneNameProfile.newBuilder(one);
 						b.setOnenameAvatarFilePath(imagePath);
 						
