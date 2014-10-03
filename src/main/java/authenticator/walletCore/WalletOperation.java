@@ -2019,6 +2019,8 @@ public class WalletOperation extends BASE{
 	}
 	
 	public void setOperationalState(BAOperationState value){
+		if(getOperationalState() == value)
+			return;
 		AppParams.setOperationalState(value);
 		LOG.info("Changed Authenticator's operational state to " + BAOperationState.getStateString(value));
 	}

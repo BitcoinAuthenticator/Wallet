@@ -12,9 +12,9 @@ import java.util.Formatter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
-
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.crypto.DeterministicKey;
+
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
@@ -34,7 +34,16 @@ public class EncodingUtils {
 	/**Reads JSON object from a URL*/
 	public static void readFromUrl(String url, AsyncCompletionHandler<Response> listener) throws IOException { 
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-		asyncHttpClient.prepareGet(url).execute(listener);
+		asyncHttpClient.prepareGet(url).execute(new AsyncCompletionHandler<Response>(){
+
+			@Override
+			public Response onCompleted(Response response) throws Exception {
+				listener.onCompleted(response);
+				asyncHttpClient.closeAsynchronously();
+				return null;
+			}
+			
+		});
 		
 	}
 	
