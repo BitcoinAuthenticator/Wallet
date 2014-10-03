@@ -164,9 +164,10 @@ public class WalletOperation extends BASE{
 	
 	private void init(BAApplicationParameters params) {
 		try {
+			String configFileName = params.getApplicationDataFolderAbsolutePath() + params.getAppName() + ".config";
 			AppParams = params;
 			if(configFile == null){
-				configFile = new walletDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
+				configFile = new walletDB(configFileName);
 				/**
 				 * Check to see if a config file exists, if not, initialize
 				 */
@@ -176,7 +177,7 @@ public class WalletOperation extends BASE{
 				}
 			}
 			if(settingsFile == null) {
-				settingsFile = new settingsDB(params.getApplicationDataFolderAbsolutePath() + params.getAppName());
+				settingsFile = new settingsDB(configFileName);
 			}
 			if(authenticatorWalletHierarchy == null)
 			{
