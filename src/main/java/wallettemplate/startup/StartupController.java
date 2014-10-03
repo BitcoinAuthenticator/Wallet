@@ -560,7 +560,7 @@ public class StartupController  extends BaseUI{
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
 		 
-		 hlFinished.setDisable(true);
+		 hlFinished.setVisible(false);
 		 
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
@@ -610,7 +610,7 @@ public class StartupController  extends BaseUI{
 					Image img = new Image(file.toURI().toString());
 					Platform.runLater(() -> {
 						ivFirstAccountPairingQR.setImage(img);
-						hlFinished.setDisable(false);
+						hlFinished.setVisible(true);
 					});
 				}
 			  };
@@ -678,7 +678,6 @@ public class StartupController  extends BaseUI{
 			 GuiUtils.fadeIn(hlFinished);
 			 btnContinue3.setVisible(false);
 			 lblScan.setVisible(true);
-			 hlFinished.setVisible(true);
 			 btnPlayStore.setVisible(false);
 			 btnBack5.setDisable(true);
 			 lblLoadginQR.setVisible(true);
