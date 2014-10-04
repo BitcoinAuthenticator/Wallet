@@ -163,7 +163,6 @@ public class Main extends BAApplication {
     
     @SuppressWarnings("restriction")
 	public static void finishLoading(){
-    	boolean isStartingForTheFirstTime = returnedParamsFromSetup == null? false: true;;
     	/**
     	 * If we get returned params from startup, use that
     	 */
