@@ -467,7 +467,7 @@ public class Controller  extends BaseUI{
 				Platform.runLater(new Runnable() { 
 					  @Override
 					  public void run() {
-							Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+							Image logo = new Image(Main.class.getResourceAsStream("authenticator_logo_plain_small.png"));
 							// Create a custom Notification without icon
 							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Sent :" + 
 									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
@@ -507,7 +507,7 @@ public class Controller  extends BaseUI{
 						else {
 							return;}
 						
-						Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+						Image logo = new Image(Main.class.getResourceAsStream("authenticator_logo_plain_small.png"));
 				    	// Create a custom Notification without icon
 				    	Notification info = new Notification("Bitcoin Authenticator Wallet", notifStr , logo);
 				    	// Show the custom notification

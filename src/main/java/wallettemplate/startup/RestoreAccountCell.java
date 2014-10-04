@@ -40,7 +40,7 @@ public class RestoreAccountCell extends Region{
         this.loadFXML();
         this.setSnapToPixel(true);
         if(type == WalletAccountType.StandardAccount)
-        	ivLogo.setImage(new Image("/wallettemplate/bitcoin_logo_plain_small.png"));
+        	ivLogo.setImage(new Image("/wallettemplate/bitcoin_logo_small.png"));
         else
         	ivLogo.setImage(new Image("wallettemplate/authenticator_logo_plain_small.png"));
       }
