@@ -331,7 +331,7 @@ public class WalletOperation extends BASE{
     					Script scr = out.getScriptPubKey();
     	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     	    			if(isWatchingAddress(addrStr)){
-    	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+    	    				ATAddress add = findAddressInAccounts(addrStr);
     	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     	    				
     	    				/**
@@ -355,7 +355,7 @@ public class WalletOperation extends BASE{
     						Script scr = out.getScriptPubKey();
         	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
         	    			if(isWatchingAddress(addrStr)){
-        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+        	    				ATAddress add = findAddressInAccounts(addrStr);
         	    				
         	    				/**
         	    				 * Subtract from internal account list
@@ -382,7 +382,7 @@ public class WalletOperation extends BASE{
     					Script scr = out.getScriptPubKey();
     	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     	    			if(isWatchingAddress(addrStr)){
-    	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+    	    				ATAddress add = findAddressInAccounts(addrStr);
     	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     	    				
     	    				/**
@@ -406,7 +406,7 @@ public class WalletOperation extends BASE{
     						Script scr = out.getScriptPubKey();
         	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
         	    			if(isWatchingAddress(addrStr)){
-        	    				ATAddress add = Authenticator.getWalletOperation().findAddressInAccounts(addrStr);
+        	    				ATAddress add = findAddressInAccounts(addrStr);
         	    				if(out.getParentTransaction().getConfidence().getConfidenceType() == ConfidenceType.PENDING) {
         	    					/**
             	    				 * Subtract from internal account list
@@ -590,7 +590,7 @@ public class WalletOperation extends BASE{
 			Address add = new Address(getNetworkParams(), addStr);			
 			long satoshis = (long) (Double.parseDouble(to.get(addStr).toPlainString()) * 100000000);
 			if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
-				TransactionOutput out = new TransactionOutput(Authenticator.getWalletOperation().getNetworkParams(),
+				TransactionOutput out = new TransactionOutput(getNetworkParams(),
 															tx, 
 									        				Coin.valueOf(satoshis), 
 									        				add);
@@ -688,7 +688,7 @@ public class WalletOperation extends BASE{
 		for(int index=0;index < tx.getInputs().size(); index++){
 			TransactionInput in = tx.getInput(index);
 			TransactionOutput connectedOutput = in.getConnectedOutput();
-			String addFrom = connectedOutput.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+			String addFrom = connectedOutput.getScriptPubKey().getToAddress(getNetworkParams()).toString();
 			TransactionSignature sig = tx.calculateSignature(index, keys.get(addFrom), 
 					connectedOutput.getScriptPubKey(), 
 					Transaction.SigHash.ALL, 
@@ -962,7 +962,14 @@ public class WalletOperation extends BASE{
 				for(ATAccount acc:accounts){
 					for(int i = gapLookAhead - 30 ; i < gapLookAhead; i++)
 					{
-						ATAddress add = getATAddreessFromAccount(acc.getIndex(), HierarchyAddressTypes.External, i);
+						ATAddress add = null;
+						/*
+						 * Will throw an exception if the address is not watched by the wallet, if so just break from the loop
+						 */
+						try { add = getATAddreessFromAccount(acc.getIndex(), HierarchyAddressTypes.External, i); } catch(CannotGetAddressException e) {}
+						if (add == null)
+							break; 
+						
 						if(add.getAddressStr().equals(addressStr))
 							return add;
 					}
@@ -999,7 +1006,7 @@ public class WalletOperation extends BASE{
 	
 	/**
 	 * Gets a particular address from an account.<br>
-	 * Will assert that the address was created before, if not will throw exception.
+	 * Will assert that the address was created before + it is watched by the wallet, if not will throw exception.
 	 * 
 	 * 
 	 * @param accountIndex
@@ -1009,7 +1016,9 @@ public class WalletOperation extends BASE{
 	 * @throws CannotGetAddressException 
 	 */
 	@SuppressWarnings("static-access")
-	public ATAddress getATAddreessFromAccount(int accountIndex, HierarchyAddressTypes type, int addressKey) throws CannotGetAddressException {		
+	public ATAddress getATAddreessFromAccount(int accountIndex, 
+			HierarchyAddressTypes type, 
+			int addressKey) throws CannotGetAddressException {		
 		try {
 			ATAccount acc = getAccount(accountIndex);
 			ATAddress.Builder atAdd = ATAddress.newBuilder();
@@ -1021,7 +1030,7 @@ public class WalletOperation extends BASE{
 							   */
 							  if(acc.getAccountType() == WalletAccountType.StandardAccount){
 								  //TODO - THIS LINE THROWS A NULLPOINTER EXCEPTION DUE TO CHANGE IN HIERARCHY
-								  DeterministicKey hdKey = getPubKeyFromAccount(accountIndex,type,addressKey, false);
+								  DeterministicKey hdKey = getPubKeyFromAccount(accountIndex,type,addressKey, true);
 								  atAdd.setAddressStr(hdKey.toAddress(getNetworkParams()).toString());
 							  }
 							  else{
@@ -1723,7 +1732,7 @@ public class WalletOperation extends BASE{
 			AuthenticatorConfiguration.ConfigActiveAccount.Builder b1 = AuthenticatorConfiguration.ConfigActiveAccount.newBuilder();
 			b1.setActiveAccount(acc);
 			if(acc.getAccountType() == WalletAccountType.AuthenticatorAccount){
-				PairedAuthenticator p = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(acc.getIndex());
+				PairedAuthenticator p = getPairingObjectForAccountIndex(acc.getIndex());
 				b1.setPairedAuthenticator(p);
 			}
 			try {
@@ -1976,7 +1985,7 @@ public class WalletOperation extends BASE{
 	    	for (Transaction tx : fullTxSet){
 	    		for (int a=0; a<tx.getInputs().size(); a++){
 	    			if (tx.getInput(a).getConnectedOutput()!=null){
-	    				String address = tx.getInput(a).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+	    				String address = tx.getInput(a).getConnectedOutput().getScriptPubKey().getToAddress(getNetworkParams()).toString();
 	    				for (String addr : usedExternalAddressList){
 	    					if (addr.equals(address)){
 	    						if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
@@ -1992,7 +2001,7 @@ public class WalletOperation extends BASE{
 	    			
 	    		}
 	    		for (int b=0; b<tx.getOutputs().size(); b++){
-	    			String address = tx.getOutput(b).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+	    			String address = tx.getOutput(b).getScriptPubKey().getToAddress(getNetworkParams()).toString();
 	    			for (String addr : usedExternalAddressList){
 	    				if (addr.equals(address)){
 	    					if (!filteredHistory.contains(tx)){filteredHistory.add(tx);}
