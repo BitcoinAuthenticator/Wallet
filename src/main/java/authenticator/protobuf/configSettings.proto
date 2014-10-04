@@ -32,5 +32,5 @@ message ConfigSettings{
 	optional bool 			 connectToTrustedPeer				= 8 [default = false];
 	optional string			 trustedPeerIP						= 9;
 		
-	optional float			 bloomFilterFalsePositiveRate		= 10 [default = 0.0005];
+	optional float			 bloomFilterFalsePositiveRate		= 10 [default = 0.00001];
 }
