@@ -123,12 +123,8 @@ public class PairWallet extends BaseUI{
 			Platform.runLater(new Runnable() {
 				@Override
 		        public void run() {
-					Dialogs.create()
-		        	        .owner(Main.stage)
-		        	        .title("Error !")
-		        	        .masthead("Failed to pair the wallet and the Authenticator")
-		        	        .message(e.getMessage())
-		        	        .showError();
+					informationalAlert("Failed to pair the wallet and the Authenticator",
+							e.getMessage());
 		        }
 			});
 		}

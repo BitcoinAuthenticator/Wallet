@@ -445,7 +445,7 @@ public class Controller  extends BaseUI{
 				    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
 				    		if (exit.compareTo(Coin.ZERO) > 0){} //only show notification on coins received excluding change
 				    		else {
-				    			Image logo = new Image(Main.class.getResourceAsStream("bitcoin_logo_plain_small.png"));
+				    			Image logo = new Image(Main.class.getResourceAsStream("authenticator_logo_plain_small.png"));
 				    			
 				    			// Create a custom Notification without icon
 				    			Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received: " + 
