@@ -972,7 +972,7 @@ public class WalletOperation extends BASE{
 			throw new AddressWasNotFoundException("Cannot find address in accounts");
 		}
 		catch(Exception e) {
-			throw new CannotGetAddressException(e.toString());
+			throw new CannotGetAddressException(addressStr + "\n" + e.toString());
 		}
 		
 	}

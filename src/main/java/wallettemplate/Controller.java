@@ -168,7 +168,6 @@ import java.util.concurrent.CountDownLatch;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
-import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -778,12 +777,9 @@ public class Controller  extends BaseUI{
 			   Platform.runLater(new Runnable() { 
 				   @Override
 				   public void run() {
-					   Dialogs.create()
-					   .owner(Main.stage)
-					   .title("Error !")
-					   .masthead("Some network requirements are not available, some functionalities may be compromised")
-					   .message("If this problem repeats, your router may not allow port mapping.")
-					   .showInformation();   
+					   informationalAlert("Error !",
+							   "Some network requirements are not available, some functionalities may be compromised\n" +
+							   "If this problem repeats, your router may not allow port mapping.");   
 				   }
 			   });
 	   		}
@@ -1119,15 +1115,11 @@ public class Controller  extends BaseUI{
     
     @FXML protected void SendTx(ActionEvent event) throws CurrencyConverterSingeltonNoDataException{
     	if(!ValidateTx()){
-    		Dialogs.create()
-	        .owner(Main.stage)
-	        .title("Error")
-	        .masthead("Something Is not Right ...")
-	        .message("Make Sure:\n" +
-					"  1) You entered correct values in all fields\n"+
-					"  2) You have sufficient funds to cover your outputs\n"+
-					"  3) Outputs amount to at least the dust value(" + Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.toString() + ")\n")
-	        .showError();  
+    		informationalAlert("Something Is not Right ...",
+    				"Make Sure:\n" +
+    						"  1) You entered correct values in all fields\n"+
+    						"  2) You have sufficient funds to cover your outputs\n"+
+    						"  3) Outputs amount to at least the dust value(" + Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.toString() + ")\n");
     	}
     	else{
     		Transaction tx = new Transaction(Authenticator.getWalletOperation().getNetworkParams());
@@ -1195,12 +1187,8 @@ public class Controller  extends BaseUI{
         		e.printStackTrace();
         		Platform.runLater(new Runnable() {
 				      @Override public void run() {
-				    	  Dialogs.create()
-					        .owner(Main.stage)
-					        .title("Error !")
-					        .masthead("Cannot Create Tx")
-					        .message("")
-					        .showInformation();   
+				    	  informationalAlert("Cannot Create Tx",
+				    			  "");
 				      }
 				    });
         	}
@@ -1469,17 +1457,14 @@ public class Controller  extends BaseUI{
                     	txFee.clear();
                     	setFeeTipText();
                     	
-                    	// Notify user
-                    	Dialogs.create()
-        		        .owner(Main.stage)
-        		        .title("Error !")
-        		        .masthead("Could not add operation to queue")
-        		        .message("try to restart the wallet and resend the Tx")
-        		        .showInformation();
+                    	informationalAlert("Could not add operation to queue",
+                    			"try to restart the wallet and resend the Tx");
         			}
         				
         		} 
         		catch (Exception e) {
+        			informationalAlert("Something went wrong",
+                			e.getMessage());
         			e.printStackTrace();
         		}
             }
@@ -1546,12 +1531,8 @@ public class Controller  extends BaseUI{
 						    		  e.printStackTrace();
 						    	  }
 						    	  //
-						    	  Dialogs.create()
-							        .owner(Main.stage)
-							        .title("Error")
-							        .masthead("Error broadcasting Tx")
-							        .message(desc)
-							        .showError();   
+						    	  informationalAlert("Error broadcasting Tx",
+						    			  desc);
 						      }
 						    });
 					}
@@ -2023,11 +2004,8 @@ public class Controller  extends BaseUI{
     		Main.instance.overlayUI("DisplayOneName.fxml");
     	}
     	else {
-    		Dialogs.create()
-		        .owner(Main.stage)
-		        .title("Cannot display your OneName account")
-		        .message("Please press on your avatr picture on the overview tab to set your OneName account")
-		        .showWarning();
+    		informationalAlert("Cannot display your OneName account",
+					"Please press on your avatr picture on the overview tab to set your OneName account");
     	}
     }
     
