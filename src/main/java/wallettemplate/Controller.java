@@ -1421,17 +1421,7 @@ public class Controller  extends BaseUI{
                 		}
                 		Main.UI_ONLY_WALLET_PW.setPassword(password.getText());
             		}
-            		
-        			Animation ani = GuiUtils.fadeOut(v);
-        			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
-        				GuiUtils.fadeIn(authenticatorVbox);
-        				authenticatorVbox.setVisible(true);
-        				startAuthRotation(imglogo1);
-        			}
-        			else {
-        				GuiUtils.fadeIn(successVbox);
-        				successVbox.setVisible(true);
-        			}
+        			
         			String to = "";
         			if (OutputAddresses.size()==1){
         				if( Authenticator.getWalletOperation().isWatchingAddress(OutputAddresses.get(0))){
@@ -1447,7 +1437,17 @@ public class Controller  extends BaseUI{
         			else {to = "Multiple";}
         			v.setVisible(false);
         			if (broadcast(tx,to,Main.UI_ONLY_WALLET_PW) == true) {
-        				
+        				// animate success
+        				Animation ani = GuiUtils.fadeOut(v);
+            			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
+            				GuiUtils.fadeIn(authenticatorVbox);
+            				authenticatorVbox.setVisible(true);
+            				startAuthRotation(imglogo1);
+            			}
+            			else {
+            				GuiUtils.fadeIn(successVbox);
+            				successVbox.setVisible(true);
+            			}
         			}
         			else {
         				txoverlay.done();
