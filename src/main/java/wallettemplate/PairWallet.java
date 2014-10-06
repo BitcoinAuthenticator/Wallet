@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
-
-import org.controlsfx.dialog.Dialogs;
-
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import authenticator.Authenticator;
@@ -158,11 +155,7 @@ public class PairWallet extends BaseUI{
     	
     	boolean result = Authenticator.addOperation(op);
     	if(!result){
-    		Dialogs.create()
-		        .owner(Main.stage)
-		        .title("Error !")
-		        .masthead("Could not add operation")
-		        .showInformation();   
+    		GuiUtils.informationalAlert("Error !", "Could not add operation");
     	}
     	else{}
     }

@@ -20,7 +20,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
-import org.controlsfx.dialog.Dialogs;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 

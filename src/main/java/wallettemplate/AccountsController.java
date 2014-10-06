@@ -36,11 +36,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.Node;
 import javafx.util.Duration;
-
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-
 import org.bitcoinj.core.Transaction;
 
 public class AccountsController  extends BaseUI{

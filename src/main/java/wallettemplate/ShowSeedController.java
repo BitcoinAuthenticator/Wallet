@@ -5,7 +5,6 @@ import static wallettemplate.utils.GuiUtils.informationalAlert;
 import java.io.IOException;
 import java.util.List;
 
-import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
 import org.bitcoinj.wallet.DeterministicSeed;

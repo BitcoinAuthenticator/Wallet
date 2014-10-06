@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
 import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextUtils;
 
 import org.bitcoinj.core.AddressFormatException;
@@ -735,16 +735,7 @@ public class UIUpdateHelper extends BaseUI{
 
 				@Override
 				public void onErrorGettingCurrencyData(Exception e) {
-					Platform.runLater(new Runnable() {
-					      @Override public void run() {
-					    	  Dialogs.create()
-						        .owner(Main.stage)
-						        .title("Error !")
-						        .masthead("Cannot Download Currency Data")
-						        .message("Some functionalities may be compromised")
-						        .showInformation();   
-					      }
-					    });
+					Platform.runLater(() -> GuiUtils.informationalAlert("Cannot Download Currency Data","Some functionalities may be compromised"));
 				}
 	        });
 		}

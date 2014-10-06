@@ -7,8 +7,6 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-import org.controlsfx.dialog.Dialogs;
-
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import authenticator.Authenticator;

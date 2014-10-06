@@ -30,10 +30,6 @@ import javax.annotation.Nullable;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.swing.JFrame;
-
-import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.dialog.Dialogs;
-
 import wallettemplate.Main;
 import wallettemplate.SettingsController;
 import wallettemplate.PairWallet.PairingWalletControllerListener;
@@ -728,13 +724,7 @@ public class StartupController  extends BaseUI{
 				 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
 			} catch (Exception e) { 
 				e.printStackTrace();
-				
-				Dialogs.create()
-		        .owner(Main.startup)
-		        .title("Error")
-		        .masthead("Cannot Create account !")
-		        .message("Please try again")
-		        .showError();
+				GuiUtils.informationalAlert("Cannot Create account !", "Please try again");
 			}
 			 
 		 }
@@ -914,21 +904,11 @@ public class StartupController  extends BaseUI{
 				launchRestoreAccoutns(RestoreFromMnemonicPane);
 			} catch (IOException e) {
 				e.printStackTrace();
-				Dialogs.create()
-		        .owner(Main.startup)
-		        .title("Error")
-		        .masthead("Cannot Restore from Mnemonic Seed")
-		        .message("Please try again")
-		        .showError();
+				GuiUtils.informationalAlert("Cannot Restore from Mnemonic Seed", "Please try again");
 			}
 		 }
 		 else
-			 Dialogs.create()
-		        .owner(Main.startup)
-		        .title("Error")
-		        .masthead("Cannot Restore from Mnemonic Seed")
-		        .message("Please try again")
-		        .showError();
+			 GuiUtils.informationalAlert("Cannot Restore from Mnemonic Seed", "Please try again");
 	 }
 	 
 	 private DeterministicSeed reconstructSeed(String mnemonicStr, LocalDate date){
@@ -1062,21 +1042,11 @@ public class StartupController  extends BaseUI{
 				launchRestoreAccoutns(RestoreFromMnemonicPane);
 			} catch (IOException e) {
 				e.printStackTrace();
-				Dialogs.create()
-		        .owner(Main.startup)
-		        .title("Error")
-		        .masthead("Cannot Restore from Mnemonic Seed")
-		        .message("Please try again")
-		        .showError();
+				GuiUtils.informationalAlert("Cannot Restore from Mnemonic Seed", "Please try again");
 			}
 		 }
 		 else
-			 Dialogs.create()
-		        .owner(Main.startup)
-		        .title("Error")
-		        .masthead("Cannot Restore from Mnemonic Seed")
-		        .message("Please try again")
-		        .showError();
+			 GuiUtils.informationalAlert("Cannot Restore from Mnemonic Seed", "Please try again");
 	 }
 	 
 	 //##############################
@@ -1128,11 +1098,7 @@ public class StartupController  extends BaseUI{
 		 }
 		 else
 		 {
-			 Dialogs.create()
-		        .owner(Main.startup)
-		        .title("Error")
-		        .masthead("Please Choose Seed Creation time")
-		        .showError();
+			 GuiUtils.informationalAlert("Error", "Please Choose Seed Creation time");
 		 }
 	 }
 	 
@@ -1157,12 +1123,7 @@ public class StartupController  extends BaseUI{
 			 
 		  } catch (Exception e) {
 			e.printStackTrace();
-			Dialogs.create()
-		        .owner(Main.startup)
-		        .title("Error")
-		        .masthead("Cannot Restore from SSS Shares")
-		        .message("Please make sure you typed the correct share strings")
-		        .showError();
+			GuiUtils.informationalAlert("Cannot Restore from SSS Shares", "Please make sure you typed the correct share strings");
 		  }
 	 }
 	 
@@ -1411,12 +1372,8 @@ public class StartupController  extends BaseUI{
 		});
 		
 		boolean result = auth.addOperation(op);
-    	if(!result){
-    		Dialogs.create()
-		        .owner(Main.stage)
-		        .title("Error !")
-		        .masthead("Could not add operation")
-		        .showInformation();   
+    	if(!result){ 
+    		GuiUtils.informationalAlert("Error !", "Could not add operation");
     	}
 	}
 	 

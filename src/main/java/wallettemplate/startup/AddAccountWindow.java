@@ -9,9 +9,7 @@ import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
-import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
-
 import org.bitcoinj.core.Coin;
 
 import wallettemplate.Controller;
@@ -22,6 +20,7 @@ import wallettemplate.PairWallet.PairingWalletControllerListener;
 import wallettemplate.startup.StartupController.AddAccountListener;
 import wallettemplate.startup.StartupController.AddedAccountObject;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 import authenticator.Utils.OneName.OneName;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
@@ -134,12 +133,7 @@ public class AddAccountWindow extends BaseUI{
     		stage.close();
     	}
     	else{
-    		Dialogs.create()
-		        .owner(Main.stage)
-		        .title("Error !")
-		        .masthead("Something is wrong")
-		        .message("Make sure u entered all fields correctly")
-		        .showInformation(); 
+    		GuiUtils.informationalAlert("Something is wrong", "Make sure u entered all fields correctly");
     	}
 	 }
     
@@ -159,17 +153,7 @@ public class AddAccountWindow extends BaseUI{
 					@Override
 					public void onFailed(Exception e) {
 						isPaired = false;
-						Platform.runLater(new Runnable() {
-					        @Override
-					        public void run() {
-					        	Dialogs.create()
-							        .owner(Main.stage)
-							        .title("Error !")
-							        .masthead("Something is wrong")
-							        .message("Pairing Failed")
-							        .showInformation(); 
-					        }
-						});
+						Platform.runLater(() -> GuiUtils.informationalAlert("Something is wrong", "Pairing Failed"));
 					}
 
 					@SuppressWarnings("restriction")

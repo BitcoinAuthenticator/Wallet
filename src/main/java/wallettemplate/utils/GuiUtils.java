@@ -22,36 +22,27 @@ import wallettemplate.utils.dialogs.BADialog;
 import static com.google.common.base.Preconditions.checkState;
 
 public class GuiUtils {
-    public static void runAlert(BiConsumer<Stage, AlertWindowController> setup) {
-        try {
-            // JavaFX2 doesn't actually have a standard alert template. Instead the Scene Builder app will create FXML
-            // files for an alert window for you, and then you customise it as you see fit. I guess it makes sense in
-            // an odd sort of way.
-            Stage dialogStage = new Stage();
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            FXMLLoader loader = new FXMLLoader(GuiUtils.class.getResource("alert.fxml"));
-            Pane pane = loader.load();
-            AlertWindowController controller = loader.getController();
-            setup.accept(dialogStage, controller);
-            dialogStage.setScene(new Scene(pane));
-            dialogStage.showAndWait();
-        } catch (IOException e) {
-            // We crashed whilst trying to show the alert dialog (this should never happen). Give up!
-            throw new RuntimeException(e);
-        }
-    }
+//    public static void runAlert(BiConsumer<Stage, AlertWindowController> setup) {
+//        try {
+//            // JavaFX2 doesn't actually have a standard alert template. Instead the Scene Builder app will create FXML
+//            // files for an alert window for you, and then you customise it as you see fit. I guess it makes sense in
+//            // an odd sort of way.
+//            Stage dialogStage = new Stage();
+//            dialogStage.initModality(Modality.APPLICATION_MODAL);
+//            FXMLLoader loader = new FXMLLoader(GuiUtils.class.getResource("alert.fxml"));
+//            Pane pane = loader.load();
+//            AlertWindowController controller = loader.getController();
+//            setup.accept(dialogStage, controller);
+//            dialogStage.setScene(new Scene(pane));
+//            dialogStage.showAndWait();
+//        } catch (IOException e) {
+//            // We crashed whilst trying to show the alert dialog (this should never happen). Give up!
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public static void crashAlert(Throwable t) {
         t.printStackTrace();
-        /*Throwable rootCause = Throwables.getRootCause(t);
-        Runnable r = () -> {
-            runAlert((stage, controller) -> controller.crashAlert(stage, rootCause.toString()));
-            Platform.exit();
-        };
-        if (Platform.isFxApplicationThread())
-            r.run();
-        else
-            Platform.runLater(r);*/
         Platform.exit();
     }
 

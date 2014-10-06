@@ -2,7 +2,7 @@ package wallettemplate;
 
 import java.io.IOException;
 
-import org.controlsfx.dialog.Dialogs;
+
 import org.json.JSONException;
 
 import wallettemplate.controls.BitcoinAddressValidator;
