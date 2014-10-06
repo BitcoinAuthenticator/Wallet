@@ -1,6 +1,7 @@
 package wallettemplate.utils;
 
 import com.google.common.base.Throwables;
+
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +13,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import wallettemplate.Main;
+
 import java.io.IOException;
 import java.util.function.BiConsumer;
 
+import wallettemplate.utils.dialogs.BADialog;
 import static com.google.common.base.Preconditions.checkState;
 
 public class GuiUtils {
@@ -59,8 +63,10 @@ public class GuiUtils {
     }
 
     public static void informationalAlert(String message, String details, Object... args) {
-        String formattedDetails = String.format(details, args);
-        Runnable r = () -> runAlert((stage, controller) -> controller.informational(stage, message, formattedDetails));
+        //String formattedDetails = String.format(details, args);
+        Runnable r = () -> {
+        	BADialog.info(Main.class, message, details).show();
+        };//runAlert((stage, controller) -> controller.informational(stage, message, formattedDetails));
         if (Platform.isFxApplicationThread())
             r.run();
         else

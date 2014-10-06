@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><VBox prefHeight="140.0" prefWidth="550.0">
+<children><HBox prefHeight="97.0" prefWidth="550.0">
+<children><ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+<HBox.margin>
+<Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+</HBox.margin>
+<image>
+<Image url="@../../authenticator_logo_plain_big.png" />
+</image></ImageView><VBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="460.0">
+<children><Label fx:id="lblTitle" prefHeight="23.0" prefWidth="428.0" text="title">
+<VBox.margin>
+<Insets left="15.0" />
+</VBox.margin>
+<font>
+<Font size="18.0" />
+</font></Label><Label fx:id="lblDesc" prefHeight="23.0" prefWidth="424.0" text="details">
+<VBox.margin>
+<Insets left="15.0" top="10.0" />
+</VBox.margin></Label>
+</children></VBox>
+</children></HBox><HBox alignment="CENTER_RIGHT" prefHeight="61.0" prefWidth="550.0">
+<children><Button fx:id="btnDone" mnemonicParsing="false" onAction="#done" text="Done">
+<HBox.margin>
+<Insets right="15.0" />
+</HBox.margin></Button>
+</children></HBox>
+</children></VBox>
+</children>
+</AnchorPane>
