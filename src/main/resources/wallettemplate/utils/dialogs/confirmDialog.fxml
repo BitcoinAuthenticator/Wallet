@@ -29,7 +29,10 @@
 </VBox.margin></Label>
 </children></VBox>
 </children></HBox><HBox alignment="CENTER_RIGHT" prefHeight="61.0" prefWidth="550.0">
-<children><Button fx:id="btnDone" mnemonicParsing="false" onAction="#done" text="Done">
+<children><Button fx:id="btnYes" mnemonicParsing="false" onAction="#yesAnswer" prefHeight="26.0" prefWidth="56.0" text="Yes">
+<HBox.margin>
+<Insets right="15.0" />
+</HBox.margin></Button><Button fx:id="btnNo" mnemonicParsing="false" onAction="#noAnswer" text="No">
 <HBox.margin>
 <Insets right="15.0" />
 </HBox.margin></Button>

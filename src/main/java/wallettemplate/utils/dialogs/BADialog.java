@@ -1,13 +1,33 @@
 package wallettemplate.utils.dialogs;
 
+import javax.annotation.Nullable;
+
 import org.apache.tools.ant.Main;
 
 public class BADialog extends BADialogBase{
-	static int STANDARD_WIDTH 	= 550;
-	static int STANDARD_HEIGHT  = 140;
 	
-	public static BADialog info(Class<?> resourceClass, String title, String details) {
-		return DialogFactory.infoDialog(resourceClass, title, details);
+	public enum BADialogResponse {
+		Yes,
+		No,
+		
+		Ok,
+		Cancel;
+	}
+	
+	public interface BADialogResponseListner {
+		public void onResponse(BADialogResponse response, @Nullable String input);
+	}
+	
+	public static BADialog info(Class<?> resourceClass, String title, String desc) {
+		return DialogFactory.infoDialog(resourceClass, title, desc);
+	}
+	
+	public static BADialog confirm(Class<?> resourceClass, String title, String desc, BADialogResponseListner response) {
+		return DialogFactory.confirmDialog(resourceClass, response, title, desc);
+	}
+	
+	public static BADialog input(Class<?> resourceClass, String title, String desc, BADialogResponseListner response) {
+		return DialogFactory.inputDialog(resourceClass, response, title, desc);
 	}
 	
 	public void show() {

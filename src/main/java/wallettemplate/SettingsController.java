@@ -18,6 +18,7 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.wallet.DeterministicSeed;
+
 import com.google.common.base.Joiner;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
@@ -38,8 +39,12 @@ import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import wallettemplate.ControllerHelpers.AsyncTask;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 import wallettemplate.utils.TextUtils;
+import wallettemplate.utils.dialogs.BADialog;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponse;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponseListner;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -550,27 +555,49 @@ public class SettingsController  extends BaseUI{
 	}
 	
 	@FXML protected void deleteWallet(ActionEvent event){
-		Action response = Dialogs.create()
-    	        .owner(Controller.accountsAppStage)
-    	        .title("Warning !")
-    	        .masthead("You are about to delete your wallet !!!\n"
-    	        		+ "Deleting the wallet will cause you to loose all related data and the ability to access your coins\n\n"
-    	        		+ "Are you sure your wallet is backed up and you wish to continue ?\n")
-    	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-    	        .showConfirm();
+		BADialog.confirm(Main.class, "Warning !",
+				"You are about to delete your wallet !!!\n"
+        		+ "Deleting the wallet will cause you to loose all related data and the ability to access your coins\n\n"
+        		+ "Are you sure your wallet is backed up and you wish to continue ?\n",
+        		new BADialogResponseListner(){
+						@Override
+						public void onResponse(BADialogResponse response,String input) {
+							if(response == BADialogResponse.Yes)
+							{
+								if(deleteDirectory(new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath()))) {
+									informationalAlert("Deleted wallet",
+											 "Will shut down.");
+									
+									Runtime.getRuntime().exit(0);
+								}
+								else
+									informationalAlert("Failed !",
+											 "Could not delete wallet");
+							}
+						}
+					}).show();
 		
-		if(response == Dialog.Actions.YES) {
-			if(deleteDirectory(new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath()))) {
-				informationalAlert("Deleted wallet",
-						 "Will shut down.");
-				
-				Runtime.getRuntime().exit(0);
-			}
-			else
-				informationalAlert("Failed !",
-						 "Could not delete wallet");
-			
-		}
+//		Action response = Dialogs.create()
+//    	        .owner(Controller.accountsAppStage)
+//    	        .title("Warning !")
+//    	        .masthead("You are about to delete your wallet !!!\n"
+//    	        		+ "Deleting the wallet will cause you to loose all related data and the ability to access your coins\n\n"
+//    	        		+ "Are you sure your wallet is backed up and you wish to continue ?\n")
+//    	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+//    	        .showConfirm();
+//		
+//		if(response == Dialog.Actions.YES) {
+//			if(deleteDirectory(new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath()))) {
+//				informationalAlert("Deleted wallet",
+//						 "Will shut down.");
+//				
+//				Runtime.getRuntime().exit(0);
+//			}
+//			else
+//				informationalAlert("Failed !",
+//						 "Could not delete wallet");
+//			
+//		}
 	}
 	
 	public static boolean deleteDirectory(File directory) {

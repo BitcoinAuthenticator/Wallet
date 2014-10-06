@@ -26,6 +26,7 @@ import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.utils.BriefLogFormatter;
 import org.bitcoinj.utils.Threading;
+
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -49,6 +50,9 @@ import javafx.stage.WindowEvent;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
+import wallettemplate.utils.dialogs.BADialog;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponse;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponseListner;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -321,21 +325,36 @@ public class Main extends BAApplication {
     		@SuppressWarnings("static-access")
 			@Override
     		public void handle(WindowEvent e) {
-    			Action response = null;
-    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0){
-    				response = Dialogs.create()
-            	        .owner(stage)
-            	        .title("Warning !")
-            	        .masthead("Pending Requests/ Operations")
-            	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
-            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-            	        .showConfirm();
-    			}
+    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0)
+    			BADialog.confirm(Main.class, 
+    					"Pending Requests/ Operations", 
+    					"Exiting now will cancell all pending requests and operations.\nDo you want to continue?",
+    					new BADialogResponseListner() {
+
+							@Override
+							public void onResponse(BADialogResponse response,String input) {
+								if(response == BADialogResponse.Yes)
+									handleStopRequest();
+							}
+    				
+    			}).show();
     			
-	        	// Or no conditioning needed or user pressed Ok
-	        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-	        		handleStopRequest();
-	        	}
+    			
+//    			Action response = null;
+//    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0){
+//    				response = Dialogs.create()
+//            	        .owner(stage)
+//            	        .title("Warning !")
+//            	        .masthead("Pending Requests/ Operations")
+//            	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
+//            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+//            	        .showConfirm();
+//    			}
+//    			
+//	        	// Or no conditioning needed or user pressed Ok
+//	        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
+//	        		handleStopRequest();
+//	        	}
 	        	
     		}
     	});

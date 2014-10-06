@@ -12,6 +12,10 @@ import org.json.JSONException;
 import wallettemplate.controls.DisplayAccountCell;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.dialogs.BADialog;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponse;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponseListner;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.OneName.OneName;
@@ -36,6 +40,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.Node;
 import javafx.util.Duration;
+
 import org.bitcoinj.core.Transaction;
 
 public class AccountsController  extends BaseUI{
@@ -82,13 +87,7 @@ public class AccountsController  extends BaseUI{
 					 * check at least one account remains
 					 */
 					if(Authenticator.getWalletOperation().getAllAccounts().size() < 2){
-						Dialogs.create()
-				        .owner(Controller.accountsAppStage)
-				        .title("Error")
-				        .masthead("Cannot Remove account !")
-				        .message("At least one active account should remain.")
-				        .showError();
-						
+						GuiUtils.informationalAlert("Cannot Remove account !", "At least one active account should remain.");						
 						cell.setSettingsClose();
 						return;
 					}
@@ -97,78 +96,111 @@ public class AccountsController  extends BaseUI{
 					 * Check is not the active account
 					 */
 					if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex() == cell.getAccount().getIndex()){
-						Dialogs.create()
-				        .owner(Controller.accountsAppStage)
-				        .title("Error")
-				        .masthead("Cannot Remove account !")
-				        .message("The account for removal is the active wallet's account.\n"
-				        		+ "Change the wallet's active account and try again.")
-				        .showError();
-						
+						GuiUtils.informationalAlert("Cannot Remove account !", "The account for removal is the active wallet's account.\n"
+				        		+ "Change the wallet's active account and try again.");
 						cell.setSettingsClose();
 						return;
 					}
 					
+					BADialog.confirm(Main.class, "Warning !","You are about to delete the \"" + cell.getAccount().getAccountName() + "\" account !\n"
+        	        		+ "Deleting the account will delete all information about it.\n"
+        	        		+ "Do you wish do continue ?\n",
+        	        		new BADialogResponseListner(){
+									@Override
+									public void onResponse(BADialogResponse response,String input) {
+										if(response == BADialogResponse.Yes)
+										{
+											try {
+												Authenticator.getWalletOperation().removeAccount(cell.getAccount().getIndex());
+												setupContent();
+												GuiUtils.informationalAlert("Operation Complete", "Account was deleted");
+											} catch (IOException e) { 
+												e.printStackTrace();
+												GuiUtils.informationalAlert("Error !", "Error occured while deleting the account.");
+											}
+										}
+									}
+								}).show();
 					
-					Optional<String> response = Dialogs.create()
-	            	        .owner(Controller.accountsAppStage)
-	            	        .title("Warning !")
-	            	        .masthead("You are about to delete the \"" + cell.getAccount().getAccountName() + "\" account !\n"
-	            	        		+ "Deleting the account will delete all information about it.\n"
-	            	        		+ "Do you wish do continue ?\n")
-	            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-	            	        .showTextInput("Enter account name to confirm");
-					
-					if (response.isPresent() && response.get().equals(cell.getAccount().getAccountName())) {
-						try {
-							Authenticator.getWalletOperation().removeAccount(cell.getAccount().getIndex());
-							setupContent();
-							Dialogs.create()
-					        .owner(Controller.accountsAppStage)
-					        .title("Operation Complete")
-					        .masthead("Account was deleted")
-					        .message("")
-					        .showInformation();
-						} catch (IOException e) { 
-							e.printStackTrace();
-							Dialogs.create()
-					        .owner(Controller.accountsAppStage)
-					        .title("Error !")
-					        .masthead("Error occured while deleting the account.")
-					        .message("")
-					        .showInformation();
-						}
-					}
-					else
-						System.out.println("not deleting");
+//					Optional<String> response = Dialogs.create()
+//	            	        .owner(Controller.accountsAppStage)
+//	            	        .title("Warning !")
+//	            	        .masthead("You are about to delete the \"" + cell.getAccount().getAccountName() + "\" account !\n"
+//	            	        		+ "Deleting the account will delete all information about it.\n"
+//	            	        		+ "Do you wish do continue ?\n")
+//	            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+//	            	        .showTextInput("Enter account name to confirm");
+//					
+//					if (response.isPresent() && response.get().equals(cell.getAccount().getAccountName())) {
+//						try {
+//							Authenticator.getWalletOperation().removeAccount(cell.getAccount().getIndex());
+//							setupContent();
+//							Dialogs.create()
+//					        .owner(Controller.accountsAppStage)
+//					        .title("Operation Complete")
+//					        .masthead("Account was deleted")
+//					        .message("")
+//					        .showInformation();
+//						} catch (IOException e) { 
+//							e.printStackTrace();
+//							Dialogs.create()
+//					        .owner(Controller.accountsAppStage)
+//					        .title("Error !")
+//					        .masthead("Error occured while deleting the account.")
+//					        .message("")
+//					        .showInformation();
+//						}
+//					}
+//					else
+//						System.out.println("not deleting");
 				}
 
 				@Override
 				public void onChangeNameRequest(DisplayAccountCell cell) {
-					Optional<String> response = null;
-					response = Dialogs.create()
-	            	        .owner(Controller.accountsAppStage)
-	            	        .title("Change Account Name")
-	            	        .masthead("Please enter a new name:")
-	            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-	            	        .showTextInput("Enter new account name");
-					if (response.isPresent()) {
-						try {
-							ATAccount t = Authenticator.getWalletOperation().setAccountName(response.get(), cell.getAccount().getIndex());
-							cell.setAccount(t);
-							cell.updateUI();
-							cell.setSettingsClose();
-						} catch (CannotWriteToConfigurationFileException e) { 
-							e.printStackTrace(); 
-							Dialogs.create()
-					        .owner(Controller.accountsAppStage)
-					        .title("Error !")
-					        .masthead("Error occured while changing account's name.")
-					        .message("")
-					        .showInformation();
-						}
-						
-					}
+					BADialog.input(Main.class, "Change Account Name", "Please enter a new name:",
+        	        		new BADialogResponseListner(){
+									@Override
+									public void onResponse(BADialogResponse response,String input) {
+										if(response == BADialogResponse.Ok)
+										{
+											try {
+												ATAccount t = Authenticator.getWalletOperation().setAccountName(input, cell.getAccount().getIndex());
+												cell.setAccount(t);
+												cell.updateUI();
+												cell.setSettingsClose();
+											} catch (CannotWriteToConfigurationFileException e) { 
+												e.printStackTrace(); 
+												GuiUtils.informationalAlert("Error !", "Error occured while changing account's name.");
+											}
+										}
+									}
+								}).show();
+					
+					
+//					Optional<String> response = null;
+//					response = Dialogs.create()
+//	            	        .owner(Controller.accountsAppStage)
+//	            	        .title("Change Account Name")
+//	            	        .masthead("Please enter a new name:")
+//	            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
+//	            	        .showTextInput("Enter new account name");
+//					if (response.isPresent()) {
+//						try {
+//							ATAccount t = Authenticator.getWalletOperation().setAccountName(response.get(), cell.getAccount().getIndex());
+//							cell.setAccount(t);
+//							cell.updateUI();
+//							cell.setSettingsClose();
+//						} catch (CannotWriteToConfigurationFileException e) { 
+//							e.printStackTrace(); 
+//							Dialogs.create()
+//					        .owner(Controller.accountsAppStage)
+//					        .title("Error !")
+//					        .masthead("Error occured while changing account's name.")
+//					        .message("")
+//					        .showInformation();
+//						}
+//						
+//					}
 					
 				}
 			});
@@ -190,12 +222,7 @@ public class AccountsController  extends BaseUI{
 		
 		} catch (IOException e) {
 			e.printStackTrace();
-			Dialogs.create()
-	        .owner(Controller.accountsAppStage)
-	        .title("Error !")
-	        .masthead("Error occured while creating the account.")
-	        .message("")
-	        .showInformation();
+			GuiUtils.informationalAlert("Error !", "Error occured while creating the account.");
 		}
 	}
 	

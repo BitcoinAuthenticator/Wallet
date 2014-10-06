@@ -11,29 +11,37 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
+
 import javax.annotation.Nullable;
 
 import wallettemplate.Main;
 import wallettemplate.PairWallet;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.TextFieldValidator;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponse;
+import wallettemplate.utils.dialogs.BADialog.BADialogResponseListner;
 
 public class BADialogBase{
 	@FXML public Button btnDone;
+	@FXML public Button btnOk;
+	@FXML public Button btnCancel;
+	@FXML public Button btnYes;
+	@FXML public Button btnNo;
 	@FXML public Label lblTitle;
 	@FXML public Label lblDesc;
+	@FXML public TextField txfInput;
 	
 	private Stage dialogStage;
 	
 	private Class<?> resourceLoaderClass;
 	private String resourceViewPath;
-	private int width  = BADialog.STANDARD_WIDTH;
-	private int height = BADialog.STANDARD_HEIGHT;
 	private Runnable doneRunnable = () -> {};
 	private String windowTitle = "";
 	private String title = "";
 	private String description = "";
+	private BADialogResponseListner response;
 
 	public BADialogBase() {
 	}
@@ -47,7 +55,7 @@ public class BADialogBase{
 			loader.setLocation(getViewURL());
 			
 			Scene scene;
-			scene = new Scene((AnchorPane) loader.load(), getWindowWidth(), getWindowHeight());
+			scene = new Scene((AnchorPane) loader.load());
 			final String file = TextFieldValidator.class.getResource("GUI.css").toString();
 	        scene.getStylesheets().add(file); 
 	        dialogStage.setScene(scene);	
@@ -62,14 +70,6 @@ public class BADialogBase{
 	
 	private String getViewPath() {
 		return resourceViewPath;
-	}
-	
-	private int getWindowWidth() {
-		return width;
-	}
-	
-	private int getWindowHeight() {
-		return height;
 	}
 	
 	private String getWindowTitle() {
@@ -97,6 +97,34 @@ public class BADialogBase{
 		dialogStage.close();
 	}
 	
+	@FXML protected void okAnswer(ActionEvent event){
+		doneRunnable.run();
+		if(this.response != null)
+			this.response.onResponse(BADialogResponse.Ok, txfInput.getText());
+		dialogStage.close();
+	}
+	
+	@FXML protected void cancelAnswer(ActionEvent event){
+		doneRunnable.run();
+		if(this.response != null)
+			this.response.onResponse(BADialogResponse.Cancel, null);
+		dialogStage.close();
+	}
+	
+	@FXML protected void yesAnswer(ActionEvent event){
+		doneRunnable.run();
+		if(this.response != null)
+			this.response.onResponse(BADialogResponse.Yes, null);
+		dialogStage.close();
+	}
+	
+	@FXML protected void noAnswer(ActionEvent event){
+		doneRunnable.run();
+		if(this.response != null)
+			this.response.onResponse(BADialogResponse.No, null);
+		dialogStage.close();
+	}
+	
 	/*
 	 * 
 	 * 	API
@@ -114,21 +142,16 @@ public class BADialogBase{
 		return this;
 	}
 	
-	public BADialogBase setWidth(int value) {
-		width = value;
-		return this;
-	}
-	
-	public BADialogBase setHeight(int value) {
-		height = value;
-		return this;
-	}
-	
 	public BADialogBase setResourceClass(Class<?> T) {
 		resourceLoaderClass = T;
 		return this;
 	}
 	
+	/**
+	 * is triggered when the user closes the dialog
+	 * @param r
+	 * @return
+	 */
 	public BADialogBase setOnDone(Runnable r) {
 		doneRunnable = r;
 		return this;
@@ -146,6 +169,11 @@ public class BADialogBase{
 	
 	public BADialogBase setDesc(String d) {
 		description = d;
+		return this;
+	}
+	
+	public BADialogBase setResponseListener(BADialogResponseListner l) {
+		response = l;
 		return this;
 	}
 }
