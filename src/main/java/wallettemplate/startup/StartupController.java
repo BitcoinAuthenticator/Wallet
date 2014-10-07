@@ -649,7 +649,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void openPlayStore(ActionEvent event) throws IOException{
-		 String url = "https://play.google.com/";
+		 String url = "https://play.google.com/store/apps/details?id=org.bitcoin.authenticator";
          java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
 	 }
 	 
