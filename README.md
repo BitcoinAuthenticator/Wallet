@@ -74,7 +74,7 @@ c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -out
  ```
 
 ## Development 
-Check our future development proposals at [here](https://docs.google.com/spreadsheets/d/1o5ZS_L8OppZJit46SzpauJOthI0ncWuIgmo6ZtPevOU/edit?usp=sharing)
+Check our future development proposals [here](https://docs.google.com/spreadsheets/d/1o5ZS_L8OppZJit46SzpauJOthI0ncWuIgmo6ZtPevOU/edit?usp=sharing)
 
 ## Contacts
 If you have any questions feel free to contact us: 
