@@ -2009,20 +2009,8 @@ public class Controller  extends BaseUI{
     	}
     }
     
-    public static Stage accountsAppStage;
     @FXML protected void btnAccounts(MouseEvent event) {
-        try {
-        	URL location = getClass().getResource("display_accounts/display_accounts.fxml");
-        	FXMLLoader loader = new FXMLLoader(location);
-        	accountsAppStage = new Stage();
-        	accountsAppStage.setTitle("Accounts");
-        	accountsAppStage.initStyle(StageStyle.UNDECORATED);
-        	Scene scene = new Scene((AnchorPane) loader.load(), 436, 516);
-        	final String file = TextFieldValidator.class.getResource("GUI.css").toString();
-            scene.getStylesheets().add(file);  // Add CSS that we need.
-        	accountsAppStage.setScene(scene);
-        	accountsAppStage.show();
-		} catch (IOException e) { e.printStackTrace(); }
+    	Main.instance.overlayUI("accounts.fxml");
     }
     
     //#####################################

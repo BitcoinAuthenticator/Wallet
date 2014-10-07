@@ -45,6 +45,7 @@ import org.bitcoinj.core.Transaction;
 
 public class AccountsController  extends BaseUI{
 	@FXML public ScrollPane scrlPane;
+	public Main.OverlayUI overlayUi;
 	
 	private ScrollPaneContentManager scrlPaneContentManager;
 	
@@ -227,19 +228,19 @@ public class AccountsController  extends BaseUI{
 	}
 	
 	@FXML protected void close(ActionEvent event){
-		Controller.accountsAppStage.close();
+		overlayUi.done();
 	}
 	
 	
 	private double xOffset = 0;
 	private double yOffset = 0;
-	@FXML protected void drag1(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
+	 @FXML protected void drag1(MouseEvent event) {
+	        xOffset = event.getSceneX();
+	        yOffset = event.getSceneY();
+	    }
 
-    @FXML protected void drag2(MouseEvent event) {
-    	Controller.accountsAppStage.setX(event.getScreenX() - xOffset);
-    	Controller.accountsAppStage.setY(event.getScreenY() - yOffset);
-    }
+	    @FXML protected void drag2(MouseEvent event) {
+	    	Main.stage.setX(event.getScreenX() - xOffset);
+	    	Main.stage.setY(event.getScreenY() - yOffset);
+	    }
 }

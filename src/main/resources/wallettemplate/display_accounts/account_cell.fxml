@@ -5,112 +5,47 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="374.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<children><HBox prefHeight="80.0" prefWidth="695.0" style="-fx-background-color: white;">
-<children><HBox prefHeight="80.0" prefWidth="387.0">
-<children><VBox prefHeight="85.0" prefWidth="465.0" style="-fx-background-color: white;">
-<children><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-<children><Label fx:id="lblName" text="xxxx" textFill="#6e86a0">
-<font>
-<Font size="16.0" />
-</font></Label><Label text="Account (" textFill="#6e86a0">
-<VBox.margin>
-<Insets left="20.0" top="10.0" />
-</VBox.margin>
-<font>
-<Font size="16.0" />
-</font>
-<HBox.margin>
-<Insets left="5.0" />
-</HBox.margin></Label><Label text="ID " textFill="#6e86a0">
-<font>
-<Font size="16.0" />
-</font>
-</Label><Label fx:id="lblAccountID" text="xxxx" textFill="#6e86a0">
-<font>
-<Font size="16.0" />
-</font>
-</Label><Label text=")" textFill="#6e86a0">
-<font>
-<Font size="16.0" />
-</font>
-</Label>
-</children>
-<VBox.margin>
-<Insets left="10.0" />
-</VBox.margin></HBox><HBox prefHeight="80.0" prefWidth="193.0">
-<children><VBox prefHeight="55.0" prefWidth="88.0">
-<children><Label text="Confirmed: " textFill="#6e86a0">
-<HBox.margin>
-<Insets left="10.0" top="10.0" />
-</HBox.margin>
-<font>
-<Font size="12.0" />
-</font></Label>
-<Label text="Unconfirmed: " textFill="#6e86a0">
-<HBox.margin>
-<Insets left="10.0" top="10.0" />
-</HBox.margin>
-<VBox.margin>
-<Insets top="10.0" />
-</VBox.margin>
-<font>
-<Font size="12.0" />
-</font>
-</Label>
-</children>
-<HBox.margin>
-<Insets bottom="5.0" left="10.0" />
-</HBox.margin></VBox><VBox prefHeight="200.0" prefWidth="100.0">
-<children><Label fx:id="lblConfirmed" style="-fx-text-fill: #98d947;" text="1000">
-<HBox.margin>
-<Insets left="10.0" top="10.0" />
-</HBox.margin>
-<font>
-<Font size="12.0" />
-</font></Label>
-<Label fx:id="lblUnconfirmed" style="-fx-text-fill: #f06e6e;" text="1000">
-<HBox.margin>
-<Insets left="10.0" top="10.0" />
-</HBox.margin>
-<VBox.margin>
-<Insets top="10.0" />
-</VBox.margin>
-<font>
-<Font size="12.0" />
-</font>
-</Label>
-</children>
-<HBox.margin>
-<Insets />
-</HBox.margin></VBox>
-</children>
-<VBox.margin>
-<Insets left="15.0" />
-</VBox.margin></HBox>
-</children></VBox><HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-<children>
-<Button fx:id="btnSettings" focusTraversable="false" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#btnSettingsClick" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2;" text="" visible="true">
-  <graphic>
-    <ImageView fx:id="btnSettingsImageView" fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
-      <image>
-        <Image url="@btnSettingsSmall.png" />
-      </image>
-    </ImageView>
-  </graphic>
-<HBox.margin>
-<Insets left="10.0" />
-</HBox.margin>
-</Button>
-</children></HBox>
-</children></HBox><HBox alignment="CENTER" prefHeight="80.0" prefWidth="326.0" style="-fx-background-color: #c2c0c0;">
-<children><VBox alignment="CENTER" prefHeight="80.0" prefWidth="130.0">
-<children><Button fx:id="btnChangeName" mnemonicParsing="false" onAction="#changeAccountName" style="-fx-background-color: white;" text="Change Name" />
-</children></VBox><VBox alignment="CENTER" prefHeight="80.0" prefWidth="136.0">
-<children><Button fx:id="btnDeleteAccount" mnemonicParsing="false" onAction="#deleteAccount" style="-fx-background-color: red;" text="Delete Account" textFill="#fcfcfc" />
-</children></VBox>
-</children></HBox>
-</children></HBox>
-</children></AnchorPane>
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="460.0" style="-fx-background-color: white; -fx-background-radius: 8;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <HBox layoutX="13.0" layoutY="16.0" prefHeight="19.0" prefWidth="200.0">
+      <children>
+        <Label fx:id="lblName" text="xxxx">
+          <font>
+            <Font size="16.0" fx:id="x1" />
+          </font>
+          <textFill>
+            <Color blue="0.627" green="0.525" red="0.431" fx:id="x2" />
+          </textFill>
+        </Label>
+        <Label font="$x1" text="(Index:" textFill="$x2" />
+        <Label fx:id="lblAccountID" font="$x1" text="xxxx" textFill="$x2" />
+        <Label font="$x1" text=")" textFill="$x2" />
+      </children>
+    </HBox>
+    <HBox layoutX="282.0" layoutY="14.0" prefHeight="19.0" prefWidth="200.0">
+      <children>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+          <children>
+            <Label id="lblTotal" font="$x1" text="Total:" textFill="$x2" />
+            <Label text="Confirmed: " textFill="$x2">
+              <font>
+                <Font size="12.0" fx:id="x3" />
+              </font>
+            </Label>
+            <Label font="$x3" text="Unconfirmed: " textFill="$x2" />
+          </children>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+          <children>
+            <Label id="lblName" font="$x1" text="xxxx" textFill="$x2" />
+            <Label fx:id="lblConfirmed" font="$x3" style="-fx-text-fill: #98d947;" text="1000" />
+            <Label fx:id="lblUnconfirmed" font="$x3" style="-fx-text-fill: #f06e6e;" text="1000" />
+          </children>
+        </VBox>
+      </children>
+    </HBox>
+  </children>
+</AnchorPane>
