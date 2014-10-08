@@ -18,6 +18,7 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.crypto.DeterministicKey;
+
 import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
@@ -29,6 +30,7 @@ import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.listeners.BAGeneralEventsListener;
 import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
+import authenticator.network.BANetworkInfo;
 import authenticator.network.TCPListener;
 import authenticator.network.TCPListener.TCPListenerExecutionDataBinder;
 import authenticator.operations.BAOperation;
@@ -343,5 +345,10 @@ public class Authenticator extends BASE{
 	public static void fireOnWalletSettingsChange(){
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onWalletSettingsChange();
+	}
+	
+	public static void fireOnAuthenticatorNetworkStatusChange(BANetworkInfo info){
+		for(BAGeneralEventsListener l:generalEventsListeners)
+			l.onAuthenticatorNetworkStatusChange(info);
 	}
 }

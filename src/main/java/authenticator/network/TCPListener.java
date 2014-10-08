@@ -99,12 +99,6 @@ public class TCPListener extends BASE{
 		}
 	}
 	
-	/**
-	 * Network Requirements flags
-	 */
-	public  boolean PORT_FORWARDED = false;
-	public  boolean SOCKET_OPERATIONAL = false;
-	
 	WalletOperation wallet;
 	
 	/**
@@ -144,6 +138,9 @@ public class TCPListener extends BASE{
 	    			catch (TCPListenerCouldNotStartException e){
 	    				logAsInfo("Something went wrong with the TCPLIstener startup, some operations may not work\n");
 						e.printStackTrace();
+	    			}
+	    			finally {
+	    				Authenticator.fireOnAuthenticatorNetworkStatusChange(getNetworkInfo());
 	    			}
 	    			
 	    			assert(operationsQueue != null);
@@ -191,28 +188,36 @@ public class TCPListener extends BASE{
 		    		try {
 						plugnplay.run(new String[]{args[0]});
 						if(plugnplay.isPortMapped(Integer.parseInt(args[0])) == true){
-							PORT_FORWARDED = true;
 							vBANeworkInfo = new BANetworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP());
+							vBANeworkInfo.PORT_FORWARDED = true;
+							LOG.info("Successfuly map ported port: " + forwardedPort);
+						}
+						else {
+							vBANeworkInfo = new BANetworkInfo();
+							vBANeworkInfo.PORT_FORWARDED = false;
+							LOG.info("Failed to map port");
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 					}
 	    		}
-
-    			try {
-					vBANeworkInfo = new BANetworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
-					PORT_FORWARDED = true;
-				} catch (IOException e) {
-					e.printStackTrace();
-					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
-				}
+	    		else
+	    			try {
+						vBANeworkInfo = new BANetworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
+						vBANeworkInfo.PORT_FORWARDED = true;
+						LOG.info("Marked port " + forwardedPort + " as forwarded");
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+					}
 	    			    		
 	    		//if(PORT_FORWARDED)
     			try {
 					ss = new ServerSocket (forwardedPort);
 					ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
-					SOCKET_OPERATIONAL = true;
+					vBANeworkInfo.SOCKET_OPERATIONAL = true;
+					LOG.info("Socket operational");
 				} catch (IOException e) {
 					e.printStackTrace();
 					try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
@@ -238,7 +243,7 @@ public class TCPListener extends BASE{
 				while(true)
 	    	    {
 					isConnected = false;
-					if(PORT_FORWARDED && SOCKET_OPERATIONAL)
+					if(vBANeworkInfo.PORT_FORWARDED && vBANeworkInfo.SOCKET_OPERATIONAL)
 						try{
 							socket = ss.accept();
 							isConnected = true;
@@ -430,13 +435,13 @@ public class TCPListener extends BASE{
 	
 	public boolean checkForOperationNetworkRequirements(BAOperation op){
 		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.PORT_MAPPING.getValue()) > 0){
-			if(! PORT_FORWARDED || !SOCKET_OPERATIONAL){
+			if(! vBANeworkInfo.PORT_FORWARDED || !vBANeworkInfo.SOCKET_OPERATIONAL){
 				return false;
 			}
 		}
 		
 		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.SOCKET.getValue()) > 0){
-			if(!SOCKET_OPERATIONAL){
+			if(!vBANeworkInfo.SOCKET_OPERATIONAL){
 				return false;
 			}
 		}
@@ -490,7 +495,7 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean areAllNetworkRequirementsAreFullyRunning(){
-		if(!PORT_FORWARDED || !SOCKET_OPERATIONAL)
+		if(!vBANeworkInfo.PORT_FORWARDED || !vBANeworkInfo.SOCKET_OPERATIONAL)
 			return false;
 		return true;
 	}
@@ -514,10 +519,10 @@ public class TCPListener extends BASE{
 			CURRENT_OUTBOUND_OPERATION.interruptOperation();
 			
 			// restore socket
-			SOCKET_OPERATIONAL = false;
+			vBANeworkInfo.SOCKET_OPERATIONAL = false;
 			ss = new ServerSocket (forwardedPort);
 			ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
-			SOCKET_OPERATIONAL = true;
+			vBANeworkInfo.SOCKET_OPERATIONAL = true;
 		}
 		else
 			logAsInfo("Operation Not Found: Cannot Interrupt Operation with ID " + op.getOperationID());

@@ -1,6 +1,7 @@
 package authenticator.listeners;
 
 import javafx.scene.image.Image;
+import authenticator.network.BANetworkInfo;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
@@ -53,6 +54,12 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 
 	@Override
 	public void onAccountsModified(AccountModificationType type, int accountIndex) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAuthenticatorNetworkStatusChange(BANetworkInfo info) {
 		// TODO Auto-generated method stub
 		
 	}

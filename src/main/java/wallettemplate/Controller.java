@@ -21,6 +21,7 @@ import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.listeners.BAGeneralEventsListener;
 import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
+import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation;
 import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
@@ -61,6 +62,7 @@ import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.KeyCrypterException;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.uri.BitcoinURI;
+
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -223,6 +225,9 @@ public class Controller  extends BaseUI{
 	 @FXML private Button btnConnection3;
 	 @FXML private Button btnTor_grey;
 	 @FXML private Button btnTor_color;
+	 @FXML private Button btnNet_grey;
+	 @FXML private Button btnNet_yellow;
+	 @FXML private Button btnNet_green;
 	 @FXML private Label lblStatus;
 	 @FXML private Button btnRequest;
 	 @FXML private Button btnClearReceivePane;
@@ -314,7 +319,10 @@ public class Controller  extends BaseUI{
         });
         
         // Peer icon
-        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));      
+        Tooltip.install(btnConnection0, new Tooltip("Not connected to any peers"));   
+        
+        // net icon
+        Tooltip.install(btnNet_grey, new Tooltip("Authenticator network off"));
         
         // transaction history scrollPane
         scrlViewTxHistoryContentManager = new ScrollPaneContentManager()
@@ -376,11 +384,7 @@ public class Controller  extends BaseUI{
      * will be called after the awaitRunning event is called from the authenticator
      */
     public void onAuthenticatorSetup() {
-    	Authenticator.addGeneralEventsListener(vBAGeneralEventsAdapter);
-    	
-    	// lock 
-    	Main.UI_ONLY_IS_WALLET_LOCKED = Authenticator.getWalletOperation().isWalletEncrypted();
-      	updateLockIcon();
+    	Authenticator.addGeneralEventsListener(vBAGeneralEventsAdapter);    	
       	
       	/**
       	 * Read the comments in TCPListener#looper()
@@ -391,15 +395,20 @@ public class Controller  extends BaseUI{
     	Platform.runLater(new Runnable() { 
 			 @Override
 			public void run() {
+				// lock 
+		    	Main.UI_ONLY_IS_WALLET_LOCKED = Authenticator.getWalletOperation().isWalletEncrypted();
+		      	updateLockIcon();
+			      	
 				/**
 	    	 	 * refreshBalanceLabel will take care of downloading the currency data needed
 	    	 	 */
 	        	 setupOneName(Authenticator.getWalletOperation().getOnename());
 
 	         	 updateLockIcon();
+	         	 
+	         	setAccountChoiceBox();
 			}
 	    });    
-    	setAccountChoiceBox();	
     	updateUI();
     }
    
@@ -559,6 +568,23 @@ public class Controller  extends BaseUI{
 		@Override
 		public void onWalletSettingsChange() {
 			Platform.runLater(() -> updateUI());
+		}
+		
+		@Override
+		public void onAuthenticatorNetworkStatusChange(BANetworkInfo info) {
+			Platform.runLater(() -> {
+				if(info.PORT_FORWARDED == true && info.SOCKET_OPERATIONAL == true) {
+					btnNet_grey.setVisible(false);
+					btnNet_green.setVisible(true);
+					Tooltip.install(btnNet_green, new Tooltip("Authenticator network is on"));
+				}
+				else if(info.PORT_FORWARDED == false && info.SOCKET_OPERATIONAL == true) {
+					btnNet_grey.setVisible(false);
+					btnNet_yellow.setVisible(true);
+					Tooltip.install(btnNet_yellow, new Tooltip("No port-forwarding, can't access from outside your network"));
+				}
+            });	
+			
 		}
     };
     

@@ -370,9 +370,9 @@ public class Main extends BAApplication {
     	/*
     	 * Start bitcoin and authenticator
     	 */
-        
+    	controller.onAuthenticatorSetup();
     	auth.startAsync();
-    	Platform.runLater(() -> controller.onAuthenticatorSetup());
+    	
     }
     
     public class OverlayUI<T> {

@@ -1,11 +1,13 @@
 package authenticator.listeners;
 
 import javax.annotation.Nullable;
+
 import javafx.scene.image.Image;
 
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 
+import authenticator.network.BANetworkInfo;
 import authenticator.operations.OperationsUtils.SignProtocol;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
@@ -82,4 +84,11 @@ public interface BAGeneralEventsListener {
 	 * Call {@link authenticator.Authenticator#fireOnWalletSettingsChange fireOnWalletSettingsChange}
 	 */
 	public void onWalletSettingsChange();
+	
+	/**
+	 * Will be called after the {@link authenticator.network.TCPListener TCPListener} tried its startup process.
+	 * 
+	 * @param info
+	 */
+	public void onAuthenticatorNetworkStatusChange(BANetworkInfo info);
 }

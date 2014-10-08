@@ -465,7 +465,7 @@
     <!-- 
     
     
-    	Indicators for: tor, connection 
+    	Indicators for: tor, peers, net 
     	
     	
     -->
@@ -519,6 +519,33 @@
         <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
           <image>
             <Image url="@Tor_color.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnNet_grey" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="true">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@net_grey.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnNet_yellow" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@net_yellow.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnNet_green" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@net_green.png" />
           </image>
         </ImageView>
       </graphic>
