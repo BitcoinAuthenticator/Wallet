@@ -326,36 +326,21 @@ public class Main extends BAApplication {
 			@Override
     		public void handle(WindowEvent e) {
     			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0)
-    			BADialog.confirm(Main.class, 
-    					"Pending Requests/ Operations", 
-    					"Exiting now will cancell all pending requests and operations.\nDo you want to continue?",
-    					new BADialogResponseListner() {
-
-							@Override
-							public void onResponse(BADialogResponse response,String input) {
-								if(response == BADialogResponse.Yes)
-									handleStopRequest();
-							}
-    				
-    			}).show();
+	    			BADialog.confirm(Main.class, 
+	    					"Pending Requests/ Operations", 
+	    					"Exiting now will cancell all pending requests and operations.\nDo you want to continue?",
+	    					new BADialogResponseListner() {
+	
+								@Override
+								public void onResponse(BADialogResponse response,String input) {
+									if(response == BADialogResponse.Yes)
+										handleStopRequest();
+								}
+	    				
+	    			}).show();
+    			else
+    				handleStopRequest();
     			
-    			
-//    			Action response = null;
-//    			if(Authenticator.getWalletOperation().getPendingRequestSize() > 0 || Authenticator.getQueuePendingOperations() > 0){
-//    				response = Dialogs.create()
-//            	        .owner(stage)
-//            	        .title("Warning !")
-//            	        .masthead("Pending Requests/ Operations")
-//            	        .message("Exiting now will cancell all pending requests and operations.\nDo you want to continue?")
-//            	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-//            	        .showConfirm();
-//    			}
-//    			
-//	        	// Or no conditioning needed or user pressed Ok
-//	        	if (response == null || (response != null && response == Dialog.Actions.YES)) {
-//	        		handleStopRequest();
-//	        	}
-	        	
     		}
     	});
     }

@@ -2010,7 +2010,7 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnAccounts(MouseEvent event) {
-    	Main.instance.overlayUI("accounts.fxml");
+    	Main.instance.overlayUI("accounts/accounts.fxml");
     }
     
     //#####################################
