@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.swing.JFrame;
+
 import wallettemplate.Main;
 import wallettemplate.SettingsController;
 import wallettemplate.PairWallet.PairingWalletControllerListener;
@@ -38,6 +39,7 @@ import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.dialogs.BADialog;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BAApplicationParameters.NetworkType;
@@ -49,6 +51,8 @@ import authenticator.BipSSS.BipSSS.NotEnoughSharesException;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
 import authenticator.db.exceptions.AccountWasNotFoundException;
+import authenticator.listeners.BAGeneralEventsAdapter;
+import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation;
 import authenticator.operations.BAWalletRestorer;
 import authenticator.operations.OperationsFactory;
@@ -68,6 +72,7 @@ import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
+
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
@@ -84,6 +89,7 @@ import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.wallet.DeterministicSeed;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
@@ -1253,6 +1259,9 @@ public class StartupController  extends BaseUI{
 					});
 		         }
 			}, MoreExecutors.sameThreadExecutor());
+		 
+		 
+		 
 		 auth.startAsync();
 	 }
 	 
@@ -1390,6 +1399,17 @@ public class StartupController  extends BaseUI{
 		DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
 	    // set Authenticator wallet
 		auth = new Authenticator(masterPubKey, appParams);
+		
+		// add listener
+		auth.addGeneralEventsListener(new BAGeneralEventsAdapter(){
+			@Override
+			public void onAuthenticatorNetworkStatusChange(BANetworkInfo info) {
+				Platform.runLater(() -> {
+					if(info.PORT_FORWARDED == false)
+						BADialog.info(Main.class, "Warning !", "Could not map/forward port, could only be used on local network.").show();
+	            });
+			}
+		});
 	}
 	
 	private void playPairingOperation(String pairName, NetworkType nt, Runnable animDisplay, PairingStageUpdater stageListener){
