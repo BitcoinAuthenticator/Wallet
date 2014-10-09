@@ -417,8 +417,8 @@
     <Pane fx:id="SetPasswordAfterRestorePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
       <children>
         <Hyperlink fx:id="hlpw" layoutX="59.0" layoutY="140.0" minHeight="23.1328125" onAction="#openWeb" prefHeight="23.1328125" prefWidth="302.0" text="Choosing Secure Passwords" />
-        <PasswordField fx:id="txPW1" layoutX="59.0" layoutY="80.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
-        <PasswordField fx:id="txPW2" layoutX="304.0" layoutY="80.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
+        <PasswordField fx:id="txRestorePW1" layoutX="59.0" layoutY="80.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
+        <PasswordField fx:id="txRestorePW2" layoutX="304.0" layoutY="80.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
         <Button fx:id="btnBackFromSetPasswordAfterRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toRestoreProcess" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnContinueAfterSetPasswordAfterRestore" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#finishRestoreProcess" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       </children>

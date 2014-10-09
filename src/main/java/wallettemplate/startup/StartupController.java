@@ -194,6 +194,8 @@ public class StartupController  extends BaseUI{
 	@FXML private TextField txAccount;
 	@FXML private PasswordField txPW1;
 	@FXML private PasswordField txPW2;
+	@FXML private PasswordField txRestorePW1;
+	@FXML private PasswordField txRestorePW2;
 	@FXML private Label lblSeed;
 	@FXML private CheckBox ckSeed;
 	@FXML private CheckBox chkTestNet;
@@ -703,7 +705,7 @@ public class StartupController  extends BaseUI{
 					 "You need to enter a name for your account");
 		 }
 		 
-		 if(handlePasswordPane())
+		 if(handlePasswordPane(txPW1.getText(), txPW2.getText()))
 		 {
 			 try {
 				firstAccountName = txAccount.getText();
@@ -733,17 +735,17 @@ public class StartupController  extends BaseUI{
 		 }
 	 }
 	 
-	 private boolean handlePasswordPane() {
-		 if (txPW1.getText().toString().equals("") || txPW2.getText().toString().equals("")){
+	 private boolean handlePasswordPane(String pw1, String pw2) {
+		 if (pw1.equals("") || pw2.equals("")){
 			 informationalAlert("Unfortunately, you messed up.",
 					 "You need to enter a password");
 		 }
-		 else if (!txPW1.getText().toString().equals(txPW2.getText().toString())){
+		 else if (!pw1.equals(pw2)){
 			 informationalAlert("Unfortunately, you messed up.",
 					 "Your passwords don't match");
 		 }
 		 else {
-			 encryptionPassword =  txPW2.getText();
+			 encryptionPassword =  pw2;
 			 return true;
 		 }
 		 
@@ -1351,7 +1353,7 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void finishRestoreProcess(ActionEvent event){
 		 SetPasswordAfterRestorePane.setVisible(false);
-		 if(handlePasswordPane())
+		 if(handlePasswordPane(txRestorePW1.getText(), txRestorePW2.getText()))
 			 finishsetup();
 	 }
 	 
