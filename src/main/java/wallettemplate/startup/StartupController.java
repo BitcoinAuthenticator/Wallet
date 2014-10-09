@@ -148,7 +148,7 @@ import javafx.util.Duration;
 public class StartupController  extends BaseUI{
 	
 	@FXML private Pane MainPane;
-	@FXML private Pane CreateAccountPane;
+	@FXML private Pane SetPasswordPane;
 	@FXML private Pane BackupNewWalletPane;
 	@FXML private Pane ExplanationPane1;
 	@FXML private Pane Pane6;
@@ -160,6 +160,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane RestoreFromSSSDatePane;
 	@FXML private Pane RestoreProcessPane;
 	@FXML private Pane RestoreAccountsPane;
+	@FXML private Pane SetPasswordAfterRestorePane;
 	@FXML private Pane LoadingPane;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
@@ -184,6 +185,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnFinishRestoreProcess;
 	@FXML private Button btnBackFromAccountRestore;
 	@FXML private Button btnAccountRestoreContinue;
+	@FXML private Button btnBackFromSetPasswordAfterRestore;
+	@FXML private Button btnContinueAfterSetPasswordAfterRestore;
 	@FXML private Button btnPlayStore;
 	@FXML private Label lblMinimize;
 	@FXML private Label lblClose;
@@ -361,6 +364,13 @@ public class StartupController  extends BaseUI{
 		 Label lblScanQR = AwesomeDude.createIconLabel(AwesomeIcon.QRCODE, "90");
 		 btnScanQR.setGraphic(lblScanQR);
 		 //
+		 Label labelBackFromSetPasswordAfterRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labelBackFromSetPasswordAfterRestore.setPadding(new Insets(0,6,0,0));
+		 btnBackFromSetPasswordAfterRestore.setGraphic(labelBackFromSetPasswordAfterRestore);
+		 //
+		 Label labeContinueAfterSetPasswordAfterRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeContinueAfterSetPasswordAfterRestore.setPadding(new Insets(0,6,0,0));
+		 btnContinueAfterSetPasswordAfterRestore.setGraphic(labeContinueAfterSetPasswordAfterRestore);
 		 
 		 lblMinimize.setPadding(new Insets(0,20,0,0));
 		 // Pane Control
@@ -521,27 +531,27 @@ public class StartupController  extends BaseUI{
 		 lblSeed.setText(mnemonic);
 		 
 		 Animation ani = GuiUtils.fadeOut(MainPane);
-		 GuiUtils.fadeIn(CreateAccountPane);
+		 GuiUtils.fadeIn(SetPasswordPane);
 		 MainPane.setVisible(false);
-		 CreateAccountPane.setVisible(true);
+		 SetPasswordPane.setVisible(true);
 	 }
 	
 	 
 	 @FXML protected void toMainPane(ActionEvent event) {
 		 shouldCreateNewAccountOnFinish = false;
 		 Animation ani = GuiUtils.fadeOut(MainRestorePane);
-		 Animation ani2 = GuiUtils.fadeOut(CreateAccountPane);
+		 Animation ani2 = GuiUtils.fadeOut(SetPasswordPane);
 		 GuiUtils.fadeIn(MainPane);
-		 CreateAccountPane.setVisible(false);
+		 SetPasswordPane.setVisible(false);
 		 MainRestorePane.setVisible(false);
 		 MainPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void toCreateAccountPane(ActionEvent event) {
 		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
-		 GuiUtils.fadeIn(CreateAccountPane);
+		 GuiUtils.fadeIn(SetPasswordPane);
 		 BackupNewWalletPane.setVisible(false);
-		 CreateAccountPane.setVisible(true);
+		 SetPasswordPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void toExplanationPane1(ActionEvent event) {
@@ -632,19 +642,19 @@ public class StartupController  extends BaseUI{
 			 
 		}
 		 
-		 auth.addListener(new Service.Listener() {
-				@Override public void terminated(State from) {
-					 Platform.runLater(() -> {
-						 	auth.disposeOfAuthenticator();
-							Main.startup.hide();
-							Main.stage.show();
-							if(encryptionPassword != null && encryptionPassword.length() > 0)
-								wallet.encrypt(encryptionPassword);
-							Main.finishLoading();
-					 });
-		         }
-			}, MoreExecutors.sameThreadExecutor());
-		 	auth.stopAsync();
+		auth.addListener(new Service.Listener() {
+			@Override public void terminated(State from) {
+				 Platform.runLater(() -> {
+					 	auth.disposeOfAuthenticator();
+						Main.startup.hide();
+						Main.stage.show();
+						if(encryptionPassword != null && encryptionPassword.length() > 0)
+							wallet.encrypt(encryptionPassword);
+						Main.finishLoading();
+				 });
+		     }
+		}, MoreExecutors.sameThreadExecutor());
+		auth.stopAsync();
 		 	
 	 }
 	 
@@ -692,17 +702,10 @@ public class StartupController  extends BaseUI{
 			 informationalAlert("Unfortunately, you messed up.",
 					 "You need to enter a name for your account");
 		 }
-		 else if (!txPW1.getText().toString().equals(txPW2.getText().toString())){
-			 informationalAlert("Unfortunately, you messed up.",
-					 "Your passwords don't match");
-		 }
-		 else if (txPW1.getText().toString().equals("") && txPW2.getText().toString().equals("")){
-			 informationalAlert("Unfortunately, you messed up.",
-					 "You need to enter a password");
-		 }
-		 else {
+		 
+		 if(handlePasswordPane())
+		 {
 			 try {
-				encryptionPassword =  txPW2.getText();
 				firstAccountName = txAccount.getText();
 				//createNewStandardAccount(txAccount.getText());
 				
@@ -717,9 +720,9 @@ public class StartupController  extends BaseUI{
 						 }
 					 }
 				 });
-				 Animation ani = GuiUtils.fadeOut(CreateAccountPane);
+				 Animation ani = GuiUtils.fadeOut(SetPasswordPane);
 				 GuiUtils.fadeIn(BackupNewWalletPane);
-				 CreateAccountPane.setVisible(false);
+				 SetPasswordPane.setVisible(false);
 				 BackupNewWalletPane.setVisible(true);
 				 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
 			} catch (Exception e) { 
@@ -728,6 +731,23 @@ public class StartupController  extends BaseUI{
 			}
 			 
 		 }
+	 }
+	 
+	 private boolean handlePasswordPane() {
+		 if (txPW1.getText().toString().equals("") || txPW2.getText().toString().equals("")){
+			 informationalAlert("Unfortunately, you messed up.",
+					 "You need to enter a password");
+		 }
+		 else if (!txPW1.getText().toString().equals(txPW2.getText().toString())){
+			 informationalAlert("Unfortunately, you messed up.",
+					 "Your passwords don't match");
+		 }
+		 else {
+			 encryptionPassword =  txPW2.getText();
+			 return true;
+		 }
+		 
+		 return false;
 	 }
 	 
 	 @FXML protected void saveWallet(ActionEvent event) throws IOException{
@@ -809,9 +829,9 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void openWeb(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(CreateAccountPane);
+		 Animation ani = GuiUtils.fadeOut(SetPasswordPane);
 		 GuiUtils.fadeIn(Pane6);
-		 CreateAccountPane.setVisible(false);
+		 SetPasswordPane.setVisible(false);
 		 Pane6.setVisible(true);
 		 browser.autosize();
 		 URL location = Main.class.getResource("passwords.html");
@@ -820,9 +840,9 @@ public class StartupController  extends BaseUI{
 	 
 	 @FXML protected void webFinished(ActionEvent event){
 		 Animation ani = GuiUtils.fadeOut(Pane6);
-		 GuiUtils.fadeIn(CreateAccountPane);
+		 GuiUtils.fadeIn(SetPasswordPane);
 		 Pane6.setVisible(false);
-		 CreateAccountPane.setVisible(true);
+		 SetPasswordPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void btnBackPressed(MouseEvent event) {
@@ -871,7 +891,7 @@ public class StartupController  extends BaseUI{
 		 lblSeed.setText(mnemonic);
 		 
 		 MainPane.setVisible(false);
-		 CreateAccountPane.setVisible(false);
+		 SetPasswordPane.setVisible(false);
 		 BackupNewWalletPane.setVisible(true);
 		 
 		 btnBack2.setVisible(false);
@@ -1313,9 +1333,26 @@ public class StartupController  extends BaseUI{
 	        }, MoreExecutors.sameThreadExecutor());
 	 }
 	  
-	 @FXML protected void finishRestoreProcess(ActionEvent event){
+	 @FXML protected void toSetPasswordAfterResotre(ActionEvent event){
 		 RestoreProcessPane.setVisible(false);
-		 finishsetup();
+		 SetPasswordAfterRestorePane.setVisible(true);
+	 }
+	 
+	//##############################
+	 //
+	 //	Set password after restore process 
+	 //
+	 //##############################
+	 
+	 @FXML protected void toRestoreProcess(ActionEvent event) {
+		 RestoreProcessPane.setVisible(true);
+		 SetPasswordAfterRestorePane.setVisible(false);
+	 }
+	 
+	 @FXML protected void finishRestoreProcess(ActionEvent event){
+		 SetPasswordAfterRestorePane.setVisible(false);
+		 if(handlePasswordPane())
+			 finishsetup();
 	 }
 	 
 	//##############################

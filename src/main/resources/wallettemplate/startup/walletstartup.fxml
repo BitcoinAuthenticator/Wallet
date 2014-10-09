@@ -48,11 +48,11 @@
     </Pane>
     <!--
     
-    	The create new first account in a new wallet.
+    	Set Password Pane
     	
     	
     	-->
-    <Pane fx:id="CreateAccountPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+    <Pane fx:id="SetPasswordPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
       <children>
         <Hyperlink fx:id="hlpw" layoutX="59.0" layoutY="171.0" minHeight="23.1328125" onAction="#openWeb" prefHeight="23.1328125" prefWidth="302.0" text="Choosing Secure Passwords" />
         <TextField fx:id="txAccount" layoutX="59.0" layoutY="64.0" prefHeight="27.1328125" prefWidth="481.0" promptText="Name your first account" />
@@ -402,11 +402,28 @@
             </stylesheets>
         </ScrollPane>
         <Button fx:id="btnCancelRestoreProcess" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnBackFromRestoreProcess" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
-      	<Button fx:id="btnFinishRestoreProcess" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#finishRestoreProcess" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      	<Button fx:id="btnFinishRestoreProcess" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toSetPasswordAfterResotre" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       	<Label fx:id="lblRestoreProcessStatus" layoutX="150.0" layoutY="320.0" prefHeight="20.0" prefWidth="294.0" text="Status String ... " wrapText="true" />
       	<ProgressBar fx:id="syncProgress" layoutX="150.0" layoutY="340.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
       </children>
     </Pane>
+    
+    <!--
+    
+    	Set Password Pane
+    	
+    	
+    	-->
+    <Pane fx:id="SetPasswordAfterRestorePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Hyperlink fx:id="hlpw" layoutX="59.0" layoutY="140.0" minHeight="23.1328125" onAction="#openWeb" prefHeight="23.1328125" prefWidth="302.0" text="Choosing Secure Passwords" />
+        <PasswordField fx:id="txPW1" layoutX="59.0" layoutY="80.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
+        <PasswordField fx:id="txPW2" layoutX="304.0" layoutY="80.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
+        <Button fx:id="btnBackFromSetPasswordAfterRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toRestoreProcess" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinueAfterSetPasswordAfterRestore" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#finishRestoreProcess" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    
     <!--
     	
     	Loading Pane
