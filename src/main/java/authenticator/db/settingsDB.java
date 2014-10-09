@@ -177,4 +177,15 @@ public class settingsDB extends dbBase{
 		ConfigSettings.Builder s = getSettingsBuilder();
 		return s.getBloomFilterFalsePositiveRate();
 	}
+	
+	public void setIsPortForwarding(boolean value) throws IOException{
+		ConfigSettings.Builder s = getSettingsBuilder();
+		s.setPortForwarding(value);
+		writeSettingsFile(s);
+	}
+	
+	public boolean getIsPortForwarding() throws IOException{
+		ConfigSettings.Builder s = getSettingsBuilder();
+		return s.getPortForwarding();
+	}
 }

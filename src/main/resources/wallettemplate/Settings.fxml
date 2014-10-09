@@ -273,10 +273,10 @@
         <Pane layoutX="285.0" layoutY="14.0" prefHeight="207.1328125" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
           <children>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Network" />
-            <CheckBox fx:id="ckTor" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" text="Connect through Tor" />
-            <CheckBox fx:id="ckLocalHost" layoutX="14.0" layoutY="89.0" mnemonicParsing="false" text="Connect to Bitcoind on localhost" />
-            <CheckBox fx:id="ckTrustedPeer" layoutX="14.0" layoutY="128.0" mnemonicParsing="false" text="Connect to trusted peer" />
-            <TextField fx:id="txPeerIP" layoutX="14.0" layoutY="157.0" prefWidth="200.0" promptText="Peer IP Address" />
+            <CheckBox fx:id="ckTor" layoutX="14.0" layoutY="45.0" mnemonicParsing="false" text="Connect through Tor" />
+            <CheckBox fx:id="ckLocalHost" layoutX="14.0" layoutY="80.0" mnemonicParsing="false" text="Connect to Bitcoind on localhost" /><CheckBox fx:id="ckPortForwarding" layoutX="14.0" layoutY="115.0" mnemonicParsing="false" text="Port-Forwarding" />
+            <CheckBox fx:id="ckTrustedPeer" layoutX="14.0" layoutY="150.0" mnemonicParsing="false" text="Connect to trusted peer" />
+            <TextField fx:id="txPeerIP" layoutX="14.0" layoutY="175.0" prefWidth="200.0" promptText="Peer IP Address" />
           </children>
         </Pane>
         <Pane layoutX="285.0" layoutY="229.0" prefHeight="142.0" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">

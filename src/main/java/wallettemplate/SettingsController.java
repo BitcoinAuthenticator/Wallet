@@ -45,6 +45,7 @@ import wallettemplate.utils.TextUtils;
 import wallettemplate.utils.dialogs.BADialog;
 import wallettemplate.utils.dialogs.BADialog.BADialogResponse;
 import wallettemplate.utils.dialogs.BADialog.BADialogResponseListner;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -116,6 +117,7 @@ public class SettingsController  extends BaseUI{
 	@FXML private Label lblBloomFilterRate;
 	@FXML private CheckBox ckTor;
 	@FXML private CheckBox ckLocalHost;
+	@FXML private CheckBox ckPortForwarding;
 	@FXML private CheckBox ckTrustedPeer;
 	@FXML private TextField txFee;
 	@FXML private TextField txPeerIP;
@@ -138,6 +140,7 @@ public class SettingsController  extends BaseUI{
 	private String strLanguage;
 	private boolean useTor;
 	private boolean localHost;
+	private boolean portForwarding;
 	private boolean TrustedPeer;
 	private String strFee;
 	private double falsePositiveRate;
@@ -148,13 +151,14 @@ public class SettingsController  extends BaseUI{
 	public void initialize() {     
     	super.initialize(SettingsController.class);
     	
-    	this.intDecimal = Authenticator.getWalletOperation().getDecimalPointFromSettings();
-    	this.strCurrency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
-    	this.strLanguage = Authenticator.getWalletOperation().getLanguageFromSettings().toString();
-    	this.useTor = Authenticator.getWalletOperation().getIsUsingTORFromSettings();
-    	this.localHost = Authenticator.getWalletOperation().getIsConnectingToLocalHostFromSettings();
-    	this.TrustedPeer = Authenticator.getWalletOperation().getIsConnectingToTrustedPeerFromSettings();
-    	this.falsePositiveRate = Authenticator.getWalletOperation().getBloomFilterFalsePositiveRateFromSettings();
+    	this.intDecimal 		= Authenticator.getWalletOperation().getDecimalPointFromSettings();
+    	this.strCurrency 		= Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
+    	this.strLanguage 		= Authenticator.getWalletOperation().getLanguageFromSettings().toString();
+    	this.useTor 			= Authenticator.getWalletOperation().getIsUsingTORFromSettings();
+    	this.localHost 			= Authenticator.getWalletOperation().getIsConnectingToLocalHostFromSettings();
+    	this.portForwarding 	= Authenticator.getWalletOperation().getIsPortForwarding();
+    	this.TrustedPeer 		= Authenticator.getWalletOperation().getIsConnectingToTrustedPeerFromSettings();
+    	this.falsePositiveRate 	= Authenticator.getWalletOperation().getBloomFilterFalsePositiveRateFromSettings();
     	
     	Tooltip.install(slBloom, new Tooltip(String.valueOf(slBloom.getValue())));
     	this.lblBloomFilterRate.setText(String.format( "%.5f", falsePositiveRate ));
@@ -255,6 +259,15 @@ public class SettingsController  extends BaseUI{
 				 }
 			 }
 		 });
+    	ckPortForwarding.setSelected(portForwarding);
+    	ckPortForwarding.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			 public void changed(ObservableValue<? extends Boolean> ov,
+					 Boolean old_val, Boolean new_val) {
+					 portForwarding = ckPortForwarding.isSelected();
+					 
+			 }
+		 });
+    	
     	ckTrustedPeer.setSelected(TrustedPeer);
     	if (TrustedPeer) {
     		txPeerIP.setText(Authenticator.getWalletOperation().getTrustedPeerIPFromSettings());
@@ -395,6 +408,13 @@ public class SettingsController  extends BaseUI{
 		Authenticator.getWalletOperation().setIsUsingTORInSettings(useTor);
 		
 		Authenticator.getWalletOperation().setIsConnectingToLocalHostInSettings(localHost);
+		
+		if(Authenticator.getWalletOperation().getIsPortForwarding() != portForwarding)
+			 Platform.runLater(() -> { 
+				 informationalAlert("Important !",
+							"Please restart your wallet so the settings will take effect");
+			 } );
+		Authenticator.getWalletOperation().setIsPortForwarding(portForwarding);
 		
 		Authenticator.getWalletOperation().setIsConnectingToTrustedPeerInSettings(TrustedPeer, txPeerIP.getText());
 

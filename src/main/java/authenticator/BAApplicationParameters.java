@@ -23,7 +23,6 @@ public class BAApplicationParameters{
 	boolean isTestMode = false;
 	boolean shouldLaunchProgram = false;
 	boolean shouldPrintTCPListenerInfoToConsole;
-	boolean isManuallyPortForwarded = false;
 	
 	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
 	
@@ -79,14 +78,6 @@ public class BAApplicationParameters{
 		else
 			setShouldPrintTCPListenerInfoToConsole(false);
 		
-		// Port Forwarding
-		if(params.containsKey("portforwarding")){
-			boolean value = Boolean.parseBoolean(params.get("portforwarding"));
-			setIsManuallyPortForwarded(value);
-		}
-		else
-			setIsManuallyPortForwarded(false);
-		
 		// Port
 		if(params.containsKey("port")){
 			int value = Integer.parseInt(params.get("port"));
@@ -124,13 +115,14 @@ public class BAApplicationParameters{
 		/*
 		 * Settings from file
 		 */
-		WalletOperation wo = new WalletOperation(this);
-		shouldConnectWithTOR = wo.getIsUsingTORFromSettings();
-		shouldConnectToLocalHost = wo.getIsConnectingToLocalHostFromSettings();
-		shouldConnectToTrustedPeer = wo.getIsConnectingToTrustedPeerFromSettings();
+		WalletOperation wo 				= new WalletOperation(this);
+		shouldConnectWithTOR 			= wo.getIsUsingTORFromSettings();
+		shouldConnectToLocalHost		= wo.getIsConnectingToLocalHostFromSettings();
+		shouldConnectToTrustedPeer 		= wo.getIsConnectingToTrustedPeerFromSettings();
+		isManuallyPortForwarded 		= wo.getIsPortForwarding();
 		if(shouldConnectToTrustedPeer)
-			trustedPeerIP = wo.getTrustedPeerIPFromSettings();
-		bloomFilterFalsePositiveRate = wo.getBloomFilterFalsePositiveRateFromSettings();
+			trustedPeerIP 				= wo.getTrustedPeerIPFromSettings();
+		bloomFilterFalsePositiveRate 	= wo.getBloomFilterFalsePositiveRateFromSettings();
 		wo.dispose();
 		
 		shouldLaunchProgram = returnValue;
@@ -148,7 +140,6 @@ public class BAApplicationParameters{
 				{"--testnet"			,"If =true will use testnet parameters, else mainnet parameters"},
 				{"--debuglistener"		,"If =true will print tcp listener info. False by default"},
 				{"--testermode"			,"Testing mode, if true will not send bitcoins. False by default"},
-				{"--portforwarding"		,"Manual Port Forwarding mode, if true will not use UPNP to map ports (Port:1234)"},
 				{"--port"				,"Port Number, default is 1234"}
 		};
 		
@@ -189,12 +180,6 @@ public class BAApplicationParameters{
 	}
 	public void setAppName(String name){
 		APP_NAME = name;
-	}
-	
-	public boolean getIsManuallyPortForwarded(){ return isManuallyPortForwarded; }
-	public BAApplicationParameters setIsManuallyPortForwarded(boolean value) {
-		this.isManuallyPortForwarded = value;
-		return this;
 	}
 	
 	public int getNetworkPort(){ return NETWORK_PORT; }
@@ -260,6 +245,7 @@ public class BAApplicationParameters{
 	boolean shouldConnectToLocalHost = false;
 	double  bloomFilterFalsePositiveRate = 0.00001;
 	boolean shouldConnectToTrustedPeer = false;
+	boolean isManuallyPortForwarded = false;
 	String trustedPeerIP = null;
 	
 	public boolean getShouldConnectWithTOR() {
@@ -275,6 +261,11 @@ public class BAApplicationParameters{
 	public boolean getShouldConnectToTrustedPeer() {
 		checkState(getOperationalState() != BAOperationState.NOT_SYNCED,"Please retreive variable through WalletOperation");
 		return this.shouldConnectToTrustedPeer;
+	}
+	
+	public boolean getIsManuallyPortForwarded() {
+		checkState(getOperationalState() != BAOperationState.NOT_SYNCED,"Please retreive variable through WalletOperation");
+		return isManuallyPortForwarded;
 	}
 	
 	public String getTrustedPeer() {

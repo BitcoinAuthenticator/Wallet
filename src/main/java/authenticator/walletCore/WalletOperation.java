@@ -64,6 +64,7 @@ import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
+import authenticator.protobuf.ProtoSettings.ConfigSettings;
 import authenticator.protobuf.ProtoSettings.Languages;
 
 import org.bitcoinj.core.AbstractWalletEventListener;
@@ -96,6 +97,7 @@ import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.CoinSelection;
 import org.bitcoinj.wallet.DefaultCoinSelector;
 import org.bitcoinj.wallet.DeterministicSeed;
+
 import com.google.common.collect.ImmutableList;
 
 
@@ -2220,6 +2222,22 @@ public class WalletOperation extends BASE{
 			settingsFile.setDefaultFee(value);
 		} catch (IOException e) {
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public void setIsPortForwarding(boolean value) throws CannotWriteToConfigurationFileException{
+		try {
+			settingsFile.setIsPortForwarding(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	public boolean getIsPortForwarding() {
+		try {
+			return settingsFile.getIsPortForwarding();
+		} catch (Exception e) {
+			return false;
 		}
 	}
 }
