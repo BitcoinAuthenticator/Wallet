@@ -187,10 +187,10 @@
                     <Insets left="3.0" top="1.0" />
                   </HBox.margin>
                 </TextField>
-                <Label fx:id="lblFeeUnitName" prefWidth="50.0"  style="-fx-text-fill: #4b698f;" text="XXX">
-                	<HBox.margin>
-                   		 <Insets left="5.0" top="8.0" />
-                 	</HBox.margin>
+                <Label fx:id="lblFeeUnitName" prefWidth="50.0" style="-fx-text-fill: #4b698f;" text="XXX">
+                  <HBox.margin>
+                    <Insets left="5.0" top="8.0" />
+                  </HBox.margin>
                 </Label>
                 <Button fx:id="btnAddTxOutput" mnemonicParsing="false" onAction="#addTxOutput" onMousePressed="#btnAddTxOutputPressed" onMouseReleased="#btnAddTxOutputReleased" prefHeight="25.0" styleClass="custom-button" text="+" textFill="WHITE">
                   <HBox.margin>
@@ -287,7 +287,7 @@
     -->
     <Pane fx:id="AppsPane" layoutX="196.0" layoutY="74.0" prefHeight="337.0000999999975" prefWidth="629.0" visible="false">
       <children>
-        <ScrollPane layoutX="14.0" layoutY="8.0" prefHeight="330.00006948241935" prefWidth="618.0" style="-fx-background:white;" styleClass="custom-scroll">
+        <ScrollPane layoutX="14.0" layoutY="8.0" prefHeight="330.0" prefWidth="618.0" style="-fx-background:white;" styleClass="custom-scroll">
           <content>
             <GridPane prefHeight="520.0" prefWidth="601.0">
               <children>
@@ -330,52 +330,16 @@
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coinbase Buyback" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.margin="$x1" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Support Us!" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
-                        <Image url="@btnCoinbase.png" />
+                        <Image url="@btnDonate.png" />
                       </image>
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coin Control" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                  <graphic>
-                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                      <image>
-                        <Image url="@btnCoinControl.png" />
-                      </image>
-                    </ImageView>
-                  </graphic>
-                </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btncoinjoin" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="CoinJoin" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                  <graphic>
-                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                      <image>
-                        <Image url="@btnCoinJoin.png" />
-                      </image>
-                    </ImageView>
-                  </graphic>
-                </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="LocalBitcoins" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                  <graphic>
-                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                      <image>
-                        <Image url="@btnLocalBitcoins.png" />
-                      </image>
-                    </ImageView>
-                  </graphic>
-                </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnOneName" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="OneName" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                  <graphic>
-                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                      <image>
-                        <Image url="@btnOneName.png" />
-                      </image>
-                    </ImageView>
-                  </graphic>
-                </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnSettings" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Settings" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnSettings" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Settings" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -384,11 +348,56 @@
                     </ImageView>
                   </graphic>
                 </Button>
-                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Support Us!" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnOneName" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="OneName" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                   <graphic>
                     <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                       <image>
-                        <Image url="@btnDonate.png" />
+                        <Image url="@btnOneName.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="LocalBitcoins" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <graphic>
+                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@btnLocalBitcoins.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btncoinjoin" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="CoinJoin" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <graphic>
+                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@btnCoinJoin.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coin Control" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <graphic>
+                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@btnCoinControl.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coinbase Buyback" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.margin="$x1" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <graphic>
+                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@btnCoinbase.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+                <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coinapult Locks" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <graphic>
+                    <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@btnLocks.png" />
                       </image>
                     </ImageView>
                   </graphic>

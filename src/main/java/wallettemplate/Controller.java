@@ -291,6 +291,16 @@ public class Controller  extends BaseUI{
         createSendButtons();
         
         // Transaction pane
+        HBox notx = new HBox();
+		Label l = new Label("                    No transaction history here yet  ");
+		l.setStyle("-fx-font-weight: SEMI_BOLD;");
+		l.setTextFill(Paint.valueOf("#6e86a0"));
+		l.setFont(Font.font(13));
+		notx.getChildren().add(l);
+		Image inout = new Image(Main.class.getResourceAsStream("in-out.png"));
+		ImageView arrows = new ImageView(inout);
+		notx.getChildren().add(arrows);
+        txTable.setPlaceholder(notx);
         colConfirmations.setCellValueFactory(new PropertyValueFactory<TableTx,String>("confirmations"));
     	colInOut.setCellValueFactory(new PropertyValueFactory<TableTx,ImageView>("inOut"));
     	colDate.setCellValueFactory(new PropertyValueFactory<TableTx,String>("date"));
@@ -323,6 +333,7 @@ public class Controller  extends BaseUI{
         
         // net icon
         Tooltip.install(btnNet_grey, new Tooltip("Authenticator network off"));
+        btnNet_grey.setVisible(false);
         
         // transaction history scrollPane
         scrlViewTxHistoryContentManager = new ScrollPaneContentManager()
@@ -575,12 +586,12 @@ public class Controller  extends BaseUI{
 			Platform.runLater(() -> {
 				if(info.PORT_FORWARDED == true && info.SOCKET_OPERATIONAL == true) {
 					btnNet_grey.setVisible(false);
-					btnNet_green.setVisible(true);
+					//btnNet_green.setVisible(true);
 					Tooltip.install(btnNet_green, new Tooltip("Authenticator network is on"));
 				}
 				else if(info.PORT_FORWARDED == false && info.SOCKET_OPERATIONAL == true) {
 					btnNet_grey.setVisible(false);
-					btnNet_yellow.setVisible(true);
+					//btnNet_yellow.setVisible(true);
 					Tooltip.install(btnNet_yellow, new Tooltip("No port-forwarding, can't access from outside your network"));
 				}
             });	
@@ -2010,7 +2021,8 @@ public class Controller  extends BaseUI{
    	//
    	//#####################################
     @FXML protected void btnNotImplementedYet(MouseEvent event) {
-    	Main.instance.overlayUI("not_implemented_yet/NotImplementedYetScreen.fxml");
+    	informationalAlert("Whoa, hold your horses",
+				"This is only an alpha release. Check back in a couple weeks and we should have more apps implemented.");
     }
     
     @FXML protected void btnAppAuthenticator(MouseEvent event) {

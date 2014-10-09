@@ -9,7 +9,6 @@ public class BADialog extends BADialogBase{
 	public enum BADialogResponse {
 		Yes,
 		No,
-		
 		Ok,
 		Cancel;
 	}

@@ -7,44 +7,69 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<children><VBox prefWidth="550.0">
-<children><HBox prefHeight="63.0" prefWidth="550.0">
-<children><ImageView fitHeight="51.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
-<HBox.margin>
-<Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
-</HBox.margin>
-<image>
-<Image url="@../../authenticator_logo_plain_big.png" />
-</image></ImageView><VBox alignment="CENTER_LEFT" prefWidth="460.0">
-<children><Label fx:id="lblTitle" prefHeight="23.0" prefWidth="428.0" text="title">
-<VBox.margin>
-<Insets left="15.0" />
-</VBox.margin>
-<font>
-<Font size="18.0" />
-</font></Label><Label fx:id="lblDesc" prefWidth="424.0" text="details">
-<VBox.margin>
-<Insets left="15.0" top="10.0" />
-</VBox.margin></Label>
-</children></VBox>
-</children></HBox><HBox alignment="CENTER" prefHeight="46.0" prefWidth="550.0">
-<children><TextField fx:id="txfInput" prefHeight="26.0" prefWidth="550.0">
-<HBox.margin>
-<Insets left="10.0" right="10.0" />
-</HBox.margin></TextField>
-</children></HBox><HBox alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="550.0">
-<children><Button fx:id="btnYes" mnemonicParsing="false" onAction="#okAnswer" prefHeight="26.0" prefWidth="59.0" text="Ok">
-<HBox.margin>
-<Insets right="15.0" />
-</HBox.margin></Button><Button fx:id="btnNo" mnemonicParsing="false" onAction="#cancelAnswer" text="Cancel">
-<HBox.margin>
-<Insets right="15.0" />
-</HBox.margin></Button>
-</children>
-<VBox.margin>
-<Insets bottom="10.0" />
-</VBox.margin></HBox>
-</children></VBox>
-</children>
+<AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="550.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <VBox prefWidth="550.0">
+      <children>
+        <HBox prefHeight="63.0" prefWidth="550.0">
+          <children>
+            <ImageView fitHeight="51.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../../startup/logo.png" />
+              </image>
+              <HBox.margin>
+                <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+              </HBox.margin>
+            </ImageView>
+            <VBox alignment="CENTER_LEFT" prefWidth="460.0">
+              <children>
+                <Label fx:id="lblTitle" prefHeight="23.0" prefWidth="428.0" text="title">
+                  <font>
+                    <Font size="18.0" />
+                  </font>
+                  <VBox.margin>
+                    <Insets left="15.0" />
+                  </VBox.margin>
+                </Label>
+                <Label fx:id="lblDesc" prefHeight="26.0" prefWidth="424.0" text="details">
+                  <VBox.margin>
+                    <Insets left="15.0" top="10.0" />
+                  </VBox.margin>
+                </Label>
+              </children>
+            </VBox>
+          </children>
+        </HBox>
+        <HBox alignment="CENTER" prefHeight="46.0" prefWidth="550.0">
+          <children>
+            <TextField fx:id="txfInput" prefHeight="26.0" prefWidth="550.0">
+              <HBox.margin>
+                <Insets left="10.0" right="10.0" />
+              </HBox.margin>
+            </TextField>
+          </children>
+        </HBox>
+        <HBox alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="550.0">
+          <children>
+            <Button fx:id="btnYes" mnemonicParsing="false" onAction="#okAnswer" prefHeight="26.0" prefWidth="70.0" text="Ok">
+              <HBox.margin>
+                <Insets right="15.0" />
+              </HBox.margin>
+            </Button>
+            <Button fx:id="btnNo" mnemonicParsing="false" onAction="#cancelAnswer" prefHeight="26.0" prefWidth="70.0" text="Cancel">
+              <HBox.margin>
+                <Insets right="15.0" />
+              </HBox.margin>
+            </Button>
+          </children>
+          <padding>
+            <Insets right="182.0" />
+          </padding>
+          <VBox.margin>
+            <Insets bottom="10.0" />
+          </VBox.margin>
+        </HBox>
+      </children>
+    </VBox>
+  </children>
 </AnchorPane>
