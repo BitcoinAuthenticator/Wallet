@@ -1156,6 +1156,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 private void createSSSRestorePieces(int threshHold){
+		 restoreSSSScrllContent.clearAll();
 		 for(int i=1; i <= threshHold; i++)
 		 {
 			 SSSRestoreCell c = new SSSRestoreCell();

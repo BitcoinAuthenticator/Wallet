@@ -12,6 +12,7 @@ import authenticator.walletCore.exceptions.CannotGetAccountUsedAddressesExceptio
 import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.CannotGetHDKeyException;
 import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
+import authenticator.walletCore.exceptions.CannotReadFromConfigurationFileException;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
@@ -305,9 +306,12 @@ public class WalletOperation extends BASE{
 	/**
 	 * Be careful using this method directly because it can block 
 	 * @param wallet
+	 * @throws CannotWriteToConfigurationFileException 
+	 * @throws AccountWasNotFoundException 
+	 * @throws IOException 
 	 * @throws Exception
 	 */
-	private synchronized void updateBalance(Wallet wallet) throws Exception{
+	private synchronized void updateBalance(Wallet wallet) throws CannotWriteToConfigurationFileException {
 		List<ATAccount> accounts = getAllAccounts();
 		List<ATAccount.Builder> newBalances = new ArrayList<ATAccount.Builder>();
     	for(ATAccount acc:accounts){
@@ -334,6 +338,9 @@ public class WalletOperation extends BASE{
     	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     	    			if(isWatchingAddress(addrStr)){
     	    				ATAddress add = findAddressInAccounts(addrStr);
+    	    				if(add == null)
+    	    					continue;
+    	    				
     	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     	    				
     	    				/**
@@ -345,7 +352,6 @@ public class WalletOperation extends BASE{
     	    						Coin old = Coin.valueOf(acc.getConfirmedBalance());
     	    						acc.setConfirmedBalance(old.add(out.getValue()).longValue());
     	    					}
-    	    				//addToConfirmedBalance(add.getAccountIndex(), out.getValue());
     	    			}
     				}
     			}
@@ -358,6 +364,8 @@ public class WalletOperation extends BASE{
         	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
         	    			if(isWatchingAddress(addrStr)){
         	    				ATAddress add = findAddressInAccounts(addrStr);
+        	    				if(add == null)
+        	    					continue;
         	    				
         	    				/**
         	    				 * Subtract from internal account list
@@ -368,7 +376,6 @@ public class WalletOperation extends BASE{
         	    						Coin old = Coin.valueOf(acc.getConfirmedBalance());
         	    						acc.setConfirmedBalance(old.subtract(out.getValue()).longValue());
         	    					}
-        	    				//subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
         	    			}
     					}
     				}
@@ -385,6 +392,9 @@ public class WalletOperation extends BASE{
     	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
     	    			if(isWatchingAddress(addrStr)){
     	    				ATAddress add = findAddressInAccounts(addrStr);
+    	    				if(add == null)
+    	    					continue;
+    	    				
     	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
     	    				
     	    				/**
@@ -396,7 +406,6 @@ public class WalletOperation extends BASE{
     	    						Coin old = Coin.valueOf(acc.getUnConfirmedBalance());
     	    						acc.setUnConfirmedBalance(old.add(out.getValue()).longValue());
     	    					}
-    	    				//addToUnConfirmedBalance(add.getAccountIndex(), out.getValue());
     	    			}
     				}
     			}
@@ -409,6 +418,9 @@ public class WalletOperation extends BASE{
         	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
         	    			if(isWatchingAddress(addrStr)){
         	    				ATAddress add = findAddressInAccounts(addrStr);
+        	    				if(add == null)
+        	    					continue;
+        	    				
         	    				if(out.getParentTransaction().getConfidence().getConfidenceType() == ConfidenceType.PENDING) {
         	    					/**
             	    				 * Subtract from internal account list
@@ -419,8 +431,6 @@ public class WalletOperation extends BASE{
             	    						Coin old = Coin.valueOf(acc.getUnConfirmedBalance());
             	    						acc.setUnConfirmedBalance(old.subtract(out.getValue()).longValue());
             	    					}
-        	    					
-        	    					//subtractFromUnConfirmedBalance(add.getAccountIndex(), out.getValue());
         	    				}
         	    				if(out.getParentTransaction().getConfidence().getConfidenceType() == ConfidenceType.BUILDING) {
         	    					/**
@@ -432,7 +442,6 @@ public class WalletOperation extends BASE{
             	    						Coin old = Coin.valueOf(acc.getConfirmedBalance());
             	    						acc.setConfirmedBalance(old.subtract(out.getValue()).longValue());
             	    					}
-        	    					//subtractFromConfirmedBalance(add.getAccountIndex(), out.getValue());
         	    				}
         	    			}
     					}
@@ -907,7 +916,7 @@ public class WalletOperation extends BASE{
 				throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 			return ret;
 		}
-		catch(NoWalletPasswordException | KeyIndexOutOfRangeException | AddressFormatException e) {
+		catch(NoWalletPasswordException | KeyIndexOutOfRangeException e) {
 			throw new CannotGetHDKeyException(e.toString());
 		}
 		
@@ -926,7 +935,7 @@ public class WalletOperation extends BASE{
 	public DeterministicKey getPubKeyFromAccount(int accountIndex, 
 			HierarchyAddressTypes type, 
 			int addressKey, 
-			boolean iKnowAddressFromKeyIsNotWatched) throws AddressNotWatchedByWalletException, CannotGetHDKeyException{
+			boolean iKnowAddressFromKeyIsNotWatched) throws AddressNotWatchedByWalletException, CannotGetHDKeyException, AddressFormatException{
 		try {
 			ATAccount acc = this.getAccount(accountIndex);
 			ATAccountAddressHierarchy H = type == HierarchyAddressTypes.External? acc.getAccountExternalHierarchy():acc.getAccountInternalHierarchy();
@@ -935,7 +944,7 @@ public class WalletOperation extends BASE{
 				throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 			return ret;
 		}
-		catch(KeyIndexOutOfRangeException | AddressFormatException | AccountWasNotFoundException e) {
+		catch(KeyIndexOutOfRangeException | AccountWasNotFoundException e) {
 			throw new CannotGetHDKeyException(e.toString());
 		}
 		
@@ -950,40 +959,33 @@ public class WalletOperation extends BASE{
 	 * 
 	 * @param addressStr
 	 * @return {@link authenticator.protobuf.ProtoConfig.ATAddress ATAddress}
-	 * @throws CannotGetAddressException 
 
 	 */
-	public ATAddress findAddressInAccounts(String addressStr) throws CannotGetAddressException {
-		try {
-			if(!isWatchingAddress(addressStr))
-				throw new AddressWasNotFoundException("Cannot find address in accounts");
-			List<ATAccount> accounts = getAllAccounts();
-			int gapLookAhead = 30;
-			while(gapLookAhead < 10000) // just arbitrary number, TODO - this is very stupid !!
-			{
-				for(ATAccount acc:accounts){
-					for(int i = gapLookAhead - 30 ; i < gapLookAhead; i++)
-					{
-						ATAddress add = null;
-						/*
-						 * Will throw an exception if the address is not watched by the wallet, if so just break from the loop
-						 */
-						try { add = getATAddreessFromAccount(acc.getIndex(), HierarchyAddressTypes.External, i); } catch(CannotGetAddressException e) {}
-						if (add == null)
-							break; 
-						
-						if(add.getAddressStr().equals(addressStr))
-							return add;
-					}
+	public ATAddress findAddressInAccounts(String addressStr) {
+		if(!isWatchingAddress(addressStr))
+			return null;
+		List<ATAccount> accounts = getAllAccounts();
+		int gapLookAhead = 30;
+		while(gapLookAhead < 10000) // just arbitrary number, TODO - this is very stupid !!
+		{
+			for(ATAccount acc:accounts){
+				for(int i = gapLookAhead - 30 ; i < gapLookAhead; i++)
+				{
+					ATAddress add = null;
+					/*
+					 * Will throw an exception if the address is not watched by the wallet, if so just break from the loop
+					 */
+					try { add = getATAddreessFromAccount(acc.getIndex(), HierarchyAddressTypes.External, i); } catch(CannotGetAddressException e) {}
+					if (add == null)
+						break; 
+					
+					if(add.getAddressStr().equals(addressStr))
+						return add;
 				}
-				gapLookAhead += 30;
 			}
-			throw new AddressWasNotFoundException("Cannot find address in accounts");
+			gapLookAhead += 30;
 		}
-		catch(Exception e) {
-			throw new CannotGetAddressException(addressStr + "\n" + e.toString());
-		}
-		
+		return null;
 	}
 	
 	/**
@@ -1448,9 +1450,15 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
-	public Coin getConfirmedBalance(int accountIdx) throws AccountWasNotFoundException{
-		long balance = configFile.getConfirmedBalace(accountIdx);
-		return Coin.valueOf(balance);
+	public Coin getConfirmedBalance(int accountIdx) throws CannotReadFromConfigurationFileException{		
+		try {
+			long balance = configFile.getConfirmedBalace(accountIdx);
+			return Coin.valueOf(balance);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new CannotReadFromConfigurationFileException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -1459,14 +1467,19 @@ public class WalletOperation extends BASE{
 	 * @param accountIdx
 	 * @param amount
 	 * @return
-	 * @throws IOException
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotWriteToConfigurationFileException 
 	 */
-	public Coin addToConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
-		Coin old = getConfirmedBalance(accountIdx);
-		Coin ret = setConfirmedBalance(accountIdx, old.add(amount));
-		LOG.info("Added " + amount.toFriendlyString() + " to confirmed balance. Account: " + accountIdx );
-		return ret;
+	public Coin addToConfirmedBalance(int accountIdx, Coin amount) throws CannotWriteToConfigurationFileException{		
+		try{
+			Coin old = getConfirmedBalance(accountIdx);
+			Coin ret = setConfirmedBalance(accountIdx, old.add(amount));
+			LOG.info("Added " + amount.toFriendlyString() + " to confirmed balance. Account: " + accountIdx );
+			return ret;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -1475,15 +1488,20 @@ public class WalletOperation extends BASE{
 	 * @param accountIdx
 	 * @param amount
 	 * @return
-	 * @throws IOException
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotWriteToConfigurationFileException 
 	 */
-	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
-		Coin old = getConfirmedBalance(accountIdx);
-		LOG.info("Subtracting " + amount.toFriendlyString() + " from confirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
-		assert(old.compareTo(amount) >= 0);
-		Coin ret = setConfirmedBalance(accountIdx, old.subtract(amount));
-		return ret;
+	public Coin subtractFromConfirmedBalance(int accountIdx, Coin amount) throws CannotWriteToConfigurationFileException{
+		try{
+			Coin old = getConfirmedBalance(accountIdx);
+			LOG.info("Subtracting " + amount.toFriendlyString() + " from confirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
+			assert(old.compareTo(amount) >= 0);
+			Coin ret = setConfirmedBalance(accountIdx, old.subtract(amount));
+			return ret;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}		
 	}
 	
 	/**
@@ -1492,35 +1510,30 @@ public class WalletOperation extends BASE{
 	 * @param accountIdx
 	 * @param newBalance
 	 * @return
-	 * @throws IOException
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotWriteToConfigurationFileException 
 	 */
-	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws IOException, AccountWasNotFoundException{
-		long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
-		Coin ret = Coin.valueOf(balance);
-		LOG.info("Set " + ret.toFriendlyString() + " in confirmed balance. Account: " + accountIdx);
-		return ret;
+	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws CannotWriteToConfigurationFileException{
+		try {
+			long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
+			Coin ret = Coin.valueOf(balance);
+			LOG.info("Set " + ret.toFriendlyString() + " in confirmed balance. Account: " + accountIdx);
+			return ret;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
 	}
 	
-	public Coin getUnConfirmedBalance(int accountIdx) throws AccountWasNotFoundException{
-		long balance = configFile.getUnConfirmedBalace(accountIdx);
-		return Coin.valueOf(balance);
-	}
-	
-	/**
-	 * Will return updated balance
-	 * 
-	 * @param accountIdx
-	 * @param amount
-	 * @return
-	 * @throws IOException
-	 * @throws AccountWasNotFoundException 
-	 */
-	public Coin addToUnConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
-		Coin old = getUnConfirmedBalance(accountIdx);
-		Coin ret = setUnConfirmedBalance(accountIdx, old.add(amount));
-		LOG.info("Added " + amount.toFriendlyString() + " to unconfirmed balance. Account: " + accountIdx );
-		return ret;
+	public Coin getUnConfirmedBalance(int accountIdx) throws CannotReadFromConfigurationFileException{
+		try {
+			long balance = configFile.getUnConfirmedBalace(accountIdx);
+			return Coin.valueOf(balance);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new CannotReadFromConfigurationFileException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -1529,15 +1542,41 @@ public class WalletOperation extends BASE{
 	 * @param accountIdx
 	 * @param amount
 	 * @return
-	 * @throws IOException
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotWriteToConfigurationFileException 
 	 */
-	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws IOException, AccountWasNotFoundException{
-		Coin old = getUnConfirmedBalance(accountIdx);
-		LOG.info("Subtracting " + amount.toFriendlyString() + " from unconfirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
-		assert(old.compareTo(amount) >= 0);
-		Coin ret = setUnConfirmedBalance(accountIdx, old.subtract(amount));
-		return ret;
+	public Coin addToUnConfirmedBalance(int accountIdx, Coin amount) throws CannotWriteToConfigurationFileException{
+		try {
+			Coin old = getUnConfirmedBalance(accountIdx);
+			Coin ret = setUnConfirmedBalance(accountIdx, old.add(amount));
+			LOG.info("Added " + amount.toFriendlyString() + " to unconfirmed balance. Account: " + accountIdx );
+			return ret;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Will return updated balance
+	 * 
+	 * @param accountIdx
+	 * @param amount
+	 * @return
+	 * @throws CannotWriteToConfigurationFileException 
+	 */
+	public Coin subtractFromUnConfirmedBalance(int accountIdx, Coin amount) throws CannotWriteToConfigurationFileException{		
+		try {
+			Coin old = getUnConfirmedBalance(accountIdx);
+			LOG.info("Subtracting " + amount.toFriendlyString() + " from unconfirmed balance(" + old.toFriendlyString() + "). Account: " + accountIdx);
+			assert(old.compareTo(amount) >= 0);
+			Coin ret = setUnConfirmedBalance(accountIdx, old.subtract(amount));
+			return ret;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -1546,14 +1585,20 @@ public class WalletOperation extends BASE{
 	 * @param accountIdx
 	 * @param newBalance
 	 * @return
-	 * @throws IOException
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotWriteToConfigurationFileException 
 	 */
-	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws IOException, AccountWasNotFoundException{
-		long balance = configFile.writeUnConfirmedBalace(accountIdx, newBalance.longValue());
-		Coin ret = Coin.valueOf(balance);
-		LOG.info("Set " + ret.toFriendlyString() + " in unconfirmed balance. Account: " + accountIdx);
-		return ret;
+	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws CannotWriteToConfigurationFileException {
+		try {
+			long balance = configFile.writeUnConfirmedBalace(accountIdx, newBalance.longValue());
+			Coin ret = Coin.valueOf(balance);
+			LOG.info("Set " + ret.toFriendlyString() + " in unconfirmed balance. Account: " + accountIdx);
+			return ret;
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -1562,24 +1607,30 @@ public class WalletOperation extends BASE{
 	 * @param accountId
 	 * @param amount
 	 * @return
+	 * @throws CannotWriteToConfigurationFileException 
 	 * @throws IOException 
-	 * @throws AccountWasNotFoundException 
 	 */
-	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws IOException, AccountWasNotFoundException{
-		Coin beforeConfirmed = getConfirmedBalance(accountId);
-		Coin beforeUnconf = getUnConfirmedBalance(accountId);
-		LOG.info("Moving " + amount.toFriendlyString() + 
-				" from unconfirmed(" + beforeUnconf.toFriendlyString() 
-				+") to confirmed(" + beforeConfirmed.toFriendlyString() + ") balance. Account: " + accountId );
-		assert(beforeUnconf.compareTo(amount) >= 0);
-		//
-		Coin afterConfirmed = beforeConfirmed.add(amount);
-		Coin afterUnconfirmed = beforeUnconf.subtract(amount);
-		
-		setConfirmedBalance(accountId,afterConfirmed);
-		setUnConfirmedBalance(accountId,afterUnconfirmed);
-				
-		return afterConfirmed;
+	public Coin moveFundsFromUnconfirmedToConfirmed(int accountId,Coin amount) throws CannotWriteToConfigurationFileException{		
+		try {
+			Coin beforeConfirmed = getConfirmedBalance(accountId);
+			Coin beforeUnconf = getUnConfirmedBalance(accountId);
+			LOG.info("Moving " + amount.toFriendlyString() + 
+					" from unconfirmed(" + beforeUnconf.toFriendlyString() 
+					+") to confirmed(" + beforeConfirmed.toFriendlyString() + ") balance. Account: " + accountId );
+			assert(beforeUnconf.compareTo(amount) >= 0);
+			//
+			Coin afterConfirmed = beforeConfirmed.add(amount);
+			Coin afterUnconfirmed = beforeUnconf.subtract(amount);
+			
+			setConfirmedBalance(accountId,afterConfirmed);
+			setUnConfirmedBalance(accountId,afterUnconfirmed);
+					
+			return afterConfirmed;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -1588,23 +1639,29 @@ public class WalletOperation extends BASE{
 	 * @param accountId
 	 * @param amount
 	 * @return
-	 * @throws IOException 
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotWriteToConfigurationFileException 
 	 */
-	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws IOException, AccountWasNotFoundException{
-		Coin beforeConfirmed = getConfirmedBalance(accountId);
-		Coin beforeUnconf = getUnConfirmedBalance(accountId);
-		LOG.info("Moving " + amount.toFriendlyString() + 
-				" from confirmed(" + beforeConfirmed.toFriendlyString() 
-				+") to unconfirmed(" + beforeUnconf.toFriendlyString() + ") balance. Account: " + accountId );
-		assert(beforeConfirmed.compareTo(amount) >= 0);
-		//
-		Coin afterConfirmed = beforeConfirmed.subtract(amount);
-		Coin afterUnconfirmed = beforeUnconf.add(amount);
+	public Coin moveFundsFromConfirmedToUnConfirmed(int accountId,Coin amount) throws CannotWriteToConfigurationFileException {
+		try{
+			Coin beforeConfirmed = getConfirmedBalance(accountId);
+			Coin beforeUnconf = getUnConfirmedBalance(accountId);
+			LOG.info("Moving " + amount.toFriendlyString() + 
+					" from confirmed(" + beforeConfirmed.toFriendlyString() 
+					+") to unconfirmed(" + beforeUnconf.toFriendlyString() + ") balance. Account: " + accountId );
+			assert(beforeConfirmed.compareTo(amount) >= 0);
+			//
+			Coin afterConfirmed = beforeConfirmed.subtract(amount);
+			Coin afterUnconfirmed = beforeUnconf.add(amount);
+			
+			setConfirmedBalance(accountId,afterConfirmed);
+			setUnConfirmedBalance(accountId,afterUnconfirmed);		
+			return afterUnconfirmed;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
 		
-		setConfirmedBalance(accountId,afterConfirmed);
-		setUnConfirmedBalance(accountId,afterUnconfirmed);		
-		return afterUnconfirmed;
 	}
 	
 	
@@ -1774,13 +1831,20 @@ public class WalletOperation extends BASE{
 		return mWalletWrapper.getNetworkParams();
 	}
     
-    public boolean isWatchingAddress(Address address) throws AddressFormatException{
+    public boolean isWatchingAddress(Address address){
     	return isWatchingAddress(address.toString());
     }
-    public boolean isWatchingAddress(String address) throws AddressFormatException
+    
+    /**
+     * Will check if address is watched by the wallet
+     * 
+     * @param address
+     * @return
+     */
+    public boolean isWatchingAddress(String address)
 	{
     	assert(mWalletWrapper != null);
-		return mWalletWrapper.isAuthenticatorAddressWatched(address);
+    	return mWalletWrapper.isAuthenticatorAddressWatched(address);
 	}
     
     public boolean isTransactionOutputMine(TransactionOutput out)

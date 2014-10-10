@@ -31,6 +31,7 @@ import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
+import authenticator.walletCore.exceptions.CannotReadFromConfigurationFileException;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -709,7 +710,7 @@ public class UIUpdateHelper extends BaseUI{
 	    	try {
 				unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 				confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-			} catch (AccountWasNotFoundException e) { e.printStackTrace(); }
+			} catch (CannotReadFromConfigurationFileException e) { e.printStackTrace(); }
 	  
 		}
 
@@ -726,7 +727,7 @@ public class UIUpdateHelper extends BaseUI{
 					      @Override public void run() {
 								try {
 									attachBalanceToolTip();
-								} catch (AccountWasNotFoundException e) {
+								} catch (CannotReadFromConfigurationFileException e) {
 									e.printStackTrace();
 								}
 					      }
@@ -740,7 +741,7 @@ public class UIUpdateHelper extends BaseUI{
 	        });
 		}
 		
-		private void attachBalanceToolTip() throws AccountWasNotFoundException{
+		private void attachBalanceToolTip() throws CannotReadFromConfigurationFileException{
 	    	  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 		      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 			  

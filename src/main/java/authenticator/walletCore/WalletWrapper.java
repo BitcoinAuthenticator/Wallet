@@ -110,8 +110,16 @@ public class WalletWrapper extends BASE{
 		trackedWallet.addWatchedAddresses(addresses, Utils.currentTimeSeconds());
 	}
 	
-	public boolean isAuthenticatorAddressWatched(String address) throws AddressFormatException{
-		return isAuthenticatorAddressWatched(new Address(trackedWallet.getNetworkParameters(),address));
+	public boolean isAuthenticatorAddressWatched(String address) {
+		Address addr = null;
+		try {
+			addr = new Address(trackedWallet.getNetworkParameters(),address);
+		} catch (AddressFormatException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return isAuthenticatorAddressWatched(addr);
 	}
 	public boolean isAuthenticatorAddressWatched(Address address)
 	{
