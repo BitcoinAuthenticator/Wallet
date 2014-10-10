@@ -21,7 +21,7 @@ enum Languages{
 
 message ConfigSettings{
 	optional BitcoinUnit	 accountUnit 						= 1 [default = BTC];
-	optional int32 			 decimalPoints 						= 2 [default = 2];
+	optional int32 			 decimalPoints 						= 2 [default = 4];
 	optional string 		 localCurrencySymbol				= 3 [default = "USD"];
 	optional Languages 		 language							= 4 [default = English];
 	optional int32 			 defaultFee							= 5 [default = 10000]; // in satoshies

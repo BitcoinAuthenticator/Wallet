@@ -186,13 +186,13 @@ public final class ProtoSettings {
      */
     authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit();
 
-    // optional int32 decimalPoints = 2 [default = 2];
+    // optional int32 decimalPoints = 2 [default = 4];
     /**
-     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 4];</code>
      */
     boolean hasDecimalPoints();
     /**
-     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 4];</code>
      */
     int getDecimalPoints();
 
@@ -486,17 +486,17 @@ public final class ProtoSettings {
       return accountUnit_;
     }
 
-    // optional int32 decimalPoints = 2 [default = 2];
+    // optional int32 decimalPoints = 2 [default = 4];
     public static final int DECIMALPOINTS_FIELD_NUMBER = 2;
     private int decimalPoints_;
     /**
-     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 4];</code>
      */
     public boolean hasDecimalPoints() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+     * <code>optional int32 decimalPoints = 2 [default = 4];</code>
      */
     public int getDecimalPoints() {
       return decimalPoints_;
@@ -718,7 +718,7 @@ public final class ProtoSettings {
 
     private void initFields() {
       accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.BTC;
-      decimalPoints_ = 2;
+      decimalPoints_ = 4;
       localCurrencySymbol_ = "USD";
       language_ = authenticator.protobuf.ProtoSettings.Languages.English;
       defaultFee_ = 10000;
@@ -945,7 +945,7 @@ public final class ProtoSettings {
         super.clear();
         accountUnit_ = authenticator.protobuf.ProtoSettings.BitcoinUnit.BTC;
         bitField0_ = (bitField0_ & ~0x00000001);
-        decimalPoints_ = 2;
+        decimalPoints_ = 4;
         bitField0_ = (bitField0_ & ~0x00000002);
         localCurrencySymbol_ = "USD";
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1153,22 +1153,22 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional int32 decimalPoints = 2 [default = 2];
-      private int decimalPoints_ = 2;
+      // optional int32 decimalPoints = 2 [default = 4];
+      private int decimalPoints_ = 4;
       /**
-       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 4];</code>
        */
       public boolean hasDecimalPoints() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 4];</code>
        */
       public int getDecimalPoints() {
         return decimalPoints_;
       }
       /**
-       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 4];</code>
        */
       public Builder setDecimalPoints(int value) {
         bitField0_ |= 0x00000002;
@@ -1177,11 +1177,11 @@ public final class ProtoSettings {
         return this;
       }
       /**
-       * <code>optional int32 decimalPoints = 2 [default = 2];</code>
+       * <code>optional int32 decimalPoints = 2 [default = 4];</code>
        */
       public Builder clearDecimalPoints() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        decimalPoints_ = 2;
+        decimalPoints_ = 4;
         onChanged();
         return this;
       }
@@ -1640,7 +1640,7 @@ public final class ProtoSettings {
       "otobuf\032 google/protobuf/descriptor.proto" +
       "\"\242\003\n\016ConfigSettings\022=\n\013accountUnit\030\001 \001(\016" +
       "2#.authenticator.protobuf.BitcoinUnit:\003B" +
-      "TC\022\030\n\rdecimalPoints\030\002 \001(\005:\0012\022 \n\023localCur" +
+      "TC\022\030\n\rdecimalPoints\030\002 \001(\005:\0014\022 \n\023localCur" +
       "rencySymbol\030\003 \001(\t:\003USD\022<\n\010language\030\004 \001(\016" +
       "2!.authenticator.protobuf.Languages:\007Eng" +
       "lish\022\031\n\ndefaultFee\030\005 \001(\005:\00510000\022\021\n\003TOR\030\006" +

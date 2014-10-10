@@ -226,10 +226,14 @@ public class AccountsController  extends BaseUI{
 					}).show();
 	}
 	
+	@FXML protected void repairAccount(ActionEvent event)
+	{
+		
+	}
+	
 	@FXML protected void close(ActionEvent event){
 		overlayUi.done();
 	}
-	
 	
 	private double xOffset = 0;
 	private double yOffset = 0;
