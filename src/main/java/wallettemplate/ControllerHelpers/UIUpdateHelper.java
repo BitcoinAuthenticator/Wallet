@@ -260,7 +260,7 @@ public class UIUpdateHelper extends BaseUI{
 		    			amount.setText(enter.toFriendlyString());
 		    			amount.setFill(Paint.valueOf("#98d947"));
 		    			if (tx.getInputs().size()==1){
-		    				toFrom = tx.getInput(0).getFromAddress().toString();
+		    				toFrom = "TX: " +  tx.getInput(0).getOutpoint().toString();
 		    			}
 		    		}
 		    		String desc = tx.getHashAsString();
@@ -399,7 +399,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			    		 Text inputtext2 = new Text("");
 	    			    		 Text inputtext3 = new Text("");
 	    			    		 inputtext3.setFill(Paint.valueOf("#98d947"));
-	    			    		 inputtext2.setText(tx.getInput(b).getFromAddress().toString() + " ");
+	    			    		 inputtext2.setText("TX: " + tx.getInput(b).getOutpoint().toString() + " ");
 	    			    		 intext.add(inputtext2);
 	    			    		 try { 
 	    			    			 inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());
@@ -519,7 +519,7 @@ public class UIUpdateHelper extends BaseUI{
 	    					            case 8:  stringToCopy = String.valueOf(tx.getConfidence().numBroadcastPeers() + " peers");
 	    					                     break;
 	    					            case 9:  break;
-	    					            case 10: for (TransactionInput in : tx.getInputs()){stringToCopy = stringToCopy + in.getFromAddress().toString() + "; ";}
+	    					            case 10: for (TransactionInput in : tx.getInputs()){stringToCopy = stringToCopy + "TX: " + in.getOutpoint().toString() + "; ";}
 	    					                     break;
 	    					            case 11: break;
 	    					            case 12: stringToCopy = intotaltext2.getText();
