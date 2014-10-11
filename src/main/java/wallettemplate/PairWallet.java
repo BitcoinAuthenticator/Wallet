@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
+
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import authenticator.Authenticator;
@@ -20,6 +21,7 @@ import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.dialogs.BADialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,6 +30,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.animation.Animation;
@@ -46,6 +49,7 @@ public class PairWallet extends BaseUI{
 	@FXML private Button btnHelp;
 	@FXML private ProgressIndicator prgIndicator;
 	@FXML private TextField textfield;
+	@FXML private TextField txfWalletPwd;
 	@FXML private Label lblStatus;
 	@FXML private Pane qrPane;
 	@FXML private Pane gcmPane;
@@ -53,6 +57,7 @@ public class PairWallet extends BaseUI{
 	@FXML private Pane pairPane;
 	@FXML private Label lblScan;
 	@FXML private ImageView imgViewQR;
+	@FXML private CheckBox chkGCM;
 	public Main.OverlayUI overlayUi;
 	@FXML private Button btnBack;
 	@FXML private Label lblInfo;
@@ -67,6 +72,17 @@ public class PairWallet extends BaseUI{
     
     public void initialize() {
         super.initialize(PairWallet.class);
+        
+        if(Main.UI_ONLY_IS_WALLET_LOCKED && !Main.UI_ONLY_WALLET_PW.hasPassword()) {
+        	txfWalletPwd.setVisible(true); 
+        	
+        	textfield.setLayoutY(textfield.getLayoutY() + 30);
+        	runBtn.setLayoutY(runBtn.getLayoutY() + 30);
+        	chkGCM.setLayoutY(chkGCM.getLayoutY() + 30);
+        	hlGCM.setLayoutY(hlGCM.getLayoutY() + 30);
+        }
+        else
+        	txfWalletPwd.setVisible(false);
     }
     
     @FXML protected void drag1(MouseEvent event) {
@@ -211,6 +227,16 @@ public class PairWallet extends BaseUI{
     public void run(ActionEvent event) throws IOException {
     	if (animDisplay == null || animAfterPairing == null)
     		prepareAnimations();
+    	
+    	if(txfWalletPwd.isVisible()) {
+    		if(txfWalletPwd.getText().length() == 0) {
+    			BADialog.info(Main.class, "Error!", "Wallet is locked, please provide a password").show();
+    			return;
+    		}
+    		
+    		if(!Main.UI_ONLY_WALLET_PW.hasPassword())
+    			Main.UI_ONLY_WALLET_PW.setPassword(txfWalletPwd.getText());
+    	}
     	
     	if(textfield.getText().length() > 0)
     	{
