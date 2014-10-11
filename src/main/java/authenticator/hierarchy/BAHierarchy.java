@@ -33,6 +33,10 @@ import com.google.protobuf.ByteString;
   *
   */
  public class BAHierarchy{
+	 /**
+	  * Fresh unused keys will be given up to the set keyLookAhead, if the user will ask 
+	  * more it will get the same keyLookAhead keys to maintain a strict handling over keys for later hierarchy restoring.
+	  */
 	static public int keyLookAhead = 10; 
  	 	
  	List<AccountTracker> accountTracker;

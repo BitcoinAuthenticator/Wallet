@@ -965,26 +965,22 @@ public class WalletOperation extends BASE{
 		if(!isWatchingAddress(addressStr))
 			return null;
 		List<ATAccount> accounts = getAllAccounts();
-		int gapLookAhead = 30;
-		while(gapLookAhead < 10000) // just arbitrary number, TODO - this is very stupid !!
-		{
-			for(ATAccount acc:accounts){
-				for(int i = gapLookAhead - 30 ; i < gapLookAhead; i++)
-				{
-					ATAddress add = null;
-					/*
-					 * Will throw an exception if the address is not watched by the wallet, if so just break from the loop
-					 */
-					try { add = getATAddreessFromAccount(acc.getIndex(), HierarchyAddressTypes.External, i); } catch(CannotGetAddressException e) {}
-					if (add == null)
-						break; 
-					
-					if(add.getAddressStr().equals(addressStr))
-						return add;
-				}
+		for(ATAccount acc:accounts){
+			for(int i = 0 ; i <= acc.getUsedExternalKeysCount() + BAHierarchy.keyLookAhead; i++)
+			{
+				ATAddress add = null;
+				/*
+				 * Will throw an exception if the address is not watched by the wallet, if so just break from the loop
+				 */
+				try { add = getATAddreessFromAccount(acc.getIndex(), HierarchyAddressTypes.External, i); } catch(CannotGetAddressException e) {}
+				if (add == null)
+					break; 
+				
+				if(add.getAddressStr().equals(addressStr))
+					return add;
 			}
-			gapLookAhead += 30;
-		}
+		}		
+		
 		return null;
 	}
 	

@@ -1036,6 +1036,8 @@ public class Controller  extends BaseUI{
     
     @FXML protected void openOneNameDialog(ActionEvent event){
     	Main.instance.overlayUI("OneName.fxml");
+    	
+    	updateUI();
     }
     
     @SuppressWarnings("static-access")

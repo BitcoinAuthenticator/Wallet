@@ -36,7 +36,6 @@ public class OneNameController  extends BaseUI{
 	@FXML private Button btnBack;
 	
 	public void initialize(){
-		 //super(AccountsController.class);
 		AnchorPane.setEffect(new DropShadow());
 	}
 	
@@ -113,11 +112,8 @@ public class OneNameController  extends BaseUI{
 	
 	@SuppressWarnings("restriction")
 	private void setAllComponentsEnabled(boolean value) {
-		//txtOneName.setDisable(!value);
 		btnOK.setDisable(!value);;
 		btnCancel.setDisable(!value);
-		//btnSignUp.setDisable(!value);
-		//btnBack.setDisable(!value);
 	}
 	
 	@FXML protected void learnMore(){
@@ -164,12 +160,4 @@ public class OneNameController  extends BaseUI{
 	@FXML protected void SignUpreleased(){
 		btnSignUp.setStyle("-fx-background-color: #4db2dc;");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 }

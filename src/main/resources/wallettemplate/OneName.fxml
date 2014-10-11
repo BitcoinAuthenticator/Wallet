@@ -21,12 +21,12 @@
         <Pane fx:id="Pane1" layoutX="2.0" layoutY="44.0" prefHeight="234.0" prefWidth="377.0" visible="true">
           <children>
             <Button id="btnCancel" fx:id="btnCancel" layoutX="190.0" layoutY="160.0" mnemonicParsing="false" onAction="#done" onMousePressed="#Cancelpressed" onMouseReleased="#Cancelreleased" prefWidth="151.5" style="-fx-background-color: #4db2dc;" text="Cancel" />
-            <Label layoutX="39.0" layoutY="79.0" prefHeight="45.0" prefWidth="327.0" text="(optional) Enter your passphrase:                           We will store it encrypted with your wallet's seed." wrapText="true" />
+            <Label disable="true" layoutX="39.0" layoutY="79.0" prefHeight="45.0" prefWidth="327.0" text="(optional) Enter your passphrase:                           We will store it encrypted with your wallet's seed." wrapText="true" />
             <Button fx:id="btnOK" layoutX="38.0" layoutY="160.0" mnemonicParsing="false" onAction="#onename" onMousePressed="#OKpressed" onMouseReleased="#OKreleased" prefWidth="151.5" style="-fx-background-color: #4db2dc;" text="OK" />
             <TextField fx:id="txtOneName" layoutX="39.0" layoutY="45.0" prefWidth="303.0000999999975" />
             <Label layoutX="38.0" layoutY="25.0" text="Enter OneName ID:" />
             <Label layoutX="25.0" layoutY="48.0" text="+" />
-            <PasswordField layoutX="38.0" layoutY="124.0" prefWidth="304.0" />
+            <PasswordField disable="true" layoutX="38.0" layoutY="124.0" prefWidth="304.0" />
             <Label layoutX="48.0" layoutY="201.0" text="Don't have one?" />
             <Hyperlink layoutX="165.0" layoutY="198.0" onAction="#learnMore" text="Click here to learn more" />
           </children>
