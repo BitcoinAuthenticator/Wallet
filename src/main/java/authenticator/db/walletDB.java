@@ -286,9 +286,17 @@ public class walletDB extends dbBase{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<PendingRequest> all = getPendingRequests();
 		auth.getConfigAuthenticatorWalletBuilder().clearPendingRequests();
-		for(PendingRequest pr:all)
-			if(!req.contains(pr))//!pr.getRequestID().equals(req.getRequestID()))
+		for(PendingRequest pr:all) {
+			boolean found = false;
+			for(PendingRequest forDelete: req) 
+				if(pr.getRequestID().equals(forDelete.getRequestID())) {
+					found = true;
+					break;
+				}
+			
+			if(!found)
 				auth.getConfigAuthenticatorWalletBuilder().addPendingRequests(pr);
+		}
 		writeConfigFile(auth);
 	}
 

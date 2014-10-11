@@ -1,5 +1,7 @@
 package authenticator.listeners;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import javafx.scene.image.Image;
@@ -91,4 +93,13 @@ public interface BAGeneralEventsListener {
 	 * @param info
 	 */
 	public void onAuthenticatorNetworkStatusChange(BANetworkInfo info);
+	
+	/**
+	 * Will be called whenever a {@link authenticator.protobuf.ProtoConfig.PendingRequest PendingRequest} is been added or removed.
+	 */
+	public void onPendingRequestUpdate(List<PendingRequest> requests, PendingRequestUpdateType updateType);
+	public enum PendingRequestUpdateType{
+		RequestAdded,
+		RequestDeleted;
+	};
 }

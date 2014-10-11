@@ -24,11 +24,13 @@ import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import authenticator.hierarchy.exceptions.NoUnusedKeyException;
 import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
+import authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1669,6 +1671,8 @@ public class WalletOperation extends BASE{
 		
 		public void addPendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
 			configFile.writeNewPendingRequest(req);
+			LOG.info("Added pending request: " + req.getRequestID());
+			Authenticator.fireOnPendingRequestUpdate(Arrays.asList(req), PendingRequestUpdateType.RequestAdded);
 		}
 		
 		public void removePendingRequest(PendingRequest req) throws CannotRemovePendingRequestException{
@@ -1683,8 +1687,9 @@ public class WalletOperation extends BASE{
 				for(PendingRequest pr:req)
 					a = a + pr.getRequestID() + "\n					";
 				
-				LOG.info("Removed pending requests: " + a);
 				configFile.removePendingRequest(req);
+				LOG.info("Removed pending requests: " + a);
+				Authenticator.fireOnPendingRequestUpdate(req, PendingRequestUpdateType.RequestDeleted);
 			}
 			catch(Exception e) {
 				throw new CannotRemovePendingRequestException(e.getMessage());

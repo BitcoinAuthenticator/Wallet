@@ -1,5 +1,7 @@
 package authenticator.listeners;
 
+import java.util.List;
+
 import javafx.scene.image.Image;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
@@ -60,6 +62,13 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 
 	@Override
 	public void onAuthenticatorNetworkStatusChange(BANetworkInfo info) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPendingRequestUpdate(List<PendingRequest> requests,
+			PendingRequestUpdateType updateType) {
 		// TODO Auto-generated method stub
 		
 	}

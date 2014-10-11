@@ -30,6 +30,7 @@ import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.listeners.BAGeneralEventsListener;
 import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
+import authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
 import authenticator.network.BANetworkInfo;
 import authenticator.network.TCPListener;
 import authenticator.network.TCPListener.TCPListenerExecutionDataBinder;
@@ -45,6 +46,7 @@ import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
+import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 
 /**
  * <p>The main building block of the BitocinAuthenticator wallet.<br>
@@ -131,7 +133,7 @@ public class Authenticator extends BASE{
 		if(generalEventsListeners == null)
 			generalEventsListeners = new ArrayList<BAGeneralEventsListener>();
 		
-		new OperationsFactory(); // to instantiate various things		
+		new OperationsFactory(); // to instantiate various things			
 	}
 	
 	private void init2(){
@@ -350,5 +352,10 @@ public class Authenticator extends BASE{
 	public static void fireOnAuthenticatorNetworkStatusChange(BANetworkInfo info){
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAuthenticatorNetworkStatusChange(info);
+	}
+	
+	public static void fireOnPendingRequestUpdate(List<PendingRequest> request, PendingRequestUpdateType updateType){
+		for(BAGeneralEventsListener l:generalEventsListeners)
+			l.onPendingRequestUpdate(request, updateType);
 	}
 }

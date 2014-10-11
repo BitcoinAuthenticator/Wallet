@@ -25,6 +25,8 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import authenticator.Authenticator;
 import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
+import authenticator.listeners.BAGeneralEventsAdapter;
+import authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
 import authenticator.protobuf.ProtoSettings;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
@@ -375,6 +377,15 @@ public class SettingsController  extends BaseUI{
     			colRequestID,
     			colOperationType,
     			colAccount).execute();
+    	Authenticator.addGeneralEventsListener(new BAGeneralEventsAdapter() {
+    		@Override
+    		public void onPendingRequestUpdate(List<PendingRequest> requests, PendingRequestUpdateType updateType) {
+    			new PendingRquestsUpdater(tblViewPendingRequests, 
+    	    			colRequestID,
+    	    			colOperationType,
+    	    			colAccount).execute();
+    		}
+    	});
     }
     
     @FXML protected void drag1(MouseEvent event) {
@@ -596,28 +607,6 @@ public class SettingsController  extends BaseUI{
 							}
 						}
 					}).show();
-		
-//		Action response = Dialogs.create()
-//    	        .owner(Controller.accountsAppStage)
-//    	        .title("Warning !")
-//    	        .masthead("You are about to delete your wallet !!!\n"
-//    	        		+ "Deleting the wallet will cause you to loose all related data and the ability to access your coins\n\n"
-//    	        		+ "Are you sure your wallet is backed up and you wish to continue ?\n")
-//    	        .actions(Dialog.Actions.YES, Dialog.Actions.NO)
-//    	        .showConfirm();
-//		
-//		if(response == Dialog.Actions.YES) {
-//			if(deleteDirectory(new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath()))) {
-//				informationalAlert("Deleted wallet",
-//						 "Will shut down.");
-//				
-//				Runtime.getRuntime().exit(0);
-//			}
-//			else
-//				informationalAlert("Failed !",
-//						 "Could not delete wallet");
-//			
-//		}
 	}
 	
 	public static boolean deleteDirectory(File directory) {
