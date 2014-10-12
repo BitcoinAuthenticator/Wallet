@@ -182,16 +182,11 @@
                     <Insets top="1.0" />
                   </HBox.margin>
                 </TextField>
-                <TextField fx:id="txFee" maxHeight="23.0" prefHeight="23.0" prefWidth="120.0" promptText="Fee" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+                <TextField fx:id="txFee" maxHeight="23.0" prefHeight="23.0" prefWidth="200.0" promptText="Fee" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
                   <HBox.margin>
                     <Insets left="3.0" top="1.0" />
                   </HBox.margin>
                 </TextField>
-                <Label fx:id="lblFeeUnitName" prefWidth="50.0" style="-fx-text-fill: #4b698f;" text="XXX">
-                  <HBox.margin>
-                    <Insets left="5.0" top="8.0" />
-                  </HBox.margin>
-                </Label>
                 <Button fx:id="btnAddTxOutput" mnemonicParsing="false" onAction="#addTxOutput" onMousePressed="#btnAddTxOutputPressed" onMouseReleased="#btnAddTxOutputReleased" prefHeight="25.0" styleClass="custom-button" text="+" textFill="WHITE">
                   <HBox.margin>
                     <Insets left="3.0" top="2.0" />
@@ -219,6 +214,7 @@
                 <Insets top="10.0" />
               </VBox.margin>
             </HBox>
+            <Label fx:id="lblFeeUnitName" prefWidth="50.0" style="-fx-text-fill: #4b698f;" text="XXX" />
           </children>
         </VBox>
       </children>

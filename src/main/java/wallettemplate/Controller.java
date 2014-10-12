@@ -1092,9 +1092,10 @@ public class Controller  extends BaseUI{
     	LOG.info("Updating fee text box");
     	double fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
     	BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
+    	int decimals = Authenticator.getWalletOperation().getDecimalPointFromSettings();
     	double printableFee = TextUtils.satoshiesToBitcoinUnit(fee, u);
-    	String strFee = String.format( "%.4f", printableFee );
-    	txFee.setPromptText(strFee);
+    	String strFee = String.format( "%." + decimals + "f", printableFee );
+    	txFee.setPromptText("Fee: " + strFee + " " + TextUtils.getAbbreviatedUnit(u));
     	
     	// set unit name
     	BitcoinUnit unit = Authenticator
