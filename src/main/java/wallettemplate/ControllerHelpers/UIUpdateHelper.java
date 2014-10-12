@@ -46,6 +46,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -65,6 +66,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Callback;
 
 public class UIUpdateHelper extends BaseUI{
 	
@@ -131,8 +133,9 @@ public class UIUpdateHelper extends BaseUI{
 		TableView txTable;
 		TableColumn colToFrom;
 		TableColumn colDescription;
+		TableColumn colConfirmations;
 		
-		public TxPaneHistoryUpdater(TableView txTable, TableColumn colToFrom, TableColumn colDescription){
+		public TxPaneHistoryUpdater(TableView txTable, TableColumn colToFrom, TableColumn colDescription, TableColumn colConfimrations){
 			this.txTable = txTable;
 			this.colToFrom = colToFrom;
 			this.colDescription = colDescription;
@@ -189,6 +192,7 @@ public class UIUpdateHelper extends BaseUI{
 		    	    }
 		    	);
 			
+			
 			/**
 			 * 
 			 */
@@ -232,9 +236,6 @@ public class UIUpdateHelper extends BaseUI{
 		    	    }
 		    	);
 			
-			/**
-			 * 
-			 */
 		}
 		
 		@SuppressWarnings({ "deprecation", "restriction" })
@@ -261,9 +262,12 @@ public class UIUpdateHelper extends BaseUI{
 		    			amount.setText(enter.toFriendlyString());
 		    			amount.setFill(Paint.valueOf("#98d947"));
 		    			if (tx.getInputs().size()==1){
-		    				toFrom = "TX: " +  tx.getInput(0).getOutpoint().toString();
+		    				toFrom = tx.getInput(0).getFromAddress().toString();
 		    			}
 		    		}
+		    		VBox v = new VBox();
+		    		v.getChildren().add(arrow);
+		    		v.setAlignment(Pos.CENTER);
 		    		String desc = tx.getHashAsString();
 		    		String date = tx.getUpdateTime().toLocaleString();
 		    		for (int i=0; i<savedTXIDs.size(); i++){
@@ -276,8 +280,24 @@ public class UIUpdateHelper extends BaseUI{
 		    				toFrom = Authenticator.getWalletOperation().getSavedToFrom(i);
 		    			}
 		    		}
-		    		String confirmations = String.valueOf(tx.getConfidence().getDepthInBlocks());
-		    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), confirmations, arrow, date, toFrom, desc, amount);
+		    		Label confirmations = new Label();
+	    			confirmations.setText(Integer.toString(tx.getConfidence().getDepthInBlocks()));
+		    		if (tx.getConfidence().getDepthInBlocks() == 0){
+		    			confirmations.setStyle("-fx-background-color: #f06e6e;");
+		    			confirmations.setPadding(new Insets(1,4,1,4));
+		    		}
+		    		else if (tx.getConfidence().getDepthInBlocks() > 0 && tx.getConfidence().getDepthInBlocks() < 6){
+		    			confirmations.setStyle("-fx-background-color: #f8fb1a;");
+		    			confirmations.setPadding(new Insets(1,4,1,4));
+		    		}
+		    		else if (tx.getConfidence().getDepthInBlocks() > 5){
+		    			confirmations.setStyle("-fx-background-color: #98d947;");
+		    			confirmations.setPadding(new Insets(1,4,1,4));
+		    		}
+		    		VBox v2 = new VBox();
+		    		v2.getChildren().add(confirmations);
+		    		v2.setAlignment(Pos.CENTER);
+		    		TableTx transaction = new TableTx(tx, tx.getHashAsString(), v2, v, date, toFrom, desc, amount);
 		    		txdata.add(transaction);
 	    		}
 	    		catch (Exception e) {
@@ -285,6 +305,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			e.printStackTrace();
 	    			System.out.println("TX: " + tx.toString());
 	    		}
+	    		
 	    	}
 		}
 
@@ -400,7 +421,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			    		 Text inputtext2 = new Text("");
 	    			    		 Text inputtext3 = new Text("");
 	    			    		 inputtext3.setFill(Paint.valueOf("#98d947"));
-	    			    		 inputtext2.setText("TX: " + tx.getInput(b).getOutpoint().toString() + " ");
+	    			    		 inputtext2.setText(tx.getInput(b).getFromAddress().toString() + " ");
 	    			    		 intext.add(inputtext2);
 	    			    		 try { 
 	    			    			 inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());

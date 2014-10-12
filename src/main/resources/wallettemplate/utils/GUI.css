@@ -23,7 +23,7 @@
 }
 
 .table-view .column-header, .table-view .filler {
-    -fx-background-color: white;    
+    -fx-background-color: #a29e9e;    
 }
 
 /* The main scrollbar **track** CSS class  */

@@ -293,6 +293,7 @@ public class Controller  extends BaseUI{
         // Transaction pane
         HBox notx = new HBox();
 		Label l = new Label("                    No transaction history here yet  ");
+		notx.setPadding(new Insets(140,0,0,140));
 		l.setStyle("-fx-font-weight: SEMI_BOLD;");
 		l.setTextFill(Paint.valueOf("#6e86a0"));
 		l.setFont(Font.font(13));
@@ -2014,7 +2015,7 @@ public class Controller  extends BaseUI{
     
     public void setTxPaneHistory() {
     	LOG.info("Updating Tx pane");
-    	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription).execute();
+    	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription, colConfirmations).execute();
     }
     
     //#####################################

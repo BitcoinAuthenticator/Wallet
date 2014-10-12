@@ -2,22 +2,24 @@ package wallettemplate.ControllerHelpers;
 
 import org.bitcoinj.core.Transaction;
 
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class TableTx {
 	
 	private Transaction T;
 	private String txid;
-	private String confirmations;
-	private ImageView inOut;
+	private VBox confirmations;
+	private VBox inOut;
 	private String date;
 	private String toFrom;
 	private String description;
 	private Text amount;
 	
-	public TableTx (Transaction pT, String ptxid, String pConfirmations, ImageView pInOut, String pDate, String pToFrom, String pDescription, Text pAmount){
+	public TableTx (Transaction pT, String ptxid, VBox pConfirmations, VBox pInOut, String pDate, String pToFrom, String pDescription, Text pAmount){
 		this.T = pT;
 		this.txid = ptxid;
 		this.confirmations = pConfirmations;
@@ -36,15 +38,15 @@ public class TableTx {
 		return txid;
 	}
 	
-	public String getConfirmations(){
+	public VBox getConfirmations(){
 		return confirmations;
 	}
 	
-	public void setConfirmations(String pConfirmations){
+	public void setConfirmations(VBox pConfirmations){
 		this.confirmations = pConfirmations;
 	}
 	
-	public ImageView getInOut(){
+	public VBox getInOut(){
 		return inOut;
 	}
 	
