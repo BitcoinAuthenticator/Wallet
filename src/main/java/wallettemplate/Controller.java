@@ -1175,7 +1175,7 @@ public class Controller  extends BaseUI{
         		Address add;
         		
 				double amount;
-				if (na.getSelectedCurrency().equals("BTC")){
+				if (na.getSelectedCurrency().equals("BTC") || na.getSelectedCurrency().equals("mBTC") || na.getSelectedCurrency().equals("μBTC")){
 					amount = na.getAmountValue();
 				}
 				else {		
