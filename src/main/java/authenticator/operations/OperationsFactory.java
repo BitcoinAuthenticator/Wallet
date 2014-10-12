@@ -110,8 +110,6 @@ public class OperationsFactory extends BASE{
 			@Nullable Integer accountID,
 			NetworkType networkType, 
 			int timeout,
-			@Nullable Runnable animation,
-			@Nullable Runnable animationAfterPairing,
 			@Nullable PairingStageUpdater statusListener,
 			@Nullable BAPassword walletPW){
 		BAOperation op = new BAOperation(ATOperationType.Pairing);
@@ -143,8 +141,6 @@ public class OperationsFactory extends BASE{
 									 args,
 									 listener,
 									 statusListener,
-									 animation, 
-									 animationAfterPairing,
 									 walletPW); 
 							 //Return to previous timeout
 							 if(!ss.isClosed())

@@ -2,7 +2,10 @@ package authenticator;
 
 import static org.junit.Assert.*;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -10,12 +13,18 @@ import java.util.Map;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.imageio.ImageIO;
 
 import org.junit.Test;
 
+import com.google.zxing.BinaryBitmap;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
 import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import authenticator.BAApplicationParameters.OS_TYPE;
@@ -51,15 +60,13 @@ public class QRTest {
 		}
 		
 	    //
-		qr.createQRCode(qrData, 
-				new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCodeTEST.png", 
-				"UTF-8", 
-				hintMap,
-				350, 350);
+		byte[] qrByteData = qr.createQRCode(qrData,350, 350);
 		
-		String readQRDataFromImage = qr.readQRCode(new java.io.File( "." ).getCanonicalPath() + "/cached_resources/PairingQRCodeTEST.png",
-				"UTF-8",
-				hintMap);
+		BufferedImage bi= ImageIO.read(new ByteArrayInputStream(qrByteData));
+		BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(
+		        new BufferedImageLuminanceSource(bi)));
+		Result qrCodeResult = new MultiFormatReader().decode(binaryBitmap);
+		String readQRDataFromImage = qrCodeResult.getText();
 		
 		assertTrue(qrData.equals(readQRDataFromImage));
 		

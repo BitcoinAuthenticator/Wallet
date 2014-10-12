@@ -22,9 +22,9 @@ import javafx.scene.image.Image;
 
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
-
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
+
 import com.google.protobuf.ByteString;
 
 import wallettemplate.Main;
@@ -132,16 +132,9 @@ public class TCPListener extends BASE{
 			@Override
 			public void run() {
 	    		try{
-	    			try{
-	    				startup();
-	    			}
-	    			catch (TCPListenerCouldNotStartException e){
-	    				logAsInfo("Something went wrong with the TCPLIstener startup, some operations may not work\n");
-						e.printStackTrace();
-	    			}
-	    			finally {
-	    				Authenticator.fireOnAuthenticatorNetworkStatusChange(getNetworkInfo());
-	    			}
+	    			startup();
+	    			Authenticator.fireOnAuthenticatorNetworkStatusChange(getNetworkInfo());
+	    			System.out.println(TCPListener.this.toString());
 	    			
 	    			assert(operationsQueue != null);
 	    			notifyStarted();
@@ -149,8 +142,9 @@ public class TCPListener extends BASE{
 	    			looper();
 				}
 				catch (Exception e1) {
-					logAsInfo("Fatal Error, Authenticator Operation ShutDown Because Of: \n");
+					LOG.info("Fatal Error, TCPListener ShutDown Because Of: \n");
 					e1.printStackTrace();
+					System.out.println("\n\n" + toString());
 				}
 				finally
 				{
@@ -193,7 +187,7 @@ public class TCPListener extends BASE{
 							LOG.info("Successfuly map ported port: " + forwardedPort);
 						}
 						else {
-							vBANeworkInfo = new BANetworkInfo();
+							vBANeworkInfo = new BANetworkInfo(getExternalIp(), getInternalIp());
 							vBANeworkInfo.PORT_FORWARDED = false;
 							LOG.info("Failed to map port");
 						}
@@ -474,6 +468,17 @@ public class TCPListener extends BASE{
 	//		General
 	//
 	//#####################################
+	@Override
+	public String toString() {
+		return "Authenticator TCPListener: \n" + 
+				String.format("%-30s: %10s\n", "State", this.isRunning()? "Running":"Not Running") + 
+				String.format("%-30s: %10s\n", "External IP", this.getNetworkInfo().EXTERNAL_IP) + 
+				String.format("%-30s: %10s\n", "Internal IP", this.getNetworkInfo().INTERNAL_IP) + 
+				
+				"Network Requirements: \n" + 
+					String.format("   %-30s: %10s\n", "Port Mapped/ Forwarded", this.getNetworkInfo().PORT_FORWARDED? "True":"False") + 
+					String.format("   %-30s: %10s\n", "Socket", this.getNetworkInfo().SOCKET_OPERATIONAL? "Operational":"Not Operational");
+	}
 	
 	public void logAsInfo(String str)
     {
@@ -495,15 +500,33 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean areAllNetworkRequirementsAreFullyRunning(){
+		
 		if(!vBANeworkInfo.PORT_FORWARDED || !vBANeworkInfo.SOCKET_OPERATIONAL)
 			return false;
 		return true;
 	}
 	
+	/**
+	 * Used in case UPNP mapping doesn't work
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	private String getExternalIp() throws IOException{
 	    URL whatismyip = new URL("http://icanhazip.com");
 	    BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 	    return in.readLine();
+	}
+	
+	/**
+	 * Used in case UPNP mapping doesn't work
+	 * 
+	 * @return
+	 * @throws UnknownHostException
+	 */
+	private String getInternalIp() throws UnknownHostException {
+		InetAddress i = InetAddress.getLocalHost();
+        return i.getHostAddress();
 	}
 	
 	public void INTERRUPT_CURRENT_OUTBOUND_OPERATION() throws IOException{

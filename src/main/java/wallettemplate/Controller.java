@@ -596,6 +596,20 @@ public class Controller  extends BaseUI{
 				}
             });	
 			
+			/*
+			 * If the Current account is a paired account, notify the user that some operations may be limited
+			 */
+			if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
+				   Platform.runLater(new Runnable() { 
+					   @Override
+					   public void run() {
+						   informationalAlert("Warning !",
+								   "Some network requirements are not available, some functionalities may be compromised\n" +
+								   "If this problem repeats, your router may not allow port mapping.");   
+					   }
+				   });
+		   		}
+			
 		}
     };
     
@@ -809,18 +823,6 @@ public class Controller  extends BaseUI{
    @SuppressWarnings("unchecked")
    public void setAccountChoiceBox(){
 	   ATAccount active = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount();
-	   if (active.getAccountType() == WalletAccountType.AuthenticatorAccount){
-		   if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
-			   Platform.runLater(new Runnable() { 
-				   @Override
-				   public void run() {
-					   informationalAlert("Error !",
-							   "Some network requirements are not available, some functionalities may be compromised\n" +
-							   "If this problem repeats, your router may not allow port mapping.");   
-				   }
-			   });
-	   		}
-	   }
 	   LOG.info("Setting accounts checkbox");
 	   List<ATAccount> all = new ArrayList<ATAccount>();
 	   all = Authenticator.getWalletOperation().getAllAccounts();

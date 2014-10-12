@@ -82,14 +82,12 @@ public class PairingProtocol {
 		  String[] args, 
 		  OperationListener opListener,
 		  PairingStageUpdater statusListener,
-		  Runnable displayQRAnimation, 
-		  Runnable animationAfterPairing,
 		  @Nullable BAPassword walletPW) throws Exception {
 
 	  assert(args != null);
 	  String walletType = args[2];
 	  
-	  postUIStatusUpdate(statusListener, PairingStage.PAIRING_SETUP);
+	  postUIStatusUpdate(statusListener, PairingStage.PAIRING_SETUP, null);
 	  
 	  String ip = netInfo.EXTERNAL_IP;
 	  String localip = netInfo.INTERNAL_IP;
@@ -104,12 +102,12 @@ public class PairingProtocol {
 	  byte[] authWalletIndex = generateAuthenticatorsWalletIndex(seed, accID);
       
 	  //Display a QR code for the user to scan
-	  PairingQRCode PairingQR = new PairingQRCode(ip, localip, walletType, key, Integer.parseInt(args[3]), authWalletIndex);
-	  Socket socket = dispalyQRAnListenForCommunication(ss, 
+	  PairingQRCode PairingQR = new PairingQRCode();
+	  byte[] qr = PairingQR.generateQRImageBytes(ip, localip, walletType, key, Integer.parseInt(args[3]), authWalletIndex);
+	  Socket socket = dispalyQRAnListenForCommunication(qr,
+			  ss, 
 			  timeout, 
-			  statusListener,
-			  displayQRAnimation, 
-			  animationAfterPairing);
+			  statusListener);
 	  if(socket == null)
 		  return;
 	  
@@ -149,18 +147,19 @@ public class PairingProtocol {
 															  NetworkType.fromString(args[2]),
 															  walletPW);
 		  
-		  postUIStatusUpdate(statusListener, PairingStage.FINISHED);
+		  postUIStatusUpdate(statusListener, PairingStage.FINISHED, null);
 		  statusListener.pairingData(obj);
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");
-		  postUIStatusUpdate(statusListener, PairingStage.FAILED);
+		  postUIStatusUpdate(statusListener, PairingStage.FAILED, null);
 	  }
 
   }
   
   /**
    * 
+   * @param qrImage
    * @param ss
    * @param timeout - in miliseconds
    * @param listener
@@ -168,42 +167,30 @@ public class PairingProtocol {
    * @param animationAfterPairing
    * @return
    */
-  public Socket dispalyQRAnListenForCommunication(ServerSocket ss, 
+  public Socket dispalyQRAnListenForCommunication(byte[] qrImage,
+		  ServerSocket ss, 
 		  int timeout,
-		  PairingStageUpdater listener, 
-		  Runnable displayQRAnimation, 
-		  Runnable animationAfterPairing){
-	  //DisplayQR QR = new DisplayQR();
-	  //QR.displayQR();   
-	  
-	  if(displayQRAnimation != null)
-		  displayQRAnimation.run();
-	  
+		  PairingStageUpdater listener){
 	  System.out.println("Listening for connection ("  + timeout + " sec timeout) ...");
-	  postUIStatusUpdate(listener, PairingStage.WAITING_FOR_SCAN);
+	  postUIStatusUpdate(listener, PairingStage.WAITING_FOR_SCAN, qrImage);
 	  try {
 		ss.setSoTimeout( timeout );
 		Socket socket = ss.accept();
 		//QR.CloseWindow();
 		System.out.println("Connected to Alice");
-	    postUIStatusUpdate(listener, PairingStage.CONNECTED);		 
+	    postUIStatusUpdate(listener, PairingStage.CONNECTED, null);		 
 		  
 		  return socket;
 	} catch (IOException e) {
 		System.out.println("Connection timedout");
-		postUIStatusUpdate(listener, PairingStage.CONNECTION_TIMEOUT);
-	}
-	finally{
-		 if(animationAfterPairing != null)
-			  animationAfterPairing.run();
-    }
-	  
+		postUIStatusUpdate(listener, PairingStage.CONNECTION_TIMEOUT, null);
+	}	  
 	return null;
 	  
   }
   
   public String decipherDataFromAuthenticator(byte[] cipherKeyBytes, PairingStageUpdater listener, SecretKey sharedsecret) throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException{
-	  postUIStatusUpdate(listener, PairingStage.DECRYPTING_MESSAGE);
+	  postUIStatusUpdate(listener, PairingStage.DECRYPTING_MESSAGE, null);
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
 	  String payload = EncodingUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
@@ -250,14 +237,26 @@ public class PairingProtocol {
 	return ret;
   }
   
-  public  void postUIStatusUpdate(PairingStageUpdater listener, PairingStage stage)
+  public  void postUIStatusUpdate(PairingStageUpdater listener, PairingStage stage, @Nullable byte[] qrImageBytes)
   {
 	  if(listener != null)
-		  listener.onPairingStageChanged(stage);
+		  listener.onPairingStageChanged(stage, qrImageBytes);
   }
   
   public interface PairingStageUpdater{
-	  public void onPairingStageChanged(PairingStage stage);
+	  /**
+	   * Will update on the various pairing stages, will pass a QR image as bytes on WAITING_FOR_SCAN.
+	   * 
+	   * @param stage
+	   * @param qrImageBytes
+	   */
+	  public void onPairingStageChanged(PairingStage stage, @Nullable byte[] qrImageBytes);
+	  
+	  /**
+	   * Will pass a paired authenticator object when it is created at the end of the pairing process
+	   * 
+	   * @param data
+	   */
 	  public void pairingData(PairedAuthenticator data);
   }
   

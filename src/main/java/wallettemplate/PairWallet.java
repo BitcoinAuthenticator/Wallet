@@ -21,6 +21,7 @@ import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.ImageUtils;
 import wallettemplate.utils.dialogs.BADialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -66,10 +67,7 @@ public class PairWallet extends BaseUI{
 	private double yOffset = 0;
     
     PairingWalletControllerListener listener;
-    
-    Runnable animDisplay;
-    Runnable animAfterPairing;
-    
+        
     public void initialize() {
         super.initialize(PairWallet.class);
         
@@ -156,12 +154,10 @@ public class PairWallet extends BaseUI{
     			accountID,
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
     			60000,
-    			animDisplay, 
-    			animAfterPairing,
     			new PairingStageUpdater(){
 					@Override
-					public void onPairingStageChanged(PairingStage stage) {
-						handlePairingStage(stage);
+					public void onPairingStageChanged(PairingStage stage, @Nullable byte[] qrImageBytes) {
+						handlePairingStage(stage, qrImageBytes);
 					}
 
 					@Override
@@ -177,7 +173,7 @@ public class PairWallet extends BaseUI{
     }
     
     @SuppressWarnings("restriction")
-	private void handlePairingStage(PairingStage stage){
+	private void handlePairingStage(PairingStage stage, @Nullable byte[] qrImageBytes){
     	switch(stage){
 	    	case PAIRING_SETUP:
 	    		setProgressIndicator(0, "Setup ..");
@@ -187,6 +183,18 @@ public class PairWallet extends BaseUI{
 	    		break;
 	    	case WAITING_FOR_SCAN:
 	    		setProgressIndicator(0.1f, "Waiting QR Scan ..");
+	    		
+	    		Image qrImg;
+				try {
+					qrImg = ImageUtils.javaFXImageFromBytes(qrImageBytes);
+					displayQRAnimation(qrImg);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Platform.runLater(() -> {
+						BADialog.info(Main.class, "Error!", "Could not display QR code").show();
+					} );
+				}
+				
 	    		break;
 	    	case CONNECTED:
 	    		setProgressIndicator(0.4f, "Connected");
@@ -196,6 +204,7 @@ public class PairWallet extends BaseUI{
 	    		break;
 	    	case FINISHED:
 	    		setProgressIndicator(1, "");
+	    		afterPairingAnimation();
 	    		break;
 	    		
 	    		
@@ -204,6 +213,7 @@ public class PairWallet extends BaseUI{
 	    		Platform.runLater(new Runnable() {
 	    			@Override
 	    	        public void run() {
+	    				afterPairingAnimation();
 	    				prgIndicator.setProgress(0);
 	    				lblStatus.setText("Connection Timeout");
 	    	        }
@@ -225,8 +235,6 @@ public class PairWallet extends BaseUI{
     
     @FXML
     public void run(ActionEvent event) throws IOException {
-    	if (animDisplay == null || animAfterPairing == null)
-    		prepareAnimations();
     	
     	if(txfWalletPwd.isVisible()) {
     		if(txfWalletPwd.getText().length() == 0) {
@@ -282,63 +290,38 @@ public class PairWallet extends BaseUI{
     		
     }
     
-    public void prepareAnimations(){
-    	animDisplay = getAnimationForDisplayingQR();
-    	animAfterPairing = getAnimationForAfterPairing();
-    }
-        
-    public Runnable getAnimationForDisplayingQR(){
-    	return new Runnable(){
-
-			@SuppressWarnings("restriction")
-			@Override
-			public void run() {
-				Platform.runLater(new Runnable() {
-				      @Override public void run() {
-				    	  pairPane.setVisible(false);
-				    	  qrPane.setVisible(true);
-				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
-				    	  move.setByX(437.0);
-				    	  move.setCycleCount(1);
-				    	  move.play();
-							//
-							File file;
-							file = new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath() + 
-									PairingQRCode.QR_IMAGE_RELATIVE_PATH);
-							Image img = new Image(file.toURI().toString());
-							imgViewQR.setImage(img);
-							lblScan.setVisible(true);
-				      }
-				});
-			}
-    		
-    	};
+    private void displayQRAnimation(Image img) {
+    	Platform.runLater(new Runnable() {
+		      @Override public void run() {
+		    	  pairPane.setVisible(false);
+		    	  qrPane.setVisible(true);
+		    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
+		    	  move.setByX(437.0);
+		    	  move.setCycleCount(1);
+		    	  move.play();
+				  //
+				  imgViewQR.setImage(img);
+				  lblScan.setVisible(true);
+		      }
+		});
     }
     
-    public Runnable getAnimationForAfterPairing(){
-    	return new Runnable(){
-
-			@SuppressWarnings("restriction")
-			@Override
-			public void run() {
-				Platform.runLater(new Runnable() {
-				      @Override public void run() {
-				    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
-				    	  move.setByX(-437.0);
-				    	  move.setCycleCount(1);
-				    	  move.play();
-				    	  imgViewQR.setImage(null);
-				    	  pairPane.setVisible(true);
-				    	  qrPane.setVisible(false);
-				    	  
-				    	  runBtn.setDisable(true);
-				    	  btnBack.setDisable(true);
-				    	  cancelBtn.setText("Done");
-				      }
-				});
-			}
-    		
-    	};
+    private void afterPairingAnimation() {
+    	Platform.runLater(new Runnable() {
+		      @Override public void run() {
+		    	  TranslateTransition move = new TranslateTransition(Duration.millis(400), imgViewQR);
+		    	  move.setByX(-437.0);
+		    	  move.setCycleCount(1);
+		    	  move.play();
+		    	  imgViewQR.setImage(null);
+		    	  pairPane.setVisible(true);
+		    	  qrPane.setVisible(false);
+		    	  
+		    	  runBtn.setDisable(true);
+		    	  btnBack.setDisable(true);
+		    	  cancelBtn.setText("Done");
+		      }
+		});
     }
     
     public interface PairingWalletControllerListener{

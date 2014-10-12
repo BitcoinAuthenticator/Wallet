@@ -8,6 +8,9 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import wallettemplate.Main;
@@ -39,6 +43,7 @@ import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.ImageUtils;
 import wallettemplate.utils.dialogs.BADialog;
 import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
@@ -586,16 +591,37 @@ public class StartupController  extends BaseUI{
 							//prepare pairing
 							 playPairingOperation(firstAccountName, 
 									 auth.getApplicationParams().getBitcoinNetworkType(), 
-									 pairingQRAnimation(),
 									 new PairingStageUpdater(){
 										@Override
-										public void onPairingStageChanged(PairingStage stage) {
+										public void onPairingStageChanged(PairingStage stage, @Nullable byte[] qrImageBytes) {
 											if(stage == PairingStage.FINISHED){
 												firstAccountType = WalletAccountType.AuthenticatorAccount;
 												finishsetup();
 											}
 											else if(stage == PairingStage.FAILED) {
 												Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "We could not create the pairing QR code, please restart wallet."));
+											}
+											else if(stage == PairingStage.WAITING_FOR_SCAN) {
+												if(qrImageBytes != null && qrImageBytes.length > 0) {
+													try {
+														Image qrImg = ImageUtils.javaFXImageFromBytes(qrImageBytes);
+														Platform.runLater(() -> {
+															ivFirstAccountPairingQR.setImage(qrImg);
+															ivFirstAccountPairingQR.setVisible(true);
+															hlFinished.setVisible(true);
+														});
+													} catch (IOException e) {
+														e.printStackTrace();
+														Platform.runLater(() -> {
+															BADialog.info(Main.class, "Error!", "Could not display QR code").show();
+														} );
+													}
+												}
+												else
+													Platform.runLater(() -> {
+														BADialog.info(Main.class, "Error!", "Could not display QR code").show();
+													} );
+												
 											}
 										}
 
@@ -611,23 +637,6 @@ public class StartupController  extends BaseUI{
 		         }
 			}, MoreExecutors.sameThreadExecutor());
 		 
-	 }
-	 
-	 private Runnable pairingQRAnimation()
-	 {
-		 return new Runnable(){
-				@Override
-				public void run() {
-					// set image 
-					File file;
-					file = new File(appParams.getApplicationDataFolderAbsolutePath() + PairingQRCode.QR_IMAGE_RELATIVE_PATH);
-					Image img = new Image(file.toURI().toString());
-					Platform.runLater(() -> {
-						ivFirstAccountPairingQR.setImage(img);
-						hlFinished.setVisible(true);
-					});
-				}
-			  };
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
@@ -1413,14 +1422,12 @@ public class StartupController  extends BaseUI{
 		});
 	}
 	
-	private void playPairingOperation(String pairName, NetworkType nt, Runnable animDisplay, PairingStageUpdater stageListener){
+	private void playPairingOperation(String pairName, NetworkType nt, PairingStageUpdater stageListener){
 		BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			null,
     			nt,
     			0,
-    			animDisplay, 
-    			null,
     			stageListener,
     			null);
 		
