@@ -1104,7 +1104,6 @@ public class Controller  extends BaseUI{
 		String unitStr = unit.getValueDescriptor()
     			.getOptions()
     			.getExtension(ProtoSettings.bitcoinUnitName);
-		lblFeeUnitName.setText(unitStr);
     }
     
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {

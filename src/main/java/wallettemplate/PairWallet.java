@@ -27,6 +27,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
@@ -49,7 +50,7 @@ public class PairWallet extends BaseUI{
 	@FXML private Button btnHelp;
 	@FXML private ProgressIndicator prgIndicator;
 	@FXML private TextField textfield;
-	@FXML private TextField txfWalletPwd;
+	@FXML private PasswordField txfWalletPwd;
 	@FXML private Label lblStatus;
 	@FXML private Pane qrPane;
 	@FXML private Pane gcmPane;
@@ -74,15 +75,10 @@ public class PairWallet extends BaseUI{
         super.initialize(PairWallet.class);
         
         if(Main.UI_ONLY_IS_WALLET_LOCKED && !Main.UI_ONLY_WALLET_PW.hasPassword()) {
-        	txfWalletPwd.setVisible(true); 
-        	
-        	textfield.setLayoutY(textfield.getLayoutY() + 30);
-        	runBtn.setLayoutY(runBtn.getLayoutY() + 30);
-        	chkGCM.setLayoutY(chkGCM.getLayoutY() + 30);
-        	hlGCM.setLayoutY(hlGCM.getLayoutY() + 30);
+        	txfWalletPwd.setDisable(false); 
         }
         else
-        	txfWalletPwd.setVisible(false);
+        	txfWalletPwd.setDisable(true);
     }
     
     @FXML protected void drag1(MouseEvent event) {
