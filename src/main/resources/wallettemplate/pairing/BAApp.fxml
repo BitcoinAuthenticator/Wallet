@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.PairWallet">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.PairWallet">
   <children>
     <Pane layoutX="0.0" layoutY="0.0" prefHeight="484.0" prefWidth="850.0" style="-fx-background-color: #49acbf;">
       <children>
@@ -27,18 +27,19 @@
         </Pane>
         <Pane fx:id="pairPane" layoutX="0.0" layoutY="59.0" prefHeight="425.0" prefWidth="538.666748046875" visible="true">
           <children>
-            <Label layoutX="75.0" layoutY="14.0" prefHeight="139.0" prefWidth="433.0" style="-fx-background-color: #e3e3e3;  -fx-background-radius: 2; -fx-padding: 10;" text="You can use this app to pair your wallet with the Bitcoin Authenticator Android app to enable two-factor authentication. When complete, your wallet will generate multisignature addresses which require a signature from two keys to spend the bitcoins. One set of keys will be kept in this wallet and the other on your mobile device. When you make a transaction, your phone will prompt you for authorization." wrapText="true" /><TextField fx:id="txfWalletPwd" layoutX="75.0" layoutY="220.0" prefHeight="26.0" prefWidth="335.0" promptText="Wallet Password" style="" visible="false" />
-            <TextField fx:id="textfield" layoutX="75.0" layoutY="220.0" prefHeight="26.0" prefWidth="335.0" promptText="New Account Name" style="" />
-            <Button fx:id="runBtn" alignment="CENTER" contentDisplay="CENTER" layoutX="410.0" layoutY="220.0" mnemonicParsing="false" onAction="#run" onMousePressed="#btnPairPressed" onMouseReleased="#btnPairReleased" prefHeight="26.0" prefWidth="98.0" style="-fx-background-color: grey; -fx-text-fill: #e3e3e3;" styleClass="custom-button" text="OK" />
+            <Label layoutX="75.0" layoutY="14.0" prefHeight="139.0" prefWidth="433.0" style="-fx-background-color: #e3e3e3;  -fx-background-radius: 2; -fx-padding: 10;" text="You can use this app to pair your wallet with the Bitcoin Authenticator Android app to enable two-factor authentication. When complete, your wallet will generate multisignature addresses which require a signature from two keys to spend the bitcoins. One set of keys will be kept in this wallet and the other on your mobile device. When you make a transaction, your phone will prompt you for authorization." wrapText="true" />
+            <TextField fx:id="textfield" layoutX="75.0" layoutY="252.0" prefHeight="26.0" prefWidth="335.0" promptText="New account name" style="" />
+            <Button fx:id="runBtn" alignment="CENTER" contentDisplay="CENTER" layoutX="410.0" layoutY="252.0" mnemonicParsing="false" onAction="#run" onMousePressed="#btnPairPressed" onMouseReleased="#btnPairReleased" prefHeight="26.0" prefWidth="98.0" style="-fx-background-color: grey; -fx-text-fill: #e3e3e3;" styleClass="custom-button" text="OK" />
             <ProgressIndicator fx:id="prgIndicator" layoutX="206.0" layoutY="380.0" progress="0.0" visible="false" />
             <ImageView fitHeight="64.965" fitWidth="183.0" layoutX="194.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true">
               <image>
                 <Image url="@../startup/googleplay.png" />
               </image>
             </ImageView>
-            <CheckBox fx:id="chkGCM" indeterminate="false" layoutX="75.0" layoutY="253.0" mnemonicParsing="false" selected="true" text="Use Google Cloud Messaging" />
-            <Hyperlink fx:id="hlGCM" layoutX="308.0" layoutY="250.0" onAction="#showGCM" text="What is this?" />
+            <CheckBox fx:id="chkGCM" indeterminate="false" layoutX="75.0" layoutY="290.0" mnemonicParsing="false" selected="true" text="Use Google Cloud Messaging" />
+            <Hyperlink fx:id="hlGCM" layoutX="301.0" layoutY="287.0" onAction="#showGCM" text="What is this?" />
             <Label layoutX="75.0" layoutY="145.0" prefHeight="59.0" prefWidth="433.0" style="-fx-background-color: #e3e3e3;  -fx-background-radius: 2; -fx-padding: 10;" text="To begin, create a new multisig account by entering an account name clicking OK." wrapText="true" />
+            <PasswordField layoutX="75.0" layoutY="213.0" prefHeight="26.0" prefWidth="433.0" promptText="Enter your password" />
           </children>
         </Pane>
         <Pane fx:id="qrPane" layoutX="0.0" layoutY="66.0" prefHeight="418.0" prefWidth="538.666748046875" visible="false">

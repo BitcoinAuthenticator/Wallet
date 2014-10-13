@@ -316,6 +316,11 @@
 -fx-text-fill: -icons-color;
 }
 
+#SetPasswordPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
 #SSSBackupPane .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;

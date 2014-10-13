@@ -214,7 +214,6 @@
                 <Insets top="10.0" />
               </VBox.margin>
             </HBox>
-            <Label fx:id="lblFeeUnitName" prefWidth="50.0" style="-fx-text-fill: #4b698f;" text="XXX" />
           </children>
         </VBox>
       </children>

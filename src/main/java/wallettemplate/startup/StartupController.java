@@ -1400,14 +1400,13 @@ public class StartupController  extends BaseUI{
 		DeterministicKey masterPubKey = HDKeyDerivation.createMasterPrivateKey(walletSeed.getSecretBytes()).getPubOnly();
 	    // set Authenticator wallet
 		auth = new Authenticator(masterPubKey, appParams);
-		
 		// add listener
 		auth.addGeneralEventsListener(new BAGeneralEventsAdapter(){
 			@Override
 			public void onAuthenticatorNetworkStatusChange(BANetworkInfo info) {
 				Platform.runLater(() -> {
 					if(info.PORT_FORWARDED == false)
-						BADialog.info(Main.class, "Warning !", "Could not map/forward port, could only be used on local network.").show();
+						BADialog.info(Main.class, "Warning !", "UPnP was unable to map your port. You may need to manually set up port forwarding in your router to commuincate with the Bitcoin Authenticator Android app").show();
 	            });
 			}
 		});
