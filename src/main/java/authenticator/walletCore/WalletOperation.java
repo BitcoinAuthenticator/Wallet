@@ -2305,6 +2305,14 @@ public class WalletOperation extends BASE{
 			return false;
 		}
 	}
+	
+	public void resotreSettingsToDefault() throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.resotreSettingsToDefault();
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
 }
 
 

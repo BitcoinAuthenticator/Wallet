@@ -152,7 +152,10 @@ public class SettingsController  extends BaseUI{
     @SuppressWarnings("restriction")
 	public void initialize() {     
     	super.initialize(SettingsController.class);
-    	
+    	 initUI();
+    }
+    
+    private void initUI() {    	
     	this.intDecimal 		= Authenticator.getWalletOperation().getDecimalPointFromSettings();
     	this.strCurrency 		= Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
     	this.strLanguage 		= Authenticator.getWalletOperation().getLanguageFromSettings().toString();
@@ -522,6 +525,9 @@ public class SettingsController  extends BaseUI{
 						changePWNewFirst.getText(), 
 						changePWNewSecond.getText());
 			}
+			else
+				informationalAlert("Unfortunately, you messed up.",
+	 					 "You need to enter the correct original password.");
 		}
 		
 		else if(Authenticator.getWalletOperation().isWalletEncrypted()) {
@@ -624,6 +630,19 @@ public class SettingsController  extends BaseUI{
 	        }
 	    }
 	    return(directory.delete());
+	}
+	
+	@FXML protected void restoreSettingsToDefault(ActionEvent event){
+		try {
+			Authenticator.getWalletOperation().resotreSettingsToDefault();
+			this.initUI();
+			informationalAlert("Success !",
+					 "Restored Settings To Default");
+		} catch (CannotWriteToConfigurationFileException e) {
+			e.printStackTrace();
+			informationalAlert("Failed !",
+					 "Could not restore settings to default");
+		}
 	}
 	
 	//################################

@@ -77,9 +77,14 @@ public class walletDB extends dbBase{
 	public void initConfigFile() throws IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth.getConfigAuthenticatorWalletBuilder().setPaired(false);
+		auth = setDefaultSettings(auth);
+		writeConfigFile(auth);
+	}
+	
+	public AuthenticatorConfiguration.Builder setDefaultSettings(AuthenticatorConfiguration.Builder auth) {
 		ConfigSettings.Builder b = ConfigSettings.newBuilder();
 		auth.setConfigSettings(b);
-		writeConfigFile(auth);
+		return auth;
 	}
 
 	public void setPaired(boolean paired) throws IOException{
@@ -385,4 +390,10 @@ public class walletDB extends dbBase{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigSavedTXData(index).getToFrom();
 	} 
+	
+	public void resotreSettingsToDefault() throws IOException {
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth = this.setDefaultSettings(auth);
+		writeConfigFile(auth);
+	}
 }
