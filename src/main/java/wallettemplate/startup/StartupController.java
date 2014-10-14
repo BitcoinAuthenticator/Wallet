@@ -578,6 +578,8 @@ public class StartupController  extends BaseUI{
 		 GuiUtils.fadeIn(ExplanationPane1);
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
+		 
+		 hlFinished.setDisable(true);
 		 		 
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
@@ -605,6 +607,7 @@ public class StartupController  extends BaseUI{
 														Image qrImg = ImageUtils.javaFXImageFromBytes(qrImageBytes);
 														Platform.runLater(() -> {
 															ivFirstAccountPairingQR.setImage(qrImg);
+															hlFinished.setDisable(false);
 														});
 													} catch (IOException e) {
 														e.printStackTrace();
