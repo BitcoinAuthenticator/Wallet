@@ -23,7 +23,7 @@
 }
 
 .table-view .column-header, .table-view .filler {
-    -fx-background-color: white;    
+    -fx-background-color: #a29e9e;    
 }
 
 /* The main scrollbar **track** CSS class  */
@@ -312,6 +312,11 @@
 }
 
 #Pane6 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#SetPasswordPane .awesome{
 -fx-font-family: FontAwesome;
 -fx-text-fill: -icons-color;
 }

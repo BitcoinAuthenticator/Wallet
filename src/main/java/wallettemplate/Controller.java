@@ -293,6 +293,7 @@ public class Controller  extends BaseUI{
         // Transaction pane
         HBox notx = new HBox();
 		Label l = new Label("                    No transaction history here yet  ");
+		notx.setPadding(new Insets(140,0,0,140));
 		l.setStyle("-fx-font-weight: SEMI_BOLD;");
 		l.setTextFill(Paint.valueOf("#6e86a0"));
 		l.setFont(Font.font(13));
@@ -1093,9 +1094,10 @@ public class Controller  extends BaseUI{
     	LOG.info("Updating fee text box");
     	double fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
     	BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
+    	int decimals = Authenticator.getWalletOperation().getDecimalPointFromSettings();
     	double printableFee = TextUtils.satoshiesToBitcoinUnit(fee, u);
-    	String strFee = String.format( "%.4f", printableFee );
-    	txFee.setPromptText(strFee);
+    	String strFee = String.format( "%." + decimals + "f", printableFee );
+    	txFee.setPromptText("Fee: " + strFee + " " + TextUtils.getAbbreviatedUnit(u));
     	
     	// set unit name
     	BitcoinUnit unit = Authenticator
@@ -1104,7 +1106,6 @@ public class Controller  extends BaseUI{
 		String unitStr = unit.getValueDescriptor()
     			.getOptions()
     			.getExtension(ProtoSettings.bitcoinUnitName);
-		lblFeeUnitName.setText(unitStr);
     }
     
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {
@@ -1175,7 +1176,7 @@ public class Controller  extends BaseUI{
         		Address add;
         		
 				double amount;
-				if (na.getSelectedCurrency().equals("BTC")){
+				if (na.getSelectedCurrency().equals("BTC") || na.getSelectedCurrency().equals("mBTC") || na.getSelectedCurrency().equals("μBTC")){
 					amount = na.getAmountValue();
 				}
 				else {		
@@ -2016,7 +2017,7 @@ public class Controller  extends BaseUI{
     
     public void setTxPaneHistory() {
     	LOG.info("Updating Tx pane");
-    	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription).execute();
+    	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription, colConfirmations).execute();
     }
     
     //#####################################

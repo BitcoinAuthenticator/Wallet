@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 
 import org.json.JSONException;
-
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
@@ -19,11 +18,13 @@ import wallettemplate.Main;
 import wallettemplate.OneNameControllerDisplay;
 import wallettemplate.Main.OverlayUI;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.TextUtils;
 import authenticator.Authenticator;
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
+import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -285,7 +286,14 @@ public class SendToCell extends Region{
 	
 	@SuppressWarnings("restriction")
 	public double getAmountValue(){
-		return (double) Double.parseDouble(txfAmount.getText())*100000000;
+		if (Authenticator.getWalletOperation().getAccountUnitFromSettings() == BitcoinUnit.BTC){
+			return (double) Double.parseDouble(txfAmount.getText())*100000000;}
+		else if (Authenticator.getWalletOperation().getAccountUnitFromSettings() == BitcoinUnit.Millibits){
+			return (double) Double.parseDouble(txfAmount.getText())*100000;}
+		else if (Authenticator.getWalletOperation().getAccountUnitFromSettings() == BitcoinUnit.Microbits){
+			return (double) Double.parseDouble(txfAmount.getText())*100;}
+		else return index;
+		
 	}
 	public Coin getAmount(){
 		return Coin.valueOf((long)getAmountValue());

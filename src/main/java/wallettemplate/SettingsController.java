@@ -218,7 +218,7 @@ public class SettingsController  extends BaseUI{
     	    		else
     	    			unit = BitcoinUnit.Microbits;
     	    	  	
-    	    	  	txFee.setPromptText(TextUtils.coinAmountTextDisplay(c, unit));
+    	    	  	txFee.setPromptText("Fee: " + TextUtils.coinAmountTextDisplay(c, unit) + " " + TextUtils.getAbbreviatedUnit(unit));
     	      }
     	    });
     	cbDecimal.setValue(String.valueOf(intDecimal));

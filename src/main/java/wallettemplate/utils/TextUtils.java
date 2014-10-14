@@ -105,4 +105,11 @@ public class TextUtils {
 		
 		return in;
 	}
+	
+	public static String getAbbreviatedUnit (BitcoinUnit unit){
+		if (unit == BitcoinUnit.BTC){return "BTC";}
+		else if (unit == BitcoinUnit.Millibits){return "mBTC";}
+		else if (unit == BitcoinUnit.Microbits){return "µBTC";}
+		return null;
+	}
 }
