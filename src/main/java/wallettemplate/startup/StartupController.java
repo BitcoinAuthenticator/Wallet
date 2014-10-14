@@ -222,7 +222,6 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane BA2;
 	@FXML private Pane BA3;
 	@FXML private Pane BA4;
-	@FXML private Hyperlink hlFinished;
 	@FXML private Label lblLoadginQR;
 	@FXML private ImageView imgSSS;
 	@FXML private Button btnSSS;
@@ -260,6 +259,7 @@ public class StartupController  extends BaseUI{
 	 *  the explanation pane if he wants that the created account should be paired or standard.
 	 */
 	@FXML private ImageView   ivFirstAccountPairingQR;
+	@FXML private Hyperlink hlFinished;
 	private String 			  encryptionPassword = null;
 	private String 			  firstAccountName;
 	private WalletAccountType firstAccountType = WalletAccountType.StandardAccount;
@@ -578,9 +578,7 @@ public class StartupController  extends BaseUI{
 		 GuiUtils.fadeIn(ExplanationPane1);
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
-		 
-		 hlFinished.setVisible(false);
-		 
+		 		 
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
 		 auth.addListener(new Service.Listener() {
@@ -607,8 +605,6 @@ public class StartupController  extends BaseUI{
 														Image qrImg = ImageUtils.javaFXImageFromBytes(qrImageBytes);
 														Platform.runLater(() -> {
 															ivFirstAccountPairingQR.setImage(qrImg);
-															ivFirstAccountPairingQR.setVisible(true);
-															hlFinished.setVisible(true);
 														});
 													} catch (IOException e) {
 														e.printStackTrace();
@@ -699,6 +695,7 @@ public class StartupController  extends BaseUI{
 			 ivFirstAccountPairingQR.setVisible(true);
 			 Animation ani2 = GuiUtils.fadeOut(btnContinue3);
 			 GuiUtils.fadeIn(hlFinished);
+			 hlFinished.setVisible(true);
 			 btnContinue3.setVisible(false);
 			 lblScan.setVisible(true);
 			 btnPlayStore.setVisible(false);

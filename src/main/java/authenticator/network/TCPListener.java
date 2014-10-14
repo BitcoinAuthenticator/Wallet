@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -132,12 +133,12 @@ public class TCPListener extends BASE{
 			@Override
 			public void run() {
 	    		try{
-	    			startup();
-	    			Authenticator.fireOnAuthenticatorNetworkStatusChange(getNetworkInfo());
-	    			System.out.println(TCPListener.this.toString());
+	    			startup();	    			
 	    			
 	    			assert(operationsQueue != null);
 	    			notifyStarted();
+	    			Authenticator.fireOnAuthenticatorNetworkStatusChange(getNetworkInfo());
+	    			System.out.println(TCPListener.this.toString());
 	    			
 	    			looper();
 				}
@@ -193,7 +194,9 @@ public class TCPListener extends BASE{
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
+						vBANeworkInfo = new BANetworkInfo(getExternalIp(), getInternalIp());
+						vBANeworkInfo.PORT_FORWARDED = false;
+						LOG.info("Failed to map port");
 					}
 	    		}
 	    		else
@@ -512,10 +515,16 @@ public class TCPListener extends BASE{
 	 * @return
 	 * @throws IOException
 	 */
-	private String getExternalIp() throws IOException{
-	    URL whatismyip = new URL("http://icanhazip.com");
-	    BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-	    return in.readLine();
+	private String getExternalIp(){
+	    URL whatismyip;
+		try {
+			whatismyip = new URL("http://icanhazip.com");
+			BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+		    return in.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    return null;
 	}
 	
 	/**
@@ -524,9 +533,15 @@ public class TCPListener extends BASE{
 	 * @return
 	 * @throws UnknownHostException
 	 */
-	private String getInternalIp() throws UnknownHostException {
-		InetAddress i = InetAddress.getLocalHost();
-        return i.getHostAddress();
+	private String getInternalIp() {
+		InetAddress i;
+		try {
+			i = InetAddress.getLocalHost();
+			return i.getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+        return null;
 	}
 	
 	public void INTERRUPT_CURRENT_OUTBOUND_OPERATION() throws IOException{
