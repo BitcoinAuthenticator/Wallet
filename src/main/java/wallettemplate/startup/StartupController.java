@@ -42,6 +42,7 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.FileUtils;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.ImageUtils;
 import wallettemplate.utils.dialogs.BADialog;
@@ -87,13 +88,16 @@ import org.bitcoinj.core.Peer;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.core.Wallet;
+import org.bitcoinj.core.WalletExtension;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.BlockStoreException;
+import org.bitcoinj.store.WalletProtobufSerializer;
 import org.bitcoinj.wallet.DeterministicSeed;
+import org.bitcoinj.wallet.Protos;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -209,6 +213,7 @@ public class StartupController  extends BaseUI{
 	@FXML private PasswordField txRestorePW2;
 	@FXML private Label lblSeed;
 	@FXML private CheckBox ckSeed;
+	@FXML private Button btnSave;
 	@FXML private CheckBox chkTestNet;
 	private double xOffset = 0;
 	private double yOffset = 0;
@@ -511,6 +516,7 @@ public class StartupController  extends BaseUI{
          rt.setByAngle(360);
          rt.setCycleCount(10000);
          rt.play();
+         
 	 }
 	 	 
 	 @FXML protected void drag1(MouseEvent event) {
@@ -658,19 +664,30 @@ public class StartupController  extends BaseUI{
 			 
 		}
 		 
-		auth.addListener(new Service.Listener() {
-			@Override public void terminated(State from) {
-				 Platform.runLater(() -> {
-					 	auth.disposeOfAuthenticator();
-						Main.startup.hide();
-						Main.stage.show();
-						if(encryptionPassword != null && encryptionPassword.length() > 0)
-							wallet.encrypt(encryptionPassword);
-						Main.finishLoading();
-				 });
-		     }
-		}, MoreExecutors.sameThreadExecutor());
-		auth.stopAsync();
+		if(auth != null) {
+			auth.addListener(new Service.Listener() {
+				@Override public void terminated(State from) {
+					 Platform.runLater(() -> {
+						 	auth.disposeOfAuthenticator();
+							Main.startup.hide();
+							Main.stage.show();
+							if(encryptionPassword != null && encryptionPassword.length() > 0)
+								wallet.encrypt(encryptionPassword);
+							Main.finishLoading();
+					 });
+			     }
+			}, MoreExecutors.sameThreadExecutor());
+			auth.stopAsync();
+		}
+		else {
+			Platform.runLater(() -> {
+				Main.startup.hide();
+				Main.stage.show();
+				if(encryptionPassword != null && encryptionPassword.length() > 0)
+					wallet.encrypt(encryptionPassword);
+				Main.finishLoading();
+			});
+		}
 		 	
 	 }
 	 
@@ -713,43 +730,7 @@ public class StartupController  extends BaseUI{
 		 ExplanationPane1.setVisible(false);
 		 BackupNewWalletPane.setVisible(true);
 	 }
-	 
-	 @FXML protected void toBackupNewWalletPane(ActionEvent event) {
-		 if (txAccount.getText().toString().equals("")){
-			 informationalAlert("Unfortunately, you messed up.",
-					 "You need to enter a name for your account");
-		 }
-		 
-		 if(handlePasswordPane(txPW1.getText(), txPW2.getText()))
-		 {
-			 try {
-				firstAccountName = txAccount.getText();
-				//createNewStandardAccount(txAccount.getText());
-				
-				ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
-					 public void changed(ObservableValue<? extends Boolean> ov,
-							 Boolean old_val, Boolean new_val) {
-						 if (ckSeed.isSelected()){
-							 btnContinue2.setStyle("-fx-background-color: #95d946;");
-						 }
-						 else {
-							 btnContinue2.setStyle("-fx-background-color: #badb93;");
-						 }
-					 }
-				 });
-				 Animation ani = GuiUtils.fadeOut(SetPasswordPane);
-				 GuiUtils.fadeIn(BackupNewWalletPane);
-				 SetPasswordPane.setVisible(false);
-				 BackupNewWalletPane.setVisible(true);
-				 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
-			} catch (Exception e) { 
-				e.printStackTrace();
-				GuiUtils.informationalAlert("Cannot Create account !", "Please try again");
-			}
-			 
-		 }
-	 }
-	 
+	 	 
 	 private boolean handlePasswordPane(String pw1, String pw2) {
 		 if (pw1.equals("") || pw2.equals("")){
 			 informationalAlert("Unfortunately, you messed up.",
@@ -765,84 +746,6 @@ public class StartupController  extends BaseUI{
 		 }
 		 
 		 return false;
-	 }
-	 
-	 @FXML protected void saveWallet(ActionEvent event) throws IOException{
-		 String filepath = new java.io.File( "." ).getCanonicalPath() + "/" + appParams.getAppName() + ".wallet";
-		 File wallet = new File(filepath);
-		 FileChooser fileChooser = new FileChooser();
-		 fileChooser.setTitle("Save Wallet");
-		 fileChooser.setInitialFileName(appParams.getAppName() + ".wallet");
-		 File file = fileChooser.showSaveDialog(Main.startup);
-		 FileChannel source = null;
-		 FileChannel destination = null;
-		 if (file != null) {
-			 try {
-				 source = new FileInputStream(wallet).getChannel();
-				 destination = new FileOutputStream(file).getChannel();
-				 destination.transferFrom(source, 0, source.size());
-			 }	
-			 finally {
-				 if(source != null) {
-					 source.close();
-				 }
-				 if(destination != null) {
-					 destination.close();
-				 }
-			 }	 
-		 }
-	 }
-	 
-	 @FXML protected void printPaperWallet(ActionEvent event) throws IOException{
-		 PaperWalletController c = new PaperWalletController();
-		 c.createPaperWallet(mnemonic, walletSeed, walletSeed.getCreationTimeSeconds());
-	 }
-	 
-	 @FXML protected void openSSS(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
-		 GuiUtils.fadeIn(SSSBackupPane);
-		 BackupNewWalletPane.setVisible(false);
-		 SSSBackupPane.setVisible(true); 
-	 }
-	 
-	 List<Share> shares;
-	 byte[] mnemonicEntropy;
-	 @FXML protected void split(ActionEvent event) throws IOException{
-		 // get the mnemonic hex
-		 String qrCodeData = null;
-		 MnemonicCode ms = null;
-		 try {
- 		 	ms = new MnemonicCode();
- 			List<String> mnemonic = walletSeed.getMnemonicCode();
- 			mnemonicEntropy = ms.toEntropy(mnemonic);
- 			//String entropyHex = HEX.encode(entropy);
- 			
- 			BipSSS sss = new BipSSS();
- 			shares = sss.shard(mnemonicEntropy, 
- 					 Integer.parseInt(txThreshold.getText().toString()), Integer.parseInt(txPieces.getText().toString()), EncodingFormat.SHORT, params);
- 			final ObservableList list = FXCollections.observableArrayList();
- 			for (Share share: shares){list.add(share.toString());}
- 			lvSSS.setItems(list);
- 		 } catch (Exception e) {
- 			e.printStackTrace();
- 	     }
-		 
-	 }
-	 
-	 @FXML protected void testSSS(ActionEvent event){
-		 if(shares != null && shares.size() > 0 && mnemonicEntropy != null){
-			 TestSSSWindow w = new TestSSSWindow(shares, 
-					 mnemonicEntropy,
-					 Integer.parseInt(txThreshold.getText().toString()));
-			 w.show();
-		 }
-	 }
-	 
-	 @FXML protected void returntoBackupNewWalletPane(ActionEvent event){
-		 Animation ani = GuiUtils.fadeOut(SSSBackupPane);
-		 GuiUtils.fadeIn(BackupNewWalletPane);
-		 SSSBackupPane.setVisible(false);
-		 BackupNewWalletPane.setVisible(true);
 	 }
 	 
 	 @FXML protected void openWeb(ActionEvent event){
@@ -899,9 +802,10 @@ public class StartupController  extends BaseUI{
 	 //##############################
 	 
 	 private boolean backupMode;
-	 public void setBackMode(DeterministicSeed seed){
+	 public void setBackupMode(Wallet wallet, DeterministicSeed seed){
 		 backupMode = true;
 		 
+		 this.wallet= wallet;
 		 walletSeed = seed;
 		 List<String> mnemoniclst = walletSeed.getMnemonicCode();
 		 mnemonic = Joiner.on(" ").join(mnemoniclst);
@@ -914,6 +818,113 @@ public class StartupController  extends BaseUI{
 		 btnBack2.setVisible(false);
 		 btnContinue2.setVisible(false);
 		 ckSeed.setVisible(false);
+		 btnSave.setDisable(false);
+	 }
+	 
+	 @FXML protected void toBackupNewWalletPane(ActionEvent event) {
+		 if (txAccount.getText().toString().equals("")){
+			 informationalAlert("Unfortunately, you messed up.",
+					 "You need to enter a name for your account");
+		 }
+		 
+		 if(handlePasswordPane(txPW1.getText(), txPW2.getText()))
+		 {
+			 try {
+				firstAccountName = txAccount.getText();
+				//createNewStandardAccount(txAccount.getText());
+				
+				ckSeed.selectedProperty().addListener(new ChangeListener<Boolean>() {
+					 public void changed(ObservableValue<? extends Boolean> ov,
+							 Boolean old_val, Boolean new_val) {
+						 if (ckSeed.isSelected()){
+							 btnContinue2.setStyle("-fx-background-color: #95d946;");
+						 }
+						 else {
+							 btnContinue2.setStyle("-fx-background-color: #badb93;");
+						 }
+					 }
+				 });
+				 Animation ani = GuiUtils.fadeOut(SetPasswordPane);
+				 GuiUtils.fadeIn(BackupNewWalletPane);
+				 SetPasswordPane.setVisible(false);
+				 BackupNewWalletPane.setVisible(true);
+				 //Main.bitcoin.wallet().encrypt(txPW1.getText().toString());
+			} catch (Exception e) { 
+				e.printStackTrace();
+				GuiUtils.informationalAlert("Cannot Create account !", "Please try again");
+			}
+			 
+		 }
+	 }
+	 
+	 @FXML protected void saveWalletFolderAsZip(ActionEvent event) throws IOException{
+		 FileChooser fileChooser = new FileChooser();
+		 fileChooser.setTitle("Save Wallet");
+		 fileChooser.setInitialFileName(appParams.getAppName() + ".zip");
+		 File destination = fileChooser.showSaveDialog(Main.startup);
+		 
+		 File walletFolder = new File(appParams.getApplicationDataFolderAbsolutePath());
+		 if(!walletFolder.isDirectory() || !walletFolder.exists()) {
+			 Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "Could not load wallet data directory"));
+			 return;
+		 }
+		 
+		 if(FileUtils.ZipHelper.zipDir(walletFolder.getAbsolutePath(), destination.getAbsolutePath()))
+			 Platform.runLater(() -> GuiUtils.informationalAlert("Success !", "Saved wallet files to:\n" + destination.getAbsolutePath()));
+		 else
+			 Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "Could not save wallet files"));
+	 }
+	 	 	 
+	 @FXML protected void printPaperWallet(ActionEvent event) throws IOException{
+		 PaperWalletController c = new PaperWalletController();
+		 c.createPaperWallet(mnemonic, walletSeed, walletSeed.getCreationTimeSeconds());
+	 }
+	 
+	 @FXML protected void openSSS(ActionEvent event){
+		 Animation ani = GuiUtils.fadeOut(BackupNewWalletPane);
+		 GuiUtils.fadeIn(SSSBackupPane);
+		 BackupNewWalletPane.setVisible(false);
+		 SSSBackupPane.setVisible(true); 
+	 }
+	 
+	 List<Share> shares;
+	 byte[] mnemonicEntropy;
+	 @FXML protected void split(ActionEvent event) throws IOException{
+		 // get the mnemonic hex
+		 String qrCodeData = null;
+		 MnemonicCode ms = null;
+		 try {
+ 		 	ms = new MnemonicCode();
+ 			List<String> mnemonic = walletSeed.getMnemonicCode();
+ 			mnemonicEntropy = ms.toEntropy(mnemonic);
+ 			//String entropyHex = HEX.encode(entropy);
+ 			
+ 			BipSSS sss = new BipSSS();
+ 			shares = sss.shard(mnemonicEntropy, 
+ 					 Integer.parseInt(txThreshold.getText().toString()), Integer.parseInt(txPieces.getText().toString()), EncodingFormat.SHORT, params);
+ 			final ObservableList list = FXCollections.observableArrayList();
+ 			for (Share share: shares){list.add(share.toString());}
+ 			lvSSS.setItems(list);
+ 		 } catch (Exception e) {
+ 			e.printStackTrace();
+ 	     }
+		 
+	 }
+	 
+	 @FXML protected void testSSS(ActionEvent event){
+		 if(shares != null && shares.size() > 0 && mnemonicEntropy != null){
+			 TestSSSWindow w = new TestSSSWindow(shares, 
+					 mnemonicEntropy,
+					 Integer.parseInt(txThreshold.getText().toString()));
+			 w.show();
+		 }
+	 }
+	 
+	 @FXML protected void returntoBackupNewWalletPane(ActionEvent event){
+		 Animation ani = GuiUtils.fadeOut(SSSBackupPane);
+		 GuiUtils.fadeIn(BackupNewWalletPane);
+		 SSSBackupPane.setVisible(false);
+		 BackupNewWalletPane.setVisible(true);
 	 }
 	 
 	 //##############################
@@ -1172,6 +1183,24 @@ public class StartupController  extends BaseUI{
 			 c.setLabel("Share #" + i);
 			 restoreSSSScrllContent.addItem(c);
 		 }
+	 }
+	 
+	 //##############################
+	 //
+	 //		Restore from file 
+	 //
+	 //##############################
+	 
+	 @FXML protected void btnRestoreFromFile(ActionEvent event){
+		 FileChooser fileChooser = new FileChooser();
+		 fileChooser.setTitle("Save Wallet");
+		 fileChooser.setInitialFileName(appParams.getAppName() + ".zip");
+		 File file = fileChooser.showOpenDialog(Main.startup);
+		 
+		 if(FileUtils.ZipHelper.unZip(file.getAbsolutePath(), appParams.getApplicationDataFolderPath()))
+			 finishsetup();
+		 else
+			 Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "Could not restore from file"));
 	 }
 	 
 	 //##############################

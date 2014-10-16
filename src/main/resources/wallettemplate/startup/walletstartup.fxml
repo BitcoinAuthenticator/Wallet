@@ -73,7 +73,7 @@
         <Button fx:id="btnBack2" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toCreateAccountPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnContinue2" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toExplanationPane1" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
         <Label fx:id="lblSeed" layoutX="45.0" layoutY="91.0" prefHeight="70.1328125" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
-        <Button fx:id="btnSave" contentDisplay="TOP" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#saveWallet" prefHeight="143.1328125" prefWidth="146.0" text="Backup to file" textAlignment="CENTER">
+        <Button fx:id="btnSave" contentDisplay="TOP" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#saveWalletFolderAsZip" prefHeight="143.1328125" prefWidth="146.0" text="Backup to file" textAlignment="CENTER" disable="true">
           <graphic>
             <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
               <Image url="@btnSave.png" />
@@ -225,7 +225,7 @@
         <Button fx:id="btnBack4" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnMnemonic" onAction="#btnRestoreMnemonic" contentDisplay="TOP" layoutX="132.0" layoutY="40.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" styleClass="restore-button" text="Enter mnemonic" textAlignment="CENTER" wrapText="true" />
         <Button fx:id="btnScanQR" onAction="#btnRestoreQR" contentDisplay="TOP" layoutX="319.0" layoutY="40.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="146.0" styleClass="restore-button" text="Scan QR code" textAlignment="CENTER" wrapText="true" />
-        <Button fx:id="btnLoad" contentDisplay="TOP" layoutX="132.0" layoutY="216.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" text="Load from file" textAlignment="CENTER" wrapText="true">
+        <Button fx:id="btnLoad" onAction="#btnRestoreFromFile" contentDisplay="TOP" layoutX="132.0" layoutY="216.0" mnemonicParsing="false" prefHeight="143.0" prefWidth="146.0" text="Load from file" textAlignment="CENTER" wrapText="true">
           <graphic>
             <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
               <Image url="@btnSave.png" />

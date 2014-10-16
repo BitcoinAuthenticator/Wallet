@@ -41,6 +41,7 @@ import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import wallettemplate.ControllerHelpers.AsyncTask;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.BaseUI;
+import wallettemplate.utils.FileUtils;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 import wallettemplate.utils.TextUtils;
@@ -463,7 +464,7 @@ public class SettingsController  extends BaseUI{
             backupPane.setScene(scene1);
             StartupController controller =	loader.getController();
             DeterministicSeed seed = Authenticator.getWalletOperation().getWalletSeed(Main.UI_ONLY_WALLET_PW);
-            controller.setBackMode(seed);
+            controller.setBackupMode(Authenticator.getWalletOperation().getTrackedWallet(), seed);
             backupPane.show();
         } catch (IOException e) {e.printStackTrace();}
     }
@@ -601,7 +602,7 @@ public class SettingsController  extends BaseUI{
 						public void onResponse(BADialogResponse response,String input) {
 							if(response == BADialogResponse.Yes)
 							{
-								if(deleteDirectory(new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath()))) {
+								if(FileUtils.deleteDirectory(new File(Authenticator.getApplicationParams().getApplicationDataFolderAbsolutePath()))) {
 									informationalAlert("Deleted wallet",
 											 "Will shut down.");
 									
@@ -614,24 +615,7 @@ public class SettingsController  extends BaseUI{
 						}
 					}).show();
 	}
-	
-	public static boolean deleteDirectory(File directory) {
-	    if(directory.exists()){
-	        File[] files = directory.listFiles();
-	        if(null!=files){
-	            for(int i=0; i<files.length; i++) {
-	                if(files[i].isDirectory()) {
-	                    deleteDirectory(files[i]);
-	                }
-	                else {
-	                    files[i].delete();
-	                }
-	            }
-	        }
-	    }
-	    return(directory.delete());
-	}
-	
+		
 	@FXML protected void restoreSettingsToDefault(ActionEvent event){
 		try {
 			Authenticator.getWalletOperation().resotreSettingsToDefault();
