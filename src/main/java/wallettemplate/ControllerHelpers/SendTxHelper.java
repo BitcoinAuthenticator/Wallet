@@ -1,5 +1,7 @@
 package wallettemplate.ControllerHelpers;
 
+import static wallettemplate.utils.GuiUtils.informationalAlert;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,6 +59,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.params.MainNetParams;
+
 import com.google.common.base.Throwables;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
@@ -170,8 +173,13 @@ public class SendTxHelper {
 		
 		// operation listeners
 		op.SetOperationUIUpdate(opUpdateListener);
-		if(Authenticator.checkForOperationNetworkRequirements(op) == true)
+		if(Authenticator.checkForOperationNetworkRequirements(op) == true) {
+			if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false)
+				informationalAlert("Warning !",
+						   "Some network requirements are not available,\nthe transaction signing by the authenticator app may only\nbe available in your local network"); 
+			
 			return Authenticator.addOperation(op);
+		}
 		else
 			opUpdateListener.onError(op, new Exception("Cannot add operation to queue, network requirements not available"), null);
 		return false;

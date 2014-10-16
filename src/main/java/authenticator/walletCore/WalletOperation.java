@@ -1929,6 +1929,12 @@ public class WalletOperation extends BASE{
 		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
 		for(TransactionOutput unspentOut:all){
 			ATAddress add = findAddressInAccounts(unspentOut.getScriptPubKey().getToAddress(getNetworkParams()).toString());
+			/*
+			 * could happen if an unspent address belongs to a deleted account, it will not find it
+			 */
+			if(add == null)
+				continue;
+			
 			if(add.getAccountIndex() == accountIndex)
 				ret.add(unspentOut);
 		}

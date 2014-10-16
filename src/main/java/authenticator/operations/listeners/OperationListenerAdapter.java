@@ -28,4 +28,10 @@ public class OperationListenerAdapter implements OperationListener{
 		
 	}
 
+	@Override
+	public void onWarning(BAOperation operation, String warning) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

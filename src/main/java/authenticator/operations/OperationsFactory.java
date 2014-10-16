@@ -198,7 +198,7 @@ public class OperationsFactory extends BASE{
 																@Nullable PendingRequest pendigReq,
 																@Nullable BAPassword WALLET_PW){
 		BAOperation op = new BAOperation(ATOperationType.SignAndBroadcastAuthenticatorTx);
-				op.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
+				op.setOperationNetworkRequirements(BANetworkRequirement.SOCKET)
 				.SetDescription("Sign Raw Transaction By Authenticator device")
 				.SetOperationAction(new BAOperationActions(){
 					//int timeout = 5;
@@ -350,7 +350,7 @@ public class OperationsFactory extends BASE{
 	 */
 	static public BAOperation UPDATE_PAIRED_AUTHENTICATORS_IPS(WalletOperation wallet, String pairingID){
 		BAOperation op = new BAOperation(ATOperationType.updateIpAddressesForPreviousMessage);
-					op.setOperationNetworkRequirements(BANetworkRequirement.PORT_MAPPING)
+					op.setOperationNetworkRequirements(BANetworkRequirement.NONE)
 					.SetDescription("Update Authenticator's wallet IPs")
 					.SetBeginMsg("Updating Authenticator's wallet IPs ...")
 					.SetFinishedMsg("Finished IPs updates")

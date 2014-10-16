@@ -597,7 +597,7 @@ public class Controller  extends BaseUI{
 			/*
 			 * If the Current account is a paired account, notify the user that some operations may be limited
 			 */
-			/*if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
+			if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
 				   Platform.runLater(new Runnable() { 
 					   @Override
 					   public void run() {
@@ -606,7 +606,7 @@ public class Controller  extends BaseUI{
 								   "If this problem repeats, your router may not allow port mapping.");   
 					   }
 				   });
-		   	  }*/
+		   	  }
 			
 		}
     };
@@ -1574,6 +1574,15 @@ public class Controller  extends BaseUI{
 						    			  desc);
 						      }
 						    });
+					}
+					
+					@Override
+					public void onWarning(BAOperation operation, String warning) {
+						Platform.runLater(() -> {
+						    	  informationalAlert("Warning",
+						    			  warning);
+						      	}
+						);
 					}
 				});
     }	

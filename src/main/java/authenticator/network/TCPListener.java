@@ -240,18 +240,11 @@ public class TCPListener extends BASE{
 				while(true)
 	    	    {
 					isConnected = false;
-					if(vBANeworkInfo.PORT_FORWARDED && vBANeworkInfo.SOCKET_OPERATIONAL)
-						try{
-							socket = ss.accept();
-							isConnected = true;
-						}
-						catch (SocketTimeoutException | java.net.SocketException e){ isConnected = false; }
-					else
-						try {
-							Thread.sleep(LOOPER_BLOCKING_TIMEOUT);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
+					try{
+						socket = ss.accept();
+						isConnected = true;
+					}
+					catch (SocketTimeoutException | java.net.SocketException e){ isConnected = false; }
 					
 					//#################################
 					//
@@ -266,7 +259,7 @@ public class TCPListener extends BASE{
 							 */
 							// if we have an inbound operation that means upnp and socket work
 							
-							logAsInfo("Processing Pending Operation ...");
+							LOG.info("Processing Pending Operation ...");
 							DataInputStream inStream = new DataInputStream(socket.getInputStream());
 							DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
 							
@@ -276,7 +269,7 @@ public class TCPListener extends BASE{
 							PongPayload pp = new PongPayload();
 							outStream.writeInt(pp.getPayloadSize());
 							outStream.write(pp.getBytes());
-							logAsInfo("Sent a pong answer");
+							LOG.info("Sent a pong answer");
 							
 							//get request ID
 							String requestID = "";
@@ -287,7 +280,7 @@ public class TCPListener extends BASE{
 							requestID = jo.getString("requestID");
 							String pairingID = jo.getString("pairingID");	
 							//
-							logAsInfo("Looking for pending request ID: " + requestID);
+							LOG.info("Looking for pending request ID: " + requestID);
 							for(Object o:wallet.getPendingRequests()){
 								PendingRequest po = (PendingRequest)o;
 								if(po.getRequestID().equals(requestID))
@@ -303,7 +296,7 @@ public class TCPListener extends BASE{
 										secretkey);
 								outStream.writeInt(p.getPayloadSize());
 								outStream.write(p.toEncryptedBytes());
-								logAsInfo("No Pending Request Found, aborting inbound operation");
+								LOG.info("No Pending Request Found, aborting inbound operation");
 								
 								if(longLivingOperationsListener != null)
 									longLivingOperationsListener.onError(null, new Exception("Authenticator tried to complete a pending request but the request was not found, please try again"), null);
@@ -314,7 +307,7 @@ public class TCPListener extends BASE{
 									byte[] p = pendingReq.getPayloadToSendInCaseOfConnection().toByteArray();
 									outStream.writeInt(p.length);
 									outStream.write(p);
-									logAsInfo("Sent transaction");
+									LOG.info("Sent transaction");
 								}
 								
 								// Should we receive something ?
@@ -354,9 +347,9 @@ public class TCPListener extends BASE{
 									wallet.removePendingRequest(pendingReq);
 							}
 						}
-						else{
-							//notifyUiAndLog("Timed-out, Not Connections");
-						}
+						else
+							;
+						
 					}
 					catch(Exception e){
 						if(pendingReq != null)
@@ -366,7 +359,7 @@ public class TCPListener extends BASE{
 								e1.printStackTrace();
 							}
 						e.printStackTrace();
-						logAsInfo("Error Occured while executing Inbound operation:\n"
+						LOG.info("Error Occured while executing Inbound operation:\n"
 								+ e.toString());
 					}
 					
@@ -378,7 +371,7 @@ public class TCPListener extends BASE{
 					
 					if(operationsQueue.size() > 0)
 					{
-						logAsInfo("Found " + operationsQueue.size() + " Operations in queue");
+						LOG.info("Found " + operationsQueue.size() + " Operations in queue");
 						while (operationsQueue.size() > 0){
 							BAOperation op = operationsQueue.poll();
 							if (op == null){
@@ -387,7 +380,7 @@ public class TCPListener extends BASE{
 							/**
 							 * Check for network requirements availability
 							 */
-							logAsInfo("Checking network requirements availability for outbound operation");
+							LOG.info("Checking network requirements availability for outbound operation");
 							if(checkForOperationNetworkRequirements(op) == false )
 							{
 								op.OnExecutionError(new BAOperationNetworkRequirementsNotAvailableException("Required Network requirements not available"));
@@ -395,7 +388,7 @@ public class TCPListener extends BASE{
 							}
 									
 							
-							logAsInfo("Executing Operation: " + op.getDescription());
+							LOG.info("Executing Operation: " + op.getDescription());
 							CURRENT_OUTBOUND_OPERATION = op;
 							try{
 								op.run(ss, vBANeworkInfo);
@@ -404,7 +397,7 @@ public class TCPListener extends BASE{
 							catch (Exception e)
 							{
 								e.printStackTrace();
-								logAsInfo("Error Occured while executing Outbound operation:\n"
+								LOG.info("Error Occured while executing Outbound operation:\n"
 										+ e.toString());
 								
 								if(op.getOperationListener() != null)
@@ -420,7 +413,7 @@ public class TCPListener extends BASE{
 						}
 					}
 					else
-						logAsInfo("No Outbound Operations Found.");
+						; // do nothing
 					
 					if(shouldStopListener)
 						break;
@@ -482,12 +475,6 @@ public class TCPListener extends BASE{
 					String.format("   %-30s: %10s\n", "Port Mapped/ Forwarded", this.getNetworkInfo().PORT_FORWARDED? "True":"False") + 
 					String.format("   %-30s: %10s\n", "Socket", this.getNetworkInfo().SOCKET_OPERATIONAL? "Operational":"Not Operational");
 	}
-	
-	public void logAsInfo(String str)
-    {
-		if(Authenticator.getApplicationParams().getShouldPrintTCPListenerInfoToConsole())
-			LOG.info(str);
-    }
 	
 	/**
 	 * Check if the TCPListener has all the various operation network requirements
@@ -553,7 +540,7 @@ public class TCPListener extends BASE{
 		
 		
 		if(CURRENT_OUTBOUND_OPERATION.getOperationID().equals(op.getOperationID())){
-			logAsInfo("Interrupting Operation with ID " + op.getOperationID());
+			LOG.info("Interrupting Operation with ID " + op.getOperationID());
 			CURRENT_OUTBOUND_OPERATION.interruptOperation();
 			
 			// restore socket
@@ -563,7 +550,7 @@ public class TCPListener extends BASE{
 			vBANeworkInfo.SOCKET_OPERATIONAL = true;
 		}
 		else
-			logAsInfo("Operation Not Found: Cannot Interrupt Operation with ID " + op.getOperationID());
+			LOG.info("Operation Not Found: Cannot Interrupt Operation with ID " + op.getOperationID());
 	}
 	
 	public BANetworkInfo getNetworkInfo() {

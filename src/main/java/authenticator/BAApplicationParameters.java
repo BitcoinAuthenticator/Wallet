@@ -22,7 +22,6 @@ public class BAApplicationParameters{
 	
 	boolean isTestMode = false;
 	boolean shouldLaunchProgram = false;
-	boolean shouldPrintTCPListenerInfoToConsole;
 	
 	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
 	
@@ -69,15 +68,7 @@ public class BAApplicationParameters{
 		}
 		else
 			setBitcoinNetworkType(NetworkType.MAIN_NET);
-		
-		// Debug Tcp Listener
-		if(params.containsKey("debuglistener")){
-			boolean value = Boolean.parseBoolean(params.get("debuglistener"));
-			setShouldPrintTCPListenerInfoToConsole(value);
-		}
-		else
-			setShouldPrintTCPListenerInfoToConsole(false);
-		
+				
 		// Port
 		if(params.containsKey("port")){
 			int value = Integer.parseInt(params.get("port"));
@@ -138,7 +129,6 @@ public class BAApplicationParameters{
 				
 				{"--help","Print Help"},
 				{"--testnet"			,"If =true will use testnet parameters, else mainnet parameters"},
-				{"--debuglistener"		,"If =true will print tcp listener info. False by default"},
 				{"--testermode"			,"Testing mode, if true will not send bitcoins. False by default"},
 				{"--port"				,"Port Number, default is 1234"}
 		};
@@ -166,12 +156,6 @@ public class BAApplicationParameters{
 	public boolean getIsTestMode(){ return isTestMode; }
 	public BAApplicationParameters setIsTestMode(boolean value) {
 		this.isTestMode = value;
-		return this;
-	}
-	
-	public boolean getShouldPrintTCPListenerInfoToConsole(){ return shouldPrintTCPListenerInfoToConsole; }
-	public BAApplicationParameters setShouldPrintTCPListenerInfoToConsole(boolean value) {
-		this.shouldPrintTCPListenerInfoToConsole = value;
 		return this;
 	}
 	
@@ -289,7 +273,6 @@ public class BAApplicationParameters{
 			   "Application Parameter values: \n" + 
 			   String.format("%-30s: %10s\n", "testermode", (isTestMode? "True":"False")) + 
 			   String.format("%-30s: %10s\n","testnet", (bitcoinNetworkType == NetworkType.TEST_NET? "True":"False")) +
-			   String.format("%-30s: %10s\n", "debuglistener", (shouldPrintTCPListenerInfoToConsole? "True":"False")) +
 			   String.format("%-30s: %10s\n", "portforwarding", (isManuallyPortForwarded? "True":"False")) +
 			   String.format("%-30s: %10s\n", "port", NETWORK_PORT) +
 			   "\nApplication Defaults:\n"			+
