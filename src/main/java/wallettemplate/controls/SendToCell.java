@@ -252,8 +252,7 @@ public class SendToCell extends Region{
     	if(txfAmount.getText().matches("[a-zA-Z]+"))
     		return false;
     	// check dust amount 
-    	double fee = (double) Double.parseDouble(txfAmount.getText())*100000000;
-    	Coin am = Coin.valueOf((long)fee);
+    	Coin am = Coin.valueOf((long) getAmountValue());
     	if(am.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
     		return false;
     	return true;

@@ -1,31 +1,19 @@
 package wallettemplate;
 
 import authenticator.Authenticator;
-import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.EncodingUtils;
-import authenticator.Utils.KeyUtils;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
-import authenticator.db.walletDB;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
-import authenticator.walletCore.WalletOperation;
-import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
-import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
-import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.listeners.BAGeneralEventsAdapter;
-import authenticator.listeners.BAGeneralEventsListener;
-import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
-import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation;
-import authenticator.operations.OperationsFactory;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
-import authenticator.operations.listeners.OperationListener;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.ProtoSettings;
 import authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
@@ -593,21 +581,6 @@ public class Controller  extends BaseUI{
 					Tooltip.install(btnNet_yellow, new Tooltip("No port-forwarding, can't access from outside your network"));
 				}
             });	
-			
-			/*
-			 * If the Current account is a paired account, notify the user that some operations may be limited
-			 */
-			if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
-				   Platform.runLater(new Runnable() { 
-					   @Override
-					   public void run() {
-						   informationalAlert("Warning !",
-								   "Some network requirements are not available, some functionalities may be compromised\n" +
-								   "If this problem repeats, your router may not allow port mapping.");   
-					   }
-				   });
-		   	  }
-			
 		}
     };
     
@@ -1271,7 +1244,7 @@ public class Controller  extends BaseUI{
 			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
 			intext.add(inputtext2);
 			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
-			inputtext3.setText(tx.getInput(b).getValue().toFriendlyString());
+			inputtext3.setText(TextUtils.coinAmountTextDisplay(tx.getInput(b).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
 			if (b<tx.getInputs().size()-1){
 				inputtext3.setText(inputtext3.getText() + "\n                                    ");
 			}
@@ -1294,7 +1267,7 @@ public class Controller  extends BaseUI{
 			outputtext3.setFill(Paint.valueOf("#f06e6e"));
 			outputtext2.setText(OutputAddresses.get(a) + " ");
 			outtext.add(outputtext2);
-			outputtext3.setText(to.get(a).getValue().toFriendlyString());
+			outputtext3.setText(TextUtils.coinAmountTextDisplay(to.get(a).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
 			if (a<OutputAddresses.size()-1){
 				outputtext3.setText(outputtext3.getText() + "\n                                     ");
 			}
@@ -1306,7 +1279,8 @@ public class Controller  extends BaseUI{
 		Text changetext = new Text("Change:                   ");
 		changetext.setStyle("-fx-font-weight:bold;");
 		Text changetext2 = new Text(changeaddr + " ");
-		Text changetext3 = new Text(((inAmount.subtract(outAmount)).subtract(fee)).toFriendlyString());
+		Text changetext3 = new Text(TextUtils.coinAmountTextDisplay((inAmount.subtract(outAmount)).subtract(fee), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+
 		changetext3.setFill(Paint.valueOf("#98d947"));
 		TextFlow changeflow = new TextFlow();
 		changeflow.getChildren().addAll(changetext, changetext2,changetext3);
@@ -1314,7 +1288,7 @@ public class Controller  extends BaseUI{
 		textformatted.add(spaceflow);
 		Text feetext = new Text("Fee:                         ");
 		feetext.setStyle("-fx-font-weight:bold;");
-		Text feetext2 = new Text(fee.toFriendlyString());
+		Text feetext2 = new Text(TextUtils.coinAmountTextDisplay(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
 		feetext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow feeflow = new TextFlow();
 		feeflow.getChildren().addAll(feetext, feetext2);
@@ -1322,7 +1296,7 @@ public class Controller  extends BaseUI{
 		textformatted.add(spaceflow);
 		Text leavingtext = new Text("Leaving Wallet:       ");
 		leavingtext.setStyle("-fx-font-weight:bold;");
-		Text leavingtext2 = new Text("-" + leavingWallet.toFriendlyString());
+		Text leavingtext2 = new Text("-" + TextUtils.coinAmountTextDisplay(leavingWallet, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
 		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow leavingflow = new TextFlow();
 		leavingflow.getChildren().addAll(leavingtext, leavingtext2);

@@ -268,7 +268,7 @@ public class UIUpdateHelper extends BaseUI{
 		    					ca = Authenticator.getWalletOperation().findAddressInAccounts(output.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
 		    					if (ca==null){
 		    						leavingaddrs++;
-		    						o = ca.getAddressStr();
+		    						o = output.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 		    					}
 		    				}
 		    				if (leavingaddrs==1){toFrom = o;}

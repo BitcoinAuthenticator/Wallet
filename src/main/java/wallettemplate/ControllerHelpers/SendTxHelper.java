@@ -91,7 +91,7 @@ public class SendTxHelper {
     		SendToCell na = (SendToCell)n;
     		na.validate();
     		double a;
-			if (na.getSelectedCurrency().equals("BTC")){
+			if (na.getSelectedCurrency().equals("BTC") || na.getSelectedCurrency().equals("mBTC") || na.getSelectedCurrency().equals("μBTC")){
 				a = na.getAmountValue();
 			}
 			else {
@@ -173,16 +173,7 @@ public class SendTxHelper {
 		
 		// operation listeners
 		op.SetOperationUIUpdate(opUpdateListener);
-		if(Authenticator.checkForOperationNetworkRequirements(op) == true) {
-			if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false)
-				informationalAlert("Warning !",
-						   "Some network requirements are not available,\nthe transaction signing by the authenticator app may only\nbe available in your local network"); 
-			
-			return Authenticator.addOperation(op);
-		}
-		else
-			opUpdateListener.onError(op, new Exception("Cannot add operation to queue, network requirements not available"), null);
-		return false;
+		return Authenticator.addOperation(op);
     }	
 	
 }
