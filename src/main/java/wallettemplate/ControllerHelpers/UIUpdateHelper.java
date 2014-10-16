@@ -257,6 +257,22 @@ public class UIUpdateHelper extends BaseUI{
 		    			amount.setFill(Paint.valueOf("#f06e6e"));
 		    			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
 		    			amount.setText(TextUtils.coinAmountTextDisplay(exit.subtract(enter),u));
+		    			if (tx.getOutputs().size()==1){
+		    				toFrom = tx.getOutput(0).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+		    			}
+		    			else {
+		    				int leavingaddrs=0;
+		    				ATAddress ca = null;
+		    				String o = null;
+		    				for (TransactionOutput output : tx.getOutputs()){
+		    					ca = Authenticator.getWalletOperation().findAddressInAccounts(output.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString());
+		    					if (ca==null){
+		    						leavingaddrs++;
+		    						o = ca.getAddressStr();
+		    					}
+		    				}
+		    				if (leavingaddrs==1){toFrom = o;}
+		    			}
 		    		}
 		    		else { // i only received coins
 		    			arrow = new ImageView(in);

@@ -72,7 +72,7 @@ public class PairWallet extends BaseUI{
     public void initialize() {
         super.initialize(PairWallet.class);
         
-        if(Main.UI_ONLY_IS_WALLET_LOCKED && !Main.UI_ONLY_WALLET_PW.hasPassword()) {
+        if(!Main.UI_ONLY_WALLET_PW.hasPassword()) {
         	txfWalletPwd.setDisable(false); 
         }
         else
@@ -232,7 +232,7 @@ public class PairWallet extends BaseUI{
     @FXML
     public void run(ActionEvent event) throws IOException {
     	
-    	if(txfWalletPwd.isVisible()) {
+    	if(!txfWalletPwd.isDisable()) {
     		if(txfWalletPwd.getText().length() == 0) {
     			BADialog.info(Main.class, "Error!", "Wallet is locked, please provide a password").show();
     			return;

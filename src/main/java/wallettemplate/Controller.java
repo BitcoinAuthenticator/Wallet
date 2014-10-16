@@ -313,15 +313,12 @@ public class Controller  extends BaseUI{
         
         
         // Pane Control
-        Tooltip.install(lblMinimize, new Tooltip("Minimize Window"));
         lblMinimize.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
             	Main.stage.setIconified(true);
             }
         });
-        //
-        Tooltip.install(lblClose, new Tooltip("Close Window"));
         lblClose.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
@@ -600,7 +597,7 @@ public class Controller  extends BaseUI{
 			/*
 			 * If the Current account is a paired account, notify the user that some operations may be limited
 			 */
-			if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
+			/*if(Authenticator.areAllNetworkRequirementsAreFullyRunning() == false){
 				   Platform.runLater(new Runnable() { 
 					   @Override
 					   public void run() {
@@ -609,7 +606,7 @@ public class Controller  extends BaseUI{
 								   "If this problem repeats, your router may not allow port mapping.");   
 					   }
 				   });
-		   		}
+		   	  }*/
 			
 		}
     };
@@ -1765,7 +1762,7 @@ public class Controller  extends BaseUI{
 					 */
 					String outPut = "";
 					if(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType() == WalletAccountType.StandardAccount ){
-						int accountID = Authenticator.getWalletOperation().getActiveAccount().getPairedAuthenticator().getWalletAccountIndex();
+						int accountID = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex();
 						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
 						int index = ca.getKeyIndex();
 						ECKey key = Authenticator.getWalletOperation().getPubKeyFromAccount(accountID, HierarchyAddressTypes.External, index, false);
