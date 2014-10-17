@@ -2,6 +2,7 @@ package wallettemplate;
 
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
+import authenticator.Utils.CurrencyConverter.Currency;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
 import authenticator.Utils.OneName.OneName;
@@ -145,6 +146,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -269,7 +271,6 @@ public class Controller  extends BaseUI{
         //scrlpane.setFocusTraversable(false);
         //scrlContent.setStyle(scrlpane.getStyle());
         scrlpane.setContent(scrlContent);
-        addOutput();
         
         syncProgress.setProgress(-1);
         lblName.setFont(Font.font(null, FontWeight.NORMAL, 15));
@@ -404,9 +405,16 @@ public class Controller  extends BaseUI{
 	         	 updateLockIcon();
 	         	 
 	         	setAccountChoiceBox();
+	         	
+	         	/*
+	        	 * here because it requires the config file to load
+	        	 */
+	        	addTransactionOutputToPane();
 			}
 	    });    
     	updateUI();
+    	
+    	
     }
    
     private void updateUI(){
@@ -564,7 +572,10 @@ public class Controller  extends BaseUI{
 		
 		@Override
 		public void onWalletSettingsChange() {
-			Platform.runLater(() -> updateUI());
+			Platform.runLater(() -> {
+				updateUI();
+				updateAllTransactionOutpointCellsWithNewCurrencies();
+			});
 		}
 		
 		@Override
@@ -1097,7 +1108,7 @@ public class Controller  extends BaseUI{
     @FXML protected void btnClearSendPanePressed(MouseEvent event) {
     	btnClearSendPane.setStyle("-fx-background-color: #d7d4d4;");
     	txMsgLabel.clear();
-    	scrlContent.clearAll(); addOutput();
+    	scrlContent.clearAll(); addTransactionOutputToPane();
     	
     	txFee.clear();
     	this.setFeeTipText();
@@ -1151,7 +1162,7 @@ public class Controller  extends BaseUI{
 				}
 				else {		
 					CurrencyConverterSingelton.CANNOT_EXECUTE_ASYNC_SO_CHECK_IS_READY();
-					amount = CurrencyConverterSingelton.USD.convertToBTC(na.getAmountValue());
+					amount = CurrencyConverterSingelton.currencies.get("USD").convertToBTC(na.getAmountValue());
 				}
 				long satoshis = (long) amount;
 				if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
@@ -1465,7 +1476,7 @@ public class Controller  extends BaseUI{
         			else {
         				txoverlay.done();
                     	txMsgLabel.clear();
-                    	scrlContent.clearAll(); addOutput();
+                    	scrlContent.clearAll(); addTransactionOutputToPane();
                     	
                     	txFee.clear();
                     	setFeeTipText();
@@ -1498,7 +1509,7 @@ public class Controller  extends BaseUI{
             public void handle(MouseEvent t) {
             	txoverlay.done();
             	txMsgLabel.clear();
-            	scrlContent.clearAll(); addOutput();
+            	scrlContent.clearAll(); addTransactionOutputToPane();
             	txFee.clear();
             	setFeeTipText();
             }
@@ -1509,7 +1520,7 @@ public class Controller  extends BaseUI{
             	stopAuthRotation();
             	txoverlay.done();
             	txMsgLabel.clear();
-            	scrlContent.clearAll(); addOutput();
+            	scrlContent.clearAll(); addTransactionOutputToPane();
             	txFee.clear();
             	setFeeTipText();
             }
@@ -1563,10 +1574,10 @@ public class Controller  extends BaseUI{
     
     
     @FXML protected void addTxOutput() {
-    	addOutput();
+    	addTransactionOutputToPane();
     }
     
-    private void addOutput() {
+    private void addTransactionOutputToPane() {
     	Class[] parameterTypes = new Class[1];
         parameterTypes[0] = int.class;
         Method removeOutput;
@@ -1574,7 +1585,17 @@ public class Controller  extends BaseUI{
 			removeOutput = Controller.class.getMethod("removeOutput", parameterTypes);
 			//NewAddress na = new SendTxHelper.NewAddress(scrlContent.getCount()).setCancelOnMouseClick(this,removeOutput);
 			SendToCell na = new SendToCell(scrlContent.getCount());
-			na.initGUI();
+			
+			// generate currency list
+			List<String> l = new ArrayList<String>();
+			String a = TextUtils.getAbbreviatedUnit(Authenticator
+	    			.getWalletOperation()
+	    			.getAccountUnitFromSettings());
+			l.add(a);
+			for(String s: Currency.AVAILBLE_CURRENCY_CODES)
+				l.add(s);
+			na.initGUI(l, a);
+			
 			na.setCancelOnMouseClick(this,removeOutput);
 			scrlContent.addItem(na);
 			//scrlpane.setContent(scrlContent);
@@ -1583,6 +1604,30 @@ public class Controller  extends BaseUI{
 		}
     }
     
+    private void updateAllTransactionOutpointCellsWithNewCurrencies() {
+    	for(Node n:scrlContent.getChildren())
+    	{
+    		SendToCell na = (SendToCell)n;
+    		
+    		// generate currency list
+			List<String> l = new ArrayList<String>();
+			String a = TextUtils.getAbbreviatedUnit(Authenticator
+	    			.getWalletOperation()
+	    			.getAccountUnitFromSettings());
+			l.add(a);
+			for(String s: Currency.AVAILBLE_CURRENCY_CODES)
+				l.add(s);
+    		
+    		na.updateCurrencyChoiceBox(l, a);
+    	}
+    }
+    
+    /**
+     * Is public so an added {@link wallettemplate.controls.SendToCell SendToCell} would 
+     * be able to find it and execute a remove cell action
+     * 
+     * @param index
+     */
     public void removeOutput(int index) {
     	scrlContent.removeNodeAtIndex(index);
     	// TODO - make it better !

@@ -23,6 +23,7 @@ import com.google.common.base.Joiner;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
 import authenticator.Authenticator;
+import authenticator.Utils.CurrencyConverter.Currency;
 import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
 import authenticator.listeners.BAGeneralEventsAdapter;
@@ -177,7 +178,9 @@ public class SettingsController  extends BaseUI{
 			    			.getExtension(ProtoSettings.bitcoinUnitName);
     	cbBitcoinUnit.setValue(unitStr);
     	
-    	
+    	cbCurrency.getItems().clear();
+    	for(String s: Currency.AVAILBLE_CURRENCY_CODES)
+    		cbCurrency.getItems().add(s);
     	cbCurrency.setValue(strCurrency);
     	cbCurrency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
   	      @Override

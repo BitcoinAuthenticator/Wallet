@@ -4,6 +4,9 @@ import java.awt.Button;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.json.JSONException;
 import org.bitcoinj.core.Address;
@@ -78,8 +81,20 @@ public class SendToCell extends Region{
         this.setSnapToPixel(true);
       }
 	
-	@SuppressWarnings({ "restriction", "unchecked" })
-	public void initGUI(){
+	public void initGUI(String[] lstCurrencies, String setValue){
+		initGUI(Arrays.asList(lstCurrencies), setValue);
+	}
+	
+	
+	@SuppressWarnings("restriction")
+	public void initGUI(List<String> lstCurrencies, String setValue){
+		Platform.runLater(() -> {
+			initCellGUI(lstCurrencies, setValue);
+		});
+	}
+	
+	@SuppressWarnings({ "restriction" })
+	public void initCellGUI(List<String> lstCurrencies, String setValue) {
 		// delete icon 
 		AwesomeDude.setIcon(lblDelete, AwesomeIcon.TIMES_CIRCLE);
         Tooltip.install(lblDelete, new Tooltip("Remove"));
@@ -107,10 +122,7 @@ public class SendToCell extends Region{
             }
 		});
 		
-		// currency choice box
-		cbCurrency.getItems().add("BTC");
-		cbCurrency.getItems().add("USD");
-		cbCurrency.setValue("BTC");
+		this.updateCurrencyChoiceBox(lstCurrencies, setValue);
 		
         // One name control
         txfAddress.focusedProperty().addListener(new ChangeListener<Boolean>()
@@ -243,6 +255,15 @@ public class SendToCell extends Region{
         		});
 	}
 	
+	@SuppressWarnings({ "restriction", "unchecked" })
+	public void updateCurrencyChoiceBox(List<String> lstCurrencies, String setValue) {
+		// currency choice box
+		cbCurrency.getItems().clear();
+		for(String s: lstCurrencies)
+			cbCurrency.getItems().add(s);
+		cbCurrency.setValue(setValue);
+	}
+	
 	public boolean validate()
     {
     	if(getAddress().length() == 0)
@@ -294,6 +315,7 @@ public class SendToCell extends Region{
 		else return index;
 		
 	}
+	
 	public Coin getAmount(){
 		return Coin.valueOf((long)getAmountValue());
 	}

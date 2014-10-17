@@ -151,6 +151,10 @@ public class Authenticator extends BASE{
 		mTCPListener = null;
 	}
 	
+	public Authenticator getInstance() {
+		return this;
+	}
+	
 	//#####################################
 	//
 	//		TCPListener Control
