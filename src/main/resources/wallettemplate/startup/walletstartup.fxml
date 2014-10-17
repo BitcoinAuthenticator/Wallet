@@ -73,7 +73,7 @@
         <Button fx:id="btnBack2" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toCreateAccountPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnContinue2" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toExplanationPane1" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
         <Label fx:id="lblSeed" layoutX="45.0" layoutY="91.0" prefHeight="70.1328125" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
-        <Button fx:id="btnSave" contentDisplay="TOP" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#saveWalletFolderAsZip" prefHeight="143.1328125" prefWidth="146.0" text="Backup to file" textAlignment="CENTER" disable="true">
+        <Button fx:id="btnSave" contentDisplay="TOP" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#saveWalletFolderAsZip" prefHeight="143.1328125" prefWidth="146.0" text="Backup to file" textAlignment="CENTER" disable="false">
           <graphic>
             <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
               <Image url="@btnSave.png" />

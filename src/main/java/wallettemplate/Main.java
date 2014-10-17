@@ -48,6 +48,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import wallettemplate.startup.StartupController;
+import wallettemplate.utils.FileUtils;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 import wallettemplate.utils.dialogs.BADialog;
@@ -80,6 +81,8 @@ public class Main extends BAApplication {
     public static Authenticator auth;
     public static Stage startup;
     public static BAApplicationParameters returnedParamsFromSetup;
+    public static File destination;
+    public static File walletFolder;
     
 	 /**
 	  * In order to make wallet encryption and decryption smoother, we keep
@@ -252,6 +255,10 @@ public class Main extends BAApplication {
         // start UI
         stage.show();
         versionCheck();
+        
+        if (destination!=null){
+        	FileUtils.ZipHelper.zipDir(walletFolder.getAbsolutePath(), destination.getAbsolutePath());      		
+        }
     }
     
     @SuppressWarnings("restriction")
