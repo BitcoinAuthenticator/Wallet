@@ -867,9 +867,19 @@ public class StartupController  extends BaseUI{
 			 Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "Could not load wallet data directory"));
 			 return;
 		 }
-		 Main.destination = destination;
-		 Main.walletFolder = walletFolder;
-		 GuiUtils.informationalAlert("Take note !", "The backup files will be saved to:\n" + destination.getAbsolutePath() + " after you complete the setup.");
+		 
+		 if(this.backupMode) {
+			 if(FileUtils.ZipHelper.zipDir(walletFolder.getAbsolutePath(), destination.getAbsolutePath()))
+				 Platform.runLater(() -> GuiUtils.informationalAlert("Success !", "Saved wallet files to:\n" + destination.getAbsolutePath()));
+			 else {
+				 Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "Could not save wallet files"));
+			 }
+		 }
+		 else {
+			 Main.destination = destination;
+			 Main.walletFolder = walletFolder;
+			 GuiUtils.informationalAlert("Take note !", "The backup files will be saved to:\n" + destination.getAbsolutePath() + " after you complete the setup.");
+		 }		 
 	 }
 	 	 	 
 	 @FXML protected void printPaperWallet(ActionEvent event) throws IOException{
