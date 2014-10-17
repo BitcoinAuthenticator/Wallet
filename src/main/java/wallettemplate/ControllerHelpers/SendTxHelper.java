@@ -90,18 +90,8 @@ public class SendTxHelper {
     		//NewAddress na = (NewAddress)n;
     		SendToCell na = (SendToCell)n;
     		na.validate();
-    		double a;
-			if (na.getSelectedCurrency().equals("BTC") || na.getSelectedCurrency().equals("mBTC") || na.getSelectedCurrency().equals("μBTC")){
-				a = na.getAmountValue();
-			}
-			else {
-				// TOOD - it is not async !
-				JSONObject json = EncodingUtils.readJsonFromUrl("https://api.bitcoinaverage.com/ticker/global/" + na.getSelectedCurrency() + "/");
-				double last = json.getDouble("last");
-				a = na.getAmountValue();
-			}
-			long satoshis = (long) a;
-    		amount = amount.add(Coin.valueOf((long)a));
+			long satoshis = (long) na.getAmountValue();
+    		amount = amount.add(Coin.valueOf(satoshis));
     	}
     	amount = amount.add(fee);
     	//

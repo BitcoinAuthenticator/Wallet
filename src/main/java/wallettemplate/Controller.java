@@ -1152,19 +1152,9 @@ public class Controller  extends BaseUI{
     		Coin outAmount = Coin.valueOf(0);
         	for(Node n:scrlContent.getChildren())
         	{
-        		//NewAddress na = (NewAddress)n;
         		SendToCell na = (SendToCell)n;
-        		Address add;
-        		
-				double amount;
-				if (na.getSelectedCurrency().equals("BTC") || na.getSelectedCurrency().equals("mBTC") || na.getSelectedCurrency().equals("μBTC")){
-					amount = na.getAmountValue();
-				}
-				else {		
-					CurrencyConverterSingelton.CANNOT_EXECUTE_ASYNC_SO_CHECK_IS_READY();
-					amount = CurrencyConverterSingelton.currencies.get("USD").convertToBTC(na.getAmountValue());
-				}
-				long satoshis = (long) amount;
+   
+				long satoshis = (long) na.getAmountValue();
 				if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 					outAmount = outAmount.add(Coin.valueOf(satoshis));
 					OutputAddresses.add(na.getAddress());

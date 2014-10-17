@@ -23,6 +23,8 @@ import wallettemplate.Main.OverlayUI;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextUtils;
 import authenticator.Authenticator;
+import authenticator.Utils.CurrencyConverter.Currency;
+import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
@@ -304,16 +306,36 @@ public class SendToCell extends Region{
 			return txfAddress.getText();
 	}
 	
+	/**
+	 * return the amount in satoshies depending on the currency selected
+	 * 
+	 * @return
+	 */
 	@SuppressWarnings("restriction")
 	public double getAmountValue(){
-		if (Authenticator.getWalletOperation().getAccountUnitFromSettings() == BitcoinUnit.BTC){
-			return (double) Double.parseDouble(txfAmount.getText())*100000000;}
-		else if (Authenticator.getWalletOperation().getAccountUnitFromSettings() == BitcoinUnit.Millibits){
-			return (double) Double.parseDouble(txfAmount.getText())*100000;}
-		else if (Authenticator.getWalletOperation().getAccountUnitFromSettings() == BitcoinUnit.Microbits){
-			return (double) Double.parseDouble(txfAmount.getText())*100;}
-		else return index;
+		String a = TextUtils.getAbbreviatedUnit(BitcoinUnit.BTC);
+		if(getSelectedCurrency().equals(a)) {
+			return TextUtils.bitcoinUnitToSatoshies(Double.parseDouble(txfAmount.getText()), BitcoinUnit.BTC);//(double) Double.parseDouble(txfAmount.getText())*100000000;
+		}
 		
+		a = TextUtils.getAbbreviatedUnit(BitcoinUnit.Millibits);
+		if(getSelectedCurrency().equals(a)) {
+			return TextUtils.bitcoinUnitToSatoshies(Double.parseDouble(txfAmount.getText()), BitcoinUnit.Millibits);//return (double) Double.parseDouble(txfAmount.getText())*100000;
+		}	
+		a = TextUtils.getAbbreviatedUnit(BitcoinUnit.Microbits);
+		if(getSelectedCurrency().equals(a)) {
+			return TextUtils.bitcoinUnitToSatoshies(Double.parseDouble(txfAmount.getText()), BitcoinUnit.Microbits);//return (double) Double.parseDouble(txfAmount.getText())*100;
+		}
+		else {
+			Currency c = CurrencyConverterSingelton.currencies.get(getSelectedCurrency());
+			if(c != null)
+			{
+				return c.convertToSatoshi(Double.parseDouble(txfAmount.getText()));
+			}
+			else {
+				return -1;// notify user
+			}
+		}		
 	}
 	
 	public Coin getAmount(){

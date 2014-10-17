@@ -218,7 +218,7 @@ public class Currency {
 	 * @param howMuchCurrency
 	 * @return
 	 */
-	public double convertToBTC(double howMuchCurrency){
+	public double convertToSatoshi(double howMuchCurrency){
 		return howMuchCurrency * ONE_CURRENCY_TO_BTC * SATHOSIES_IN_ONE_BTC;
 	}
 	
