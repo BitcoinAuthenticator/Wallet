@@ -1350,6 +1350,7 @@ public class Controller  extends BaseUI{
 		Label lblTxid = new Label("Transaction ID:");
 		Button btnContinue = new Button("Continue");
 		btnContinue.getStyleClass().add("custom-button");
+		btnContinue.setDisable(false);
         btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
@@ -1497,11 +1498,13 @@ public class Controller  extends BaseUI{
 		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
+            	btnContinue.setDisable(true);
             	txoverlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addTransactionOutputToPane();
             	txFee.clear();
             	setFeeTipText();
+            	
             }
         });
 		btnSave.setOnMouseClicked(new EventHandler<MouseEvent>(){
