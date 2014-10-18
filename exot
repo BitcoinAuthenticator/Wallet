@@ -1,0 +1,295 @@
+[33mcommit 0f7ba7b5d2bb1323f31aff23b277560003d52554[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Mon Oct 6 18:28:27 2014 +0300
+
+    custom dialogs
+
+[33mcommit 75797b140395e69909ccbdf1a6a8622493158a2a[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Mon Oct 6 17:37:15 2014 +0300
+
+    removed controls fx
+
+[33mcommit 3c1dfce810ef728552438a29de69fec787a6b323[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Mon Oct 6 17:29:08 2014 +0300
+
+    info dialog
+
+[33mcommit d94b5aae8b98ebbdb9a0435d51981e3d1bb33110[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Mon Oct 6 13:19:15 2014 +0300
+
+    bitcoinj v0.12
+
+[33mcommit 88dbb5c0136f6ec2b89e7585caa3fba12bf1b009[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Oct 4 18:54:42 2014 +0300
+
+    authenticator and bitocin logo
+
+[33mcommit 889643f36ff5a51b0a27b815cc0768ed2cf3fc61[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Oct 4 17:16:52 2014 +0300
+
+    findAddressInAccounts bug fix
+
+[33mcommit 0cafec97e580a52b80bbab991ee5911889d1801f[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Oct 4 17:10:58 2014 +0300
+
+    cleaning up
+
+[33mcommit e6b9cdf4497644834e6dd5d0000c1f208e427045[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Oct 4 16:58:54 2014 +0300
+
+    fail in broadcasting fix
+
+[33mcommit e726860288793f1f54b1b380aabcf0b38ebe289e[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Oct 4 16:44:30 2014 +0300
+
+    removed controlsfx from controller
+
+[33mcommit dd1e7e9d9e77a883d30524ebf77f4c5944aa33c8[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Oct 4 16:03:09 2014 +0300
+
+    removed controlsfx from pairing screen
+
+[33mcommit c4e1fc644dbbc5930d83f9f731b986c14b4dea99[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Oct 4 15:37:53 2014 +0300
+
+    default bloom filter false positive rate
+
+[33mcommit 1b4c9b20e04be52b814ec08959a102bbc5f2a1c0[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Oct 3 20:26:38 2014 +0300
+
+    config file rename
+
+[33mcommit d99d6d1cab252bc1120f786942f31b85fdafa5c6[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Oct 3 19:38:58 2014 +0300
+
+    change operational state fix
+
+[33mcommit d9ce225ffdc96a26ce20f136ecb6c3d6fe8b63a3[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Oct 3 10:22:33 2014 +0300
+
+    launch wallet from startup small fixes
+
+[33mcommit 93c588d64ebe57f36544097663cd3a5c7eaab326[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Oct 3 10:13:32 2014 +0300
+
+    one name fix
+
+[33mcommit 0e3e0bf7ea5e6ce9ca4d1bbb5a09b6833ad86eb1[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Thu Oct 2 11:17:55 2014 +0300
+
+    updated to bitcoinj head
+
+[33mcommit 33d1bd6dcdb68c09db29531a9ecabda69c6cc74a[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Wed Oct 1 08:57:58 2014 +0300
+
+    coming soon window on un-implemented apps
+
+[33mcommit 0eac63bc1726d59187fdd009358565ff07eb5e81[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Mon Sep 29 14:33:51 2014 +0300
+
+    one name pay fix
+
+[33mcommit 15ac1383042004d0f59e83315cede5aeba3cc163[m
+Author: cpacia <ctpacia@gmail.com>
+Date:   Sun Sep 28 20:00:07 2014 -0400
+
+    version check
+
+[33mcommit e2c6139abfab3ba36b021833b214d8a6aa37e340[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Sep 27 16:49:37 2014 +0300
+
+    crypto utils unit tests
+
+[33mcommit 7e3e564a2379700516be6446e6f4928bdc1b0681[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Sep 27 16:12:20 2014 +0300
+
+    cleaning
+
+[33mcommit 410fdade5edbe3b708b93384645418c7cb712fd4[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Sep 27 12:15:47 2014 +0300
+
+    small fix
+
+[33mcommit d78ed99c7b4c268ba73e22fc4e53b28075cb3935[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Sep 27 11:22:56 2014 +0300
+
+    force shutdown in 10 sec
+
+[33mcommit c0b93a5b6ad5006c05e36712305fb8e414b14be9[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 21:28:05 2014 +0300
+
+    fix
+
+[33mcommit 7b1b58d63a3cbc792547ac15fb87466413c153d2[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 21:19:22 2014 +0300
+
+    fix to last
+
+[33mcommit c912e926081da447b3fcedd9c9eb5326b84fd8ba[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 21:16:41 2014 +0300
+
+    application params to string
+
+[33mcommit 3008b695912e9c84aa4f08047c86162ee676a97c[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 21:08:15 2014 +0300
+
+    File.seperator fix
+
+[33mcommit 00b110ba7d79f50038013347c56becd5a6d4ca62[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 20:38:53 2014 +0300
+
+    readme
+
+[33mcommit 8da32c7adbe2de6b867dd5f58c33bdfec30780ac[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 20:16:48 2014 +0300
+
+    readme
+
+[33mcommit d33208d96bb3ed2b08278b0b4ead5ac2fc902794[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 19:57:25 2014 +0300
+
+    windows app data folder
+
+[33mcommit 261204161f8d11ce79f977571957d5fdc2c573c9[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 19:46:20 2014 +0300
+
+    small fixes for bitcinj head
+
+[33mcommit 5d6317be9fe6826b765afd705c5b713683e636d7[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 17:45:23 2014 +0300
+
+    linux icon
+
+[33mcommit aca9eff87ff238684a8a2dbd4aa8cf19de462428[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 17:40:43 2014 +0300
+
+    icons for mac and windows
+
+[33mcommit 5dec88e55803f3b5c38794d1d52c81158d74b70d[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 26 17:13:22 2014 +0300
+
+    webcam sarox dependency fix
+
+[33mcommit 997905e4c5c04cd12f094b0034c1369a01f274db[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Thu Sep 25 23:56:15 2014 +0300
+
+    windowns app data folder + gitignore update
+
+[33mcommit 6a49baa742ea095566bbee50ac7cadf4fc30ae47[m
+Merge: 0d3ceb1 b083802
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Thu Sep 25 23:03:30 2014 +0300
+
+    Merge branch 'javafxpackager' into basewallet
+
+[33mcommit b08380233f2fcfe389b9fe97b5cd7576687532c8[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Thu Sep 25 23:02:26 2014 +0300
+
+    native builder
+
+[33mcommit 0d3ceb16e76d27d542d49785ccb885945d326b41[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Thu Sep 25 10:21:46 2014 +0300
+
+    account events refactoring
+
+[33mcommit 56ff4e5b86e84511c6a90d391869c5fe37c17236[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Thu Sep 25 09:44:07 2014 +0300
+
+    a little refactoring
+
+[33mcommit 3a1de2c9ccb7ecc9ffd30392a65ac5a20dc2caf3[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Thu Sep 25 09:34:34 2014 +0300
+
+    no luck
+
+[33mcommit ccf7d7b66bf1dba72c36cd86ce0e6942d0d1760d[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Wed Sep 24 14:20:07 2014 +0300
+
+    removed chached resource folder
+
+[33mcommit fbd85b5d81054539fd9d81e566a74d00b79d8793[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Wed Sep 24 13:52:47 2014 +0300
+
+    initial
+
+[33mcommit 2fbe0d5d7368156d9d53fc130495bfbd8a323e43[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Mon Sep 22 17:39:04 2014 +0300
+
+    delete wallet in settings
+
+[33mcommit a2c4043934d5e829191bc25fad10bc480faffc65[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sun Sep 21 18:09:57 2014 +0300
+
+    settings on startup
+
+[33mcommit 0da92a564e4034b815ed6038fb216436463c4b26[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sun Sep 21 10:13:07 2014 +0300
+
+    change password in settings
+
+[33mcommit 39850baf747a701d382612167ecf19641770999c[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sun Sep 21 09:50:32 2014 +0300
+
+    show seed in settings
+
+[33mcommit 83619e756879373569a8a8f4679cacaefed44a64[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Sep 20 10:06:45 2014 +0300
+
+    moved wallet locked to main
+
+[33mcommit 707a184ea5bd8a4d29a201fb939d36a32f26bb37[m
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Sat Sep 20 10:00:56 2014 +0300
+
+    settings decimal point
+
+[33mcommit 6bad51462cf80cd90aedb0cd7580a3cb1d87d7e7[m
+Merge: 0f297f0 d907348
+Author: Alon Muroch <alonmuroch@gmail.com>
+Date:   Fri Sep 19 12:15:04 2014 +0300
+
+    Merge branch 'basewallet' of ht

@@ -613,7 +613,7 @@ public class SettingsController  extends BaseUI{
 								}
 								else
 									informationalAlert("Failed !",
-											 "Could not delete wallet");
+											 "Could not delete wallet\n" + "Try and launching the wallet with the right permissions");
 							}
 						}
 					}).show();

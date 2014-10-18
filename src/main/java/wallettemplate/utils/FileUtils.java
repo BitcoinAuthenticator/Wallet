@@ -119,6 +119,11 @@ public class FileUtils {
 	    }
 	}
 	
+	/**
+	 * Returns true if directory was deleted/ does not exist
+	 * @param directory
+	 * @return
+	 */
 	public static boolean deleteDirectory(File directory) {
 	    if(directory.exists()){
 	        File[] files = directory.listFiles();
@@ -132,8 +137,9 @@ public class FileUtils {
 	                }
 	            }
 	        }
+	        return(directory.delete());
 	    }
-	    return(directory.delete());
+	   return true;
 	}
 
 }

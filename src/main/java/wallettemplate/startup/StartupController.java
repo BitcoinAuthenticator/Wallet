@@ -645,6 +645,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
+		 hlFinished.setDisable(true);
 		 finishsetup();
 	 }
 	 
