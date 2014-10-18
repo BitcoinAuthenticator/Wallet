@@ -53,6 +53,12 @@ public class FileUtils {
 		               //create all non exists folders
 		               //else you will hit FileNotFoundException for compressed folder
 		               new File(newFile.getParent()).mkdirs();
+		               
+		               if(newFile.isDirectory()) {
+		            	   newFile.mkdirs();
+		            	   ze = zis.getNextEntry();
+		            	   continue;
+		               }
 		    
 		               FileOutputStream fos = new FileOutputStream(newFile);             
 		    
