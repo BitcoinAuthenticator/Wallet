@@ -122,6 +122,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import wallettemplate.ControllerHelpers.SendTxHelper;
+import wallettemplate.ControllerHelpers.SendTxOverlayHelper;
 import wallettemplate.ControllerHelpers.TableTx;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
 import wallettemplate.ControllerHelpers.UIUpdateHelper;
@@ -246,10 +247,6 @@ public class Controller  extends BaseUI{
 	 TorListener listener = new TorListener();
 	 
 	 private ThrottledRunnableExecutor throttledUIUpdater;
-	 Main.OverlayUI<Controller> txoverlay;
-	 Pane txoverlaypane;
-	 VBox successVbox;
-	 VBox authenticatorVbox;
 	 
 
 	//#####################################
@@ -508,18 +505,23 @@ public class Controller  extends BaseUI{
 					    String notifStr = "";
 						if(answerType == AuthenticatorAnswerType.Authorized){
 							notifStr = "Authenticator Authorized a Transaction:\n";
-							if (authenticatorVbox.isVisible()){
-								GuiUtils.fadeOut(authenticatorVbox);
-								GuiUtils.fadeIn(successVbox);
-								authenticatorVbox.setVisible(false);
-								successVbox.setVisible(true);
+							
+							if(mSendTxOverlayHelper == null)
+								return;
+							
+							if (mSendTxOverlayHelper.authenticatorVbox.isVisible()){
+								GuiUtils.fadeOut(mSendTxOverlayHelper.authenticatorVbox);
+								GuiUtils.fadeIn(mSendTxOverlayHelper.successVbox);
+								mSendTxOverlayHelper.authenticatorVbox.setVisible(false);
+								mSendTxOverlayHelper.successVbox.setVisible(true);
 							}
 						}
 							
 						else if (answerType == AuthenticatorAnswerType.NotAuthorized){
 							notifStr = "Authenticator Refused To Sign a Transaction:\n";}
 						else {
-							return;}
+							return;
+						}
 						
 						Image logo = new Image(Main.class.getResourceAsStream("authenticator_logo_plain_small.png"));
 				    	// Create a custom Notification without icon
@@ -1209,6 +1211,11 @@ public class Controller  extends BaseUI{
     	}
     }
     
+//    Main.OverlayUI<Controller> txoverlay;
+//	Pane txoverlaypane;
+//	VBox successVbox;
+//	VBox authenticatorVbox;
+    SendTxOverlayHelper mSendTxOverlayHelper;
     private void displayTxOverview(Transaction tx, 
     		ArrayList<String> OutputAddresses, 
     		List<TransactionOutput> to, 
@@ -1216,225 +1223,238 @@ public class Controller  extends BaseUI{
     		Coin outAmount,
     		Coin fee,
     		Coin leavingWallet){
+    	
+    	mSendTxOverlayHelper = new SendTxOverlayHelper(tx, 
+										    			OutputAddresses, 
+										        		to, 
+										        		changeaddr,
+										        		outAmount,
+										        		fee,
+										        		leavingWallet);
+    	
     	//Display Transaction Overview
-    	txoverlaypane = new Pane();
-		txoverlay = Main.instance.overlayUI(txoverlaypane, Main.controller);
-		txoverlaypane.setMaxSize(600, 360);
-		txoverlaypane.setStyle("-fx-background-color: white;");
-		txoverlaypane.setEffect(new DropShadow());
-		VBox v = new VBox();
-		Label lblOverview = new Label("Transaction Overview");
-		v.setMargin(lblOverview, new Insets(10,0,10,20));
-		lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
-		ListView lvTx= new ListView();
-		lvTx.setStyle("-fx-background-color: transparent;");
-		lvTx.getStyleClass().add("custom-scroll");
-		v.setMargin(lvTx, new Insets(0,0,0,20));
-		lvTx.setPrefSize(560, 270);
-		ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
-		Text inputtext = new Text("Inputs:                     ");
-		inputtext.setStyle("-fx-font-weight:bold;");
-		Coin inAmount = Coin.valueOf(0);
-		TextFlow inputflow = new TextFlow();
-		inputflow.getChildren().addAll(inputtext);
-		ArrayList<Text> intext = new ArrayList<Text>();
-		for (int b=0; b<tx.getInputs().size(); b++){
-			Text inputtext2 = new Text("");
-			Text inputtext3 = new Text("");
-			inputtext3.setFill(Paint.valueOf("#98d947"));
-			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
-			intext.add(inputtext2);
-			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
-			inputtext3.setText(TextUtils.coinAmountTextDisplay(tx.getInput(b).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
-			if (b<tx.getInputs().size()-1){
-				inputtext3.setText(inputtext3.getText() + "\n                                    ");
-			}
-			intext.add(inputtext3);
-		}
-		for (Text t : intext){inputflow.getChildren().addAll(t);}
-		textformatted.add(inputflow);
-		TextFlow spaceflow = new TextFlow();
-		Text space = new Text(" ");
-		spaceflow.getChildren().addAll(space);
-		textformatted.add(spaceflow);
-		Text outputtext = new Text("Outputs:                  ");
-		outputtext.setStyle("-fx-font-weight:bold;");
-		TextFlow outputflow = new TextFlow();
-		outputflow.getChildren().addAll(outputtext);
-		ArrayList<Text> outtext = new ArrayList<Text>();
-		for (int a=0; a < OutputAddresses.size(); a++){
-			Text outputtext2 = new Text("");
-			Text outputtext3 = new Text("");
-			outputtext3.setFill(Paint.valueOf("#f06e6e"));
-			outputtext2.setText(OutputAddresses.get(a) + " ");
-			outtext.add(outputtext2);
-			outputtext3.setText(TextUtils.coinAmountTextDisplay(to.get(a).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
-			if (a<OutputAddresses.size()-1){
-				outputtext3.setText(outputtext3.getText() + "\n                                     ");
-			}
-			outtext.add(outputtext3);
-		}
-		for (Text t : outtext){outputflow.getChildren().addAll(t);}
-		textformatted.add(outputflow);
-		textformatted.add(spaceflow);
-		Text changetext = new Text("Change:                   ");
-		changetext.setStyle("-fx-font-weight:bold;");
-		Text changetext2 = new Text(changeaddr + " ");
-		Text changetext3 = new Text(TextUtils.coinAmountTextDisplay((inAmount.subtract(outAmount)).subtract(fee), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
-
-		changetext3.setFill(Paint.valueOf("#98d947"));
-		TextFlow changeflow = new TextFlow();
-		changeflow.getChildren().addAll(changetext, changetext2,changetext3);
-		textformatted.add(changeflow);
-		textformatted.add(spaceflow);
-		Text feetext = new Text("Fee:                         ");
-		feetext.setStyle("-fx-font-weight:bold;");
-		Text feetext2 = new Text(TextUtils.coinAmountTextDisplay(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
-		feetext2.setFill(Paint.valueOf("#f06e6e"));
-		TextFlow feeflow = new TextFlow();
-		feeflow.getChildren().addAll(feetext, feetext2);
-		textformatted.add(feeflow);
-		textformatted.add(spaceflow);
-		Text leavingtext = new Text("Leaving Wallet:       ");
-		leavingtext.setStyle("-fx-font-weight:bold;");
-		Text leavingtext2 = new Text("-" + TextUtils.coinAmountTextDisplay(leavingWallet, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
-		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
-		TextFlow leavingflow = new TextFlow();
-		leavingflow.getChildren().addAll(leavingtext, leavingtext2);
-		textformatted.add(leavingflow);
-		lvTx.setItems(textformatted);
-		Button btnCancel = new Button("Cancel");
-		btnCancel.getStyleClass().add("clear-button");
-		btnCancel.setOnMousePressed(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnCancel.setStyle("-fx-background-color: #d7d4d4;");
-            }
-        });
-        btnCancel.setOnMouseReleased(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnCancel.setStyle("-fx-background-color: #999999;");
-            }
-        });
-		Button btnConfirm = new Button("Send Transaction");
-		btnConfirm.getStyleClass().add("custom-button");
-        btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnConfirm.setStyle("-fx-background-color: #a1d2e7;");
-            }
-        });
-        btnConfirm.setOnMouseReleased(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnConfirm.setStyle("-fx-background-color: #199bd6;");
-            }
-        });
-		PasswordField password = new PasswordField();
-		password.setPrefWidth(350);
-		password.setStyle("-fx-border-color: #dae0e5; -fx-background-color: white; -fx-border-radius: 2;");
-		if (!Main.UI_ONLY_WALLET_PW.hasPassword() || Main.UI_ONLY_IS_WALLET_LOCKED){
-			password.setDisable(false);
-			password.setPromptText("Enter Password");
-			}
-		else {
-			password.setDisable(true);
-			password.setPromptText("Wallet is unlocked");
-		}
-		//success pane
-		successVbox = new VBox();
-		Image rocket = new Image(Main.class.getResource("rocket.png").toString());
-		ImageView img = new ImageView(rocket);
-		Label txid = new Label();
-		Label lblTxid = new Label("Transaction ID:");
-		Button btnContinue = new Button("Continue");
-		btnContinue.getStyleClass().add("custom-button");
-		btnContinue.setDisable(false);
-        btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnContinue.setStyle("-fx-background-color: #a1d2e7;");
-            }
-        });
-        btnContinue.setOnMouseReleased(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnContinue.setStyle("-fx-background-color: #199bd6;");
-            }
-        });
-		txid.setText(tx.getHashAsString());
-		final ContextMenu contextMenu = new ContextMenu();
-		MenuItem item1 = new MenuItem("Copy");
-		item1.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-				Clipboard clipboard = Clipboard.getSystemClipboard();
-				ClipboardContent content = new ClipboardContent();
-				content.putString(txid.getText().toString());
-				clipboard.setContent(content);
-			}
-		});
-		contextMenu.getItems().addAll(item1);
-		txid.setContextMenu(contextMenu);
-		successVbox.getChildren().add(img);
-		successVbox.getChildren().add(lblTxid);
-		successVbox.getChildren().add(txid);
-		successVbox.getChildren().add(btnContinue);
-		successVbox.setVisible(false);
-		successVbox.setAlignment(Pos.CENTER);
-		successVbox.setPrefWidth(600);
-		successVbox.setPadding(new Insets(15,0,0,0));
-		successVbox.setMargin(lblTxid, new Insets(15,0,0,0));
-		successVbox.setMargin(btnContinue, new Insets(30,0,0,0));
-		txoverlaypane.getChildren().add(successVbox);
+//    	txoverlaypane = new Pane();
+//		txoverlay = Main.instance.overlayUI(txoverlaypane, Main.controller);
+//		
+//		txoverlaypane.setMaxSize(600, 360);
+//		txoverlaypane.setStyle("-fx-background-color: white;");
+//		txoverlaypane.setEffect(new DropShadow());
+//		
+//		VBox v = new VBox();
+//		Label lblOverview = new Label("Transaction Overview");
+//		v.setMargin(lblOverview, new Insets(10,0,10,20));
+//		lblOverview.setFont(Font.font(null, FontWeight.BOLD, 18));
+//		
+//		ListView lvTx= new ListView();
+//		lvTx.setStyle("-fx-background-color: transparent;");
+//		lvTx.getStyleClass().add("custom-scroll");
+//		v.setMargin(lvTx, new Insets(0,0,0,20));
+//		lvTx.setPrefSize(560, 270);
+//		ObservableList<TextFlow> textformatted = FXCollections.<TextFlow>observableArrayList();
+//		Text inputtext = new Text("Inputs:                     ");
+//		inputtext.setStyle("-fx-font-weight:bold;");
+//		Coin inAmount = Coin.valueOf(0);
+//		TextFlow inputflow = new TextFlow();
+//		inputflow.getChildren().addAll(inputtext);
+//		ArrayList<Text> intext = new ArrayList<Text>();
+//		for (int b=0; b<tx.getInputs().size(); b++){
+//			Text inputtext2 = new Text("");
+//			Text inputtext3 = new Text("");
+//			inputtext3.setFill(Paint.valueOf("#98d947"));
+//			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
+//			intext.add(inputtext2);
+//			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
+//			inputtext3.setText(TextUtils.coinAmountTextDisplay(tx.getInput(b).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+//			if (b<tx.getInputs().size()-1){
+//				inputtext3.setText(inputtext3.getText() + "\n                                    ");
+//			}
+//			intext.add(inputtext3);
+//		}
+//		for (Text t : intext){inputflow.getChildren().addAll(t);}
+//		textformatted.add(inputflow);
+//		TextFlow spaceflow = new TextFlow();
+//		Text space = new Text(" ");
+//		spaceflow.getChildren().addAll(space);
+//		textformatted.add(spaceflow);
+//		Text outputtext = new Text("Outputs:                  ");
+//		outputtext.setStyle("-fx-font-weight:bold;");
+//		TextFlow outputflow = new TextFlow();
+//		outputflow.getChildren().addAll(outputtext);
+//		ArrayList<Text> outtext = new ArrayList<Text>();
+//		for (int a=0; a < OutputAddresses.size(); a++){
+//			Text outputtext2 = new Text("");
+//			Text outputtext3 = new Text("");
+//			outputtext3.setFill(Paint.valueOf("#f06e6e"));
+//			outputtext2.setText(OutputAddresses.get(a) + " ");
+//			outtext.add(outputtext2);
+//			outputtext3.setText(TextUtils.coinAmountTextDisplay(to.get(a).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+//			if (a<OutputAddresses.size()-1){
+//				outputtext3.setText(outputtext3.getText() + "\n                                     ");
+//			}
+//			outtext.add(outputtext3);
+//		}
+//		for (Text t : outtext){outputflow.getChildren().addAll(t);}
+//		textformatted.add(outputflow);
+//		textformatted.add(spaceflow);
+//		Text changetext = new Text("Change:                   ");
+//		changetext.setStyle("-fx-font-weight:bold;");
+//		Text changetext2 = new Text(changeaddr + " ");
+//		Text changetext3 = new Text(TextUtils.coinAmountTextDisplay((inAmount.subtract(outAmount)).subtract(fee), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+//
+//		changetext3.setFill(Paint.valueOf("#98d947"));
+//		TextFlow changeflow = new TextFlow();
+//		changeflow.getChildren().addAll(changetext, changetext2,changetext3);
+//		textformatted.add(changeflow);
+//		textformatted.add(spaceflow);
+//		Text feetext = new Text("Fee:                         ");
+//		feetext.setStyle("-fx-font-weight:bold;");
+//		Text feetext2 = new Text(TextUtils.coinAmountTextDisplay(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+//		feetext2.setFill(Paint.valueOf("#f06e6e"));
+//		TextFlow feeflow = new TextFlow();
+//		feeflow.getChildren().addAll(feetext, feetext2);
+//		textformatted.add(feeflow);
+//		textformatted.add(spaceflow);
+//		Text leavingtext = new Text("Leaving Wallet:       ");
+//		leavingtext.setStyle("-fx-font-weight:bold;");
+//		Text leavingtext2 = new Text("-" + TextUtils.coinAmountTextDisplay(leavingWallet, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+//		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
+//		TextFlow leavingflow = new TextFlow();
+//		leavingflow.getChildren().addAll(leavingtext, leavingtext2);
+//		textformatted.add(leavingflow);
+//		lvTx.setItems(textformatted);
+//		Button btnCancel = new Button("Cancel");
+//		btnCancel.getStyleClass().add("clear-button");
+//		btnCancel.setOnMousePressed(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnCancel.setStyle("-fx-background-color: #d7d4d4;");
+//            }
+//        });
+//        btnCancel.setOnMouseReleased(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnCancel.setStyle("-fx-background-color: #999999;");
+//            }
+//        });
+//		Button btnConfirm = new Button("Send Transaction");
+//		btnConfirm.getStyleClass().add("custom-button");
+//        btnConfirm.setOnMousePressed(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnConfirm.setStyle("-fx-background-color: #a1d2e7;");
+//            }
+//        });
+//        btnConfirm.setOnMouseReleased(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnConfirm.setStyle("-fx-background-color: #199bd6;");
+//            }
+//        });
+//		PasswordField password = new PasswordField();
+//		password.setPrefWidth(350);
+//		password.setStyle("-fx-border-color: #dae0e5; -fx-background-color: white; -fx-border-radius: 2;");
+//		if (!Main.UI_ONLY_WALLET_PW.hasPassword() || Main.UI_ONLY_IS_WALLET_LOCKED){
+//			password.setDisable(false);
+//			password.setPromptText("Enter Password");
+//			}
+//		else {
+//			password.setDisable(true);
+//			password.setPromptText("Wallet is unlocked");
+//		}
+//		//success pane
+//		successVbox = new VBox();
+//		Image rocket = new Image(Main.class.getResource("rocket.png").toString());
+//		ImageView img = new ImageView(rocket);
+//		Label txid = new Label();
+//		Label lblTxid = new Label("Transaction ID:");
+//		Button btnContinue = new Button("Continue");
+//		btnContinue.getStyleClass().add("custom-button");
+//		btnContinue.setDisable(false);
+//        btnContinue.setOnMousePressed(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnContinue.setStyle("-fx-background-color: #a1d2e7;");
+//            }
+//        });
+//        btnContinue.setOnMouseReleased(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnContinue.setStyle("-fx-background-color: #199bd6;");
+//            }
+//        });
+//		txid.setText(tx.getHashAsString());
+//		final ContextMenu contextMenu = new ContextMenu();
+//		MenuItem item1 = new MenuItem("Copy");
+//		item1.setOnAction(new EventHandler<ActionEvent>() {
+//			public void handle(ActionEvent e) {
+//				Clipboard clipboard = Clipboard.getSystemClipboard();
+//				ClipboardContent content = new ClipboardContent();
+//				content.putString(txid.getText().toString());
+//				clipboard.setContent(content);
+//			}
+//		});
+//		contextMenu.getItems().addAll(item1);
+//		txid.setContextMenu(contextMenu);
+//		successVbox.getChildren().add(img);
+//		successVbox.getChildren().add(lblTxid);
+//		successVbox.getChildren().add(txid);
+//		successVbox.getChildren().add(btnContinue);
+//		successVbox.setVisible(false);
+//		successVbox.setAlignment(Pos.CENTER);
+//		successVbox.setPrefWidth(600);
+//		successVbox.setPadding(new Insets(15,0,0,0));
+//		successVbox.setMargin(lblTxid, new Insets(15,0,0,0));
+//		successVbox.setMargin(btnContinue, new Insets(30,0,0,0));
+//		txoverlaypane.getChildren().add(successVbox);
+		
 		//Paired tx pane
-		authenticatorVbox = new VBox();
-		StackPane stk = new StackPane();
-		Image phone = new Image(Main.class.getResource("phone.png").toString());
-		ImageView imgphone = new ImageView(phone);
-		Image auth1 = new Image(Main.class.getResource("auth1.png").toString());
-		ImageView imglogo1 = new ImageView(auth1);
-		Image auth2 = new Image(Main.class.getResource("auth2.png").toString());
-		ImageView imglogo2 = new ImageView(auth2);
-		stk.getChildren().add(imgphone);
-		stk.getChildren().add(imglogo1);
-		stk.getChildren().add(imglogo2);
-		Button btnSave = new Button("Authorize Later");
-		Label authinstructions = new Label("The transaction has been sent to your phone for authorization");
-		btnSave.getStyleClass().add("custom-button");
-        btnSave.setOnMousePressed(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnSave.setStyle("-fx-background-color: #a1d2e7;");
-            }
-        });
-        btnSave.setOnMouseReleased(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent t) {
-            	btnSave.setStyle("-fx-background-color: #199bd6;");
-            }
-        });
-		authenticatorVbox.getChildren().add(stk);
-		authenticatorVbox.getChildren().add(authinstructions);
-		authenticatorVbox.getChildren().add(btnSave);
-		authenticatorVbox.setVisible(false);
-		authenticatorVbox.setAlignment(Pos.CENTER);
-		authenticatorVbox.setPrefWidth(600);
-		authenticatorVbox.setPadding(new Insets(15,0,0,0));
-		authenticatorVbox.setMargin(authinstructions, new Insets(15,0,0,0));
-		authenticatorVbox.setMargin(btnSave, new Insets(30,0,0,0));
-		txoverlaypane.getChildren().add(authenticatorVbox);
-		btnConfirm.setOnMouseClicked(new EventHandler<MouseEvent>(){
+//		authenticatorVbox = new VBox();
+//		StackPane stk = new StackPane();
+//		Image phone = new Image(Main.class.getResource("phone.png").toString());
+//		ImageView imgphone = new ImageView(phone);
+//		Image auth1 = new Image(Main.class.getResource("auth1.png").toString());
+//		ImageView imglogo1 = new ImageView(auth1);
+//		Image auth2 = new Image(Main.class.getResource("auth2.png").toString());
+//		ImageView imglogo2 = new ImageView(auth2);
+//		stk.getChildren().add(imgphone);
+//		stk.getChildren().add(imglogo1);
+//		stk.getChildren().add(imglogo2);
+//		Button btnSave = new Button("Authorize Later");
+//		Label authinstructions = new Label("The transaction has been sent to your phone for authorization");
+//		btnSave.getStyleClass().add("custom-button");
+//        btnSave.setOnMousePressed(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnSave.setStyle("-fx-background-color: #a1d2e7;");
+//            }
+//        });
+//        btnSave.setOnMouseReleased(new EventHandler<MouseEvent>(){
+//            @Override
+//            public void handle(MouseEvent t) {
+//            	btnSave.setStyle("-fx-background-color: #199bd6;");
+//            }
+//        });
+//		authenticatorVbox.getChildren().add(stk);
+//		authenticatorVbox.getChildren().add(authinstructions);
+//		authenticatorVbox.getChildren().add(btnSave);
+//		authenticatorVbox.setVisible(false);
+//		authenticatorVbox.setAlignment(Pos.CENTER);
+//		authenticatorVbox.setPrefWidth(600);
+//		authenticatorVbox.setPadding(new Insets(15,0,0,0));
+//		authenticatorVbox.setMargin(authinstructions, new Insets(15,0,0,0));
+//		authenticatorVbox.setMargin(btnSave, new Insets(30,0,0,0));
+//		txoverlaypane.getChildren().add(authenticatorVbox);
+    	mSendTxOverlayHelper.btnSendTransaction.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
             	try {
             		if(Main.UI_ONLY_IS_WALLET_LOCKED) {
-                		if(!checkIfPasswordDecryptsWallet(new BAPassword(password.getText()))){
+                		if(!checkIfPasswordDecryptsWallet(new BAPassword(mSendTxOverlayHelper.pfPassword.getText()))){
                 			informationalAlert("Unfortunately, you messed up.",
                 					"Wrong password");
                     		return;
                 		}
-                		Main.UI_ONLY_WALLET_PW.setPassword(password.getText());
+                		Main.UI_ONLY_WALLET_PW.setPassword(mSendTxOverlayHelper.pfPassword.getText());
             		}
         			
         			String to = "";
@@ -1450,22 +1470,22 @@ public class Controller  extends BaseUI{
         				else {to = OutputAddresses.get(0) ;}	
         			}
         			else {to = "Multiple";}
-        			v.setVisible(false);
+        			mSendTxOverlayHelper.transactionOverviewBox.setVisible(false);
         			if (broadcast(tx,to,Main.UI_ONLY_WALLET_PW) == true) {
         				// animate success
-        				Animation ani = GuiUtils.fadeOut(v);
+        				Animation ani = GuiUtils.fadeOut(mSendTxOverlayHelper.transactionOverviewBox);
             			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
-            				GuiUtils.fadeIn(authenticatorVbox);
-            				authenticatorVbox.setVisible(true);
-            				startAuthRotation(imglogo1);
+            				GuiUtils.fadeIn(mSendTxOverlayHelper.authenticatorVbox);
+            				mSendTxOverlayHelper.authenticatorVbox.setVisible(true);
+            				startAuthRotation(mSendTxOverlayHelper.ivLogo1);
             			}
             			else {
-            				GuiUtils.fadeIn(successVbox);
-            				successVbox.setVisible(true);
+            				GuiUtils.fadeIn(mSendTxOverlayHelper.successVbox);
+            				mSendTxOverlayHelper.successVbox.setVisible(true);
             			}
         			}
         			else {
-        				txoverlay.done();
+        				mSendTxOverlayHelper.txOverlay.done();
                     	txMsgLabel.clear();
                     	scrlContent.clearAll(); addTransactionOutputToPane();
                     	
@@ -1484,22 +1504,24 @@ public class Controller  extends BaseUI{
         		}
             }
         });
-		HBox h = new HBox();
-		h.setPadding(new Insets(10,0,0,20));
-		h.setMargin(btnCancel, new Insets(0,5,0,10));
-		h.setMargin(password, new Insets(-1,0,0,0));
-		h.getChildren().add(password);
-		h.getChildren().add(btnCancel);
-		h.getChildren().add(btnConfirm);
-		v.getChildren().add(lblOverview);
-		v.getChildren().add(lvTx);
-		v.getChildren().add(h);
-		txoverlaypane.getChildren().add(v);
-		btnContinue.setOnMouseClicked(new EventHandler<MouseEvent>(){
+		
+		
+//		HBox h = new HBox();
+//		h.setPadding(new Insets(10,0,0,20));
+//		h.setMargin(btnCancel, new Insets(0,5,0,10));
+//		h.setMargin(password, new Insets(-1,0,0,0));
+//		h.getChildren().add(password);
+//		h.getChildren().add(btnCancel);
+//		h.getChildren().add(btnConfirm);
+//		transactionOverviewBox.getChildren().add(lblOverview);
+//		transactionOverviewBox.getChildren().add(lvTx);
+//		transactionOverviewBox.getChildren().add(h);
+//		txOverlayPane.getChildren().add(transactionOverviewBox);
+    	mSendTxOverlayHelper.btnSuccessPaneFinish.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnContinue.setDisable(true);
-            	txoverlay.done();
+            	mSendTxOverlayHelper.btnSuccessPaneFinish.setDisable(true);
+            	mSendTxOverlayHelper.txOverlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addTransactionOutputToPane();
             	txFee.clear();
@@ -1507,21 +1529,22 @@ public class Controller  extends BaseUI{
             	
             }
         });
-		btnSave.setOnMouseClicked(new EventHandler<MouseEvent>(){
+    	
+    	mSendTxOverlayHelper.btnAuthorizeTxLater.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
             	stopAuthRotation();
-            	txoverlay.done();
+            	mSendTxOverlayHelper.txOverlay.done();
             	txMsgLabel.clear();
             	scrlContent.clearAll(); addTransactionOutputToPane();
             	txFee.clear();
             	setFeeTipText();
             }
         });
-		btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    	mSendTxOverlayHelper.btnCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 				public void handle(MouseEvent event) {
-				txoverlay.done();
+				mSendTxOverlayHelper.txOverlay.done();
 			}
 		});
     }
