@@ -57,7 +57,7 @@ public class PaperWalletQR extends BASE{
         return qrSeed;
 	}
 	
-	private String generateQRSeedDataString(DeterministicSeed seed, long creationTime)
+	public String generateQRSeedDataString(DeterministicSeed seed, long creationTime)
 	{
 		String qrCodeData = null;
 		MnemonicCode ms = null;
