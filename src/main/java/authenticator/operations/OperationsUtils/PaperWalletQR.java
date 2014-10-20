@@ -45,16 +45,21 @@ public class PaperWalletQR extends BASE{
 	}
 	
 	@SuppressWarnings("restriction")
-	private Image createQRSeedImage(DeterministicSeed seed, long creationTime){
+	public Image createQRSeedImage(DeterministicSeed seed, long creationTime){
+		byte[] imageBytes = this.createQRSeedImageBytes(seed, creationTime, 170, 170);
+        Image qrSeed = new Image(new ByteArrayInputStream(imageBytes), 153, 153, true, false);
+        return qrSeed;
+	}
+	
+	public byte[] createQRSeedImageBytes(DeterministicSeed seed, long creationTime, int w, int h){
 		byte[] imageBytes = null;
 		imageBytes = QRCode
 				        .from(generateQRSeedDataString(seed, creationTime))
-				        .withSize(170, 170)
+				        .withSize(w, h)
 				        .to(ImageType.PNG)
 				        .stream()
 				        .toByteArray();
-        Image qrSeed = new Image(new ByteArrayInputStream(imageBytes), 153, 153, true, false);
-        return qrSeed;
+        return imageBytes;
 	}
 	
 	public String generateQRSeedDataString(DeterministicSeed seed, long creationTime)

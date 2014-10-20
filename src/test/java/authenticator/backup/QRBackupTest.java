@@ -3,13 +3,18 @@ package authenticator.backup;
 import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.scene.image.Image;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.imageio.ImageIO;
 
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.MnemonicCode;
@@ -23,10 +28,13 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
+import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 
+import javafx.embed.swing.SwingFXUtils;
 import authenticator.operations.OperationsUtils.PaperWalletQR;
 
 public class QRBackupTest {
@@ -76,6 +84,7 @@ public class QRBackupTest {
 	}
 
 	
+	@SuppressWarnings("restriction")
 	@Test
 	public void qrImageDataTest() throws IOException, MnemonicLengthException {
 		/*
@@ -94,19 +103,25 @@ public class QRBackupTest {
 		
 		//get data from qr
 		PaperWalletQR qr = new PaperWalletQR();
-		BufferedImage bi = qr.generatePaperWallet(Arrays.toString(mnemonic.toArray()), seed, creationTime);
+		BufferedImage bi = null;
+		byte[] imgBytes = qr.createQRSeedImageBytes(seed, creationTime, 170, 170);
+		InputStream in = new ByteArrayInputStream(imgBytes);
+		bi = ImageIO.read(in);
 		Result qrResult = null;
 		LuminanceSource source = new BufferedImageLuminanceSource(bi);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+		
+		QRCodeReader reader = new QRCodeReader();
 		try {
-			qrResult = new MultiFormatReader().decode(bitmap);
-		} catch (NotFoundException e) {
-			assertTrue(false);
-		}
+			qrResult = reader.decode(bitmap);
+	    } catch (ReaderException e) {
+	    	assertTrue(false);
+	    }
+
 		if (qrResult == null) assertTrue(false);
 		result = qrResult.getText();
 		
-		assertFalse(expected.equals(result));
+		assertTrue(expected.equals(result));
 		
 		/*
 		 * just checks the qr generation, the data itself should be tested elsewhere 
@@ -125,21 +140,24 @@ public class QRBackupTest {
 		
 		long creationTime = 1413794360;
 		DeterministicSeed seed = new DeterministicSeed(mnemonic, null,"", creationTime);
-		
-		String expected = "Seed=55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d&Time=1413794360";
-		String result;
-		
+				
 		//get data from qr
 		PaperWalletQR qr = new PaperWalletQR();
-		BufferedImage bi = qr.generatePaperWallet(Arrays.toString(mnemonic.toArray()), seed, creationTime);
+		BufferedImage bi = null;
+		byte[] imgBytes = qr.createQRSeedImageBytes(seed, creationTime, 170, 170);
+		InputStream in = new ByteArrayInputStream(imgBytes);
+		bi = ImageIO.read(in);
 		Result qrResult = null;
 		LuminanceSource source = new BufferedImageLuminanceSource(bi);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+		
+		QRCodeReader reader = new QRCodeReader();
 		try {
-			qrResult = new MultiFormatReader().decode(bitmap);
-		} catch (NotFoundException e) {
-			assertTrue(false);
-		}
+			qrResult = reader.decode(bitmap);
+	    } catch (ReaderException e) {
+	    	assertTrue(false);
+	    }
+
 		if (qrResult == null) assertTrue(false);
 		
 		PaperWalletQR.SeedQRData data = qr.parseSeedQR(qrResult.getText());
@@ -148,7 +166,8 @@ public class QRBackupTest {
 		 * mnemonic
 		 */
 		String mnemonicResultString = Joiner.on(" ").join(data.seed.getMnemonicCode());
-		assertTrue(mnemonicResultString.equals(Arrays.toString(mnemonic.toArray())));
+		String expected = Joiner.on(" ").join(mnemonic);
+		assertTrue(mnemonicResultString.equals(expected));
 		
 		/*
 		 * creation time
