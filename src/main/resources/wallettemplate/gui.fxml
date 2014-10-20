@@ -249,7 +249,7 @@
         </Button>
         <HBox fx:id="overviewHBox" layoutX="126.0" layoutY="33.0" prefHeight="51.0" prefWidth="337.0">
           <children>
-            <Label fx:id="lblName" prefHeight="25.0" prefWidth="252.9999000000025" text="Welcome back, Zach Galifianakis" textFill="#4b698f">
+            <Label fx:id="lblName" prefHeight="25.0" prefWidth="252.9999000000025" text="Welcome back !" textFill="#4b698f">
               <font>
                 <Font size="15.0" />
               </font>
