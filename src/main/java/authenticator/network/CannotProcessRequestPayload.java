@@ -8,8 +8,8 @@ import javax.crypto.SecretKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import authenticator.crypto.CryptoUtils;
-import authenticator.crypto.CryptoUtils.CouldNotEncryptPayload;
+import authenticator.Utils.CryptoUtils;
+import authenticator.Utils.CryptoUtils.CouldNotEncryptPayload;
 
 public class CannotProcessRequestPayload extends JSONObject{
 	private byte[] payload;

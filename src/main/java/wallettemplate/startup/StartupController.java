@@ -905,7 +905,6 @@ public class StartupController  extends BaseUI{
  		 	ms = new MnemonicCode();
  			List<String> mnemonic = walletSeed.getMnemonicCode();
  			mnemonicEntropy = ms.toEntropy(mnemonic);
- 			//String entropyHex = HEX.encode(entropy);
  			
  			BipSSS sss = new BipSSS();
  			shares = sss.shard(mnemonicEntropy, 

@@ -9,9 +9,9 @@ import org.junit.Test;
 import org.spongycastle.util.Arrays;
 import org.spongycastle.util.encoders.Hex;
 
-import authenticator.crypto.CryptoUtils;
-import authenticator.crypto.CryptoUtils.CannotDecryptMessageException;
-import authenticator.crypto.CryptoUtils.CouldNotEncryptPayload;
+import authenticator.Utils.CryptoUtils;
+import authenticator.Utils.CryptoUtils.CannotDecryptMessageException;
+import authenticator.Utils.CryptoUtils.CouldNotEncryptPayload;
 
 public class CryptoUtilsTest {
 

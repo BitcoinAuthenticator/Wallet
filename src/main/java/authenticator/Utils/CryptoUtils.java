@@ -1,4 +1,4 @@
-package authenticator.crypto;
+package authenticator.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,8 +14,6 @@ import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import authenticator.Utils.EncodingUtils;
 
 public class CryptoUtils {
 	

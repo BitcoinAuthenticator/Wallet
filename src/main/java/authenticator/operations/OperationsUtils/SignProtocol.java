@@ -21,9 +21,9 @@ import org.json.JSONException;
 import authenticator.Authenticator;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
+import authenticator.Utils.CryptoUtils;
 import authenticator.Utils.EncodingUtils;
 import authenticator.walletCore.exceptions.UnableToCompleteTxSigningException;
-import authenticator.crypto.CryptoUtils;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
@@ -43,6 +43,7 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
+
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
 

@@ -17,8 +17,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.Utils.CryptoUtils;
 import authenticator.Utils.EncodingUtils;
-import authenticator.crypto.CryptoUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANetworkInfo;
 import authenticator.network.PongPayload;
