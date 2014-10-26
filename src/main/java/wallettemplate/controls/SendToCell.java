@@ -206,7 +206,7 @@ public class SendToCell extends Region{
 		                		        						 @Override
 		                		        						public void run() {
 		                		        							txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");
-		                             		        				txfAddress.setText(data.getOnenameFormatted());
+		                             		        				txfAddress.setText(data.getBitcoinAddress());
 		                             		        				isAddressFromOneName = true;
 		                             		        				try {
 		                             		        					spinner.setProgress(50.0);

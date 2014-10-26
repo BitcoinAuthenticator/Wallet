@@ -154,6 +154,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
@@ -999,6 +1000,11 @@ public class Controller  extends BaseUI{
 		   
 		   if(img != null && one != null)
 			   setUserProfileAvatarAndName(img,one.getOnenameFormatted());	   
+	   }
+	   else {
+		   lblName.setText("Welcome to Authenticator Wallet");
+			lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
+			lblName.getText(), 0.0D));
 	   }
    }
    

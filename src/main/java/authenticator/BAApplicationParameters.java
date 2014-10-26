@@ -25,7 +25,7 @@ public class BAApplicationParameters{
 	
 	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
 	
-	int NETWORK_PORT = 1234;
+	int NETWORK_PORT = 8222;
 	
 	String APP_NAME = "AuthenticatorWallet";
 	
