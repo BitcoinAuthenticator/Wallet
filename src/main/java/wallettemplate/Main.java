@@ -35,6 +35,8 @@ import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
+import com.vinumeris.updatefx.AppDirectory;
+import com.vinumeris.updatefx.UpdateFX;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -64,6 +66,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.json.JSONException;
@@ -153,10 +156,7 @@ public class Main extends BAApplication {
                 final String file1 = TextFieldValidator.class.getResource("GUI.css").toString();
                 scene1.getStylesheets().add(file1);  // Add CSS that we need.
                 startup.setScene(scene1);
-                startup.show();
-                versionCheck();
-               
-                
+                startup.show();               
             } else {finishLoading();}
         } 
     	catch (Exception e) {
@@ -253,9 +253,7 @@ public class Main extends BAApplication {
         hockCloseEvent(stage);
         	
         // start UI
-        stage.show();
-        versionCheck();
-        
+        stage.show();        
         if (destination!=null){
         	FileUtils.ZipHelper.zipDir(walletFolder.getAbsolutePath(), destination.getAbsolutePath());      		
         }
@@ -457,35 +455,21 @@ public class Main extends BAApplication {
     	}
     }
 
-    @SuppressWarnings("restriction")
-	public static void main(String[] args) {
-        launch(args);
+    public static void main(String[] args) throws IOException, WrongOperatingSystemException {
+    	/*
+    	 * We create a BAApplicationParameters instance to get the app data folder
+    	 */
+    	BAApplicationParameters appParams = new BAApplicationParameters(null, Arrays.asList(args));
+    	
+        // We want to store updates in our app dir so must init that here.
+        AppDirectory.initAppDir(appParams.getAppName());
+        // re-enter at realMain, but possibly running a newer version of the software i.e. after this point the
+        // rest of this code may be ignored.
+        UpdateFX.bootstrap(Main.class, AppDirectory.dir(), args);
     }
-    
-    public static void versionCheck(){
-    	try {
-			EncodingUtils.readFromUrl("https://www.bitcoinauthenticator.org/version.json", new AsyncCompletionHandler<Response>(){
-				@Override
-				public Response onCompleted(Response arg0) throws Exception {
-					try {
-						String res = arg0.getResponseBody();
-						JSONObject json = new JSONObject(res);
-						String version = json.getString("current");
-						if (!version.equals("0.1.0")){
-							 informationalAlert("A new version is available!",
-									   "You can download it at bitcoinauthenticator.org");
-						}
-					   	
-					}
-					catch(Exception e) {
-					}
-				    
-					return null;
-				}
-			});
-		}
-		catch(IOException e) {
-		}
+
+    public static void realMain(String[] args) {
+        launch(args);
     }
     
 }

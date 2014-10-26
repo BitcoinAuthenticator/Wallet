@@ -2,6 +2,7 @@ package authenticator;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import static com.google.common.base.Preconditions.checkState;
  *
  */
 public class BAApplicationParameters{
+	final static public String APP_VERSION = "0.1";
+	
 	NetworkType bitcoinNetworkType;
 	
 	boolean isTestMode = false;
@@ -44,23 +47,44 @@ public class BAApplicationParameters{
 	 */
 	public void InitializeApplicationFlags(Map<String, String> params, List<String> raw) throws WrongOperatingSystemException{
 		boolean returnValue = true;
+		Map<String, String> paramsFinal = null;
+		{
+			/*
+			 * generate params map from both inputs
+			 */
+			if(params != null)
+				paramsFinal = params;
+			else
+				paramsFinal = new HashMap<String, String>();
+			
+			if(raw !=null) {
+				for(String s:raw) {
+					String[] divided = s.split("=");
+					String key = divided[0].replaceAll("-", "");
+					if(!paramsFinal.containsKey(key))
+						paramsFinal.put(key, divided[1]);
+				}
+			}
+		}
+		
+		
 		// Help
-		if(params.containsKey("help") || raw.contains("-help") || raw.contains("--help")){
+		if(paramsFinal.containsKey("help")){
 			PrintHelp();
 			returnValue = false;
 		}
 		
 		// test mode 
-		if(params.containsKey("testermode")){
-			boolean value = Boolean.parseBoolean(params.get("testermode"));
+		if(paramsFinal.containsKey("testermode")){
+			boolean value = Boolean.parseBoolean(paramsFinal.get("testermode"));
 			setIsTestMode(value);
 		}
 		else
 			setIsTestMode(false);
 		
 		// Network Type
-		if(params.containsKey("testnet")){
-			boolean value = Boolean.parseBoolean(params.get("testnet"));
+		if(paramsFinal.containsKey("testnet")){
+			boolean value = Boolean.parseBoolean(paramsFinal.get("testnet"));
 			if(value)
 				setBitcoinNetworkType(NetworkType.TEST_NET);
 			else
@@ -70,8 +94,8 @@ public class BAApplicationParameters{
 			setBitcoinNetworkType(NetworkType.MAIN_NET);
 				
 		// Port
-		if(params.containsKey("port")){
-			int value = Integer.parseInt(params.get("port"));
+		if(paramsFinal.containsKey("port")){
+			int value = Integer.parseInt(paramsFinal.get("port"));
 			setNetworkPort(value);
 		}
 		else

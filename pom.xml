@@ -110,7 +110,13 @@
             <artifactId>webcam-capture</artifactId>
             <version>0.3.10</version>
         </dependency>
-        <!-- UPNP -->
+        <!-- UpdateFX -->
+        <dependency>
+            <groupId>com.vinumeris</groupId>
+            <artifactId>updatefx</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+		<!-- UPNP -->
         <dependency>
             <groupId>org.bitlet</groupId>
             <artifactId>weupnp</artifactId>
