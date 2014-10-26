@@ -64,6 +64,8 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -463,9 +465,13 @@ public class Main extends BAApplication {
     	
         // We want to store updates in our app dir so must init that here.
         AppDirectory.initAppDir(appParams.getAppName());
+        AppDirectory.overrideAppDir(Paths.get(appParams.getApplicationDataFolderAbsolutePath(), "updated"));
+        
         // re-enter at realMain, but possibly running a newer version of the software i.e. after this point the
         // rest of this code may be ignored.
         UpdateFX.bootstrap(Main.class, AppDirectory.dir(), args);
+        
+        // version 3
     }
 
     public static void realMain(String[] args) {
