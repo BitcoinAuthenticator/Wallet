@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Mockito.*;
 import org.mockito.stubbing.Answer;
+import org.spongycastle.util.encoders.Hex;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -27,7 +28,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -40,7 +40,7 @@ import authenticator.operations.OperationsUtils.PairingProtocol;
 public class PairingTest {
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test() throws NoSuchAlgorithmException, InvalidKeyException, IOException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException {
+	public void decipherAndParsePayloadTest() throws NoSuchAlgorithmException, InvalidKeyException, IOException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException {
 		
 		/**
 		 * 
@@ -63,19 +63,19 @@ public class PairingTest {
 		
 		// AES Key
 		//Generate 256 bit key.
-		 KeyGenerator kgen = KeyGenerator.getInstance("AES");
-	     kgen.init(256);
+		KeyGenerator kgen = KeyGenerator.getInstance("AES");
+	    kgen.init(256);
 		// AES key
 		SecretKey sharedsecret = kgen.generateKey();
 		byte[] raw = sharedsecret.getEncoded();
-		String key = EncodingUtils.bytesToHex(raw);
+		String key = Hex.toHexString(raw);
 		//
 		
 		JSONObject payloadObj = new JSONObject();
-				   payloadObj.put("mpubkey", EncodingUtils.bytesToHex(pub.getPubKey()));
-				   payloadObj.put("chaincode", EncodingUtils.bytesToHex(pub.getChainCode()));
+				   payloadObj.put("mpubkey", Hex.toHexString(pub.getPubKey()));
+				   payloadObj.put("chaincode", Hex.toHexString(pub.getChainCode()));
 				   MessageDigest md = MessageDigest.getInstance("SHA-1");
-				   payloadObj.put("pairID",  EncodingUtils.bytesToHex(md.digest(("Some crazy thing").getBytes())));
+				   payloadObj.put("pairID",  Hex.toHexString(md.digest(("Some crazy thing").getBytes())));
 				   payloadObj.put("gcmID", "some registration id");
 				   
 		String payloadUnencryptedStr = payloadObj.toString();   
@@ -111,10 +111,30 @@ public class PairingTest {
 		String chaincodeRec = (String) jsonPayloadFromAuth.get("chaincode");
 	    String pairingIDRec = (String) jsonPayloadFromAuth.get("pairID");
 	    String GCMRec = (String) jsonPayloadFromAuth.get("gcmID");
-	    assert(mPubKeyRec.equals(EncodingUtils.bytesToHex(pub.getPubKey())));
-	    assert(chaincodeRec.equals(EncodingUtils.bytesToHex(pub.getChainCode())));
-	    assert(pairingIDRec.equals(EncodingUtils.bytesToHex(md.digest(("Some crazy thing").getBytes()))));
-	    assert(GCMRec.equals("some registration id"));
+	    assertTrue(mPubKeyRec.equals(Hex.toHexString(pub.getPubKey())));
+	    assertTrue(chaincodeRec.equals(Hex.toHexString(pub.getChainCode())));
+	    assertTrue(pairingIDRec.equals(Hex.toHexString(md.digest(("Some crazy thing").getBytes()))));
+	    assertTrue(GCMRec.equals("some registration id"));
 	}
 
+	@Test
+	public void generateAuthenticatorWalletIndexTest() {
+		byte[] seed = Hex.decode("55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d");
+		int index = 0;
+		
+		String expected = "35363265";
+		PairingProtocol pp = new PairingProtocol();    	
+		byte[] result = pp.generateAuthenticatorsWalletIndex(seed, index);
+		assertTrue(expected.equals(Hex.toHexString(result)));
+		
+		expected = "31396133";
+		index = 1;
+		result = pp.generateAuthenticatorsWalletIndex(seed, index);
+		assertTrue(expected.equals(Hex.toHexString(result)));
+		
+		expected = "37366466";
+		index = 100;
+		result = pp.generateAuthenticatorsWalletIndex(seed, index);
+		assertTrue(expected.equals(Hex.toHexString(result)));
+	}
 }

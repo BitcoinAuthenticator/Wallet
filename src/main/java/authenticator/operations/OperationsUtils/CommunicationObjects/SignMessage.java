@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.spongycastle.util.encoders.Hex;
 
 import authenticator.Utils.EncodingUtils;
 
@@ -64,7 +65,7 @@ public class SignMessage  extends JSONObject{
 			 for(int i=0; i<jsonlist.size(); i++){
 				 jsonObj = (JSONObject) jsonlist.get(i);
 				 String sig = (String) jsonObj.get("signature");
-				 sigs.add(EncodingUtils.hexStringToByteArray(sig));
+				 sigs.add(Hex.decode(sig));
 			 }
 			 return sigs;
 		 }
@@ -99,7 +100,7 @@ public class SignMessage  extends JSONObject{
 		this.keyIndexArr = new ArrayList<KeyIndex>();
 		for(int i=0;i<publickeys.size();i++)
 		{
-			KeyIndex ki = new KeyIndex(EncodingUtils.bytesToHex(publickeys.get(i)),childkeyindex.get(i));
+			KeyIndex ki = new KeyIndex(Hex.toHexString(publickeys.get(i)),childkeyindex.get(i));
 			this.keyIndexArr.add(ki);
 		}
 		return this;

@@ -48,6 +48,7 @@ import javax.annotation.Nullable;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.util.encoders.Hex;
 
 import wallettemplate.Main;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
@@ -1307,8 +1308,8 @@ public class WalletOperation extends BASE{
 	
 	public ECKey getPairedAuthenticatorKey(PairedAuthenticator po, int keyIndex){
 		ArrayList<String> keyandchain = getPublicKeyAndChain(po.getPairingID());
-		byte[] key = EncodingUtils.hexStringToByteArray(keyandchain.get(0));
-		byte[] chain = EncodingUtils.hexStringToByteArray(keyandchain.get(1));
+		byte[] key = Hex.decode(keyandchain.get(0));
+		byte[] chain = Hex.decode(keyandchain.get(1));
 		HDKeyDerivation HDKey = null;
   		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
   		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, keyIndex);
