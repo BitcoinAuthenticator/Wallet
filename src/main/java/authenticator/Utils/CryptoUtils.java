@@ -15,6 +15,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.spongycastle.util.encoders.Hex;
+
 public class CryptoUtils {
 	
 	/**
@@ -68,11 +70,11 @@ public class CryptoUtils {
 		try {
 			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 		    cipher.init(Cipher.DECRYPT_MODE, secretkey);
-		    String message = EncodingUtils.bytesToHex(cipher.doFinal(encryptedPayload));
+		    String message = Hex.toHexString(cipher.doFinal(encryptedPayload));
 		    String sig = message.substring(0,message.length()-64);
 		    String HMAC = message.substring(message.length()-64,message.length());
-		    byte[] testsig = EncodingUtils.hexStringToByteArray(sig);
-		    byte[] hash = EncodingUtils.hexStringToByteArray(HMAC);
+		    byte[] testsig = Hex.decode(sig);
+		    byte[] hash = Hex.decode(HMAC);
 		    //Calculate the HMAC of the message and verify it is valid
 		    Mac mac = Mac.getInstance("HmacSHA256");
 			mac.init(secretkey);

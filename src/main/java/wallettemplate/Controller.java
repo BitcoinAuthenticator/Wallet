@@ -164,6 +164,7 @@ import javax.imageio.ImageIO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
@@ -1588,7 +1589,7 @@ public class Controller  extends BaseUI{
 						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
 						int index = ca.getKeyIndex();
 						ECKey key = Authenticator.getWalletOperation().getPubKeyFromAccount(accountID, HierarchyAddressTypes.External, index, false);
-						outPut = EncodingUtils.bytesToHex(key.getPubKey());
+						outPut = Hex.toHexString(key.getPubKey());
 					}
 					else
 					{
@@ -1605,8 +1606,8 @@ public class Controller  extends BaseUI{
 								keyIndex, 
 								true); // true cause its a P2SH address
 						
-						outPut = "Authenticator Pubkey: " + EncodingUtils.bytesToHex(authKey.getPubKey()) + "\n" + 
-								 "Wallet Pubkey: " + EncodingUtils.bytesToHex(walletKey.getPubKey());
+						outPut = "Authenticator Pubkey: " + Hex.toHexString(authKey.getPubKey()) + "\n" + 
+								 "Wallet Pubkey: " + Hex.toHexString(walletKey.getPubKey());
 					}
 					final Clipboard clipboard = Clipboard.getSystemClipboard();
 	                final ClipboardContent content = new ClipboardContent();

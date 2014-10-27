@@ -27,6 +27,7 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 
 import com.google.protobuf.ByteString;
+import com.subgraph.orchid.encoders.Hex;
 
 import wallettemplate.Main;
 import authenticator.Authenticator;
@@ -291,7 +292,7 @@ public class TCPListener extends BASE{
 							}
 							//
 							if(pendingReq == null){
-								SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+								SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
 								CannotProcessRequestPayload p = new CannotProcessRequestPayload("Cannot find pending request\nPlease resend operation",
 										secretkey);
 								outStream.writeInt(p.getPayloadSize());
@@ -327,7 +328,7 @@ public class TCPListener extends BASE{
 								// Complete Operation ?
 								switch(pendingReq.getOperationType()){
 								case SignAndBroadcastAuthenticatorTx:
-									byte[] txBytes = EncodingUtils.hexStringToByteArray(pendingReq.getRawTx());
+									byte[] txBytes = Hex.decode(pendingReq.getRawTx());
 									Transaction tx = new Transaction(wallet.getNetworkParams(),txBytes);
 									 
 									BAOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
@@ -424,6 +425,9 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean checkForOperationNetworkRequirements(BAOperation op){
+		if(vBANeworkInfo == null) // in case the setup process is not finished yet
+			return false;
+		
 		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.PORT_MAPPING.getValue()) > 0){
 			if(! vBANeworkInfo.PORT_FORWARDED || !vBANeworkInfo.SOCKET_OPERATIONAL){
 				return false;

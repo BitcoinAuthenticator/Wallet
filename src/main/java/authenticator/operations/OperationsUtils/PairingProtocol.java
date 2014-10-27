@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.spongycastle.util.encoders.Hex;
 
 import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.CryptoUtils;
@@ -94,7 +95,7 @@ public class PairingProtocol {
 	  
 	  SecretKey sharedsecret = CryptoUtils.generateNewSecretAESKey();
       byte[] raw = sharedsecret.getEncoded();
-      String key = EncodingUtils.bytesToHex(raw);
+      String key = Hex.toHexString(raw);
       
       // generate Authenticator's account number
       byte[] seed = wallet.getWalletSeedBytes(walletPW);
@@ -103,7 +104,7 @@ public class PairingProtocol {
       
 	  //Display a QR code for the user to scan
 	  PairingQRCode PairingQR = new PairingQRCode();
-	  byte[] qr = PairingQR.generateQRImageBytes(ip, localip, walletType, key, Integer.parseInt(args[3]), authWalletIndex);
+	  byte[] qr = PairingQR.generateQRImageBytes(ip, localip, args[0], walletType, key, Integer.parseInt(args[3]), authWalletIndex);
 	  Socket socket = dispalyQRAnListenForCommunication(qr,
 			  ss, 
 			  timeout, 
@@ -193,13 +194,13 @@ public class PairingProtocol {
 	  postUIStatusUpdate(listener, PairingStage.DECRYPTING_MESSAGE, null);
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
-	  String payload = EncodingUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
+	  String payload = Hex.toHexString(cipher.doFinal(cipherKeyBytes));
 	  return payload;
   }
   
   public JSONObject parseAndVerifyPayload(String payload, SecretKey sharedsecret, PairingStageUpdater listener) throws NoSuchAlgorithmException, InvalidKeyException, ParseException{
-	  byte[] testpayload = EncodingUtils.hexStringToByteArray(payload.substring(0,payload.length()-64));
-	  byte[] hash = EncodingUtils.hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
+	  byte[] testpayload = Hex.decode(payload.substring(0,payload.length()-64));
+	  byte[] hash = Hex.decode(payload.substring(payload.length()-64,payload.length()));
 	  Mac mac = Mac.getInstance("HmacSHA256");
 	  mac.init(sharedsecret);
 	  byte[] macbytes = mac.doFinal(testpayload);
@@ -224,11 +225,11 @@ public class PairingProtocol {
 	  
   }
   
-  private byte[] generateAuthenticatorsWalletIndex(byte[] seed, int walletIndex) {
+  public byte[] generateAuthenticatorsWalletIndex(byte[] seed, int walletIndex) {
 	MessageDigest md = null;
 	try {md = MessageDigest.getInstance("SHA-256");}
 	catch(NoSuchAlgorithmException e) {e.printStackTrace();} 
-	byte[] digest = md.digest((EncodingUtils.bytesToHex(seed) + "_" + Integer.toString(walletIndex)).getBytes());
+	byte[] digest = md.digest((Hex.toHexString(seed) + "_" + Integer.toString(walletIndex)).getBytes());
 	byte[] complete = new BigInteger(1, digest).toString(16).getBytes();
 	// copy the right most 31 bits
 	byte[] ret = new byte[4];

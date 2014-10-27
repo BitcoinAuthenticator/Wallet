@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
+import org.spongycastle.util.encoders.Hex;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
@@ -234,7 +235,7 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+							SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
 							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
 							
 							//Break apart the signature array sent over from the authenticator

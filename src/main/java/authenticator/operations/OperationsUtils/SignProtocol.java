@@ -17,6 +17,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
+import org.spongycastle.util.encoders.Hex;
 
 import authenticator.Authenticator;
 import authenticator.GCM.dispacher.Device;
@@ -91,7 +92,7 @@ public class SignProtocol {
 						;
 		byte[] jsonBytes = signMsgPayload.serializeToBytes();
 		
-		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+		SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
 		return CryptoUtils.encryptPayloadWithChecksum(jsonBytes, secretkey);
 	}
 
@@ -113,8 +114,8 @@ public class SignProtocol {
 	 {
 		try{
 			//Prep the keys needed for signing
-			byte[] key = EncodingUtils.hexStringToByteArray(po.getMasterPublicKey());
-			byte[] chain = EncodingUtils.hexStringToByteArray(po.getChainCode());
+			byte[] key = Hex.decode(po.getMasterPublicKey());
+			byte[] chain = Hex.decode(po.getChainCode());
 			
 			//Loop to create a signature for each input
 			int i = 0;							
@@ -176,7 +177,7 @@ public class SignProtocol {
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
-		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");						
+		SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");						
 		PairedAuthenticator  po = wallet.getPairingObject(pairingID);
 		byte[] gcmID = po.getGCM().getBytes();
 		assert(gcmID != null);
