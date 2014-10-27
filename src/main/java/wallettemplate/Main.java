@@ -27,20 +27,32 @@ import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.utils.BriefLogFormatter;
 import org.bitcoinj.utils.Threading;
+import org.bouncycastle.math.ec.ECPoint;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import com.vinumeris.updatefx.AppDirectory;
+import com.vinumeris.updatefx.Crypto;
 import com.vinumeris.updatefx.UpdateFX;
+import com.vinumeris.updatefx.UpdateSummary;
+import com.vinumeris.updatefx.Updater;
 
+import javafx.geometry.Pos;
 import javafx.application.Platform;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -69,7 +81,9 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,8 +116,56 @@ public class Main extends BAApplication {
 	  */
 	 public static boolean UI_ONLY_IS_WALLET_LOCKED = true;
 
-    @Override
-    public void start(Stage mainWindow) {
+    @SuppressWarnings("restriction")
+	@Override
+    public void start(Stage mainWindow) throws IOException {
+    	// For some reason the JavaFX launch process results in us losing the thread context class loader: reset it.
+        Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
+        // Must be done twice for the times when we come here via realMain.
+        // We want to store updates in our app dir so must init that here.
+        AppDirectory.initAppDir(updateFxAppParams.getAppName());
+        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updated"));
+
+        ProgressIndicator indicator = showGiantProgressWheel(mainWindow);
+
+        List<ECPoint> pubkeys = Crypto.decode("03BAB59EBCF0943981B2AA4EC05FA87915386BB59D60E67C5370977AED00D9E0DF");
+        Updater updater = new Updater("http://localhost:8000/", "ExampleApp/" + updateFxAppParams.APP_VERSION, updateFxAppParams.APP_VERSION,
+                AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
+                pubkeys, 1) {
+            @Override
+            protected void updateProgress(long workDone, long max) {
+                super.updateProgress(workDone, max);
+                // Give UI a chance to show.
+                Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
+            }
+        };
+
+        indicator.progressProperty().bind(updater.progressProperty());
+
+        updater.setOnSucceeded(event -> {
+            try {
+                UpdateSummary summary = updater.get();
+                if (summary.descriptions.size() > 0) {
+                    // ??
+                }
+                if (summary.newVersion > updateFxAppParams.APP_VERSION) {
+                    //??
+                    if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
+                        UpdateFX.restartApp();
+                }
+            } catch (Throwable e) {
+               e.printStackTrace();
+            }
+        });
+
+        indicator.setOnMouseClicked(ev -> UpdateFX.restartApp());
+
+        new Thread(updater, "UpdateFX Thread").start();
+
+        mainWindow.show();
+    }
+    
+    public void realStart(Stage mainWindow) {
         instance = this;
         // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
         GuiUtils.handleCrashesOnThisThread();
@@ -125,6 +187,27 @@ public class Main extends BAApplication {
 	            else 
 	            	Runtime.getRuntime().exit(0);
 	        }
+    }
+    
+    private ProgressIndicator showGiantProgressWheel(Stage stage) {
+        ProgressIndicator indicator = new ProgressIndicator();
+        BorderPane borderPane = new BorderPane(indicator);
+        borderPane.setMinWidth(640);
+        borderPane.setMinHeight(480);
+        Button pinButton = new Button();
+        pinButton.setText("Pin to version 1");
+        pinButton.setOnAction(event -> {
+            UpdateFX.pinToVersion(AppDirectory.dir(), 1);
+            UpdateFX.restartApp();
+        });
+        HBox box = new HBox(new Label("Version " + "TEST"), pinButton);
+        box.setSpacing(10);
+        box.setAlignment(Pos.CENTER_LEFT);
+        box.setPadding(new Insets(10));
+        borderPane.setTop(box);
+        Scene scene = new Scene(borderPane);
+        stage.setScene(scene);
+        return indicator;
     }
 
     @SuppressWarnings("restriction")
@@ -457,15 +540,16 @@ public class Main extends BAApplication {
     	}
     }
 
+    static BAApplicationParameters updateFxAppParams = null;
     public static void main(String[] args) throws IOException, WrongOperatingSystemException {
     	/*
     	 * We create a BAApplicationParameters instance to get the app data folder
     	 */
-    	BAApplicationParameters appParams = new BAApplicationParameters(null, Arrays.asList(args));
+    	updateFxAppParams = new BAApplicationParameters(null, Arrays.asList(args));
     	
         // We want to store updates in our app dir so must init that here.
-        AppDirectory.initAppDir(appParams.getAppName());
-        AppDirectory.overrideAppDir(Paths.get(appParams.getApplicationDataFolderAbsolutePath(), "updated"));
+        AppDirectory.initAppDir(updateFxAppParams.getAppName());
+        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updated"));
         
         // re-enter at realMain, but possibly running a newer version of the software i.e. after this point the
         // rest of this code may be ignored.
