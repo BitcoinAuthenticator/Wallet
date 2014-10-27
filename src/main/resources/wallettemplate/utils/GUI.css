@@ -380,7 +380,7 @@
 }
 
 .tab:focused {
-	-fx-background-color:transparent;
+	-fx-focus-color: transparent;
 }
 
 .tab .tab-label { 

@@ -203,6 +203,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnBackFromSetPasswordAfterRestore;
 	@FXML private Button btnContinueAfterSetPasswordAfterRestore;
 	@FXML private Button btnPlayStore;
+	@FXML private Button btnStandard;
 	@FXML private Label lblMinimize;
 	@FXML private Label lblClose;
 	@FXML private Button btnDone;
@@ -212,6 +213,8 @@ public class StartupController  extends BaseUI{
 	@FXML private PasswordField txRestorePW1;
 	@FXML private PasswordField txRestorePW2;
 	@FXML private Label lblSeed;
+	@FXML private Label lbld1;
+	@FXML private Label lbld2;
 	@FXML private CheckBox ckSeed;
 	@FXML private Button btnSave;
 	@FXML private CheckBox chkTestNet;
@@ -233,6 +236,7 @@ public class StartupController  extends BaseUI{
 	@FXML private ProgressBar syncProgress;
 	@FXML private Label lblRestoreProcessStatus;
 	@FXML private Label lblScan;
+	@FXML private Label lbl2fa;
 	@FXML private TextField lblSeedRestorer;
 	@FXML private DatePicker seedCreationDatePicker;
 	
@@ -715,10 +719,14 @@ public class StartupController  extends BaseUI{
 			 BA4.setVisible(true);
 			 ivFirstAccountPairingQR.setVisible(true);
 			 Animation ani2 = GuiUtils.fadeOut(btnContinue3);
-			 GuiUtils.fadeIn(hlFinished);
-			 hlFinished.setVisible(true);
+			 GuiUtils.fadeIn(btnStandard);
+			 btnStandard.setVisible(true);
+			 lbl2fa.setText("Choose Account Type");
+			 //hlFinished.setVisible(true);
 			 btnContinue3.setVisible(false);
-			 lblScan.setVisible(true);
+			 //lblScan.setVisible(true);
+			 lbld1.setVisible(true);
+			 lbld2.setVisible(true);
 			 btnPlayStore.setVisible(false);
 			 btnBack5.setDisable(true);
 			 lblLoadginQR.setVisible(true);
