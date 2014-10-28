@@ -116,19 +116,30 @@ public class Main extends BAApplication {
 	  */
 	 public static boolean UI_ONLY_IS_WALLET_LOCKED = true;
 
+	 public static boolean isFirstLoad = true;
     @SuppressWarnings("restriction")
 	@Override
-    public void start(Stage mainWindow) throws IOException {
+    public void start(Stage mainWindow) throws IOException, WrongOperatingSystemException {
+    	System.out.println("is first load ? " + (isFirstLoad==true? "true":"false"));
+    	if(!isFirstLoad) {
+    		realStart(mainWindow);
+    		return;
+    	}
     	// For some reason the JavaFX launch process results in us losing the thread context class loader: reset it.
         Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
         // Must be done twice for the times when we come here via realMain.
         // We want to store updates in our app dir so must init that here.
+        /*
+    	 * We create a BAApplicationParameters instance to get the app data folder
+    	 */
+    	BAApplicationParameters updateFxAppParams = new BAApplicationParameters(null, null);
+        // We want to store updates in our app dir so must init that here.
         AppDirectory.initAppDir(updateFxAppParams.getAppName());
-        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updated"));
+        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updates"));
 
         ProgressIndicator indicator = showGiantProgressWheel(mainWindow);
 
-        List<ECPoint> pubkeys = Crypto.decode("03BAB59EBCF0943981B2AA4EC05FA87915386BB59D60E67C5370977AED00D9E0DF");
+        List<ECPoint> pubkeys = Crypto.decode("02B027C57AD33DC1A3C0A634E21093F05290C0C07527F4930B4B6F8164BFCD80CF");
         Updater updater = new Updater("http://localhost:8000/", "ExampleApp/" + updateFxAppParams.APP_VERSION, updateFxAppParams.APP_VERSION,
                 AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
                 pubkeys, 1) {
@@ -146,13 +157,18 @@ public class Main extends BAApplication {
             try {
                 UpdateSummary summary = updater.get();
                 if (summary.descriptions.size() > 0) {
-                    // ??
+                    System.out.println("summary.descriptions.size() > 0");
                 }
                 if (summary.newVersion > updateFxAppParams.APP_VERSION) {
-                    //??
+                	System.out.println("summary.newVersion > updateFxAppParams.APP_VERSION");
                     if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
                         UpdateFX.restartApp();
+                }else {
+                	System.out.println("best verison");
+                	UpdateFX.restartApp();
                 }
+                isFirstLoad = false;
+                
             } catch (Throwable e) {
                e.printStackTrace();
             }
@@ -189,7 +205,8 @@ public class Main extends BAApplication {
 	        }
     }
     
-    private ProgressIndicator showGiantProgressWheel(Stage stage) {
+    @SuppressWarnings("restriction")
+	private ProgressIndicator showGiantProgressWheel(Stage stage) {
         ProgressIndicator indicator = new ProgressIndicator();
         BorderPane borderPane = new BorderPane(indicator);
         borderPane.setMinWidth(640);
@@ -200,7 +217,7 @@ public class Main extends BAApplication {
             UpdateFX.pinToVersion(AppDirectory.dir(), 1);
             UpdateFX.restartApp();
         });
-        HBox box = new HBox(new Label("Version " + "TEST"), pinButton);
+        HBox box = new HBox(new Label("Version " + BAApplicationParameters.APP_VERSION), pinButton);
         box.setSpacing(10);
         box.setAlignment(Pos.CENTER_LEFT);
         box.setPadding(new Insets(10));
@@ -540,25 +557,23 @@ public class Main extends BAApplication {
     	}
     }
 
-    static BAApplicationParameters updateFxAppParams = null;
     public static void main(String[] args) throws IOException, WrongOperatingSystemException {
     	/*
     	 * We create a BAApplicationParameters instance to get the app data folder
     	 */
-    	updateFxAppParams = new BAApplicationParameters(null, Arrays.asList(args));
+    	BAApplicationParameters updateFxAppParams = new BAApplicationParameters(null, Arrays.asList(args));
     	
         // We want to store updates in our app dir so must init that here.
         AppDirectory.initAppDir(updateFxAppParams.getAppName());
-        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updated"));
+        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updates"));
         
         // re-enter at realMain, but possibly running a newer version of the software i.e. after this point the
         // rest of this code may be ignored.
         UpdateFX.bootstrap(Main.class, AppDirectory.dir(), args);
-        
-        // version 3
     }
 
-    public static void realMain(String[] args) {
+    @SuppressWarnings("restriction")
+	public static void realMain(String[] args) {
         launch(args);
     }
     

@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  */
 public class BAApplicationParameters{
-	final static public int APP_VERSION = 1; // 0.1
+	final static public int APP_VERSION = 1; 
 	
 	NetworkType bitcoinNetworkType;
 	
@@ -231,6 +231,12 @@ public class BAApplicationParameters{
 		File f2 = new File(getApplicationDataFolderAbsolutePath() + "cached_resources");
 		if (!(f2.exists() && f2.isDirectory())) {
 		   f2.mkdir();
+		}
+		
+		// check updates exists
+		File f3 = new File(getApplicationDataFolderAbsolutePath() + "updates");
+		if (!(f3.exists() && f3.isDirectory())) {
+		   f3.mkdir();
 		}
 	}
 	
