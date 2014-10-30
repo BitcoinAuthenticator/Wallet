@@ -265,6 +265,15 @@
             </Button>
           </children>
         </HBox>
+        <HBox fx:id="dateTimeHBox" layoutX="126.0" layoutY="55.0" prefHeight="51.0" prefWidth="337.0">
+          <children>
+            <Label fx:id="lblDateAndTime" prefHeight="25.0" prefWidth="252.9999000000025" text="" textFill="#4b698f">
+              <font>
+                <Font size="15.0" />
+              </font>
+            </Label>
+          </children>
+        </HBox>
         <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="150.0" style="-fx-text-fill: #98d947;" text="0.000000 BTC">
           <font>
             <Font size="14.0" fx:id="x2" />

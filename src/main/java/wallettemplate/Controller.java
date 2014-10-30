@@ -146,8 +146,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -179,6 +181,7 @@ import static wallettemplate.utils.GuiUtils.informationalAlert;
 public class Controller  extends BaseUI{
 	 @FXML private Label lblMinimize;
 	 @FXML private Label lblClose;
+	 @FXML private Label lblDateAndTime;
 	 @FXML private Button btnOverview_white;
 	 @FXML private Button btnOverview_grey;
 	 @FXML private Button btnSend_white;
@@ -364,6 +367,22 @@ public class Controller  extends BaseUI{
 		
 		// wallet lock/ unlock
 		Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
+		
+		// date and time label
+		final DateFormat format = DateFormat.getInstance();  
+		final Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {  
+		     @Override  
+		     public void handle(ActionEvent event) {  
+		    	 Platform.runLater(() -> { 
+		    		 final Calendar cal = Calendar.getInstance();  
+		    		 String txt = format.format(cal.getTime());
+			         lblDateAndTime.setText(txt);  
+		    	 });
+		     }  
+		}));  
+		timeline.setCycleCount(Animation.INDEFINITE);  
+		timeline.play();  
+		 
     }
     
     /**
