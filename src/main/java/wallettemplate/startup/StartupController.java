@@ -1352,6 +1352,7 @@ public class StartupController  extends BaseUI{
 			public void onProgress(double pct, int blocksSoFar, Date date) {
 				float completion = (float) (pct / 100.0);
 				Platform.runLater(() -> syncProgress.setProgress(completion));
+				
 			}
 
 			@Override
