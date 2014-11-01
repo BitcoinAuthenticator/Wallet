@@ -23,6 +23,7 @@ import com.google.common.base.Joiner;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
 import authenticator.Authenticator;
+import authenticator.Utils.FileUtils;
 import authenticator.Utils.CurrencyConverter.Currency;
 import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
@@ -42,7 +43,6 @@ import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import wallettemplate.ControllerHelpers.AsyncTask;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.BaseUI;
-import wallettemplate.utils.FileUtils;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 import wallettemplate.utils.TextUtils;

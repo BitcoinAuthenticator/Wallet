@@ -1,4 +1,4 @@
-package wallettemplate.utils;
+package authenticator.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,13 +12,20 @@ import java.util.zip.ZipOutputStream;
 public class FileUtils {
 	public static class ZipHelper  
 	{
-	    public static  boolean zipDir(String dirName, String nameZipFile) {
+		/**
+		 * Takes as arguments a normal directory and returns True if successfully created a zip file in the destination path
+		 * 
+		 * @param srcDirPath
+		 * @param destZipFolderPath
+		 * @return
+		 */
+	    public static boolean zipDir(String srcDirPath, String destZipFilePath) {
 	    	try {
 	    		ZipOutputStream zip = null;
 		        FileOutputStream fW = null;
-		        fW = new FileOutputStream(nameZipFile);
+		        fW = new FileOutputStream(destZipFilePath);
 		        zip = new ZipOutputStream(fW);
-		        addFolderToZip("", dirName, zip);
+		        addFolderToZip("", srcDirPath, zip);
 		        zip.close();
 		        fW.close();
 		        return true;
@@ -29,26 +36,33 @@ public class FileUtils {
 	    	}
 	    }
 	    
-	    static public boolean unZip(String zipFile, String outputFolder) {
+	    /**
+	     * Takes as arguments a zip file and returns True if successfully extracted the zip file into the destination folder
+	     * 
+	     * @param srcZipFilePath
+	     * @param destDirPath
+	     * @return
+	     */
+	    static public boolean unZip(String srcZipFilePath, String destDirPath) {
 	        byte[] buffer = new byte[1024];
 	        try{
 	    
 		       	//create output directory is not exists
-		       	File folder = new File(outputFolder);
+		       	File folder = new File(destDirPath);
 		       	if(!folder.exists()){
 		       		folder.mkdir();
 		       	}
 		    
 		       	//get the zip file content
 		       	ZipInputStream zis = 
-		       		new ZipInputStream(new FileInputStream(zipFile));
+		       		new ZipInputStream(new FileInputStream(srcZipFilePath));
 		       	//get the zipped file list entry
 		       	ZipEntry ze = zis.getNextEntry();
 		    
 		       	while(ze!=null){
 		    
 		       	   String fileName = ze.getName();
-		              File newFile = new File(outputFolder + File.separator + fileName);
+		              File newFile = new File(destDirPath + File.separator + fileName);
 		    		    
 		               //create all non exists folders
 		               //else you will hit FileNotFoundException for compressed folder
@@ -80,6 +94,14 @@ public class FileUtils {
 		       }
 	    }  
 
+	    /**
+	     * add a folder with all its content into the zip stream
+	     * 
+	     * @param path
+	     * @param srcFolder
+	     * @param zip
+	     * @throws IOException
+	     */
 	    private static void addFolderToZip(String path, String srcFolder, ZipOutputStream zip) throws IOException {
 	        File folder = new File(srcFolder);
 	        if (folder.list().length == 0) {
@@ -97,6 +119,15 @@ public class FileUtils {
 	        }
 	    }
 
+	    /**
+	     * add a file to the zip stream
+	     * 
+	     * @param path
+	     * @param srcFile
+	     * @param zip
+	     * @param flag
+	     * @throws IOException
+	     */
 	    private static void addFileToZip(String path, String srcFile, ZipOutputStream zip, boolean flag) throws IOException {
 	        File folder = new File(srcFile);
 	        if (flag) {

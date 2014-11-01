@@ -42,7 +42,6 @@ import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
 import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
-import wallettemplate.utils.FileUtils;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.ImageUtils;
 import wallettemplate.utils.dialogs.BADialog;
@@ -56,6 +55,7 @@ import authenticator.BipSSS.BipSSS.InvalidContentTypeException;
 import authenticator.BipSSS.BipSSS.NotEnoughSharesException;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
+import authenticator.Utils.FileUtils;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.network.BANetworkInfo;
@@ -1352,6 +1352,7 @@ public class StartupController  extends BaseUI{
 			public void onProgress(double pct, int blocksSoFar, Date date) {
 				float completion = (float) (pct / 100.0);
 				Platform.runLater(() -> syncProgress.setProgress(completion));
+				
 			}
 
 			@Override
