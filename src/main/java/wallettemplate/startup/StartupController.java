@@ -1459,7 +1459,7 @@ public class StartupController  extends BaseUI{
 			public void onAuthenticatorNetworkStatusChange(BANetworkInfo info) {
 				Platform.runLater(() -> {
 					if(info.PORT_FORWARDED == false)
-						BADialog.info(Main.class, "Warning !", "UPnP was unable to map your port. You may need to manually set up port forwarding in your router to commuincate with the Bitcoin Authenticator Android app").show();
+						BADialog.info(Main.class, "Warning !", "We were unable to map your port using Universal Plug and Play. If you plan to use this wallet with the Bitcoin Authenticator Android app, you can still use it over your local WiFi network. However, to use it over 3G/4G you will need to manually configure port forwarding in your router. ").show();
 	            });
 			}
 		});

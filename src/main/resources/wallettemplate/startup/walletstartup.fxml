@@ -178,7 +178,13 @@
         <Hyperlink fx:id="hlFinished" layoutX="225.0" layoutY="335.0" onAction="#finished" text="I will set up 2FA later" visible="false" />
         <Label fx:id="lbld1" layoutX="89.0" layoutY="60.0" prefHeight="74.0" prefWidth="182.0" text="Scan QR code to set up 2-factor authentication and use multisig addresses." visible="false" wrapText="true" />
         <Label fx:id="lbld2" layoutX="391.0" layoutY="77.0" prefHeight="40.0" prefWidth="146.0" text="Or click below to use standard addresses." visible="false" wrapText="true" />
-        <Button fx:id="btnStandard" layoutX="373.0" layoutY="126.0" mnemonicParsing="false" onAction="#finished" prefHeight="182.0" prefWidth="182.0" text="Continue with standard addresses" textAlignment="CENTER" visible="false" wrapText="true" />
+        <Button fx:id="btnStandard" layoutX="373.0" layoutY="126.0" mnemonicParsing="false" onAction="#finished" prefHeight="182.0" prefWidth="182.0" text="" textAlignment="CENTER" visible="false" wrapText="true" >
+      	 <graphic>
+            <ImageView fitHeight="114.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnP2KH.png" />
+            </ImageView>
+         </graphic>
+         </Button>
       </children>
     </Pane>
     <!--

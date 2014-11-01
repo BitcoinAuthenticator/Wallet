@@ -6,11 +6,11 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import org.bitlet.weupnp.GatewayDevice;
-import org.bitlet.weupnp.GatewayDiscover;
-import org.bitlet.weupnp.PortMappingEntry;
 import org.xml.sax.SAXException;
 
+import weupnp.src.main.java.org.bitlet.weupnp.GatewayDevice;
+import weupnp.src.main.java.org.bitlet.weupnp.GatewayDiscover;
+import weupnp.src.main.java.org.bitlet.weupnp.PortMappingEntry;
 import authenticator.BASE;
 
 /**
