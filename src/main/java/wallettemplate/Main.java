@@ -116,117 +116,6 @@ public class Main extends BAApplication {
 	  */
 	 public static boolean UI_ONLY_IS_WALLET_LOCKED = true;
 
-	 public static boolean isFirstLoad = true;
-    @SuppressWarnings("restriction")
-	@Override
-    public void start(Stage mainWindow) throws IOException, WrongOperatingSystemException {
-    	System.out.println("is first load ? " + (isFirstLoad==true? "true":"false"));
-    	if(!isFirstLoad) {
-    		realStart(mainWindow);
-    		return;
-    	}
-    	// For some reason the JavaFX launch process results in us losing the thread context class loader: reset it.
-        Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
-        // Must be done twice for the times when we come here via realMain.
-        // We want to store updates in our app dir so must init that here.
-        /*
-    	 * We create a BAApplicationParameters instance to get the app data folder
-    	 */
-    	BAApplicationParameters updateFxAppParams = new BAApplicationParameters(null, null);
-        // We want to store updates in our app dir so must init that here.
-        AppDirectory.initAppDir(updateFxAppParams.getAppName());
-        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updates"));
-
-        ProgressIndicator indicator = showGiantProgressWheel(mainWindow);
-
-        List<ECPoint> pubkeys = Crypto.decode("02B027C57AD33DC1A3C0A634E21093F05290C0C07527F4930B4B6F8164BFCD80CF");
-        Updater updater = new Updater("http://localhost:8000/", "ExampleApp/" + updateFxAppParams.APP_VERSION, updateFxAppParams.APP_VERSION,
-                AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
-                pubkeys, 1) {
-            @Override
-            protected void updateProgress(long workDone, long max) {
-                super.updateProgress(workDone, max);
-                // Give UI a chance to show.
-                Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
-            }
-        };
-
-        indicator.progressProperty().bind(updater.progressProperty());
-
-        updater.setOnSucceeded(event -> {
-            try {
-                UpdateSummary summary = updater.get();
-                if (summary.descriptions.size() > 0) {
-                    System.out.println("summary.descriptions.size() > 0");
-                }
-                if (summary.newVersion > updateFxAppParams.APP_VERSION) {
-                	System.out.println("summary.newVersion > updateFxAppParams.APP_VERSION");
-                    if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
-                        UpdateFX.restartApp();
-                }else {
-                	System.out.println("best verison");
-                	UpdateFX.restartApp();
-                }
-                isFirstLoad = false;
-                
-            } catch (Throwable e) {
-               e.printStackTrace();
-            }
-        });
-
-        indicator.setOnMouseClicked(ev -> UpdateFX.restartApp());
-
-        new Thread(updater, "UpdateFX Thread").start();
-
-        mainWindow.show();
-    }
-    
-    public void realStart(Stage mainWindow) {
-        instance = this;
-        // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
-        GuiUtils.handleCrashesOnThisThread();
-        
-        UI_ONLY_WALLET_PW = new BAPassword();
-        
-        
-	        try {
-	        	if(super.BAInit()) {
-	        		System.out.println(toString());
-	            	init(mainWindow);
-	        	}
-	        	else
-	            	Runtime.getRuntime().exit(0);
-	        } catch (Exception t) {
-	            if(t instanceof WrongOperatingSystemException)
-	            	GuiUtils.informationalAlert("Error", "Could not find an appropriate OS");
-	            
-	            else 
-	            	Runtime.getRuntime().exit(0);
-	        }
-    }
-    
-    @SuppressWarnings("restriction")
-	private ProgressIndicator showGiantProgressWheel(Stage stage) {
-        ProgressIndicator indicator = new ProgressIndicator();
-        BorderPane borderPane = new BorderPane(indicator);
-        borderPane.setMinWidth(640);
-        borderPane.setMinHeight(480);
-        Button pinButton = new Button();
-        pinButton.setText("Pin to version 1");
-        pinButton.setOnAction(event -> {
-            UpdateFX.pinToVersion(AppDirectory.dir(), 1);
-            UpdateFX.restartApp();
-        });
-        HBox box = new HBox(new Label("Version " + BAApplicationParameters.APP_VERSION), pinButton);
-        box.setSpacing(10);
-        box.setAlignment(Pos.CENTER_LEFT);
-        box.setPadding(new Insets(10));
-        borderPane.setTop(box);
-        Scene scene = new Scene(borderPane);
-        stage.setScene(scene);
-        return indicator;
-    }
-
     @SuppressWarnings("restriction")
 	private void init(Stage mainWindow) {
     	try {
@@ -577,4 +466,117 @@ public class Main extends BAApplication {
         launch(args);
     }
     
+    @SuppressWarnings("restriction")
+	@Override
+    public void start(Stage mainWindow) throws IOException, WrongOperatingSystemException {
+    	/**
+    	 * Entry point for the remote update UI.
+    	 */
+    	
+    	// For some reason the JavaFX launch process results in us losing the thread context class loader: reset it.
+        Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
+        // Must be done twice for the times when we come here via realMain.
+        // We want to store updates in our app dir so must init that here.
+        /*
+    	 * We create a BAApplicationParameters instance to get the app data folder
+    	 */
+    	BAApplicationParameters updateFxAppParams = new BAApplicationParameters(null, null);
+        // We want to store updates in our app dir so must init that here.
+        AppDirectory.initAppDir(updateFxAppParams.getAppName());
+        AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updates"));
+
+        Stage downloadUpdatesStage = new Stage();
+        ProgressIndicator indicator = showGiantProgressWheel(downloadUpdatesStage);
+
+        List<ECPoint> pubkeys = Crypto.decode("03D862C94F031037DF0AE56603092990D623BAAB0811953134569ACD5AC7CFBAB2");
+        Updater updater = new Updater("http://localhost:8000/", "ExampleApp/" + updateFxAppParams.APP_VERSION, updateFxAppParams.APP_VERSION,
+                AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
+                pubkeys, 1) {
+            @Override
+            protected void updateProgress(long workDone, long max) {
+                super.updateProgress(workDone, max);
+                // Give UI a chance to show.
+                Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
+            }
+        };
+
+        indicator.progressProperty().bind(updater.progressProperty());
+
+        updater.setOnSucceeded(event -> {
+            try {
+                UpdateSummary summary = updater.get();
+//                if (summary.descriptions.size() > 0) {
+//                    System.out.println("summary.descriptions.size() > 0");
+//                }
+                if (summary.newVersion > updateFxAppParams.APP_VERSION) {
+                	System.out.println("Restarting the app to load the new version");
+                    if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
+                        UpdateFX.restartApp();
+                }else {
+                	System.out.println("Loaded best version, starting wallet ...");
+                	downloadUpdatesStage.close();
+                	realStart(mainWindow);
+                }                
+            } catch (Throwable e) {
+               e.printStackTrace();
+            }
+        });
+        
+        updater.setOnFailed(event -> {
+        	System.out.println("Update error: " + updater.getException());
+            updater.getException().printStackTrace();
+        });
+
+        indicator.setOnMouseClicked(ev -> UpdateFX.restartApp());
+
+        new Thread(updater, "UpdateFX Thread").start();
+
+        downloadUpdatesStage.show();
+    }
+    
+    public void realStart(Stage mainWindow) {
+        instance = this;
+        // Show the crash dialog for any exceptions that we don't handle and that hit the main loop.
+        GuiUtils.handleCrashesOnThisThread();
+        
+        UI_ONLY_WALLET_PW = new BAPassword();
+        
+        
+	        try {
+	        	if(super.BAInit()) {
+	        		System.out.println(toString());
+	            	init(mainWindow);
+	        	}
+	        	else
+	            	Runtime.getRuntime().exit(0);
+	        } catch (Exception t) {
+	            if(t instanceof WrongOperatingSystemException)
+	            	GuiUtils.informationalAlert("Error", "Could not find an appropriate OS");
+	            
+	            else 
+	            	Runtime.getRuntime().exit(0);
+	        }
+    }
+    
+    @SuppressWarnings("restriction")
+	private ProgressIndicator showGiantProgressWheel(Stage stage) {
+        ProgressIndicator indicator = new ProgressIndicator();
+        BorderPane borderPane = new BorderPane(indicator);
+        borderPane.setMinWidth(640);
+        borderPane.setMinHeight(480);
+        Button pinButton = new Button();
+        pinButton.setText("Pin to version 1");
+        pinButton.setOnAction(event -> {
+            UpdateFX.pinToVersion(AppDirectory.dir(), 1);
+            UpdateFX.restartApp();
+        });
+        HBox box = new HBox(new Label("Version " + BAApplicationParameters.APP_VERSION), pinButton);
+        box.setSpacing(10);
+        box.setAlignment(Pos.CENTER_LEFT);
+        box.setPadding(new Insets(10));
+        borderPane.setTop(box);
+        Scene scene = new Scene(borderPane);
+        stage.setScene(scene);
+        return indicator;
+    }
 }
