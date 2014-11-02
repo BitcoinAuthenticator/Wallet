@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  */
 public class BAApplicationParameters{
-	final static public int APP_VERSION = 4; 
+	final static public int APP_VERSION = 2; 
 	
 	NetworkType bitcoinNetworkType;
 	
