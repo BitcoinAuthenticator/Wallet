@@ -49,6 +49,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -62,6 +63,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import wallettemplate.RemoteUpdateWindow.RemoteUpdateWindowListener;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
@@ -461,12 +463,10 @@ public class Main extends BAApplication {
         UpdateFX.bootstrap(Main.class, AppDirectory.dir(), args);
     }
 
-    @SuppressWarnings("restriction")
 	public static void realMain(String[] args) {
         launch(args);
     }
     
-    @SuppressWarnings("restriction")
 	@Override
     public void start(Stage mainWindow) throws IOException, WrongOperatingSystemException {
     	/**
@@ -485,11 +485,10 @@ public class Main extends BAApplication {
         AppDirectory.initAppDir(updateFxAppParams.getAppName());
         AppDirectory.overrideAppDir(Paths.get(updateFxAppParams.getApplicationDataFolderAbsolutePath(), "updates"));
 
-        Stage downloadUpdatesStage = new Stage();
-        ProgressIndicator indicator = showGiantProgressWheel(downloadUpdatesStage);
+        ProgressBar indicator = showUpdateDownloadProgressBar();
 
         List<ECPoint> pubkeys = Crypto.decode("03D862C94F031037DF0AE56603092990D623BAAB0811953134569ACD5AC7CFBAB2");
-        Updater updater = new Updater("http://localhost:8000/", "ExampleApp/" + updateFxAppParams.APP_VERSION, updateFxAppParams.APP_VERSION,
+        Updater updater = new Updater("http://localhost:1234/", "ExampleApp/" + updateFxAppParams.APP_VERSION, updateFxAppParams.APP_VERSION,
                 AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
                 pubkeys, 1) {
             @Override
@@ -505,16 +504,13 @@ public class Main extends BAApplication {
         updater.setOnSucceeded(event -> {
             try {
                 UpdateSummary summary = updater.get();
-//                if (summary.descriptions.size() > 0) {
-//                    System.out.println("summary.descriptions.size() > 0");
-//                }
                 if (summary.newVersion > updateFxAppParams.APP_VERSION) {
                 	System.out.println("Restarting the app to load the new version");
                     if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
                         UpdateFX.restartApp();
                 }else {
                 	System.out.println("Loaded best version, starting wallet ...");
-                	downloadUpdatesStage.close();
+                	donwloadUpdatesWindow.close();
                 	realStart(mainWindow);
                 }                
             } catch (Throwable e) {
@@ -525,13 +521,22 @@ public class Main extends BAApplication {
         updater.setOnFailed(event -> {
         	System.out.println("Update error: " + updater.getException());
             updater.getException().printStackTrace();
+            
+            // load the wallet without applying updates
+            Platform.runLater(() -> { 
+            	donwloadUpdatesWindow.setToFailedConnectionMode("Failed To Connect/ download from server");
+            	donwloadUpdatesWindow.setListener(new RemoteUpdateWindowListener() {
+					@Override
+					public void UserPressedOk(RemoteUpdateWindow window) {
+						realStart(mainWindow);
+					}
+            	});
+            });
         });
 
         indicator.setOnMouseClicked(ev -> UpdateFX.restartApp());
 
-        new Thread(updater, "UpdateFX Thread").start();
-
-        downloadUpdatesStage.show();
+        new Thread(updater, "UpdateFX Thread").start();        
     }
     
     public void realStart(Stage mainWindow) {
@@ -559,24 +564,10 @@ public class Main extends BAApplication {
     }
     
     @SuppressWarnings("restriction")
-	private ProgressIndicator showGiantProgressWheel(Stage stage) {
-        ProgressIndicator indicator = new ProgressIndicator();
-        BorderPane borderPane = new BorderPane(indicator);
-        borderPane.setMinWidth(640);
-        borderPane.setMinHeight(480);
-        Button pinButton = new Button();
-        pinButton.setText("Pin to version 1");
-        pinButton.setOnAction(event -> {
-            UpdateFX.pinToVersion(AppDirectory.dir(), 1);
-            UpdateFX.restartApp();
-        });
-        HBox box = new HBox(new Label("Version " + BAApplicationParameters.APP_VERSION), pinButton);
-        box.setSpacing(10);
-        box.setAlignment(Pos.CENTER_LEFT);
-        box.setPadding(new Insets(10));
-        borderPane.setTop(box);
-        Scene scene = new Scene(borderPane);
-        stage.setScene(scene);
-        return indicator;
+    RemoteUpdateWindow donwloadUpdatesWindow;
+	private ProgressBar showUpdateDownloadProgressBar() {
+		donwloadUpdatesWindow = new RemoteUpdateWindow(Main.class);
+		donwloadUpdatesWindow.show();
+        return donwloadUpdatesWindow.getProgressBar();
     }
 }

@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  */
 public class BAApplicationParameters{
-	final static public int APP_VERSION = 1; 
+	final static public int APP_VERSION = 4; 
 	
 	NetworkType bitcoinNetworkType;
 	
@@ -99,7 +99,7 @@ public class BAApplicationParameters{
 			setNetworkPort(value);
 		}
 		else
-			setNetworkPort(1234);
+			// keep default
 		
 		//App Name
 		if(getBitcoinNetworkType() == NetworkType.TEST_NET){
@@ -154,7 +154,7 @@ public class BAApplicationParameters{
 				{"--help","Print Help"},
 				{"--testnet"			,"If =true will use testnet parameters, else mainnet parameters"},
 				{"--testermode"			,"Testing mode, if true will not send bitcoins. False by default"},
-				{"--port"				,"Port Number, default is 1234"}
+				{"--port"				,"Port Number, default is 8222"}
 		};
 		
 		String ret = "";
