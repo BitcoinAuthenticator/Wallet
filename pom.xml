@@ -110,6 +110,12 @@
             <artifactId>webcam-capture</artifactId>
             <version>0.3.10</version>
         </dependency>
+        <!-- UPNP -->
+        <dependency>
+            <groupId>org.bitlet</groupId>
+            <artifactId>weupnp</artifactId>
+            <version>0.1.3-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
