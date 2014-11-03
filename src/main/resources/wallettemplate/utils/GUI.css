@@ -155,7 +155,20 @@
     -fx-background-color: #95d946;
     -fx-background-insets: 0;
     -fx-background-radius: .3em;
-  }
+}
+  
+////
+
+.update-window-progress-bar .track {
+	-fx-background-color: #d9dee1;
+	-fx-background-radius: .3em;
+}
+
+.update-window-progress-bar .bar {
+    -fx-background-color: #4b698f;
+    -fx-background-insets: 0;
+    -fx-background-radius: .3em;
+}
     
 .custom-button {
 	-fx-text-fill:white;

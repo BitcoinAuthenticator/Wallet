@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.scene.Scene;
 
 public class RemoteUpdateWindow {	
@@ -43,6 +44,7 @@ public class RemoteUpdateWindow {
 			final String file = TextFieldValidator.class.getResource("GUI.css").toString();
 	        scene.getStylesheets().add(file); 
 	        dialogStage.setScene(scene);	
+	        dialogStage.initStyle(StageStyle.UNDECORATED);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -53,7 +55,7 @@ public class RemoteUpdateWindow {
     }
 	
 	private String getViewPath() {
-		return "RemoteUpdateWindow.fxml";
+		return "remote_update/RemoteUpdateWindow.fxml";
 	}
 	
 	private void initialize() {
