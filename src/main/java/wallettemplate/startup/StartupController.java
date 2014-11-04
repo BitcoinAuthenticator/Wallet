@@ -40,6 +40,7 @@ import wallettemplate.SettingsController;
 import wallettemplate.PairWallet.PairingWalletControllerListener;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
+import wallettemplate.startup.backup.PaperSSSController;
 import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
@@ -151,6 +152,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
@@ -168,6 +170,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane ExplanationPane1;
 	@FXML private Pane Pane6;
 	@FXML private Pane SSSBackupPane;
+	@FXML private Button btnPrintSSS;
 	@FXML private Pane MainRestorePane;
 	@FXML private Pane RestoreFromMnemonicPane;
 	@FXML private Pane RestoreFromQRPane;
@@ -393,6 +396,11 @@ public class StartupController  extends BaseUI{
 		 Label labeContinueAfterSetPasswordAfterRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labeContinueAfterSetPasswordAfterRestore.setPadding(new Insets(0,6,0,0));
 		 btnContinueAfterSetPasswordAfterRestore.setGraphic(labeContinueAfterSetPasswordAfterRestore);
+		 
+		 //
+		 Label labePrintSSS = AwesomeDude.createIconLabel(AwesomeIcon.PRINT, "30");
+		 btnPrintSSS.setGraphic(labePrintSSS);
+		 Tooltip.install(btnPrintSSS, new Tooltip("Print Pieces"));
 		 
 		 lblMinimize.setPadding(new Insets(0,20,0,0));
 		 // Pane Control
@@ -926,13 +934,39 @@ public class StartupController  extends BaseUI{
 		 
 	 }
 	 
-	 @FXML protected void testSSS(ActionEvent event){
+	 @FXML protected void testSSS(ActionEvent event) {
 		 if(shares != null && shares.size() > 0 && mnemonicEntropy != null){
 			 TestSSSWindow w = new TestSSSWindow(shares, 
 					 mnemonicEntropy,
 					 Integer.parseInt(txThreshold.getText().toString()));
 			 w.show();
 		 }
+	 }
+	 
+	 @FXML protected void printSSS(ActionEvent event) {
+		 if(shares == null || shares.size() == 0) {
+			 GuiUtils.informationalAlert("Error !", "Make sure you split the wallet's seed and then print the pieces");
+			 return;
+		 }
+		 
+		 DirectoryChooser dirChooser = new DirectoryChooser();
+		 dirChooser.setTitle("Save Pieces");
+		 File destination = dirChooser.showDialog(Main.startup);
+		 if(!destination.exists())
+			 destination.mkdir();
+
+		 for(Share s: shares) {
+			 try {
+				PaperSSSController.createAndSavePaperSSS(s, walletSeed.getCreationTimeSeconds(), destination);
+			} catch (IOException e) {
+				e.printStackTrace();
+				GuiUtils.informationalAlert("Error !", "Failed to print all the pieces.");
+				return;
+			}
+		 }
+		 
+		 GuiUtils.informationalAlert("Done !", "Saved all pieces to " + destination.getAbsolutePath() + "\n" +
+				 							   "We suggest you give the pieces to close friends and family for safe keeping.");
 	 }
 	 
 	 @FXML protected void returntoBackupNewWalletPane(ActionEvent event){

@@ -574,6 +574,9 @@ public class SettingsController  extends BaseUI{
 			BAPassword newPW = new BAPassword(pw1);
 			Authenticator.getWalletOperation().encryptWallet(newPW);
 			
+			//set new password
+			Main.UI_ONLY_WALLET_PW.setPassword(pw1);
+			
 			// set to locked
 			Main.UI_ONLY_IS_WALLET_LOCKED = true;	
 			
