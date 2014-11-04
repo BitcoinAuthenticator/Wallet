@@ -130,7 +130,6 @@ public class TCPListener extends BASE{
 	{
 		shouldStopListener = false;   
 	    this.listenerThread = new Thread(){
-	    	@SuppressWarnings("static-access")
 			@Override
 			public void run() {
 	    		try{
@@ -205,7 +204,7 @@ public class TCPListener extends BASE{
 						vBANeworkInfo = new BANetworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
 						vBANeworkInfo.PORT_FORWARDED = true;
 						LOG.info("Marked port " + forwardedPort + " as forwarded");
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 					}
@@ -216,7 +215,7 @@ public class TCPListener extends BASE{
 					ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
 					vBANeworkInfo.SOCKET_OPERATIONAL = true;
 					LOG.info("Socket operational");
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
 					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
