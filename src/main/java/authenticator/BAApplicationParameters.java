@@ -2,9 +2,15 @@ package authenticator;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.bouncycastle.math.ec.ECPoint;
+
+import com.vinumeris.updatefx.Crypto;
 
 import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.WalletOperation.BAOperationState;
@@ -19,21 +25,38 @@ import static com.google.common.base.Preconditions.checkState;
  *
  */
 public class BAApplicationParameters{
-	final static public int APP_VERSION = 2; 
-	
-	NetworkType bitcoinNetworkType;
-	
-	boolean isTestMode = false;
-	boolean shouldLaunchProgram = false;
-	
-	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
-	
-	int NETWORK_PORT = 8222;
-	
 	String APP_NAME = "AuthenticatorWallet";
 	
+	/*
+	 * Remote update vars
+	 */
+	final static public int APP_VERSION 	= 1; 
+	private String remoteUpdateBaseURL 		= "http://www.bitcoinauthenticator.org/updates/";
+	private String remoteUpdateUserAgent 	= "AuthenticatorWallet/" + APP_VERSION;
+	private List<ECPoint> remoteUpdateKeys 	= Crypto.decode("03D862C94F031037DF0AE56603092990D623BAAB0811953134569ACD5AC7CFBAB2");
+	
+	/*
+	 * flags
+	 */
+	boolean isTestMode = false;
+	boolean shouldLaunchProgram = false;	
+	
+	/*
+	 * Network
+	 */
+	int NETWORK_PORT = 8222;
+	NetworkType bitcoinNetworkType;
+	
+	/*
+	 * Data folder
+	 */
 	OS_TYPE osType;
 	String APPLICATION_DATA_FOLDER ;
+	
+	/*
+	 * Global vars
+	 */
+	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
 	
 	public BAApplicationParameters(Map<String, String> params, List<String> raw) throws WrongOperatingSystemException{
 		InitializeApplicationFlags(params, raw);
@@ -99,14 +122,42 @@ public class BAApplicationParameters{
 			setNetworkPort(value);
 		}
 		else
-			// keep default
+			;// keep default
+			
+		//remote update base URL
+		if(paramsFinal.containsKey("remoteUpdateBaseURL")){
+			setRemoteUpdateBaseURL(paramsFinal.get("remoteUpdateBaseURL"));
+		}
+		else
+			; // keep default
+		
+		//remote update user agent
+		if(paramsFinal.containsKey("remoteUpdateUserAgent")){
+			setRemoteUpdateUserAgent(paramsFinal.get("remoteUpdateUserAgent"));
+		}
+		else
+			; // keep default
+		
+		//remote update keys
+		if(paramsFinal.containsKey("remoteUpdateKeys")){
+			String r = paramsFinal.get("remoteUpdateKeys");
+			List<String> rl = Arrays.asList(r.split(","));
+			List<ECPoint> keys = new ArrayList<ECPoint>();
+			for(String p: rl) {
+				List<ECPoint> tmp = Crypto.decode(p);
+				keys.add(tmp.get(0));
+			}
+			setRemoteUpdateKeys(keys);
+		}
+		else
+			; // keep default
 		
 		//App Name
 		if(getBitcoinNetworkType() == NetworkType.TEST_NET){
 			setAppName(APP_NAME + "_TestNet");
 		}
 		else
-			setAppName(APP_NAME);
+			setAppName(APP_NAME);		
 		
 		//Application data folder
 		osType =  OS_TYPE.operationSystemFromString(System.getProperty("os.name"));
@@ -152,9 +203,12 @@ public class BAApplicationParameters{
 				{"Parameters Available For This Wallet",""},{"",""},
 				
 				{"--help","Print Help"},
-				{"--testnet"			,"If =true will use testnet parameters, else mainnet parameters"},
-				{"--testermode"			,"Testing mode, if true will not send bitcoins. False by default"},
-				{"--port"				,"Port Number, default is 8222"}
+				{"--testnet"				,"If =true will use testnet parameters, else mainnet parameters"},
+				{"--testermode"				,"Testing mode, if true will not send bitcoins. False by default"},
+				{"--port"					,"Port Number, default is 8222"},
+				{"--remoteUpdateBaseURL"	,"Base URL for remote updates"},
+				{"--remoteUpdateUserAgent"	,"User agent for remote updates"},
+				{"--remoteUpdateKeys"		,"Validation keys for remote updates (e.g. --remoteUpdateKeys=k1,k2,k3..."}
 		};
 		
 		String ret = "";
@@ -246,6 +300,30 @@ public class BAApplicationParameters{
 	
 	public void setOperationalState(BAOperationState newState) {
 		operationalState = newState;
+	}
+	
+	public String getRemoteUpdateBaseURL() {
+		return remoteUpdateBaseURL;
+	}
+	
+	public void setRemoteUpdateBaseURL(String v) {
+		remoteUpdateBaseURL = v;
+	}
+	
+	public String getRemoteUpdateUserAgent() {
+		return remoteUpdateUserAgent;
+	}
+	
+	public void setRemoteUpdateUserAgent(String v) {
+		remoteUpdateUserAgent = v;
+	}
+	
+	public List<ECPoint> getRemoteUpdateKeys() {
+		return remoteUpdateKeys;
+	}
+	
+	public void setRemoteUpdateKeys(List<ECPoint> keys) {
+		remoteUpdateKeys = keys;
 	}
 	
 	/*

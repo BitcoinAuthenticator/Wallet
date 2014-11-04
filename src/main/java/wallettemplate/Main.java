@@ -487,10 +487,9 @@ public class Main extends BAApplication {
 
         ProgressBar indicator = showUpdateDownloadProgressBar();
 
-        List<ECPoint> pubkeys = Crypto.decode("03D862C94F031037DF0AE56603092990D623BAAB0811953134569ACD5AC7CFBAB2");
-        Updater updater = new Updater("http://localhost:80/", "ExampleApp/" + updateFxAppParams.APP_VERSION, updateFxAppParams.APP_VERSION,
+        Updater updater = new Updater(updateFxAppParams.getRemoteUpdateBaseURL(), updateFxAppParams.getRemoteUpdateUserAgent(), updateFxAppParams.APP_VERSION,
                 AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
-                pubkeys, 1) {
+                updateFxAppParams.getRemoteUpdateKeys(), 1) {
             @Override
             protected void updateProgress(long workDone, long max) {
                 super.updateProgress(workDone, max);
