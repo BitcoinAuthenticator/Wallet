@@ -972,6 +972,8 @@ public class Controller  extends BaseUI{
 	   if(Main.UI_ONLY_IS_WALLET_LOCKED){
 		   Image imglocked = new Image(Main.class.getResource("btnLocked.png").toString());
 		   ImageView img = new ImageView(imglocked);
+		   img.setFitWidth(25);
+		   img.setFitHeight(26);
 		   btnLock.setGraphic(img);
 		   overviewHBox.setMargin(btnLock, new Insets(0,0,0,0));
 		   Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
@@ -980,6 +982,8 @@ public class Controller  extends BaseUI{
 	   {
 		   Image unlocked = new Image(Main.class.getResource("btnUnlocked.png").toString());
 		   ImageView img = new ImageView(unlocked);
+		   img.setFitWidth(25);
+		   img.setFitHeight(26);
 		   btnLock.setGraphic(img);
 		   overviewHBox.setMargin(btnLock, new Insets(-2,0,0,0));
 		   Tooltip.install(btnLock, new Tooltip("Click to Lock Wallet"));
