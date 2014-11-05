@@ -630,7 +630,7 @@
     -->
     <ImageView fx:id="ivLogo" fitHeight="40.0" fitWidth="40.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
       <image>
-        <Image url="@authenticator_logo_plain_small.png" />
+        <Image url="@btnBitcoinAuthenticator.png" />
       </image>
     </ImageView>
     <ChoiceBox fx:id="AccountBox" layoutX="65.0" layoutY="22.0" prefHeight="15.0" prefWidth="150.0" styleClass="choice-box-account">
