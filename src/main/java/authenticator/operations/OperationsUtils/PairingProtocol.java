@@ -67,13 +67,13 @@ public class PairingProtocol {
    * 
    * @param wallet
    * @param ss
-   * @param timeout - in miliseconds  (0 for no timeout)
+   * @param timeout
    * @param netInfo
    * @param args
    * @param opListener
    * @param statusListener
-   * @param displayQRAnimation
-   * @param animationAfterPairing
+   * @param isRepairingAccount
+   * @param walletPW
    * @throws Exception
    */
   public void run (WalletOperation wallet,
@@ -83,6 +83,7 @@ public class PairingProtocol {
 		  String[] args, 
 		  OperationListener opListener,
 		  PairingStageUpdater statusListener,
+		  boolean isRepairingAccount,
 		  @Nullable BAPassword walletPW) throws Exception {
 
 	  assert(args != null);
@@ -128,6 +129,11 @@ public class PairingProtocol {
 	  in.read(cipherKeyBytes);
 	  String payload = decipherDataFromAuthenticator(cipherKeyBytes, statusListener, sharedsecret);
     
+	  if(isRepairingAccount) {
+		  postUIStatusUpdate(statusListener, PairingStage.FINISHED, null);
+		  return;
+	  }
+	  
 	  // Verify HMAC
 	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, statusListener);
 	 

@@ -22,6 +22,7 @@
         <Label layoutX="23.0" layoutY="287.0" style="-fx-text-fill: #4b698f;" text="Manage Existing Accounts:" />
         <Button fx:id="btnRenameAccount" disable="true" layoutX="23.0" layoutY="321.0" mnemonicParsing="false" onAction="#renameAccount" prefHeight="29.132904052734375" prefWidth="141.0" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Rename" />
         <Button fx:id="btnDeleteAccount" disable="true" layoutX="169.0" layoutY="321.0" mnemonicParsing="false" onAction="#deleteAccount" prefHeight="29.1328125" prefWidth="141.0" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Delete" />
+            <Button fx:id="btnRepairAccount" disable="true" layoutX="23.0" layoutY="360.0" mnemonicParsing="false" onAction="#repairAccount" prefHeight="29.132904052734375" prefWidth="141.0" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Re-Pair Account" />
         <Label fx:id="lblTotal" font="$x1" layoutX="712.0" layoutY="438.0" prefHeight="21.1328125" style="-fx-text-fill: #98d947;" text="Label" />
         <TextField layoutX="23.0" layoutY="392.0" prefHeight="29.0" prefWidth="216.0" promptText="Enter a new name" visible="false" />
         <Button cancelButton="false" layoutX="239.0" layoutY="392.0" mnemonicParsing="false" prefHeight="27.532912499997472" prefWidth="66.0" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="OK" visible="false" />

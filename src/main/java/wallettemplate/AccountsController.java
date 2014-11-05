@@ -4,16 +4,22 @@ import static wallettemplate.utils.GuiUtils.informationalAlert;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import org.json.JSONException;
 
+import wallettemplate.PairWallet.PairingWalletControllerListener;
 import wallettemplate.controls.DisplayAccountCell;
 import wallettemplate.controls.DisplayAccountCell.AccountCellEvents;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
+import wallettemplate.utils.TextFieldValidator;
 import wallettemplate.utils.dialogs.BADialog;
 import wallettemplate.utils.dialogs.BADialog.BADialogResponse;
 import wallettemplate.utils.dialogs.BADialog.BADialogResponseListner;
@@ -38,11 +44,14 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import org.bitcoinj.core.Coin;
@@ -54,6 +63,7 @@ public class AccountsController  extends BaseUI{
 	@FXML public TextField txfPassword;
 	@FXML public Button btnDeleteAccount;
 	@FXML public Button btnRenameAccount;
+	@FXML public Button btnRepairAccount;
 	@FXML public Label lblTotal;
 	
 	private DisplayAccountCell currentSelectedCell = null;
@@ -109,9 +119,25 @@ public class AccountsController  extends BaseUI{
 			@SuppressWarnings("restriction")
 			@Override
 			public void onClick(DisplayAccountCell cell) {
+				// in case a selected cell is clicked
+				if(currentSelectedCell != null && cell.getAccount().getIndex() == currentSelectedCell.getAccount().getIndex()) {
+					Platform.runLater(() -> {
+						btnDeleteAccount.setDisable(true);
+						btnRenameAccount.setDisable(true);						
+						btnRepairAccount.setDisable(true);
+					});
+					currentSelectedCell.setSelected(false);
+					currentSelectedCell = null;
+					return;
+				}
+				
 				Platform.runLater(() -> {
 					btnDeleteAccount.setDisable(false);
 					btnRenameAccount.setDisable(false);
+					if(cell.getAccount().getAccountType() == WalletAccountType.AuthenticatorAccount)
+						btnRepairAccount.setDisable(false);
+					else
+						btnRepairAccount.setDisable(true);
 				});			
 				
 				if(currentSelectedCell != null)
@@ -226,10 +252,72 @@ public class AccountsController  extends BaseUI{
 					}).show();
 	}
 	
+	Stage pairingStage;
 	@FXML protected void repairAccount(ActionEvent event)
 	{
-		
+		if(currentSelectedCell != null) { // repair a selected account
+			pairingStage = loadPairingFXML(pairingStage, new ArrayList(Arrays.asList((Object)currentSelectedCell.getAccount().getAccountName(),
+											(Object)currentSelectedCell.getAccount().getIndex(),
+											(Object)Boolean.toString(true))));
+			pairingStage.show();
+			
+		}
 	}
+	
+	@SuppressWarnings("unused")
+	private Stage loadPairingFXML(Stage s, ArrayList<Object> param) {    	
+		s = new Stage();
+		URL url = Main.class.getResource("/wallettemplate/pairing/BAApp.fxml");
+		int width = 850;
+		int height = 484;
+		try {
+			FXMLLoader loader = new FXMLLoader(url);
+			s.setTitle("Add Account");
+	    	Scene scene;
+			scene = new Scene((AnchorPane) loader.load(), width, height);
+			if(param != null){
+				BaseUI controller = loader.<BaseUI>getController();
+				try{
+					PairWallet w = loader.<PairWallet>getController();
+					w.setListener(pairingListener);
+				}
+				catch (Exception e){ }
+				controller.setParams(param);
+				controller.updateUIForParams();
+			}
+			final String file = TextFieldValidator.class.getResource("GUI.css").toString();
+	        scene.getStylesheets().add(file); 
+	        s.setScene(scene);	
+	        return s;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+	
+	private PairingWalletControllerListener pairingListener = new PairingWalletControllerListener(){
+					@Override
+					public void onPairedWallet() { }
+			
+					@SuppressWarnings("restriction")
+					@Override
+					public void onFailed(Exception e) {
+						Platform.runLater(() -> GuiUtils.informationalAlert("Something is wrong", "Pairing Failed"));
+					}
+			
+					@SuppressWarnings("restriction")
+					@Override
+					public void closeWindow() {
+						Platform.runLater(new Runnable() {
+					        @Override
+					        public void run() {
+					        	if(pairingStage != null)
+					        		pairingStage.close();
+					        }
+						});
+						
+					}
+				};
 	
 	@FXML protected void close(ActionEvent event){
 		overlayUi.done();

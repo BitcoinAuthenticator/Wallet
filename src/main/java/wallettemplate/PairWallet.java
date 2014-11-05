@@ -44,6 +44,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+/**
+ * Pairing controller, receives the following parameters:
+ * <ol start="0">
+ * <li>Pairing Name [String]</li>
+ * <li>Account index [int]</li>
+ * <li>is re-pairing account, will not create the pairing objects because it assumes they exist [boolean]</li>
+ * </ol>
+ * 
+ * @author alonmuroch
+ *
+ */
 public class PairWallet extends BaseUI{
 	
 	@FXML private Button cancelBtn;
@@ -67,8 +78,8 @@ public class PairWallet extends BaseUI{
 	private double xOffset = 0;
 	private double yOffset = 0;
     
-    PairingWalletControllerListener listener;
-        
+    PairingWalletControllerListener listener;    
+    
     public void initialize() {
         super.initialize(PairWallet.class);
         
@@ -137,7 +148,7 @@ public class PairWallet extends BaseUI{
 		}
     };
     
-    private void runPairing(String pairName, @Nullable Integer accountID) throws IOException
+    private void runPairing(String pairName, @Nullable Integer accountID, boolean isRepairing) throws IOException
     {    	    	
     	if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
     		informationalAlert("The wallet is locked",
@@ -150,6 +161,7 @@ public class PairWallet extends BaseUI{
     			accountID,
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
     			60000,
+    			isRepairing,
     			new PairingStageUpdater(){
 					@Override
 					public void onPairingStageChanged(PairingStage stage, @Nullable byte[] qrImageBytes) {
@@ -241,17 +253,18 @@ public class PairWallet extends BaseUI{
     		if(!Main.UI_ONLY_WALLET_PW.hasPassword())
     			Main.UI_ONLY_WALLET_PW.setPassword(txfWalletPwd.getText());
     	}
-    	
+    
     	if(textfield.getText().length() > 0)
     	{
     		// in case any messages are on 
     		if(hasParameters()){
     			String name = arrParams.get(0).toString();
     			Integer accID = Integer.parseInt(arrParams.get(1).toString());
-    			this.runPairing(name, accID);
+    			boolean isRepairing = (arrParams.size() == 3)? Boolean.parseBoolean(arrParams.get(2).toString()):false;
+    			this.runPairing(name, accID, isRepairing);
     		}
     		else
-    			this.runPairing(textfield.getText(), null);
+    			this.runPairing(textfield.getText(), null, false);
     	}
     	else
     	{

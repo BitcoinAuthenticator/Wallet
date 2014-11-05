@@ -111,6 +111,7 @@ public class OperationsFactory extends BASE{
 			@Nullable Integer accountID,
 			NetworkType networkType, 
 			int timeout,
+			boolean isRepairingAccount,
 			@Nullable PairingStageUpdater statusListener,
 			@Nullable BAPassword walletPW){
 		BAOperation op = new BAOperation(ATOperationType.Pairing);
@@ -142,6 +143,7 @@ public class OperationsFactory extends BASE{
 									 args,
 									 listener,
 									 statusListener,
+									 isRepairingAccount,
 									 walletPW); 
 							 //Return to previous timeout
 							 if(!ss.isClosed())
