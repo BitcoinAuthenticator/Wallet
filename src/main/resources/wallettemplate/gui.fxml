@@ -306,7 +306,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnOneName.png" />
+                                <Image url="@apps/btnOneName.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -318,7 +318,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnAccounts.png" />
+                                <Image url="@apps/btnAccounts.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -327,7 +327,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnBitcoinAuthenticator.png" />
+                                <Image url="@apps/btnBitcoinAuthenticator.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -342,7 +342,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnSettings.png" />
+                                <Image url="@apps/btnSettings.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -374,7 +374,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnAddressBook.png" />
+                                <Image url="@apps/btnAddressBook.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -386,7 +386,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnBnB.png" />
+                                <Image url="@apps/btnBnB.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -398,7 +398,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnDonate.png" />
+                                <Image url="@apps/btnDonate.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -410,7 +410,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnLocalBitcoins.png" />
+                                <Image url="@apps/btnLocalBitcoins.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -419,7 +419,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnCoinJoin.png" />
+                                <Image url="@apps/btnCoinJoin.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -431,7 +431,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnCoinControl.png" />
+                                <Image url="@apps/btnCoinControl.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -443,7 +443,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnCoinbase.png" />
+                                <Image url="@apps/btnCoinbase.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -455,7 +455,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@btnLocks.png" />
+                                <Image url="@apps/btnLocks.png" />
                               </image>
                             </ImageView>
                           </graphic>
