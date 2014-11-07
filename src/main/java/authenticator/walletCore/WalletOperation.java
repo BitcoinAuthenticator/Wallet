@@ -4,6 +4,8 @@ import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BASE;
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.GCM.dispacher.Device;
+import authenticator.GCM.dispacher.Dispacher;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
@@ -22,6 +24,7 @@ import authenticator.hierarchy.exceptions.IncorrectPathException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import authenticator.hierarchy.exceptions.NoUnusedKeyException;
+import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
@@ -44,6 +47,8 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -64,6 +69,7 @@ import authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
+import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
@@ -1739,6 +1745,54 @@ public class WalletOperation extends BASE{
 			return pairingName + ": " + type + "  ---  " + op.getRequestID();
 		}
 		
+	//#####################################
+	//
+	//	 On Coins received Notifications
+	//
+	//#####################################
+		
+	public void sendNotificationToAuthenticatorWhenCoinsReceived() {
+		Authenticator.addGeneralEventsListener(new BAGeneralEventsAdapter() {
+			@Override
+			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+				if(howBalanceChanged == HowBalanceChanged.ReceivedCoins)
+				for (TransactionOutput out : tx.getOutputs()){
+					Script scr = out.getScriptPubKey();
+	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
+	    			if(isWatchingAddress(addrStr)){
+	    				ATAddress add = findAddressInAccounts(addrStr);
+	    				if(add == null)
+	    					continue;
+	    				
+	    				// incoming sum
+	    				Coin receivedSum = out.getValue();
+	    				
+	    				ATAccount account = null;
+						try {
+							account = getAccount(add.getAccountIndex());
+							if(account.getAccountType() != WalletAccountType.AuthenticatorAccount)
+								continue;
+							PairedAuthenticator pairing = getPairingObjectForAccountIndex(account.getIndex());
+		    				SecretKey secretkey = new SecretKeySpec(Hex.decode(pairing.getAesKey()), "AES");						
+		    				byte[] gcmID = pairing.getGCM().getBytes();
+		    				assert(gcmID != null);
+		    				Device d = new Device(pairing.getChainCode().getBytes(),
+		    						pairing.getMasterPublicKey().getBytes(),
+		    						gcmID,
+		    						pairing.getPairingID().getBytes(),
+		    						secretkey);
+		    				
+		    				Dispacher disp = new Dispacher(null,null);
+		    				System.out.println("Sending a Coins Received Notification");
+		    				disp.dispachMessage(ATGCMMessageType.CoinsReceived, d, new String[]{ "Coins Received: " + receivedSum.toFriendlyString() });	
+						} catch (AccountWasNotFoundException | JSONException | IOException e1) {
+							e1.printStackTrace();
+						}
+	    			}
+				}
+			}
+		});
+	}
 	
 	//#####################################
 	//

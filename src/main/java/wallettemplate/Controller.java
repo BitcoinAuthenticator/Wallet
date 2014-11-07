@@ -392,8 +392,7 @@ public class Controller  extends BaseUI{
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	if(tor != null)
-    		tor.addInitializationListener(listener);          	
-    	
+    		tor.addInitializationListener(listener);          	    	
     }
     
     /**
@@ -432,7 +431,7 @@ public class Controller  extends BaseUI{
 	    });    
     	updateUI();
     	
-    	
+    	Authenticator.getWalletOperation().sendNotificationToAuthenticatorWhenCoinsReceived();
     }
    
     private void updateUI(){

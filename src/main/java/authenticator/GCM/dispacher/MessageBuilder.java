@@ -51,6 +51,17 @@ public class MessageBuilder extends JSONObject{
 				this.put("ReqPayload", reqPayload);
 				this.put("CustomMsg", arg[3]); // TODO localize
 				break;
+			/**
+			 * arg - <br>
+			 * 0 - PairingID<br>
+			 * 1 - CustomMsg <br>
+			 */
+			case CoinsReceived:
+				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
+				this.put("PairingID", arg[0]); 
+				this.put("RequestType", ATGCMMessageType.CoinsReceived_VALUE); 
+				this.put("CustomMsg", arg[1]); 
+				break;
 		}
 	}
 	

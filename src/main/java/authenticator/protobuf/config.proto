@@ -8,6 +8,7 @@ import "configSettings.proto";
 enum ATGCMMessageType{
 	SignTX 					= 2;
 	UpdatePendingRequestIPs	= 4;
+	CoinsReceived			= 6;
 }
 
 enum ATOperationType {

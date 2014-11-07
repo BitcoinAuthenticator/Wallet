@@ -94,6 +94,31 @@ public class Dispacher {
 			else
 				;//TODO
 			break;
+			/**
+			 * arg:
+			 * [0] - Custom msg
+			 */
+			case CoinsReceived:
+				if(device.gcmRegId != null)
+				{				
+					MessageBuilder msgGCM = null;
+					try {
+						
+						msgGCM = new MessageBuilder(ATGCMMessageType.CoinsReceived,
+								new String[]{new String(device.pairingID), args[0]});
+						ArrayList<String> devicesList = new ArrayList<String>();
+						devicesList.add(new String(device.gcmRegId));
+						GCMSender sender = new GCMSender();
+						sender.sender(devicesList,msgGCM);
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+				else
+					;
+				break;
 		}
 		return null;
 	}
