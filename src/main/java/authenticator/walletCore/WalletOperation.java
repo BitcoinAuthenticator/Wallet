@@ -1815,6 +1815,25 @@ public class WalletOperation extends BASE{
 			LOG.info("Set new OneName profile: " + one.toString());
 		}
 		
+		public boolean isOnenameAvatarSet() {
+			try {
+				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
+				if(on.getOnename().length() == 0)
+					return false;
+				return true;
+			} 
+			catch (IOException e) {  return false; }
+		}
+		
+		public boolean deleteOneNameAvatar() throws IOException {
+			if(isOnenameAvatarSet()) {
+				configFile.deleteOneNameAvatar();
+				LOG.info("Deleted OneName profile");
+				return true;
+			}
+			return false;
+		}
+		
 	//#####################################
 	//
 	//		Active account Control

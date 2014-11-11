@@ -2,6 +2,8 @@ package authenticator.listeners;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import javafx.scene.image.Image;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
@@ -36,8 +38,7 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 	}
 
 	@Override
-	public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile,
-			Image profileImage) {
+	public void onOneNameIdentityChanged(@Nullable ConfigOneNameProfile profile, @Nullable Image profileImage) {
 		// TODO Auto-generated method stub
 		
 	}

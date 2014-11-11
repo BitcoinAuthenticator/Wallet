@@ -327,6 +327,12 @@ public class walletDB extends dbBase{
 		writeConfigFile(auth);
 	}
 	
+	public void deleteOneNameAvatar() throws IOException {
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		auth.clearConfigOneNameProfile();
+		writeConfigFile(auth);
+	}
+	
 //	public void writeAccountHierarchyPubKey(int accountIdx, DeterministicKey mpubkey) throws AccountWasNotFoundException, IOException{
 //		ATAccount acc = getAccount(accountIdx);
 //		ATAccount.Builder b = ATAccount.newBuilder(acc);

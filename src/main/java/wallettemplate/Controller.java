@@ -451,7 +451,7 @@ public class Controller  extends BaseUI{
     	}
 		
 		@Override
-		public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile, Image profileImage) {
+		public void onOneNameIdentityChanged(@Nullable ConfigOneNameProfile profile, @Nullable Image profileImage) {
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
@@ -1026,8 +1026,10 @@ public class Controller  extends BaseUI{
 	   }
 	   else {
 		   lblName.setText("Welcome to Authenticator Wallet");
-			lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
-			lblName.getText(), 0.0D));
+		   lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
+		   lblName.getText(), 0.0D));
+		   Image def = new Image(Main.class.getResourceAsStream("DefaultAvatar.png"));
+		   ivAvatar.setImage(def);
 	   }
    }
    

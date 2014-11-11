@@ -34,9 +34,15 @@ public class OneNameController  extends BaseUI{
 	@FXML private Button btnCancel;
 	@FXML private Button btnSignUp;
 	@FXML private Button btnBack;
+	@FXML private Button btnDelete;
 	
 	public void initialize(){
 		AnchorPane.setEffect(new DropShadow());
+		
+		if(Authenticator.getWalletOperation().isOnenameAvatarSet())
+			btnDelete.setDisable(false);
+		else
+			btnDelete.setDisable(true);
 	}
 	
 	@FXML protected void onename (ActionEvent event){
@@ -89,7 +95,7 @@ public class OneNameController  extends BaseUI{
 									setAllComponentsEnabled(true);
 								});
 							}
-							Authenticator.fireonNewOneNameIdentitySelection(one, img);
+							Authenticator.fireonOneNameIdentityChanged(one, img);
 						}
 						
 						Platform.runLater(new Runnable() { 
@@ -108,6 +114,25 @@ public class OneNameController  extends BaseUI{
 	
 	@FXML protected void done (){
 		overlayUi.done();
+	}
+	
+	@FXML protected void deleteAvatar (ActionEvent event){
+		if(Authenticator.getWalletOperation().isOnenameAvatarSet()) {
+			boolean result = false;
+			try {
+				result = Authenticator.getWalletOperation().deleteOneNameAvatar();
+			} catch (IOException e) {
+				e.printStackTrace();
+				GuiUtils.informationalAlert("Could not delete OneName profile", "");
+			}
+			if(result == false) {
+				GuiUtils.informationalAlert("Could not delete OneName profile", "");
+			}
+			else {
+				Authenticator.fireonOneNameIdentityChanged(null, null);
+				done();
+			}
+		}
 	}
 	
 	@SuppressWarnings("restriction")

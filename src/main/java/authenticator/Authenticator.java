@@ -319,9 +319,9 @@ public class Authenticator extends BASE{
 			l.onAccountsModified(type, accountIndex);
 	}
 	
-	public static void fireonNewOneNameIdentitySelection(ConfigOneNameProfile profile, @Nullable Image profileImage){
+	public static void fireonOneNameIdentityChanged(@Nullable ConfigOneNameProfile profile, @Nullable Image profileImage){
 		for(BAGeneralEventsListener l:generalEventsListeners)
-			l.onNewOneNameIdentitySelection(profile, profileImage);
+			l.onOneNameIdentityChanged(profile, profileImage);
 	}
 	
 	public static void fireOnBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){
