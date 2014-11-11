@@ -1888,7 +1888,9 @@ public class Controller  extends BaseUI{
     
     @FXML protected void btnOneName(MouseEvent event) {
     	if(Authenticator.getWalletOperation().getOnename() != null){
-    		Main.instance.overlayUI("DisplayOneName.fxml");
+    		ArrayList<Object> l = new ArrayList<Object>();
+			   l.add(Authenticator.getWalletOperation().getOnename().getOnename());
+			   Main.instance.overlayUI("DisplayOneName.fxml", l);
     	}
     	else {
     		informationalAlert("Cannot display your OneName account",

@@ -176,8 +176,9 @@ public class SendToCell extends Region{
 		        	        						ivAvatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		        	                					   @Override
 		        	                					   public void handle(MouseEvent event) {
-		        	                						   Main.instance.overlayUI("DisplayOneName.fxml");
-		        	                						   OneNameControllerDisplay.loadOneName(onenameID);
+		        	                						   ArrayList<Object> l = new ArrayList<Object>();
+		        	                						   l.add(onenameID);
+		        	                						   Main.instance.overlayUI("DisplayOneName.fxml", l);
 		        	                					   }
 		        	                				   });
 		        	        						lblAvatarName.setText(one.getOnenameFormatted());

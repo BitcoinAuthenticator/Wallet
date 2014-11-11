@@ -65,6 +65,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import wallettemplate.RemoteUpdateWindow.RemoteUpdateWindowListener;
 import wallettemplate.startup.StartupController;
+import wallettemplate.utils.BaseUI;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 import wallettemplate.utils.dialogs.BADialog;
@@ -86,6 +87,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -414,15 +417,26 @@ public class Main extends BAApplication {
         pair.show();
         return pair;
     }
+    
+    public <T> OverlayUI<T> overlayUI(String name) {
+    	return overlayUI(name, null);
+    }
 
     /** Loads the FXML file with the given name, blurs out the main UI and puts this one on top. */
-    public <T> OverlayUI<T> overlayUI(String name) {
+    public <T> OverlayUI<T> overlayUI(String name, @Nullable ArrayList<Object> param) {
         try {
             checkGuiThread();
             // Load the UI from disk.
             URL location = getClass().getResource(name);
             FXMLLoader loader = new FXMLLoader(location);
             Pane ui = loader.load();
+            
+            if(param != null) {
+            	BaseUI baseContr = loader.<BaseUI>getController();
+            	baseContr.setParams(param);
+            	baseContr.updateUIForParams();
+            }
+                        
             T controller = loader.getController();
             OverlayUI<T> pair = new OverlayUI<T>(ui, controller);
             // Auto-magically set the overlayUi member, if it's there.

@@ -3,6 +3,7 @@ package wallettemplate;
 import static wallettemplate.utils.GuiUtils.informationalAlert;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.json.JSONException;
 
@@ -157,8 +158,10 @@ public class OneNameController  extends BaseUI{
 	
 	@FXML protected void openapp(){
 		overlayUi.done();
-		Main.instance.overlayUI("DisplayOneName.fxml");
-		OneNameControllerDisplay.loadOneName("register");
+		
+		ArrayList<Object> l = new ArrayList<Object>();
+		l.add("register");
+		Main.instance.overlayUI("DisplayOneName.fxml", l);
 	}
 	
 	@FXML protected void OKpressed(){
