@@ -1,4 +1,4 @@
-package authenticator;
+package authenticator.operations;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +21,7 @@ public class UpdateIPsTest {
 											    "custom msg"});
 			String result = b.toString();
 			JSONObject objResult = new JSONObject(result);
-			assertTrue(objResult.getString("PairingID").equals("pairing id"));
+			assertTrue(objResult.getString("WalletID").equals("pairing id"));
 			
 			assertTrue(objResult.getInt("RequestType") == ATGCMMessageType.UpdatePendingRequestIPs_VALUE);
 			JSONObject payload = new JSONObject(objResult.getString("ReqPayload"));

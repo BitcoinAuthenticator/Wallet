@@ -276,9 +276,9 @@ public class TCPListener extends BASE{
 							int keysize = inStream.readInt();
 							byte[] reqIdPayload = new byte[keysize];
 							inStream.read(reqIdPayload);
-							JSONObject jo = new JSONObject(new String(reqIdPayload));
-							requestID = jo.getString("requestID");
-							String pairingID = jo.getString("pairingID");	
+							GetRequestIDPayload reqPayload = new GetRequestIDPayload(reqIdPayload);
+							requestID = reqPayload.getRequestID();
+							String pairingID = reqPayload.getPairingID();
 							//
 							LOG.info("Looking for pending request ID: " + requestID);
 							for(Object o:wallet.getPendingRequests()){

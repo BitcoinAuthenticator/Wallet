@@ -141,7 +141,7 @@ public class PairingProtocol {
 		//Parse the received json object
 		  String mPubKey = (String) jsonObject.get("mpubkey");
 		  String chaincode = (String) jsonObject.get("chaincode");
-		  String pairingID = (String) jsonObject.get("pairID");
+		  String pairingID = Hex.toHexString(authWalletIndex);
 		  String GCM = (String) jsonObject.get("gcmID");
 		  //Save to file
 		  PairedAuthenticator  obj = wallet.generatePairing(mPubKey, 
