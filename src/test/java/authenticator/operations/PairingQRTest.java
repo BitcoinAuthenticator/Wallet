@@ -1,4 +1,4 @@
-package authenticator;
+package authenticator.operations;
 
 import static org.junit.Assert.*;
 

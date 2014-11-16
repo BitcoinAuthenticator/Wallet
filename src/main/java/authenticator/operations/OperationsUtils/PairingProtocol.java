@@ -141,7 +141,7 @@ public class PairingProtocol {
 		//Parse the received json object
 		  String mPubKey = (String) jsonObject.get("mpubkey");
 		  String chaincode = (String) jsonObject.get("chaincode");
-		  String pairingID = (String) jsonObject.get("pairID");
+		  String pairingID = Hex.toHexString(authWalletIndex);
 		  String GCM = (String) jsonObject.get("gcmID");
 		  //Save to file
 		  PairedAuthenticator  obj = wallet.generatePairing(mPubKey, 
@@ -154,6 +154,11 @@ public class PairingProtocol {
 															  NetworkType.fromString(args[2]),
 															  walletPW);
 		  
+		  System.out.println("Pairing Details:" +
+		  			 " Master Public Key: " + mPubKey + "\n" +
+		  			 "chaincode: " +  chaincode + "\n" +
+		  			 "gcmRegId: " +  GCM + "\n" + 
+		  			 "pairing ID: " + pairingID);		 
 		  postUIStatusUpdate(statusListener, PairingStage.FINISHED, null);
 		  statusListener.pairingData(obj);
 	  }
@@ -215,15 +220,7 @@ public class PairingProtocol {
 		  String strJson = new String(testpayload);
 		  JSONParser parser=new JSONParser();
 		  Object obj = parser.parse(strJson);
-		  JSONObject jsonObject = (JSONObject) obj;
-		  String mPubKey = (String) jsonObject.get("mpubkey");
-		  String chaincode = (String) jsonObject.get("chaincode");
-		  String pairingID = (String) jsonObject.get("pairID");
-		  String GCM = (String) jsonObject.get("gcmID");
-		  System.out.println("Received Master Public Key: " + mPubKey + "\n" +
-		  				  			 "chaincode: " +  chaincode + "\n" +
-		  				  			 "gcmRegId: " +  GCM + "\n" + 
-		  				  			 "pairing ID: " + pairingID);		  
+		  JSONObject jsonObject = (JSONObject) obj;	  
 		  return  jsonObject;
 	  }
 	

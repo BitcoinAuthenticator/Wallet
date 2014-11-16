@@ -18,7 +18,7 @@ public class CoinsReceivedNotificationTest {
 					new String[]{"pairing id", "custom msg"});
 			String result = b.toString();
 			JSONObject objResult = new JSONObject(result);
-			assertTrue(objResult.getString("PairingID").equals("pairing id"));
+			assertTrue(objResult.getString("WalletID").equals("pairing id"));
 			assertTrue(objResult.getInt("RequestType") == ATGCMMessageType.CoinsReceived_VALUE);			
 			assertTrue(objResult.getString("CustomMsg").equals("custom msg"));
 		}
