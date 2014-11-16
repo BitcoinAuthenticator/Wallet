@@ -542,7 +542,6 @@ public class TCPListener extends BASE{
 		    while(inetAddresses.hasMoreElements()) {
 		        InetAddress ia = inetAddresses.nextElement();
 		        if(!ia.isLinkLocalAddress()) {
-		            System.out.println("IP: " + ia.getHostAddress());
 		            return ia.getHostAddress();
 		        }
 		    }
