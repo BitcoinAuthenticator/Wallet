@@ -187,7 +187,7 @@ public class TCPListener extends BASE{
 		    		try {
 						plugnplay.run(new String[]{args[0]});
 						if(plugnplay.isPortMapped(Integer.parseInt(args[0])) == true){
-							vBANeworkInfo = new BANetworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP());
+							vBANeworkInfo = new BANetworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP().substring(1));
 							vBANeworkInfo.PORT_FORWARDED = true;
 							LOG.info("Successfuly map ported port: " + forwardedPort);
 						}
