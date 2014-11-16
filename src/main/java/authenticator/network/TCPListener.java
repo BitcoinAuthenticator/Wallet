@@ -7,12 +7,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.crypto.SecretKey;
@@ -524,13 +528,17 @@ public class TCPListener extends BASE{
 	 * @throws UnknownHostException
 	 */
 	private String getInternalIp() {
-		InetAddress i;
 		try {
-			i = InetAddress.getLocalHost();
-			return i.getHostAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+            Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
+            while( b.hasMoreElements()){
+                for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses())
+                    if ( f.getAddress().isSiteLocalAddress())
+                    	return  f.getAddress().getHostAddress();
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+		
         return null;
 	}
 	
