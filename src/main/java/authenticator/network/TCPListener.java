@@ -529,12 +529,23 @@ public class TCPListener extends BASE{
 	 */
 	private String getInternalIp() {
 		try {
-            Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
+            /*Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
             while( b.hasMoreElements()){
-                for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses())
+                for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses()){
+                	LOG.info("$$$$$$$$$$$$$$ " + f.getAddress());
                     if ( f.getAddress().isSiteLocalAddress())
                     	return  f.getAddress().getHostAddress();
-            }
+                }
+            }*/
+			NetworkInterface ni = NetworkInterface.getByName("wlan0");
+		    Enumeration<InetAddress> inetAddresses =  ni.getInetAddresses();
+		    while(inetAddresses.hasMoreElements()) {
+		        InetAddress ia = inetAddresses.nextElement();
+		        if(!ia.isLinkLocalAddress()) {
+		            System.out.println("IP: " + ia.getHostAddress());
+		            return ia.getHostAddress();
+		        }
+		    }
         } catch (SocketException e) {
             e.printStackTrace();
         }
