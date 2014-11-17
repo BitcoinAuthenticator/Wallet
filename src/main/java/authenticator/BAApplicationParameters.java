@@ -419,6 +419,18 @@ public class BAApplicationParameters{
 				return MAIN_NET;
 	    	}
 	    }
+	    
+	    public static NetworkType fromIndex(Integer i){
+	    	switch(i)
+	    	{
+	    	case 0:
+	    		return TEST_NET;
+			case 1:
+	    		return MAIN_NET;
+			default:
+				return MAIN_NET;
+	    	}
+	    }
 	}
 	
 	public enum OS_TYPE {

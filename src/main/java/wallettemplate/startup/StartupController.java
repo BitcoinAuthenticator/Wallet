@@ -1504,6 +1504,7 @@ public class StartupController  extends BaseUI{
 		BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			null,
+    			null,
     			nt,
     			0,
     			false,

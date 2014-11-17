@@ -107,6 +107,11 @@ public class CryptoUtils {
 		}
 	}
 	
+	static public SecretKey secretKeyFromHexString(String hexKey) {
+		byte[] keyBytes = Hex.decode(hexKey);
+		return new SecretKeySpec(keyBytes, "AES");
+	}
+	
 	static public class ChecksumIncorrectException extends Exception {
 		public ChecksumIncorrectException(String str) {
 			super (str);

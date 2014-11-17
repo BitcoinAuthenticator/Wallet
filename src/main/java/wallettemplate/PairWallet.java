@@ -50,6 +50,7 @@ import javafx.scene.text.Text;
  * <li>Pairing Name [String]</li>
  * <li>Account index [int]</li>
  * <li>is re-pairing account, will not create the pairing objects because it assumes they exist [boolean]</li>
+ * <li>keyHex - force the pairing process to use this AES key hex</li>
  * </ol>
  * 
  * @author alonmuroch
@@ -148,7 +149,7 @@ public class PairWallet extends BaseUI{
 		}
     };
     
-    private void runPairing(String pairName, @Nullable Integer accountID, boolean isRepairing) throws IOException
+    private void runPairing(String pairName, @Nullable Integer accountID, @Nullable String keyHex,  boolean isRepairing) throws IOException
     {    	    	
     	if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
     		informationalAlert("The wallet is locked",
@@ -159,6 +160,7 @@ public class PairWallet extends BaseUI{
     	BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			accountID,
+    			keyHex,
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
     			60000,
     			isRepairing,
@@ -260,11 +262,12 @@ public class PairWallet extends BaseUI{
     		if(hasParameters()){
     			String name = arrParams.get(0).toString();
     			Integer accID = Integer.parseInt(arrParams.get(1).toString());
-    			boolean isRepairing = (arrParams.size() == 3)? Boolean.parseBoolean(arrParams.get(2).toString()):false;
-    			this.runPairing(name, accID, isRepairing);
+    			String keyHex = (arrParams.size() > 3)? (String)arrParams.get(3):null;
+    			boolean isRepairing = (arrParams.size() > 2)? Boolean.parseBoolean(arrParams.get(2).toString()):false;
+    			this.runPairing(name, accID, keyHex, isRepairing);
     		}
     		else
-    			this.runPairing(textfield.getText(), null, false);
+    			this.runPairing(textfield.getText(), null, null, false);
     	}
     	else
     	{

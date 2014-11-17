@@ -58,11 +58,12 @@ public class PairingProtocol {
   /**
    * Run a complete process of pairing with an authenticator device.<br>
    * args[]:
-   * <ol>
+   * <ol start="0">
    * <li>Pairing name</li>
    * <li>Account ID, could be blank ("") if none is provided</li>
    * <li>Pair type, by default "blockchain"</li>
    * <li>NetworkType - 1 for main net, 0 for testnet</li>
+   * <li>Secret Key - could be blank ("") if none is provided</li>
    * </ol>
    * 
    * @param wallet
@@ -86,26 +87,38 @@ public class PairingProtocol {
 		  boolean isRepairingAccount,
 		  @Nullable BAPassword walletPW) throws Exception {
 
+	  // get all args
 	  assert(args != null);
-	  String walletType = args[2];
+	  String argPairingName 			= args[0];
+	  Integer argAccountID 				= args[1].length() == 0? wallet.whatIsTheNextAvailableAccountIndex():Integer.parseInt(args[1]);
+	  String argWalletType 				= args[2];
+	  Integer argNetworkType 			= Integer.parseInt(args[3]);
+	  String argKeyHex 					= args[4].length() == 0? null:args[4];
 	  
 	  postUIStatusUpdate(statusListener, PairingStage.PAIRING_SETUP, null);
 	  
 	  String ip = netInfo.EXTERNAL_IP;
 	  String localip = netInfo.INTERNAL_IP;
 	  
-	  SecretKey sharedsecret = CryptoUtils.generateNewSecretAESKey();
-      byte[] raw = sharedsecret.getEncoded();
-      String key = Hex.toHexString(raw);
+	  String key = null;
+	  SecretKey sharedsecret = null;
+	  if(argKeyHex == null) {
+		  sharedsecret = CryptoUtils.generateNewSecretAESKey();
+	      byte[] raw = sharedsecret.getEncoded();
+	      key = Hex.toHexString(raw);
+	  }
+	  else {
+		  sharedsecret = CryptoUtils.secretKeyFromHexString(argKeyHex);
+		  key = argKeyHex;
+	  }
       
       // generate Authenticator's account number
       byte[] seed = wallet.getWalletSeedBytes(walletPW);
-      Integer accID = args[1].length() == 0? wallet.whatIsTheNextAvailableAccountIndex():Integer.parseInt(args[1]);
-	  byte[] authWalletIndex = generateAuthenticatorsWalletIndex(seed, accID);
+	  byte[] authWalletIndex = generateAuthenticatorsWalletIndex(seed, argAccountID);
       
 	  //Display a QR code for the user to scan
 	  PairingQRCode PairingQR = new PairingQRCode();
-	  byte[] qr = PairingQR.generateQRImageBytes(ip, localip, args[0], walletType, key, Integer.parseInt(args[3]), authWalletIndex);
+	  byte[] qr = PairingQR.generateQRImageBytes(ip, localip, argPairingName, argWalletType, key, argNetworkType, authWalletIndex);
 	  Socket socket = dispalyQRAnListenForCommunication(qr,
 			  ss, 
 			  timeout, 
@@ -149,9 +162,9 @@ public class PairingProtocol {
 															  key, 
 															  GCM, 
 															  pairingID, 
-															  args[0], 
-															  accID,
-															  NetworkType.fromString(args[2]),
+															  argPairingName, 
+															  argAccountID,
+															  NetworkType.fromIndex(argNetworkType),
 															  walletPW);
 		  
 		  System.out.println("Pairing Details:" +
