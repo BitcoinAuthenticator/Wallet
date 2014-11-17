@@ -242,11 +242,10 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
+							SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));							
 							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
 							
 							//Break apart the signature array sent over from the authenticator
-							//String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = null;
 							SignProtocol.AuthenticatorAnswerType answerType = SignProtocol.AuthenticatorAnswerType.DoNothing;
 							try{

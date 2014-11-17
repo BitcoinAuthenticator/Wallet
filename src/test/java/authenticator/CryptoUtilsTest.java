@@ -21,11 +21,11 @@ public class CryptoUtilsTest {
 		byte[] plBytes = pl.getBytes();
 		
 		String aes1 = "d8d2b7a00a615ead144bcb02abe325fb955415484003eee969339d7d32f8ca3a";
-		SecretKey key1 = new SecretKeySpec(Hex.decode(aes1), "AES");
+		SecretKey key1 = CryptoUtils.secretKeyFromHexString(aes1);
 		assertTrue(key1 != null);
 		
 		String aes2 = "7d2db9d447f41cd16b936ac177f7eacbbad378f53b92dc6445924dd8c700e231";
-		SecretKey key2 = new SecretKeySpec(Hex.decode(aes2), "AES");
+		SecretKey key2 = CryptoUtils.secretKeyFromHexString(aes2);
 		assertTrue(key2 != null);
 		
 		String expectedStr1 = "c558a0c22e542153111e81db37456900ee821764667de99ffa5217c016ddd43aa6e5836f457a9b788302fcc0cc11b943ae622310ebff850848a31ce1d3fd587d";
@@ -81,11 +81,11 @@ public class CryptoUtilsTest {
 		byte[] expectedBytes = "I am the payload".getBytes();
 		
 		String aes1 = "d8d2b7a00a615ead144bcb02abe325fb955415484003eee969339d7d32f8ca3a";
-		SecretKey key1 = new SecretKeySpec(Hex.decode(aes1), "AES");
+		SecretKey key1 = CryptoUtils.secretKeyFromHexString(aes1);
 		assertTrue(key1 != null);
 		
 		String aes2 = "7d2db9d447f41cd16b936ac177f7eacbbad378f53b92dc6445924dd8c700e231";
-		SecretKey key2 = new SecretKeySpec(Hex.decode(aes2), "AES");
+		SecretKey key2 = CryptoUtils.secretKeyFromHexString(aes2);
 		assertTrue(key2 != null);		
 		
 		byte[] result1 = null;
@@ -103,5 +103,16 @@ public class CryptoUtilsTest {
 		
 		assertFalse(Arrays.areEqual(result1, "I am not the payload".getBytes()));
 		assertFalse(Arrays.areEqual(result2, "I am not the payload".getBytes()));
+	}
+	
+	@Test
+	public void secretKeyFromHexStringTest() {
+		String expected = "d8d2b7a00a615ead144bcb02abe325fb955415484003eee969339d7d32f8ca3a";
+		
+		SecretKey key = CryptoUtils.secretKeyFromHexString(expected);
+		byte[] raw = key.getEncoded();
+		String result = Hex.toHexString(raw);
+		
+		assertTrue(expected.equals(result));
 	}
 }
