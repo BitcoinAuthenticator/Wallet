@@ -531,8 +531,12 @@ public class TCPListener extends BASE{
 		try {
 			Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
 			while( b.hasMoreElements()){
+				NetworkInterface ni = b.nextElement();
+				System.out.println(ni.getName());
 				for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses()) {
 					if ( f.getAddress().isSiteLocalAddress()) {
+						System.out.println(ni.getName() + ", IP: " + f.getAddress().getHostAddress());
+						
 						/*
 						 *	Fixing a strange behavior on some machines, returns the IP with a '/' prefix 
 						 */
@@ -542,11 +546,11 @@ public class TCPListener extends BASE{
 						return  f.getAddress().getHostAddress();
 					}
 				}
+				System.out.println();
 			}
         } catch (SocketException e) {
             e.printStackTrace();
-        }
-		
+        }	
         return null;
 	}
 	

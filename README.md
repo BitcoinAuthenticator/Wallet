@@ -65,13 +65,13 @@ c:\<Path to project> set jh=%JAVA_HOME%/bin
  ```
 3. Build (OSX/ Linux): 
 ```
-$ $jh/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
- ```
+$ $jh/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "Authenticator Wallet" -title "Authenticator Wallet"
+```
 <br>
 Build (Windows): 
 ```
-c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "BTCAuthenticator"
- ```
+c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "Authenticator Wallet" -title "Authenticator Wallet"
+```
 
 ## Development 
 Check our future development proposals [here](https://docs.google.com/spreadsheets/d/1o5ZS_L8OppZJit46SzpauJOthI0ncWuIgmo6ZtPevOU/edit?usp=sharing)

@@ -102,6 +102,8 @@ public class SettingsController  extends BaseUI{
 	@FXML private Pane settingspane;
 	@FXML private Pane pendingRequestsPane;
 	
+	@FXML private Label lblAppVersion;
+	
 	@FXML private AnchorPane SettingsApp;
 	@FXML private Button btnDone;
 	@FXML private Button btnRestore;
@@ -158,6 +160,8 @@ public class SettingsController  extends BaseUI{
     }
     
     private void initUI() {    	
+    	lblAppVersion.setText(Authenticator.getApplicationParams().getFriendlyAppVersion());
+    	
     	this.intDecimal 		= Authenticator.getWalletOperation().getDecimalPointFromSettings();
     	this.strCurrency 		= Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
     	this.strLanguage 		= Authenticator.getWalletOperation().getLanguageFromSettings().toString();
