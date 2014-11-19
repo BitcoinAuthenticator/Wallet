@@ -6,6 +6,8 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.MalformedURLException;
@@ -529,26 +531,22 @@ public class TCPListener extends BASE{
 	 */
 	private String getInternalIp() {
 		try {
-			Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
-			while( b.hasMoreElements()){
-				NetworkInterface ni = b.nextElement();
-				System.out.println(ni.getName());
-				for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses()) {
-					if ( f.getAddress().isSiteLocalAddress()) {
-						System.out.println(ni.getName() + ", IP: " + f.getAddress().getHostAddress());
-						
-						/*
-						 *	Fixing a strange behavior on some machines, returns the IP with a '/' prefix 
-						 */
-						String firstChar = f.getAddress().getHostAddress().substring(0, 1);
-						if(firstChar.equals("/"))
-							return  f.getAddress().getHostAddress().substring(1, f.getAddress().getHostAddress().length());
-						return  f.getAddress().getHostAddress();
-					}
-				}
-				System.out.println();
-			}
-        } catch (SocketException e) {
+			String os = System.getProperty("os.name").toLowerCase();
+
+		    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {   
+		        NetworkInterface ni = NetworkInterface.getByName("eth0");
+
+		        Enumeration<InetAddress> ias = ni.getInetAddresses();
+
+		        InetAddress iaddress;
+		        do {
+		            iaddress = ias.nextElement();
+		        } while(!(iaddress instanceof Inet4Address));
+
+		        return iaddress.getHostAddress();
+		    }
+		    return InetAddress.getLocalHost().getHostAddress();  // for Windows and OS X it should work well
+        } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }	
         return null;

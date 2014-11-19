@@ -227,8 +227,8 @@ public class BAApplicationParameters{
 	 * @return
 	 */
 	public String getFriendlyAppVersion() {
-		if(APP_CODE_VERSION <= 1 )
-			return "V0.1";
+		if(APP_CODE_VERSION <= 10)
+			return "V0.1." + APP_CODE_VERSION;
 		else
 			return "XXX";
 	}
