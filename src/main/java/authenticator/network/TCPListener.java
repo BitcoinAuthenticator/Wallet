@@ -534,16 +534,15 @@ public class TCPListener extends BASE{
 			String os = System.getProperty("os.name").toLowerCase();
 
 		    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {   
-		        NetworkInterface ni = NetworkInterface.getByName("eth0");
-
-		        Enumeration<InetAddress> ias = ni.getInetAddresses();
-
-		        InetAddress iaddress;
-		        do {
-		            iaddress = ias.nextElement();
-		        } while(!(iaddress instanceof Inet4Address));
-
-		        return iaddress.getHostAddress();
+		    	NetworkInterface ni = NetworkInterface.getByName("wlan0");
+			    Enumeration<InetAddress> inetAddresses =  ni.getInetAddresses();
+			    while(inetAddresses.hasMoreElements()) {
+			        InetAddress ia = inetAddresses.nextElement();
+			        if(!ia.isLinkLocalAddress()) {
+			            System.out.println("IP: " + ia.getHostAddress());
+			            return ia.getHostAddress();
+			        }
+			    }
 		    }
 		    return InetAddress.getLocalHost().getHostAddress();  // for Windows and OS X it should work well
         } catch (SocketException | UnknownHostException e) {
