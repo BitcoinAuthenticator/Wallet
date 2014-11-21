@@ -175,7 +175,6 @@
         -->
         <Label fx:id="lblLoadginQR" font="$x1" layoutX="140.0" layoutY="207.0" prefWidth="98.0" text="Loading..." visible="false" />
         <ImageView fx:id="ivFirstAccountPairingQR" fitHeight="182.0" fitWidth="182.0" layoutX="89.0" layoutY="126.0" pickOnBounds="true" preserveRatio="true" visible="false" />
-        <Hyperlink fx:id="hlFinished" layoutX="225.0" layoutY="335.0" onAction="#finished" text="I will set up 2FA later" visible="false" />
         <Label fx:id="lbld1" layoutX="89.0" layoutY="60.0" prefHeight="74.0" prefWidth="182.0" text="Scan QR code to set up 2-factor authentication and use multisig addresses." visible="false" wrapText="true" />
         <Label fx:id="lbld2" layoutX="391.0" layoutY="77.0" prefHeight="40.0" prefWidth="146.0" text="Or click below to use standard addresses." visible="false" wrapText="true" />
         <Button fx:id="btnStandard" layoutX="373.0" layoutY="126.0" mnemonicParsing="false" onAction="#finished" prefHeight="182.0" prefWidth="182.0" text="" textAlignment="CENTER" visible="false" wrapText="true" >
@@ -285,7 +284,7 @@
             </ImageView>
           </graphic>
         </Button>
-        <Label font="$x3" layoutX="25.0" layoutY="240.0" prefHeight="20.0" prefWidth="531.0" text="Mnemonic:" wrapText="true" />
+        <Label font="$x3" layoutX="25.0" layoutY="240.0" prefHeight="20.0" prefWidth="531.0" text="Mnemonic Seed Found:" wrapText="true" />
         <Label fx:id="lblSeedFromQR" layoutX="25.0" layoutY="260.0" prefHeight="40.0" prefWidth="557.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
         <Button fx:id="btnBackFromSeedFromQRRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromQRRestore" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnRestoreFromSeedFromQRContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromQR" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />

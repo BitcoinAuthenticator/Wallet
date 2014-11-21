@@ -2,6 +2,8 @@ BitcoinAuthenticator - Wallet
 ====================
 
 ###IMPORTANT - This project is under development.
+[![Coverage Status](https://coveralls.io/repos/negedzuregal/BitcoinAuthWallet/badge.png)](https://coveralls.io/r/negedzuregal/BitcoinAuthWallet)
+
 
 ####What Is This ?
 ![alt tag](https://raw.githubusercontent.com/cpacia/BitcoinAuthenticator/master/res/drawable-xhdpi/ic_icon_action_bar.png)
@@ -74,7 +76,11 @@ c:\<Path to project> "%jh%/javafxpackager.exe" -deploy -v -native -outdir . -out
 ```
 
 ## Development 
-Check our future development proposals [here](https://docs.google.com/spreadsheets/d/1o5ZS_L8OppZJit46SzpauJOthI0ncWuIgmo6ZtPevOU/edit?usp=sharing)
+- Check our future development proposals [here](https://docs.google.com/spreadsheets/d/1o5ZS_L8OppZJit46SzpauJOthI0ncWuIgmo6ZtPevOU/edit?usp=sharing)
+
+## Testing
+- Our UX testing checklist [here](https://docs.google.com/spreadsheets/d/1Tcg6E1ZxlYmg9TjcGjNhZoP0vHRUZT_O_2SzJJVfcKQ/edit?usp=sharing)
+- <b> Unit testing coverage is low, any contribution will be much appreciated !</b>
 
 ## Contacts
 If you have any questions feel free to contact us: 

@@ -76,6 +76,8 @@ public class PairWallet extends BaseUI{
 	@FXML private Button btnBack;
 	@FXML private Label lblInfo;
 	
+	private BAOperation pairingOP;
+	
 	private double xOffset = 0;
 	private double yOffset = 0;
     
@@ -84,7 +86,7 @@ public class PairWallet extends BaseUI{
     public void initialize() {
         super.initialize(PairWallet.class);
         
-        if(!Main.UI_ONLY_WALLET_PW.hasPassword()) {
+        if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
         	txfWalletPwd.setDisable(false); 
         }
         else
@@ -157,7 +159,7 @@ public class PairWallet extends BaseUI{
     		return ;
     	}
     	
-    	BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
+    	pairingOP = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			accountID,
     			keyHex,
@@ -175,7 +177,7 @@ public class PairWallet extends BaseUI{
     			},
     			Main.UI_ONLY_WALLET_PW).SetOperationUIUpdate(opListener);
     	
-    	boolean result = Authenticator.addOperation(op);
+    	boolean result = Authenticator.addOperation(pairingOP);
     	if(!result){
     		GuiUtils.informationalAlert("Error !", "Could not add operation");
     	}
@@ -213,6 +215,7 @@ public class PairWallet extends BaseUI{
 	    		setProgressIndicator(0.8f, "Decrypting Message");
 	    		break;
 	    	case FINISHED:
+	    		pairingOP = null;
 	    		setProgressIndicator(1, "");
 	    		afterPairingAnimation();
 	    		break;
@@ -220,6 +223,7 @@ public class PairWallet extends BaseUI{
 	    		
 	    	case CONNECTION_TIMEOUT:
 	    	case FAILED:
+	    		pairingOP = null;
 	    		Platform.runLater(new Runnable() {
 	    			@Override
 	    	        public void run() {
@@ -287,6 +291,16 @@ public class PairWallet extends BaseUI{
 
     @FXML
     public void cancel(ActionEvent event) {
+    	if(pairingOP != null)
+			try {
+				Authenticator.Net().INTERRUPT_OUTBOUND_OPERATION(pairingOP);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Platform.runLater(() -> {
+					BADialog.info(Main.class, "Error!", "Could not interrupt pairing operation").show();
+				});
+			}
+    		
     	if(overlayUi != null)
     		overlayUi.done();
     	else if(listener != null)
