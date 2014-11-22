@@ -189,7 +189,8 @@ public class SettingsController  extends BaseUI{
     	cbCurrency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
   	      @Override
   	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-  	    		strCurrency = cbCurrency.getItems().get((Integer) number2).toString();
+  	    	if((Integer) number2 > 0)
+    			strCurrency = cbCurrency.getItems().get((Integer) number2).toString();
   	      }
   	    });
     	
