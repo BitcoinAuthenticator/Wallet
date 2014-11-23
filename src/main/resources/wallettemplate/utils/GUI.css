@@ -74,7 +74,6 @@
 	-fx-background-radius: 2em;
 }
 
-////////
 .onename .scroll-bar{
  -fx-background-color: black;
 }
@@ -144,7 +143,6 @@
 .onename .scroll-bar:horizontal:focused {
  -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
 }
-////////
 
 .progress-bar .track {
 	-fx-background-color: #d9dee1;
@@ -157,7 +155,6 @@
     -fx-background-radius: .3em;
 }
   
-////
 
 .update-window-progress-bar .track {
 	-fx-background-color: #d9dee1;
@@ -165,7 +162,7 @@
 }
 
 .update-window-progress-bar .bar {
-    -fx-background-color: #4b698f;
+    -fx-background-color: #95d946;
     -fx-background-insets: 0;
     -fx-background-radius: .3em;
 }

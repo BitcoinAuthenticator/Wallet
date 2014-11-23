@@ -205,7 +205,7 @@ public class TCPListener extends BASE{
 	    		}
 	    		else
 	    			try {
-						vBANeworkInfo = new BANetworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
+						vBANeworkInfo = new BANetworkInfo(getExternalIp(), getInternalIp());
 						vBANeworkInfo.PORT_FORWARDED = true;
 						LOG.info("Marked port " + forwardedPort + " as forwarded");
 					} catch (Exception e) {
@@ -529,22 +529,21 @@ public class TCPListener extends BASE{
 	 */
 	private String getInternalIp() {
 		try {
-            /*Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
-            while( b.hasMoreElements()){
-                for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses()){
-                	LOG.info("$$$$$$$$$$$$$$ " + f.getAddress());
-                    if ( f.getAddress().isSiteLocalAddress())
-                    	return  f.getAddress().getHostAddress();
-                }
-            }*/
-			NetworkInterface ni = NetworkInterface.getByName("wlan0");
-		    Enumeration<InetAddress> inetAddresses =  ni.getInetAddresses();
-		    while(inetAddresses.hasMoreElements()) {
-		        InetAddress ia = inetAddresses.nextElement();
-		        if(!ia.isLinkLocalAddress()) {
-		            return ia.getHostAddress();
-		        }
-		    }
+
+			Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
+			while( b.hasMoreElements()){
+				for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses()) {
+					if ( f.getAddress().isSiteLocalAddress()) {
+						/*
+						 *	Fixing a strange behavior on some machines, returns the IP with a '/' prefix 
+						 */
+						String firstChar = f.getAddress().getHostAddress().substring(0, 1);
+						if(firstChar.equals("/"))
+							return  f.getAddress().getHostAddress().substring(1, f.getAddress().getHostAddress().length());
+						return  f.getAddress().getHostAddress();
+					}
+				}
+			}
         } catch (SocketException e) {
             e.printStackTrace();
         }

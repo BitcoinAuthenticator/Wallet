@@ -9,30 +9,26 @@
 
 <AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="640.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <StackPane prefHeight="360.0" prefWidth="640.0">
+      <ImageView fitHeight="458.0" fitWidth="446.0" layoutX="227.0" layoutY="-11.0" opacity="0.48" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../startup/logo.png" />
+         </image>
+      </ImageView>
+      <VBox prefHeight="100.0" prefWidth="592.0">
          <children>
-            <ImageView fitHeight="360.0" fitWidth="660.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@splashBackground.png" />
-               </image>
-            </ImageView>
-            <VBox prefHeight="100.0" prefWidth="592.0">
-               <children>
-                  <Label fx:id="lblTitle" text="Downloading Updates" textFill="#4b698f">
-                     <VBox.margin>
-                        <Insets left="10.0" top="15.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lblDetails" text="Label">
-                     <VBox.margin>
-                        <Insets left="10.0" top="10.0" />
-                     </VBox.margin>
-                  </Label>
-               </children>
-            </VBox>
+            <Label fx:id="lblTitle" text="Downloading Updates" textFill="#4b698f">
+               <VBox.margin>
+                  <Insets left="10.0" top="15.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblDetails" text="Label">
+               <VBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
             <Pane prefHeight="200.0" prefWidth="200.0">
                <children>
                   <StackPane layoutX="80.0" layoutY="260.0" prefHeight="39.0" prefWidth="494.0">
@@ -56,6 +52,6 @@
                </children>
             </Pane>
          </children>
-      </StackPane>
+      </VBox>
    </children>
 </AnchorPane>
