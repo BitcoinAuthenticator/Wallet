@@ -35,6 +35,7 @@ import javax.crypto.SecretKey;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.SettingsController;
 import wallettemplate.PairWallet.PairingWalletControllerListener;
@@ -79,6 +80,9 @@ import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
+
+import net.glxn.qrgen.QRCode;
+import net.glxn.qrgen.image.ImageType;
 
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Block;
@@ -160,6 +164,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.effect.DropShadow;
 import javafx.util.Duration;
 
 public class StartupController  extends BaseUI{

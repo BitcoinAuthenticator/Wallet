@@ -115,10 +115,8 @@ public class UpNp extends BASE{
 		 * For some reason weupnp returns a '/' prefix with the localIPAddress string, 
 		 * this is a hack to fix it
 		 */
-		{ 
-			char firstChar = localIPAddress.charAt(0);
-			if(firstChar == '/')
-				localIPAddress = localIPAddress.substring(1, localIPAddress.length());
+		if (localIPAddress.substring(0).equals("/")){
+				return localIPAddress.substring(1, localIPAddress.length());
 		}
 		
 		return localIPAddress;
