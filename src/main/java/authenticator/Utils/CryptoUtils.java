@@ -67,10 +67,11 @@ public class CryptoUtils {
 	}
 	
 	static public byte[] decryptPayloadWithChecksum(byte[] encryptedPayload, SecretKey secretkey) throws CannotDecryptMessageException {
-		try {
+		try {			
 			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 		    cipher.init(Cipher.DECRYPT_MODE, secretkey);
-		    String message = Hex.toHexString(cipher.doFinal(encryptedPayload));
+		    byte[] decryptedPayload = cipher.doFinal(encryptedPayload);
+		    String message = Hex.toHexString(decryptedPayload);
 		    String sig = message.substring(0,message.length()-64);
 		    String HMAC = message.substring(message.length()-64,message.length());
 		    byte[] testsig = Hex.decode(sig);
@@ -80,7 +81,6 @@ public class CryptoUtils {
 			mac.init(secretkey);
 			byte[] macbytes = mac.doFinal(testsig);
 			if (Arrays.equals(macbytes, hash)){
-				//staticLooger.info("Received Response: " + EncodingUtils.bytesToHex(testsig));
 				return testsig;
 			}
 			else {
@@ -105,6 +105,11 @@ public class CryptoUtils {
 		catch(NoSuchAlgorithmException e) {
 			return null;
 		}
+	}
+	
+	static public SecretKey secretKeyFromHexString(String hexKey) {
+		byte[] keyBytes = Hex.decode(hexKey);
+		return new SecretKeySpec(keyBytes, "AES");
 	}
 	
 	static public class ChecksumIncorrectException extends Exception {

@@ -132,7 +132,7 @@ public class Main extends BAApplication {
             controller = loader.getController();
             // Configure the window with a StackPane so we can overlay things on top of the main UI.
             uiStack = new StackPane(mainUI);
-            mainWindow.setTitle(BAApplication.ApplicationParams.getAppName());
+            mainWindow.setTitle(BAApplication.ApplicationParams.getAppName() + " " + BAApplication.ApplicationParams.getFriendlyAppVersion());
             final Scene scene = new Scene(uiStack, 850, 483);
             final String file = TextFieldValidator.class.getResource("GUI.css").toString();
             scene.getStylesheets().add(file);  // Add CSS that we need.
@@ -501,7 +501,7 @@ public class Main extends BAApplication {
 
         ProgressBar indicator = showUpdateDownloadProgressBar();
 
-        Updater updater = new Updater(updateFxAppParams.getRemoteUpdateBaseURL(), updateFxAppParams.getRemoteUpdateUserAgent(), updateFxAppParams.APP_VERSION,
+        Updater updater = new Updater(updateFxAppParams.getRemoteUpdateBaseURL(), updateFxAppParams.getRemoteUpdateUserAgent(), updateFxAppParams.APP_CODE_VERSION,
                 AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
                 updateFxAppParams.getRemoteUpdateKeys(), 1) {
             @Override
@@ -517,7 +517,7 @@ public class Main extends BAApplication {
         updater.setOnSucceeded(event -> {
             try {
                 UpdateSummary summary = updater.get();
-                if (summary.newVersion > updateFxAppParams.APP_VERSION) {
+                if (summary.newVersion > updateFxAppParams.APP_CODE_VERSION) {
                 	System.out.println("Restarting the app to load the new version");
                     if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
                         UpdateFX.restartApp();

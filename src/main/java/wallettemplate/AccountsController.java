@@ -28,6 +28,7 @@ import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.Utils.OneName.OneName;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.ProtoConfig.ATAccount;
+import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
@@ -256,9 +257,17 @@ public class AccountsController  extends BaseUI{
 	@FXML protected void repairAccount(ActionEvent event)
 	{
 		if(currentSelectedCell != null) { // repair a selected account
-			pairingStage = loadPairingFXML(pairingStage, new ArrayList(Arrays.asList((Object)currentSelectedCell.getAccount().getAccountName(),
-											(Object)currentSelectedCell.getAccount().getIndex(),
-											(Object)Boolean.toString(true))));
+			PairedAuthenticator op = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(currentSelectedCell.getAccount().getIndex());
+			
+			ArrayList<Object> args = new ArrayList<Object>(
+					Arrays.asList(	(Object)currentSelectedCell.getAccount().getAccountName(),
+									(Object)currentSelectedCell.getAccount().getIndex(),
+									(Object)Boolean.toString(true),
+									(Object)op.getAesKey()
+								 )
+					);
+			
+			pairingStage = loadPairingFXML(pairingStage, args);
 			pairingStage.show();
 			
 		}

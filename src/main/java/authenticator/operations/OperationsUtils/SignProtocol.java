@@ -92,7 +92,7 @@ public class SignProtocol {
 						;
 		byte[] jsonBytes = signMsgPayload.serializeToBytes();
 		
-		SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
+		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));
 		return CryptoUtils.encryptPayloadWithChecksum(jsonBytes, secretkey);
 	}
 
@@ -177,7 +177,7 @@ public class SignProtocol {
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
-		SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");						
+		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));				
 		PairedAuthenticator  po = wallet.getPairingObject(pairingID);
 		byte[] gcmID = po.getGCM().getBytes();
 		assert(gcmID != null);

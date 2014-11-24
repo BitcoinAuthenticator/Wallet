@@ -66,7 +66,7 @@ message PairedAuthenticator{
 	required string 	master_public_key 	= 2;
 	required string 	chain_code 			= 3;
 	required string 	GCM 				= 4;
-	required string 	pairingID 			= 5;
+	required string 	pairingID 			= 5; // digest of wallet's seed and account index
 	required bool 		testnet 			= 6;
 	required int32 		keys_n 				= 7;
 	//repeated KeysObject generatedKeys 	= 8; // no need to cache them

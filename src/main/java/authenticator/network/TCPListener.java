@@ -6,6 +6,8 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.MalformedURLException;
@@ -280,9 +282,9 @@ public class TCPListener extends BASE{
 							int keysize = inStream.readInt();
 							byte[] reqIdPayload = new byte[keysize];
 							inStream.read(reqIdPayload);
-							JSONObject jo = new JSONObject(new String(reqIdPayload));
-							requestID = jo.getString("requestID");
-							String pairingID = jo.getString("pairingID");	
+							GetRequestIDPayload reqPayload = new GetRequestIDPayload(reqIdPayload);
+							requestID = reqPayload.getRequestID();
+							String pairingID = reqPayload.getPairingID();
 							//
 							LOG.info("Looking for pending request ID: " + requestID);
 							for(Object o:wallet.getPendingRequests()){
@@ -529,25 +531,23 @@ public class TCPListener extends BASE{
 	 */
 	private String getInternalIp() {
 		try {
+			String os = System.getProperty("os.name").toLowerCase();
 
-			Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
-			while( b.hasMoreElements()){
-				for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses()) {
-					if ( f.getAddress().isSiteLocalAddress()) {
-						/*
-						 *	Fixing a strange behavior on some machines, returns the IP with a '/' prefix 
-						 */
-						String firstChar = f.getAddress().getHostAddress().substring(0, 1);
-						if(firstChar.equals("/"))
-							return  f.getAddress().getHostAddress().substring(1, f.getAddress().getHostAddress().length());
-						return  f.getAddress().getHostAddress();
-					}
-				}
-			}
-        } catch (SocketException e) {
+		    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {   
+		    	NetworkInterface ni = NetworkInterface.getByName("wlan0");
+			    Enumeration<InetAddress> inetAddresses =  ni.getInetAddresses();
+			    while(inetAddresses.hasMoreElements()) {
+			        InetAddress ia = inetAddresses.nextElement();
+			        if(!ia.isLinkLocalAddress()) {
+			            System.out.println("IP: " + ia.getHostAddress());
+			            return ia.getHostAddress();
+			        }
+			    }
+		    }
+		    return InetAddress.getLocalHost().getHostAddress();  // for Windows and OS X it should work well
+        } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
-        }
-		
+        }	
         return null;
 	}
 	

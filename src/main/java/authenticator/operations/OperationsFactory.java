@@ -109,6 +109,7 @@ public class OperationsFactory extends BASE{
 	static public BAOperation PAIRING_OPERATION(WalletOperation wallet,
 			String pairingName, 
 			@Nullable Integer accountID,
+			@Nullable String secretKey,
 			NetworkType networkType, 
 			int timeout,
 			boolean isRepairingAccount,
@@ -119,7 +120,11 @@ public class OperationsFactory extends BASE{
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "authenticator", Integer.toString(networkType.getValue()) })
+					.SetArguments(new String[]{ pairingName, 
+												accountID == null? "":Integer.toString(accountID), 
+												"authenticator", 
+												Integer.toString(networkType.getValue()),
+												secretKey == null? "":secretKey})
 					.SetOperationAction(new BAOperationActions(){
 						int tempTimeout = 5;
 						ServerSocket socket = null;
@@ -237,11 +242,10 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
+							SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));							
 							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
 							
 							//Break apart the signature array sent over from the authenticator
-							//String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = null;
 							SignProtocol.AuthenticatorAnswerType answerType = SignProtocol.AuthenticatorAnswerType.DoNothing;
 							try{

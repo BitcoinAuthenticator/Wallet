@@ -18,14 +18,18 @@ public class MessageBuilder extends JSONObject{
 		switch (type){
 			/**
 			 * arg - <br>
-			 * 0 - PairingID<br>
+			 * 0 - WalletID<br>
 			 * 1 - ExternalIP <br>
 			 * 2 - LocalIP <br>
 			 * 3 - CustomMsg <br>
+			 * 4 - tmp, for testing purposes <br>
 			 */
 			case SignTX:
-				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
-				this.put("PairingID", arg[0]); 
+				if(arg.length > 4)
+					this.put("tmp", arg[4]);
+				else
+					this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
+				this.put("WalletID", arg[0]); 
 				this.put("RequestType", ATGCMMessageType.SignTX_VALUE); 
 				reqPayload = new JSONObject();
 				reqPayload.put("ExternalIP", arg[1]);
@@ -36,14 +40,14 @@ public class MessageBuilder extends JSONObject{
 				break;
 			/**
 			 * arg - <br>
-			 * 0 - PairingID<br>
+			 * 0 - WalletID<br>
 			 * 1 - ExternalIP <br>
 			 * 2 - LocalIP <br>
 			 * 3 - CustomMsg <br>
 			 */
 			case UpdatePendingRequestIPs:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
-				this.put("PairingID", arg[0]); 
+				this.put("WalletID", arg[0]); 
 				this.put("RequestType", ATGCMMessageType.UpdatePendingRequestIPs_VALUE); 
 				reqPayload = new JSONObject();
 				reqPayload.put("ExternalIP", arg[1]);
@@ -53,12 +57,12 @@ public class MessageBuilder extends JSONObject{
 				break;
 			/**
 			 * arg - <br>
-			 * 0 - PairingID<br>
+			 * 0 - WalletID<br>
 			 * 1 - CustomMsg <br>
 			 */
 			case CoinsReceived:
 				this.put("tmp", new Timestamp( new java.util.Date().getTime() ));
-				this.put("PairingID", arg[0]); 
+				this.put("WalletID", arg[0]); 
 				this.put("RequestType", ATGCMMessageType.CoinsReceived_VALUE); 
 				this.put("CustomMsg", arg[1]); 
 				break;
@@ -69,11 +73,11 @@ public class MessageBuilder extends JSONObject{
 		String ReqPayload = msg.get("ReqPayload").toString();
 		String tmp = msg.get("tmp").toString();
 		String RequestType = msg.get("RequestType").toString();
-		String PairingID = msg.get("PairingID").toString();
+		String WalletID = msg.get("WalletID").toString();
 		return ReqPayload +
 				tmp + 
 				RequestType + 
-				PairingID;
+				WalletID;
 	}
 	
 	private String getRequestIDDigest(MessageBuilder msg) throws JSONException

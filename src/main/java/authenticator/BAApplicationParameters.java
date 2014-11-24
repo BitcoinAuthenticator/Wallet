@@ -30,9 +30,9 @@ public class BAApplicationParameters{
 	/*
 	 * Remote update vars
 	 */
-	final static public int APP_VERSION 	= 1; 
+	final static public int APP_CODE_VERSION 	= 1; 
 	private String remoteUpdateBaseURL 		= "http://www.bitcoinauthenticator.org/updates/";
-	private String remoteUpdateUserAgent 	= "AuthenticatorWallet/" + APP_VERSION;
+	private String remoteUpdateUserAgent 	= "AuthenticatorWallet/" + APP_CODE_VERSION;
 	private List<ECPoint> remoteUpdateKeys 	= Crypto.decode("03D862C94F031037DF0AE56603092990D623BAAB0811953134569ACD5AC7CFBAB2");
 	
 	/*
@@ -220,6 +220,17 @@ public class BAApplicationParameters{
 	    }
 		
 		return ret;
+	}
+	
+	/**
+	 * Returns a readable user friendly app version based on the current {@link BAApplicationParameters#APP_CODE_VERSION app code version}
+	 * @return
+	 */
+	public String getFriendlyAppVersion() {
+		if(APP_CODE_VERSION <= 10)
+			return "V0.1." + APP_CODE_VERSION;
+		else
+			return "XXX";
 	}
 	
 	public NetworkType getBitcoinNetworkType(){ 
@@ -415,6 +426,18 @@ public class BAApplicationParameters{
 				return TEST_NET;
 			case "TEST_NET":
 				return TEST_NET;
+			default:
+				return MAIN_NET;
+	    	}
+	    }
+	    
+	    public static NetworkType fromIndex(Integer i){
+	    	switch(i)
+	    	{
+	    	case 0:
+	    		return TEST_NET;
+			case 1:
+	    		return MAIN_NET;
 			default:
 				return MAIN_NET;
 	    	}

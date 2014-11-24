@@ -271,7 +271,6 @@ public class StartupController  extends BaseUI{
 	 *  the explanation pane if he wants that the created account should be paired or standard.
 	 */
 	@FXML private ImageView   ivFirstAccountPairingQR;
-	@FXML private Hyperlink hlFinished;
 	private String 			  encryptionPassword = null;
 	private String 			  firstAccountName;
 	private WalletAccountType firstAccountType = WalletAccountType.StandardAccount;
@@ -597,7 +596,7 @@ public class StartupController  extends BaseUI{
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
 		 
-		 hlFinished.setDisable(true);
+		 btnStandard.setDisable(true);
 		 		 
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
@@ -625,7 +624,7 @@ public class StartupController  extends BaseUI{
 														Image qrImg = ImageUtils.javaFXImageFromBytes(qrImageBytes);
 														Platform.runLater(() -> {
 															ivFirstAccountPairingQR.setImage(qrImg);
-															hlFinished.setDisable(false);
+															btnStandard.setDisable(false);
 														});
 													} catch (IOException e) {
 														e.printStackTrace();
@@ -657,7 +656,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
-		 hlFinished.setDisable(true);
+		 btnStandard.setDisable(true);
 		 finishsetup();
 	 }
 	 
@@ -1503,6 +1502,7 @@ public class StartupController  extends BaseUI{
 	private void playPairingOperation(String pairName, NetworkType nt, PairingStageUpdater stageListener){
 		BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
+    			null,
     			null,
     			nt,
     			0,
