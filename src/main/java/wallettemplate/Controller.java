@@ -1893,8 +1893,9 @@ public class Controller  extends BaseUI{
 			   Main.instance.overlayUI("DisplayOneName.fxml", l);
     	}
     	else {
-    		informationalAlert("Cannot display your OneName account",
-					"Please press on your avatr picture on the overview tab to set your OneName account");
+    		ArrayList<Object> l = new ArrayList<Object>();
+    		l.add("");
+    		Main.instance.overlayUI("DisplayOneName.fxml", l);
     	}
     }
     
