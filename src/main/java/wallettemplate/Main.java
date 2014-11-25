@@ -483,6 +483,16 @@ public class Main extends BAApplication {
     
 	@Override
     public void start(Stage mainWindow) throws IOException, WrongOperatingSystemException {
+		//###########################################################################
+		//##
+		//##	Temporary disabling of remote updating for linux
+		//##
+		//###########################################################################
+		String os = System.getProperty("os.name").toLowerCase();
+	    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
+	    	realStart(mainWindow);
+	    }
+		
     	/**
     	 * Entry point for the remote update UI.
     	 */
