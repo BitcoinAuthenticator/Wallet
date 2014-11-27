@@ -369,6 +369,7 @@ public class Controller  extends BaseUI{
 		Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
 		
 		// date and time label
+		lblDateAndTime.setStyle("-fx-font-size: 13; -fx-text-fill: #bfc6ce;");
 		final DateFormat format = DateFormat.getInstance();  
 		final Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {  
 		     @Override  
