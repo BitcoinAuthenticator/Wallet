@@ -40,6 +40,12 @@ public class BAApplicationParameters{
 	 */
 	boolean isTestMode = false;
 	boolean shouldLaunchProgram = false;	
+	/** 
+	 * ###########################################<br>
+	 * a temporary flag to disable spinners because they crash on some platforms<br>
+	 * ############################################
+	 */
+	public boolean useSpinners = false;
 	
 	/*
 	 * Network
@@ -90,6 +96,15 @@ public class BAApplicationParameters{
 			}
 		}
 		
+		// #####################################
+		//
+		//	a temporary flag to disable spinners because they crash on some platforms
+		//
+		// #####################################
+		if(paramsFinal.containsKey("disableSpinners")){
+			boolean value = Boolean.parseBoolean(paramsFinal.get("disableSpinners"));
+			useSpinners = value;
+		}
 		
 		// Help
 		if(paramsFinal.containsKey("help")){
