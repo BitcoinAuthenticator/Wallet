@@ -430,7 +430,7 @@ public class Controller  extends BaseUI{
 			}
 	    });    
     	updateUI();
-    	
+    	if (Authenticator.getApplicationParams().disableSpinners){stopSyncRotation();}
     	Authenticator.getWalletOperation().sendNotificationToAuthenticatorWhenCoinsReceived();
     }
    
@@ -1292,7 +1292,7 @@ public class Controller  extends BaseUI{
             			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
             				GuiUtils.fadeIn(mSendTxOverlayHelper.authenticatorVbox);
             				mSendTxOverlayHelper.authenticatorVbox.setVisible(true);
-            				startAuthRotation(mSendTxOverlayHelper.ivLogo1);
+            				if (!Authenticator.getApplicationParams().disableSpinners){startAuthRotation(mSendTxOverlayHelper.ivLogo1);}
             			}
             			else {
             				GuiUtils.fadeIn(mSendTxOverlayHelper.successVbox);
@@ -2003,7 +2003,7 @@ public class Controller  extends BaseUI{
         rt2.play();
     }
     private void stopAuthRotation(){
-    	rt2.stop();
+    	if (!Authenticator.getApplicationParams().disableSpinners){rt2.stop();}
     }
     
 }

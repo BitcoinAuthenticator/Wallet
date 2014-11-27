@@ -45,7 +45,7 @@ public class BAApplicationParameters{
 	 * a temporary flag to disable spinners because they crash on some platforms<br>
 	 * ############################################
 	 */
-	public boolean useSpinners = false;
+	public boolean disableSpinners = false;
 	
 	/*
 	 * Network
@@ -101,9 +101,9 @@ public class BAApplicationParameters{
 		//	a temporary flag to disable spinners because they crash on some platforms
 		//
 		// #####################################
-		if(paramsFinal.containsKey("disableSpinners")){
-			boolean value = Boolean.parseBoolean(paramsFinal.get("disableSpinners"));
-			useSpinners = value;
+		if(paramsFinal.containsKey("disablespinners")){
+			boolean value = Boolean.parseBoolean(paramsFinal.get("disablespinners"));
+			disableSpinners = value;
 		}
 		
 		// Help
@@ -246,6 +246,10 @@ public class BAApplicationParameters{
 			return "V0.1." + APP_CODE_VERSION;
 		else
 			return "XXX";
+	}
+	
+	public boolean getDisableSpinners(){
+		return disableSpinners;
 	}
 	
 	public NetworkType getBitcoinNetworkType(){ 
