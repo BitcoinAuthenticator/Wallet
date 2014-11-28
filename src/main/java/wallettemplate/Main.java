@@ -474,6 +474,11 @@ public class Main extends BAApplication {
         
         // re-enter at realMain, but possibly running a newer version of the software i.e. after this point the
         // rest of this code may be ignored.
+        String os = System.getProperty("os.name").toLowerCase();
+	    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
+	    	realMain(args);
+	    	return;
+	    }
         UpdateFX.bootstrap(Main.class, AppDirectory.dir(), args);
     }
 

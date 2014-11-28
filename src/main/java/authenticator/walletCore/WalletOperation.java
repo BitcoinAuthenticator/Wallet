@@ -110,6 +110,9 @@ import org.bitcoinj.wallet.DeterministicSeed;
 
 import com.google.common.collect.ImmutableList;
 
+import eu.hansolo.enzo.notification.Notification;
+import eu.hansolo.enzo.notification.Notification.Notifier;
+
 
 /**
  *<p>A super class for handling all wallet operations<br>
@@ -1513,41 +1516,46 @@ public class WalletOperation extends BASE{
 		Authenticator.addGeneralEventsListener(new BAGeneralEventsAdapter() {
 			@Override
 			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
-				if(howBalanceChanged == HowBalanceChanged.ReceivedCoins)
-				for (TransactionOutput out : tx.getOutputs()){
-					Script scr = out.getScriptPubKey();
-	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-	    			if(isWatchingAddress(addrStr)){
-	    				ATAddress add = findAddressInAccounts(addrStr);
-	    				if(add == null)
-	    					continue;
+				Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
+	    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
+	    		if (exit.compareTo(Coin.ZERO) > 0){} //only show notification on coins received excluding change
+	    		else {
+	    			if(howBalanceChanged == HowBalanceChanged.ReceivedCoins)
+	    				for (TransactionOutput out : tx.getOutputs()){
+	    					Script scr = out.getScriptPubKey();
+	    					String addrStr = scr.getToAddress(getNetworkParams()).toString();
+	    					if(isWatchingAddress(addrStr)){
+	    						ATAddress add = findAddressInAccounts(addrStr);
+	    						if(add == null)
+	    							continue;
 	    				
-	    				// incoming sum
-	    				Coin receivedSum = out.getValue();
+	    						// incoming sum
+	    						Coin receivedSum = out.getValue();
 	    				
-	    				ATAccount account = null;
-						try {
-							account = getAccount(add.getAccountIndex());
-							if(account.getAccountType() != WalletAccountType.AuthenticatorAccount)
-								continue;
-							PairedAuthenticator pairing = getPairingObjectForAccountIndex(account.getIndex());
-		    				SecretKey secretkey = new SecretKeySpec(Hex.decode(pairing.getAesKey()), "AES");						
-		    				byte[] gcmID = pairing.getGCM().getBytes();
-		    				assert(gcmID != null);
-		    				Device d = new Device(pairing.getChainCode().getBytes(),
-		    						pairing.getMasterPublicKey().getBytes(),
-		    						gcmID,
-		    						pairing.getPairingID().getBytes(),
-		    						secretkey);
+	    						ATAccount account = null;
+	    						try {
+	    							account = getAccount(add.getAccountIndex());
+	    							if(account.getAccountType() != WalletAccountType.AuthenticatorAccount)
+	    								continue;
+	    							PairedAuthenticator pairing = getPairingObjectForAccountIndex(account.getIndex());
+	    							SecretKey secretkey = new SecretKeySpec(Hex.decode(pairing.getAesKey()), "AES");						
+	    							byte[] gcmID = pairing.getGCM().getBytes();
+	    							assert(gcmID != null);
+	    							Device d = new Device(pairing.getChainCode().getBytes(),
+	    									pairing.getMasterPublicKey().getBytes(),
+	    									gcmID,
+	    									pairing.getPairingID().getBytes(),
+	    									secretkey);
 		    				
-		    				Dispacher disp = new Dispacher(null,null);
-		    				System.out.println("Sending a Coins Received Notification");
-		    				disp.dispachMessage(ATGCMMessageType.CoinsReceived, d, new String[]{ "Coins Received: " + receivedSum.toFriendlyString() });	
-						} catch (AccountWasNotFoundException | JSONException | IOException e1) {
-							e1.printStackTrace();
-						}
+	    							Dispacher disp = new Dispacher(null,null);
+	    							System.out.println("Sending a Coins Received Notification");
+	    							disp.dispachMessage(ATGCMMessageType.CoinsReceived, d, new String[]{ "Coins Received: " + receivedSum.toFriendlyString() });	
+	    						} catch (AccountWasNotFoundException | JSONException | IOException e1) {
+	    							e1.printStackTrace();
+	    					}
+	    				}
 	    			}
-				}
+	    		}
 			}
 		});
 	}
