@@ -9,6 +9,7 @@ import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.walletCore.BAPassword;
+import authenticator.walletCore.BalanceUpdater;
 import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import authenticator.listeners.BAGeneralEventsAdapter;
@@ -577,18 +578,19 @@ public class Controller  extends BaseUI{
             	/**
             	 * run an update of balances after we finished syncing
             	 */
-            	Authenticator.getWalletOperation().updateBalaceNonBlocking(Authenticator.getWalletOperation().mWalletWrapper.trackedWallet, new Runnable(){
-    				@Override
-    				public void run() { 
-    					Platform.runLater(new Runnable(){
-    						@Override
-    						public void run() {
-    							 readyToGoAnimation(1, null);
-    						}
-    			        });
-    				}
-        		});
-				
+            	BalanceUpdater.updateBalaceNonBlocking(Authenticator.getWalletOperation(),
+            											Authenticator.getWalletOperation().mWalletWrapper.trackedWallet, 
+            											new Runnable(){
+										    				@Override
+										    				public void run() { 
+										    					Platform.runLater(new Runnable(){
+										    						@Override
+										    						public void run() {
+										    							 readyToGoAnimation(1, null);
+										    						}
+										    			        });
+										    				}
+										        		});
 			}
 		}
 		

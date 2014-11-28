@@ -76,6 +76,11 @@ public class Authenticator extends BASE{
 		super(Authenticator.class);
 	}
 	
+	public Authenticator(BAApplicationParameters appParams) {
+		super(Authenticator.class);
+		init(appParams);
+	}
+	
 	/**
 	 * Instantiate without bitcoinj's wallet 
 	 * 
@@ -144,7 +149,8 @@ public class Authenticator extends BASE{
 	}
 	
 	public static void disposeOfAuthenticator(){
-		mWalletOperation.dispose();
+		if(mWalletOperation != null)
+			mWalletOperation.dispose();
 		mWalletOperation = null;
 		mApplicationParams = null;
 		generalEventsListeners = null;

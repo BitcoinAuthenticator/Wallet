@@ -63,7 +63,7 @@ public class BAApplicationParameters{
 	 * Global vars
 	 */
 	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
-	
+	public BAApplicationParameters() {}
 	public BAApplicationParameters(Map<String, String> params, List<String> raw) throws WrongOperatingSystemException{
 		InitializeApplicationFlags(params, raw);
 	}
