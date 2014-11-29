@@ -8,10 +8,10 @@ import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingelt
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.db.exceptions.AccountWasNotFoundException;
-import authenticator.walletCore.BAPassword;
-import authenticator.walletCore.BalanceUpdater;
 import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
+import authenticator.walletCore.utils.BAPassword;
+import authenticator.walletCore.utils.BalanceUpdater;
 import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation;

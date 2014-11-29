@@ -14,8 +14,8 @@ import authenticator.network.TrustedPeerNodes;
 import authenticator.operations.BAOperation;
 import authenticator.operations.listeners.OperationListenerAdapter;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.utils.BAPassword;
 
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;

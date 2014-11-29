@@ -320,6 +320,25 @@ public class Authenticator extends BASE{
 		generalEventsListeners.add(listener);
 	}
 	
+	/**
+	 * will search the specific listener by its identity hash code, returns null if not found
+	 * @param target
+	 * @return
+	 */
+	public static BAGeneralEventsListener getGeneralListenerByIdentityHashCode(BAGeneralEventsListener listener) {
+		int target = System.identityHashCode(listener);
+		for(BAGeneralEventsListener l: generalEventsListeners) {
+			int hashCode = System.identityHashCode(l);
+			if(hashCode == target)
+				return l;
+		}
+		return null;
+	}
+	
+	public static void removeGeneralListener(BAGeneralEventsListener listener) {
+		generalEventsListeners.remove(listener);
+	}
+	
 	public static void fireOnAccountsModified(AccountModificationType type, int accountIndex){
 		for(BAGeneralEventsListener l:generalEventsListeners)
 			l.onAccountsModified(type, accountIndex);

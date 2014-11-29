@@ -1,4 +1,4 @@
-package authenticator.walletCore;
+package authenticator.walletCore.utils;
 
 public class BAPassword{
 	private String pw;

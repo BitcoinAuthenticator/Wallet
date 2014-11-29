@@ -81,9 +81,9 @@ import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
+import authenticator.walletCore.utils.BAPassword;
 
 public class OperationsFactory extends BASE{
 	

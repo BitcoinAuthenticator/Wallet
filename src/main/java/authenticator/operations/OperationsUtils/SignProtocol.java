@@ -25,13 +25,13 @@ import authenticator.GCM.dispacher.Dispacher;
 import authenticator.Utils.CryptoUtils;
 import authenticator.Utils.EncodingUtils;
 import authenticator.walletCore.exceptions.UnableToCompleteTxSigningException;
+import authenticator.walletCore.utils.BAPassword;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
 import org.bitcoinj.core.ECKey;

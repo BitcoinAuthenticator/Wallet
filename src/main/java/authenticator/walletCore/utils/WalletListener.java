@@ -1,4 +1,4 @@
-package authenticator.walletCore;
+package authenticator.walletCore.utils;
 
 import org.bitcoinj.core.AbstractWalletEventListener;
 import org.bitcoinj.core.Coin;
@@ -8,6 +8,7 @@ import org.bitcoinj.core.Wallet;
 
 import authenticator.Authenticator;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
+import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.WalletOperation.BAOperationState;
 
 /**

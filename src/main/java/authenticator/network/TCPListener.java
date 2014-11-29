@@ -50,9 +50,9 @@ import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
+import authenticator.walletCore.utils.BAPassword;
 
 /**
  * <b>The heart of the wallet operation.</b><br>

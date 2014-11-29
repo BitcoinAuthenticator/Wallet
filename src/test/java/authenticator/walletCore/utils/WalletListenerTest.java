@@ -1,4 +1,4 @@
-package authenticator.walletCore;
+package authenticator.walletCore.utils;
 
 import static org.junit.Assert.*;
 
@@ -15,7 +15,9 @@ import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
+import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.WalletOperation.BAOperationState;
+import authenticator.walletCore.utils.WalletListener;
 
 public class WalletListenerTest {
 

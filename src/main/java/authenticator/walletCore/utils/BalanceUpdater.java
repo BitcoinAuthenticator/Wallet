@@ -1,4 +1,4 @@
-package authenticator.walletCore;
+package authenticator.walletCore.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import org.bitcoinj.script.Script;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.ATAddress;
+import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 
 public class BalanceUpdater {

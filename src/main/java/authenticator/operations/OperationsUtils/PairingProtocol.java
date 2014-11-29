@@ -26,8 +26,8 @@ import authenticator.network.PongPayload;
 import authenticator.network.UpNp;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.utils.BAPassword;
 
 /**
  * <b>Pairing Protocol</b><br>
