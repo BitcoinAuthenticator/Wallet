@@ -1,6 +1,8 @@
 package wallettemplate.controls;
 
 import java.awt.Button;
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -8,12 +10,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import org.json.JSONException;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.MainNetParams;
+
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
+import com.google.common.base.Joiner;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -27,6 +43,7 @@ import authenticator.Utils.CurrencyConverter.Currency;
 import authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
+import authenticator.operations.OperationsUtils.PaperWalletQR;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
@@ -104,6 +121,12 @@ public class SendToCell extends Region{
         // scan QR label
         Tooltip.install(lblScanQR, new Tooltip("Scan QR code"));
 		AwesomeDude.setIcon(lblScanQR, AwesomeIcon.QRCODE);
+		lblScanQR.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+            	runQRCamera();
+            }
+        });
 		
 		// address book label
 		Tooltip.install(lblContacts, new Tooltip("Select from address book"));
@@ -153,8 +176,9 @@ public class SendToCell extends Region{
 		        	        						ivAvatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		        	                					   @Override
 		        	                					   public void handle(MouseEvent event) {
-		        	                						   Main.instance.overlayUI("DisplayOneName.fxml");
-		        	                						   OneNameControllerDisplay.loadOneName(onenameID);
+		        	                						   ArrayList<Object> l = new ArrayList<Object>();
+		        	                						   l.add(onenameID);
+		        	                						   Main.instance.overlayUI("DisplayOneName.fxml", l);
 		        	                					   }
 		        	                				   });
 		        	        						lblAvatarName.setText(one.getOnenameFormatted());
@@ -206,7 +230,7 @@ public class SendToCell extends Region{
 		                		        						 @Override
 		                		        						public void run() {
 		                		        							txfAddress.setStyle("-fx-background-insets: 0, 0, 1, 2; -fx-background-color:#ecf0f1; -fx-text-fill: #98d947;");
-		                             		        				txfAddress.setText(data.getOnenameFormatted());
+		                             		        				txfAddress.setText(data.getBitcoinAddress());
 		                             		        				isAddressFromOneName = true;
 		                             		        				try {
 		                             		        					spinner.setProgress(50.0);
@@ -257,6 +281,103 @@ public class SendToCell extends Region{
         		});
 	}
 	
+	Webcam webcam;
+	JFrame camFrame;
+	private void runQRCamera() {
+		
+		new Thread(){
+			 @Override
+            public void run() {
+				 camFrame  = new JFrame();
+				 
+				 Dimension size = WebcamResolution.QVGA.getSize();
+				 webcam = Webcam.getDefault();
+				 webcam.setViewSize(size);
+				 WebcamPanel panel = new WebcamPanel(webcam);
+				 
+				 Platform.runLater(new Runnable() {
+	                @Override
+	                public void run() {
+	                	camFrame.add(panel);
+	                	camFrame.pack();
+	                	
+	                	camFrame.setVisible(true);
+	                	camFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+	                	    @Override
+	                	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+	                	    	webcam.close();
+	                	    }
+	                	});
+	                }
+	            });
+				 
+				tryAndReadQR(webcam);
+			 }
+		 }.start();
+	}
+	
+	private void tryAndReadQR(Webcam webcam){
+		 String qrDataString;
+		 do {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				Result result = null;
+				BufferedImage image = null;
+
+				if (webcam.isOpen()) {
+
+					if ((image = webcam.getImage()) == null) {
+						continue;
+					}
+
+					LuminanceSource source = new BufferedImageLuminanceSource(image);
+					BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+					try {
+						result = new MultiFormatReader().decode(bitmap);
+					} catch (NotFoundException e) {
+						// fall thru, it means there is no QR code in image
+					}
+				}
+
+				if (result != null) {
+					qrDataString = result.getText();
+					 
+					webcam.close();
+	                camFrame.setVisible(false);
+					break;
+				}
+
+			} while (true);
+		 
+		 System.out.println("Data read from qr: " + qrDataString);
+		 
+		 Platform.runLater(() -> {
+			 int addressStartIndex = qrDataString.indexOf("bitcoin:")+8;
+			 int addressEndIndex = qrDataString.indexOf("?amount=") != -1? qrDataString.indexOf("?amount="): qrDataString.length();			 
+			 String address = qrDataString.substring(addressStartIndex, addressEndIndex);
+			 txfAddress.setText(address);
+			 
+			 String amountStr = null;
+			 if(qrDataString.indexOf("?amount=") != -1) {
+				 int amountBeginIndex = qrDataString.indexOf("?amount=") + 8;
+				 int amountEndIndex = qrDataString.length();
+				 amountStr = qrDataString.substring(amountBeginIndex, amountEndIndex);
+				 
+				 double amount = (double)Float.parseFloat(amountStr); // the URI passes the amount in BTC
+				 amount *= 100000000; // convert amount to satoshies
+				 amount = TextUtils.satoshiesToBitcoinUnit(amount, 
+						 Authenticator.getWalletOperation().getAccountUnitFromSettings());
+				 
+				 txfAmount.setText(Long.toString((long)amount));
+			 }
+		 });
+	 }
+		
 	@SuppressWarnings({ "restriction", "unchecked" })
 	public void updateCurrencyChoiceBox(List<String> lstCurrencies, String setValue) {
 		// currency choice box
@@ -264,6 +385,18 @@ public class SendToCell extends Region{
 		for(String s: lstCurrencies)
 			cbCurrency.getItems().add(s);
 		cbCurrency.setValue(setValue);
+		
+		cleanAll();
+	}
+	
+	private void cleanAll() {
+		txfAmount.setText("");
+		txfAddress.setText("");
+		
+		ivAvatar.setImage(null);
+		avatarBox.setVisible(false);
+		spinner.setProgress(0);
+		loadingAvatarBox.setVisible(false);
 	}
 	
 	public boolean validate()

@@ -8,8 +8,8 @@ import javax.crypto.SecretKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import authenticator.crypto.CryptoUtils;
-import authenticator.crypto.CryptoUtils.CouldNotEncryptPayload;
+import authenticator.Utils.CryptoUtils;
+import authenticator.Utils.CryptoUtils.CouldNotEncryptPayload;
 
 /**
  * When receiving a request ID payload form the authenticator, this payload will be sent to confirm connection

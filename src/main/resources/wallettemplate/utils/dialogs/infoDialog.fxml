@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="550.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <VBox prefWidth="550.0">
       <children>
@@ -31,7 +31,7 @@
                     <Insets left="15.0" />
                   </VBox.margin>
                 </Label>
-                <Label fx:id="lblDesc" contentDisplay="LEFT" prefHeight="56.0" prefWidth="424.0" text="details" wrapText="true">
+                <Label fx:id="lblDesc" contentDisplay="LEFT" prefHeight="133.0" prefWidth="424.0" text="details" wrapText="true">
                   <VBox.margin>
                     <Insets left="15.0" />
                   </VBox.margin>
@@ -40,7 +40,7 @@
             </VBox>
           </children>
         </HBox>
-        <HBox alignment="CENTER_RIGHT" prefHeight="46.0" prefWidth="550.0">
+        <HBox alignment="BOTTOM_RIGHT" prefHeight="60.0" prefWidth="550.0">
           <children>
             <Button fx:id="btnDone" mnemonicParsing="false" onAction="#done" prefHeight="32.0" prefWidth="60.0" text="OK">
               <HBox.margin>

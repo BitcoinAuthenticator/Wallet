@@ -17,20 +17,21 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
+import org.spongycastle.util.encoders.Hex;
 
 import authenticator.Authenticator;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
+import authenticator.Utils.CryptoUtils;
 import authenticator.Utils.EncodingUtils;
 import authenticator.walletCore.exceptions.UnableToCompleteTxSigningException;
-import authenticator.crypto.CryptoUtils;
+import authenticator.walletCore.utils.BAPassword;
 import authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 
 import org.bitcoinj.core.ECKey;
@@ -43,6 +44,7 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
+
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
 
@@ -90,7 +92,7 @@ public class SignProtocol {
 						;
 		byte[] jsonBytes = signMsgPayload.serializeToBytes();
 		
-		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));
 		return CryptoUtils.encryptPayloadWithChecksum(jsonBytes, secretkey);
 	}
 
@@ -112,8 +114,8 @@ public class SignProtocol {
 	 {
 		try{
 			//Prep the keys needed for signing
-			byte[] key = EncodingUtils.hexStringToByteArray(po.getMasterPublicKey());
-			byte[] chain = EncodingUtils.hexStringToByteArray(po.getChainCode());
+			byte[] key = Hex.decode(po.getMasterPublicKey());
+			byte[] chain = Hex.decode(po.getChainCode());
 			
 			//Loop to create a signature for each input
 			int i = 0;							
@@ -175,7 +177,7 @@ public class SignProtocol {
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
-		SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");						
+		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));				
 		PairedAuthenticator  po = wallet.getPairingObject(pairingID);
 		byte[] gcmID = po.getGCM().getBytes();
 		assert(gcmID != null);

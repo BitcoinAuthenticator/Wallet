@@ -70,6 +70,7 @@ import org.bitcoinj.script.Script;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.SPVBlockStore;
 import org.bitcoinj.utils.Threading;
+
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
 import com.google.common.util.concurrent.Service.State;
@@ -96,7 +97,8 @@ public class BAWalletRestorer extends BASE{
 		@Override
 		 protected void progress(double pct, int blocksSoFar, Date date) {
 			if(pct < 100){
-			 listener.onStatusChange("Downloading Block Chain ... ");
+			 float completion = (float) (pct / 100.0);
+			 listener.onStatusChange("Downloading Block Chain (" + String.format("%d",(long)(completion * 100)) + " %) ... ");
 			 listener.onProgress(pct, blocksSoFar, date);
 			}
 			else
@@ -127,7 +129,7 @@ public class BAWalletRestorer extends BASE{
      *	Flags
      */
     boolean useTor = false;
-    boolean usePreselectedAddresses = true;
+    boolean usePreselectedAddresses = false;
     
 	public BAWalletRestorer(Authenticator auth,WalletRestoreListener l) {      
 		super (BAWalletRestorer.class);
@@ -250,6 +252,7 @@ public class BAWalletRestorer extends BASE{
 	        vChain.addWallet(vWallet);
             vPeerGroup.addWallet(vWallet);
             vPeerGroup.setMaxConnections(11);
+            vPeerGroup.setBloomFilterFalsePositiveRate(0.00001);
             vWallet.addEventListener(vWalletListener);
 	        if (true){//blockingStartup) {
                 vPeerGroup.startAsync();

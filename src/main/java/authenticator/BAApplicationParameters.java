@@ -2,8 +2,15 @@ package authenticator;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.bouncycastle.math.ec.ECPoint;
+
+import com.vinumeris.updatefx.Crypto;
 
 import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.WalletOperation.BAOperationState;
@@ -18,20 +25,45 @@ import static com.google.common.base.Preconditions.checkState;
  *
  */
 public class BAApplicationParameters{
-	NetworkType bitcoinNetworkType;
-	
-	boolean isTestMode = false;
-	boolean shouldLaunchProgram = false;
-	
-	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
-	
-	int NETWORK_PORT = 1234;
-	
 	String APP_NAME = "AuthenticatorWallet";
 	
+	/*
+	 * Remote update vars
+	 */
+	final static public int APP_CODE_VERSION 	= 1; 
+	private String remoteUpdateBaseURL 		= "http://www.bitcoinauthenticator.org/updates/";
+	private String remoteUpdateUserAgent 	= "AuthenticatorWallet/" + APP_CODE_VERSION;
+	private List<ECPoint> remoteUpdateKeys 	= Crypto.decode("03D862C94F031037DF0AE56603092990D623BAAB0811953134569ACD5AC7CFBAB2");
+	
+	/*
+	 * flags
+	 */
+	boolean isTestMode = false;
+	boolean shouldLaunchProgram = false;	
+	/** 
+	 * ###########################################<br>
+	 * a temporary flag to disable spinners because they crash on some platforms<br>
+	 * ############################################
+	 */
+	public boolean disableSpinners = false;
+	
+	/*
+	 * Network
+	 */
+	int NETWORK_PORT = 8222;
+	NetworkType bitcoinNetworkType;
+	
+	/*
+	 * Data folder
+	 */
 	OS_TYPE osType;
 	String APPLICATION_DATA_FOLDER ;
 	
+	/*
+	 * Global vars
+	 */
+	private BAOperationState operationalState = BAOperationState.NOT_SYNCED;
+	public BAApplicationParameters() {}
 	public BAApplicationParameters(Map<String, String> params, List<String> raw) throws WrongOperatingSystemException{
 		InitializeApplicationFlags(params, raw);
 	}
@@ -44,23 +76,53 @@ public class BAApplicationParameters{
 	 */
 	public void InitializeApplicationFlags(Map<String, String> params, List<String> raw) throws WrongOperatingSystemException{
 		boolean returnValue = true;
+		Map<String, String> paramsFinal = null;
+		{
+			/*
+			 * generate params map from both inputs
+			 */
+			if(params != null)
+				paramsFinal = params;
+			else
+				paramsFinal = new HashMap<String, String>();
+			
+			if(raw !=null) {
+				for(String s:raw) {
+					String[] divided = s.split("=");
+					String key = divided[0].replaceAll("-", "");
+					if(!paramsFinal.containsKey(key))
+						paramsFinal.put(key, divided[1]);
+				}
+			}
+		}
+		
+		// #####################################
+		//
+		//	a temporary flag to disable spinners because they crash on some platforms
+		//
+		// #####################################
+		if(paramsFinal.containsKey("disablespinners")){
+			boolean value = Boolean.parseBoolean(paramsFinal.get("disablespinners"));
+			disableSpinners = value;
+		}
+		
 		// Help
-		if(params.containsKey("help") || raw.contains("-help") || raw.contains("--help")){
+		if(paramsFinal.containsKey("help")){
 			PrintHelp();
 			returnValue = false;
 		}
 		
 		// test mode 
-		if(params.containsKey("testermode")){
-			boolean value = Boolean.parseBoolean(params.get("testermode"));
+		if(paramsFinal.containsKey("testermode")){
+			boolean value = Boolean.parseBoolean(paramsFinal.get("testermode"));
 			setIsTestMode(value);
 		}
 		else
 			setIsTestMode(false);
 		
 		// Network Type
-		if(params.containsKey("testnet")){
-			boolean value = Boolean.parseBoolean(params.get("testnet"));
+		if(paramsFinal.containsKey("testnet")){
+			boolean value = Boolean.parseBoolean(paramsFinal.get("testnet"));
 			if(value)
 				setBitcoinNetworkType(NetworkType.TEST_NET);
 			else
@@ -70,19 +132,47 @@ public class BAApplicationParameters{
 			setBitcoinNetworkType(NetworkType.MAIN_NET);
 				
 		// Port
-		if(params.containsKey("port")){
-			int value = Integer.parseInt(params.get("port"));
+		if(paramsFinal.containsKey("port")){
+			int value = Integer.parseInt(paramsFinal.get("port"));
 			setNetworkPort(value);
 		}
 		else
-			setNetworkPort(1234);
+			;// keep default
+			
+		//remote update base URL
+		if(paramsFinal.containsKey("remoteUpdateBaseURL")){
+			setRemoteUpdateBaseURL(paramsFinal.get("remoteUpdateBaseURL"));
+		}
+		else
+			; // keep default
+		
+		//remote update user agent
+		if(paramsFinal.containsKey("remoteUpdateUserAgent")){
+			setRemoteUpdateUserAgent(paramsFinal.get("remoteUpdateUserAgent"));
+		}
+		else
+			; // keep default
+		
+		//remote update keys
+		if(paramsFinal.containsKey("remoteUpdateKeys")){
+			String r = paramsFinal.get("remoteUpdateKeys");
+			List<String> rl = Arrays.asList(r.split(","));
+			List<ECPoint> keys = new ArrayList<ECPoint>();
+			for(String p: rl) {
+				List<ECPoint> tmp = Crypto.decode(p);
+				keys.add(tmp.get(0));
+			}
+			setRemoteUpdateKeys(keys);
+		}
+		else
+			; // keep default
 		
 		//App Name
 		if(getBitcoinNetworkType() == NetworkType.TEST_NET){
 			setAppName(APP_NAME + "_TestNet");
 		}
 		else
-			setAppName(APP_NAME);
+			setAppName(APP_NAME);		
 		
 		//Application data folder
 		osType =  OS_TYPE.operationSystemFromString(System.getProperty("os.name"));
@@ -128,9 +218,12 @@ public class BAApplicationParameters{
 				{"Parameters Available For This Wallet",""},{"",""},
 				
 				{"--help","Print Help"},
-				{"--testnet"			,"If =true will use testnet parameters, else mainnet parameters"},
-				{"--testermode"			,"Testing mode, if true will not send bitcoins. False by default"},
-				{"--port"				,"Port Number, default is 1234"}
+				{"--testnet"				,"If =true will use testnet parameters, else mainnet parameters"},
+				{"--testermode"				,"Testing mode, if true will not send bitcoins. False by default"},
+				{"--port"					,"Port Number, default is 8222"},
+				{"--remoteUpdateBaseURL"	,"Base URL for remote updates"},
+				{"--remoteUpdateUserAgent"	,"User agent for remote updates"},
+				{"--remoteUpdateKeys"		,"Validation keys for remote updates (e.g. --remoteUpdateKeys=k1,k2,k3..."}
 		};
 		
 		String ret = "";
@@ -142,6 +235,21 @@ public class BAApplicationParameters{
 	    }
 		
 		return ret;
+	}
+	
+	/**
+	 * Returns a readable user friendly app version based on the current {@link BAApplicationParameters#APP_CODE_VERSION app code version}
+	 * @return
+	 */
+	public String getFriendlyAppVersion() {
+		if(APP_CODE_VERSION <= 10)
+			return "V0.1." + APP_CODE_VERSION;
+		else
+			return "XXX";
+	}
+	
+	public boolean getDisableSpinners(){
+		return disableSpinners;
 	}
 	
 	public NetworkType getBitcoinNetworkType(){ 
@@ -208,6 +316,12 @@ public class BAApplicationParameters{
 		if (!(f2.exists() && f2.isDirectory())) {
 		   f2.mkdir();
 		}
+		
+		// check updates exists
+		File f3 = new File(getApplicationDataFolderAbsolutePath() + "updates");
+		if (!(f3.exists() && f3.isDirectory())) {
+		   f3.mkdir();
+		}
 	}
 	
 	public BAOperationState getOperationalState() {
@@ -216,6 +330,30 @@ public class BAApplicationParameters{
 	
 	public void setOperationalState(BAOperationState newState) {
 		operationalState = newState;
+	}
+	
+	public String getRemoteUpdateBaseURL() {
+		return remoteUpdateBaseURL;
+	}
+	
+	public void setRemoteUpdateBaseURL(String v) {
+		remoteUpdateBaseURL = v;
+	}
+	
+	public String getRemoteUpdateUserAgent() {
+		return remoteUpdateUserAgent;
+	}
+	
+	public void setRemoteUpdateUserAgent(String v) {
+		remoteUpdateUserAgent = v;
+	}
+	
+	public List<ECPoint> getRemoteUpdateKeys() {
+		return remoteUpdateKeys;
+	}
+	
+	public void setRemoteUpdateKeys(List<ECPoint> keys) {
+		remoteUpdateKeys = keys;
 	}
 	
 	/*
@@ -307,6 +445,18 @@ public class BAApplicationParameters{
 				return TEST_NET;
 			case "TEST_NET":
 				return TEST_NET;
+			default:
+				return MAIN_NET;
+	    	}
+	    }
+	    
+	    public static NetworkType fromIndex(Integer i){
+	    	switch(i)
+	    	{
+	    	case 0:
+	    		return TEST_NET;
+			case 1:
+	    		return MAIN_NET;
 			default:
 				return MAIN_NET;
 	    	}

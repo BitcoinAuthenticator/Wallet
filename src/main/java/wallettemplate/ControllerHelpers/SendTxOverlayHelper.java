@@ -12,7 +12,7 @@ import org.bitcoinj.core.TransactionOutput;
 import authenticator.Authenticator;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
-import authenticator.walletCore.BAPassword;
+import authenticator.walletCore.utils.BAPassword;
 import javafx.animation.Animation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

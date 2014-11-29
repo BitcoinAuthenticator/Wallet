@@ -8,9 +8,10 @@ import authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingelt
 import authenticator.Utils.OneName.OneName;
 import authenticator.Utils.OneName.OneNameAdapter;
 import authenticator.db.exceptions.AccountWasNotFoundException;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.CannotGetAddressException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
+import authenticator.walletCore.utils.BAPassword;
+import authenticator.walletCore.utils.BalanceUpdater;
 import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation;
@@ -146,14 +147,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
@@ -163,6 +167,7 @@ import javax.imageio.ImageIO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
@@ -177,6 +182,7 @@ import static wallettemplate.utils.GuiUtils.informationalAlert;
 public class Controller  extends BaseUI{
 	 @FXML private Label lblMinimize;
 	 @FXML private Label lblClose;
+	 @FXML private Label lblDateAndTime;
 	 @FXML private Button btnOverview_white;
 	 @FXML private Button btnOverview_grey;
 	 @FXML private Button btnSend_white;
@@ -362,6 +368,23 @@ public class Controller  extends BaseUI{
 		
 		// wallet lock/ unlock
 		Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
+		
+		// date and time label
+		lblDateAndTime.setStyle("-fx-font-size: 13; -fx-text-fill: #bfc6ce;");
+		final DateFormat format = DateFormat.getInstance();  
+		final Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {  
+		     @Override  
+		     public void handle(ActionEvent event) {  
+		    	 Platform.runLater(() -> { 
+		    		 final Calendar cal = Calendar.getInstance();  
+		    		 String txt = format.format(cal.getTime());
+			         lblDateAndTime.setText(txt);  
+		    	 });
+		     }  
+		}));  
+		timeline.setCycleCount(Animation.INDEFINITE);  
+		timeline.play();  
+		 
     }
     
     /**
@@ -371,8 +394,7 @@ public class Controller  extends BaseUI{
     	bitcoin.peerGroup().addEventListener(new PeerListener());
     	TorClient tor = bitcoin.peerGroup().getTorClient();
     	if(tor != null)
-    		tor.addInitializationListener(listener);          	
-    	
+    		tor.addInitializationListener(listener);          	    	
     }
     
     /**
@@ -410,8 +432,8 @@ public class Controller  extends BaseUI{
 			}
 	    });    
     	updateUI();
-    	
-    	
+    	if (Authenticator.getApplicationParams().disableSpinners){stopSyncRotation();}
+    	Authenticator.getWalletOperation().sendNotificationToAuthenticatorWhenCoinsReceived();
     }
    
     private void updateUI(){
@@ -431,7 +453,7 @@ public class Controller  extends BaseUI{
     	}
 		
 		@Override
-		public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile, Image profileImage) {
+		public void onOneNameIdentityChanged(@Nullable ConfigOneNameProfile profile, @Nullable Image profileImage) {
 			Platform.runLater(new Runnable() { 
 			  @Override
 			  public void run() {
@@ -557,18 +579,19 @@ public class Controller  extends BaseUI{
             	/**
             	 * run an update of balances after we finished syncing
             	 */
-            	Authenticator.getWalletOperation().updateBalaceNonBlocking(Authenticator.getWalletOperation().mWalletWrapper.trackedWallet, new Runnable(){
-    				@Override
-    				public void run() { 
-    					Platform.runLater(new Runnable(){
-    						@Override
-    						public void run() {
-    							 readyToGoAnimation(1, null);
-    						}
-    			        });
-    				}
-        		});
-				
+            	BalanceUpdater.updateBalaceNonBlocking(Authenticator.getWalletOperation(),
+            											Authenticator.getWalletOperation().mWalletWrapper.trackedWallet, 
+            											new Runnable(){
+										    				@Override
+										    				public void run() { 
+										    					Platform.runLater(new Runnable(){
+										    						@Override
+										    						public void run() {
+										    							 readyToGoAnimation(1, null);
+										    						}
+										    			        });
+										    				}
+										        		});
 			}
 		}
 		
@@ -951,6 +974,8 @@ public class Controller  extends BaseUI{
 	   if(Main.UI_ONLY_IS_WALLET_LOCKED){
 		   Image imglocked = new Image(Main.class.getResource("btnLocked.png").toString());
 		   ImageView img = new ImageView(imglocked);
+		   img.setFitWidth(25);
+		   img.setFitHeight(26);
 		   btnLock.setGraphic(img);
 		   overviewHBox.setMargin(btnLock, new Insets(0,0,0,0));
 		   Tooltip.install(btnLock, new Tooltip("Click to Unlock Wallet"));
@@ -959,6 +984,8 @@ public class Controller  extends BaseUI{
 	   {
 		   Image unlocked = new Image(Main.class.getResource("btnUnlocked.png").toString());
 		   ImageView img = new ImageView(unlocked);
+		   img.setFitWidth(25);
+		   img.setFitHeight(26);
 		   btnLock.setGraphic(img);
 		   overviewHBox.setMargin(btnLock, new Insets(-2,0,0,0));
 		   Tooltip.install(btnLock, new Tooltip("Click to Lock Wallet"));
@@ -999,6 +1026,13 @@ public class Controller  extends BaseUI{
 		   
 		   if(img != null && one != null)
 			   setUserProfileAvatarAndName(img,one.getOnenameFormatted());	   
+	   }
+	   else {
+		   lblName.setText("Welcome to Authenticator Wallet");
+		   lblName.setPrefWidth(wallettemplate.utils.TextUtils.computeTextWidth(lblName.getFont(),
+		   lblName.getText(), 0.0D));
+		   Image def = new Image(Main.class.getResourceAsStream("DefaultAvatar.png"));
+		   ivAvatar.setImage(def);
 	   }
    }
    
@@ -1261,7 +1295,7 @@ public class Controller  extends BaseUI{
             			if (Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getAccountType()==WalletAccountType.AuthenticatorAccount){
             				GuiUtils.fadeIn(mSendTxOverlayHelper.authenticatorVbox);
             				mSendTxOverlayHelper.authenticatorVbox.setVisible(true);
-            				startAuthRotation(mSendTxOverlayHelper.ivLogo1);
+            				if (!Authenticator.getApplicationParams().disableSpinners){startAuthRotation(mSendTxOverlayHelper.ivLogo1);}
             			}
             			else {
             				GuiUtils.fadeIn(mSendTxOverlayHelper.successVbox);
@@ -1582,7 +1616,7 @@ public class Controller  extends BaseUI{
 						ATAddress ca = Authenticator.getWalletOperation().findAddressInAccounts(AddressBox.getValue().toString());
 						int index = ca.getKeyIndex();
 						ECKey key = Authenticator.getWalletOperation().getPubKeyFromAccount(accountID, HierarchyAddressTypes.External, index, false);
-						outPut = EncodingUtils.bytesToHex(key.getPubKey());
+						outPut = Hex.toHexString(key.getPubKey());
 					}
 					else
 					{
@@ -1599,8 +1633,8 @@ public class Controller  extends BaseUI{
 								keyIndex, 
 								true); // true cause its a P2SH address
 						
-						outPut = "Authenticator Pubkey: " + EncodingUtils.bytesToHex(authKey.getPubKey()) + "\n" + 
-								 "Wallet Pubkey: " + EncodingUtils.bytesToHex(walletKey.getPubKey());
+						outPut = "Authenticator Pubkey: " + Hex.toHexString(authKey.getPubKey()) + "\n" + 
+								 "Wallet Pubkey: " + Hex.toHexString(walletKey.getPubKey());
 					}
 					final Clipboard clipboard = Clipboard.getSystemClipboard();
 	                final ClipboardContent content = new ClipboardContent();
@@ -1857,11 +1891,14 @@ public class Controller  extends BaseUI{
     
     @FXML protected void btnOneName(MouseEvent event) {
     	if(Authenticator.getWalletOperation().getOnename() != null){
-    		Main.instance.overlayUI("DisplayOneName.fxml");
+    		ArrayList<Object> l = new ArrayList<Object>();
+			   l.add(Authenticator.getWalletOperation().getOnename().getOnename());
+			   Main.instance.overlayUI("DisplayOneName.fxml", l);
     	}
     	else {
-    		informationalAlert("Cannot display your OneName account",
-					"Please press on your avatr picture on the overview tab to set your OneName account");
+    		ArrayList<Object> l = new ArrayList<Object>();
+    		l.add("");
+    		Main.instance.overlayUI("DisplayOneName.fxml", l);
     	}
     }
     
@@ -1969,7 +2006,7 @@ public class Controller  extends BaseUI{
         rt2.play();
     }
     private void stopAuthRotation(){
-    	rt2.stop();
+    	if (!Authenticator.getApplicationParams().disableSpinners){rt2.stop();}
     }
     
 }

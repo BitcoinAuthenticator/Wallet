@@ -18,7 +18,7 @@ import authenticator.BASE;
  */
 public class UpNp extends BASE{
 
-	private int SAMPLE_PORT;
+	private int PORT;
 	static String externalIPAddress;
 	static String localIPAddress;
 	static GatewayDevice activeGW;
@@ -31,7 +31,7 @@ public class UpNp extends BASE{
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception{
-		SAMPLE_PORT = Integer.parseInt(args[0]);
+		PORT = Integer.parseInt(args[0]);
 		boolean LIST_ALL_MAPPINGS = false;
 		addLogLine("Starting weupnp");
 		GatewayDiscover gatewayDiscover = new GatewayDiscover();
@@ -62,46 +62,28 @@ public class UpNp extends BASE{
 			addLogLine("Stopping weupnp");
 			return;
 		}
-		// Testing PortMappingNumberOfEntries
-		Integer portMapCount = activeGW.getPortMappingNumberOfEntries();
-		addLogLine("GetPortMappingNumberOfEntries: " + (portMapCount!=null?portMapCount.toString():"(unsupported)"));
-		// Testing getGenericPortMappingEntry
-		PortMappingEntry portMapping = new PortMappingEntry();
-		if (LIST_ALL_MAPPINGS) {
-			int pmCount = 0;
-			do {
-				if (activeGW.getGenericPortMappingEntry(pmCount,portMapping))
-					addLogLine("Portmapping #"+pmCount+" successfully retrieved ("+portMapping.getPortMappingDescription()+":"+portMapping.getExternalPort()+")");
-				else{
-					addLogLine("Portmapping #"+pmCount+" retrieval failed"); 
-					break;
-				}
-				pmCount++;
-			} while (portMapping!=null);
-		} else {
-			if (activeGW.getGenericPortMappingEntry(0,portMapping))
-				addLogLine("Portmapping #0 successfully retrieved ("+portMapping.getPortMappingDescription()+":"+portMapping.getExternalPort()+")");
-			else
-				addLogLine("Portmapping #0 retrival failed");        	
-		}
+		
+		/* get local and external IPs*/
 		InetAddress localAddress = activeGW.getLocalAddress();
 		localIPAddress = activeGW.getLocalAddress().toString();
 		addLogLine("Using local address: "+ localAddress.getHostAddress());
 		externalIPAddress = activeGW.getExternalIPAddress();
 		addLogLine("External address: "+ externalIPAddress);
-		addLogLine("Querying device to see if a port mapping already exists for port "+ SAMPLE_PORT);
-		if (activeGW.getSpecificPortMappingEntry(SAMPLE_PORT,"TCP",portMapping)) {
-			addLogLine("Port "+SAMPLE_PORT+" is already mapped. Aborting test.");
+		
+		/* Check if port is mapped */
+		addLogLine("Attempting to map port " + PORT);
+		PortMappingEntry portMapping = new PortMappingEntry();
+		if (activeGW.getSpecificPortMappingEntry(PORT,"TCP",portMapping)) {
+			addLogLine("Port " + PORT + " is already mapped. Aborting test.");
 			return;
 		} else {
-			addLogLine("Mapping free. Sending port mapping request for port "+SAMPLE_PORT);
-			// Test static lease duration mapping
-			if (activeGW.addPortMapping(SAMPLE_PORT,SAMPLE_PORT,localAddress.getHostAddress(),"TCP","test")) {
-				addLogLine("Mapping SUCCESSFUL"); // Waiting "+WAIT_TIME+" seconds before removing mapping...");
-				//Thread.sleep(1000*WAIT_TIME);
+			addLogLine("Mapping free. Sending port mapping request for port " + PORT);
+			if (activeGW.addPortMapping(PORT, PORT,localAddress.getHostAddress(), "TCP", "BTCAuthenticator_Mapping")) {
+				addLogLine("Mapping SUCCESSFUL"); 
 			}
+			else
+				addLogLine("Port mapping attempt failed"); 
 		} 
-		addLogLine("Stopping weupnp");
 	}
 	
 	public boolean isPortMapped(int port) throws IOException, SAXException
@@ -117,8 +99,8 @@ public class UpNp extends BASE{
 	/**This method removes the mapping*/
 	public void removeMapping() throws IOException, SAXException{
 		if(activeGW != null)
-			if (activeGW.deletePortMapping(SAMPLE_PORT,"TCP")) {
-				addLogLine("Port mapping removed, test SUCCESSFUL");
+			if (activeGW.deletePortMapping(PORT,"TCP")) {
+				addLogLine("Removed port mapping to port: " + PORT);
 	        } else {
 				addLogLine("Port mapping removal FAILED");
 	        }
@@ -129,6 +111,14 @@ public class UpNp extends BASE{
 		return externalIPAddress;
 	}
 	public String getLocalIP(){
+		/*
+		 * For some reason weupnp returns a '/' prefix with the localIPAddress string, 
+		 * this is a hack to fix it
+		 */
+		if (localIPAddress.substring(0).equals("/")){
+				return localIPAddress.substring(1, localIPAddress.length());
+		}
+		
 		return localIPAddress;
 	}
 

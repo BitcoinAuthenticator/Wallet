@@ -21,6 +21,10 @@ public final class ProtoConfig {
      * <code>UpdatePendingRequestIPs = 4;</code>
      */
     UpdatePendingRequestIPs(1, 4),
+    /**
+     * <code>CoinsReceived = 6;</code>
+     */
+    CoinsReceived(2, 6),
     ;
 
     /**
@@ -31,6 +35,10 @@ public final class ProtoConfig {
      * <code>UpdatePendingRequestIPs = 4;</code>
      */
     public static final int UpdatePendingRequestIPs_VALUE = 4;
+    /**
+     * <code>CoinsReceived = 6;</code>
+     */
+    public static final int CoinsReceived_VALUE = 6;
 
 
     public final int getNumber() { return value; }
@@ -39,6 +47,7 @@ public final class ProtoConfig {
       switch (value) {
         case 2: return SignTX;
         case 4: return UpdatePendingRequestIPs;
+        case 6: return CoinsReceived;
         default: return null;
       }
     }
@@ -286,10 +295,10 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(enum_scope:authenticator.protobuf.WalletAccountType)
   }
 
-  public interface ATAddressOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface ATAddressOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:authenticator.protobuf.ATAddress)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional int32 accountIndex = 1;
     /**
      * <code>optional int32 accountIndex = 1;</code>
      */
@@ -299,7 +308,6 @@ public final class ProtoConfig {
      */
     int getAccountIndex();
 
-    // optional int32 keyIndex = 2;
     /**
      * <code>optional int32 keyIndex = 2;</code>
      */
@@ -309,7 +317,6 @@ public final class ProtoConfig {
      */
     int getKeyIndex();
 
-    // required string addressStr = 3;
     /**
      * <code>required string addressStr = 3;</code>
      */
@@ -324,7 +331,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getAddressStrBytes();
 
-    // optional bool isUsed = 4;
     /**
      * <code>optional bool isUsed = 4;</code>
      */
@@ -334,7 +340,6 @@ public final class ProtoConfig {
      */
     boolean getIsUsed();
 
-    // optional .authenticator.protobuf.HierarchyAddressTypes type = 5;
     /**
      * <code>optional .authenticator.protobuf.HierarchyAddressTypes type = 5;</code>
      */
@@ -348,8 +353,9 @@ public final class ProtoConfig {
    * Protobuf type {@code authenticator.protobuf.ATAddress}
    */
   public static final class ATAddress extends
-      com.google.protobuf.GeneratedMessage
-      implements ATAddressOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:authenticator.protobuf.ATAddress)
+      ATAddressOrBuilder {
     // Use ATAddress.newBuilder() to construct.
     private ATAddress(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -406,8 +412,9 @@ public final class ProtoConfig {
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              addressStr_ = input.readBytes();
+              addressStr_ = bs;
               break;
             }
             case 32: {
@@ -466,7 +473,6 @@ public final class ProtoConfig {
     }
 
     private int bitField0_;
-    // optional int32 accountIndex = 1;
     public static final int ACCOUNTINDEX_FIELD_NUMBER = 1;
     private int accountIndex_;
     /**
@@ -482,7 +488,6 @@ public final class ProtoConfig {
       return accountIndex_;
     }
 
-    // optional int32 keyIndex = 2;
     public static final int KEYINDEX_FIELD_NUMBER = 2;
     private int keyIndex_;
     /**
@@ -498,7 +503,6 @@ public final class ProtoConfig {
       return keyIndex_;
     }
 
-    // required string addressStr = 3;
     public static final int ADDRESSSTR_FIELD_NUMBER = 3;
     private java.lang.Object addressStr_;
     /**
@@ -541,7 +545,6 @@ public final class ProtoConfig {
       }
     }
 
-    // optional bool isUsed = 4;
     public static final int ISUSED_FIELD_NUMBER = 4;
     private boolean isUsed_;
     /**
@@ -557,7 +560,6 @@ public final class ProtoConfig {
       return isUsed_;
     }
 
-    // optional .authenticator.protobuf.HierarchyAddressTypes type = 5;
     public static final int TYPE_FIELD_NUMBER = 5;
     private authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes type_;
     /**
@@ -583,7 +585,8 @@ public final class ProtoConfig {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasAddressStr()) {
         memoizedIsInitialized = 0;
@@ -722,8 +725,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.ATAddress}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.ATAddressOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:authenticator.protobuf.ATAddress)
+        authenticator.protobuf.ProtoConfig.ATAddressOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAddress_descriptor;
@@ -878,7 +882,6 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      // optional int32 accountIndex = 1;
       private int accountIndex_ ;
       /**
        * <code>optional int32 accountIndex = 1;</code>
@@ -911,7 +914,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional int32 keyIndex = 2;
       private int keyIndex_ ;
       /**
        * <code>optional int32 keyIndex = 2;</code>
@@ -944,7 +946,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string addressStr = 3;
       private java.lang.Object addressStr_ = "";
       /**
        * <code>required string addressStr = 3;</code>
@@ -958,9 +959,12 @@ public final class ProtoConfig {
       public java.lang.String getAddressStr() {
         java.lang.Object ref = addressStr_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          addressStr_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            addressStr_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1018,7 +1022,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional bool isUsed = 4;
       private boolean isUsed_ ;
       /**
        * <code>optional bool isUsed = 4;</code>
@@ -1051,7 +1054,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional .authenticator.protobuf.HierarchyAddressTypes type = 5;
       private authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes type_ = authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes.External;
       /**
        * <code>optional .authenticator.protobuf.HierarchyAddressTypes type = 5;</code>
@@ -1098,10 +1100,10 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(class_scope:authenticator.protobuf.ATAddress)
   }
 
-  public interface ATAccountOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface ATAccountOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:authenticator.protobuf.ATAccount)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required int32 index = 1;
     /**
      * <code>required int32 index = 1;</code>
      */
@@ -1111,7 +1113,6 @@ public final class ProtoConfig {
      */
     int getIndex();
 
-    // repeated int32 usedExternalKeys = 2;
     /**
      * <code>repeated int32 usedExternalKeys = 2;</code>
      */
@@ -1125,7 +1126,6 @@ public final class ProtoConfig {
      */
     int getUsedExternalKeys(int index);
 
-    // repeated int32 usedInternalKeys = 3;
     /**
      * <code>repeated int32 usedInternalKeys = 3;</code>
      */
@@ -1139,7 +1139,6 @@ public final class ProtoConfig {
      */
     int getUsedInternalKeys(int index);
 
-    // required sint64 confirmedBalance = 4;
     /**
      * <code>required sint64 confirmedBalance = 4;</code>
      *
@@ -1155,7 +1154,6 @@ public final class ProtoConfig {
      */
     long getConfirmedBalance();
 
-    // required sint64 unConfirmedBalance = 5;
     /**
      * <code>required sint64 unConfirmedBalance = 5;</code>
      */
@@ -1165,7 +1163,6 @@ public final class ProtoConfig {
      */
     long getUnConfirmedBalance();
 
-    // required int32 networkType = 6;
     /**
      * <code>required int32 networkType = 6;</code>
      *
@@ -1181,7 +1178,6 @@ public final class ProtoConfig {
      */
     int getNetworkType();
 
-    // required .authenticator.protobuf.WalletAccountType accountType = 7;
     /**
      * <code>required .authenticator.protobuf.WalletAccountType accountType = 7;</code>
      *
@@ -1197,7 +1193,6 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.WalletAccountType getAccountType();
 
-    // required string accountName = 8;
     /**
      * <code>required string accountName = 8;</code>
      *
@@ -1221,7 +1216,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getAccountNameBytes();
 
-    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;
     /**
      * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;</code>
      *
@@ -1244,7 +1238,6 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder getAccountExternalHierarchyOrBuilder();
 
-    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;
     /**
      * <code>required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;</code>
      */
@@ -1262,8 +1255,9 @@ public final class ProtoConfig {
    * Protobuf type {@code authenticator.protobuf.ATAccount}
    */
   public static final class ATAccount extends
-      com.google.protobuf.GeneratedMessage
-      implements ATAccountOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:authenticator.protobuf.ATAccount)
+      ATAccountOrBuilder {
     // Use ATAccount.newBuilder() to construct.
     private ATAccount(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -1383,8 +1377,9 @@ public final class ProtoConfig {
               break;
             }
             case 66: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
-              accountName_ = input.readBytes();
+              accountName_ = bs;
               break;
             }
             case 74: {
@@ -1458,10 +1453,10 @@ public final class ProtoConfig {
       return PARSER;
     }
 
-    public interface ATAccountAddressHierarchyOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface ATAccountAddressHierarchyOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:authenticator.protobuf.ATAccount.ATAccountAddressHierarchy)
+        com.google.protobuf.MessageOrBuilder {
 
-      // required bytes hierarchyKey = 1;
       /**
        * <code>required bytes hierarchyKey = 1;</code>
        */
@@ -1471,7 +1466,6 @@ public final class ProtoConfig {
        */
       com.google.protobuf.ByteString getHierarchyKey();
 
-      // required bytes hierarchyChaincode = 2;
       /**
        * <code>required bytes hierarchyChaincode = 2;</code>
        */
@@ -1485,8 +1479,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.ATAccount.ATAccountAddressHierarchy}
      */
     public static final class ATAccountAddressHierarchy extends
-        com.google.protobuf.GeneratedMessage
-        implements ATAccountAddressHierarchyOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:authenticator.protobuf.ATAccount.ATAccountAddressHierarchy)
+        ATAccountAddressHierarchyOrBuilder {
       // Use ATAccountAddressHierarchy.newBuilder() to construct.
       private ATAccountAddressHierarchy(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -1582,7 +1577,6 @@ public final class ProtoConfig {
       }
 
       private int bitField0_;
-      // required bytes hierarchyKey = 1;
       public static final int HIERARCHYKEY_FIELD_NUMBER = 1;
       private com.google.protobuf.ByteString hierarchyKey_;
       /**
@@ -1598,7 +1592,6 @@ public final class ProtoConfig {
         return hierarchyKey_;
       }
 
-      // required bytes hierarchyChaincode = 2;
       public static final int HIERARCHYCHAINCODE_FIELD_NUMBER = 2;
       private com.google.protobuf.ByteString hierarchyChaincode_;
       /**
@@ -1621,7 +1614,8 @@ public final class ProtoConfig {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (!hasHierarchyKey()) {
           memoizedIsInitialized = 0;
@@ -1743,8 +1737,9 @@ public final class ProtoConfig {
        * Protobuf type {@code authenticator.protobuf.ATAccount.ATAccountAddressHierarchy}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:authenticator.protobuf.ATAccount.ATAccountAddressHierarchy)
+          authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
@@ -1874,7 +1869,6 @@ public final class ProtoConfig {
         }
         private int bitField0_;
 
-        // required bytes hierarchyKey = 1;
         private com.google.protobuf.ByteString hierarchyKey_ = com.google.protobuf.ByteString.EMPTY;
         /**
          * <code>required bytes hierarchyKey = 1;</code>
@@ -1910,7 +1904,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // required bytes hierarchyChaincode = 2;
         private com.google.protobuf.ByteString hierarchyChaincode_ = com.google.protobuf.ByteString.EMPTY;
         /**
          * <code>required bytes hierarchyChaincode = 2;</code>
@@ -1958,7 +1951,6 @@ public final class ProtoConfig {
     }
 
     private int bitField0_;
-    // required int32 index = 1;
     public static final int INDEX_FIELD_NUMBER = 1;
     private int index_;
     /**
@@ -1974,7 +1966,6 @@ public final class ProtoConfig {
       return index_;
     }
 
-    // repeated int32 usedExternalKeys = 2;
     public static final int USEDEXTERNALKEYS_FIELD_NUMBER = 2;
     private java.util.List<java.lang.Integer> usedExternalKeys_;
     /**
@@ -1997,7 +1988,6 @@ public final class ProtoConfig {
       return usedExternalKeys_.get(index);
     }
 
-    // repeated int32 usedInternalKeys = 3;
     public static final int USEDINTERNALKEYS_FIELD_NUMBER = 3;
     private java.util.List<java.lang.Integer> usedInternalKeys_;
     /**
@@ -2020,7 +2010,6 @@ public final class ProtoConfig {
       return usedInternalKeys_.get(index);
     }
 
-    // required sint64 confirmedBalance = 4;
     public static final int CONFIRMEDBALANCE_FIELD_NUMBER = 4;
     private long confirmedBalance_;
     /**
@@ -2042,7 +2031,6 @@ public final class ProtoConfig {
       return confirmedBalance_;
     }
 
-    // required sint64 unConfirmedBalance = 5;
     public static final int UNCONFIRMEDBALANCE_FIELD_NUMBER = 5;
     private long unConfirmedBalance_;
     /**
@@ -2058,7 +2046,6 @@ public final class ProtoConfig {
       return unConfirmedBalance_;
     }
 
-    // required int32 networkType = 6;
     public static final int NETWORKTYPE_FIELD_NUMBER = 6;
     private int networkType_;
     /**
@@ -2080,7 +2067,6 @@ public final class ProtoConfig {
       return networkType_;
     }
 
-    // required .authenticator.protobuf.WalletAccountType accountType = 7;
     public static final int ACCOUNTTYPE_FIELD_NUMBER = 7;
     private authenticator.protobuf.ProtoConfig.WalletAccountType accountType_;
     /**
@@ -2102,7 +2088,6 @@ public final class ProtoConfig {
       return accountType_;
     }
 
-    // required string accountName = 8;
     public static final int ACCOUNTNAME_FIELD_NUMBER = 8;
     private java.lang.Object accountName_;
     /**
@@ -2154,7 +2139,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;
     public static final int ACCOUNTEXTERNALHIERARCHY_FIELD_NUMBER = 9;
     private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy_;
     /**
@@ -2185,7 +2169,6 @@ public final class ProtoConfig {
       return accountExternalHierarchy_;
     }
 
-    // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;
     public static final int ACCOUNTINTERNALHIERARCHY_FIELD_NUMBER = 10;
     private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy_;
     /**
@@ -2222,7 +2205,8 @@ public final class ProtoConfig {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasIndex()) {
         memoizedIsInitialized = 0;
@@ -2442,8 +2426,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.ATAccount}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.ATAccountOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:authenticator.protobuf.ATAccount)
+        authenticator.protobuf.ProtoConfig.ATAccountOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_descriptor;
@@ -2713,7 +2698,6 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      // required int32 index = 1;
       private int index_ ;
       /**
        * <code>required int32 index = 1;</code>
@@ -2746,7 +2730,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // repeated int32 usedExternalKeys = 2;
       private java.util.List<java.lang.Integer> usedExternalKeys_ = java.util.Collections.emptyList();
       private void ensureUsedExternalKeysIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
@@ -2798,7 +2781,8 @@ public final class ProtoConfig {
       public Builder addAllUsedExternalKeys(
           java.lang.Iterable<? extends java.lang.Integer> values) {
         ensureUsedExternalKeysIsMutable();
-        super.addAll(values, usedExternalKeys_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, usedExternalKeys_);
         onChanged();
         return this;
       }
@@ -2812,7 +2796,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // repeated int32 usedInternalKeys = 3;
       private java.util.List<java.lang.Integer> usedInternalKeys_ = java.util.Collections.emptyList();
       private void ensureUsedInternalKeysIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
@@ -2864,7 +2847,8 @@ public final class ProtoConfig {
       public Builder addAllUsedInternalKeys(
           java.lang.Iterable<? extends java.lang.Integer> values) {
         ensureUsedInternalKeysIsMutable();
-        super.addAll(values, usedInternalKeys_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, usedInternalKeys_);
         onChanged();
         return this;
       }
@@ -2878,7 +2862,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required sint64 confirmedBalance = 4;
       private long confirmedBalance_ ;
       /**
        * <code>required sint64 confirmedBalance = 4;</code>
@@ -2923,7 +2906,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required sint64 unConfirmedBalance = 5;
       private long unConfirmedBalance_ ;
       /**
        * <code>required sint64 unConfirmedBalance = 5;</code>
@@ -2956,7 +2938,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required int32 networkType = 6;
       private int networkType_ ;
       /**
        * <code>required int32 networkType = 6;</code>
@@ -3001,7 +2982,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required .authenticator.protobuf.WalletAccountType accountType = 7;
       private authenticator.protobuf.ProtoConfig.WalletAccountType accountType_ = authenticator.protobuf.ProtoConfig.WalletAccountType.StandardAccount;
       /**
        * <code>required .authenticator.protobuf.WalletAccountType accountType = 7;</code>
@@ -3049,7 +3029,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string accountName = 8;
       private java.lang.Object accountName_ = "";
       /**
        * <code>required string accountName = 8;</code>
@@ -3069,9 +3048,12 @@ public final class ProtoConfig {
       public java.lang.String getAccountName() {
         java.lang.Object ref = accountName_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          accountName_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            accountName_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -3141,7 +3123,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy = 9;
       private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountExternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder> accountExternalHierarchyBuilder_;
@@ -3277,7 +3258,7 @@ public final class ProtoConfig {
         if (accountExternalHierarchyBuilder_ == null) {
           accountExternalHierarchyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder>(
-                  accountExternalHierarchy_,
+                  getAccountExternalHierarchy(),
                   getParentForChildren(),
                   isClean());
           accountExternalHierarchy_ = null;
@@ -3285,7 +3266,6 @@ public final class ProtoConfig {
         return accountExternalHierarchyBuilder_;
       }
 
-      // required .authenticator.protobuf.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy = 10;
       private authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy accountInternalHierarchy_ = authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder> accountInternalHierarchyBuilder_;
@@ -3394,7 +3374,7 @@ public final class ProtoConfig {
         if (accountInternalHierarchyBuilder_ == null) {
           accountInternalHierarchyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder, authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder>(
-                  accountInternalHierarchy_,
+                  getAccountInternalHierarchy(),
                   getParentForChildren(),
                   isClean());
           accountInternalHierarchy_ = null;
@@ -3413,10 +3393,10 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(class_scope:authenticator.protobuf.ATAccount)
   }
 
-  public interface PairedAuthenticatorOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface PairedAuthenticatorOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:authenticator.protobuf.PairedAuthenticator)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string aes_key = 1;
     /**
      * <code>required string aes_key = 1;</code>
      */
@@ -3431,7 +3411,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getAesKeyBytes();
 
-    // required string master_public_key = 2;
     /**
      * <code>required string master_public_key = 2;</code>
      */
@@ -3446,7 +3425,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getMasterPublicKeyBytes();
 
-    // required string chain_code = 3;
     /**
      * <code>required string chain_code = 3;</code>
      */
@@ -3461,7 +3439,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getChainCodeBytes();
 
-    // required string GCM = 4;
     /**
      * <code>required string GCM = 4;</code>
      */
@@ -3476,7 +3453,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getGCMBytes();
 
-    // required string pairingID = 5;
     /**
      * <code>required string pairingID = 5;</code>
      */
@@ -3491,7 +3467,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getPairingIDBytes();
 
-    // required bool testnet = 6;
     /**
      * <code>required bool testnet = 6;</code>
      */
@@ -3501,7 +3476,6 @@ public final class ProtoConfig {
      */
     boolean getTestnet();
 
-    // required int32 keys_n = 7;
     /**
      * <code>required int32 keys_n = 7;</code>
      */
@@ -3511,7 +3485,6 @@ public final class ProtoConfig {
      */
     int getKeysN();
 
-    // required int32 walletAccountIndex = 10;
     /**
      * <code>required int32 walletAccountIndex = 10;</code>
      *
@@ -3535,13 +3508,13 @@ public final class ProtoConfig {
    * Protobuf type {@code authenticator.protobuf.PairedAuthenticator}
    *
    * <pre>
-   *
    *	Pairing Data
    * </pre>
    */
   public static final class PairedAuthenticator extends
-      com.google.protobuf.GeneratedMessage
-      implements PairedAuthenticatorOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:authenticator.protobuf.PairedAuthenticator)
+      PairedAuthenticatorOrBuilder {
     // Use PairedAuthenticator.newBuilder() to construct.
     private PairedAuthenticator(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -3588,28 +3561,33 @@ public final class ProtoConfig {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              aesKey_ = input.readBytes();
+              aesKey_ = bs;
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              masterPublicKey_ = input.readBytes();
+              masterPublicKey_ = bs;
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              chainCode_ = input.readBytes();
+              chainCode_ = bs;
               break;
             }
             case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
-              gCM_ = input.readBytes();
+              gCM_ = bs;
               break;
             }
             case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000010;
-              pairingID_ = input.readBytes();
+              pairingID_ = bs;
               break;
             }
             case 48: {
@@ -3667,7 +3645,6 @@ public final class ProtoConfig {
     }
 
     private int bitField0_;
-    // required string aes_key = 1;
     public static final int AES_KEY_FIELD_NUMBER = 1;
     private java.lang.Object aesKey_;
     /**
@@ -3710,7 +3687,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required string master_public_key = 2;
     public static final int MASTER_PUBLIC_KEY_FIELD_NUMBER = 2;
     private java.lang.Object masterPublicKey_;
     /**
@@ -3753,7 +3729,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required string chain_code = 3;
     public static final int CHAIN_CODE_FIELD_NUMBER = 3;
     private java.lang.Object chainCode_;
     /**
@@ -3796,7 +3771,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required string GCM = 4;
     public static final int GCM_FIELD_NUMBER = 4;
     private java.lang.Object gCM_;
     /**
@@ -3839,7 +3813,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required string pairingID = 5;
     public static final int PAIRINGID_FIELD_NUMBER = 5;
     private java.lang.Object pairingID_;
     /**
@@ -3882,7 +3855,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required bool testnet = 6;
     public static final int TESTNET_FIELD_NUMBER = 6;
     private boolean testnet_;
     /**
@@ -3898,7 +3870,6 @@ public final class ProtoConfig {
       return testnet_;
     }
 
-    // required int32 keys_n = 7;
     public static final int KEYS_N_FIELD_NUMBER = 7;
     private int keysN_;
     /**
@@ -3914,7 +3885,6 @@ public final class ProtoConfig {
       return keysN_;
     }
 
-    // required int32 walletAccountIndex = 10;
     public static final int WALLETACCOUNTINDEX_FIELD_NUMBER = 10;
     private int walletAccountIndex_;
     /**
@@ -3953,7 +3923,8 @@ public final class ProtoConfig {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasAesKey()) {
         memoizedIsInitialized = 0;
@@ -4141,13 +4112,13 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.PairedAuthenticator}
      *
      * <pre>
-     *
      *	Pairing Data
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:authenticator.protobuf.PairedAuthenticator)
+        authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
@@ -4365,7 +4336,6 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      // required string aes_key = 1;
       private java.lang.Object aesKey_ = "";
       /**
        * <code>required string aes_key = 1;</code>
@@ -4379,9 +4349,12 @@ public final class ProtoConfig {
       public java.lang.String getAesKey() {
         java.lang.Object ref = aesKey_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          aesKey_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            aesKey_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -4439,7 +4412,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string master_public_key = 2;
       private java.lang.Object masterPublicKey_ = "";
       /**
        * <code>required string master_public_key = 2;</code>
@@ -4453,9 +4425,12 @@ public final class ProtoConfig {
       public java.lang.String getMasterPublicKey() {
         java.lang.Object ref = masterPublicKey_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          masterPublicKey_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            masterPublicKey_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -4513,7 +4488,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string chain_code = 3;
       private java.lang.Object chainCode_ = "";
       /**
        * <code>required string chain_code = 3;</code>
@@ -4527,9 +4501,12 @@ public final class ProtoConfig {
       public java.lang.String getChainCode() {
         java.lang.Object ref = chainCode_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          chainCode_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            chainCode_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -4587,7 +4564,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string GCM = 4;
       private java.lang.Object gCM_ = "";
       /**
        * <code>required string GCM = 4;</code>
@@ -4601,9 +4577,12 @@ public final class ProtoConfig {
       public java.lang.String getGCM() {
         java.lang.Object ref = gCM_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          gCM_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            gCM_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -4661,7 +4640,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string pairingID = 5;
       private java.lang.Object pairingID_ = "";
       /**
        * <code>required string pairingID = 5;</code>
@@ -4675,9 +4653,12 @@ public final class ProtoConfig {
       public java.lang.String getPairingID() {
         java.lang.Object ref = pairingID_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          pairingID_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            pairingID_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -4735,7 +4716,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required bool testnet = 6;
       private boolean testnet_ ;
       /**
        * <code>required bool testnet = 6;</code>
@@ -4768,7 +4748,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required int32 keys_n = 7;
       private int keysN_ ;
       /**
        * <code>required int32 keys_n = 7;</code>
@@ -4801,7 +4780,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required int32 walletAccountIndex = 10;
       private int walletAccountIndex_ ;
       /**
        * <code>required int32 walletAccountIndex = 10;</code>
@@ -4865,10 +4843,10 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(class_scope:authenticator.protobuf.PairedAuthenticator)
   }
 
-  public interface PendingRequestOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface PendingRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:authenticator.protobuf.PendingRequest)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string pairingID = 1;
     /**
      * <code>required string pairingID = 1;</code>
      */
@@ -4883,7 +4861,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getPairingIDBytes();
 
-    // required string requestID = 2;
     /**
      * <code>required string requestID = 2;</code>
      */
@@ -4898,7 +4875,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getRequestIDBytes();
 
-    // required .authenticator.protobuf.ATOperationType operationType = 3;
     /**
      * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
      */
@@ -4908,7 +4884,6 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.ATOperationType getOperationType();
 
-    // optional string rawTx = 4;
     /**
      * <code>optional string rawTx = 4;</code>
      */
@@ -4923,7 +4898,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getRawTxBytes();
 
-    // optional string txLabel = 5;
     /**
      * <code>optional string txLabel = 5;</code>
      */
@@ -4938,7 +4912,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getTxLabelBytes();
 
-    // optional string txDestinationDescription = 6;
     /**
      * <code>optional string txDestinationDescription = 6;</code>
      */
@@ -4953,7 +4926,6 @@ public final class ProtoConfig {
     com.google.protobuf.ByteString
         getTxDestinationDescriptionBytes();
 
-    // optional bytes payloadIncoming = 7;
     /**
      * <code>optional bytes payloadIncoming = 7;</code>
      */
@@ -4963,7 +4935,6 @@ public final class ProtoConfig {
      */
     com.google.protobuf.ByteString getPayloadIncoming();
 
-    // optional bytes payloadToSendInCaseOfConnection = 8;
     /**
      * <code>optional bytes payloadToSendInCaseOfConnection = 8;</code>
      */
@@ -4973,7 +4944,6 @@ public final class ProtoConfig {
      */
     com.google.protobuf.ByteString getPayloadToSendInCaseOfConnection();
 
-    // required .authenticator.protobuf.PendingRequest.Contract contract = 9;
     /**
      * <code>required .authenticator.protobuf.PendingRequest.Contract contract = 9;</code>
      */
@@ -4991,8 +4961,9 @@ public final class ProtoConfig {
    * Protobuf type {@code authenticator.protobuf.PendingRequest}
    */
   public static final class PendingRequest extends
-      com.google.protobuf.GeneratedMessage
-      implements PendingRequestOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:authenticator.protobuf.PendingRequest)
+      PendingRequestOrBuilder {
     // Use PendingRequest.newBuilder() to construct.
     private PendingRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -5039,13 +5010,15 @@ public final class ProtoConfig {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              pairingID_ = input.readBytes();
+              pairingID_ = bs;
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              requestID_ = input.readBytes();
+              requestID_ = bs;
               break;
             }
             case 24: {
@@ -5060,18 +5033,21 @@ public final class ProtoConfig {
               break;
             }
             case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
-              rawTx_ = input.readBytes();
+              rawTx_ = bs;
               break;
             }
             case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000010;
-              txLabel_ = input.readBytes();
+              txLabel_ = bs;
               break;
             }
             case 50: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
-              txDestinationDescription_ = input.readBytes();
+              txDestinationDescription_ = bs;
               break;
             }
             case 58: {
@@ -5136,10 +5112,10 @@ public final class ProtoConfig {
       return PARSER;
     }
 
-    public interface ContractOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface ContractOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:authenticator.protobuf.PendingRequest.Contract)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional bool ShouldSendPayloadOnConnection = 1;
       /**
        * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
        */
@@ -5149,7 +5125,6 @@ public final class ProtoConfig {
        */
       boolean getShouldSendPayloadOnConnection();
 
-      // optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;
       /**
        * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
        */
@@ -5159,7 +5134,6 @@ public final class ProtoConfig {
        */
       boolean getShouldReceivePayloadAfterSendingPayloadOnConnection();
 
-      // optional bool ShouldLetPendingRequestHandleRemoval = 3;
       /**
        * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
        */
@@ -5173,8 +5147,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.PendingRequest.Contract}
      */
     public static final class Contract extends
-        com.google.protobuf.GeneratedMessage
-        implements ContractOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:authenticator.protobuf.PendingRequest.Contract)
+        ContractOrBuilder {
       // Use Contract.newBuilder() to construct.
       private Contract(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -5275,7 +5250,6 @@ public final class ProtoConfig {
       }
 
       private int bitField0_;
-      // optional bool ShouldSendPayloadOnConnection = 1;
       public static final int SHOULDSENDPAYLOADONCONNECTION_FIELD_NUMBER = 1;
       private boolean shouldSendPayloadOnConnection_;
       /**
@@ -5291,7 +5265,6 @@ public final class ProtoConfig {
         return shouldSendPayloadOnConnection_;
       }
 
-      // optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;
       public static final int SHOULDRECEIVEPAYLOADAFTERSENDINGPAYLOADONCONNECTION_FIELD_NUMBER = 2;
       private boolean shouldReceivePayloadAfterSendingPayloadOnConnection_;
       /**
@@ -5307,7 +5280,6 @@ public final class ProtoConfig {
         return shouldReceivePayloadAfterSendingPayloadOnConnection_;
       }
 
-      // optional bool ShouldLetPendingRequestHandleRemoval = 3;
       public static final int SHOULDLETPENDINGREQUESTHANDLEREMOVAL_FIELD_NUMBER = 3;
       private boolean shouldLetPendingRequestHandleRemoval_;
       /**
@@ -5331,7 +5303,8 @@ public final class ProtoConfig {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         memoizedIsInitialized = 1;
         return true;
@@ -5452,8 +5425,9 @@ public final class ProtoConfig {
        * Protobuf type {@code authenticator.protobuf.PendingRequest.Contract}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.PendingRequest.ContractOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:authenticator.protobuf.PendingRequest.Contract)
+          authenticator.protobuf.ProtoConfig.PendingRequest.ContractOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor;
@@ -5584,7 +5558,6 @@ public final class ProtoConfig {
         }
         private int bitField0_;
 
-        // optional bool ShouldSendPayloadOnConnection = 1;
         private boolean shouldSendPayloadOnConnection_ ;
         /**
          * <code>optional bool ShouldSendPayloadOnConnection = 1;</code>
@@ -5617,7 +5590,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;
         private boolean shouldReceivePayloadAfterSendingPayloadOnConnection_ ;
         /**
          * <code>optional bool ShouldReceivePayloadAfterSendingPayloadOnConnection = 2;</code>
@@ -5650,7 +5622,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional bool ShouldLetPendingRequestHandleRemoval = 3;
         private boolean shouldLetPendingRequestHandleRemoval_ ;
         /**
          * <code>optional bool ShouldLetPendingRequestHandleRemoval = 3;</code>
@@ -5695,7 +5666,6 @@ public final class ProtoConfig {
     }
 
     private int bitField0_;
-    // required string pairingID = 1;
     public static final int PAIRINGID_FIELD_NUMBER = 1;
     private java.lang.Object pairingID_;
     /**
@@ -5738,7 +5708,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required string requestID = 2;
     public static final int REQUESTID_FIELD_NUMBER = 2;
     private java.lang.Object requestID_;
     /**
@@ -5781,7 +5750,6 @@ public final class ProtoConfig {
       }
     }
 
-    // required .authenticator.protobuf.ATOperationType operationType = 3;
     public static final int OPERATIONTYPE_FIELD_NUMBER = 3;
     private authenticator.protobuf.ProtoConfig.ATOperationType operationType_;
     /**
@@ -5797,7 +5765,6 @@ public final class ProtoConfig {
       return operationType_;
     }
 
-    // optional string rawTx = 4;
     public static final int RAWTX_FIELD_NUMBER = 4;
     private java.lang.Object rawTx_;
     /**
@@ -5840,7 +5807,6 @@ public final class ProtoConfig {
       }
     }
 
-    // optional string txLabel = 5;
     public static final int TXLABEL_FIELD_NUMBER = 5;
     private java.lang.Object txLabel_;
     /**
@@ -5883,7 +5849,6 @@ public final class ProtoConfig {
       }
     }
 
-    // optional string txDestinationDescription = 6;
     public static final int TXDESTINATIONDESCRIPTION_FIELD_NUMBER = 6;
     private java.lang.Object txDestinationDescription_;
     /**
@@ -5926,7 +5891,6 @@ public final class ProtoConfig {
       }
     }
 
-    // optional bytes payloadIncoming = 7;
     public static final int PAYLOADINCOMING_FIELD_NUMBER = 7;
     private com.google.protobuf.ByteString payloadIncoming_;
     /**
@@ -5942,7 +5906,6 @@ public final class ProtoConfig {
       return payloadIncoming_;
     }
 
-    // optional bytes payloadToSendInCaseOfConnection = 8;
     public static final int PAYLOADTOSENDINCASEOFCONNECTION_FIELD_NUMBER = 8;
     private com.google.protobuf.ByteString payloadToSendInCaseOfConnection_;
     /**
@@ -5958,7 +5921,6 @@ public final class ProtoConfig {
       return payloadToSendInCaseOfConnection_;
     }
 
-    // required .authenticator.protobuf.PendingRequest.Contract contract = 9;
     public static final int CONTRACT_FIELD_NUMBER = 9;
     private authenticator.protobuf.ProtoConfig.PendingRequest.Contract contract_;
     /**
@@ -5994,7 +5956,8 @@ public final class ProtoConfig {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasPairingID()) {
         memoizedIsInitialized = 0;
@@ -6173,8 +6136,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.PendingRequest}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:authenticator.protobuf.PendingRequest)
+        authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_descriptor;
@@ -6394,7 +6358,6 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      // required string pairingID = 1;
       private java.lang.Object pairingID_ = "";
       /**
        * <code>required string pairingID = 1;</code>
@@ -6408,9 +6371,12 @@ public final class ProtoConfig {
       public java.lang.String getPairingID() {
         java.lang.Object ref = pairingID_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          pairingID_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            pairingID_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6468,7 +6434,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required string requestID = 2;
       private java.lang.Object requestID_ = "";
       /**
        * <code>required string requestID = 2;</code>
@@ -6482,9 +6447,12 @@ public final class ProtoConfig {
       public java.lang.String getRequestID() {
         java.lang.Object ref = requestID_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          requestID_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            requestID_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6542,7 +6510,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required .authenticator.protobuf.ATOperationType operationType = 3;
       private authenticator.protobuf.ProtoConfig.ATOperationType operationType_ = authenticator.protobuf.ProtoConfig.ATOperationType.Pairing;
       /**
        * <code>required .authenticator.protobuf.ATOperationType operationType = 3;</code>
@@ -6578,7 +6545,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional string rawTx = 4;
       private java.lang.Object rawTx_ = "";
       /**
        * <code>optional string rawTx = 4;</code>
@@ -6592,9 +6558,12 @@ public final class ProtoConfig {
       public java.lang.String getRawTx() {
         java.lang.Object ref = rawTx_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          rawTx_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            rawTx_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6652,7 +6621,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional string txLabel = 5;
       private java.lang.Object txLabel_ = "";
       /**
        * <code>optional string txLabel = 5;</code>
@@ -6666,9 +6634,12 @@ public final class ProtoConfig {
       public java.lang.String getTxLabel() {
         java.lang.Object ref = txLabel_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          txLabel_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            txLabel_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6726,7 +6697,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional string txDestinationDescription = 6;
       private java.lang.Object txDestinationDescription_ = "";
       /**
        * <code>optional string txDestinationDescription = 6;</code>
@@ -6740,9 +6710,12 @@ public final class ProtoConfig {
       public java.lang.String getTxDestinationDescription() {
         java.lang.Object ref = txDestinationDescription_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          txDestinationDescription_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            txDestinationDescription_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6800,7 +6773,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional bytes payloadIncoming = 7;
       private com.google.protobuf.ByteString payloadIncoming_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes payloadIncoming = 7;</code>
@@ -6836,7 +6808,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // optional bytes payloadToSendInCaseOfConnection = 8;
       private com.google.protobuf.ByteString payloadToSendInCaseOfConnection_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes payloadToSendInCaseOfConnection = 8;</code>
@@ -6872,7 +6843,6 @@ public final class ProtoConfig {
         return this;
       }
 
-      // required .authenticator.protobuf.PendingRequest.Contract contract = 9;
       private authenticator.protobuf.ProtoConfig.PendingRequest.Contract contract_ = authenticator.protobuf.ProtoConfig.PendingRequest.Contract.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoConfig.PendingRequest.Contract, authenticator.protobuf.ProtoConfig.PendingRequest.Contract.Builder, authenticator.protobuf.ProtoConfig.PendingRequest.ContractOrBuilder> contractBuilder_;
@@ -6981,7 +6951,7 @@ public final class ProtoConfig {
         if (contractBuilder_ == null) {
           contractBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               authenticator.protobuf.ProtoConfig.PendingRequest.Contract, authenticator.protobuf.ProtoConfig.PendingRequest.Contract.Builder, authenticator.protobuf.ProtoConfig.PendingRequest.ContractOrBuilder>(
-                  contract_,
+                  getContract(),
                   getParentForChildren(),
                   isClean());
           contract_ = null;
@@ -7000,10 +6970,10 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(class_scope:authenticator.protobuf.PendingRequest)
   }
 
-  public interface AuthenticatorConfigurationOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface AuthenticatorConfigurationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:authenticator.protobuf.AuthenticatorConfiguration)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;
     /**
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;</code>
      */
@@ -7017,7 +6987,6 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder getConfigActiveAccountOrBuilder();
 
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;
     /**
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;</code>
      */
@@ -7031,7 +7000,6 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder getConfigAuthenticatorWalletOrBuilder();
 
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;
     /**
      * <code>optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;</code>
      *
@@ -7057,7 +7025,6 @@ public final class ProtoConfig {
      */
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder getConfigOneNameProfileOrBuilder();
 
-    // repeated .authenticator.protobuf.ATAccount configAccounts = 6;
     /**
      * <code>repeated .authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
@@ -7102,7 +7069,6 @@ public final class ProtoConfig {
     authenticator.protobuf.ProtoConfig.ATAccountOrBuilder getConfigAccountsOrBuilder(
         int index);
 
-    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;
     /**
      * <code>repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;</code>
      */
@@ -7127,7 +7093,6 @@ public final class ProtoConfig {
     authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder getConfigSavedTXDataOrBuilder(
         int index);
 
-    // required .authenticator.protobuf.ConfigSettings configSettings = 8;
     /**
      * <code>required .authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
@@ -7145,8 +7110,9 @@ public final class ProtoConfig {
    * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration}
    */
   public static final class AuthenticatorConfiguration extends
-      com.google.protobuf.GeneratedMessage
-      implements AuthenticatorConfigurationOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:authenticator.protobuf.AuthenticatorConfiguration)
+      AuthenticatorConfigurationOrBuilder {
     // Use AuthenticatorConfiguration.newBuilder() to construct.
     private AuthenticatorConfiguration(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -7305,10 +7271,10 @@ public final class ProtoConfig {
       return PARSER;
     }
 
-    public interface ConfigActiveAccountOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface ConfigActiveAccountOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
       /**
        * <code>optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;</code>
        */
@@ -7322,7 +7288,6 @@ public final class ProtoConfig {
        */
       authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedAuthenticatorOrBuilder();
 
-      // required .authenticator.protobuf.ATAccount activeAccount = 2;
       /**
        * <code>required .authenticator.protobuf.ATAccount activeAccount = 2;</code>
        */
@@ -7340,8 +7305,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount}
      */
     public static final class ConfigActiveAccount extends
-        com.google.protobuf.GeneratedMessage
-        implements ConfigActiveAccountOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount)
+        ConfigActiveAccountOrBuilder {
       // Use ConfigActiveAccount.newBuilder() to construct.
       private ConfigActiveAccount(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -7453,7 +7419,6 @@ public final class ProtoConfig {
       }
 
       private int bitField0_;
-      // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
       public static final int PAIREDAUTHENTICATOR_FIELD_NUMBER = 1;
       private authenticator.protobuf.ProtoConfig.PairedAuthenticator pairedAuthenticator_;
       /**
@@ -7475,7 +7440,6 @@ public final class ProtoConfig {
         return pairedAuthenticator_;
       }
 
-      // required .authenticator.protobuf.ATAccount activeAccount = 2;
       public static final int ACTIVEACCOUNT_FIELD_NUMBER = 2;
       private authenticator.protobuf.ProtoConfig.ATAccount activeAccount_;
       /**
@@ -7504,7 +7468,8 @@ public final class ProtoConfig {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (!hasActiveAccount()) {
           memoizedIsInitialized = 0;
@@ -7632,8 +7597,9 @@ public final class ProtoConfig {
        * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount)
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
@@ -7787,7 +7753,6 @@ public final class ProtoConfig {
         }
         private int bitField0_;
 
-        // optional .authenticator.protobuf.PairedAuthenticator pairedAuthenticator = 1;
         private authenticator.protobuf.ProtoConfig.PairedAuthenticator pairedAuthenticator_ = authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder> pairedAuthenticatorBuilder_;
@@ -7896,7 +7861,7 @@ public final class ProtoConfig {
           if (pairedAuthenticatorBuilder_ == null) {
             pairedAuthenticatorBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 authenticator.protobuf.ProtoConfig.PairedAuthenticator, authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder, authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder>(
-                    pairedAuthenticator_,
+                    getPairedAuthenticator(),
                     getParentForChildren(),
                     isClean());
             pairedAuthenticator_ = null;
@@ -7904,7 +7869,6 @@ public final class ProtoConfig {
           return pairedAuthenticatorBuilder_;
         }
 
-        // required .authenticator.protobuf.ATAccount activeAccount = 2;
         private authenticator.protobuf.ProtoConfig.ATAccount activeAccount_ = authenticator.protobuf.ProtoConfig.ATAccount.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             authenticator.protobuf.ProtoConfig.ATAccount, authenticator.protobuf.ProtoConfig.ATAccount.Builder, authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> activeAccountBuilder_;
@@ -8013,7 +7977,7 @@ public final class ProtoConfig {
           if (activeAccountBuilder_ == null) {
             activeAccountBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 authenticator.protobuf.ProtoConfig.ATAccount, authenticator.protobuf.ProtoConfig.ATAccount.Builder, authenticator.protobuf.ProtoConfig.ATAccountOrBuilder>(
-                    activeAccount_,
+                    getActiveAccount(),
                     getParentForChildren(),
                     isClean());
             activeAccount_ = null;
@@ -8032,10 +7996,10 @@ public final class ProtoConfig {
       // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount)
     }
 
-    public interface ConfigAuthenticatorWalletOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface ConfigAuthenticatorWalletOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional bool paired = 1;
       /**
        * <code>optional bool paired = 1;</code>
        *
@@ -8053,7 +8017,6 @@ public final class ProtoConfig {
        */
       boolean getPaired();
 
-      // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
       /**
        * <code>repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;</code>
        */
@@ -8078,7 +8041,6 @@ public final class ProtoConfig {
       authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder getPairedWalletsOrBuilder(
           int index);
 
-      // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
       /**
        * <code>repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;</code>
        */
@@ -8107,8 +8069,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet}
      */
     public static final class ConfigAuthenticatorWallet extends
-        com.google.protobuf.GeneratedMessage
-        implements ConfigAuthenticatorWalletOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet)
+        ConfigAuthenticatorWalletOrBuilder {
       // Use ConfigAuthenticatorWallet.newBuilder() to construct.
       private ConfigAuthenticatorWallet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -8221,7 +8184,6 @@ public final class ProtoConfig {
       }
 
       private int bitField0_;
-      // optional bool paired = 1;
       public static final int PAIRED_FIELD_NUMBER = 1;
       private boolean paired_;
       /**
@@ -8245,7 +8207,6 @@ public final class ProtoConfig {
         return paired_;
       }
 
-      // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
       public static final int PAIREDWALLETS_FIELD_NUMBER = 2;
       private java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> pairedWallets_;
       /**
@@ -8281,7 +8242,6 @@ public final class ProtoConfig {
         return pairedWallets_.get(index);
       }
 
-      // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
       public static final int PENDINGREQUESTS_FIELD_NUMBER = 3;
       private java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> pendingRequests_;
       /**
@@ -8325,7 +8285,8 @@ public final class ProtoConfig {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         for (int i = 0; i < getPairedWalletsCount(); i++) {
           if (!getPairedWallets(i).isInitialized()) {
@@ -8458,8 +8419,9 @@ public final class ProtoConfig {
        * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet)
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
@@ -8668,7 +8630,6 @@ public final class ProtoConfig {
         }
         private int bitField0_;
 
-        // optional bool paired = 1;
         private boolean paired_ ;
         /**
          * <code>optional bool paired = 1;</code>
@@ -8717,7 +8678,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // repeated .authenticator.protobuf.PairedAuthenticator pairedWallets = 2;
         private java.util.List<authenticator.protobuf.ProtoConfig.PairedAuthenticator> pairedWallets_ =
           java.util.Collections.emptyList();
         private void ensurePairedWalletsIsMutable() {
@@ -8859,7 +8819,8 @@ public final class ProtoConfig {
             java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.PairedAuthenticator> values) {
           if (pairedWalletsBuilder_ == null) {
             ensurePairedWalletsIsMutable();
-            super.addAll(values, pairedWallets_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, pairedWallets_);
             onChanged();
           } else {
             pairedWalletsBuilder_.addAllMessages(values);
@@ -8957,7 +8918,6 @@ public final class ProtoConfig {
           return pairedWalletsBuilder_;
         }
 
-        // repeated .authenticator.protobuf.PendingRequest pendingRequests = 3;
         private java.util.List<authenticator.protobuf.ProtoConfig.PendingRequest> pendingRequests_ =
           java.util.Collections.emptyList();
         private void ensurePendingRequestsIsMutable() {
@@ -9099,7 +9059,8 @@ public final class ProtoConfig {
             java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.PendingRequest> values) {
           if (pendingRequestsBuilder_ == null) {
             ensurePendingRequestsIsMutable();
-            super.addAll(values, pendingRequests_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, pendingRequests_);
             onChanged();
           } else {
             pendingRequestsBuilder_.addAllMessages(values);
@@ -9208,10 +9169,10 @@ public final class ProtoConfig {
       // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet)
     }
 
-    public interface ConfigOneNameProfileOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface ConfigOneNameProfileOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile)
+        com.google.protobuf.MessageOrBuilder {
 
-      // required string onename = 1;
       /**
        * <code>required string onename = 1;</code>
        *
@@ -9238,7 +9199,6 @@ public final class ProtoConfig {
       com.google.protobuf.ByteString
           getOnenameBytes();
 
-      // optional string onenameFormatted = 2;
       /**
        * <code>optional string onenameFormatted = 2;</code>
        */
@@ -9253,7 +9213,6 @@ public final class ProtoConfig {
       com.google.protobuf.ByteString
           getOnenameFormattedBytes();
 
-      // optional string onenameAvatarURL = 3;
       /**
        * <code>optional string onenameAvatarURL = 3;</code>
        */
@@ -9268,7 +9227,6 @@ public final class ProtoConfig {
       com.google.protobuf.ByteString
           getOnenameAvatarURLBytes();
 
-      // optional string onenameAvatarFilePath = 4;
       /**
        * <code>optional string onenameAvatarFilePath = 4;</code>
        */
@@ -9283,7 +9241,6 @@ public final class ProtoConfig {
       com.google.protobuf.ByteString
           getOnenameAvatarFilePathBytes();
 
-      // optional string bitcoinAddress = 5;
       /**
        * <code>optional string bitcoinAddress = 5;</code>
        */
@@ -9302,8 +9259,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile}
      */
     public static final class ConfigOneNameProfile extends
-        com.google.protobuf.GeneratedMessage
-        implements ConfigOneNameProfileOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile)
+        ConfigOneNameProfileOrBuilder {
       // Use ConfigOneNameProfile.newBuilder() to construct.
       private ConfigOneNameProfile(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -9350,28 +9308,33 @@ public final class ProtoConfig {
                 break;
               }
               case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
-                onename_ = input.readBytes();
+                onename_ = bs;
                 break;
               }
               case 18: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000002;
-                onenameFormatted_ = input.readBytes();
+                onenameFormatted_ = bs;
                 break;
               }
               case 26: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000004;
-                onenameAvatarURL_ = input.readBytes();
+                onenameAvatarURL_ = bs;
                 break;
               }
               case 34: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000008;
-                onenameAvatarFilePath_ = input.readBytes();
+                onenameAvatarFilePath_ = bs;
                 break;
               }
               case 42: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000010;
-                bitcoinAddress_ = input.readBytes();
+                bitcoinAddress_ = bs;
                 break;
               }
             }
@@ -9414,7 +9377,6 @@ public final class ProtoConfig {
       }
 
       private int bitField0_;
-      // required string onename = 1;
       public static final int ONENAME_FIELD_NUMBER = 1;
       private java.lang.Object onename_;
       /**
@@ -9469,7 +9431,6 @@ public final class ProtoConfig {
         }
       }
 
-      // optional string onenameFormatted = 2;
       public static final int ONENAMEFORMATTED_FIELD_NUMBER = 2;
       private java.lang.Object onenameFormatted_;
       /**
@@ -9512,7 +9473,6 @@ public final class ProtoConfig {
         }
       }
 
-      // optional string onenameAvatarURL = 3;
       public static final int ONENAMEAVATARURL_FIELD_NUMBER = 3;
       private java.lang.Object onenameAvatarURL_;
       /**
@@ -9555,7 +9515,6 @@ public final class ProtoConfig {
         }
       }
 
-      // optional string onenameAvatarFilePath = 4;
       public static final int ONENAMEAVATARFILEPATH_FIELD_NUMBER = 4;
       private java.lang.Object onenameAvatarFilePath_;
       /**
@@ -9598,7 +9557,6 @@ public final class ProtoConfig {
         }
       }
 
-      // optional string bitcoinAddress = 5;
       public static final int BITCOINADDRESS_FIELD_NUMBER = 5;
       private java.lang.Object bitcoinAddress_;
       /**
@@ -9651,7 +9609,8 @@ public final class ProtoConfig {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (!hasOnename()) {
           memoizedIsInitialized = 0;
@@ -9790,8 +9749,9 @@ public final class ProtoConfig {
        * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile)
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
@@ -9954,7 +9914,6 @@ public final class ProtoConfig {
         }
         private int bitField0_;
 
-        // required string onename = 1;
         private java.lang.Object onename_ = "";
         /**
          * <code>required string onename = 1;</code>
@@ -9976,9 +9935,12 @@ public final class ProtoConfig {
         public java.lang.String getOnename() {
           java.lang.Object ref = onename_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            onename_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              onename_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -10052,7 +10014,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional string onenameFormatted = 2;
         private java.lang.Object onenameFormatted_ = "";
         /**
          * <code>optional string onenameFormatted = 2;</code>
@@ -10066,9 +10027,12 @@ public final class ProtoConfig {
         public java.lang.String getOnenameFormatted() {
           java.lang.Object ref = onenameFormatted_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            onenameFormatted_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              onenameFormatted_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -10126,7 +10090,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional string onenameAvatarURL = 3;
         private java.lang.Object onenameAvatarURL_ = "";
         /**
          * <code>optional string onenameAvatarURL = 3;</code>
@@ -10140,9 +10103,12 @@ public final class ProtoConfig {
         public java.lang.String getOnenameAvatarURL() {
           java.lang.Object ref = onenameAvatarURL_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            onenameAvatarURL_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              onenameAvatarURL_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -10200,7 +10166,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional string onenameAvatarFilePath = 4;
         private java.lang.Object onenameAvatarFilePath_ = "";
         /**
          * <code>optional string onenameAvatarFilePath = 4;</code>
@@ -10214,9 +10179,12 @@ public final class ProtoConfig {
         public java.lang.String getOnenameAvatarFilePath() {
           java.lang.Object ref = onenameAvatarFilePath_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            onenameAvatarFilePath_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              onenameAvatarFilePath_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -10274,7 +10242,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional string bitcoinAddress = 5;
         private java.lang.Object bitcoinAddress_ = "";
         /**
          * <code>optional string bitcoinAddress = 5;</code>
@@ -10288,9 +10255,12 @@ public final class ProtoConfig {
         public java.lang.String getBitcoinAddress() {
           java.lang.Object ref = bitcoinAddress_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            bitcoinAddress_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              bitcoinAddress_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -10359,10 +10329,10 @@ public final class ProtoConfig {
       // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile)
     }
 
-    public interface SavedTXOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface SavedTXOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:authenticator.protobuf.AuthenticatorConfiguration.SavedTX)
+        com.google.protobuf.MessageOrBuilder {
 
-      // required string txid = 1;
       /**
        * <code>required string txid = 1;</code>
        */
@@ -10377,7 +10347,6 @@ public final class ProtoConfig {
       com.google.protobuf.ByteString
           getTxidBytes();
 
-      // optional string toFrom = 2;
       /**
        * <code>optional string toFrom = 2;</code>
        */
@@ -10392,7 +10361,6 @@ public final class ProtoConfig {
       com.google.protobuf.ByteString
           getToFromBytes();
 
-      // optional string description = 3;
       /**
        * <code>optional string description = 3;</code>
        */
@@ -10411,8 +10379,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.SavedTX}
      */
     public static final class SavedTX extends
-        com.google.protobuf.GeneratedMessage
-        implements SavedTXOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:authenticator.protobuf.AuthenticatorConfiguration.SavedTX)
+        SavedTXOrBuilder {
       // Use SavedTX.newBuilder() to construct.
       private SavedTX(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -10459,18 +10428,21 @@ public final class ProtoConfig {
                 break;
               }
               case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
-                txid_ = input.readBytes();
+                txid_ = bs;
                 break;
               }
               case 18: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000002;
-                toFrom_ = input.readBytes();
+                toFrom_ = bs;
                 break;
               }
               case 26: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000004;
-                description_ = input.readBytes();
+                description_ = bs;
                 break;
               }
             }
@@ -10513,7 +10485,6 @@ public final class ProtoConfig {
       }
 
       private int bitField0_;
-      // required string txid = 1;
       public static final int TXID_FIELD_NUMBER = 1;
       private java.lang.Object txid_;
       /**
@@ -10556,7 +10527,6 @@ public final class ProtoConfig {
         }
       }
 
-      // optional string toFrom = 2;
       public static final int TOFROM_FIELD_NUMBER = 2;
       private java.lang.Object toFrom_;
       /**
@@ -10599,7 +10569,6 @@ public final class ProtoConfig {
         }
       }
 
-      // optional string description = 3;
       public static final int DESCRIPTION_FIELD_NUMBER = 3;
       private java.lang.Object description_;
       /**
@@ -10650,7 +10619,8 @@ public final class ProtoConfig {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (!hasTxid()) {
           memoizedIsInitialized = 0;
@@ -10775,8 +10745,9 @@ public final class ProtoConfig {
        * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration.SavedTX}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:authenticator.protobuf.AuthenticatorConfiguration.SavedTX)
+          authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
@@ -10917,7 +10888,6 @@ public final class ProtoConfig {
         }
         private int bitField0_;
 
-        // required string txid = 1;
         private java.lang.Object txid_ = "";
         /**
          * <code>required string txid = 1;</code>
@@ -10931,9 +10901,12 @@ public final class ProtoConfig {
         public java.lang.String getTxid() {
           java.lang.Object ref = txid_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            txid_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              txid_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -10991,7 +10964,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional string toFrom = 2;
         private java.lang.Object toFrom_ = "";
         /**
          * <code>optional string toFrom = 2;</code>
@@ -11005,9 +10977,12 @@ public final class ProtoConfig {
         public java.lang.String getToFrom() {
           java.lang.Object ref = toFrom_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            toFrom_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              toFrom_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -11065,7 +11040,6 @@ public final class ProtoConfig {
           return this;
         }
 
-        // optional string description = 3;
         private java.lang.Object description_ = "";
         /**
          * <code>optional string description = 3;</code>
@@ -11079,9 +11053,12 @@ public final class ProtoConfig {
         public java.lang.String getDescription() {
           java.lang.Object ref = description_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            description_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              description_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -11151,7 +11128,6 @@ public final class ProtoConfig {
     }
 
     private int bitField0_;
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;
     public static final int CONFIGACTIVEACCOUNT_FIELD_NUMBER = 1;
     private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount_;
     /**
@@ -11173,7 +11149,6 @@ public final class ProtoConfig {
       return configActiveAccount_;
     }
 
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;
     public static final int CONFIGAUTHENTICATORWALLET_FIELD_NUMBER = 2;
     private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet_;
     /**
@@ -11195,7 +11170,6 @@ public final class ProtoConfig {
       return configAuthenticatorWallet_;
     }
 
-    // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;
     public static final int CONFIGONENAMEPROFILE_FIELD_NUMBER = 5;
     private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile_;
     /**
@@ -11229,7 +11203,6 @@ public final class ProtoConfig {
       return configOneNameProfile_;
     }
 
-    // repeated .authenticator.protobuf.ATAccount configAccounts = 6;
     public static final int CONFIGACCOUNTS_FIELD_NUMBER = 6;
     private java.util.List<authenticator.protobuf.ProtoConfig.ATAccount> configAccounts_;
     /**
@@ -11285,7 +11258,6 @@ public final class ProtoConfig {
       return configAccounts_.get(index);
     }
 
-    // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;
     public static final int CONFIGSAVEDTXDATA_FIELD_NUMBER = 7;
     private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_;
     /**
@@ -11321,7 +11293,6 @@ public final class ProtoConfig {
       return configSavedTXData_.get(index);
     }
 
-    // required .authenticator.protobuf.ConfigSettings configSettings = 8;
     public static final int CONFIGSETTINGS_FIELD_NUMBER = 8;
     private authenticator.protobuf.ProtoSettings.ConfigSettings configSettings_;
     /**
@@ -11354,7 +11325,8 @@ public final class ProtoConfig {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasConfigSettings()) {
         memoizedIsInitialized = 0;
@@ -11530,8 +11502,9 @@ public final class ProtoConfig {
      * Protobuf type {@code authenticator.protobuf.AuthenticatorConfiguration}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements authenticator.protobuf.ProtoConfig.AuthenticatorConfigurationOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:authenticator.protobuf.AuthenticatorConfiguration)
+        authenticator.protobuf.ProtoConfig.AuthenticatorConfigurationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
@@ -11825,7 +11798,6 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount = 1;
       private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount configActiveAccount_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder> configActiveAccountBuilder_;
@@ -11934,7 +11906,7 @@ public final class ProtoConfig {
         if (configActiveAccountBuilder_ == null) {
           configActiveAccountBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder>(
-                  configActiveAccount_,
+                  getConfigActiveAccount(),
                   getParentForChildren(),
                   isClean());
           configActiveAccount_ = null;
@@ -11942,7 +11914,6 @@ public final class ProtoConfig {
         return configActiveAccountBuilder_;
       }
 
-      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet = 2;
       private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet configAuthenticatorWallet_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder> configAuthenticatorWalletBuilder_;
@@ -12051,7 +12022,7 @@ public final class ProtoConfig {
         if (configAuthenticatorWalletBuilder_ == null) {
           configAuthenticatorWalletBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder>(
-                  configAuthenticatorWallet_,
+                  getConfigAuthenticatorWallet(),
                   getParentForChildren(),
                   isClean());
           configAuthenticatorWallet_ = null;
@@ -12059,7 +12030,6 @@ public final class ProtoConfig {
         return configAuthenticatorWalletBuilder_;
       }
 
-      // optional .authenticator.protobuf.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile = 5;
       private authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile configOneNameProfile_ = authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder> configOneNameProfileBuilder_;
@@ -12204,7 +12174,7 @@ public final class ProtoConfig {
         if (configOneNameProfileBuilder_ == null) {
           configOneNameProfileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder, authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder>(
-                  configOneNameProfile_,
+                  getConfigOneNameProfile(),
                   getParentForChildren(),
                   isClean());
           configOneNameProfile_ = null;
@@ -12212,7 +12182,6 @@ public final class ProtoConfig {
         return configOneNameProfileBuilder_;
       }
 
-      // repeated .authenticator.protobuf.ATAccount configAccounts = 6;
       private java.util.List<authenticator.protobuf.ProtoConfig.ATAccount> configAccounts_ =
         java.util.Collections.emptyList();
       private void ensureConfigAccountsIsMutable() {
@@ -12394,7 +12363,8 @@ public final class ProtoConfig {
           java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.ATAccount> values) {
         if (configAccountsBuilder_ == null) {
           ensureConfigAccountsIsMutable();
-          super.addAll(values, configAccounts_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, configAccounts_);
           onChanged();
         } else {
           configAccountsBuilder_.addAllMessages(values);
@@ -12524,7 +12494,6 @@ public final class ProtoConfig {
         return configAccountsBuilder_;
       }
 
-      // repeated .authenticator.protobuf.AuthenticatorConfiguration.SavedTX configSavedTXData = 7;
       private java.util.List<authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> configSavedTXData_ =
         java.util.Collections.emptyList();
       private void ensureConfigSavedTXDataIsMutable() {
@@ -12666,7 +12635,8 @@ public final class ProtoConfig {
           java.lang.Iterable<? extends authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX> values) {
         if (configSavedTXDataBuilder_ == null) {
           ensureConfigSavedTXDataIsMutable();
-          super.addAll(values, configSavedTXData_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, configSavedTXData_);
           onChanged();
         } else {
           configSavedTXDataBuilder_.addAllMessages(values);
@@ -12764,7 +12734,6 @@ public final class ProtoConfig {
         return configSavedTXDataBuilder_;
       }
 
-      // required .authenticator.protobuf.ConfigSettings configSettings = 8;
       private authenticator.protobuf.ProtoSettings.ConfigSettings configSettings_ = authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           authenticator.protobuf.ProtoSettings.ConfigSettings, authenticator.protobuf.ProtoSettings.ConfigSettings.Builder, authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder> configSettingsBuilder_;
@@ -12873,7 +12842,7 @@ public final class ProtoConfig {
         if (configSettingsBuilder_ == null) {
           configSettingsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               authenticator.protobuf.ProtoSettings.ConfigSettings, authenticator.protobuf.ProtoSettings.ConfigSettings.Builder, authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder>(
-                  configSettings_,
+                  getConfigSettings(),
                   getParentForChildren(),
                   isClean());
           configSettings_ = null;
@@ -12892,57 +12861,57 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(class_scope:authenticator.protobuf.AuthenticatorConfiguration)
   }
 
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_ATAddress_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_ATAddress_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_ATAccount_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_PendingRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -13018,95 +12987,98 @@ public final class ProtoConfig {
       "\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAv",
       "atarFilePath\030\004 \001(\t\022\026\n\016bitcoinAddress\030\005 \001" +
       "(\t\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 " +
-      "\001(\t\022\023\n\013description\030\003 \001(\t*;\n\020ATGCMMessage" +
+      "\001(\t\022\023\n\013description\030\003 \001(\t*N\n\020ATGCMMessage" +
       "Type\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequest" +
-      "IPs\020\004*\217\001\n\017ATOperationType\022\013\n\007Pairing\020\000\022\n" +
-      "\n\006Unpair\020\001\022#\n\037SignAndBroadcastAuthentica" +
-      "torTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n#update" +
-      "IpAddressesForPreviousMessage\020\004*B\n\021Walle" +
-      "tAccountType\022\023\n\017StandardAccount\020\000\022\030\n\024Aut" +
-      "henticatorAccount\020\001B\rB\013ProtoConfig"
+      "IPs\020\004\022\021\n\rCoinsReceived\020\006*\217\001\n\017ATOperation" +
+      "Type\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAnd" +
+      "BroadcastAuthenticatorTx\020\002\022\025\n\021BroadcastN" +
+      "ormalTx\020\003\022\'\n#updateIpAddressesForPreviou" +
+      "sMessage\020\004*B\n\021WalletAccountType\022\023\n\017Stand" +
+      "ardAccount\020\000\022\030\n\024AuthenticatorAccount\020\001B\r",
+      "B\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          internal_static_authenticator_protobuf_ATAddress_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_authenticator_protobuf_ATAddress_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ATAddress_descriptor,
-              new java.lang.String[] { "AccountIndex", "KeyIndex", "AddressStr", "IsUsed", "Type", });
-          internal_static_authenticator_protobuf_ATAccount_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-          internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ATAccount_descriptor,
-              new java.lang.String[] { "Index", "UsedExternalKeys", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "NetworkType", "AccountType", "AccountName", "AccountExternalHierarchy", "AccountInternalHierarchy", });
-          internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor =
-            internal_static_authenticator_protobuf_ATAccount_descriptor.getNestedTypes().get(0);
-          internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor,
-              new java.lang.String[] { "HierarchyKey", "HierarchyChaincode", });
-          internal_static_authenticator_protobuf_PairedAuthenticator_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-          internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_PairedAuthenticator_descriptor,
-              new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "WalletAccountIndex", });
-          internal_static_authenticator_protobuf_PendingRequest_descriptor =
-            getDescriptor().getMessageTypes().get(3);
-          internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_PendingRequest_descriptor,
-              new java.lang.String[] { "PairingID", "RequestID", "OperationType", "RawTx", "TxLabel", "TxDestinationDescription", "PayloadIncoming", "PayloadToSendInCaseOfConnection", "Contract", });
-          internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor =
-            internal_static_authenticator_protobuf_PendingRequest_descriptor.getNestedTypes().get(0);
-          internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor,
-              new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", "ShouldLetPendingRequestHandleRemoval", });
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
-            getDescriptor().getMessageTypes().get(4);
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
-              new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", });
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
-            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor,
-              new java.lang.String[] { "PairedAuthenticator", "ActiveAccount", });
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor =
-            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(1);
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor,
-              new java.lang.String[] { "Paired", "PairedWallets", "PendingRequests", });
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor =
-            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(2);
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor,
-              new java.lang.String[] { "Onename", "OnenameFormatted", "OnenameAvatarURL", "OnenameAvatarFilePath", "BitcoinAddress", });
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
-            internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
-          internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor,
-              new java.lang.String[] { "Txid", "ToFrom", "Description", });
-          return null;
-        }
-      };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           authenticator.protobuf.AuthWalletHierarchy.getDescriptor(),
           authenticator.protobuf.ProtoSettings.getDescriptor(),
         }, assigner);
+    internal_static_authenticator_protobuf_ATAddress_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_authenticator_protobuf_ATAddress_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_ATAddress_descriptor,
+        new java.lang.String[] { "AccountIndex", "KeyIndex", "AddressStr", "IsUsed", "Type", });
+    internal_static_authenticator_protobuf_ATAccount_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_ATAccount_descriptor,
+        new java.lang.String[] { "Index", "UsedExternalKeys", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "NetworkType", "AccountType", "AccountName", "AccountExternalHierarchy", "AccountInternalHierarchy", });
+    internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor =
+      internal_static_authenticator_protobuf_ATAccount_descriptor.getNestedTypes().get(0);
+    internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor,
+        new java.lang.String[] { "HierarchyKey", "HierarchyChaincode", });
+    internal_static_authenticator_protobuf_PairedAuthenticator_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_PairedAuthenticator_descriptor,
+        new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "WalletAccountIndex", });
+    internal_static_authenticator_protobuf_PendingRequest_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_PendingRequest_descriptor,
+        new java.lang.String[] { "PairingID", "RequestID", "OperationType", "RawTx", "TxLabel", "TxDestinationDescription", "PayloadIncoming", "PayloadToSendInCaseOfConnection", "Contract", });
+    internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor =
+      internal_static_authenticator_protobuf_PendingRequest_descriptor.getNestedTypes().get(0);
+    internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor,
+        new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", "ShouldLetPendingRequestHandleRemoval", });
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
+        new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", });
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor,
+        new java.lang.String[] { "PairedAuthenticator", "ActiveAccount", });
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor =
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(1);
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor,
+        new java.lang.String[] { "Paired", "PairedWallets", "PendingRequests", });
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor =
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(2);
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor,
+        new java.lang.String[] { "Onename", "OnenameFormatted", "OnenameAvatarURL", "OnenameAvatarFilePath", "BitcoinAddress", });
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
+      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
+    internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor,
+        new java.lang.String[] { "Txid", "ToFrom", "Description", });
+    authenticator.protobuf.AuthWalletHierarchy.getDescriptor();
+    authenticator.protobuf.ProtoSettings.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

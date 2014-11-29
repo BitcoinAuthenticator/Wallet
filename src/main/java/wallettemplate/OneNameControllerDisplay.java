@@ -29,15 +29,28 @@ public class OneNameControllerDisplay  extends BaseUI{
 	public Main.OverlayUI overlayUi;
 	 private double xOffset = 0;
 	 private double yOffset = 0;
+	 
+	 String oneNameID;
 
 	// Called by FXMLLoader
     public void initialize() {
     	super.initialize(OneNameControllerDisplay.class);
-    	engine = webView.getEngine();
-		loadOneName(Authenticator.getWalletOperation().getOnename().getOnename());
+    	engine = webView.getEngine();    	
     }
     
-    public static void loadOneName(String onename){
+    @Override
+    public void updateUIForParams(){
+    	if(this.hasParameters()) {
+    		oneNameID = arrParams.get(0).toString();
+    	}
+    	
+    	if(oneNameID != null)
+    		loadOneName(oneNameID);
+    	else
+    		loadOneName(Authenticator.getWalletOperation().getOnename().getOnename());
+	}
+    
+    private void loadOneName(String onename){
     	engine.load("https://onename.io/" + onename);
     }
     

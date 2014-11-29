@@ -33,7 +33,7 @@ import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
-
+import org.spongycastle.util.encoders.Hex;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
@@ -53,6 +53,7 @@ import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 import org.bitcoinj.script.ScriptChunk;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -63,8 +64,8 @@ import authenticator.BAApplicationParameters.NetworkType;
 import authenticator.BASE;
 import authenticator.GCM.dispacher.Device;
 import authenticator.GCM.dispacher.Dispacher;
+import authenticator.Utils.CryptoUtils;
 import authenticator.Utils.EncodingUtils;
-import authenticator.crypto.CryptoUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANetworkInfo;
 import authenticator.operations.BAOperation.BANetworkRequirement;
@@ -80,9 +81,9 @@ import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
+import authenticator.walletCore.utils.BAPassword;
 
 public class OperationsFactory extends BASE{
 	
@@ -108,8 +109,10 @@ public class OperationsFactory extends BASE{
 	static public BAOperation PAIRING_OPERATION(WalletOperation wallet,
 			String pairingName, 
 			@Nullable Integer accountID,
+			@Nullable String secretKey,
 			NetworkType networkType, 
 			int timeout,
+			boolean isRepairingAccount,
 			@Nullable PairingStageUpdater statusListener,
 			@Nullable BAPassword walletPW){
 		BAOperation op = new BAOperation(ATOperationType.Pairing);
@@ -117,7 +120,11 @@ public class OperationsFactory extends BASE{
 					.SetDescription("Pair Wallet With an Authenticator Device")
 					.SetBeginMsg("Pairing Started ...")
 					.SetFinishedMsg("Finished pairing")
-					.SetArguments(new String[]{pairingName, accountID == null? "":Integer.toString(accountID), "authenticator", Integer.toString(networkType.getValue()) })
+					.SetArguments(new String[]{ pairingName, 
+												accountID == null? "":Integer.toString(accountID), 
+												"authenticator", 
+												Integer.toString(networkType.getValue()),
+												secretKey == null? "":secretKey})
 					.SetOperationAction(new BAOperationActions(){
 						int tempTimeout = 5;
 						ServerSocket socket = null;
@@ -141,6 +148,7 @@ public class OperationsFactory extends BASE{
 									 args,
 									 listener,
 									 statusListener,
+									 isRepairingAccount,
 									 walletPW); 
 							 //Return to previous timeout
 							 if(!ss.isClosed())
@@ -234,11 +242,10 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+							SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));							
 							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
 							
 							//Break apart the signature array sent over from the authenticator
-							//String sigstr = BAUtils.bytesToHex(testsig);
 							ArrayList<byte[]> AuthSigs = null;
 							SignProtocol.AuthenticatorAnswerType answerType = SignProtocol.AuthenticatorAnswerType.DoNothing;
 							try{

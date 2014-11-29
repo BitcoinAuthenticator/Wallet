@@ -74,7 +74,6 @@
 	-fx-background-radius: 2em;
 }
 
-////////
 .onename .scroll-bar{
  -fx-background-color: black;
 }
@@ -144,7 +143,6 @@
 .onename .scroll-bar:horizontal:focused {
  -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
 }
-////////
 
 .progress-bar .track {
 	-fx-background-color: #d9dee1;
@@ -155,7 +153,19 @@
     -fx-background-color: #95d946;
     -fx-background-insets: 0;
     -fx-background-radius: .3em;
-  }
+}
+  
+
+.update-window-progress-bar .track {
+	-fx-background-color: #d9dee1;
+	-fx-background-radius: .3em;
+}
+
+.update-window-progress-bar .bar {
+    -fx-background-color: #95d946;
+    -fx-background-insets: 0;
+    -fx-background-radius: .3em;
+}
     
 .custom-button {
 	-fx-text-fill:white;
@@ -354,4 +364,43 @@
 #AppsPane .button {
 	-fx-text-fill: #4b698f;
 	-fx-cursor: hand;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane
+{
+    -fx-tab-min-width:290px;
+}
+
+.tab{
+    -fx-background-insets: 0 1 0 1,0,0;
+}
+.tab-pane .tab
+{
+    -fx-background-color: #e6e6e6;
+
+}
+
+.tab-pane .tab:selected
+{
+    -fx-background-color: #FFFFFF;
+}
+
+.tab:focused {
+	-fx-focus-color: transparent;
+}
+
+.tab .tab-label { 
+    -fx-alignment: CENTER;
+    -fx-text-fill: #828282;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.tab:selected .tab-label { 
+    -fx-alignment: CENTER;
+    -fx-text-fill: #767676;
 }

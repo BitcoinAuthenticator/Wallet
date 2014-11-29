@@ -15,6 +15,7 @@ import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 
 import org.bitcoinj.core.AddressFormatException;
+import org.spongycastle.util.encoders.Hex;
 
 import authenticator.Authenticator;
 import authenticator.Utils.EncodingUtils;
@@ -54,14 +55,15 @@ public class PairingQRCode {
  * @throws NotFoundException
  */
   public PairingQRCode(){}
-  public byte[] generateQRImageBytes (BANetworkInfo ni, String wallettype, String key, int networkType, byte[] authWalletIndex) throws NotFoundException, WriterException, IOException{
-	  return generateQRImageBytes(ni.EXTERNAL_IP, ni.INTERNAL_IP, wallettype, key, networkType, authWalletIndex);
+  public byte[] generateQRImageBytes (BANetworkInfo ni, String pairingName, String wallettype, String key, int networkType, byte[] authWalletIndex) throws NotFoundException, WriterException, IOException{
+	  return generateQRImageBytes(ni.EXTERNAL_IP, ni.INTERNAL_IP, pairingName, wallettype, key, networkType, authWalletIndex);
   }
-  public byte[] generateQRImageBytes (String ip, String localip, String wallettype, String key, int networkType, byte[] authWalletIndex) throws WriterException, IOException,
+  public byte[] generateQRImageBytes (String ip, String localip, String pairingName, String wallettype, String key, int networkType, byte[] authWalletIndex) throws WriterException, IOException,
       NotFoundException {
 	  // Build the string to display in the QR.
 	  String qrCodeData = generateQRDataString(ip,
 											  localip,
+											  pairingName,
 											  wallettype,
 											  key,
 											  networkType,
@@ -73,13 +75,14 @@ public class PairingQRCode {
 	  return ret;
   }
   
-  public String generateQRDataString(String ip, String localip, String wallettype, String key, int networkType, byte[] authWalletIndex){
+  public String generateQRDataString(String ip, String localip, String pairingName, String wallettype, String key, int networkType, byte[] authWalletIndex){
 	  String qrCodeData = "AESKey=" + key + 
 			  "&PublicIP=" + ip + 
 			  "&LocalIP=" + localip + 
+			  "&pairingName=" + pairingName +
 			  "&WalletType=" + wallettype +
 			  "&NetworkType=" + networkType +
-			  "&index=" + EncodingUtils.bytesToHex(authWalletIndex);
+			  "&index=" + Hex.toHexString(authWalletIndex);
 	  return qrCodeData;
   }
 
@@ -89,7 +92,6 @@ public class PairingQRCode {
   	 * @param qrCodeheight
   	 * @param qrCodewidth
   	 */
-  	@SuppressWarnings({ "unchecked", "rawtypes" })
   	public byte[] createQRCode(String qrCodeData, int qrCodeheight,  int qrCodewidth) {
   		byte[] imageBytes = QRCode
 		        .from(qrCodeData)

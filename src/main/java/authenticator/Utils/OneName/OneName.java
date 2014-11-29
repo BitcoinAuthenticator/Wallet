@@ -42,6 +42,7 @@ public class OneName {
 	
 	public static void getOneNameData(String onename, WalletOperation wallet, OneNameListener listener) {
 		try {
+			System.out.println("Downloading OneName profile data: " + onename);
 			EncodingUtils.readFromUrl("https://onename.io/" + onename + ".json", new AsyncCompletionHandler<Response>(){
 				@Override
 				public Response onCompleted(Response arg0) throws Exception {
@@ -49,24 +50,36 @@ public class OneName {
 						String res = arg0.getResponseBody();
 						JSONObject json = new JSONObject(res);
 						
-						JSONObject bitcoin = json.getJSONObject("bitcoin");
-					   	String address = bitcoin.getString("address");
+						JSONObject bitcoin = null;
+						String address = null;
+						if(json.has("bitcoin")) {
+							bitcoin = json.getJSONObject("bitcoin");
+							if(bitcoin.has("address"))
+								address = bitcoin.getString("address");
+						}
 					   	
 					   	//TODO - get facebook, twitter, github data
-					   						   	
 					   	
 					   	//Name Formatted
 					   	JSONObject name = json.getJSONObject("name");
 					   	String formatted = name.getString("formatted");
 					   	//Avatar
-					   	JSONObject avatar = json.getJSONObject("avatar");
-					    String imgURL = avatar.getString("url");
+					   	JSONObject avatar = null;
+					   	String imgURL = null;
+					   	if(json.has("avatar")) {
+					   		avatar = json.getJSONObject("avatar");
+					   		if(avatar.has("url"))
+					   			imgURL = avatar.getString("url");
+					   	}
 					    
 					    // build return object
 					    ConfigOneNameProfile.Builder onb = ConfigOneNameProfile.newBuilder();
-					    onb.setOnename(onename);
-					    onb.setOnenameFormatted(formatted);
-					    onb.setBitcoinAddress(address);
+					    if(onename != null)
+					    	onb.setOnename(onename);
+					    if(formatted != null)
+					    	onb.setOnenameFormatted(formatted);
+					    if(address != null)
+					    	onb.setBitcoinAddress(address);
 					    if(imgURL != null)
 					    	onb.setOnenameAvatarURL(imgURL);
 					    
@@ -92,6 +105,7 @@ public class OneName {
 	
 	public static void downloadAvatarImage(ConfigOneNameProfile one, WalletOperation wallet, OneNameListener listener) {
 		try {
+			System.out.println("Downloading OneName avatar image: " + one.getOnenameAvatarURL());
 			EncodingUtils.readFromUrl(one.getOnenameAvatarURL(), new AsyncCompletionHandler<Response>(){
 				@Override
 				public Response onCompleted(Response arg0) {

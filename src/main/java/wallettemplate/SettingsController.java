@@ -23,6 +23,7 @@ import com.google.common.base.Joiner;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
 import authenticator.Authenticator;
+import authenticator.Utils.FileUtils;
 import authenticator.Utils.CurrencyConverter.Currency;
 import authenticator.db.settingsDB;
 import authenticator.db.walletDB;
@@ -33,16 +34,15 @@ import authenticator.protobuf.ProtoConfig.ATOperationType;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import authenticator.protobuf.ProtoSettings.Languages;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
+import authenticator.walletCore.utils.BAPassword;
 import wallettemplate.ControllerHelpers.AsyncTask;
 import wallettemplate.startup.StartupController;
 import wallettemplate.utils.BaseUI;
-import wallettemplate.utils.FileUtils;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.TextFieldValidator;
 import wallettemplate.utils.TextUtils;
@@ -102,6 +102,8 @@ public class SettingsController  extends BaseUI{
 	@FXML private Pane settingspane;
 	@FXML private Pane pendingRequestsPane;
 	
+	@FXML private Label lblAppVersion;
+	
 	@FXML private AnchorPane SettingsApp;
 	@FXML private Button btnDone;
 	@FXML private Button btnRestore;
@@ -158,6 +160,8 @@ public class SettingsController  extends BaseUI{
     }
     
     private void initUI() {    	
+    	lblAppVersion.setText(Authenticator.getApplicationParams().getFriendlyAppVersion());
+    	
     	this.intDecimal 		= Authenticator.getWalletOperation().getDecimalPointFromSettings();
     	this.strCurrency 		= Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
     	this.strLanguage 		= Authenticator.getWalletOperation().getLanguageFromSettings().toString();
@@ -185,7 +189,8 @@ public class SettingsController  extends BaseUI{
     	cbCurrency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
   	      @Override
   	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-  	    		strCurrency = cbCurrency.getItems().get((Integer) number2).toString();
+  	    	if((Integer) number2 > 0)
+    			strCurrency = cbCurrency.getItems().get((Integer) number2).toString();
   	      }
   	    });
     	
@@ -573,6 +578,9 @@ public class SettingsController  extends BaseUI{
 			// encrypt with new password
 			BAPassword newPW = new BAPassword(pw1);
 			Authenticator.getWalletOperation().encryptWallet(newPW);
+			
+			//set new password
+			Main.UI_ONLY_WALLET_PW.setPassword(pw1);
 			
 			// set to locked
 			Main.UI_ONLY_IS_WALLET_LOCKED = true;	

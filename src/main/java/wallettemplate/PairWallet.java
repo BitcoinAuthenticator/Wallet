@@ -44,6 +44,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+/**
+ * Pairing controller, receives the following parameters:
+ * <ol start="0">
+ * <li>Pairing Name [String]</li>
+ * <li>Account index [int]</li>
+ * <li>is re-pairing account, will not create the pairing objects because it assumes they exist [boolean]</li>
+ * <li>keyHex - force the pairing process to use this AES key hex</li>
+ * </ol>
+ * 
+ * @author alonmuroch
+ *
+ */
 public class PairWallet extends BaseUI{
 	
 	@FXML private Button cancelBtn;
@@ -64,15 +76,17 @@ public class PairWallet extends BaseUI{
 	@FXML private Button btnBack;
 	@FXML private Label lblInfo;
 	
+	private BAOperation pairingOP;
+	
 	private double xOffset = 0;
 	private double yOffset = 0;
     
-    PairingWalletControllerListener listener;
-        
+    PairingWalletControllerListener listener;    
+    
     public void initialize() {
         super.initialize(PairWallet.class);
         
-        if(!Main.UI_ONLY_WALLET_PW.hasPassword()) {
+        if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
         	txfWalletPwd.setDisable(false); 
         }
         else
@@ -137,7 +151,7 @@ public class PairWallet extends BaseUI{
 		}
     };
     
-    private void runPairing(String pairName, @Nullable Integer accountID) throws IOException
+    private void runPairing(String pairName, @Nullable Integer accountID, @Nullable String keyHex,  boolean isRepairing) throws IOException
     {    	    	
     	if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
     		informationalAlert("The wallet is locked",
@@ -145,11 +159,13 @@ public class PairWallet extends BaseUI{
     		return ;
     	}
     	
-    	BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
+    	pairingOP = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			accountID,
+    			keyHex,
     			Authenticator.getApplicationParams().getBitcoinNetworkType(), 
     			60000,
+    			isRepairing,
     			new PairingStageUpdater(){
 					@Override
 					public void onPairingStageChanged(PairingStage stage, @Nullable byte[] qrImageBytes) {
@@ -161,7 +177,7 @@ public class PairWallet extends BaseUI{
     			},
     			Main.UI_ONLY_WALLET_PW).SetOperationUIUpdate(opListener);
     	
-    	boolean result = Authenticator.addOperation(op);
+    	boolean result = Authenticator.addOperation(pairingOP);
     	if(!result){
     		GuiUtils.informationalAlert("Error !", "Could not add operation");
     	}
@@ -199,6 +215,7 @@ public class PairWallet extends BaseUI{
 	    		setProgressIndicator(0.8f, "Decrypting Message");
 	    		break;
 	    	case FINISHED:
+	    		pairingOP = null;
 	    		setProgressIndicator(1, "");
 	    		afterPairingAnimation();
 	    		break;
@@ -206,6 +223,7 @@ public class PairWallet extends BaseUI{
 	    		
 	    	case CONNECTION_TIMEOUT:
 	    	case FAILED:
+	    		pairingOP = null;
 	    		Platform.runLater(new Runnable() {
 	    			@Override
 	    	        public void run() {
@@ -241,17 +259,19 @@ public class PairWallet extends BaseUI{
     		if(!Main.UI_ONLY_WALLET_PW.hasPassword())
     			Main.UI_ONLY_WALLET_PW.setPassword(txfWalletPwd.getText());
     	}
-    	
+    
     	if(textfield.getText().length() > 0)
     	{
     		// in case any messages are on 
     		if(hasParameters()){
     			String name = arrParams.get(0).toString();
     			Integer accID = Integer.parseInt(arrParams.get(1).toString());
-    			this.runPairing(name, accID);
+    			String keyHex = (arrParams.size() > 3)? (String)arrParams.get(3):null;
+    			boolean isRepairing = (arrParams.size() > 2)? Boolean.parseBoolean(arrParams.get(2).toString()):false;
+    			this.runPairing(name, accID, keyHex, isRepairing);
     		}
     		else
-    			this.runPairing(textfield.getText(), null);
+    			this.runPairing(textfield.getText(), null, null, false);
     	}
     	else
     	{
@@ -271,6 +291,16 @@ public class PairWallet extends BaseUI{
 
     @FXML
     public void cancel(ActionEvent event) {
+    	if(pairingOP != null)
+			try {
+				Authenticator.Net().INTERRUPT_OUTBOUND_OPERATION(pairingOP);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Platform.runLater(() -> {
+					BADialog.info(Main.class, "Error!", "Could not interrupt pairing operation").show();
+				});
+			}
+    		
     	if(overlayUi != null)
     		overlayUi.done();
     	else if(listener != null)

@@ -15,18 +15,19 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.spongycastle.util.encoders.Hex;
 
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.Utils.CryptoUtils;
 import authenticator.Utils.EncodingUtils;
-import authenticator.crypto.CryptoUtils;
 import authenticator.db.walletDB;
 import authenticator.network.BANetworkInfo;
 import authenticator.network.PongPayload;
 import authenticator.network.UpNp;
 import authenticator.operations.listeners.OperationListener;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
+import authenticator.walletCore.utils.BAPassword;
 
 /**
  * <b>Pairing Protocol</b><br>
@@ -57,22 +58,23 @@ public class PairingProtocol {
   /**
    * Run a complete process of pairing with an authenticator device.<br>
    * args[]:
-   * <ol>
+   * <ol start="0">
    * <li>Pairing name</li>
    * <li>Account ID, could be blank ("") if none is provided</li>
    * <li>Pair type, by default "blockchain"</li>
    * <li>NetworkType - 1 for main net, 0 for testnet</li>
+   * <li>Secret Key - could be blank ("") if none is provided</li>
    * </ol>
    * 
    * @param wallet
    * @param ss
-   * @param timeout - in miliseconds  (0 for no timeout)
+   * @param timeout
    * @param netInfo
    * @param args
    * @param opListener
    * @param statusListener
-   * @param displayQRAnimation
-   * @param animationAfterPairing
+   * @param isRepairingAccount
+   * @param walletPW
    * @throws Exception
    */
   public void run (WalletOperation wallet,
@@ -82,28 +84,41 @@ public class PairingProtocol {
 		  String[] args, 
 		  OperationListener opListener,
 		  PairingStageUpdater statusListener,
+		  boolean isRepairingAccount,
 		  @Nullable BAPassword walletPW) throws Exception {
 
+	  // get all args
 	  assert(args != null);
-	  String walletType = args[2];
+	  String argPairingName 			= args[0];
+	  Integer argAccountID 				= args[1].length() == 0? wallet.whatIsTheNextAvailableAccountIndex():Integer.parseInt(args[1]);
+	  String argWalletType 				= args[2];
+	  Integer argNetworkType 			= Integer.parseInt(args[3]);
+	  String argKeyHex 					= args[4].length() == 0? null:args[4];
 	  
 	  postUIStatusUpdate(statusListener, PairingStage.PAIRING_SETUP, null);
 	  
 	  String ip = netInfo.EXTERNAL_IP;
 	  String localip = netInfo.INTERNAL_IP;
 	  
-	  SecretKey sharedsecret = CryptoUtils.generateNewSecretAESKey();
-      byte[] raw = sharedsecret.getEncoded();
-      String key = EncodingUtils.bytesToHex(raw);
+	  String key = null;
+	  SecretKey sharedsecret = null;
+	  if(argKeyHex == null) {
+		  sharedsecret = CryptoUtils.generateNewSecretAESKey();
+	      byte[] raw = sharedsecret.getEncoded();
+	      key = Hex.toHexString(raw);
+	  }
+	  else {
+		  sharedsecret = CryptoUtils.secretKeyFromHexString(argKeyHex);
+		  key = argKeyHex;
+	  }
       
       // generate Authenticator's account number
       byte[] seed = wallet.getWalletSeedBytes(walletPW);
-      Integer accID = args[1].length() == 0? wallet.whatIsTheNextAvailableAccountIndex():Integer.parseInt(args[1]);
-	  byte[] authWalletIndex = generateAuthenticatorsWalletIndex(seed, accID);
+	  byte[] authWalletIndex = generateAuthenticatorsWalletIndex(seed, argAccountID);
       
 	  //Display a QR code for the user to scan
 	  PairingQRCode PairingQR = new PairingQRCode();
-	  byte[] qr = PairingQR.generateQRImageBytes(ip, localip, walletType, key, Integer.parseInt(args[3]), authWalletIndex);
+	  byte[] qr = PairingQR.generateQRImageBytes(ip, localip, argPairingName, argWalletType, key, argNetworkType, authWalletIndex);
 	  Socket socket = dispalyQRAnListenForCommunication(qr,
 			  ss, 
 			  timeout, 
@@ -127,6 +142,11 @@ public class PairingProtocol {
 	  in.read(cipherKeyBytes);
 	  String payload = decipherDataFromAuthenticator(cipherKeyBytes, statusListener, sharedsecret);
     
+	  if(isRepairingAccount) {
+		  postUIStatusUpdate(statusListener, PairingStage.FINISHED, null);
+		  return;
+	  }
+	  
 	  // Verify HMAC
 	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, statusListener);
 	 
@@ -134,7 +154,7 @@ public class PairingProtocol {
 		//Parse the received json object
 		  String mPubKey = (String) jsonObject.get("mpubkey");
 		  String chaincode = (String) jsonObject.get("chaincode");
-		  String pairingID = (String) jsonObject.get("pairID");
+		  String pairingID = Hex.toHexString(authWalletIndex);
 		  String GCM = (String) jsonObject.get("gcmID");
 		  //Save to file
 		  PairedAuthenticator  obj = wallet.generatePairing(mPubKey, 
@@ -142,11 +162,16 @@ public class PairingProtocol {
 															  key, 
 															  GCM, 
 															  pairingID, 
-															  args[0], 
-															  accID,
-															  NetworkType.fromString(args[2]),
+															  argPairingName, 
+															  argAccountID,
+															  NetworkType.fromIndex(argNetworkType),
 															  walletPW);
 		  
+		  System.out.println("Pairing Details:" +
+		  			 " Master Public Key: " + mPubKey + "\n" +
+		  			 "chaincode: " +  chaincode + "\n" +
+		  			 "gcmRegId: " +  GCM + "\n" + 
+		  			 "pairing ID: " + pairingID);		 
 		  postUIStatusUpdate(statusListener, PairingStage.FINISHED, null);
 		  statusListener.pairingData(obj);
 	  }
@@ -193,13 +218,13 @@ public class PairingProtocol {
 	  postUIStatusUpdate(listener, PairingStage.DECRYPTING_MESSAGE, null);
 	  Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
 	  cipher.init(Cipher.DECRYPT_MODE, sharedsecret);
-	  String payload = EncodingUtils.bytesToHex(cipher.doFinal(cipherKeyBytes));
+	  String payload = Hex.toHexString(cipher.doFinal(cipherKeyBytes));
 	  return payload;
   }
   
   public JSONObject parseAndVerifyPayload(String payload, SecretKey sharedsecret, PairingStageUpdater listener) throws NoSuchAlgorithmException, InvalidKeyException, ParseException{
-	  byte[] testpayload = EncodingUtils.hexStringToByteArray(payload.substring(0,payload.length()-64));
-	  byte[] hash = EncodingUtils.hexStringToByteArray(payload.substring(payload.length()-64,payload.length()));
+	  byte[] testpayload = Hex.decode(payload.substring(0,payload.length()-64));
+	  byte[] hash = Hex.decode(payload.substring(payload.length()-64,payload.length()));
 	  Mac mac = Mac.getInstance("HmacSHA256");
 	  mac.init(sharedsecret);
 	  byte[] macbytes = mac.doFinal(testpayload);
@@ -208,15 +233,7 @@ public class PairingProtocol {
 		  String strJson = new String(testpayload);
 		  JSONParser parser=new JSONParser();
 		  Object obj = parser.parse(strJson);
-		  JSONObject jsonObject = (JSONObject) obj;
-		  String mPubKey = (String) jsonObject.get("mpubkey");
-		  String chaincode = (String) jsonObject.get("chaincode");
-		  String pairingID = (String) jsonObject.get("pairID");
-		  String GCM = (String) jsonObject.get("gcmID");
-		  System.out.println("Received Master Public Key: " + mPubKey + "\n" +
-		  				  			 "chaincode: " +  chaincode + "\n" +
-		  				  			 "gcmRegId: " +  GCM + "\n" + 
-		  				  			 "pairing ID: " + pairingID);		  
+		  JSONObject jsonObject = (JSONObject) obj;	  
 		  return  jsonObject;
 	  }
 	
@@ -224,11 +241,11 @@ public class PairingProtocol {
 	  
   }
   
-  private byte[] generateAuthenticatorsWalletIndex(byte[] seed, int walletIndex) {
+  public byte[] generateAuthenticatorsWalletIndex(byte[] seed, int walletIndex) {
 	MessageDigest md = null;
 	try {md = MessageDigest.getInstance("SHA-256");}
 	catch(NoSuchAlgorithmException e) {e.printStackTrace();} 
-	byte[] digest = md.digest((EncodingUtils.bytesToHex(seed) + "_" + Integer.toString(walletIndex)).getBytes());
+	byte[] digest = md.digest((Hex.toHexString(seed) + "_" + Integer.toString(walletIndex)).getBytes());
 	byte[] complete = new BigInteger(1, digest).toString(16).getBytes();
 	// copy the right most 31 bits
 	byte[] ret = new byte[4];

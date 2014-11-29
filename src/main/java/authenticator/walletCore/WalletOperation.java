@@ -4,6 +4,8 @@ import authenticator.Authenticator;
 import authenticator.BAApplicationParameters;
 import authenticator.BASE;
 import authenticator.BAApplicationParameters.NetworkType;
+import authenticator.GCM.dispacher.Device;
+import authenticator.GCM.dispacher.Dispacher;
 import authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
@@ -16,12 +18,16 @@ import authenticator.walletCore.exceptions.CannotReadFromConfigurationFileExcept
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 import authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import authenticator.walletCore.exceptions.NoWalletPasswordException;
+import authenticator.walletCore.utils.BAPassword;
+import authenticator.walletCore.utils.CoinsReceivedNotificationSender;
+import authenticator.walletCore.utils.WalletListener;
 import authenticator.hierarchy.BAHierarchy;
 import authenticator.hierarchy.HierarchyUtils;
 import authenticator.hierarchy.exceptions.IncorrectPathException;
 import authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import authenticator.hierarchy.exceptions.NoUnusedKeyException;
+import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
 import authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
@@ -44,10 +50,13 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.util.encoders.Hex;
 
 import wallettemplate.Main;
 import wallettemplate.ControllerHelpers.ThrottledRunnableExecutor;
@@ -63,6 +72,7 @@ import authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
 import authenticator.protobuf.ProtoConfig.ATAddress;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
+import authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
@@ -102,6 +112,9 @@ import org.bitcoinj.wallet.DefaultCoinSelector;
 import org.bitcoinj.wallet.DeterministicSeed;
 
 import com.google.common.collect.ImmutableList;
+
+import eu.hansolo.enzo.notification.Notification;
+import eu.hansolo.enzo.notification.Notification.Notifier;
 
 
 /**
@@ -152,7 +165,7 @@ public class WalletOperation extends BASE{
 		super(WalletOperation.class);
 		if(mWalletWrapper == null){
 			mWalletWrapper = new WalletWrapper(wallet,peerGroup);
-			mWalletWrapper.addEventListener(new WalletListener());
+			mWalletWrapper.addEventListener(new WalletListener(WalletOperation.this));
 		}
 			
 		init(params);
@@ -214,248 +227,6 @@ public class WalletOperation extends BASE{
 	
 	public BAApplicationParameters getApplicationParams(){
 		return AppParams;
-	}
-	
-	/**
-	 *A basic listener to keep track of balances and transaction state.<br>
-	 *Will mark addresses as "used" when any amount of bitcoins were transfered to the address.
-	 * 
-	 * @author alon
-	 *
-	 */
-	public class WalletListener extends AbstractWalletEventListener {
-		@Override
-		public void onWalletChanged(Wallet wallet) {
-			/**
-			 * used for confidence change UI update
-			 */
-			if(getOperationalState() == BAOperationState.READY_AND_OPERATIONAL)
-    		updateBalaceNonBlocking(wallet, new Runnable(){
-				@Override
-				public void run() { 
-					notifyBalanceUpdate(wallet,null);
-				}
-    		});
-		}
-		
-		@Override
-        public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-			/**
-    		 * Notify balance onCoinsSent() only if we don't receive any coins.
-    		 * The idea is that if we have a Tx that sends and receives coins to this wallet,
-    		 * notify only onCoinsReceived() so we won't send multiple update balance calls.
-    		 * 
-    		 * If the Tx only sends coins, do update the balance from here.
-    		 */
-			if(tx.getValueSentToMe(wallet).signum() == 0)
-				updateBalaceNonBlocking(wallet, new Runnable(){
-					@Override
-					public void run() { 
-						notifyBalanceUpdate(wallet,tx);
-					}
-	    		});
-		}
-		
-		@Override
-        public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-			/**
-			 * the {org.bitcoinj.wallet.DefaultCoinSelector} can only choose candidates if they
-			 * originated from the wallet, so this fix is so incoming tx (originated elsewhere)
-			 * could be spent if not confirmed	
-			 */
-			tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
-			
-			updateBalaceNonBlocking(wallet, new Runnable(){
-				@Override
-				public void run() { 
-					notifyBalanceUpdate(wallet,tx);
-				}
-    		});
-		}        
-    }
-	
-	private void notifyBalanceUpdate(Wallet wallet, Transaction tx){
-		if(tx != null){
-			if(tx.getValueSentToMe(wallet).signum() > 0){
-	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, tx.getConfidence().getConfidenceType());
-	    	}
-	    	
-	    	if(tx.getValueSentFromMe(wallet).signum() > 0){
-	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, tx.getConfidence().getConfidenceType());
-	    	}
-		}
-		else
-			Authenticator.fireOnBalanceChanged(null, null, null);
-    }
-	
-	@SuppressWarnings("unused")
-	public void updateBalaceNonBlocking(Wallet wallet, Runnable completionBlock){
-		int s = 2;
-		new Thread(){
-			@Override
-			public void run() {
-				try {
-					updateBalance(wallet);
-					if(completionBlock != null)
-						completionBlock.run();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
-    }
-	
-	/**
-	 * Be careful using this method directly because it can block 
-	 * @param wallet
-	 * @throws CannotWriteToConfigurationFileException 
-	 * @throws AccountWasNotFoundException 
-	 * @throws IOException 
-	 * @throws Exception
-	 */
-	private synchronized void updateBalance(Wallet wallet) throws CannotWriteToConfigurationFileException {
-		List<ATAccount> accounts = getAllAccounts();
-		List<ATAccount.Builder> newBalances = new ArrayList<ATAccount.Builder>();
-    	for(ATAccount acc:accounts){
-    		ATAccount.Builder b = ATAccount.newBuilder();
-			  b.setIndex(acc.getIndex());
-			  b.setConfirmedBalance(0);
-			  b.setUnConfirmedBalance(0);
-			  b.setNetworkType(acc.getNetworkType());
-			  b.setAccountName(acc.getAccountName());
-			  b.setAccountType(acc.getAccountType());
-		  newBalances.add(b);
-    	}
-    	
-    	List<Transaction> allTx = wallet.getRecentTransactions(0, false);
-    	Collections.reverse(allTx);
-    	for(Transaction tx: allTx){
-    		/**
-    		 * BUILDING
-    		 */
-    		if(tx.getConfidence().getConfidenceType() == ConfidenceType.BUILDING){
-    			if(tx.getValueSentToMe(wallet).signum() > 0){
-    				for (TransactionOutput out : tx.getOutputs()){
-    					Script scr = out.getScriptPubKey();
-    	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-    	    			if(isWatchingAddress(addrStr)){
-    	    				ATAddress add = findAddressInAccounts(addrStr);
-    	    				if(add == null)
-    	    					continue;
-    	    				
-    	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
-    	    				
-    	    				/**
-    	    				 * Add to internal account list
-    	    				 */
-    	    				for(ATAccount.Builder acc:newBalances)
-    	    					if(acc.getIndex() == add.getAccountIndex())
-    	    					{
-    	    						Coin old = Coin.valueOf(acc.getConfirmedBalance());
-    	    						acc.setConfirmedBalance(old.add(out.getValue()).longValue());
-    	    					}
-    	    			}
-    				}
-    			}
-    			
-    			if(tx.getValueSentFromMe(wallet).signum() > 0){
-    				for (TransactionInput in : tx.getInputs()){
-    					TransactionOutput out = in.getConnectedOutput();
-    					if(out != null){
-    						Script scr = out.getScriptPubKey();
-        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-        	    			if(isWatchingAddress(addrStr)){
-        	    				ATAddress add = findAddressInAccounts(addrStr);
-        	    				if(add == null)
-        	    					continue;
-        	    				
-        	    				/**
-        	    				 * Subtract from internal account list
-        	    				 */
-        	    				for(ATAccount.Builder acc:newBalances)
-        	    					if(acc.getIndex() == add.getAccountIndex())
-        	    					{
-        	    						Coin old = Coin.valueOf(acc.getConfirmedBalance());
-        	    						acc.setConfirmedBalance(old.subtract(out.getValue()).longValue());
-        	    					}
-        	    			}
-    					}
-    				}
-    			}
-    		}
-    		
-    		/**
-    		 * PENDING
-    		 */
-    		if(tx.getConfidence().getConfidenceType() == ConfidenceType.PENDING){
-    			if(tx.getValueSentToMe(wallet).signum() > 0){
-    				for (TransactionOutput out : tx.getOutputs()){
-    					Script scr = out.getScriptPubKey();
-    	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-    	    			if(isWatchingAddress(addrStr)){
-    	    				ATAddress add = findAddressInAccounts(addrStr);
-    	    				if(add == null)
-    	    					continue;
-    	    				
-    	    				markAddressAsUsed(add.getAccountIndex(),add.getKeyIndex(), add.getType());
-    	    				
-    	    				/**
-    	    				 * Add to internal account list
-    	    				 */
-    	    				for(ATAccount.Builder acc:newBalances)
-    	    					if(acc.getIndex() == add.getAccountIndex())
-    	    					{
-    	    						Coin old = Coin.valueOf(acc.getUnConfirmedBalance());
-    	    						acc.setUnConfirmedBalance(old.add(out.getValue()).longValue());
-    	    					}
-    	    			}
-    				}
-    			}
-    			
-    			if(tx.getValueSentFromMe(wallet).signum() > 0){
-    				for (TransactionInput in : tx.getInputs()){
-    					TransactionOutput out = in.getConnectedOutput();
-    					if(out != null){
-    						Script scr = out.getScriptPubKey();
-        	    			String addrStr = scr.getToAddress(getNetworkParams()).toString();
-        	    			if(isWatchingAddress(addrStr)){
-        	    				ATAddress add = findAddressInAccounts(addrStr);
-        	    				if(add == null)
-        	    					continue;
-        	    				
-        	    				if(out.getParentTransaction().getConfidence().getConfidenceType() == ConfidenceType.PENDING) {
-        	    					/**
-            	    				 * Subtract from internal account list
-            	    				 */
-            	    				for(ATAccount.Builder acc:newBalances)
-            	    					if(acc.getIndex() == add.getAccountIndex())
-            	    					{
-            	    						Coin old = Coin.valueOf(acc.getUnConfirmedBalance());
-            	    						acc.setUnConfirmedBalance(old.subtract(out.getValue()).longValue());
-            	    					}
-        	    				}
-        	    				if(out.getParentTransaction().getConfidence().getConfidenceType() == ConfidenceType.BUILDING) {
-        	    					/**
-            	    				 * Subtract from internal account list
-            	    				 */
-            	    				for(ATAccount.Builder acc:newBalances)
-            	    					if(acc.getIndex() == add.getAccountIndex())
-            	    					{
-            	    						Coin old = Coin.valueOf(acc.getConfirmedBalance());
-            	    						acc.setConfirmedBalance(old.subtract(out.getValue()).longValue());
-            	    					}
-        	    				}
-        	    			}
-    					}
-    				}
-    			}
-    		}
-    	}
-    	
-    	for(ATAccount.Builder acc:newBalances) {
-    		setConfirmedBalance(acc.getIndex(), Coin.valueOf(acc.getConfirmedBalance()));
-    		setUnConfirmedBalance(acc.getIndex(), Coin.valueOf(acc.getUnConfirmedBalance()));
-    	}
 	}
 	
 	public WalletDownloadListener getDownloadEvenListener() {
@@ -1307,8 +1078,8 @@ public class WalletOperation extends BASE{
 	
 	public ECKey getPairedAuthenticatorKey(PairedAuthenticator po, int keyIndex){
 		ArrayList<String> keyandchain = getPublicKeyAndChain(po.getPairingID());
-		byte[] key = EncodingUtils.hexStringToByteArray(keyandchain.get(0));
-		byte[] chain = EncodingUtils.hexStringToByteArray(keyandchain.get(1));
+		byte[] key = Hex.decode(keyandchain.get(0));
+		byte[] chain = Hex.decode(keyandchain.get(1));
 		HDKeyDerivation HDKey = null;
   		DeterministicKey mPubKey = HDKey.createMasterPubKeyFromBytes(key, chain);
   		DeterministicKey childKey = HDKey.deriveChildKey(mPubKey, keyIndex);
@@ -1738,7 +1509,30 @@ public class WalletOperation extends BASE{
 			return pairingName + ": " + type + "  ---  " + op.getRequestID();
 		}
 		
-	
+	//#####################################
+	//
+	//	 On Coins received Notifications
+	//
+	//#####################################
+	/**
+	 * If called, will send a notification to the appropriate paired device when coins are received
+	 */
+	BAGeneralEventsAdapter eventsAdapterForCoinsReceivedNotificaiton = null;
+	public void sendNotificationToAuthenticatorWhenCoinsReceived() {
+		if(eventsAdapterForCoinsReceivedNotificaiton == null) {
+			eventsAdapterForCoinsReceivedNotificaiton = new BAGeneralEventsAdapter() {
+				@Override
+				public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+					if(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(WalletOperation.this, tx))
+					{ // send
+						CoinsReceivedNotificationSender.send(WalletOperation.this, tx, howBalanceChanged);
+					}
+				}
+			};
+			Authenticator.addGeneralEventsListener(eventsAdapterForCoinsReceivedNotificaiton);
+		}
+	}
+		
 	//#####################################
 	//
 	//		One name
@@ -1758,6 +1552,25 @@ public class WalletOperation extends BASE{
 		public void writeOnename(ConfigOneNameProfile one) throws FileNotFoundException, IOException{
 			configFile.writeOnename(one);
 			LOG.info("Set new OneName profile: " + one.toString());
+		}
+		
+		public boolean isOnenameAvatarSet() {
+			try {
+				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
+				if(on.getOnename().length() == 0)
+					return false;
+				return true;
+			} 
+			catch (IOException e) {  return false; }
+		}
+		
+		public boolean deleteOneNameAvatar() throws IOException {
+			if(isOnenameAvatarSet()) {
+				configFile.deleteOneNameAvatar();
+				LOG.info("Deleted OneName profile");
+				return true;
+			}
+			return false;
 		}
 		
 	//#####################################
@@ -1823,7 +1636,7 @@ public class WalletOperation extends BASE{
 			mWalletWrapper = new WalletWrapper(wallet,null);
 		else
 			mWalletWrapper.setTrackedWallet(wallet);
-		mWalletWrapper.addEventListener(new WalletListener());
+		mWalletWrapper.addEventListener(new WalletListener(WalletOperation.this));
 	}
     
     public NetworkParameters getNetworkParams()

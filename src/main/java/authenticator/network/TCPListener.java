@@ -6,13 +6,19 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.crypto.SecretKey;
@@ -27,6 +33,7 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 
 import com.google.protobuf.ByteString;
+import com.subgraph.orchid.encoders.Hex;
 
 import wallettemplate.Main;
 import authenticator.Authenticator;
@@ -43,9 +50,9 @@ import authenticator.protobuf.ProtoConfig.ATAccount;
 import authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import authenticator.protobuf.ProtoConfig.PendingRequest;
 import authenticator.protobuf.ProtoConfig.WalletAccountType;
-import authenticator.walletCore.BAPassword;
 import authenticator.walletCore.WalletOperation;
 import authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
+import authenticator.walletCore.utils.BAPassword;
 
 /**
  * <b>The heart of the wallet operation.</b><br>
@@ -129,7 +136,6 @@ public class TCPListener extends BASE{
 	{
 		shouldStopListener = false;   
 	    this.listenerThread = new Thread(){
-	    	@SuppressWarnings("static-access")
 			@Override
 			public void run() {
 	    		try{
@@ -183,7 +189,7 @@ public class TCPListener extends BASE{
 		    		try {
 						plugnplay.run(new String[]{args[0]});
 						if(plugnplay.isPortMapped(Integer.parseInt(args[0])) == true){
-							vBANeworkInfo = new BANetworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP());
+							vBANeworkInfo = new BANetworkInfo(plugnplay.getExternalIP(), plugnplay.getLocalIP().substring(1));
 							vBANeworkInfo.PORT_FORWARDED = true;
 							LOG.info("Successfuly map ported port: " + forwardedPort);
 						}
@@ -201,10 +207,10 @@ public class TCPListener extends BASE{
 	    		}
 	    		else
 	    			try {
-						vBANeworkInfo = new BANetworkInfo(getExternalIp(), InetAddress.getLocalHost().getHostAddress());
+						vBANeworkInfo = new BANetworkInfo(getExternalIp(), getInternalIp());
 						vBANeworkInfo.PORT_FORWARDED = true;
 						LOG.info("Marked port " + forwardedPort + " as forwarded");
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 						throw new TCPListenerCouldNotStartException("Could not start TCPListener");
 					}
@@ -215,7 +221,7 @@ public class TCPListener extends BASE{
 					ss.setSoTimeout(LOOPER_BLOCKING_TIMEOUT);
 					vBANeworkInfo.SOCKET_OPERATIONAL = true;
 					LOG.info("Socket operational");
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					try { plugnplay.removeMapping(); } catch (IOException | SAXException e1) { }
 					throw new TCPListenerCouldNotStartException("Could not start TCPListener");
@@ -276,9 +282,9 @@ public class TCPListener extends BASE{
 							int keysize = inStream.readInt();
 							byte[] reqIdPayload = new byte[keysize];
 							inStream.read(reqIdPayload);
-							JSONObject jo = new JSONObject(new String(reqIdPayload));
-							requestID = jo.getString("requestID");
-							String pairingID = jo.getString("pairingID");	
+							GetRequestIDPayload reqPayload = new GetRequestIDPayload(reqIdPayload);
+							requestID = reqPayload.getRequestID();
+							String pairingID = reqPayload.getPairingID();
 							//
 							LOG.info("Looking for pending request ID: " + requestID);
 							for(Object o:wallet.getPendingRequests()){
@@ -291,7 +297,7 @@ public class TCPListener extends BASE{
 							}
 							//
 							if(pendingReq == null){
-								SecretKey secretkey = new SecretKeySpec(EncodingUtils.hexStringToByteArray(wallet.getAESKey(pairingID)), "AES");
+								SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
 								CannotProcessRequestPayload p = new CannotProcessRequestPayload("Cannot find pending request\nPlease resend operation",
 										secretkey);
 								outStream.writeInt(p.getPayloadSize());
@@ -327,7 +333,7 @@ public class TCPListener extends BASE{
 								// Complete Operation ?
 								switch(pendingReq.getOperationType()){
 								case SignAndBroadcastAuthenticatorTx:
-									byte[] txBytes = EncodingUtils.hexStringToByteArray(pendingReq.getRawTx());
+									byte[] txBytes = Hex.decode(pendingReq.getRawTx());
 									Transaction tx = new Transaction(wallet.getNetworkParams(),txBytes);
 									 
 									BAOperation op = OperationsFactory.SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION(wallet,
@@ -424,6 +430,9 @@ public class TCPListener extends BASE{
 	}
 	
 	public boolean checkForOperationNetworkRequirements(BAOperation op){
+		if(vBANeworkInfo == null) // in case the setup process is not finished yet
+			return false;
+		
 		if((op.getOperationNetworkRequirements().getValue() & BANetworkRequirement.PORT_MAPPING.getValue()) > 0){
 			if(! vBANeworkInfo.PORT_FORWARDED || !vBANeworkInfo.SOCKET_OPERATIONAL){
 				return false;
@@ -521,13 +530,24 @@ public class TCPListener extends BASE{
 	 * @throws UnknownHostException
 	 */
 	private String getInternalIp() {
-		InetAddress i;
 		try {
-			i = InetAddress.getLocalHost();
-			return i.getHostAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+			String os = System.getProperty("os.name").toLowerCase();
+
+		    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {   
+		    	NetworkInterface ni = NetworkInterface.getByName("wlan0");
+			    Enumeration<InetAddress> inetAddresses =  ni.getInetAddresses();
+			    while(inetAddresses.hasMoreElements()) {
+			        InetAddress ia = inetAddresses.nextElement();
+			        if(!ia.isLinkLocalAddress()) {
+			            System.out.println("IP: " + ia.getHostAddress());
+			            return ia.getHostAddress();
+			        }
+			    }
+		    }
+		    return InetAddress.getLocalHost().getHostAddress();  // for Windows and OS X it should work well
+        } catch (SocketException | UnknownHostException e) {
+            e.printStackTrace();
+        }	
         return null;
 	}
 	

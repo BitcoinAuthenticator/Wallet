@@ -321,8 +321,8 @@ public class UIUpdateHelper extends BaseUI{
 	    		}
 	    		catch (Exception e) {
 	    			// If in any case one transaction throws an exception, continue with the Tx iteration.
-	    			e.printStackTrace();
-	    			System.out.println("TX: " + tx.toString());
+//	    			e.printStackTrace();
+//	    			System.out.println("TX: " + tx.toString());
 	    		}
 	    		
 	    	}
@@ -441,7 +441,13 @@ public class UIUpdateHelper extends BaseUI{
 	    			    		 Text inputtext2 = new Text("");
 	    			    		 Text inputtext3 = new Text("");
 	    			    		 inputtext3.setFill(Paint.valueOf("#98d947"));
-	    			    		 inputtext2.setText(tx.getInput(b).getFromAddress().toString() + " ");
+	    			    		 String to = "";
+	    			    		 {
+	    			    			 try { to = tx.getInput(b).getFromAddress().toString(); }
+	    			    			 catch (Exception e) { to = tx.getInput(b).toString(); }
+	    			    		 }
+	    			    		 
+	    			    		 inputtext2.setText(to + " ");
 	    			    		 intext.add(inputtext2);
 	    			    		 try { 
 	    			    			 inputtext3.setText(TextUtils.coinAmountTextDisplay(tx.getInput(b).getValue(),u));

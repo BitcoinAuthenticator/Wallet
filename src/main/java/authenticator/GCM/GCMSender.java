@@ -27,7 +27,7 @@ public class GCMSender {
 		    MulticastResult result;
 			try {
 				result = sender.send(message, devicesList, 1);
-				sender.send(message, devicesList, 1);
+//				sender.send(message, devicesList, 1);
 
                 System.out.println(result.toString());
                 if (result.getResults() != null) {

@@ -32,7 +32,14 @@ public interface BAGeneralEventsListener {
 		AccountBeenModified;
 	};
 	
-	public void onNewOneNameIdentitySelection(ConfigOneNameProfile profile, @Nullable Image profileImage);
+	/**
+	 * The profile param will be null if the identity was deleted.
+	 * @param profile
+	 * @param profileImage
+	 */
+	public void onOneNameIdentityChanged(@Nullable ConfigOneNameProfile profile, @Nullable Image profileImage);
+	
+	
 	/**
 	 * Will update when:<br>
 	 * <ol>

@@ -35,14 +35,15 @@ import javax.crypto.SecretKey;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import wallettemplate.Controller;
 import wallettemplate.Main;
 import wallettemplate.SettingsController;
 import wallettemplate.PairWallet.PairingWalletControllerListener;
 import wallettemplate.controls.ScrollPaneContentManager;
 import wallettemplate.startup.RestoreAccountCell.AccountCellListener;
+import wallettemplate.startup.backup.PaperSSSController;
 import wallettemplate.startup.backup.PaperWalletController;
 import wallettemplate.utils.BaseUI;
-import wallettemplate.utils.FileUtils;
 import wallettemplate.utils.GuiUtils;
 import wallettemplate.utils.ImageUtils;
 import wallettemplate.utils.dialogs.BADialog;
@@ -56,6 +57,7 @@ import authenticator.BipSSS.BipSSS.InvalidContentTypeException;
 import authenticator.BipSSS.BipSSS.NotEnoughSharesException;
 import authenticator.BipSSS.BipSSS.Share;
 import authenticator.Utils.EncodingUtils;
+import authenticator.Utils.FileUtils;
 import authenticator.db.exceptions.AccountWasNotFoundException;
 import authenticator.listeners.BAGeneralEventsAdapter;
 import authenticator.network.BANetworkInfo;
@@ -78,6 +80,9 @@ import authenticator.walletCore.exceptions.NoWalletPasswordException;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
+
+import net.glxn.qrgen.QRCode;
+import net.glxn.qrgen.image.ImageType;
 
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Block;
@@ -151,6 +156,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
@@ -158,6 +164,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.effect.DropShadow;
 import javafx.util.Duration;
 
 public class StartupController  extends BaseUI{
@@ -168,6 +175,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane ExplanationPane1;
 	@FXML private Pane Pane6;
 	@FXML private Pane SSSBackupPane;
+	@FXML private Button btnPrintSSS;
 	@FXML private Pane MainRestorePane;
 	@FXML private Pane RestoreFromMnemonicPane;
 	@FXML private Pane RestoreFromQRPane;
@@ -203,6 +211,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnBackFromSetPasswordAfterRestore;
 	@FXML private Button btnContinueAfterSetPasswordAfterRestore;
 	@FXML private Button btnPlayStore;
+	@FXML private Button btnStandard;
 	@FXML private Label lblMinimize;
 	@FXML private Label lblClose;
 	@FXML private Button btnDone;
@@ -212,6 +221,8 @@ public class StartupController  extends BaseUI{
 	@FXML private PasswordField txRestorePW1;
 	@FXML private PasswordField txRestorePW2;
 	@FXML private Label lblSeed;
+	@FXML private Label lbld1;
+	@FXML private Label lbld2;
 	@FXML private CheckBox ckSeed;
 	@FXML private Button btnSave;
 	@FXML private CheckBox chkTestNet;
@@ -233,6 +244,7 @@ public class StartupController  extends BaseUI{
 	@FXML private ProgressBar syncProgress;
 	@FXML private Label lblRestoreProcessStatus;
 	@FXML private Label lblScan;
+	@FXML private Label lbl2fa;
 	@FXML private TextField lblSeedRestorer;
 	@FXML private DatePicker seedCreationDatePicker;
 	
@@ -264,7 +276,6 @@ public class StartupController  extends BaseUI{
 	 *  the explanation pane if he wants that the created account should be paired or standard.
 	 */
 	@FXML private ImageView   ivFirstAccountPairingQR;
-	@FXML private Hyperlink hlFinished;
 	private String 			  encryptionPassword = null;
 	private String 			  firstAccountName;
 	private WalletAccountType firstAccountType = WalletAccountType.StandardAccount;
@@ -389,6 +400,11 @@ public class StartupController  extends BaseUI{
 		 Label labeContinueAfterSetPasswordAfterRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labeContinueAfterSetPasswordAfterRestore.setPadding(new Insets(0,6,0,0));
 		 btnContinueAfterSetPasswordAfterRestore.setGraphic(labeContinueAfterSetPasswordAfterRestore);
+		 
+		 //
+		 Label labePrintSSS = AwesomeDude.createIconLabel(AwesomeIcon.PRINT, "30");
+		 btnPrintSSS.setGraphic(labePrintSSS);
+		 Tooltip.install(btnPrintSSS, new Tooltip("Print Pieces"));
 		 
 		 lblMinimize.setPadding(new Insets(0,20,0,0));
 		 // Pane Control
@@ -585,7 +601,7 @@ public class StartupController  extends BaseUI{
 		 BackupNewWalletPane.setVisible(false);
 		 ExplanationPane1.setVisible(true);
 		 
-		 hlFinished.setDisable(true);
+		 btnStandard.setDisable(true);
 		 		 
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
@@ -613,7 +629,7 @@ public class StartupController  extends BaseUI{
 														Image qrImg = ImageUtils.javaFXImageFromBytes(qrImageBytes);
 														Platform.runLater(() -> {
 															ivFirstAccountPairingQR.setImage(qrImg);
-															hlFinished.setDisable(false);
+															btnStandard.setDisable(false);
 														});
 													} catch (IOException e) {
 														e.printStackTrace();
@@ -645,7 +661,7 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void finished(ActionEvent event){
-		 hlFinished.setDisable(true);
+		 btnStandard.setDisable(true);
 		 finishsetup();
 	 }
 	 
@@ -715,10 +731,14 @@ public class StartupController  extends BaseUI{
 			 BA4.setVisible(true);
 			 ivFirstAccountPairingQR.setVisible(true);
 			 Animation ani2 = GuiUtils.fadeOut(btnContinue3);
-			 GuiUtils.fadeIn(hlFinished);
-			 hlFinished.setVisible(true);
+			 GuiUtils.fadeIn(btnStandard);
+			 btnStandard.setVisible(true);
+			 lbl2fa.setText("Choose Account Type");
+			 //hlFinished.setVisible(true);
 			 btnContinue3.setVisible(false);
-			 lblScan.setVisible(true);
+			 //lblScan.setVisible(true);
+			 lbld1.setVisible(true);
+			 lbld2.setVisible(true);
 			 btnPlayStore.setVisible(false);
 			 btnBack5.setDisable(true);
 			 lblLoadginQR.setVisible(true);
@@ -905,7 +925,6 @@ public class StartupController  extends BaseUI{
  		 	ms = new MnemonicCode();
  			List<String> mnemonic = walletSeed.getMnemonicCode();
  			mnemonicEntropy = ms.toEntropy(mnemonic);
- 			//String entropyHex = HEX.encode(entropy);
  			
  			BipSSS sss = new BipSSS();
  			shares = sss.shard(mnemonicEntropy, 
@@ -919,13 +938,39 @@ public class StartupController  extends BaseUI{
 		 
 	 }
 	 
-	 @FXML protected void testSSS(ActionEvent event){
+	 @FXML protected void testSSS(ActionEvent event) {
 		 if(shares != null && shares.size() > 0 && mnemonicEntropy != null){
 			 TestSSSWindow w = new TestSSSWindow(shares, 
 					 mnemonicEntropy,
 					 Integer.parseInt(txThreshold.getText().toString()));
 			 w.show();
 		 }
+	 }
+	 
+	 @FXML protected void printSSS(ActionEvent event) {
+		 if(shares == null || shares.size() == 0) {
+			 GuiUtils.informationalAlert("Error !", "Make sure you split the wallet's seed and then print the pieces");
+			 return;
+		 }
+		 
+		 DirectoryChooser dirChooser = new DirectoryChooser();
+		 dirChooser.setTitle("Save Pieces");
+		 File destination = dirChooser.showDialog(Main.startup);
+		 if(!destination.exists())
+			 destination.mkdir();
+
+		 for(Share s: shares) {
+			 try {
+				PaperSSSController.createAndSavePaperSSS(s, walletSeed.getCreationTimeSeconds(), destination);
+			} catch (IOException e) {
+				e.printStackTrace();
+				GuiUtils.informationalAlert("Error !", "Failed to print all the pieces.");
+				return;
+			}
+		 }
+		 
+		 GuiUtils.informationalAlert("Done !", "Saved all pieces to " + destination.getAbsolutePath() + "\n" +
+				 							   "We suggest you give the pieces to close friends and family for safe keeping.");
 	 }
 	 
 	 @FXML protected void returntoBackupNewWalletPane(ActionEvent event){
@@ -1345,6 +1390,7 @@ public class StartupController  extends BaseUI{
 			public void onProgress(double pct, int blocksSoFar, Date date) {
 				float completion = (float) (pct / 100.0);
 				Platform.runLater(() -> syncProgress.setProgress(completion));
+				
 			}
 
 			@Override
@@ -1452,7 +1498,7 @@ public class StartupController  extends BaseUI{
 			public void onAuthenticatorNetworkStatusChange(BANetworkInfo info) {
 				Platform.runLater(() -> {
 					if(info.PORT_FORWARDED == false)
-						BADialog.info(Main.class, "Warning !", "UPnP was unable to map your port. You may need to manually set up port forwarding in your router to commuincate with the Bitcoin Authenticator Android app").show();
+						BADialog.info(Main.class, "Warning !", "We were unable to map your port using Universal Plug and Play. If you plan to use this wallet with the Bitcoin Authenticator Android app, you can still use it over your local WiFi network. However, to use it over 3G/4G you will need to manually configure port forwarding in your router. ").show();
 	            });
 			}
 		});
@@ -1462,8 +1508,10 @@ public class StartupController  extends BaseUI{
 		BAOperation op = OperationsFactory.PAIRING_OPERATION(Authenticator.getWalletOperation(),
     			pairName, 
     			null,
+    			null,
     			nt,
     			0,
+    			false,
     			stageListener,
     			null);
 		

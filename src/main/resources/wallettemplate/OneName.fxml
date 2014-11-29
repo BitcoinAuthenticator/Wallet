@@ -20,6 +20,15 @@
         </Pane>
         <Pane fx:id="Pane1" layoutX="2.0" layoutY="44.0" prefHeight="234.0" prefWidth="377.0" visible="true">
           <children>
+                  <Button fx:id="btnDelete" layoutX="335.0" layoutY="200.0" mnemonicParsing="false" onAction="#deleteAvatar" prefHeight="30.0" prefWidth="25.0" style="-fx-background-color: transperent;">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@trash.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
             <Button id="btnCancel" fx:id="btnCancel" layoutX="190.0" layoutY="160.0" mnemonicParsing="false" onAction="#done" onMousePressed="#Cancelpressed" onMouseReleased="#Cancelreleased" prefWidth="151.5" style="-fx-background-color: #4db2dc;" text="Cancel" />
             <Label disable="true" layoutX="39.0" layoutY="79.0" prefHeight="45.0" prefWidth="327.0" text="(optional) Enter your passphrase:                           We will store it encrypted with your wallet's seed." wrapText="true" />
             <Button fx:id="btnOK" layoutX="38.0" layoutY="160.0" mnemonicParsing="false" onAction="#onename" onMousePressed="#OKpressed" onMouseReleased="#OKreleased" prefWidth="151.5" style="-fx-background-color: #4db2dc;" text="OK" />
