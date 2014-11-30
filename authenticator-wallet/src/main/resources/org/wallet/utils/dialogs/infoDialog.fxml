@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <VBox prefWidth="550.0">
+      <children>
+        <HBox prefWidth="550.0">
+          <children>
+            <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" smooth="true">
+              <image>
+                <Image url="@../../startup/logo.png" />
+              </image>
+              <HBox.margin>
+                <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+              </HBox.margin>
+            </ImageView>
+            <VBox alignment="CENTER_LEFT" prefWidth="460.0">
+              <children>
+                <Label fx:id="lblTitle" minHeight="9.0" prefHeight="46.0" prefWidth="428.0" text="title">
+                  <font>
+                    <Font size="18.0" />
+                  </font>
+                  <VBox.margin>
+                    <Insets left="15.0" />
+                  </VBox.margin>
+                </Label>
+                <Label fx:id="lblDesc" contentDisplay="LEFT" prefHeight="133.0" prefWidth="424.0" text="details" wrapText="true">
+                  <VBox.margin>
+                    <Insets left="15.0" />
+                  </VBox.margin>
+                </Label>
+              </children>
+            </VBox>
+          </children>
+        </HBox>
+        <HBox alignment="BOTTOM_RIGHT" prefHeight="60.0" prefWidth="550.0">
+          <children>
+            <Button fx:id="btnDone" mnemonicParsing="false" onAction="#done" prefHeight="32.0" prefWidth="60.0" text="OK">
+              <HBox.margin>
+                <Insets right="15.0" />
+              </HBox.margin>
+            </Button>
+          </children>
+          <padding>
+            <Insets bottom="10.0" right="230.0" />
+          </padding>
+        </HBox>
+      </children>
+    </VBox>
+  </children>
+</AnchorPane>

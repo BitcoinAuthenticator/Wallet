@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.oracle.javafx.authoring.persist.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="MainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="850.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.wallet.Controller">
+  <children>
+    <ImageView fitHeight="483.0" fitWidth="850.0" layoutX="0.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@background.png" />
+      </image>
+    </ImageView>
+    <!-- 
+    
+    
+    	Menu Buttons 
+    	
+    	
+    -->
+    <Button fx:id="btnOverview_grey" layoutX="17.0" layoutY="70.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionOverview" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnOverview_grey.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnOverview_white" layoutX="17.0" layoutY="70.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnOverview_white.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnSend_white" layoutX="17.0" layoutY="140.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnSend_white.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnSend_grey" layoutX="17.0" layoutY="140.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionSend" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnSend_grey.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnReceive_white" layoutX="17.0" layoutY="210.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnReceive_white.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnReceive_grey" layoutX="17.0" layoutY="210.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionReceive" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnReceive_grey.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnTransactions_white" layoutX="17.0" layoutY="280.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnTransactions_white.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnTransactions_grey" layoutX="17.0" layoutY="280.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionTransactions" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnTransactions_grey.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnApps_white" layoutX="17.0" layoutY="350.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="" visible="false">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnApps_white.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnApps_grey" layoutX="17.0" layoutY="350.0" minHeight="71.0" minWidth="175.0" mnemonicParsing="false" onAction="#actionApps" prefHeight="71.0" prefWidth="175.0" styleClass="main-menu-button" text="">
+      <graphic>
+        <ImageView fitHeight="71.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+          <Image url="@btnApps_grey.png" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!-- 
+    
+    
+    	Transaction Pane
+    
+    
+     -->
+    <Pane fx:id="TxPane" layoutX="192.0" layoutY="70.0" prefHeight="351.0" prefWidth="638.0" visible="false">
+      <children>
+        <TableView fx:id="txTable" layoutX="0.0" layoutY="2.0" prefHeight="347.0" prefWidth="638.0" style="-fx-background-color: transparent;" styleClass="custom-scroll" tableMenuButtonVisible="false" visible="true">
+          <columns>
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="22.0" prefWidth="29.0" text="" fx:id="colInOut" />
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="8.0" prefWidth="39.0" text="" fx:id="colConfirmations" />
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="112.0" text="Date" fx:id="colDate" />
+            <TableColumn editable="true" maxWidth="5000.0" minWidth="10.0" prefWidth="174.0" text="To/From" fx:id="colToFrom" />
+            <TableColumn editable="true" maxWidth="5000.0" minWidth="10.0" prefWidth="188.0" text="Description" fx:id="colDescription" />
+            <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="94.0" text="Amount" fx:id="colAmount" />
+          </columns>
+        </TableView>
+      </children>
+    </Pane>
+    <!-- 
+    
+    
+    	ReceivePane 
+    	
+    	
+    -->
+    <Pane fx:id="ReceivePane" layoutX="196.0" layoutY="74.0" prefHeight="338.0" prefWidth="629.0" visible="false">
+      <children>
+        <Pane fx:id="RequestPane" layoutX="0.0" layoutY="90.0" prefHeight="250.0" prefWidth="600.0">
+          <Separator layoutX="46.0" layoutY="7.0" minHeight="2.1999969482421875" prefHeight="2.1999969482421875" prefWidth="537.0" />
+          <TextField fx:id="txReqLabel" layoutX="67.0" layoutY="27.0" prefHeight="27.0" prefWidth="475.0" promptText="Label" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+          <TextField fx:id="txReqAmount" layoutX="67.0" layoutY="65.0" prefHeight="25.0" prefWidth="200.0" promptText="Amount" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" />
+          <ChoiceBox layoutX="283.0" layoutY="67.0" prefHeight="25.0" prefWidth="52.0" value="BTC">
+            <items>
+              <FXCollections fx:factory="observableArrayList">
+                <String fx:value="BTC" />
+                <String fx:value="USD" />
+              </FXCollections>
+            </items>
+          </ChoiceBox>
+          <TextArea fx:id="txReqMemo" layoutX="67.0" layoutY="106.0" prefHeight="71.0" prefWidth="475.0" promptText="Memo" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2; -fx-focus-color: transparent;" wrapText="true" />
+          <Button fx:id="btnRequest" contentDisplay="RIGHT" layoutX="67.0" layoutY="194.0" mnemonicParsing="false" onMousePressed="#btnRequestPressed" onMouseReleased="#btnRequestReleased" prefHeight="32.0" prefWidth="175.0" styleClass="custom-button" text="Request Payment" textAlignment="CENTER" />
+          <Button fx:id="btnClearReceivePane" contentDisplay="RIGHT" layoutX="247.0" layoutY="194.0" mnemonicParsing="false" onMousePressed="#btnClearReceivePanePressed" onMouseReleased="#btnClearReceivePaneReleased" prefHeight="32.0" prefWidth="80.5" styleClass="clear-button" text="Clear" textAlignment="CENTER" />
+        </Pane>
+        <HBox fx:id="ReceiveHBox" layoutX="0.0" layoutY="14.0" prefHeight="64.0" prefWidth="629.0">
+          <children>
+            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@ivAddress.png" />
+              </image>
+              <HBox.margin>
+                <Insets left="10.0" top="9.0" />
+              </HBox.margin>
+            </ImageView>
+            <ChoiceBox fx:id="AddressBox" prefHeight="15.0" prefWidth="450.0">
+              <items>
+                <FXCollections fx:factory="observableArrayList" />
+              </items>
+              <HBox.margin>
+                <Insets left="3.0" top="14.0" />
+              </HBox.margin>
+            </ChoiceBox>
+          </children>
+        </HBox>
+      </children>
+    </Pane>
+    <!-- 
+    
+    
+    	SendPane 
+    	
+    	
+    -->
+    <Pane fx:id="SendPane" layoutX="196.0" layoutY="75.0" prefHeight="337.0000999999975" prefWidth="619.0" visible="false">
+      <children>
+        <VBox alignment="CENTER" layoutX="15.0" layoutY="6.0" prefHeight="327.0" prefWidth="600.0" style="-fx-background-color: white;">
+          <children>
+            <HBox maxHeight="23.0" prefHeight="23.0" prefWidth="200.0">
+              <children>
+                <TextField fx:id="txMsgLabel" maxHeight="23.0" prefHeight="22.0" prefWidth="386.0" promptText="Transaction Description" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+                  <HBox.margin>
+                    <Insets top="1.0" />
+                  </HBox.margin>
+                </TextField>
+                <TextField fx:id="txFee" maxHeight="23.0" prefHeight="23.0" prefWidth="200.0" promptText="Fee" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+                  <HBox.margin>
+                    <Insets left="3.0" top="1.0" />
+                  </HBox.margin>
+                </TextField>
+                <Button fx:id="btnAddTxOutput" mnemonicParsing="false" onAction="#addTxOutput" onMousePressed="#btnAddTxOutputPressed" onMouseReleased="#btnAddTxOutputReleased" prefHeight="25.0" styleClass="custom-button" text="+" textFill="WHITE">
+                  <HBox.margin>
+                    <Insets left="3.0" top="2.0" />
+                  </HBox.margin>
+                </Button>
+              </children>
+              <VBox.margin>
+                <Insets />
+              </VBox.margin>
+            </HBox>
+            <ScrollPane fx:id="scrlpane" disable="false" prefHeight="237.0" prefWidth="600.0" style="-fx-border-color: #dae0e5;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;" styleClass="custom-scroll">
+              <stylesheets>
+                <URL value="@application.css" />
+              </stylesheets>
+              <VBox.margin>
+                <Insets top="5.0" />
+              </VBox.margin>
+            </ScrollPane>
+            <HBox alignment="CENTER_LEFT" fillHeight="true" prefHeight="50.0" prefWidth="600.0" spacing="5.0" VBox.vgrow="NEVER">
+              <children>
+                <Button fx:id="btnSendTx" contentDisplay="RIGHT" defaultButton="true" mnemonicParsing="false" onAction="#SendTx" onMousePressed="#btnSendTxPressed" onMouseReleased="#btnSendTxReleased" prefHeight="32.0" prefWidth="138.0" styleClass="custom-button" text="Send" textAlignment="CENTER" textFill="WHITE" />
+                <Button fx:id="btnClearSendPane" contentDisplay="RIGHT" mnemonicParsing="false" onMousePressed="#btnClearSendPanePressed" onMouseReleased="#btnClearSendPaneReleased" prefHeight="32.0" prefWidth="80.5" styleClass="clear-button" text="Clear" textAlignment="CENTER" />
+              </children>
+              <VBox.margin>
+                <Insets top="10.0" />
+              </VBox.margin>
+            </HBox>
+          </children>
+        </VBox>
+      </children>
+    </Pane>
+    <!-- 
+    
+    
+    	OverviewPane 
+    	
+    	
+    -->
+    <Pane fx:id="OverviewPane" layoutX="196.0" layoutY="74.0" prefHeight="337.0000999999975" prefWidth="629.0" visible="true">
+      <children>
+        <ImageView fitHeight="327.0" fitWidth="585.0" layoutX="30.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" visible="true">
+          <image>
+            <Image url="@ovrImage.png" />
+          </image>
+        </ImageView>
+        <ScrollPane fx:id="scrlViewTxHistory" layoutX="280.0" layoutY="130.0" prefHeight="180.0" prefWidth="340.0" styleClass="custom-scroll" />
+        <ImageView fx:id="ivAvatar" fitHeight="73.0" fitWidth="73.0" layoutX="35.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@DefaultAvatar.png" />
+          </image>
+        </ImageView>
+        <Button fx:id="btnAvatar" layoutX="25.0" layoutY="4.0" minHeight="94.0" minWidth="94.0" mnemonicParsing="false" onAction="#openOneNameDialog" prefHeight="94.0" prefWidth="94.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-cursor: hand; -fx-background-color: transparent;" text="">
+          <graphic>
+            <ImageView fitHeight="94.0" fitWidth="94.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@btnAvatar.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <HBox fx:id="overviewHBox" layoutX="126.0" layoutY="33.0" prefHeight="51.0" prefWidth="337.0">
+          <children>
+            <Label fx:id="lblName" prefHeight="25.0" prefWidth="252.9999000000025" text="Welcome back !" textFill="#4b698f">
+              <font>
+                <Font size="15.0" />
+              </font>
+            </Label>
+            <Button fx:id="btnLock" minHeight="26.0" minWidth="25.0" mnemonicParsing="false" onAction="#lockControl" prefHeight="26.0" prefWidth="25.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-cursor: hand;" text="" visible="true">
+              <graphic>
+                <ImageView fitHeight="26.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" x="0.0">
+                  <image>
+                    <Image url="@btnLocked.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+          </children>
+        </HBox>
+        <HBox fx:id="dateTimeHBox" layoutX="126.0" layoutY="55.0" prefHeight="51.0" prefWidth="337.0">
+          <children>
+            <Label fx:id="lblDateAndTime" prefHeight="25.0" prefWidth="252.9999000000025" text="" textFill="#4b698f">
+              <font>
+                <Font size="15.0" />
+              </font>
+            </Label>
+          </children>
+        </HBox>
+        <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="150.0" style="-fx-text-fill: #98d947;" text="0.000000 BTC">
+          <font>
+            <Font size="14.0" fx:id="x2" />
+          </font>
+        </Label>
+        <Label fx:id="lblUnconfirmedBalance" font="$x2" layoutX="68.0" layoutY="227.0" prefWidth="150.0" style="-fx-text-fill: #f06e6e;" text="0.000000 BTC" />
+      </children>
+    </Pane>
+    <!-- 
+    
+    
+    	AppsPane 
+    	
+    	
+    -->
+    <Pane fx:id="AppsPane" layoutX="196.0" layoutY="74.0" prefHeight="337.0000999999975" prefWidth="629.0" visible="false">
+      <children>
+        <TabPane layoutX="-5.0" layoutY="-8.0" prefHeight="350.9999000000025" prefWidth="634.0" style="-fx-background:white;" tabClosingPolicy="UNAVAILABLE">
+          <tabs>
+            <Tab text="My Apps">
+              <content>
+                <ScrollPane prefHeight="330.0" prefWidth="618.0" style="-fx-background:white;" styleClass="custom-scroll">
+                  <content>
+                    <GridPane prefHeight="520.0" prefWidth="601.0">
+                      <children>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnOneName" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="OneName" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnOneName.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnAccounts" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Accounts" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnAccounts.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnAppAuthenticator" prefWidth="113.0" style="-fx-background-color:transparent;" text="Bitcoin Authenticator" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnBitcoinAuthenticator.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                          <GridPane.margin>
+                            <Insets top="13.0" fx:id="x1" />
+                          </GridPane.margin>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnSettings" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Settings" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnSettings.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                      </children>
+                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="313.0" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="150.0" />
+                      </columnConstraints>
+                      <rowConstraints>
+                        <RowConstraints maxHeight="181.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="216.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="192.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
+                      </rowConstraints>
+                    </GridPane>
+                  </content>
+                </ScrollPane>
+              </content>
+            </Tab>
+            <Tab text="Coming Soon">
+              <content>
+                <ScrollPane prefHeight="330.0" prefWidth="618.0" style="-fx-background:white;" styleClass="custom-scroll">
+                  <content>
+                    <GridPane prefHeight="520.0" prefWidth="601.0">
+                      <children>
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Address Book" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnAddressBook.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="Bitcoin Not Bombs" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.margin="$x1" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnBnB.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Support Us!" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnDonate.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="LocalBitcoins" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnLocalBitcoins.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btncoinjoin" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="CoinJoin" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnCoinJoin.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coin Control" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnCoinControl.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coinbase Buyback" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.margin="$x1" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnCoinbase.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+			                
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="Coinapult Locks" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnLocks.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                      </children>
+                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="313.0" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="150.0" />
+                      </columnConstraints>
+                      <rowConstraints>
+                        <RowConstraints maxHeight="181.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="216.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="192.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
+                      </rowConstraints>
+                    </GridPane>
+                  </content>
+                </ScrollPane>
+              </content>
+            </Tab>
+          </tabs>
+        </TabPane>
+      </children>
+    </Pane>
+    <!-- 
+    
+    
+    	SyncPane 
+    	
+    	
+    -->
+    <Pane fx:id="SyncPane" layoutX="17.0" layoutY="425.0" prefHeight="50.0" prefWidth="813.0" visible="true">
+      <children>
+        <Label fx:id="lblStatus" font="$x2" layoutX="0.0" layoutY="15.0" prefHeight="24.0" prefWidth="261.0" style="-fx-font-weight: SEMI_BOLD;" text="Initializing Tor" textFill="#6e86a0" />
+        <ImageView fx:id="ivSync" fitHeight="24.0" fitWidth="24.0" layoutX="591.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@ivSync.png" />
+          </image>
+        </ImageView>
+        <ProgressBar fx:id="syncProgress" layoutX="261.0" layoutY="14.0" prefHeight="25.0" prefWidth="322.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
+      </children>
+    </Pane>
+    <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="68.0" prefWidth="850.0">
+      <!-- 
+    
+    
+    	Control panel for : minimize, close 
+    	
+    	
+    -->
+      <HBox fx:id="PaneControlHBox" layoutX="780.0" layoutY="15.0" prefHeight="30.0" prefWidth="50.0">
+        <children>
+          <Label fx:id="lblMinimize" prefHeight="10.0" prefWidth="10.0">
+            <graphic>
+              <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@minimize.png" />
+                </image>
+              </ImageView>
+            </graphic>
+            <HBox.margin>
+              <Insets right="20.0" />
+            </HBox.margin>
+          </Label>
+          <Label fx:id="lblClose" prefHeight="10.0" prefWidth="10.0">
+            <graphic>
+              <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@close.png" />
+                </image>
+              </ImageView>
+            </graphic>
+          </Label>
+        </children>
+      </HBox>
+    </Pane>
+    <!-- 
+    
+    
+    	Indicators for: tor, peers, net 
+    	
+    	
+    -->
+    <Button fx:id="btnConnection0" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial;" text="Button" visible="true">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection0.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnConnection1" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent; -fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection1.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnConnection2" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent; -fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection2.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnConnection3" disable="false" layoutX="792.0" layoutY="432.0" minWidth="28.0" mnemonicParsing="false" prefWidth="28.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent; -fx-font: 18 arial;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@connection3.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnTor_grey" layoutX="765.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="true">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@Tor_grey.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnTor_color" layoutX="765.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@Tor_color.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnNet_grey" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="true">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@net_grey.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnNet_yellow" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@net_yellow.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <Button fx:id="btnNet_green" layoutX="735.0" layoutY="431.0" minWidth="46.0" mnemonicParsing="false" prefWidth="46.0" style="-fx-background-insets: 0, 0, 1, 2; -fx-background-color: transparent;-fx-font: 18 arial; -fx-cursor: hand;" text="Button" visible="false">
+      <graphic>
+        <ImageView fitHeight="27.0" fitWidth="26.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@net_green.png" />
+          </image>
+        </ImageView>
+      </graphic>
+    </Button>
+    <!-- 
+    
+    
+    	Top left icon _ account 
+    	
+    	
+    -->
+    <ImageView fx:id="ivLogo" fitHeight="40.0" fitWidth="40.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@btnBitcoinAuthenticator.png" />
+      </image>
+    </ImageView>
+    <ChoiceBox fx:id="AccountBox" layoutX="65.0" layoutY="22.0" prefHeight="15.0" prefWidth="150.0" styleClass="choice-box-account">
+      <items>
+        <FXCollections fx:factory="observableArrayList" />
+      </items>
+    </ChoiceBox>
+  </children>
+</AnchorPane>

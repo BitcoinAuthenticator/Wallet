@@ -1,0 +1,406 @@
+
+.scroll-pane:focused {
+	-fx-background-color:transparent;
+}
+
+.text-area:focused {
+	-fx-background-color:transparent;
+}
+
+
+.scroll-pane {
+	-fx-border-radius: 0.2em;
+	-fx-background-radius:0.2em;
+	-fx-background-color:transparent;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: #a29e9e;    
+}
+
+/* The main scrollbar **track** CSS class  */
+.custom-scroll .scroll-bar:horizontal .track,
+.custom-scroll .scroll-bar:vertical .track{
+    -fx-background-color: #d9e2e9;
+    -fx-border-color:transparent;
+    -fx-background-radius: 2em;
+    -fx-border-radius:2em;
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+.custom-scroll .scroll-bar:horizontal .increment-button ,
+.custom-scroll .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:white;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 0 6 0;
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+
+.custom-scroll .scroll-bar:vertical .increment-button ,
+.custom-scroll .scroll-bar:vertical .decrement-button {
+    -fx-background-color:white;
+    -fx-border-color:transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 6 0 0;
+    }
+
+.custom-scroll .scroll-bar .increment-arrow,
+.custom-scroll .scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding:0;
+    -fx-background-color:white;
+}
+
+.custom-scroll .scroll-bar {
+	-fx-background-color: white;
+	-fx-padding: 0 5 0 0;
+}
+
+/* The main scrollbar **thumb** CSS class which we drag every time (movable) */
+.custom-scroll .scroll-bar:horizontal .thumb,
+.custom-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #a1b6cb;
+	-fx-background-insets: 0, 0, 0;
+	-fx-background-radius: 2em;
+}
+
+.onename .scroll-bar{
+ -fx-background-color: black;
+}
+.onename .scroll-bar:horizontal .track,
+.onename .scroll-bar:vertical .track {
+ -fx-background-color: transparent;
+ -fx-border-color:transparent;
+}
+.onename .scroll-bar:vertical .track-background,
+.onename .scroll-bar:horizontal .track-background {
+ -fx-background-color: transparent;
+ -fx-background-insets: 0;
+}
+.onename .scroll-bar:horizontal .thumb {
+ -fx-background-color: rgb(211,211,211);
+ -fx-background-insets: 4 0 4 0;
+ -fx-background-radius: 2em;
+}
+.onename .scroll-bar:vertical .thumb {
+ -fx-background-color: rgb(211,211,211);
+ -fx-background-insets: 0 4 0 4;
+ -fx-background-radius: 2em;
+}
+.onename .scroll-bar:horizontal .thumb:hover,
+.onename .scroll-bar:vertical .thumb:hover {
+ -fx-background-color: rgb(231,231,231);
+}
+.onename .scroll-bar:horizontal .thumb:pressed,
+.onename .scroll-bar:vertical .thumb:pressed {
+ -fx-background-color: rgb(255,255,255);
+}
+.onename .scroll-bar:vertical .increment-button, 
+.onename .scroll-bar:vertical .decrement-button {
+ -fx-background-color:transparent;
+ -fx-padding: 5;
+}
+.onename .scroll-bar:horizontal .increment-button, 
+.onename .scroll-bar:horizontal .decrement-button {
+ -fx-background-color:transparent;
+ -fx-padding: 5;
+}
+.onename .scroll-bar:horizontal .increment-arrow {
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-background-color: rgb(211,211,211);
+ -fx-padding: 0.25em;
+ -fx-rotate: -90;
+}
+.onename .scroll-bar:vertical .increment-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: 0;
+}
+.onename .scroll-bar:horizontal .decrement-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: 90;
+}
+.onename .scroll-bar:vertical .decrement-arrow {
+ -fx-background-color: rgb(211,211,211);
+ -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+ -fx-padding: 0.25em;
+ -fx-rotate: -180;
+}
+.onename .scroll-bar:vertical:focused,
+.onename .scroll-bar:horizontal:focused {
+ -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
+}
+
+.progress-bar .track {
+	-fx-background-color: #d9dee1;
+	-fx-background-radius: .3em;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #95d946;
+    -fx-background-insets: 0;
+    -fx-background-radius: .3em;
+}
+  
+
+.update-window-progress-bar .track {
+	-fx-background-color: #d9dee1;
+	-fx-background-radius: .3em;
+}
+
+.update-window-progress-bar .bar {
+    -fx-background-color: #95d946;
+    -fx-background-insets: 0;
+    -fx-background-radius: .3em;
+}
+    
+.custom-button {
+	-fx-text-fill:white;
+    -fx-background-color: #199bd6;
+	-fx-background-insets: 0, 0, 1, 2;
+	-icons-color: white;
+}
+
+.clear-button {
+	-fx-background-color: #999999;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+}
+
+.cancel-button {
+	-fx-background-color: #6d6d6d;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+}
+
+.forward-button {
+	-fx-background-color: #95d946;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+	-fx-border-radius: 60;
+	-fx-background-radius: 60;
+}
+
+.finished-button {
+	-fx-background-color: #95d946; 
+	-fx-background-insets: 0, 0, 1, 2; 
+	-fx-text-fill: white;
+	-icons-color: white;
+}
+
+.back-button {
+	-fx-background-color: #808080;
+	-fx-background-insets: 0, 0, 1, 2;
+	-fx-text-fill:white;
+	-icons-color: white;
+	-fx-border-radius: 60;
+	-fx-background-radius: 60;
+}
+
+.restore-button {
+	-icons-color: #545454;
+}
+
+#RequestPane .choice-box {
+	-fx-background-color: #ecf0f1;  
+    -fx-font-size: 12px;
+}
+
+#SendPane .choice-box {
+	-fx-background-color: #ecf0f1;  
+    -fx-font-size: 12px;
+}
+
+#RestoreAccountsPane .choice-box {
+	-fx-background-color: #c1c3c4;  
+    -fx-font-size: 12px;
+}
+
+.main-menu-button {
+	-fx-background-insets: 10, 0, 1, 2;
+	-fx-focus-color: red;
+	-fx-background-color:red;
+}
+
+.main-menu-button:focused {
+	-fx-background-insets: 10, 0, 1, 2;
+	-fx-focus-color: blue;
+	-fx-background-color:black;
+}
+
+
+.choice-box {
+    -fx-background-color: #ecf0f1;  
+    -fx-font-size: 16px;
+}
+
+.choice-box .label {
+	-fx-text-fill: #767676;
+}
+
+.choice-box .context-menu .label {
+  -fx-font-size: 16px;
+  -fx-text-fill: #767676;
+}
+
+.choice-box-settings {
+    -fx-background-color: #FFFFFF;  
+    -fx-font-size: 12px;
+}
+
+.choice-box-settings .label {
+	-fx-text-fill: #0000000;
+}
+
+.choice-box-settings .context-menu .label {
+  -fx-font-size: 12px;
+  -fx-text-fill: #0000000;
+}
+
+.choice-box-account {
+    -fx-background-color: #ecf0f1;  
+    -fx-font-size: 14px;
+}
+
+.choice-box-account .label {
+	-fx-text-fill: #767676;
+}
+
+.choice-box-account .context-menu .label {
+  -fx-font-size: 12px;
+  -fx-text-fill: #767676;
+}
+
+.root {
+-icons-color: rgb(202,202,203);
+}
+
+#ReceivePane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#SendPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#MainPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#CreateAccountPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#BackupNewWalletPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#ExplanationPane1 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#Pane6 .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#SetPasswordPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#SSSBackupPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#MainRestorePane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#RestoreFromMnemonicPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#RestoreProcessPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#RestoreAccountsPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#LoadingPane .awesome{
+-fx-font-family: FontAwesome;
+-fx-text-fill: -icons-color;
+}
+
+#AppsPane .button {
+	-fx-text-fill: #4b698f;
+	-fx-cursor: hand;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane
+{
+    -fx-tab-min-width:290px;
+}
+
+.tab{
+    -fx-background-insets: 0 1 0 1,0,0;
+}
+.tab-pane .tab
+{
+    -fx-background-color: #e6e6e6;
+
+}
+
+.tab-pane .tab:selected
+{
+    -fx-background-color: #FFFFFF;
+}
+
+.tab:focused {
+	-fx-focus-color: transparent;
+}
+
+.tab .tab-label { 
+    -fx-alignment: CENTER;
+    -fx-text-fill: #828282;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.tab:selected .tab-label { 
+    -fx-alignment: CENTER;
+    -fx-text-fill: #767676;
+}

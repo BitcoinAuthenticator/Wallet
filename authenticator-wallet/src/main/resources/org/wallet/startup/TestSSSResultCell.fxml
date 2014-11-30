@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="790.0" style="-fx-background-color: white; -fx-border-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="790.0">
+<children><Label fx:id="lbl" prefHeight="50.0" prefWidth="627.0" text="Label" wrapText="true">
+<HBox.margin>
+<Insets left="30.0" right="30.0" />
+</HBox.margin></Label><ImageView fx:id="imgView" fitHeight="45.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
+<HBox.margin>
+<Insets bottom="3.0" right="10.0" top="3.0" />
+</HBox.margin></ImageView>
+</children></HBox>
+</children></AnchorPane>

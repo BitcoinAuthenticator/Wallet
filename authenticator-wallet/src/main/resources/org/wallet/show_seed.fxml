@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="118.0" prefWidth="656.0" style="" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.ShowSeedController">
+<children><VBox alignment="CENTER" prefHeight="118.0" prefWidth="656.0">
+<children><Label fx:id="lblSeed" alignment="CENTER" layoutX="109.353271484375" layoutY="51.0" prefHeight="55.0" prefWidth="644.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" text="Cannot Load Seed ..." />
+<Button fx:id="btnClose" mnemonicParsing="false" onMouseClicked="#exit" text="close">
+<VBox.margin>
+<Insets top="10.0" />
+</VBox.margin></Button>
+</children></VBox>
+</children></AnchorPane>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="SettingsApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.SettingsController">
+  <children>
+    <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="55.0" prefWidth="850.0" style="-fx-background-color: #d2cece;">
+      <children>
+        <ImageView fitHeight="46.0" fitWidth="58.0" layoutX="-1.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@apps/btnSettings.png" />
+          </image>
+        </ImageView>
+        <Button fx:id="btnBackup" layoutX="495.0" layoutY="10.0" mnemonicParsing="false" onAction="#launchBackup" style="-fx-background-color: #b3b1b1;" text="Backup" />
+        <Button fx:id="btnDone" layoutX="721.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #b3b1b1;" text="Save &amp; Close" />
+        <Button fx:id="btnRestore" layoutX="579.0" layoutY="10.0" mnemonicParsing="false" onAction="#restoreSettingsToDefault" style="-fx-background-color: #b3b1b1;" text="Restore Defaults" /><Button fx:id="btnDeleteWallet" layoutX="50.0" layoutY="10.0" mnemonicParsing="false" onAction="#deleteWallet" style="-fx-background-color: #eb0303;" text="Delete Wallet" textFill="#f5f5f5" />
+      </children>
+<padding>
+<Insets right="10.0" top="10.0" />
+</padding>
+    </Pane><StackPane layoutY="53.0" prefHeight="433.0" prefWidth="850.0">
+<children>
+    <Pane fx:id="settingspane" layoutX="-1.0" layoutY="41.0" prefHeight="442.0" prefWidth="851.0" style=" -fx-background-color: #d2cece;">
+      <children>
+        <Pane layoutX="14.0" layoutY="14.0" prefHeight="136.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;" visible="true">
+          <children>
+            <Label layoutX="14.0" layoutY="16.0" text="Bitcoin Unit">
+              <font>
+                <Font size="18.0" fx:id="x1" />
+              </font>
+            </Label>
+            <ChoiceBox fx:id="cbBitcoinUnit" layoutX="14.0" layoutY="39.0" styleClass="choice-box-settings">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="BTC" />
+                  <String fx:value="mBTC" />
+                  <String fx:value="µBTC" />
+                </FXCollections>
+              </items>
+            </ChoiceBox>
+            <Label font="$x1" layoutX="14.0" layoutY="80.0" text="Decimal Places" />
+            <ChoiceBox fx:id="cbDecimal" layoutX="14.0" layoutY="104.0" prefWidth="58.0" styleClass="choice-box-settings">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="0" />
+                  <String fx:value="2" />
+                  <String fx:value="3" />
+                  <String fx:value="4" />
+                  <String fx:value="5" />
+                  <String fx:value="6" />
+                </FXCollections>
+              </items>
+            </ChoiceBox>
+          </children>
+        </Pane>
+        <Pane id="displayPane" layoutX="14.0" layoutY="156.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;" visible="true">
+          <children>
+            <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Local Currency" />
+            <ChoiceBox fx:id="cbCurrency" layoutX="14.0" layoutY="39.0" prefWidth="94.0" styleClass="choice-box-settings" />
+          </children>
+        </Pane>
+        <Pane layoutX="566.0" layoutY="14.0" prefHeight="358.0" prefWidth="269.0" style="-fx-border-color: #7c7b7b;">
+          <children>
+            <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Security" />
+            <Label layoutX="15.0" layoutY="42.0" text="Enter Your Current Password" />
+            <PasswordField fx:id="txfShowSeedPassword" layoutX="15.0" layoutY="67.0" prefWidth="240.0" />
+            <Button fx:id="btnShowSeed" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" onAction="#showSeed" style="-fx-background-color: #b3b1b1;" text="Show Seed" />
+            <Label font="$x1" layoutX="15.0" layoutY="142.0" text="Change your Password" />
+            <Label layoutX="15.0" layoutY="169.0" text="Enter your current password" />
+            <PasswordField fx:id="changePWOriginal" layoutX="15.0" layoutY="186.0" prefWidth="240.0" />
+            <Label layoutX="15.0" layoutY="222.0" text="Enter your new password" />
+            <PasswordField fx:id="changePWNewFirst" layoutX="15.0" layoutY="245.0" prefWidth="239.0" />
+            <Label layoutX="15.0" layoutY="273.0" text="Repeat password" />
+            <PasswordField fx:id="changePWNewSecond" layoutX="14.0" layoutY="295.0" prefWidth="240.0" />
+            <Button fx:id="btnChange" layoutX="15.0" layoutY="327.0" mnemonicParsing="false" onAction="#changePassword" style="-fx-background-color: #b3b1b1;" text="Change password" />
+          </children>
+        </Pane>
+        <Pane layoutX="14.0" layoutY="229.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">
+          <children>
+            <Label font="$x1" layoutX="14.0" layoutY="10.0" text="Language" />
+            <ChoiceBox fx:id="cbLanguage" layoutX="14.0" layoutY="35.0" prefWidth="138.0" styleClass="choice-box-settings">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="English" />
+                </FXCollections>
+              </items>
+            </ChoiceBox>
+          </children>
+        </Pane>
+        <Pane layoutX="14.0" layoutY="302.0" prefHeight="67.0" prefWidth="262.0" style="-fx-border-color: #7c7b7b;">
+          <children>
+            <Label font="$x1" layoutX="14.0" layoutY="10.0" text="Default Transaction Fee" />
+            <TextField fx:id="txFee" layoutX="14.0" layoutY="34.0" prefWidth="111.0" />
+          </children>
+        </Pane>
+        <Pane layoutX="285.0" layoutY="14.0" prefHeight="207.1328125" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
+          <children>
+            <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Network" />
+            <CheckBox fx:id="ckTor" layoutX="14.0" layoutY="45.0" mnemonicParsing="false" text="Connect through Tor" />
+            <CheckBox fx:id="ckLocalHost" layoutX="14.0" layoutY="80.0" mnemonicParsing="false" text="Connect to Bitcoind on localhost" /><CheckBox fx:id="ckPortForwarding" layoutX="14.0" layoutY="115.0" mnemonicParsing="false" text="Port-Forwarding" />
+            <CheckBox fx:id="ckTrustedPeer" layoutX="14.0" layoutY="150.0" mnemonicParsing="false" text="Connect to trusted peer" />
+            <TextField fx:id="txPeerIP" layoutX="14.0" layoutY="175.0" prefWidth="200.0" promptText="Peer IP Address" />
+          </children>
+        </Pane>
+        <Pane layoutX="285.0" layoutY="229.0" prefHeight="142.0" prefWidth="272.0" style="-fx-border-color: #7c7b7b;">
+          <children>
+            <Slider fx:id="slBloom" layoutX="14.0" layoutY="72.0" prefWidth="240.0" showTickLabels="true" showTickMarks="true" />
+            <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Bloom Filtering" /><HBox layoutY="45.0" prefHeight="26.0" prefWidth="269.0">
+<children>
+            <Label layoutX="14.0" layoutY="52.0" text="False positive rate">
+<HBox.margin>
+<Insets right="5.0" />
+</HBox.margin></Label><Label fx:id="lblBloomFilterRate" layoutX="14.0" layoutY="52.0" text="XXX" />
+</children>
+<padding>
+<Insets left="10.0" right="10.0" />
+</padding></HBox>
+            <Hyperlink layoutX="14.0" layoutY="113.0" text="What is this?" />
+          </children>
+        </Pane><Pane layoutX="14.0" layoutY="375.0" prefHeight="55.0" prefWidth="205.0">
+<children><Button fx:id="btnGoToPendingRequests" layoutY="10.0" mnemonicParsing="false" onAction="#goToPendingRequests" text="Pending Requests" />
+</children></Pane>
+                  <Label fx:id="lblAppVersion" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" layoutX="700.0" layoutY="400.0" prefHeight="16.0" prefWidth="138.0" textAlignment="RIGHT" />
+      </children>
+    </Pane><Pane fx:id="pendingRequestsPane" prefHeight="200.0" prefWidth="200.0" style=" -fx-background-color: #d2cece;" visible="false">
+<children><TableView fx:id="tblViewPendingRequests" prefHeight="394.0" prefWidth="850.0" style=" -fx-background-color: #d2cece;">
+  <columns>
+    <TableColumn fx:id="colRequestID" prefWidth="380.0" text="Request ID" />
+    <TableColumn fx:id="colOperationType" minWidth="0.0" prefWidth="266.0" text="Operation Type" /><TableColumn fx:id="colAccount" minWidth="0.0" prefWidth="184.0" text="Account" />
+  </columns>
+<padding>
+<Insets left="10.0" right="10.0" />
+</padding>
+</TableView><HBox alignment="CENTER_RIGHT" layoutY="393.0" prefHeight="38.0" prefWidth="850.0">
+<children><HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="792.0">
+<children><Button mnemonicParsing="false" onAction="#deleteSelected" text="Delete Selected">
+<HBox.margin>
+<Insets left="10.0" />
+</HBox.margin></Button><Label text="(To select: hold ctrl/ shift + press with mouse on row)">
+<HBox.margin>
+<Insets left="10.0" />
+</HBox.margin></Label>
+</children></HBox><Button fx:id="btnBackFromPendingRequests" mnemonicParsing="false" onAction="#backToSettingsPane" text="back">
+<HBox.margin>
+<Insets right="10.0" />
+</HBox.margin></Button>
+</children></HBox>
+</children></Pane>
+</children></StackPane>
+  </children>
+</AnchorPane>

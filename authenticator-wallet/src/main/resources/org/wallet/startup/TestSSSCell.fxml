@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="871.0" style="-fx-background-color: white; -fx-border-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<children><VBox alignment="CENTER" prefHeight="50.0" prefWidth="871.0">
+<children><Label fx:id="lblPiece" alignment="CENTER" prefHeight="20.0" prefWidth="858.0" text="Label" />
+</children></VBox>
+</children></AnchorPane>
