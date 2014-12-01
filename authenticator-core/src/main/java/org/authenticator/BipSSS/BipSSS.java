@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 
 
 /**
+ * <b>From https://github.com/mycelium-com/wallet/tree/master/public/bitlib/src/main/java/com/mrd/bitlib/crypto</b><br>
  * Class implementing BIP-SS (place holder name until there actually is a BIP),
  * which allows sharding and combining a BIP-32 master seed or a Bitcoin private
  * key.

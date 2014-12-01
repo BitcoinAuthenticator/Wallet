@@ -447,12 +447,12 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAddress_descriptor;
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAddress_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAddress_fieldAccessorTable
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAddress_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.authenticator.protobuf.ProtoConfig.ATAddress.class, org.authenticator.protobuf.ProtoConfig.ATAddress.Builder.class);
     }
@@ -730,12 +730,12 @@ public final class ProtoConfig {
         org.authenticator.protobuf.ProtoConfig.ATAddressOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAddress_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAddress_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAddress_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAddress_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.ATAddress.class, org.authenticator.protobuf.ProtoConfig.ATAddress.Builder.class);
       }
@@ -779,7 +779,7 @@ public final class ProtoConfig {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAddress_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAddress_descriptor;
       }
 
       public org.authenticator.protobuf.ProtoConfig.ATAddress getDefaultInstanceForType() {
@@ -1428,12 +1428,12 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_descriptor;
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.authenticator.protobuf.ProtoConfig.ATAccount.class, org.authenticator.protobuf.ProtoConfig.ATAccount.Builder.class);
     }
@@ -1551,12 +1551,12 @@ public final class ProtoConfig {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.class, org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder.class);
       }
@@ -1742,12 +1742,12 @@ public final class ProtoConfig {
           org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchyOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.class, org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder.class);
         }
@@ -1785,7 +1785,7 @@ public final class ProtoConfig {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
         }
 
         public org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy getDefaultInstanceForType() {
@@ -2431,12 +2431,12 @@ public final class ProtoConfig {
         org.authenticator.protobuf.ProtoConfig.ATAccountOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.ATAccount.class, org.authenticator.protobuf.ProtoConfig.ATAccount.Builder.class);
       }
@@ -2500,7 +2500,7 @@ public final class ProtoConfig {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_ATAccount_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_ATAccount_descriptor;
       }
 
       public org.authenticator.protobuf.ProtoConfig.ATAccount getDefaultInstanceForType() {
@@ -3455,14 +3455,26 @@ public final class ProtoConfig {
 
     /**
      * <code>required string pairingID = 5;</code>
+     *
+     * <pre>
+     * digest of wallet's seed and account index
+     * </pre>
      */
     boolean hasPairingID();
     /**
      * <code>required string pairingID = 5;</code>
+     *
+     * <pre>
+     * digest of wallet's seed and account index
+     * </pre>
      */
     java.lang.String getPairingID();
     /**
      * <code>required string pairingID = 5;</code>
+     *
+     * <pre>
+     * digest of wallet's seed and account index
+     * </pre>
      */
     com.google.protobuf.ByteString
         getPairingIDBytes();
@@ -3619,12 +3631,12 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PairedAuthenticator_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.authenticator.protobuf.ProtoConfig.PairedAuthenticator.class, org.authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder.class);
     }
@@ -3817,12 +3829,20 @@ public final class ProtoConfig {
     private java.lang.Object pairingID_;
     /**
      * <code>required string pairingID = 5;</code>
+     *
+     * <pre>
+     * digest of wallet's seed and account index
+     * </pre>
      */
     public boolean hasPairingID() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
      * <code>required string pairingID = 5;</code>
+     *
+     * <pre>
+     * digest of wallet's seed and account index
+     * </pre>
      */
     public java.lang.String getPairingID() {
       java.lang.Object ref = pairingID_;
@@ -3840,6 +3860,10 @@ public final class ProtoConfig {
     }
     /**
      * <code>required string pairingID = 5;</code>
+     *
+     * <pre>
+     * digest of wallet's seed and account index
+     * </pre>
      */
     public com.google.protobuf.ByteString
         getPairingIDBytes() {
@@ -4121,12 +4145,12 @@ public final class ProtoConfig {
         org.authenticator.protobuf.ProtoConfig.PairedAuthenticatorOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PairedAuthenticator_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.PairedAuthenticator.class, org.authenticator.protobuf.ProtoConfig.PairedAuthenticator.Builder.class);
       }
@@ -4176,7 +4200,7 @@ public final class ProtoConfig {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PairedAuthenticator_descriptor;
       }
 
       public org.authenticator.protobuf.ProtoConfig.PairedAuthenticator getDefaultInstanceForType() {
@@ -4643,12 +4667,20 @@ public final class ProtoConfig {
       private java.lang.Object pairingID_ = "";
       /**
        * <code>required string pairingID = 5;</code>
+       *
+       * <pre>
+       * digest of wallet's seed and account index
+       * </pre>
        */
       public boolean hasPairingID() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>required string pairingID = 5;</code>
+       *
+       * <pre>
+       * digest of wallet's seed and account index
+       * </pre>
        */
       public java.lang.String getPairingID() {
         java.lang.Object ref = pairingID_;
@@ -4666,6 +4698,10 @@ public final class ProtoConfig {
       }
       /**
        * <code>required string pairingID = 5;</code>
+       *
+       * <pre>
+       * digest of wallet's seed and account index
+       * </pre>
        */
       public com.google.protobuf.ByteString
           getPairingIDBytes() {
@@ -4682,6 +4718,10 @@ public final class ProtoConfig {
       }
       /**
        * <code>required string pairingID = 5;</code>
+       *
+       * <pre>
+       * digest of wallet's seed and account index
+       * </pre>
        */
       public Builder setPairingID(
           java.lang.String value) {
@@ -4695,6 +4735,10 @@ public final class ProtoConfig {
       }
       /**
        * <code>required string pairingID = 5;</code>
+       *
+       * <pre>
+       * digest of wallet's seed and account index
+       * </pre>
        */
       public Builder clearPairingID() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -4704,6 +4748,10 @@ public final class ProtoConfig {
       }
       /**
        * <code>required string pairingID = 5;</code>
+       *
+       * <pre>
+       * digest of wallet's seed and account index
+       * </pre>
        */
       public Builder setPairingIDBytes(
           com.google.protobuf.ByteString value) {
@@ -5087,12 +5135,12 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_descriptor;
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.authenticator.protobuf.ProtoConfig.PendingRequest.class, org.authenticator.protobuf.ProtoConfig.PendingRequest.Builder.class);
     }
@@ -5224,12 +5272,12 @@ public final class ProtoConfig {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_Contract_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.PendingRequest.Contract.class, org.authenticator.protobuf.ProtoConfig.PendingRequest.Contract.Builder.class);
       }
@@ -5430,12 +5478,12 @@ public final class ProtoConfig {
           org.authenticator.protobuf.ProtoConfig.PendingRequest.ContractOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_Contract_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.authenticator.protobuf.ProtoConfig.PendingRequest.Contract.class, org.authenticator.protobuf.ProtoConfig.PendingRequest.Contract.Builder.class);
         }
@@ -5475,7 +5523,7 @@ public final class ProtoConfig {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_Contract_descriptor;
         }
 
         public org.authenticator.protobuf.ProtoConfig.PendingRequest.Contract getDefaultInstanceForType() {
@@ -6141,12 +6189,12 @@ public final class ProtoConfig {
         org.authenticator.protobuf.ProtoConfig.PendingRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.PendingRequest.class, org.authenticator.protobuf.ProtoConfig.PendingRequest.Builder.class);
       }
@@ -6203,7 +6251,7 @@ public final class ProtoConfig {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_PendingRequest_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_PendingRequest_descriptor;
       }
 
       public org.authenticator.protobuf.ProtoConfig.PendingRequest getDefaultInstanceForType() {
@@ -7246,12 +7294,12 @@ public final class ProtoConfig {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Builder.class);
     }
@@ -7393,12 +7441,12 @@ public final class ProtoConfig {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder.class);
       }
@@ -7602,12 +7650,12 @@ public final class ProtoConfig {
           org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccountOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.Builder.class);
         }
@@ -7655,7 +7703,7 @@ public final class ProtoConfig {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
         }
 
         public org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount getDefaultInstanceForType() {
@@ -8158,12 +8206,12 @@ public final class ProtoConfig {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
       }
@@ -8424,12 +8472,12 @@ public final class ProtoConfig {
           org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWalletOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
         }
@@ -8479,7 +8527,7 @@ public final class ProtoConfig {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
         }
 
         public org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet getDefaultInstanceForType() {
@@ -9351,12 +9399,12 @@ public final class ProtoConfig {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder.class);
       }
@@ -9754,12 +9802,12 @@ public final class ProtoConfig {
           org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfileOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile.Builder.class);
         }
@@ -9803,7 +9851,7 @@ public final class ProtoConfig {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
         }
 
         public org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile getDefaultInstanceForType() {
@@ -10459,12 +10507,12 @@ public final class ProtoConfig {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder.class);
       }
@@ -10750,12 +10798,12 @@ public final class ProtoConfig {
           org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTXOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX.Builder.class);
         }
@@ -10795,7 +10843,7 @@ public final class ProtoConfig {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+          return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
         }
 
         public org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX getDefaultInstanceForType() {
@@ -11507,12 +11555,12 @@ public final class ProtoConfig {
         org.authenticator.protobuf.ProtoConfig.AuthenticatorConfigurationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.class, org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.Builder.class);
       }
@@ -11588,7 +11636,7 @@ public final class ProtoConfig {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.authenticator.protobuf.ProtoConfig.internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
       }
 
       public org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration getDefaultInstanceForType() {
@@ -12862,60 +12910,60 @@ public final class ProtoConfig {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ATAddress_descriptor;
+    internal_static_org_authenticator_protobuf_ATAddress_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ATAddress_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_ATAddress_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ATAccount_descriptor;
+    internal_static_org_authenticator_protobuf_ATAccount_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_ATAccount_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
+    internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_PairedAuthenticator_descriptor;
+    internal_static_org_authenticator_protobuf_PairedAuthenticator_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_PendingRequest_descriptor;
+    internal_static_org_authenticator_protobuf_PendingRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_PendingRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor;
+    internal_static_org_authenticator_protobuf_PendingRequest_Contract_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -12925,77 +12973,79 @@ public final class ProtoConfig {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014config.proto\022\026org.authenticator.protobuf\032\021" +
-      "BAHierarchy.proto\032\024configSettings.proto\"" +
-      "\224\001\n\tATAddress\022\024\n\014accountIndex\030\001 \001(\005\022\020\n\010k" +
-      "eyIndex\030\002 \001(\005\022\022\n\naddressStr\030\003 \002(\t\022\016\n\006isU" +
-      "sed\030\004 \001(\010\022;\n\004type\030\005 \001(\0162-.authenticator." +
-      "protobuf.HierarchyAddressTypes\"\373\003\n\tATAcc" +
-      "ount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExternalKeys\030" +
-      "\002 \003(\005\022\030\n\020usedInternalKeys\030\003 \003(\005\022\030\n\020confi" +
-      "rmedBalance\030\004 \002(\022\022\032\n\022unConfirmedBalance\030" +
-      "\005 \002(\022\022\023\n\013networkType\030\006 \002(\005\022>\n\013accountTyp",
-      "e\030\007 \002(\0162).org.authenticator.protobuf.WalletA" +
-      "ccountType\022\023\n\013accountName\030\010 \002(\t\022]\n\030accou" +
-      "ntExternalHierarchy\030\t \002(\0132;.authenticato" +
-      "r.protobuf.ATAccount.ATAccountAddressHie" +
-      "rarchy\022]\n\030accountInternalHierarchy\030\n \002(\013" +
-      "2;.org.authenticator.protobuf.ATAccount.ATAc" +
-      "countAddressHierarchy\032M\n\031ATAccountAddres" +
-      "sHierarchy\022\024\n\014hierarchyKey\030\001 \002(\014\022\032\n\022hier" +
-      "archyChaincode\030\002 \002(\014\"\262\001\n\023PairedAuthentic" +
-      "ator\022\017\n\007aes_key\030\001 \002(\t\022\031\n\021master_public_k",
-      "ey\030\002 \002(\t\022\022\n\nchain_code\030\003 \002(\t\022\013\n\003GCM\030\004 \002(" +
-      "\t\022\021\n\tpairingID\030\005 \002(\t\022\017\n\007testnet\030\006 \002(\010\022\016\n" +
-      "\006keys_n\030\007 \002(\005\022\032\n\022walletAccountIndex\030\n \002(" +
-      "\005\"\334\003\n\016PendingRequest\022\021\n\tpairingID\030\001 \002(\t\022" +
-      "\021\n\trequestID\030\002 \002(\t\022>\n\roperationType\030\003 \002(" +
-      "\0162\'.org.authenticator.protobuf.ATOperationTy" +
-      "pe\022\r\n\005rawTx\030\004 \001(\t\022\017\n\007txLabel\030\005 \001(\t\022 \n\030tx" +
-      "DestinationDescription\030\006 \001(\t\022\027\n\017payloadI" +
-      "ncoming\030\007 \001(\014\022\'\n\037payloadToSendInCaseOfCo" +
-      "nnection\030\010 \001(\014\022A\n\010contract\030\t \002(\0132/.authe",
-      "nticator.protobuf.PendingRequest.Contrac" +
-      "t\032\234\001\n\010Contract\022%\n\035ShouldSendPayloadOnCon" +
-      "nection\030\001 \001(\010\022;\n3ShouldReceivePayloadAft" +
-      "erSendingPayloadOnConnection\030\002 \001(\010\022,\n$Sh" +
-      "ouldLetPendingRequestHandleRemoval\030\003 \001(\010" +
-      "\"\315\010\n\032AuthenticatorConfiguration\022c\n\023confi" +
-      "gActiveAccount\030\001 \001(\0132F.org.authenticator.pro" +
-      "tobuf.AuthenticatorConfiguration.ConfigA" +
-      "ctiveAccount\022o\n\031configAuthenticatorWalle" +
-      "t\030\002 \001(\0132L.org.authenticator.protobuf.Authent",
-      "icatorConfiguration.ConfigAuthenticatorW" +
-      "allet\022e\n\024configOneNameProfile\030\005 \001(\0132G.au" +
+      "\n\014config.proto\022\032org.authenticator.protob" +
+      "uf\032\021BAHierarchy.proto\032\024configSettings.pr" +
+      "oto\"\230\001\n\tATAddress\022\024\n\014accountIndex\030\001 \001(\005\022" +
+      "\020\n\010keyIndex\030\002 \001(\005\022\022\n\naddressStr\030\003 \002(\t\022\016\n" +
+      "\006isUsed\030\004 \001(\010\022?\n\004type\030\005 \001(\01621.org.authen" +
+      "ticator.protobuf.HierarchyAddressTypes\"\207" +
+      "\004\n\tATAccount\022\r\n\005index\030\001 \002(\005\022\030\n\020usedExter" +
+      "nalKeys\030\002 \003(\005\022\030\n\020usedInternalKeys\030\003 \003(\005\022" +
+      "\030\n\020confirmedBalance\030\004 \002(\022\022\032\n\022unConfirmed" +
+      "Balance\030\005 \002(\022\022\023\n\013networkType\030\006 \002(\005\022B\n\013ac",
+      "countType\030\007 \002(\0162-.org.authenticator.prot" +
+      "obuf.WalletAccountType\022\023\n\013accountName\030\010 " +
+      "\002(\t\022a\n\030accountExternalHierarchy\030\t \002(\0132?." +
+      "org.authenticator.protobuf.ATAccount.ATA" +
+      "ccountAddressHierarchy\022a\n\030accountInterna" +
+      "lHierarchy\030\n \002(\0132?.org.authenticator.pro" +
+      "tobuf.ATAccount.ATAccountAddressHierarch" +
+      "y\032M\n\031ATAccountAddressHierarchy\022\024\n\014hierar" +
+      "chyKey\030\001 \002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014" +
+      "\"\262\001\n\023PairedAuthenticator\022\017\n\007aes_key\030\001 \002(",
+      "\t\022\031\n\021master_public_key\030\002 \002(\t\022\022\n\nchain_co" +
+      "de\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t" +
+      "\022\017\n\007testnet\030\006 \002(\010\022\016\n\006keys_n\030\007 \002(\005\022\032\n\022wal" +
+      "letAccountIndex\030\n \002(\005\"\344\003\n\016PendingRequest" +
+      "\022\021\n\tpairingID\030\001 \002(\t\022\021\n\trequestID\030\002 \002(\t\022B" +
+      "\n\roperationType\030\003 \002(\0162+.org.authenticato" +
+      "r.protobuf.ATOperationType\022\r\n\005rawTx\030\004 \001(" +
+      "\t\022\017\n\007txLabel\030\005 \001(\t\022 \n\030txDestinationDescr" +
+      "iption\030\006 \001(\t\022\027\n\017payloadIncoming\030\007 \001(\014\022\'\n" +
+      "\037payloadToSendInCaseOfConnection\030\010 \001(\014\022E",
+      "\n\010contract\030\t \002(\01323.org.authenticator.pro" +
+      "tobuf.PendingRequest.Contract\032\234\001\n\010Contra" +
+      "ct\022%\n\035ShouldSendPayloadOnConnection\030\001 \001(" +
+      "\010\022;\n3ShouldReceivePayloadAfterSendingPay" +
+      "loadOnConnection\030\002 \001(\010\022,\n$ShouldLetPendi" +
+      "ngRequestHandleRemoval\030\003 \001(\010\"\365\010\n\032Authent" +
+      "icatorConfiguration\022g\n\023configActiveAccou" +
+      "nt\030\001 \001(\0132J.org.authenticator.protobuf.Au" +
+      "thenticatorConfiguration.ConfigActiveAcc" +
+      "ount\022s\n\031configAuthenticatorWallet\030\002 \001(\0132",
+      "P.org.authenticator.protobuf.Authenticat" +
+      "orConfiguration.ConfigAuthenticatorWalle" +
+      "t\022i\n\024configOneNameProfile\030\005 \001(\0132K.org.au" +
       "thenticator.protobuf.AuthenticatorConfig" +
-      "uration.ConfigOneNameProfile\0229\n\016configAc" +
-      "counts\030\006 \003(\0132!.org.authenticator.protobuf.AT" +
-      "Account\022U\n\021configSavedTXData\030\007 \003(\0132:.aut" +
-      "henticator.protobuf.AuthenticatorConfigu" +
-      "ration.SavedTX\022>\n\016configSettings\030\010 \002(\0132&" +
-      ".org.authenticator.protobuf.ConfigSettings\032\231" +
-      "\001\n\023ConfigActiveAccount\022H\n\023pairedAuthenti",
-      "cator\030\001 \001(\0132+.org.authenticator.protobuf.Pai" +
-      "redAuthenticator\0228\n\ractiveAccount\030\002 \002(\0132" +
-      "!.org.authenticator.protobuf.ATAccount\032\260\001\n\031C" +
-      "onfigAuthenticatorWallet\022\016\n\006paired\030\001 \001(\010" +
-      "\022B\n\rpairedWallets\030\002 \003(\0132+.authenticator." +
-      "protobuf.PairedAuthenticator\022?\n\017pendingR" +
-      "equests\030\003 \003(\0132&.org.authenticator.protobuf.P" +
-      "endingRequest\032\222\001\n\024ConfigOneNameProfile\022\017" +
-      "\n\007onename\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(" +
-      "\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAv",
-      "atarFilePath\030\004 \001(\t\022\026\n\016bitcoinAddress\030\005 \001" +
-      "(\t\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 " +
-      "\001(\t\022\023\n\013description\030\003 \001(\t*N\n\020ATGCMMessage" +
-      "Type\022\n\n\006SignTX\020\002\022\033\n\027UpdatePendingRequest" +
-      "IPs\020\004\022\021\n\rCoinsReceived\020\006*\217\001\n\017ATOperation" +
-      "Type\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAnd" +
-      "BroadcastAuthenticatorTx\020\002\022\025\n\021BroadcastN" +
-      "ormalTx\020\003\022\'\n#updateIpAddressesForPreviou" +
-      "sMessage\020\004*B\n\021WalletAccountType\022\023\n\017Stand" +
-      "ardAccount\020\000\022\030\n\024AuthenticatorAccount\020\001B\r",
-      "B\013ProtoConfig"
+      "uration.ConfigOneNameProfile\022=\n\016configAc" +
+      "counts\030\006 \003(\0132%.org.authenticator.protobu" +
+      "f.ATAccount\022Y\n\021configSavedTXData\030\007 \003(\0132>" +
+      ".org.authenticator.protobuf.Authenticato" +
+      "rConfiguration.SavedTX\022B\n\016configSettings" +
+      "\030\010 \002(\0132*.org.authenticator.protobuf.Conf",
+      "igSettings\032\241\001\n\023ConfigActiveAccount\022L\n\023pa" +
+      "iredAuthenticator\030\001 \001(\0132/.org.authentica" +
+      "tor.protobuf.PairedAuthenticator\022<\n\racti" +
+      "veAccount\030\002 \002(\0132%.org.authenticator.prot" +
+      "obuf.ATAccount\032\270\001\n\031ConfigAuthenticatorWa" +
+      "llet\022\016\n\006paired\030\001 \001(\010\022F\n\rpairedWallets\030\002 " +
+      "\003(\0132/.org.authenticator.protobuf.PairedA" +
+      "uthenticator\022C\n\017pendingRequests\030\003 \003(\0132*." +
+      "org.authenticator.protobuf.PendingReques" +
+      "t\032\222\001\n\024ConfigOneNameProfile\022\017\n\007onename\030\001 ",
+      "\002(\t\022\030\n\020onenameFormatted\030\002 \001(\t\022\030\n\020onename" +
+      "AvatarURL\030\003 \001(\t\022\035\n\025onenameAvatarFilePath" +
+      "\030\004 \001(\t\022\026\n\016bitcoinAddress\030\005 \001(\t\032<\n\007SavedT" +
+      "X\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t\022\023\n\013descr" +
+      "iption\030\003 \001(\t*N\n\020ATGCMMessageType\022\n\n\006Sign" +
+      "TX\020\002\022\033\n\027UpdatePendingRequestIPs\020\004\022\021\n\rCoi" +
+      "nsReceived\020\006*\217\001\n\017ATOperationType\022\013\n\007Pair" +
+      "ing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAut" +
+      "henticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n" +
+      "#updateIpAddressesForPreviousMessage\020\004*B",
+      "\n\021WalletAccountType\022\023\n\017StandardAccount\020\000" +
+      "\022\030\n\024AuthenticatorAccount\020\001B\rB\013ProtoConfi" +
+      "g"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -13011,71 +13061,71 @@ public final class ProtoConfig {
           org.authenticator.protobuf.AuthWalletHierarchy.getDescriptor(),
           org.authenticator.protobuf.ProtoSettings.getDescriptor(),
         }, assigner);
-    internal_static_authenticator_protobuf_ATAddress_descriptor =
+    internal_static_org_authenticator_protobuf_ATAddress_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_authenticator_protobuf_ATAddress_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_ATAddress_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_ATAddress_descriptor,
+        internal_static_org_authenticator_protobuf_ATAddress_descriptor,
         new java.lang.String[] { "AccountIndex", "KeyIndex", "AddressStr", "IsUsed", "Type", });
-    internal_static_authenticator_protobuf_ATAccount_descriptor =
+    internal_static_org_authenticator_protobuf_ATAccount_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_authenticator_protobuf_ATAccount_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_ATAccount_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_ATAccount_descriptor,
+        internal_static_org_authenticator_protobuf_ATAccount_descriptor,
         new java.lang.String[] { "Index", "UsedExternalKeys", "UsedInternalKeys", "ConfirmedBalance", "UnConfirmedBalance", "NetworkType", "AccountType", "AccountName", "AccountExternalHierarchy", "AccountInternalHierarchy", });
-    internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor =
-      internal_static_authenticator_protobuf_ATAccount_descriptor.getNestedTypes().get(0);
-    internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor =
+      internal_static_org_authenticator_protobuf_ATAccount_descriptor.getNestedTypes().get(0);
+    internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor,
+        internal_static_org_authenticator_protobuf_ATAccount_ATAccountAddressHierarchy_descriptor,
         new java.lang.String[] { "HierarchyKey", "HierarchyChaincode", });
-    internal_static_authenticator_protobuf_PairedAuthenticator_descriptor =
+    internal_static_org_authenticator_protobuf_PairedAuthenticator_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_PairedAuthenticator_descriptor,
+        internal_static_org_authenticator_protobuf_PairedAuthenticator_descriptor,
         new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "WalletAccountIndex", });
-    internal_static_authenticator_protobuf_PendingRequest_descriptor =
+    internal_static_org_authenticator_protobuf_PendingRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_authenticator_protobuf_PendingRequest_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_PendingRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_PendingRequest_descriptor,
+        internal_static_org_authenticator_protobuf_PendingRequest_descriptor,
         new java.lang.String[] { "PairingID", "RequestID", "OperationType", "RawTx", "TxLabel", "TxDestinationDescription", "PayloadIncoming", "PayloadToSendInCaseOfConnection", "Contract", });
-    internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor =
-      internal_static_authenticator_protobuf_PendingRequest_descriptor.getNestedTypes().get(0);
-    internal_static_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_PendingRequest_Contract_descriptor =
+      internal_static_org_authenticator_protobuf_PendingRequest_descriptor.getNestedTypes().get(0);
+    internal_static_org_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_PendingRequest_Contract_descriptor,
+        internal_static_org_authenticator_protobuf_PendingRequest_Contract_descriptor,
         new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", "ShouldLetPendingRequestHandleRemoval", });
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
+        internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
         new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", });
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor,
+        internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor,
         new java.lang.String[] { "PairedAuthenticator", "ActiveAccount", });
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor =
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(1);
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor =
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(1);
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor,
+        internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigAuthenticatorWallet_descriptor,
         new java.lang.String[] { "Paired", "PairedWallets", "PendingRequests", });
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor =
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(2);
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor =
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(2);
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor,
+        internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigOneNameProfile_descriptor,
         new java.lang.String[] { "Onename", "OnenameFormatted", "OnenameAvatarURL", "OnenameAvatarFilePath", "BitcoinAddress", });
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
-      internal_static_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
-    internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor =
+      internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(3);
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor,
+        internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_SavedTX_descriptor,
         new java.lang.String[] { "Txid", "ToFrom", "Description", });
     org.authenticator.protobuf.AuthWalletHierarchy.getDescriptor();
     org.authenticator.protobuf.ProtoSettings.getDescriptor();

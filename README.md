@@ -36,7 +36,7 @@ $mvn clean package
 #### Protobuf class
 From the Protobuf folder(/src/main/java/authenticator/protobuf):
  ```
-$ protoc <Proto File>.proto --java_out=../../ --proto_path=./ --proto_path=<system-include-directory, e.g., OSX is /usr/local/include/>
+$ protoc <Proto File>.proto --java_out=../../../ --proto_path=./ --proto_path=<system-include-directory, e.g., OSX is /usr/local/include/>
  ```
 
 For protobuf-install-directory see [this](http://stackoverflow.com/questions/20069295/importing-google-protobuf-descriptor-proto-in-java-protocol-buffers)

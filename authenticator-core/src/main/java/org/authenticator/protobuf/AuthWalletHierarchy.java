@@ -359,22 +359,22 @@ public final class AuthWalletHierarchy {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\021BAHierarchy.proto\022\026org.authenticator.proto" +
-      "buf*\035\n\020HierarchyPurpose\022\t\n\005Bip43\020,*%\n\022Hi" +
-      "erarchyCoinTypes\022\017\n\013CoinBitcoin\020\000*3\n\025Hie" +
-      "rarchyAddressTypes\022\014\n\010External\020\000\022\014\n\010Inte" +
-      "rnal\020\001*F\n\035HierarchyPrefixedAccountIndex\022" +
-      "\022\n\016PrefixSpending\020\000\022\021\n\rPrefixSavings\020\001B\025" +
-      "B\023AuthWalletHierarchy"
+      "\n\021BAHierarchy.proto\022\032org.authenticator.p" +
+      "rotobuf*\035\n\020HierarchyPurpose\022\t\n\005Bip43\020,*%" +
+      "\n\022HierarchyCoinTypes\022\017\n\013CoinBitcoin\020\000*3\n" +
+      "\025HierarchyAddressTypes\022\014\n\010External\020\000\022\014\n\010" +
+      "Internal\020\001*F\n\035HierarchyPrefixedAccountIn" +
+      "dex\022\022\n\016PrefixSpending\020\000\022\021\n\rPrefixSavings" +
+      "\020\001B\025B\023AuthWalletHierarchy"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          return null;
-        }
-      };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {

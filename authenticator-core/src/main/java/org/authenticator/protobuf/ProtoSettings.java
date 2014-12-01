@@ -173,10 +173,10 @@ public final class ProtoSettings {
     // @@protoc_insertion_point(enum_scope:org.authenticator.protobuf.Languages)
   }
 
-  public interface ConfigSettingsOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface ConfigSettingsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.authenticator.protobuf.ConfigSettings)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional .org.authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];
     /**
      * <code>optional .org.authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
      */
@@ -186,7 +186,6 @@ public final class ProtoSettings {
      */
     org.authenticator.protobuf.ProtoSettings.BitcoinUnit getAccountUnit();
 
-    // optional int32 decimalPoints = 2 [default = 4];
     /**
      * <code>optional int32 decimalPoints = 2 [default = 4];</code>
      */
@@ -196,7 +195,6 @@ public final class ProtoSettings {
      */
     int getDecimalPoints();
 
-    // optional string localCurrencySymbol = 3 [default = "USD"];
     /**
      * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
      */
@@ -211,7 +209,6 @@ public final class ProtoSettings {
     com.google.protobuf.ByteString
         getLocalCurrencySymbolBytes();
 
-    // optional .org.authenticator.protobuf.Languages language = 4 [default = English];
     /**
      * <code>optional .org.authenticator.protobuf.Languages language = 4 [default = English];</code>
      */
@@ -221,7 +218,6 @@ public final class ProtoSettings {
      */
     org.authenticator.protobuf.ProtoSettings.Languages getLanguage();
 
-    // optional int32 defaultFee = 5 [default = 10000];
     /**
      * <code>optional int32 defaultFee = 5 [default = 10000];</code>
      *
@@ -239,7 +235,6 @@ public final class ProtoSettings {
      */
     int getDefaultFee();
 
-    // optional bool TOR = 6 [default = true];
     /**
      * <code>optional bool TOR = 6 [default = true];</code>
      *
@@ -257,7 +252,6 @@ public final class ProtoSettings {
      */
     boolean getTOR();
 
-    // optional bool connectOnLocalHost = 7 [default = false];
     /**
      * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
      */
@@ -267,7 +261,6 @@ public final class ProtoSettings {
      */
     boolean getConnectOnLocalHost();
 
-    // optional bool connectToTrustedPeer = 8 [default = false];
     /**
      * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
      */
@@ -277,7 +270,6 @@ public final class ProtoSettings {
      */
     boolean getConnectToTrustedPeer();
 
-    // optional bool portForwarding = 9 [default = false];
     /**
      * <code>optional bool portForwarding = 9 [default = false];</code>
      */
@@ -287,7 +279,6 @@ public final class ProtoSettings {
      */
     boolean getPortForwarding();
 
-    // optional string trustedPeerIP = 10;
     /**
      * <code>optional string trustedPeerIP = 10;</code>
      */
@@ -302,7 +293,6 @@ public final class ProtoSettings {
     com.google.protobuf.ByteString
         getTrustedPeerIPBytes();
 
-    // optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];
     /**
      * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
      */
@@ -316,8 +306,9 @@ public final class ProtoSettings {
    * Protobuf type {@code org.authenticator.protobuf.ConfigSettings}
    */
   public static final class ConfigSettings extends
-      com.google.protobuf.GeneratedMessage
-      implements ConfigSettingsOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.authenticator.protobuf.ConfigSettings)
+      ConfigSettingsOrBuilder {
     // Use ConfigSettings.newBuilder() to construct.
     private ConfigSettings(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -380,8 +371,9 @@ public final class ProtoSettings {
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              localCurrencySymbol_ = input.readBytes();
+              localCurrencySymbol_ = bs;
               break;
             }
             case 32: {
@@ -421,8 +413,9 @@ public final class ProtoSettings {
               break;
             }
             case 82: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000200;
-              trustedPeerIP_ = input.readBytes();
+              trustedPeerIP_ = bs;
               break;
             }
             case 93: {
@@ -444,12 +437,12 @@ public final class ProtoSettings {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.authenticator.protobuf.ProtoSettings.internal_static_authenticator_protobuf_ConfigSettings_descriptor;
+      return org.authenticator.protobuf.ProtoSettings.internal_static_org_authenticator_protobuf_ConfigSettings_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.authenticator.protobuf.ProtoSettings.internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable
+      return org.authenticator.protobuf.ProtoSettings.internal_static_org_authenticator_protobuf_ConfigSettings_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.authenticator.protobuf.ProtoSettings.ConfigSettings.class, org.authenticator.protobuf.ProtoSettings.ConfigSettings.Builder.class);
     }
@@ -470,7 +463,6 @@ public final class ProtoSettings {
     }
 
     private int bitField0_;
-    // optional .org.authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];
     public static final int ACCOUNTUNIT_FIELD_NUMBER = 1;
     private org.authenticator.protobuf.ProtoSettings.BitcoinUnit accountUnit_;
     /**
@@ -486,7 +478,6 @@ public final class ProtoSettings {
       return accountUnit_;
     }
 
-    // optional int32 decimalPoints = 2 [default = 4];
     public static final int DECIMALPOINTS_FIELD_NUMBER = 2;
     private int decimalPoints_;
     /**
@@ -502,7 +493,6 @@ public final class ProtoSettings {
       return decimalPoints_;
     }
 
-    // optional string localCurrencySymbol = 3 [default = "USD"];
     public static final int LOCALCURRENCYSYMBOL_FIELD_NUMBER = 3;
     private java.lang.Object localCurrencySymbol_;
     /**
@@ -545,7 +535,6 @@ public final class ProtoSettings {
       }
     }
 
-    // optional .org.authenticator.protobuf.Languages language = 4 [default = English];
     public static final int LANGUAGE_FIELD_NUMBER = 4;
     private org.authenticator.protobuf.ProtoSettings.Languages language_;
     /**
@@ -561,7 +550,6 @@ public final class ProtoSettings {
       return language_;
     }
 
-    // optional int32 defaultFee = 5 [default = 10000];
     public static final int DEFAULTFEE_FIELD_NUMBER = 5;
     private int defaultFee_;
     /**
@@ -585,7 +573,6 @@ public final class ProtoSettings {
       return defaultFee_;
     }
 
-    // optional bool TOR = 6 [default = true];
     public static final int TOR_FIELD_NUMBER = 6;
     private boolean tOR_;
     /**
@@ -609,7 +596,6 @@ public final class ProtoSettings {
       return tOR_;
     }
 
-    // optional bool connectOnLocalHost = 7 [default = false];
     public static final int CONNECTONLOCALHOST_FIELD_NUMBER = 7;
     private boolean connectOnLocalHost_;
     /**
@@ -625,7 +611,6 @@ public final class ProtoSettings {
       return connectOnLocalHost_;
     }
 
-    // optional bool connectToTrustedPeer = 8 [default = false];
     public static final int CONNECTTOTRUSTEDPEER_FIELD_NUMBER = 8;
     private boolean connectToTrustedPeer_;
     /**
@@ -641,7 +626,6 @@ public final class ProtoSettings {
       return connectToTrustedPeer_;
     }
 
-    // optional bool portForwarding = 9 [default = false];
     public static final int PORTFORWARDING_FIELD_NUMBER = 9;
     private boolean portForwarding_;
     /**
@@ -657,7 +641,6 @@ public final class ProtoSettings {
       return portForwarding_;
     }
 
-    // optional string trustedPeerIP = 10;
     public static final int TRUSTEDPEERIP_FIELD_NUMBER = 10;
     private java.lang.Object trustedPeerIP_;
     /**
@@ -700,7 +683,6 @@ public final class ProtoSettings {
       }
     }
 
-    // optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];
     public static final int BLOOMFILTERFALSEPOSITIVERATE_FIELD_NUMBER = 11;
     private float bloomFilterFalsePositiveRate_;
     /**
@@ -732,7 +714,8 @@ public final class ProtoSettings {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -909,16 +892,17 @@ public final class ProtoSettings {
      * Protobuf type {@code org.authenticator.protobuf.ConfigSettings}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.authenticator.protobuf.ConfigSettings)
+        org.authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.authenticator.protobuf.ProtoSettings.internal_static_authenticator_protobuf_ConfigSettings_descriptor;
+        return org.authenticator.protobuf.ProtoSettings.internal_static_org_authenticator_protobuf_ConfigSettings_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.authenticator.protobuf.ProtoSettings.internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable
+        return org.authenticator.protobuf.ProtoSettings.internal_static_org_authenticator_protobuf_ConfigSettings_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.authenticator.protobuf.ProtoSettings.ConfigSettings.class, org.authenticator.protobuf.ProtoSettings.ConfigSettings.Builder.class);
       }
@@ -974,7 +958,7 @@ public final class ProtoSettings {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.authenticator.protobuf.ProtoSettings.internal_static_authenticator_protobuf_ConfigSettings_descriptor;
+        return org.authenticator.protobuf.ProtoSettings.internal_static_org_authenticator_protobuf_ConfigSettings_descriptor;
       }
 
       public org.authenticator.protobuf.ProtoSettings.ConfigSettings getDefaultInstanceForType() {
@@ -1117,7 +1101,6 @@ public final class ProtoSettings {
       }
       private int bitField0_;
 
-      // optional .org.authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];
       private org.authenticator.protobuf.ProtoSettings.BitcoinUnit accountUnit_ = org.authenticator.protobuf.ProtoSettings.BitcoinUnit.BTC;
       /**
        * <code>optional .org.authenticator.protobuf.BitcoinUnit accountUnit = 1 [default = BTC];</code>
@@ -1153,7 +1136,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional int32 decimalPoints = 2 [default = 4];
       private int decimalPoints_ = 4;
       /**
        * <code>optional int32 decimalPoints = 2 [default = 4];</code>
@@ -1186,7 +1168,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional string localCurrencySymbol = 3 [default = "USD"];
       private java.lang.Object localCurrencySymbol_ = "USD";
       /**
        * <code>optional string localCurrencySymbol = 3 [default = "USD"];</code>
@@ -1200,9 +1181,12 @@ public final class ProtoSettings {
       public java.lang.String getLocalCurrencySymbol() {
         java.lang.Object ref = localCurrencySymbol_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          localCurrencySymbol_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            localCurrencySymbol_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1260,7 +1244,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional .org.authenticator.protobuf.Languages language = 4 [default = English];
       private org.authenticator.protobuf.ProtoSettings.Languages language_ = org.authenticator.protobuf.ProtoSettings.Languages.English;
       /**
        * <code>optional .org.authenticator.protobuf.Languages language = 4 [default = English];</code>
@@ -1296,7 +1279,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional int32 defaultFee = 5 [default = 10000];
       private int defaultFee_ = 10000;
       /**
        * <code>optional int32 defaultFee = 5 [default = 10000];</code>
@@ -1345,7 +1327,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional bool TOR = 6 [default = true];
       private boolean tOR_ = true;
       /**
        * <code>optional bool TOR = 6 [default = true];</code>
@@ -1394,7 +1375,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional bool connectOnLocalHost = 7 [default = false];
       private boolean connectOnLocalHost_ ;
       /**
        * <code>optional bool connectOnLocalHost = 7 [default = false];</code>
@@ -1427,7 +1407,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional bool connectToTrustedPeer = 8 [default = false];
       private boolean connectToTrustedPeer_ ;
       /**
        * <code>optional bool connectToTrustedPeer = 8 [default = false];</code>
@@ -1460,7 +1439,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional bool portForwarding = 9 [default = false];
       private boolean portForwarding_ ;
       /**
        * <code>optional bool portForwarding = 9 [default = false];</code>
@@ -1493,7 +1471,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional string trustedPeerIP = 10;
       private java.lang.Object trustedPeerIP_ = "";
       /**
        * <code>optional string trustedPeerIP = 10;</code>
@@ -1507,9 +1484,12 @@ public final class ProtoSettings {
       public java.lang.String getTrustedPeerIP() {
         java.lang.Object ref = trustedPeerIP_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          trustedPeerIP_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            trustedPeerIP_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1567,7 +1547,6 @@ public final class ProtoSettings {
         return this;
       }
 
-      // optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];
       private float bloomFilterFalsePositiveRate_ = 1e-05F;
       /**
        * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
@@ -1614,6 +1593,10 @@ public final class ProtoSettings {
   public static final int BITCOIN_UNIT_NAME_FIELD_NUMBER = 50000;
   /**
    * <code>extend .google.protobuf.EnumValueOptions { ... }</code>
+   *
+   * <pre>
+   * Be sure to read the docs about choosing the number here.
+   * </pre>
    */
   public static final
     com.google.protobuf.GeneratedMessage.GeneratedExtension<
@@ -1622,11 +1605,11 @@ public final class ProtoSettings {
           .newFileScopedGeneratedExtension(
         java.lang.String.class,
         null);
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_authenticator_protobuf_ConfigSettings_descriptor;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_authenticator_protobuf_ConfigSettings_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable;
+      internal_static_org_authenticator_protobuf_ConfigSettings_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1636,50 +1619,53 @@ public final class ProtoSettings {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024configSettings.proto\022\026org.authenticator.pr" +
-      "otobuf\032 google/protobuf/descriptor.proto" +
-      "\"\242\003\n\016ConfigSettings\022=\n\013accountUnit\030\001 \001(\016" +
-      "2#.org.authenticator.protobuf.BitcoinUnit:\003B" +
-      "TC\022\030\n\rdecimalPoints\030\002 \001(\005:\0014\022 \n\023localCur" +
-      "rencySymbol\030\003 \001(\t:\003USD\022<\n\010language\030\004 \001(\016" +
-      "2!.org.authenticator.protobuf.Languages:\007Eng" +
-      "lish\022\031\n\ndefaultFee\030\005 \001(\005:\00510000\022\021\n\003TOR\030\006" +
-      " \001(\010:\004true\022!\n\022connectOnLocalHost\030\007 \001(\010:\005" +
-      "false\022#\n\024connectToTrustedPeer\030\010 \001(\010:\005fal",
-      "se\022\035\n\016portForwarding\030\t \001(\010:\005false\022\025\n\rtru" +
-      "stedPeerIP\030\n \001(\t\022+\n\034bloomFilterFalsePosi" +
-      "tiveRate\030\013 \001(\002:\0051e-05*R\n\013BitcoinUnit\022\020\n\003" +
-      "BTC\020\000\032\007\202\265\030\003BTC\022\027\n\tMillibits\020\001\032\010\202\265\030\004mBTC\022" +
-      "\030\n\tMicrobits\020\002\032\t\202\265\030\005\302\265BTC*\030\n\tLanguages\022\013" +
-      "\n\007English\020\000:>\n\021bitcoin_unit_name\022!.googl" +
-      "e.protobuf.EnumValueOptions\030\320\206\003 \001(\tB\017B\rP" +
-      "rotoSettings"
+      "\n\024configSettings.proto\022\032org.authenticato" +
+      "r.protobuf\032 google/protobuf/descriptor.p" +
+      "roto\"\252\003\n\016ConfigSettings\022A\n\013accountUnit\030\001" +
+      " \001(\0162\'.org.authenticator.protobuf.Bitcoi" +
+      "nUnit:\003BTC\022\030\n\rdecimalPoints\030\002 \001(\005:\0014\022 \n\023" +
+      "localCurrencySymbol\030\003 \001(\t:\003USD\022@\n\010langua" +
+      "ge\030\004 \001(\0162%.org.authenticator.protobuf.La" +
+      "nguages:\007English\022\031\n\ndefaultFee\030\005 \001(\005:\00510" +
+      "000\022\021\n\003TOR\030\006 \001(\010:\004true\022!\n\022connectOnLocal" +
+      "Host\030\007 \001(\010:\005false\022#\n\024connectToTrustedPee",
+      "r\030\010 \001(\010:\005false\022\035\n\016portForwarding\030\t \001(\010:\005" +
+      "false\022\025\n\rtrustedPeerIP\030\n \001(\t\022+\n\034bloomFil" +
+      "terFalsePositiveRate\030\013 \001(\002:\0051e-05*R\n\013Bit" +
+      "coinUnit\022\020\n\003BTC\020\000\032\007\202\265\030\003BTC\022\027\n\tMillibits\020" +
+      "\001\032\010\202\265\030\004mBTC\022\030\n\tMicrobits\020\002\032\t\202\265\030\005\302\265BTC*\030\n" +
+      "\tLanguages\022\013\n\007English\020\000:>\n\021bitcoin_unit_" +
+      "name\022!.google.protobuf.EnumValueOptions\030" +
+      "\320\206\003 \001(\tB\017B\rProtoSettings"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          internal_static_authenticator_protobuf_ConfigSettings_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_authenticator_protobuf_ConfigSettings_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_authenticator_protobuf_ConfigSettings_descriptor,
-              new java.lang.String[] { "AccountUnit", "DecimalPoints", "LocalCurrencySymbol", "Language", "DefaultFee", "TOR", "ConnectOnLocalHost", "ConnectToTrustedPeer", "PortForwarding", "TrustedPeerIP", "BloomFilterFalsePositiveRate", });
-          bitcoinUnitName.internalInit(descriptor.getExtensions().get(0));
-          com.google.protobuf.ExtensionRegistry registry =
-            com.google.protobuf.ExtensionRegistry.newInstance();
-          registry.add(org.authenticator.protobuf.ProtoSettings.bitcoinUnitName);
-          registry.add(org.authenticator.protobuf.ProtoSettings.bitcoinUnitName);
-          registry.add(org.authenticator.protobuf.ProtoSettings.bitcoinUnitName);
-          return registry;
-        }
-      };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.DescriptorProtos.getDescriptor(),
         }, assigner);
+    internal_static_org_authenticator_protobuf_ConfigSettings_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_org_authenticator_protobuf_ConfigSettings_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_authenticator_protobuf_ConfigSettings_descriptor,
+        new java.lang.String[] { "AccountUnit", "DecimalPoints", "LocalCurrencySymbol", "Language", "DefaultFee", "TOR", "ConnectOnLocalHost", "ConnectToTrustedPeer", "PortForwarding", "TrustedPeerIP", "BloomFilterFalsePositiveRate", });
+    bitcoinUnitName.internalInit(descriptor.getExtensions().get(0));
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(org.authenticator.protobuf.ProtoSettings.bitcoinUnitName);
+    registry.add(org.authenticator.protobuf.ProtoSettings.bitcoinUnitName);
+    registry.add(org.authenticator.protobuf.ProtoSettings.bitcoinUnitName);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
+    com.google.protobuf.DescriptorProtos.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
