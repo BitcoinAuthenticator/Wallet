@@ -21,51 +21,55 @@ Bitcoin Authenticator is a P2P bitcoin wallet and [android application](https://
 
 #####With Maven
 1. Clone the project:<br>
- ```
- $ git clone https://github.com/negedzuregal/BitcoinAuthWallet.git
- ```
+```
+$ git clone https://github.com/negedzuregal/BitcoinAuthWallet.git
+```
 2. 
- ```
- $ cd BitcoinAuthWallet
- ```
-3. build: <br>
- ```
+```
+$ cd BitcoinAuthWallet/authenticator-wallet
+```
+3. build wallet: <br>
+```
 $mvn clean package
- ```
+```
 
 #### Protobuf class
-From the Protobuf folder(/src/main/java/authenticator/protobuf):
- ```
+From the Protobuf folder(/src/main/java/org/authenticator/protobuf):
+```
 $ protoc <Proto File>.proto --java_out=../../../ --proto_path=./ --proto_path=<system-include-directory, e.g., OSX is /usr/local/include/>
- ```
+```
 
 For protobuf-install-directory see [this](http://stackoverflow.com/questions/20069295/importing-google-protobuf-descriptor-proto-in-java-protocol-buffers)
 
 #### Importing Into Eclipse 
 1. In Eclipse:
-  ```
-  File -> Import -> existing maven project
-   ``` 
+```
+File -> Import -> existing maven project
+``` 
 3. Run with JVM assertion flag:<br>
 ```
 Run -> Run Configurations -> arguments -> add -ea in VM Arguments
 ```
 
 ## Native Installer
-1. build: <br>
- ```
+1. 
+```
+$ cd  authenticator-wallet
+```
+2. build: <br>
+```
 $mvn clean package
- ```
-2. Set jh  (OSX/ Linux):  
- ```
+```
+3. Set jh  (OSX/ Linux):  
+```
 $ jh=$JAVA_HOME/bin
- ```
+```
 <br>
 Set jh (Windows):  
- ```
+```
 c:\<Path to project> set jh=%JAVA_HOME%/bin
- ```
-3. Build (OSX/ Linux): 
+```
+4. Build (OSX/ Linux): 
 ```
 $ $jh/javafxpackager -deploy -v -native -outdir . -outdir packages -outfile BTCAuthenticator -srcdir target -srcfiles wallettemplate-app.jar -appclass wallettemplate.Main -name "Authenticator Wallet" -title "Authenticator Wallet"
 ```
