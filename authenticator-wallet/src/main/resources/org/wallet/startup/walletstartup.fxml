@@ -13,7 +13,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="wallettemplate.startup.StartupController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.wallet.startup.StartupController">
   <children>
     <ImageView fitHeight="351.9998779296875" fitWidth="351.9998779296875" layoutX="289.0" layoutY="123.0" opacity="0.29" pickOnBounds="true" preserveRatio="true">
       <image>
@@ -411,7 +411,7 @@
             <graphic>
               <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                 <image>
-                  <Image url="@/wallettemplate/minimize.png" />
+                  <Image url="@/org/wallet/minimize.png" />
                 </image>
               </ImageView>
             </graphic>
@@ -420,7 +420,7 @@
             <graphic>
               <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                 <image>
-                  <Image url="@/wallettemplate/close.png" />
+                  <Image url="@/org/wallet/close.png" />
                 </image>
               </ImageView>
             </graphic>

@@ -1250,6 +1250,8 @@ public class StartupController  extends BaseUI{
 		 fileChooser.setInitialFileName(appParams.getAppName() + ".zip");
 		 File file = fileChooser.showOpenDialog(Main.startup);
 		 
+		 if(file == null)
+			 return;
 		 if(FileUtils.ZipHelper.unZip(file.getAbsolutePath(), appParams.getApplicationDataFolderPath()))
 			 finishsetup();
 		 else

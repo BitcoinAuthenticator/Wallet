@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="328.0" xmlns="http://javafx.com/javafx/2.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wallettemplate.startup.AddAccountWindow">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="328.0" xmlns="http://javafx.com/javafx/2.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wallet.startup.AddAccountWindow">
 <children><VBox prefHeight="370.0" prefWidth="328.0">
 <children><VBox alignment="CENTER" prefHeight="44.0" prefWidth="328.0">
 <children><Label text="Create Standard Account">

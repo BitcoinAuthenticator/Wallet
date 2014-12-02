@@ -55,7 +55,7 @@
 				  <graphic>
 				    <ImageView fx:id="ivAuth" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" x="0.0">
 				      <image>
-				        <Image url="@/wallettemplate/close.png" />
+				        <Image url="@/org/wallet/close.png" />
 				      </image>
 				    </ImageView>
 				  </graphic>
