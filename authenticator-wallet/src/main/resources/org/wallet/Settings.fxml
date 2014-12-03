@@ -17,9 +17,10 @@
             <Image url="@apps/btnSettings.png" />
           </image>
         </ImageView>
-        <Button fx:id="btnBackup" layoutX="495.0" layoutY="10.0" mnemonicParsing="false" onAction="#launchBackup" style="-fx-background-color: #b3b1b1;" text="Backup" />
-        <Button fx:id="btnDone" layoutX="721.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #b3b1b1;" text="Save &amp; Close" />
-        <Button fx:id="btnRestore" layoutX="579.0" layoutY="10.0" mnemonicParsing="false" onAction="#restoreSettingsToDefault" style="-fx-background-color: #b3b1b1;" text="Restore Defaults" /><Button fx:id="btnDeleteWallet" layoutX="50.0" layoutY="10.0" mnemonicParsing="false" onAction="#deleteWallet" style="-fx-background-color: #eb0303;" text="Delete Wallet" textFill="#f5f5f5" />
+        <Button fx:id="btnBackup" layoutX="431.0" layoutY="10.0" mnemonicParsing="false" onAction="#launchBackup" style="-fx-background-color: #b3b1b1;" text="Backup" />
+        <Button fx:id="btnSave" disable="true" layoutX="682.0" layoutY="10.0" mnemonicParsing="false" onAction="#save" style="-fx-background-color: #b3b1b1;" text="Save" />
+        <Button fx:id="btnRestore" layoutX="555.0" layoutY="10.0" mnemonicParsing="false" onAction="#restoreSettingsToDefault" style="-fx-background-color: #b3b1b1;" text="Restore Defaults" /><Button fx:id="btnDeleteWallet" layoutX="50.0" layoutY="10.0" mnemonicParsing="false" onAction="#deleteWallet" style="-fx-background-color: #eb0303;" text="Delete Wallet" textFill="#f5f5f5" />
+            <Button fx:id="btnClose" layoutX="784.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" style="-fx-background-color: #b3b1b1;" text="Close" />
       </children>
 <padding>
 <Insets right="10.0" top="10.0" />

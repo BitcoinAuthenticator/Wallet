@@ -105,7 +105,7 @@ public class SettingsController  extends BaseUI{
 	@FXML private Label lblAppVersion;
 	
 	@FXML private AnchorPane SettingsApp;
-	@FXML private Button btnDone;
+	@FXML private Button btnSave;
 	@FXML private Button btnRestore;
 	@FXML private Button btnBackup;
 	@FXML private Button btnShowSeed;
@@ -189,8 +189,10 @@ public class SettingsController  extends BaseUI{
     	cbCurrency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
   	      @Override
   	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-  	    	if((Integer) number2 > 0)
+  	    	if((Integer) number2 > 0) {
     			strCurrency = cbCurrency.getItems().get((Integer) number2).toString();
+    			setSaveButtonDisabled(false);
+  	    	}
   	      }
   	    });
     	
@@ -214,6 +216,8 @@ public class SettingsController  extends BaseUI{
 				    	String strFee = TextUtils.coinAmountTextDisplay(c, unit);
 				    	txFee.clear();
 				    	txFee.setPromptText(strFee);
+				    	
+				    	setSaveButtonDisabled(false);
 					}
     			});
     	
@@ -231,6 +235,8 @@ public class SettingsController  extends BaseUI{
     	    			unit = BitcoinUnit.Microbits;
     	    	  	
     	    	  	txFee.setPromptText("Fee: " + TextUtils.coinAmountTextDisplay(c, unit) + " " + TextUtils.getAbbreviatedUnit(unit));
+    	    	  	
+    	    	  	setSaveButtonDisabled(false);
     	      }
     	    });
     	cbDecimal.setValue(String.valueOf(intDecimal));
@@ -238,6 +244,8 @@ public class SettingsController  extends BaseUI{
     	      @Override
     	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
     	    		intDecimal = Integer.parseInt(cbDecimal.getItems().get((Integer) number2).toString());
+    	      
+    	    		setSaveButtonDisabled(false);
     	      }
     	    });
     	
@@ -253,6 +261,8 @@ public class SettingsController  extends BaseUI{
 				 else {
 					 useTor = false;
 				 }
+				 
+				 setSaveButtonDisabled(false);
 			 }
 		 });
     	ckLocalHost.setSelected(localHost);
@@ -271,6 +281,8 @@ public class SettingsController  extends BaseUI{
 					 ckTor.setDisable(false);
 					 ckTrustedPeer.setDisable(false);
 				 }
+				 
+				 setSaveButtonDisabled(false);
 			 }
 		 });
     	ckPortForwarding.setSelected(portForwarding);
@@ -279,6 +291,7 @@ public class SettingsController  extends BaseUI{
 					 Boolean old_val, Boolean new_val) {
 					 portForwarding = ckPortForwarding.isSelected();
 					 
+					 setSaveButtonDisabled(false);
 			 }
 		 });
     	
@@ -304,6 +317,8 @@ public class SettingsController  extends BaseUI{
     	slBloom.valueProperty().addListener((observable, oldValue, newValue) -> {
     		falsePositiveRate = ((double)newValue / 100000);
     		lblBloomFilterRate.setText(String.format( "%.5f", falsePositiveRate ));
+    		
+    		setSaveButtonDisabled(false);
     	});
     	
     	
@@ -326,21 +341,23 @@ public class SettingsController  extends BaseUI{
 					txPeerIP.setDisable(true);
 					ckLocalHost.setDisable(false);
 				 }
+				 
+				 setSaveButtonDisabled(false);
 			 }
 		 });
-    	btnDone.setOnMousePressed(new EventHandler<MouseEvent>(){
+    	btnSave.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnDone.setStyle("-fx-background-color: #d7d4d4;");
+            	btnSave.setStyle("-fx-background-color: #d7d4d4;");
             }
         });
     	
     	
     	
-        btnDone.setOnMouseReleased(new EventHandler<MouseEvent>(){
+    	btnSave.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
-            	btnDone.setStyle("-fx-background-color: #b3b1b1;");
+            	btnSave.setStyle("-fx-background-color: #b3b1b1;");
             }
         });
         btnRestore.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -409,9 +426,17 @@ public class SettingsController  extends BaseUI{
     	Main.stage.setX(event.getScreenX() - xOffset);
     	Main.stage.setY(event.getScreenY() - yOffset);
     }
+    
+    private void setSaveButtonDisabled(boolean value) {
+    	this.btnSave.setDisable(value);
+    }
 
-	public void exit(ActionEvent event) throws CannotWriteToConfigurationFileException {
-		overlayUi.done();
+    public void exit(ActionEvent event) {
+    	overlayUi.done();
+    }
+    
+	public void save(ActionEvent event) throws CannotWriteToConfigurationFileException {
+		setSaveButtonDisabled(true);
 		
 		//String strV = (String)cbBitcoinUnit.getSelectionModel().getSelectedItem();
 		EnumValueDescriptor desc = BitcoinUnit
