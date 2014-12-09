@@ -41,7 +41,7 @@
                             </filters>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>wallettemplate.Main</mainClass>
+                                    <mainClass>org.wallet.Main</mainClass>
                                 </transformer>
                             </transformers>
                             <outputFile>target/wallettemplate-app.jar</outputFile>

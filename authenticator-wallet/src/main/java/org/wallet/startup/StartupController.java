@@ -541,8 +541,16 @@ public class StartupController  extends BaseUI{
 	 }
 
 	 @FXML protected void drag2(MouseEvent event) {
-		 Main.startup.setX(event.getScreenX() - xOffset);
-		 Main.startup.setY(event.getScreenY() - yOffset);
+		 if(Main.startup != null) {
+			 Main.startup.setX(event.getScreenX() - xOffset);
+			 Main.startup.setY(event.getScreenY() - yOffset);	
+		 }
+
+		 if(SettingsController.backupPane != null) {
+			 SettingsController.backupPane.setX(event.getScreenX() - xOffset);
+			 SettingsController.backupPane.setY(event.getScreenY() - yOffset);
+		 }
+		 
 	 }
 	 
 	 @FXML protected void restoreFromSeed(ActionEvent event) {
@@ -884,6 +892,9 @@ public class StartupController  extends BaseUI{
 		 fileChooser.setInitialFileName(appParams.getAppName() + ".zip");
 		 File destination = fileChooser.showSaveDialog(Main.startup);
 		 File walletFolder = new File(appParams.getApplicationDataFolderAbsolutePath());
+		 if(destination == null)
+			 return;
+		 
 		 if(!walletFolder.isDirectory() || !walletFolder.exists()) {
 			 Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "Could not load wallet data directory"));
 			 return;

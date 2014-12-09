@@ -13,6 +13,7 @@ import org.authenticator.Authenticator;
 import org.authenticator.BAApplicationParameters;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
+import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
@@ -69,7 +70,7 @@ public class CoinsReceivedNotificationSenderTest {
 
 	@Test
 	@Ignore
-	public void sendTest() {
+	public void sendTest() throws IOException {
 		WalletOperation mocked = Mockito.mock(WalletOperation.class);
 		{
 			Mockito.when(mocked.getNetworkParams()).thenReturn(NetworkParameters.testNet());
@@ -98,7 +99,7 @@ public class CoinsReceivedNotificationSenderTest {
 					ds.dispachMessage(ATGCMMessageType.CoinsReceived, 
 							deviceSentTo(getMockedPairedAuthenticator()), 
 							new String[]{ "Coins Received: " + Coin.valueOf(10000).toFriendlyString() })).thenReturn("");
-		} catch (JSONException | IOException e) {
+		} catch (GCMSendFailedException e) {
 			e.printStackTrace();
 			assertTrue(false);
 		}

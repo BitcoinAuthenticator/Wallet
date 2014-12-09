@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.xml.sax.SAXException;
-
 import org.authenticator.Authenticator;
 import org.authenticator.GCM.GCMSender;
+import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.network.UpNp;
 import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 
@@ -32,7 +32,7 @@ public class Dispacher {
 		inStream = in;
 	}
 	
-	public String dispachMessage(ATGCMMessageType msgType, Device device, String ... args) throws JSONException, IOException
+	public String dispachMessage(ATGCMMessageType msgType, Device device, String ... args) throws GCMSendFailedException
 	{
 		switch (msgType){
 		/**
@@ -56,14 +56,11 @@ public class Dispacher {
 					devicesList.add(new String(device.gcmRegId));
 					GCMSender sender = new GCMSender();
 					sender.sender(devicesList,msgGCM);
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if(msgGCM != null)
 					return msgGCM.getString("RequestID");
-				return null;
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new GCMSendFailedException("Could not send GCM notification");
+				}					
 			}
 			else
 				;//TODO
@@ -87,9 +84,11 @@ public class Dispacher {
 					devicesList.add(new String(device.gcmRegId));
 					GCMSender sender = new GCMSender();
 					sender.sender(devicesList,msgGCM);
-					
-				} catch (Exception e) { e.printStackTrace(); }
-				return null;
+					return null;
+				} catch (Exception e) { 
+					e.printStackTrace(); 
+					throw new GCMSendFailedException("Could not send GCM notification");
+				}
 			}
 			else
 				;//TODO
@@ -110,11 +109,12 @@ public class Dispacher {
 						devicesList.add(new String(device.gcmRegId));
 						GCMSender sender = new GCMSender();
 						sender.sender(devicesList,msgGCM);
-						
+						return null;
 					} catch (Exception e) {
 						e.printStackTrace();
+						throw new GCMSendFailedException("Could not send GCM notification");
 					}
-					return null;
+					
 				}
 				else
 					;

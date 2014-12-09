@@ -229,6 +229,7 @@ public class OperationsFactory extends BASE{
 									txLabel,
 									netInfo.EXTERNAL_IP,
 									netInfo.INTERNAL_IP);
+							
 							PendingRequest pr = SignProtocol.generatePendingRequest(tx, 
 									cypherBytes, 
 									pairingID, 

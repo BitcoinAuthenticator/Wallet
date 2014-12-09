@@ -11,9 +11,9 @@ import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.script.Script;
 import org.json.JSONException;
 import org.spongycastle.util.encoders.Hex;
-
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
+import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
@@ -73,7 +73,7 @@ public class CoinsReceivedNotificationSender {
 						System.out.println("Sending a Coins Received Notification");
 						disp.dispachMessage(ATGCMMessageType.CoinsReceived, d, new String[]{ "Coins Received: " + receivedSum.toFriendlyString() });	
 					} 
-					catch (AccountWasNotFoundException | JSONException | IOException e1) {
+					catch (AccountWasNotFoundException | GCMSendFailedException e1) {
 						e1.printStackTrace();
 					}
 				}

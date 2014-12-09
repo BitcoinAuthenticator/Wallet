@@ -276,7 +276,7 @@ public class AccountsController  extends BaseUI{
 	@SuppressWarnings("unused")
 	private Stage loadPairingFXML(Stage s, ArrayList<Object> param) {    	
 		s = new Stage();
-		URL url = Main.class.getResource("/wallettemplate/pairing/BAApp.fxml");
+		URL url = Main.class.getResource("/org/wallet/pairing/BAApp.fxml");
 		int width = 850;
 		int height = 484;
 		try {

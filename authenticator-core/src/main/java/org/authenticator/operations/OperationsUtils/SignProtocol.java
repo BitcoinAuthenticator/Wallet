@@ -18,10 +18,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONException;
 import org.spongycastle.util.encoders.Hex;
-
 import org.authenticator.Authenticator;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
+import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.walletCore.exceptions.UnableToCompleteTxSigningException;
@@ -33,7 +33,6 @@ import org.authenticator.protobuf.ProtoConfig.ATOperationType;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 import org.authenticator.walletCore.WalletOperation;
-
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
@@ -166,14 +165,13 @@ public class SignProtocol {
 	 * @param pairingID
 	 * @param txMessage
 	 * @return
-	 * @throws JSONException
-	 * @throws IOException
+	 * @throws GCMSendFailedException 
 	 */
 	static public String sendGCM(WalletOperation wallet,
 			String pairingID,
 			@Nullable String txMessage,
 			String extIP,
-			String intIP) throws JSONException, IOException{
+			String intIP) throws GCMSendFailedException{
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
