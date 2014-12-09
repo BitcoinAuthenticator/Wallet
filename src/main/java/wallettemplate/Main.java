@@ -74,18 +74,23 @@ import wallettemplate.utils.dialogs.BADialog.BADialogResponseListner;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
@@ -107,6 +112,7 @@ public class Main extends BAApplication {
     public static BAApplicationParameters returnedParamsFromSetup;
     public static File destination;
     public static File walletFolder;
+    Properties config;
     
 	 /**
 	  * In order to make wallet encryption and decryption smoother, we keep
@@ -123,6 +129,16 @@ public class Main extends BAApplication {
 
     @SuppressWarnings("restriction")
 	private void init(Stage mainWindow) {
+    	String os = System.getProperty("os.name").toLowerCase();
+    	if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
+    		File source = new File("/etc/hosts");
+            File target = new File(ApplicationParams.getApplicationDataFolderAbsolutePath() + "hosts");
+            if(source.exists()){
+            	try {Files.copy(source.toPath(), target.toPath());} 
+            	catch (IOException e) {e.printStackTrace();}
+            	source.delete();
+            }
+	    }
     	try {
     		// Load the GUI. The Controller class will be automagically created and wired up.
             mainWindow.initStyle(StageStyle.UNDECORATED);
@@ -274,6 +290,16 @@ public class Main extends BAApplication {
 			        }
 			  }
 		});
+        
+        String os = System.getProperty("os.name").toLowerCase();
+    	if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
+    		File target = new File("/etc/hosts");
+            File source = new File(ApplicationParams.getApplicationDataFolderAbsolutePath() + "hosts");
+            if(source.exists()){
+            	try {Files.copy(source.toPath(), target.toPath());} 
+            	catch (IOException e) {e.printStackTrace();}
+            }
+	    }
     	
 		bitcoin.stopAsync();
 		
@@ -463,6 +489,7 @@ public class Main extends BAApplication {
     }
 
     public static void main(String[] args) throws IOException, WrongOperatingSystemException {
+    	
     	/*
     	 * We create a BAApplicationParameters instance to get the app data folder
     	 */
@@ -474,11 +501,6 @@ public class Main extends BAApplication {
         
         // re-enter at realMain, but possibly running a newer version of the software i.e. after this point the
         // rest of this code may be ignored.
-        String os = System.getProperty("os.name").toLowerCase();
-	    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
-	    	realMain(args);
-	    	return;
-	    }
         UpdateFX.bootstrap(Main.class, AppDirectory.dir(), args);
     }
 
@@ -488,17 +510,7 @@ public class Main extends BAApplication {
     
 	@Override
     public void start(Stage mainWindow) throws IOException, WrongOperatingSystemException {
-		//###########################################################################
-		//##
-		//##	Temporary disabling of remote updating for linux
-		//##
-		//###########################################################################
-		String os = System.getProperty("os.name").toLowerCase();
-	    if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
-	    	realStart(mainWindow);
-	    	return;
-	    }
-		
+			
     	/**
     	 * Entry point for the remote update UI.
     	 */
