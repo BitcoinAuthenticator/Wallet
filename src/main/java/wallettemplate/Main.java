@@ -112,7 +112,7 @@ public class Main extends BAApplication {
     public static BAApplicationParameters returnedParamsFromSetup;
     public static File destination;
     public static File walletFolder;
-    Properties config;
+    static Properties config;
     
 	 /**
 	  * In order to make wallet encryption and decryption smoother, we keep
@@ -175,6 +175,24 @@ public class Main extends BAApplication {
     		e.printStackTrace();
     		throw new CouldNotIinitializeWalletException("Could Not initialize wallet"); 
     	}
+    }
+    
+    public static String[] loadConfigFile() {
+        //Load configuration file
+        String filename = "wallet.cfg";
+        config = new Properties();
+        try {config.load(new FileInputStream(filename));} 
+        catch (FileNotFoundException ex) {return null;} 
+        catch (IOException ex) {return null;}
+        Enumeration en = config.keys();
+        int i=0;
+        String[] args = new String[config.size()];
+        while (en.hasMoreElements()) {
+        	String key = (String) en.nextElement();
+        	args[i]=(String) (key+"="+config.get(key));
+            i++;
+        }
+        return args;
     }
     
     @SuppressWarnings("restriction")
@@ -489,7 +507,7 @@ public class Main extends BAApplication {
     }
 
     public static void main(String[] args) throws IOException, WrongOperatingSystemException {
-    	
+   	
     	/*
     	 * We create a BAApplicationParameters instance to get the app data folder
     	 */
@@ -505,7 +523,9 @@ public class Main extends BAApplication {
     }
 
 	public static void realMain(String[] args) {
-        launch(args);
+    	String[] argsfromfile = loadConfigFile();
+    	if (argsfromfile != null){launch(argsfromfile);}
+    	else {launch(args);}
     }
     
 	@Override
