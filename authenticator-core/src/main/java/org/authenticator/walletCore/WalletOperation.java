@@ -57,7 +57,6 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.util.encoders.Hex;
-
 import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.Utils.OneName.exceptions.CannotSetOneNameProfileException;
 import org.authenticator.db.settingsDB;
@@ -77,7 +76,6 @@ import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import org.authenticator.protobuf.ProtoSettings.ConfigSettings;
 import org.authenticator.protobuf.ProtoSettings.Languages;
-
 import org.bitcoinj.core.AbstractWalletEventListener;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
@@ -1011,6 +1009,16 @@ public class WalletOperation extends BASE{
 	//		 Pairing handling
 	//
 	//#####################################
+	public void updatePairingGCMRegistrationID(String pairingID, String newGCMRegID) throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.updatePairingGCMRegistrationID(pairingID, newGCMRegID);
+			LOG.info("Updated GCM for pairing: " + pairingID);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
 	
 	public PairedAuthenticator getPairingObjectForAccountIndex(int accIdx){
 		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
@@ -1190,6 +1198,7 @@ public class WalletOperation extends BASE{
 		}
 		PairedAuthenticator ret = writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
 		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, accountID);
+		LOG.info("Created new pairing authenticator object: " + ret.toString());
 		return ret;
 	}
 	
@@ -1461,6 +1470,7 @@ public class WalletOperation extends BASE{
 				Authenticator.fireOnPendingRequestUpdate(req, PendingRequestUpdateType.RequestDeleted);
 			}
 			catch(Exception e) {
+				e.printStackTrace();
 				throw new CannotRemovePendingRequestException(e.getMessage());
 			}
 		}

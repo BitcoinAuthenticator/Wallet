@@ -149,11 +149,13 @@
             <artifactId>fontawesomefx</artifactId>
             <version>8.0.8</version>
         </dependency>
+        <!-- GCM Sender -->
         <dependency>
             <groupId>com.google.android.gcm</groupId>
             <artifactId>gcm-server</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <!-- Async HTTP -->
         <dependency>
             <groupId>com.ning</groupId>
             <artifactId>async-http-client</artifactId>

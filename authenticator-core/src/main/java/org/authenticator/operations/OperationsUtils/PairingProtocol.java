@@ -142,10 +142,6 @@ public class PairingProtocol {
 	  in.read(cipherKeyBytes);
 	  String payload = decipherDataFromAuthenticator(cipherKeyBytes, statusListener, sharedsecret);
     
-	  if(isRepairingAccount) {
-		  postUIStatusUpdate(statusListener, PairingStage.FINISHED, null);
-		  return;
-	  }
 	  
 	  // Verify HMAC
 	  JSONObject jsonObject = parseAndVerifyPayload(payload, sharedsecret, statusListener);
@@ -156,16 +152,25 @@ public class PairingProtocol {
 		  String chaincode = (String) jsonObject.get("chaincode");
 		  String pairingID = Hex.toHexString(authWalletIndex);
 		  String GCM = (String) jsonObject.get("gcmID");
-		  //Save to file
-		  PairedAuthenticator  obj = wallet.generatePairing(mPubKey, 
-															  chaincode, 
-															  key, 
-															  GCM, 
-															  pairingID, 
-															  argPairingName, 
-															  argAccountID,
-															  NetworkType.fromIndex(argNetworkType),
-															  walletPW);
+		  
+		  if(isRepairingAccount) {
+			  wallet.updatePairingGCMRegistrationID(pairingID, GCM);
+			  
+		  }
+		  else {
+			//Save to file
+			  PairedAuthenticator  obj = wallet.generatePairing(mPubKey, 
+																  chaincode, 
+																  key, 
+																  GCM, 
+																  pairingID, 
+																  argPairingName, 
+																  argAccountID,
+																  NetworkType.fromIndex(argNetworkType),
+																  walletPW);
+			  statusListener.pairingData(obj);
+		  }
+		  
 		  
 		  System.out.println("Pairing Details:" +
 		  			 " Master Public Key: " + mPubKey + "\n" +
@@ -173,7 +178,7 @@ public class PairingProtocol {
 		  			 "gcmRegId: " +  GCM + "\n" + 
 		  			 "pairing ID: " + pairingID);		 
 		  postUIStatusUpdate(statusListener, PairingStage.FINISHED, null);
-		  statusListener.pairingData(obj);
+		  
 	  }
 	  else {
 		  System.out.println("Message authentication code is invalid");

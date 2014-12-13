@@ -87,7 +87,7 @@ public class Dispacher {
 					return null;
 				} catch (Exception e) { 
 					e.printStackTrace(); 
-					throw new GCMSendFailedException("Could not send GCM notification");
+					throw new GCMSendFailedException("Could not send GCM notification\n" + e.getMessage());
 				}
 			}
 			else

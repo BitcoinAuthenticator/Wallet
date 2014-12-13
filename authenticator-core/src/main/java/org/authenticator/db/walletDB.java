@@ -12,11 +12,11 @@ import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
 
 import org.json.simple.parser.ParseException;
-
 import org.authenticator.Authenticator;
 import org.authenticator.Utils.KeyUtils;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.db.exceptions.CouldNotOpenConfigFileException;
+import org.authenticator.db.exceptions.PairingObjectWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
@@ -28,12 +28,12 @@ import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet;
 import org.authenticator.protobuf.ProtoSettings.ConfigSettings;
-
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.wallet.KeyChain;
+
 import com.google.protobuf.ByteString;
 
 public class walletDB extends dbBase{
@@ -151,6 +151,27 @@ public class walletDB extends dbBase{
  		return newPair.build();
  	}
 
+	public void updatePairingGCMRegistrationID(String pairingID, String newGCMRegID) throws FileNotFoundException, IOException, PairingObjectWasNotFoundException {
+		List<PairedAuthenticator> all  = getAllPairingObjectArray();
+		boolean found = false;
+		for(PairedAuthenticator po: all) {
+			if(po.getPairingID().equals(pairingID)) {
+				removePairingObject(pairingID);
+				
+				PairedAuthenticator.Builder b = po.toBuilder();
+				b.setGCM(newGCMRegID);
+				AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		 		auth.getConfigAuthenticatorWalletBuilder().addPairedWallets(b.build());
+		 		writeConfigFile(auth);
+		 		
+		 		found = true;
+		 		
+				break;
+			}
+		}
+		if(found == false)
+			throw new PairingObjectWasNotFoundException("Could not find pairing id: " + pairingID);
+	}
 
 	public void removePairingObject(String pairingID) throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
