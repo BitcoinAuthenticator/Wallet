@@ -47,7 +47,7 @@ public class CoinsReceivedNotificationSenderTest {
 	public void checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoinsTest() {
 		// received zero --- sent zero
 		WalletOperation mocked = Mockito.mock(WalletOperation.class);
-		Transaction tx = null;
+		Transaction tx = Mockito.mock(Transaction.class);
 		Mockito.when(mocked.getTxValueSentToMe(tx)).thenReturn(Coin.ZERO);
 		Mockito.when(mocked.getTxValueSentFromMe(tx)).thenReturn(Coin.ZERO);
 		assertFalse(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(mocked, tx));
@@ -66,6 +66,13 @@ public class CoinsReceivedNotificationSenderTest {
 		Mockito.when(mocked.getTxValueSentToMe(tx)).thenReturn(Coin.ZERO);
 		Mockito.when(mocked.getTxValueSentFromMe(tx)).thenReturn(Coin.valueOf(10000));
 		assertFalse(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(mocked, tx));
+
+		// transaction null
+		assertFalse(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(mocked, null));
+		// wallet operation null
+		assertFalse(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(null, tx));
+		// both null
+		assertFalse(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(null, null));
 	}
 
 	@Test
