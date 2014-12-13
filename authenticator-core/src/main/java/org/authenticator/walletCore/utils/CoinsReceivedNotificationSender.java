@@ -28,6 +28,11 @@ public class CoinsReceivedNotificationSender {
 	 * check if a transaction received coins that are not change, if so, return true<br>
 	 */
 	static public boolean checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(WalletOperation wo, Transaction tx) {
+		if(tx == null)
+			return false;
+		if(wo == null)
+			return false;
+		
 		Coin enter = wo.getTxValueSentToMe(tx);
 		Coin exit = wo.getTxValueSentFromMe(tx);
 		// return true only if we receive coins but dont send any. The logic is, if the Tx sends coins from the wallet,
