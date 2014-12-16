@@ -561,7 +561,12 @@ public class StartupController  extends BaseUI{
 	 }
 	 
 	 @FXML protected void newWallet(ActionEvent event) throws IOException {
-		 
+		 wallet = null;
+		 walletSeed = null;
+		 if(auth != null) {
+			 auth.disposeOfAuthenticator();
+			 auth = null;
+		 }
 		 createWallet(null);
 		 createAuthenticatorObject();
 		 
@@ -570,7 +575,8 @@ public class StartupController  extends BaseUI{
 		 // update params in main
 		 Main.returnedParamsFromSetup = appParams;
 		 
-		 for (String word : walletSeed.getMnemonicCode()){mnemonic = mnemonic + word + " ";}
+		 mnemonic = "";
+		 for (String word : walletSeed.getMnemonicCode()) { mnemonic = mnemonic + word + " "; }
 		 lblSeed.setText(mnemonic);
 		 
 		 Animation ani = GuiUtils.fadeOut(MainPane);
@@ -1481,7 +1487,9 @@ public class StartupController  extends BaseUI{
 	 private void createWallet(@Nullable DeterministicSeed seed) throws IOException{
 		 String filePath = appParams.getApplicationDataFolderAbsolutePath() + appParams.getAppName() + ".wallet";
 		 File f = new File(filePath);
-		 assert(f.exists() == false);
+		 if(f.exists()) {
+			 f.delete();
+		 }
 		 if(seed == null){
 			//Generate a new Seed
 			 SecureRandom secureRandom = null;
