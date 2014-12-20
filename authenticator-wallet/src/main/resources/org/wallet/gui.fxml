@@ -460,6 +460,18 @@
                             </ImageView>
                           </graphic>
                         </Button>
+                        <!--
+
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="My Bitcoins" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/btnMyBitcoins.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
                       </children>
                       <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="313.0" minWidth="10.0" prefWidth="150.0" />
