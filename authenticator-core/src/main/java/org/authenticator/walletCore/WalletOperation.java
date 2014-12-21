@@ -1126,9 +1126,11 @@ public class WalletOperation extends BASE{
 		for(PairedAuthenticator o:all)
 		{
 			if(o.getPairingID().equals(pairID)) {
-				if(!o.getIsEncrypted())
+				if(!o.getIsEncrypted()) {
 					return o.getAesKey();
+				}
 				else {
+					LOG.info("Pairing " + pairID + " AES key is encrypted. Returning decrypted key");
 					int accountIdx = this.getAccountIndexForPairing(pairID);
 					String seed = Hex.toHexString(this.getWalletSeedBytes(walletPW));
 					return Hex.toHexString(CryptoUtils.authenticatorAESDecryption(o.getAesKey(),
