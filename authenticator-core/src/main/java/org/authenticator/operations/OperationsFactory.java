@@ -92,16 +92,17 @@ public class OperationsFactory extends BASE{
 	}
 
 	/**
-	 * An operation for pairing the wallet with an Authenticator app.<br> 
-	 * 
+	 * An operation for pairing the wallet with an Authenticator app.<br>
+	 *
 	 * @param wallet
 	 * @param pairingName
 	 * @param accountID
+	 * @param secretKey
 	 * @param networkType
-	 * @param timeout - for the operation, in miliseconds (0 for no timeout)
-	 * @param animation
-	 * @param animationAfterPairing
+	 * @param timeout
+	 * @param isRepairingAccount
 	 * @param statusListener
+	 * @param walletPW
 	 * @return
 	 */
 	static public BAOperation PAIRING_OPERATION(WalletOperation wallet,
@@ -228,7 +229,8 @@ public class OperationsFactory extends BASE{
 									pairingID,
 									txLabel,
 									netInfo.EXTERNAL_IP,
-									netInfo.INTERNAL_IP);
+									netInfo.INTERNAL_IP,
+									WALLET_PW);
 							
 							PendingRequest pr = SignProtocol.generatePendingRequest(tx, 
 									cypherBytes, 
@@ -241,7 +243,7 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));							
+							SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID, WALLET_PW));
 							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
 							
 							//Break apart the signature array sent over from the authenticator

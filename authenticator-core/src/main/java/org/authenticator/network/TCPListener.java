@@ -296,7 +296,7 @@ public class TCPListener extends BASE{
 							}
 							//
 							if(pendingReq == null){
-								SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID)), "AES");
+								SecretKey secretkey = new SecretKeySpec(Hex.decode(wallet.getAESKey(pairingID, dataBinder.getWalletPassword())), "AES");
 								CannotProcessRequestPayload p = new CannotProcessRequestPayload("Cannot find pending request\nPlease resend operation",
 										secretkey);
 								outStream.writeInt(p.getPayloadSize());

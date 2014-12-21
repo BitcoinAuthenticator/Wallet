@@ -167,6 +167,7 @@ public class PairingProtocol {
 																  argPairingName, 
 																  argAccountID,
 																  NetworkType.fromIndex(argNetworkType),
+					  											  true,
 																  walletPW);
 			  statusListener.pairingData(obj);
 		  }
@@ -186,17 +187,15 @@ public class PairingProtocol {
 	  }
 
   }
-  
-  /**
-   * 
-   * @param qrImage
-   * @param ss
-   * @param timeout - in miliseconds
-   * @param listener
-   * @param displayQRAnimation
-   * @param animationAfterPairing
-   * @return
-   */
+
+	/**
+	 *
+	 * @param qrImage
+	 * @param ss
+	 * @param timeout
+	 * @param listener
+	 * @return
+	 */
   public Socket dispalyQRAnListenForCommunication(byte[] qrImage,
 		  ServerSocket ss, 
 		  int timeout,

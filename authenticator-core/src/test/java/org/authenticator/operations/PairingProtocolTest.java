@@ -36,7 +36,7 @@ import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.wallet.DeterministicSeed;
 
-public class PairingTest {
+public class PairingProtocolTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void decipherAndParsePayloadTest() throws NoSuchAlgorithmException, InvalidKeyException, IOException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, ParseException {

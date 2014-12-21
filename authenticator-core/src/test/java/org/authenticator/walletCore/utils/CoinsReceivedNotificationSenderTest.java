@@ -386,6 +386,8 @@ public class CoinsReceivedNotificationSenderTest {
 			newPair.setTestnet(false);
 			newPair.setKeysN(0);
 			newPair.setWalletAccountIndex(1);
+			newPair.setIsEncrypted(false);
+			newPair.setKeySalt(ByteString.copyFrom(new byte[] {}));
 		return newPair.build();
 	}
 	

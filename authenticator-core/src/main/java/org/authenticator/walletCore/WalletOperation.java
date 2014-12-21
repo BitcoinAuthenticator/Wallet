@@ -6,6 +6,7 @@ import org.authenticator.BASE;
 import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
+import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import org.authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
@@ -35,16 +36,7 @@ import org.authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateT
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -178,10 +170,10 @@ public class WalletOperation extends BASE{
 	
 	private void init(BAApplicationParameters params) {
 		try {
-			String configFileName = params.getApplicationDataFolderAbsolutePath() + params.getAppName() + ".config";
+			String getConfigFileName = params.getApplicationDataFolderAbsolutePath() + params.getAppName() + ".config";
 			AppParams = params;
 			if(configFile == null){
-				configFile = new walletDB(configFileName);
+				configFile = new walletDB(getConfigFileName);
 				/**
 				 * Check to see if a config file exists, if not, initialize
 				 */
@@ -191,11 +183,11 @@ public class WalletOperation extends BASE{
 				}
 			}
 			if(settingsFile == null) {
-				settingsFile = new settingsDB(configFileName);
+				settingsFile = new settingsDB(getConfigFileName);
 			}
 			if(authenticatorWalletHierarchy == null)
 			{
-				//byte[] seed = configFile.getHierarchySeed();
+				//byte[] seed = getConfigFile.getHierarchySeed();
 				authenticatorWalletHierarchy = new BAHierarchy(HierarchyCoinTypes.CoinBitcoin);
 				/**
 				 * Load num of keys generated in every account to get 
@@ -219,6 +211,15 @@ public class WalletOperation extends BASE{
 		}catch(Exception e) {
 			throw new RuntimeException(e.toString());
 		}
+	}
+
+	//#######################################
+	//
+	//		Getters and setters
+	//
+	//#######################################
+	public walletDB getConfigFile() {
+		return configFile;
 	}
 	
 	public BAApplicationParameters getApplicationParams(){
@@ -538,7 +539,7 @@ public class WalletOperation extends BASE{
  	}
  	
  	/**
- 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount ATAccount} object
+ 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.BAAccount BAAccount} object
  	 * 
  	 * @param nt
  	 * @param accoutnIdx
@@ -570,7 +571,7 @@ public class WalletOperation extends BASE{
  	 * @throws IOException
  	 */
  	public void addNewAccountToConfigAndHierarchy(ATAccount b) throws IOException{
- 		configFile.addAccount(b);
+ 		getConfigFile().addAccount(b);
  		LOG.info("Generated new account at index, " + b.getIndex());
  	    authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
  	    LOG.info("Added an account at index, " + b.getIndex() + " to hierarchy");
@@ -829,11 +830,11 @@ public class WalletOperation extends BASE{
 	}
 	
 	public List<ATAccount> getAllAccounts(){
-		return configFile.getAllAccounts();
+		return getConfigFile().getAllAccounts();
 	}
 	
 	public ATAccount getAccount(int index) throws AccountWasNotFoundException{
-		return configFile.getAccount(index);
+		return getConfigFile().getAccount(index);
 	} 
 
 	/**
@@ -847,7 +848,7 @@ public class WalletOperation extends BASE{
 		PairedAuthenticator po =  getPairingObjectForAccountIndex(index);
 		if(po != null)
 			removePairingObject(po.getPairingID());
-		configFile.removeAccount(index);
+		getConfigFile().removeAccount(index);
 		LOG.info("Removed account at index, " + index);
 		Authenticator.fireOnAccountsModified(AccountModificationType.AccountDeleted, index);
 	}
@@ -975,7 +976,7 @@ public class WalletOperation extends BASE{
 	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws CannotWriteToConfigurationFileException {
 		try {
 			if(!isUsedAddress(accountIdx, type, addIndx)){
-				configFile.markAddressAsUsed(accountIdx, addIndx,type);
+				getConfigFile().markAddressAsUsed(accountIdx, addIndx, type);
 				authenticatorWalletHierarchy.markAddressAsUsed(accountIdx, addIndx, type);
 				ATAddress add = getATAddreessFromAccount(accountIdx, type, addIndx);
 				Authenticator.fireOnAddressMarkedAsUsed(add);
@@ -989,12 +990,12 @@ public class WalletOperation extends BASE{
 	}
 	
 	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex) throws AccountWasNotFoundException{
-		return configFile.isUsedAddress(accountIndex, addressType, keyIndex);
+		return getConfigFile().isUsedAddress(accountIndex, addressType, keyIndex);
 	}
 	
 	private void updateAccount(ATAccount acc) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.updateAccount(acc);
+			getConfigFile().updateAccount(acc);
 			LOG.info("Updated accoutn: " + acc.toString());
 			Authenticator.fireOnAccountsModified(AccountModificationType.AccountBeenModified, acc.getIndex());
 		} catch (IOException e) {
@@ -1011,7 +1012,7 @@ public class WalletOperation extends BASE{
 	//#####################################
 	public void updatePairingGCMRegistrationID(String pairingID, String newGCMRegID) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.updatePairingGCMRegistrationID(pairingID, newGCMRegID);
+			getConfigFile().updatePairingGCMRegistrationID(pairingID, newGCMRegID);
 			LOG.info("Updated GCM for pairing: " + pairingID);
 		}
 		catch(Exception e) {
@@ -1049,14 +1050,15 @@ public class WalletOperation extends BASE{
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Returns all addresses from a pairing in a ArrayList of strings
-	 * 
-	 * @param accountIndex
+	 *
+	 * @param PairID
 	 * @param addressesType
-	 * @return ArrayList of strings
-	 * @throws CannotGetAddressException 
+	 * @param limit
+	 * @return
+	 * @throws CannotGetAddressException
 	 */
 	public ArrayList<String> getPairingAddressesArray(String PairID, HierarchyAddressTypes addressesType, int limit) throws CannotGetAddressException{
 		int accIndex = getAccountIndexForPairing(PairID);
@@ -1108,24 +1110,40 @@ public class WalletOperation extends BASE{
 		}
 		return 0;
 	}
-	
-	/**Pulls the AES key from file and returns it  */
-	public String getAESKey(String pairID) {
+
+	/**
+	 * Returns the decrypted (in case encrypted) AES key
+	 *
+	 * @param pairID
+	 * @param walletPW
+	 * @return
+	 */
+	public String getAESKey(String pairID, @Nullable BAPassword walletPW) throws NoWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
 		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
 			all = getAllPairingObjectArray();
 		} catch (IOException e) { e.printStackTrace(); }
 		for(PairedAuthenticator o:all)
 		{
-			if(o.getPairingID().equals(pairID))
-				return o.getAesKey();
+			if(o.getPairingID().equals(pairID)) {
+				if(!o.getIsEncrypted())
+					return o.getAesKey();
+				else {
+					int accountIdx = this.getAccountIndexForPairing(pairID);
+					String seed = Hex.toHexString(this.getWalletSeedBytes(walletPW));
+					return Hex.toHexString(CryptoUtils.authenticatorAESDecryption(o.getAesKey(),
+							Hex.toHexString(o.getKeySalt().toByteArray()),
+							new Integer(accountIdx).toString(),
+							seed));
+				}
+			}
 		}
 		return "";
 	}
 		
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
 	{
-		return configFile.getAllPairingObjectArray();
+		return getConfigFile().getAllPairingObjectArray();
 	}
 	
 	public PairedAuthenticator getPairingObject(String pairID)
@@ -1158,12 +1176,13 @@ public class WalletOperation extends BASE{
 	 * 
 	 * @param authMpubkey
 	 * @param authhaincode
-	 * @param sharedAES
+	 * @param sharedAES - <b>must be passed not encrypted !</b>
 	 * @param GCM
 	 * @param pairingID
 	 * @param pairName
 	 * @param accID
 	 * @param nt
+	 * @param shouldEncrypt - if true, will encrypt the shared AES key with
 	 * @param walletPW
 	 * @return
 	 * @throws IOException
@@ -1177,7 +1196,8 @@ public class WalletOperation extends BASE{
 			String pairName,
 			@Nullable Integer accID,
 			NetworkType nt,
-			@Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException{
+			boolean shouldEncrypt,
+			@Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException, CryptoUtils.CouldNotEncryptPayload {
 		int accountID ;
 		if( accID == null )
 			accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount, walletPW).getIndex();
@@ -1193,17 +1213,48 @@ public class WalletOperation extends BASE{
 	 				accountID, 
 	 				HierarchyAddressTypes.Internal);
 			
-			ATAccount a = completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount, ext, intr);
+			ATAccount a = completeAccountObject(nt,
+					accountID,
+					pairName,
+					WalletAccountType.AuthenticatorAccount,
+					ext,
+					intr);
 			addNewAccountToConfigAndHierarchy(a);
 		}
-		PairedAuthenticator ret = writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
+
+		byte[] saltBytes = new byte[20];
+		new Random().nextBytes(saltBytes);
+		String salt = Hex.toHexString(saltBytes);
+		if(shouldEncrypt) {
+			byte[] seed = this.getWalletSeedBytes(walletPW);
+			sharedAES = Hex.toHexString(CryptoUtils.authenticatorAESEncryption(sharedAES,
+					salt,
+					new Integer(accountID).toString(),
+					Hex.toHexString(seed)));
+		}
+
+		PairedAuthenticator ret = writePairingData(authMpubkey,
+				authhaincode,
+				sharedAES,
+				GCM,
+				pairingID,
+				accountID,
+				shouldEncrypt,
+				saltBytes);
 		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, accountID);
 		LOG.info("Created new pairing authenticator object: " + ret.toString());
 		return ret;
 	}
 	
-	private PairedAuthenticator writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
-		return configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, accountIndex);
+	private PairedAuthenticator writePairingData(String mpubkey,
+												 String chaincode,
+												 String key,
+												 String GCM,
+												 String pairingID,
+												 int accountIndex,
+												 boolean isEncrypted,
+												 byte[] salt) throws IOException{
+		return getConfigFile().writePairingData(mpubkey, chaincode, key, GCM, pairingID, accountIndex, isEncrypted, salt);
 	}
 
 	/**
@@ -1213,13 +1264,9 @@ public class WalletOperation extends BASE{
 	 * @throws IOException
 	 */
 	private void removePairingObject(String pairingID) throws FileNotFoundException, IOException{
-		configFile.removePairingObject(pairingID);
+		getConfigFile().removePairingObject(pairingID);
 	}
-	
-	/*public void addGeneratedAddressForPairing(String pairID, String addr, int indexWallet, int indexAuth) throws FileNotFoundException, IOException, ParseException{
-		configFile.addGeneratedAddressForPairing(pairID,  addr, indexWallet, indexAuth);
-	}*/
-	
+
 	//#####################################
 	//
 	//		 Balances handling
@@ -1228,7 +1275,7 @@ public class WalletOperation extends BASE{
 	
 	public Coin getConfirmedBalance(int accountIdx) throws CannotReadFromConfigurationFileException{		
 		try {
-			long balance = configFile.getConfirmedBalace(accountIdx);
+			long balance = getConfigFile().getConfirmedBalace(accountIdx);
 			return Coin.valueOf(balance);
 		}
 		catch (Exception e) {
@@ -1290,7 +1337,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws CannotWriteToConfigurationFileException{
 		try {
-			long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
+			long balance = getConfigFile().writeConfirmedBalace(accountIdx, newBalance.longValue());
 			Coin ret = Coin.valueOf(balance);
 			LOG.info("Set " + ret.toFriendlyString() + " in confirmed balance. Account: " + accountIdx);
 			return ret;
@@ -1303,7 +1350,7 @@ public class WalletOperation extends BASE{
 	
 	public Coin getUnConfirmedBalance(int accountIdx) throws CannotReadFromConfigurationFileException{
 		try {
-			long balance = configFile.getUnConfirmedBalace(accountIdx);
+			long balance = getConfigFile().getUnConfirmedBalace(accountIdx);
 			return Coin.valueOf(balance);
 		}
 		catch (Exception e) {
@@ -1365,7 +1412,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws CannotWriteToConfigurationFileException {
 		try {
-			long balance = configFile.writeUnConfirmedBalace(accountIdx, newBalance.longValue());
+			long balance = getConfigFile().writeUnConfirmedBalace(accountIdx, newBalance.longValue());
 			Coin ret = Coin.valueOf(balance);
 			LOG.info("Set " + ret.toFriendlyString() + " in unconfirmed balance. Account: " + accountIdx);
 			return ret;
@@ -1448,7 +1495,7 @@ public class WalletOperation extends BASE{
 	//#####################################
 		
 		public void addPendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
-			configFile.writeNewPendingRequest(req);
+			getConfigFile().writeNewPendingRequest(req);
 			LOG.info("Added pending request: " + req.getRequestID());
 			Authenticator.fireOnPendingRequestUpdate(Arrays.asList(req), PendingRequestUpdateType.RequestAdded);
 		}
@@ -1464,8 +1511,8 @@ public class WalletOperation extends BASE{
 				String a = "";
 				for(PendingRequest pr:req)
 					a = a + pr.getRequestID() + "\n					";
-				
-				configFile.removePendingRequest(req);
+
+				getConfigFile().removePendingRequest(req);
 				LOG.info("Removed pending requests: " + a);
 				Authenticator.fireOnPendingRequestUpdate(req, PendingRequestUpdateType.RequestDeleted);
 			}
@@ -1484,7 +1531,7 @@ public class WalletOperation extends BASE{
 		
 		public List<PendingRequest> getPendingRequests() throws CannotGetPendingRequestsException {
 			try {
-				return configFile.getPendingRequests();
+				return getConfigFile().getPendingRequests();
 			}
 			catch(Exception e) {
 				throw new CannotGetPendingRequestsException(e.getMessage());
@@ -1549,7 +1596,7 @@ public class WalletOperation extends BASE{
 		
 		public ConfigOneNameProfile getOnename(){
 			try {
-				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
+				AuthenticatorConfiguration.ConfigOneNameProfile on = getConfigFile().getOnename();
 				if(on.getOnename().length() == 0)
 					return null;
 				return on;
@@ -1558,13 +1605,13 @@ public class WalletOperation extends BASE{
 		}
 				
 		public void writeOnename(ConfigOneNameProfile one) throws FileNotFoundException, IOException{
-			configFile.writeOnename(one);
+			getConfigFile().writeOnename(one);
 			LOG.info("Set new OneName profile: " + one.toString());
 		}
 		
 		public boolean isOnenameAvatarSet() {
 			try {
-				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
+				AuthenticatorConfiguration.ConfigOneNameProfile on = getConfigFile().getOnename();
 				if(on.getOnename().length() == 0)
 					return false;
 				return true;
@@ -1574,7 +1621,7 @@ public class WalletOperation extends BASE{
 		
 		public boolean deleteOneNameAvatar() throws IOException {
 			if(isOnenameAvatarSet()) {
-				configFile.deleteOneNameAvatar();
+				getConfigFile().deleteOneNameAvatar();
 				LOG.info("Deleted OneName profile");
 				return true;
 			}
@@ -1594,7 +1641,7 @@ public class WalletOperation extends BASE{
 		 */
 		public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() {
 			try {
-				return configFile.getActiveAccount();
+				return getConfigFile().getActiveAccount();
 			} catch (IOException e) { e.printStackTrace(); }
 			return null;
 		}
@@ -1625,8 +1672,7 @@ public class WalletOperation extends BASE{
 		}
 
 		private void writeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc) throws FileNotFoundException, IOException{
-
-			configFile.writeActiveAccount(acc);
+			getConfigFile().writeActiveAccount(acc);
 		}
 		
 	//#####################################
@@ -1844,7 +1890,7 @@ public class WalletOperation extends BASE{
 	
 	public void writeNextSavedTxData(String txid, String toFrom, String description) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.writeNextSavedTxData(txid, toFrom, description);
+			getConfigFile().writeNextSavedTxData(txid, toFrom, description);
 		} catch (IOException e) {
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
@@ -1852,22 +1898,22 @@ public class WalletOperation extends BASE{
 	
 	public void writeSavedTxData(int x, String txid, String toFrom, String description) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.writeSavedTxData(x, txid, toFrom, description);
+			getConfigFile().writeSavedTxData(x, txid, toFrom, description);
 		} catch (IOException e) {
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
 	}
 	
 	public ArrayList<String> getSavedTxidList(){
-		return configFile.getSavedTxidList();
+		return getConfigFile().getSavedTxidList();
 	}
 	
 	public String getSavedDescription (int index) {
-		return configFile.getSavedDescription(index);
+		return getConfigFile().getSavedDescription(index);
 	}
 	
 	public String getSavedToFrom (int index) {
-		return configFile.getSavedToFrom(index);
+		return getConfigFile().getSavedToFrom(index);
 	}
 	
 	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws CannotGetAccountFilteredTransactionsException {
@@ -2135,7 +2181,7 @@ public class WalletOperation extends BASE{
 	
 	public void resotreSettingsToDefault() throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.resotreSettingsToDefault();
+			getConfigFile().resotreSettingsToDefault();
 		} catch (IOException e) {
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}

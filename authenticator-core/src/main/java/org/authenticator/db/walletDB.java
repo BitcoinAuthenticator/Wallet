@@ -132,7 +132,14 @@ public class walletDB extends dbBase{
 	/**This method is used during pairing. It saves the data from the Autheticator to file
 	 * @throws IOException */
 	@SuppressWarnings("unchecked")
-	public PairedAuthenticator writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
+	public PairedAuthenticator writePairingData(String mpubkey,
+												String chaincode,
+												String key,
+												String GCM,
+												String pairingID,
+												int accountIndex,
+												boolean isEncrypted,
+												byte[] salt) throws IOException{
  		// Create new pairing item
  		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
  									newPair.setAesKey(key);
@@ -140,10 +147,11 @@ public class walletDB extends dbBase{
  									newPair.setChainCode(chaincode);
  									newPair.setGCM(GCM);
  									newPair.setPairingID(pairingID);
-									//newPair.setPairingName(pairName);
  									newPair.setTestnet(false);
  									newPair.setKeysN(0);
  									newPair.setWalletAccountIndex(accountIndex);
+									newPair.setIsEncrypted(isEncrypted);
+									newPair.setKeySalt(ByteString.copyFrom(salt));
  
  		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
  		auth.getConfigAuthenticatorWalletBuilder().addPairedWallets(newPair.build());
