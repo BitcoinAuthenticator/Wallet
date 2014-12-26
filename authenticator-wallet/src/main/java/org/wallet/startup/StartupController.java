@@ -9,12 +9,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
@@ -1428,6 +1423,16 @@ public class StartupController  extends BaseUI{
 			}
 			 
 		 });
+
+		 { // set checkpoints
+			 InputStream inCheckpint = null;
+			 if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET)
+				 inCheckpint = Main.class.getResourceAsStream("checkpoints");
+			 else if(appParams.getBitcoinNetworkType() == NetworkType.TEST_NET)
+				 inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
+
+			 restorer.setCheckpoints(inCheckpint);
+		 }
 		 restorer.startAsync();
 	 }
 	 
