@@ -2,7 +2,8 @@ BitcoinAuthenticator - Wallet
 ====================
 
 ###IMPORTANT - This project is under development.
-[![Coverage Status](https://coveralls.io/repos/negedzuregal/BitcoinAuthWallet/badge.png?branch=develop)](https://coveralls.io/r/negedzuregal/BitcoinAuthWallet?branch=develop)
+#####Wallet
+[![Coverage Status](https://coveralls.io/repos/BitcoinAuthenticator/Wallet/badge.png)](https://coveralls.io/r/BitcoinAuthenticator/Wallet)
 
 
 ####What Is This ?
