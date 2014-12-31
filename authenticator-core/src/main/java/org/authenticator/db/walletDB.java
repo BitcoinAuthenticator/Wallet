@@ -38,11 +38,13 @@ import com.google.protobuf.ByteString;
 
 public class walletDB extends dbBase{
 
+	public walletDB() { }
+
 	public walletDB(String filePath) throws IOException{
 		super(filePath);
 	}
 
-	private synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
+	public synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
 		AuthenticatorConfiguration.Builder auth = AuthenticatorConfiguration.newBuilder();
 		try{ auth.mergeDelimitedFrom(new FileInputStream(filePath)); }
 		catch(Exception e)
@@ -53,7 +55,7 @@ public class walletDB extends dbBase{
 		return auth;
 	}
 
-	private synchronized void writeConfigFile(AuthenticatorConfiguration.Builder auth) throws IOException{
+	public synchronized void writeConfigFile(AuthenticatorConfiguration.Builder auth) throws IOException{
 		FileOutputStream output = new FileOutputStream(filePath);  
 		auth.build().writeDelimitedTo(output);          
 		output.close();
@@ -105,15 +107,7 @@ public class walletDB extends dbBase{
 		else
 			;
 		//writeConfigFile(auth);
-		this.updateAccount(b.build());
-	}
-
-	public ArrayList<String> getAddressString(List<ATAddress> cache) throws FileNotFoundException, IOException{
-		ArrayList<String> keypool = new ArrayList<String>();
-		for (ATAddress add : cache){
-			keypool.add(add.getAddressStr());
-		}
-		return keypool;
+		updateAccount(b.build());
 	}
 
 	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex) throws AccountWasNotFoundException{
