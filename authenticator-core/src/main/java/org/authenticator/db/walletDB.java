@@ -106,7 +106,6 @@ public class walletDB extends dbBase{
 			b.addUsedExternalKeys(addIndx);
 		else
 			;
-		//writeConfigFile(auth);
 		updateAccount(b.build());
 	}
 
