@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ProtoConfig.AuthenticatorConfiguration.Builder.class,
@@ -440,5 +441,103 @@ public class WalletDBTest {
 		} catch (Exception  e) {
 			assertTrue(false);
 		}
+	}
+
+	@Test
+	public void getAccountTest() {
+		List<ProtoConfig.ATAccount> all = new ArrayList<ProtoConfig.ATAccount>();
+
+		PowerMockito.mockStatic(ProtoConfig.ATAccount.class);
+		for(int i=0; i < 100; i++) {
+			ProtoConfig.ATAccount mockedAccount = PowerMockito.mock(ProtoConfig.ATAccount.class);
+			Mockito.doReturn(i).when(mockedAccount).getIndex();
+
+			all.add(mockedAccount);
+		}
+
+		// walletDB methods stub
+		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		try {
+			Mockito.doReturn(all).when(mockedWalletdb).getAllAccounts();
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		try {
+			for(int i = 0; i < 1000; i++) {
+				int rand = randInt(0, 99);
+				ProtoConfig.ATAccount result = mockedWalletdb.getAccount(rand);
+				assertTrue(result.getIndex() == rand);
+			}
+
+
+		} catch (AccountWasNotFoundException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+
+	@Test
+	public void removeAccountTest() {
+		List<ProtoConfig.ATAccount> all = new ArrayList<ProtoConfig.ATAccount>();
+
+		PowerMockito.mockStatic(ProtoConfig.ATAccount.class);
+		for(int i=0; i < 100; i++) {
+			ProtoConfig.ATAccount mockedAccount = PowerMockito.mock(ProtoConfig.ATAccount.class);
+			Mockito.doReturn(i).when(mockedAccount).getIndex();
+
+			all.add(mockedAccount);
+		}
+
+		// walletDB methods stub
+		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		try {
+			Mockito.doReturn(all).when(mockedWalletdb).getAllAccounts();
+			Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.anyObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		// test removal
+		for(int i = 0; i< 10; i++) {
+			// test
+			try {
+				mockedWalletdb.removeAccount(i);
+
+				Mockito.verify(mockedAuthConfBuilder, Mockito.atLeastOnce()).clearConfigAccounts();
+
+				ArgumentCaptor<ProtoConfig.ATAccount> arg = ArgumentCaptor.forClass(ProtoConfig.ATAccount.class);
+				Mockito.verify(mockedAuthConfBuilder, Mockito.atLeastOnce()).addConfigAccounts(arg.capture());
+
+				List<ProtoConfig.ATAccount> ret = arg.getAllValues();
+				ret = ret.subList(99*(i), ret.size()); // because ArgumentCaptor catches all calls ever
+				assertTrue(ret.size() == 99);
+				for (ProtoConfig.ATAccount acc: ret) {
+					if(acc.getIndex() == i)
+						assertTrue(false);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public static int randInt(int min, int max) {
+
+		// NOTE: Usually this should be a field rather than a method
+		// variable so that it is not re-seeded every call.
+		Random rand = new Random();
+
+		// nextInt is normally exclusive of the top value,
+		// so add 1 to make it inclusive
+		int randomNum = rand.nextInt((max - min) + 1) + min;
+
+		return randomNum;
 	}
 }

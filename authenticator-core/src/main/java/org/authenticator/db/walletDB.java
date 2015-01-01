@@ -239,7 +239,6 @@ public class walletDB extends dbBase{
 	 * @throws IOException
 	 */
 	public void removeAccount(int index) throws IOException{
-		assert (getAllAccounts().size() > 1);
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<ATAccount> all = getAllAccounts();
 		auth.clearConfigAccounts();
@@ -248,24 +247,6 @@ public class walletDB extends dbBase{
 				auth.addConfigAccounts(acc);
 		writeConfigFile(auth);
 	}
-
-	/*public void bumpByOneAccountsLastIndex(int accountIndex, HierarchyAddressTypes addressType) throws IOException{
-		//AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		ATAccount acc = getAccount(accountIndex);
-		ATAccount.Builder b = ATAccount.newBuilder(acc);
-		if(addressType == HierarchyAddressTypes.External){
-			int last = acc.getLastExternalIndex();
-			//auth.getConfigAccountsBuilder(accountIndex).setLastExternalIndex(last+1);
-			b.setLastExternalIndex(last+1);
-		}
-		else{
-			int last = acc.getLastInternalIndex();
-			//auth.getConfigAccountsBuilder(accountIndex).setLastInternalIndex(last+1);
-			b.setLastInternalIndex(last+1);
-		}		
-		//writeConfigFile(auth);
-		this.updateAccount(b.build());
-	}*/
 
 	public long getConfirmedBalace(int accountIdx) throws AccountWasNotFoundException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
@@ -285,7 +266,7 @@ public class walletDB extends dbBase{
 		ATAccount acc = getAccount(accountIdx);
 		ATAccount.Builder b = ATAccount.newBuilder(acc);
 		b.setConfirmedBalance(newBalance);
-		this.updateAccount(b.build());
+		updateAccount(b.build());
 		return b.build().getConfirmedBalance();
 	}
 
