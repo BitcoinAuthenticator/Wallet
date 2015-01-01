@@ -302,7 +302,6 @@ public class walletDB extends dbBase{
 		writeConfigFile(auth);
 	}
 
-	@SuppressWarnings("static-access")
 	public void removePendingRequest(List<PendingRequest> req) throws FileNotFoundException, IOException {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<PendingRequest> all = getPendingRequests();
@@ -348,20 +347,6 @@ public class walletDB extends dbBase{
 		auth.clearConfigOneNameProfile();
 		writeConfigFile(auth);
 	}
-	
-//	public void writeAccountHierarchyPubKey(int accountIdx, DeterministicKey mpubkey) throws AccountWasNotFoundException, IOException{
-//		ATAccount acc = getAccount(accountIdx);
-//		ATAccount.Builder b = ATAccount.newBuilder(acc);
-//		
-//		byte[] pubkey = mpubkey.getPubKey();
-//		byte[] chaincode = mpubkey.getChainCode();
-//		ATAccountHierarchy.Builder hb = ATAccountHierarchy.newBuilder();
-//		hb.setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
-//		hb.setHierarchyChaincode(ByteString.copyFrom(chaincode));
-//		
-//		b.setAccountHierarchy(hb.build());
-//		updateAccount(b.build());
-//	}
 	
 	public ATAccountAddressHierarchy geAccountHierarchy(int accountIdx, HierarchyAddressTypes type) throws AccountWasNotFoundException {
 		ATAccount acc = getAccount(accountIdx);

@@ -36,7 +36,9 @@ import java.util.Random;
 		ProtoConfig.ATAddress.class,
 		ProtoConfig.ATAddress.Builder.class,
 		ProtoConfig.PairedAuthenticator.Builder.class,
-		ProtoConfig.PairedAuthenticator.class})
+		ProtoConfig.PairedAuthenticator.class,
+		ProtoConfig.PendingRequest.class,
+		ProtoConfig.PendingRequest.Builder.class})
 public class WalletDBTest {
 
 	@Test
@@ -527,6 +529,56 @@ public class WalletDBTest {
 		}
 	}
 
+	@Test
+	public void removePendingRequestTest() {
+		List<ProtoConfig.PendingRequest> all = new ArrayList<ProtoConfig.PendingRequest>();
+		List<ProtoConfig.PendingRequest> forDeletetion = new ArrayList<ProtoConfig.PendingRequest>();
+		PowerMockito.mockStatic(ProtoConfig.PendingRequest.class);
+		for(Integer i=0; i < 100; i++) {
+			ProtoConfig.PendingRequest mockedReq = PowerMockito.mock(ProtoConfig.PendingRequest.class);
+			Mockito.doReturn(i.toString()).when(mockedReq).getRequestID();
+
+			if(i < 10)
+				forDeletetion.add(mockedReq);
+
+			all.add(mockedReq);
+		}
+
+		// walletDB methods stub
+		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		// ConfigAuthenticatorWallet.Builder
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder mockedAuthWalletBuilder =  PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		PowerMockito.when(mockedAuthConfBuilder.getConfigAuthenticatorWalletBuilder()).thenReturn(mockedAuthWalletBuilder);
+		try {
+			Mockito.doReturn(all).when(mockedWalletdb).getPendingRequests();
+			Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.anyObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		// test
+		try {
+			mockedWalletdb.removePendingRequest(forDeletetion);
+
+			Mockito.verify(mockedAuthWalletBuilder, Mockito.atLeastOnce()).clearPendingRequests();
+
+			ArgumentCaptor<ProtoConfig.PendingRequest> arg = ArgumentCaptor.forClass(ProtoConfig.PendingRequest.class);
+			Mockito.verify(mockedAuthWalletBuilder, Mockito.atLeastOnce()).addPendingRequests(arg.capture());
+
+			List<ProtoConfig.PendingRequest> ret = arg.getAllValues();
+			for(ProtoConfig.PendingRequest prReturned: ret)
+				for(ProtoConfig.PendingRequest prForDeletion: forDeletetion)
+					assertFalse(prReturned.getRequestID().equals(prForDeletion.getRequestID()));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static int randInt(int min, int max) {
 
