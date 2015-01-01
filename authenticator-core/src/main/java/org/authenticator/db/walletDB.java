@@ -44,6 +44,10 @@ public class walletDB extends dbBase{
 		super(filePath);
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
 		AuthenticatorConfiguration.Builder auth = AuthenticatorConfiguration.newBuilder();
 		try{ auth.mergeDelimitedFrom(new FileInputStream(filePath)); }
@@ -55,6 +59,11 @@ public class walletDB extends dbBase{
 		return auth;
 	}
 
+	/**
+	 *
+	 * @param auth
+	 * @throws IOException
+	 */
 	public synchronized void writeConfigFile(AuthenticatorConfiguration.Builder auth) throws IOException{
 		FileOutputStream output = new FileOutputStream(filePath);  
 		auth.build().writeDelimitedTo(output);          
@@ -117,6 +126,12 @@ public class walletDB extends dbBase{
 		return acc.getUsedInternalKeysList().contains(keyIndex);
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigAuthenticatorWallet().getPairedWalletsList();

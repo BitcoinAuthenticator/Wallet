@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import com.google.protobuf.ByteString;
 import org.authenticator.GCM.dispacher.MessageBuilder;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
+import org.authenticator.db.exceptions.PairingObjectWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy;
 import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
@@ -12,7 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -29,7 +33,9 @@ import java.util.List;
 		ProtoConfig.ATAccount.class,
 		ProtoConfig.ATAccount.Builder.class,
 		ProtoConfig.ATAddress.class,
-		ProtoConfig.ATAddress.Builder.class})
+		ProtoConfig.ATAddress.Builder.class,
+		ProtoConfig.PairedAuthenticator.Builder.class,
+		ProtoConfig.PairedAuthenticator.class})
 public class WalletDBTest {
 
 	@Test
@@ -273,4 +279,166 @@ public class WalletDBTest {
 		}
 	}
 
+	@Test
+	public void updatePairingGCMRegistrationIDTest() {
+		String searchedPairingID = "2";
+
+		String mpubkey 				= "i am the master pub key ";
+		String chaincode 			= "i am the chaincode ";
+		String key 					= "i am the AES key ";
+		String GCM 					= "i am the GCM ";
+		int accountIndex 			= 1;
+		boolean isEncrypted 		= true;
+		String salt 				= "i am the salt ";
+
+		List<ProtoConfig.PairedAuthenticator> all = new ArrayList<ProtoConfig.PairedAuthenticator>();
+		ProtoConfig.PairedAuthenticator lookedPairingObject = null;
+
+		// mock the new pair builder
+		PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.Builder.class);
+		ProtoConfig.PairedAuthenticator.Builder newPairBuilder = PowerMockito.mock(ProtoConfig.PairedAuthenticator.Builder.class);
+		// create pairing objects
+		for(int i = 1; i< 10; i ++) {
+			PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.class);
+			ProtoConfig.PairedAuthenticator newPair = PowerMockito.mock(ProtoConfig.PairedAuthenticator.class);
+						Mockito.doReturn(key + i).when(newPair).getAesKey();
+						Mockito.doReturn(mpubkey).when(newPair).getMasterPublicKey();
+						Mockito.doReturn(chaincode).when(newPair).getChainCode();
+						Mockito.doReturn(GCM).when(newPair).getGCM();
+						Mockito.doReturn(new Integer(i).toString()).when(newPair).getPairingID();
+						Mockito.doReturn(false).when(newPair).getTestnet();
+						Mockito.doReturn(0).when(newPair).getKeysN();
+						Mockito.doReturn(i).when(newPair).getWalletAccountIndex();
+						Mockito.doReturn(isEncrypted).when(newPair).getIsEncrypted();
+						Mockito.doReturn(ByteString.copyFrom((salt + i).getBytes())).when(newPair).getKeySalt();
+
+			Mockito.doReturn(newPairBuilder).when(newPair).toBuilder();
+
+			if((new Integer(i).toString()).equals(searchedPairingID)) {
+				lookedPairingObject = newPair;
+			}
+
+			all.add(newPair);
+		}
+
+		// walletDB methods stub
+		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		try {
+			Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.anyObject());
+			Mockito.doReturn(all).when(mockedWalletdb).getAllPairingObjectArray();
+			Mockito.doNothing().when(mockedWalletdb).removePairingObject(Mockito.anyObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		// ConfigAuthenticatorWallet.Builder
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder mockedAuthWalletBuilder =  PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		PowerMockito.when(mockedAuthConfBuilder.getConfigAuthenticatorWalletBuilder()).thenReturn(mockedAuthWalletBuilder);
+
+		// test setGCM and removePairingObject are called
+		try {
+			mockedWalletdb.updatePairingGCMRegistrationID(searchedPairingID, "i am the GCM new");
+			Mockito.verify(mockedWalletdb, Mockito.times(1)).removePairingObject(searchedPairingID);
+			Mockito.verify(newPairBuilder, Mockito.times(1)).setGCM("i am the GCM new");
+			Mockito.verify(newPairBuilder, Mockito.times(0)).setGCM("no the new GCM");
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		// test throws PairingObjectWasNotFoundException
+		boolean didFallOnException = false;
+		try {
+			mockedWalletdb.updatePairingGCMRegistrationID("100", "does not really matter");
+		} catch (Exception  e) {
+			didFallOnException = true;
+			if(e instanceof PairingObjectWasNotFoundException)
+				assertTrue(true);
+			else
+				assertTrue(false);
+		}
+		if(!didFallOnException) assertTrue(false);
+	}
+
+	@Test
+	public void removePairingObjectTest() {
+		String mpubkey 				= "i am the master pub key ";
+		String chaincode 			= "i am the chaincode ";
+		String key 					= "i am the AES key ";
+		String GCM 					= "i am the GCM ";
+		int accountIndex 			= 1;
+		boolean isEncrypted 		= true;
+		String salt 				= "i am the salt ";
+
+		List<ProtoConfig.PairedAuthenticator> all = new ArrayList<ProtoConfig.PairedAuthenticator>();
+		// mock the new pair builder
+		PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.Builder.class);
+		ProtoConfig.PairedAuthenticator.Builder newPairBuilder = PowerMockito.mock(ProtoConfig.PairedAuthenticator.Builder.class);
+		// create pairing objects
+		for(int i = 0; i < 10; i ++) {
+			PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.class);
+			ProtoConfig.PairedAuthenticator newPair = PowerMockito.mock(ProtoConfig.PairedAuthenticator.class);
+			Mockito.doReturn(key + i).when(newPair).getAesKey();
+			Mockito.doReturn(mpubkey).when(newPair).getMasterPublicKey();
+			Mockito.doReturn(chaincode).when(newPair).getChainCode();
+			Mockito.doReturn(GCM).when(newPair).getGCM();
+			Mockito.doReturn(new Integer(i).toString()).when(newPair).getPairingID();
+			Mockito.doReturn(false).when(newPair).getTestnet();
+			Mockito.doReturn(0).when(newPair).getKeysN();
+			Mockito.doReturn(i).when(newPair).getWalletAccountIndex();
+			Mockito.doReturn(isEncrypted).when(newPair).getIsEncrypted();
+			Mockito.doReturn(ByteString.copyFrom((salt + i).getBytes())).when(newPair).getKeySalt();
+
+			Mockito.doReturn(newPairBuilder).when(newPair).toBuilder();
+
+			all.add(newPair);
+		}
+
+		// walletDB methods stub
+		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		try {
+			Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.anyObject());
+			Mockito.doReturn(all).when(mockedWalletdb).getAllPairingObjectArray();
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+		// ConfigAuthenticatorWallet.Builder
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder mockedAuthWalletBuilder =  PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		PowerMockito.when(mockedAuthConfBuilder.getConfigAuthenticatorWalletBuilder()).thenReturn(mockedAuthWalletBuilder);
+
+		// test
+		try {
+			mockedWalletdb.removePairingObject("2");
+
+			Mockito.verify(mockedAuthConfBuilder, Mockito.times(1)).clearConfigAuthenticatorWallet();
+
+			ArgumentCaptor<ProtoConfig.PairedAuthenticator> arg = ArgumentCaptor.forClass(ProtoConfig.PairedAuthenticator.class);
+			Mockito.verify(mockedAuthWalletBuilder, Mockito.times(9)).addPairedWallets(arg.capture());
+
+			List<ProtoConfig.PairedAuthenticator> ret = arg.getAllValues();
+			assertTrue(ret.size() == 9);
+			for (ProtoConfig.PairedAuthenticator po: ret) {
+				if(po.getPairingID().equals("2"))
+					assertTrue(false);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// check does not throw exception if pairing object is not found
+		try {
+			mockedWalletdb.removePairingObject("200");
+		} catch (Exception  e) {
+			assertTrue(false);
+		}
+	}
 }
