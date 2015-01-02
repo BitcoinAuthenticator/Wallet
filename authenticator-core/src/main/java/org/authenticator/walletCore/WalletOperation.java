@@ -1020,34 +1020,46 @@ public class WalletOperation extends BASE{
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
 	}
-	
-	public PairedAuthenticator getPairingObjectForAccountIndex(int accIdx){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+
+	/**
+	 * Will return null for a non existing account
+	 *
+	 * @param accIdx
+	 * @return
+	 */
+	public PairedAuthenticator getPairingObjectForAccountIndex(int accIdx) {
 		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator po: all)
-		{
-			if(po.getWalletAccountIndex() == accIdx)
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator po: all)
 			{
-				return po;
+				if(po.getWalletAccountIndex() == accIdx)
+				{
+					return po;
+				}
 			}
-		}
+		} catch (IOException e) { e.printStackTrace(); }
+
 		return null;
 	}
-	
+
+	/**
+	 * will return -1 for a non existing account
+	 *
+	 * @param PairID
+	 * @return
+	 */
 	public int getAccountIndexForPairing(String PairID){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator po: all)
-		{
-			if(po.getPairingID().equals(PairID))
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator po: all)
 			{
-				return po.getWalletAccountIndex();
+				if(po.getPairingID().equals(PairID))
+				{
+					return po.getWalletAccountIndex();
+				}
 			}
-		}
+		} catch (IOException e) { e.printStackTrace(); }
+
 		return -1;
 	}
 
@@ -1065,26 +1077,30 @@ public class WalletOperation extends BASE{
 		return getAccountAddresses(accIndex,addressesType, limit);
 	}
 	
-	/**Returns the Master Public Key and Chaincode as an ArrayList object */
-	public ArrayList<String> getPublicKeyAndChain(String pairingID){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+	/**
+	 * Returns the Master Public [index 0] Key and Chaincode [index 1] as an ArrayList object
+	 *
+	 */
+	public ArrayList<String> getPublicKeyAndChain(String pairingID) {
 		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-		
-		ArrayList<String> ret = new ArrayList<String>();
-		for(PairedAuthenticator o:all)
-		{
-			if(o.getPairingID().equals(pairingID))
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			ArrayList<String> ret = new ArrayList<String>();
+			for(PairedAuthenticator o:all)
 			{
-				ret.add(o.getMasterPublicKey());
-				ret.add(o.getChainCode());
+				if(o.getPairingID().equals(pairingID))
+				{
+					ret.add(o.getMasterPublicKey());
+					ret.add(o.getChainCode());
+				}
 			}
-		}
-		return ret;
+			return ret;
+		} catch (IOException e) { e.printStackTrace(); }
+		return null;
 	}
 	
 	public ECKey getPairedAuthenticatorKey(PairedAuthenticator po, int keyIndex){
+		if(keyIndex < 0)
+			return null;
 		ArrayList<String> keyandchain = getPublicKeyAndChain(po.getPairingID());
 		byte[] key = Hex.decode(keyandchain.get(0));
 		byte[] chain = Hex.decode(keyandchain.get(1));
@@ -1099,48 +1115,49 @@ public class WalletOperation extends BASE{
 	
 	/**Returns the number of key pairs in the wallet */
 	public long getKeyNum(String pairID){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
-			all = getAllPairingObjectArray();
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator o:all)
+			{
+				if(o.getPairingID().equals(pairID))
+					return o.getKeysN();
+			}
 		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator o:all)
-		{
-			if(o.getPairingID().equals(pairID))
-				return o.getKeysN();
-		}
+
 		return 0;
 	}
 
 	/**
-	 * Returns the decrypted (in case encrypted) AES key
+	 * Returns the decrypted (in case encrypted) AES key, null if no key found
 	 *
 	 * @param pairID
 	 * @param walletPW
 	 * @return
 	 */
 	public String getAESKey(String pairID, @Nullable BAPassword walletPW) throws NoWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator o:all)
-		{
-			if(o.getPairingID().equals(pairID)) {
-				if(!o.getIsEncrypted()) {
-					return o.getAesKey();
-				}
-				else {
-					LOG.info("Pairing " + pairID + " AES key is encrypted. Returning decrypted key");
-					int accountIdx = this.getAccountIndexForPairing(pairID);
-					String seed = Hex.toHexString(this.getWalletSeedBytes(walletPW));
-					return Hex.toHexString(CryptoUtils.authenticatorAESDecryption(o.getAesKey(),
-							Hex.toHexString(o.getKeySalt().toByteArray()),
-							new Integer(accountIdx).toString(),
-							seed));
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator o:all)
+			{
+				if(o.getPairingID().equals(pairID)) {
+					if(!o.getIsEncrypted()) {
+						return o.getAesKey();
+					}
+					else {
+						LOG.info("Pairing " + pairID + " AES key is encrypted. Returning decrypted key");
+						int accountIdx = getAccountIndexForPairing(pairID);
+						String seed = Hex.toHexString(getWalletSeedBytes(walletPW));
+						return Hex.toHexString(CryptoUtils.authenticatorAESDecryption(o.getAesKey(),
+												Hex.toHexString(o.getKeySalt().toByteArray()),
+												new Integer(accountIdx).toString(),
+												seed)
+						                      );
+					}
 				}
 			}
-		}
-		return "";
+		} catch (IOException e) { e.printStackTrace(); }
+
+		return null;
 	}
 		
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
@@ -1150,25 +1167,25 @@ public class WalletOperation extends BASE{
 	
 	public PairedAuthenticator getPairingObject(String pairID)
 	{
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
-			all = getAllPairingObjectArray();
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator po: all)
+				if(po.getPairingID().equals(pairID))
+					return po;
 		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator po: all)
-			if(po.getPairingID().equals(pairID))
-				return po;
+
 		return null;
 	}
 	
 	public ArrayList<String> getPairingIDs()
 	{
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
-		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
 		ArrayList<String> ret = new ArrayList<String>();
-		for(PairedAuthenticator o:all)
-			ret.add(o.getPairingID());
+		try {
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator o:all)
+				ret.add(o.getPairingID());
+		} catch (IOException e) { e.printStackTrace(); }
+
 		return ret;
 	}
 	
