@@ -92,13 +92,22 @@ public class SingleAccountManagerImpl implements BAAccountHierarchyManager {
         return type == AuthWalletHierarchy.HierarchyAddressTypes.External? getUnusedExternalKey():getUnusedInternalKey();
     }
 
-    @Override
+
     public void setKeyAsUsed(int keyIndex, AuthWalletHierarchy.HierarchyAddressTypes type) {
-        if(type == AuthWalletHierarchy.HierarchyAddressTypes.External){
-            usedExternalKeys.add( new Integer(keyIndex));
-        }
-        else{
-            usedInternalKeys.add( new Integer(keyIndex));
+        List<Integer> keyIndexs = new ArrayList<Integer>();
+        keyIndexs.add(keyIndex);
+        setKeyAsUsed(keyIndexs, type);
+    }
+
+    @Override
+    public void setKeyAsUsed(List<Integer> keyIndexs, AuthWalletHierarchy.HierarchyAddressTypes type) {
+        for(Integer k: keyIndexs) {
+            if(type == AuthWalletHierarchy.HierarchyAddressTypes.External){
+                usedExternalKeys.add(k);
+            }
+            else{
+                usedInternalKeys.add(k);
+            }
         }
     }
 

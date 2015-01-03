@@ -4,6 +4,8 @@ import org.authenticator.hierarchy.exceptions.NoUnusedKeyException;
 import org.authenticator.protobuf.AuthWalletHierarchy;
 import org.bitcoinj.crypto.ChildNumber;
 
+import java.util.List;
+
 /**
  * Manages an account (following BIP44 accounts) keys by their type to be as efficient as possible.<br>
  * Efficiency is making sure previously given keys are used and marked as used before new keys are returned.
@@ -22,6 +24,6 @@ public interface BAAccountHierarchyManager {
      */
     public void setKeylookahead(int value);
     public ChildNumber getUnusedKey(AuthWalletHierarchy.HierarchyAddressTypes type) throws NoUnusedKeyException;
-    public void setKeyAsUsed(int keyIndex, AuthWalletHierarchy.HierarchyAddressTypes type);
+    public void setKeyAsUsed(List<Integer> keyIndexs, AuthWalletHierarchy.HierarchyAddressTypes type);
 
 }

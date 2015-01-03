@@ -1,19 +1,12 @@
 package org.authenticator.hierarchy;
 
 import com.google.common.collect.ImmutableList;
-import com.sun.tools.javac.util.List;
-import junit.framework.TestCase;
 import org.authenticator.hierarchy.exceptions.IncorrectPathException;
 import org.authenticator.protobuf.AuthWalletHierarchy;
-import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.wallet.DeterministicSeed;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 import static org.junit.Assert.*;
 
