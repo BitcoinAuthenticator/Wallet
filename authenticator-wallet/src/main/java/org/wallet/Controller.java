@@ -580,7 +580,7 @@ public class Controller  extends BaseUI{
             	 * run an update of balances after we finished syncing
             	 */
             	BalanceUpdater.updateBalaceNonBlocking(Authenticator.getWalletOperation(),
-            											Authenticator.getWalletOperation().mWalletWrapper.trackedWallet, 
+            											Authenticator.getWalletOperation().getTrackedWallet(),
             											new Runnable(){
 										    				@Override
 										    				public void run() { 

@@ -87,10 +87,10 @@ public class SendTxHelper {
     	Coin amount = Coin.ZERO;
     	for(Node n:scrlContent.getChildren())
     	{
-    		//NewAddress na = (NewAddress)n;
     		SendToCell na = (SendToCell)n;
     		na.validate();
 			long satoshis = (long) na.getAmountValue();
+
     		amount = amount.add(Coin.valueOf(satoshis));
     	}
     	amount = amount.add(fee);

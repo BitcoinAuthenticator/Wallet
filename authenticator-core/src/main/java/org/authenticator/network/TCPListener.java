@@ -27,6 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
+import org.authenticator.listeners.BAWalletExecutionDataBinder;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 import org.bitcoinj.core.Transaction;
@@ -98,8 +99,8 @@ public class TCPListener extends BASE{
 	/**
 	 * Data binder
 	 */
-	private TCPListenerExecutionDataBinder dataBinder = new DataBinderAdapter();
-	public class DataBinderAdapter implements TCPListenerExecutionDataBinder{
+	private BAWalletExecutionDataBinder dataBinder = new DataBinderAdapter();
+	public class DataBinderAdapter implements BAWalletExecutionDataBinder{
 		@Override
 		public BAPassword getWalletPassword() {
 			return new BAPassword();
@@ -582,19 +583,7 @@ public class TCPListener extends BASE{
 	//
 	//#####################################
 	
-	/**
-	 * An interface that implements necessary methods that get critical data to the listener at runtime.<br>
-	 * This interface is critical for the correct operation and execution of a {@link org.authenticator.operations.BAOperation BAOperation}.<br>
-	 * <b>Failing to implement this listener could cause operations to crash on execution</b>
-	 * 
-	 * @author Alon Muroch
-	 *
-	 */
-	public interface TCPListenerExecutionDataBinder{
-		public BAPassword getWalletPassword();
-	}
-	
-	public void setExecutionDataBinder(TCPListenerExecutionDataBinder b){
+	public void setExecutionDataBinder(BAWalletExecutionDataBinder b){
 		dataBinder = b;
 	}
 	
@@ -605,10 +594,10 @@ public class TCPListener extends BASE{
 	//#####################################
 	
 	/**
-	 * see {@link org.authenticator.network.TCPListener#longLivingOperationsListener TCPListener#longLivingOperationsListener}
+	 * Will be used for non user initiated operations, e.g., authenticator respose for Tx signing.
 	 * @param listener
 	 */
-	public void setOperationListener(OperationListener listener) {
+	public void setLongLivingOperationsListener(OperationListener listener) {
 		this.longLivingOperationsListener = listener;
 	}
 	

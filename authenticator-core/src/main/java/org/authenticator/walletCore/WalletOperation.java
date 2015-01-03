@@ -6,7 +6,10 @@ import org.authenticator.BASE;
 import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
+import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.Utils.CryptoUtils;
+import org.authenticator.listeners.BAWalletExecutionDataBinder;
+import org.authenticator.operations.listeners.OperationListener;
 import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import org.authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
@@ -122,7 +125,7 @@ import eu.hansolo.enzo.notification.Notification.Notifier;
  */
 public class WalletOperation extends BASE{
 
-	private  WalletWrapper mWalletWrapper;
+	private WalletWrapper mWalletWrapper;
 	private BAHierarchy authenticatorWalletHierarchy;
 	private walletDB configFile;
 	private settingsDB settingsFile;
@@ -561,7 +564,7 @@ public class WalletOperation extends BASE{
  	}
  	
  	/**
- 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.BAAccount BAAccount} object
+ 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ATAccount ATAccount} object
  	 * 
  	 * @param nt
  	 * @param accoutnIdx
@@ -1620,7 +1623,14 @@ public class WalletOperation extends BASE{
 				public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
 					if(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(WalletOperation.this, tx))
 					{ // send
-						CoinsReceivedNotificationSender.send(WalletOperation.this, tx, howBalanceChanged);
+						try {
+							CoinsReceivedNotificationSender.send(WalletOperation.this,
+									tx,
+									howBalanceChanged, Authenticator.getLongLivingDataBinder().getWalletPassword());
+						} catch (Exception e) {
+							e.printStackTrace();
+							Authenticator.getLongLivingOperationsListener().onError(null, e, null);
+						}
 					}
 				}
 			};

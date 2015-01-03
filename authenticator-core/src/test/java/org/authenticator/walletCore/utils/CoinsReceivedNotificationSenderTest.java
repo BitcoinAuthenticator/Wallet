@@ -26,6 +26,7 @@ import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.walletCore.WalletOperation;
+import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.NetworkParameters;
@@ -82,6 +83,8 @@ public class CoinsReceivedNotificationSenderTest {
 
 	@Test
 	public void sendTest() throws IOException {
+		BAPassword walletPass = new BAPassword("password");
+
 		WalletOperation mocked = Mockito.mock(WalletOperation.class);
 		{
 			Mockito.when(mocked.getNetworkParams()).thenReturn(NetworkParameters.testNet());
@@ -100,7 +103,14 @@ public class CoinsReceivedNotificationSenderTest {
 				e.printStackTrace();
 				assertTrue(false);
 			}
-			
+
+			try {
+				Mockito.when(mocked.getAESKey("i am the the pairing id", walletPass)).thenReturn("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0");
+			} catch (NoWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
+				e.printStackTrace();
+				assertTrue(false);
+			}
+
 			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator());
 		}
 		
@@ -119,7 +129,12 @@ public class CoinsReceivedNotificationSenderTest {
 		 * test send 
 		 */
 		{
-			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins);
+			try {
+				CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletPass);
+			} catch (Exception e) {
+				e.printStackTrace();
+				assertTrue(false);
+			}
 		}
 		
 		try {
@@ -151,6 +166,7 @@ public class CoinsReceivedNotificationSenderTest {
 
 	@Test
 	public void noSendBecauseOfWrongAccountTypeTest() throws IOException {
+		BAPassword walletPass = new BAPassword("password");
 		WalletOperation mocked = Mockito.mock(WalletOperation.class);
 		{
 			Mockito.when(mocked.getNetworkParams()).thenReturn(NetworkParameters.testNet());
@@ -185,7 +201,12 @@ public class CoinsReceivedNotificationSenderTest {
 		}
 
 		{
-			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins);
+			try {
+				CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletPass);
+			} catch (Exception e) {
+				e.printStackTrace();
+				assertTrue(false);
+			}
 		}
 
 		try {
@@ -203,6 +224,7 @@ public class CoinsReceivedNotificationSenderTest {
 
 	@Test
 	public void noSendBecauseAddressNotFoundTest() throws IOException {
+		BAPassword walletPass = new BAPassword("password");
 		WalletOperation mocked = Mockito.mock(WalletOperation.class);
 		{
 			Mockito.when(mocked.getNetworkParams()).thenReturn(NetworkParameters.testNet());
@@ -237,7 +259,12 @@ public class CoinsReceivedNotificationSenderTest {
 		}
 
 		{
-			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins);
+			try {
+				CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletPass);
+			} catch (Exception e) {
+				e.printStackTrace();
+				assertTrue(false);
+			}
 		}
 
 		try {
@@ -255,6 +282,7 @@ public class CoinsReceivedNotificationSenderTest {
 
 	@Test
 	public void noSendBecauseAddressNotWatchedTest() throws IOException {
+		BAPassword walletPass = new BAPassword("password");
 		WalletOperation mocked = Mockito.mock(WalletOperation.class);
 		{
 			Mockito.when(mocked.getNetworkParams()).thenReturn(NetworkParameters.testNet());
@@ -289,7 +317,12 @@ public class CoinsReceivedNotificationSenderTest {
 		}
 
 		{
-			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins);
+			try {
+				CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletPass);
+			} catch (Exception e) {
+				e.printStackTrace();
+				assertTrue(false);
+			}
 		}
 
 		try {

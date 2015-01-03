@@ -392,13 +392,13 @@ public class Main extends BAApplication {
 
     private static void startAuthenticator(BAApplicationParameters AppParams) {
     	auth = new Authenticator(bitcoin.wallet(), bitcoin.peerGroup(), AppParams);
-    	auth.setTCPListenerDataBinder(new TCPListener().new DataBinderAdapter(){
+    	auth.setLongLivingDataBinder(new TCPListener().new DataBinderAdapter(){
     		@Override
     		public BAPassword getWalletPassword() {
     			return Main.UI_ONLY_WALLET_PW;
     		}
     	});
-    	auth.setOperationsLongLivingListener(new OperationListenerAdapter() {
+    	auth.setLongLivingOperationsListener(new OperationListenerAdapter() {
     		@SuppressWarnings("restriction")
 			@Override
     		public void onError(BAOperation operation, Exception e, Throwable t) {

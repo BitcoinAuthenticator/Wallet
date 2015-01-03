@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import javafx.scene.image.Image;
 
+import org.authenticator.listeners.BAWalletExecutionDataBinder;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.PeerGroup;
@@ -33,7 +34,6 @@ import org.authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import org.authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
 import org.authenticator.network.BANetworkInfo;
 import org.authenticator.network.TCPListener;
-import org.authenticator.network.TCPListener.TCPListenerExecutionDataBinder;
 import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.OperationsFactory;
 import org.authenticator.operations.OperationsUtils.SignProtocol;
@@ -53,11 +53,9 @@ import org.authenticator.walletCore.exceptions.CannotRemovePendingRequestExcepti
  * Covers every aspect of the operations and the only object that should be accessed from the UI.<br></p>
  * <b>Main components are:</b> 
  * <ol><li>TCPListener - basically a thread that polls operations that require communication with the Authenticator app.</li>
- * <li>OnAuthenticatoGUIUpdateListener - a general pupose UI listener.</li>
- * <li>operationsQueue - all operations regarding communication with the Authenticators are added to this queue and executed by the
- * 	  TCPListener.</li>
+ * <li>Long living Operation Listener </li>
+ * <li>Long living data binder</li>
  * <li>{@link org.authenticator.walletCore.WalletOperation}</li>
- * <li>{@link org.authenticatortobuf.ProtoConfig.ActiveAccountType} - Current active account. Will effect operations that depend on the active account</li>
  * <li>{@link org.authenticator.listeners.BAGeneralEventsListener} - General events listener for the authenticatro. For Example: a new paired Authenticator was added</li>
  * </ol>
  * <br>
@@ -71,6 +69,10 @@ public class Authenticator extends BASE{
 	
 	// Listeners
 	private static List<BAGeneralEventsListener> generalEventsListeners;
+	private static OperationListener longLivingOperationsListener;
+
+	// Data binder
+	private static BAWalletExecutionDataBinder longLivingDataBinder;
 
 	public Authenticator(){ 
 		super(Authenticator.class);
@@ -80,11 +82,11 @@ public class Authenticator extends BASE{
 		super(Authenticator.class);
 		init(appParams);
 	}
-	
+
 	/**
-	 * Instantiate without bitcoinj's wallet 
-	 * 
-	 * @param wallet
+	 * Instantiate without bitcoinj's wallet
+	 *
+	 * @param mpubkey
 	 * @param appParams
 	 */
 	public Authenticator(DeterministicKey mpubkey, BAApplicationParameters appParams){
@@ -189,14 +191,6 @@ public class Authenticator extends BASE{
 		return mTCPListener.areAllNetworkRequirementsAreFullyRunning();
 	}
 	
-	/**
-	 * see {@link org.authenticator.network.TCPListener#longLivingOperationsListener TCPListener#longLivingOperationsListener}
-	 * @param listener
-	 */
-	public void setOperationsLongLivingListener(OperationListener listener) {
-		mTCPListener.setOperationListener(listener);
-	}
-	
 	//#####################################
 	//
 	//		Pending Requests Control
@@ -241,7 +235,7 @@ public class Authenticator extends BASE{
 	}
 	
 	/**
-	 * Get {@link org.authenticator.ui_helpers.BAApplication.BAApplicationParameters} object.<br>
+	 * Get {@link org.authenticator.BAApplicationParameters BAApplicationParameters} object.<br>
 	 * Object is populated when the wallet is luanched.
 	 * 
 	 * 
@@ -259,10 +253,29 @@ public class Authenticator extends BASE{
 	public static TCPListener Net(){
 		return mTCPListener;
 	}
-	
-	public void setTCPListenerDataBinder(TCPListenerExecutionDataBinder binder){
-		mTCPListener.setExecutionDataBinder(binder);
+
+	/**
+	 * See {@link org.authenticator.listeners.BAWalletExecutionDataBinder}
+	 * @param binder
+	 */
+	public static void setLongLivingDataBinder(BAWalletExecutionDataBinder binder){
+		longLivingDataBinder = binder;
+		mTCPListener.setExecutionDataBinder(longLivingDataBinder);
 	}
+
+	public static BAWalletExecutionDataBinder getLongLivingDataBinder() { return longLivingDataBinder; }
+
+	/**
+	 * Will be used for non user initiated operations, e.g., authenticator respose for Tx signing.
+	 *
+	 * @param listener
+	 */
+	public static void setLongLivingOperationsListener(OperationListener listener) {
+		longLivingOperationsListener = listener;
+		mTCPListener.setLongLivingOperationsListener(longLivingOperationsListener);
+	}
+
+	public static OperationListener getLongLivingOperationsListener() { return longLivingOperationsListener; }
 	
 	//#####################################
 	//
@@ -319,10 +332,11 @@ public class Authenticator extends BASE{
 	public static void addGeneralEventsListener(BAGeneralEventsListener listener){
 		generalEventsListeners.add(listener);
 	}
-	
+
 	/**
 	 * will search the specific listener by its identity hash code, returns null if not found
-	 * @param target
+	 *
+	 * @param listener
 	 * @return
 	 */
 	public static BAGeneralEventsListener getGeneralListenerByIdentityHashCode(BAGeneralEventsListener listener) {

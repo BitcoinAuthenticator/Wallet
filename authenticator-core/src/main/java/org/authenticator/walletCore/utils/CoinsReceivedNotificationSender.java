@@ -2,9 +2,12 @@ package org.authenticator.walletCore.utils;
 
 import java.io.IOException;
 
+import javax.annotation.Nullable;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.authenticator.Utils.CryptoUtils;
+import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutput;
@@ -43,11 +46,24 @@ public class CoinsReceivedNotificationSender {
 		return false;
 	}
 	
-	static public void send(WalletOperation wo, Transaction tx, HowBalanceChanged howBalanceChanged) {
-		send(wo, new Dispacher(null,null), tx, howBalanceChanged);
+	static public void send(WalletOperation wo,
+							Transaction tx,
+							HowBalanceChanged howBalanceChanged,
+							@Nullable BAPassword walletPass) throws AccountWasNotFoundException,
+																	NoWalletPasswordException,
+																	GCMSendFailedException,
+																	CryptoUtils.CannotDecryptMessageException {
+		send(wo, new Dispacher(null,null), tx, howBalanceChanged, walletPass);
 	}
 	
-	static public void send(WalletOperation wo, Dispacher disp, Transaction tx, HowBalanceChanged howBalanceChanged) {
+	static public void send(WalletOperation wo,
+							Dispacher disp,
+							Transaction tx,
+							HowBalanceChanged howBalanceChanged,
+							@Nullable BAPassword walletPass) throws AccountWasNotFoundException,
+																	GCMSendFailedException,
+																	NoWalletPasswordException,
+																	CryptoUtils.CannotDecryptMessageException {
 		if(howBalanceChanged == HowBalanceChanged.ReceivedCoins)
 			for (TransactionOutput out : tx.getOutputs()){
 				Script scr = out.getScriptPubKey();
@@ -60,27 +76,21 @@ public class CoinsReceivedNotificationSender {
 					// incoming sum
 					Coin receivedSum = out.getValue();
 			
-					ATAccount account = null;
-					try {
-						account = wo.getAccount(add.getAccountIndex());
-						if(account.getAccountType() != WalletAccountType.AuthenticatorAccount)
-							continue;
-						PairedAuthenticator pairing = wo.getPairingObjectForAccountIndex(account.getIndex());
-						SecretKey secretkey = new SecretKeySpec(Hex.decode(pairing.getAesKey()), "AES");						
-						byte[] gcmID = pairing.getGCM().getBytes();
-						assert(gcmID != null);
-						Device d = new Device(pairing.getChainCode().getBytes(),
-								pairing.getMasterPublicKey().getBytes(),
-								gcmID,
-								pairing.getPairingID().getBytes(),
-								secretkey);
-				
-						System.out.println("Sending a Coins Received Notification");
-						disp.dispachMessage(ATGCMMessageType.CoinsReceived, d, new String[]{ "Coins Received: " + receivedSum.toFriendlyString() });	
-					} 
-					catch (AccountWasNotFoundException | GCMSendFailedException e1) {
-						e1.printStackTrace();
-					}
+					ATAccount account = wo.getAccount(add.getAccountIndex());
+					if(account.getAccountType() != WalletAccountType.AuthenticatorAccount)
+						continue;
+					PairedAuthenticator pairing = wo.getPairingObjectForAccountIndex(account.getIndex());
+					SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wo.getAESKey(pairing.getPairingID(), walletPass));
+					byte[] gcmID = pairing.getGCM().getBytes();
+					assert(gcmID != null);
+					Device d = new Device(pairing.getChainCode().getBytes(),
+							pairing.getMasterPublicKey().getBytes(),
+							gcmID,
+							pairing.getPairingID().getBytes(),
+							secretkey);
+
+					System.out.println("Sending a Coins Received Notification");
+					disp.dispachMessage(ATGCMMessageType.CoinsReceived, d, new String[]{ "Coins Received: " + receivedSum.toFriendlyString() });
 				}
 			}
 	}
