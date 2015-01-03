@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import org.authenticator.Utils.CryptoUtils;
 import org.json.JSONException;
 import org.wallet.PairWallet.PairingWalletControllerListener;
 import org.wallet.controls.DisplayAccountCell;
@@ -258,12 +259,33 @@ public class AccountsController  extends BaseUI{
 	{
 		if(currentSelectedCell != null) { // repair a selected account
 			PairedAuthenticator op = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(currentSelectedCell.getAccount().getIndex());
-			
+
+			String decryptedAES = op.getAesKey();
+			if(op.getIsEncrypted()) {
+				{
+					if((!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted())
+							&& txfPassword.getText().length() == 0) {
+						informationalAlert("Your wallet is locked",
+								"Please unlock your wallet");
+						return;
+					}
+				}
+
+				try {
+					decryptedAES = Authenticator.getWalletOperation().getAESKey(op.getPairingID(), Main.UI_ONLY_WALLET_PW);
+				} catch (NoWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
+					e.printStackTrace();
+					informationalAlert("Could not complete operation",
+							"Please try again");
+					return;
+				}
+			}
+
 			ArrayList<Object> args = new ArrayList<Object>(
 					Arrays.asList(	(Object)currentSelectedCell.getAccount().getAccountName(),
 									(Object)currentSelectedCell.getAccount().getIndex(),
 									(Object)Boolean.toString(true),
-									(Object)op.getAesKey()
+									(Object)decryptedAES
 								 )
 					);
 			

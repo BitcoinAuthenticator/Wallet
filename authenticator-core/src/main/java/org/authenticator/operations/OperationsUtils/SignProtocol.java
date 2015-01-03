@@ -16,6 +16,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
 import org.json.JSONException;
 import org.spongycastle.util.encoders.Hex;
 import org.authenticator.Authenticator;
@@ -91,7 +92,7 @@ public class SignProtocol {
 						;
 		byte[] jsonBytes = signMsgPayload.serializeToBytes();
 		
-		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));
+		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID, WALLET_PW));
 		return CryptoUtils.encryptPayloadWithChecksum(jsonBytes, secretkey);
 	}
 
@@ -171,11 +172,12 @@ public class SignProtocol {
 			String pairingID,
 			@Nullable String txMessage,
 			String extIP,
-			String intIP) throws GCMSendFailedException{
+			String intIP,
+			@Nullable BAPassword WALLET_PW) throws GCMSendFailedException, NoWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.
-		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID));				
+		SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID, WALLET_PW));
 		PairedAuthenticator  po = wallet.getPairingObject(pairingID);
 		byte[] gcmID = po.getGCM().getBytes();
 		assert(gcmID != null);

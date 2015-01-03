@@ -69,9 +69,10 @@ message PairedAuthenticator{
 	required string 	pairingID 			= 5; // digest of wallet's seed and account index
 	required bool 		testnet 			= 6;
 	required int32 		keys_n 				= 7;
-	//repeated KeysObject generatedKeys 	= 8; // no need to cache them
-	//required string 	pairingName 		= 9;
-	required int32		walletAccountIndex	= 10;
+	required int32		walletAccountIndex	= 8;
+
+	optional bytes		key_salt			= 9; // the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+	required bool 		isEncrypted			= 10 [default = false];
 }
 
 //
@@ -145,7 +146,7 @@ message AuthenticatorConfiguration{
 	optional ConfigAuthenticatorWallet 	configAuthenticatorWallet			= 2;
 	//optional ConfigAddressBook 		configAddressBook 					= 4;
 	optional ConfigOneNameProfile 		configOneNameProfile				= 5;
-	//required Hierarchy 					ConfigHierarchy						= 6;
+	//required Hierarchy 				ConfigHierarchy						= 6;
 	repeated ATAccount 					configAccounts						= 6;
 	repeated SavedTX 					configSavedTXData                   = 7;	
 	required ConfigSettings 			configSettings						= 8;

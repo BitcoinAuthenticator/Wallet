@@ -2,7 +2,9 @@ package org.authenticator.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
@@ -28,10 +30,12 @@ public class CryptoUtils {
 	 * @throws CouldNotEncryptPayload
 	 */
 	static public byte[] encryptPayloadWithChecksum(byte[] rawPayload, SecretKey secretkey) throws CouldNotEncryptPayload {
+		byte payload[] = payloadWithChecksum(rawPayload, secretkey);
+		return encrypt(secretkey, payload);
+	}
+
+	static public byte[] encrypt(SecretKey secretkey, byte[] payload) throws CouldNotEncryptPayload {
 		try {
-			byte payload[] = payloadWithChecksum(rawPayload, secretkey);
-			
-			//Encrypt the payload
 			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			cipher.init(Cipher.ENCRYPT_MODE, secretkey);
 			byte[] cipherBytes = cipher.doFinal(payload);
@@ -67,11 +71,8 @@ public class CryptoUtils {
 	}
 	
 	static public byte[] decryptPayloadWithChecksum(byte[] encryptedPayload, SecretKey secretkey) throws CannotDecryptMessageException {
-		try {			
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-		    cipher.init(Cipher.DECRYPT_MODE, secretkey);
-		    byte[] decryptedPayload = cipher.doFinal(encryptedPayload);
-		    String message = Hex.toHexString(decryptedPayload);
+		try {
+		    String message = Hex.toHexString(decryptPayload(encryptedPayload, secretkey));
 		    String sig = message.substring(0,message.length()-64);
 		    String HMAC = message.substring(message.length()-64,message.length());
 		    byte[] testsig = Hex.decode(sig);
@@ -86,6 +87,17 @@ public class CryptoUtils {
 			else {
 				throw new ChecksumIncorrectException("");
 			}
+		}
+		catch(Exception e) {
+			throw new CannotDecryptMessageException(e.toString());
+		}
+	}
+
+	static public byte[] decryptPayload(byte[] encryptedPayload, SecretKey secretkey) throws CannotDecryptMessageException {
+		try {
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			cipher.init(Cipher.DECRYPT_MODE, secretkey);
+			return cipher.doFinal(encryptedPayload);
 		}
 		catch(Exception e) {
 			throw new CannotDecryptMessageException(e.toString());
@@ -110,6 +122,56 @@ public class CryptoUtils {
 	static public SecretKey secretKeyFromHexString(String hexKey) {
 		byte[] keyBytes = Hex.decode(hexKey);
 		return new SecretKeySpec(keyBytes, "AES");
+	}
+
+	static public byte[] digestSHA256(String input) {
+		MessageDigest md = null;
+		try {md = MessageDigest.getInstance("SHA-256");}
+		catch(NoSuchAlgorithmException e) {e.printStackTrace();}
+		return md.digest(input.getBytes());
+	}
+
+	/**
+	 *
+	 * @param AESHexKey
+	 * @param salt
+	 * @param accountIndex
+	 * @param seed
+	 * @return
+	 * @throws CouldNotEncryptPayload
+	 */
+	static public byte[] authenticatorAESEncryption(String AESHexKey, String salt, String accountIndex, String seed) throws CouldNotEncryptPayload {
+		String keyHex = null;
+		{
+			String concatenated = seed + salt + accountIndex;
+			byte[] dd = digestSHA256(concatenated);
+			keyHex = Hex.toHexString(digestSHA256(concatenated));
+ 		}
+
+		SecretKey key = secretKeyFromHexString(keyHex);
+
+		return encrypt(key, Hex.decode(AESHexKey));
+	}
+
+	/**
+	 *
+	 * @param encryptedAESHexKey
+	 * @param salt
+	 * @param accountIndex
+	 * @param seed
+	 * @return
+	 * @throws CannotDecryptMessageException
+	 */
+	static public byte[] authenticatorAESDecryption(String encryptedAESHexKey, String salt, String accountIndex, String seed) throws CannotDecryptMessageException {
+		String keyHex = null;
+		{
+			String concatenated = seed + salt + accountIndex;
+			keyHex = Hex.toHexString(digestSHA256(concatenated));
+		}
+
+		SecretKey key = secretKeyFromHexString(keyHex);
+
+		return decryptPayload(Hex.decode(encryptedAESHexKey), key);
 	}
 	
 	static public class ChecksumIncorrectException extends Exception {

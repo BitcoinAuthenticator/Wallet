@@ -6,6 +6,7 @@ import org.authenticator.BASE;
 import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
+import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import org.authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
@@ -35,16 +36,8 @@ import org.authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateT
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.security.SecureRandom;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -53,6 +46,7 @@ import javax.annotation.Nullable;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.bouncycastle.crypto.prng.RandomGenerator;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.spongycastle.crypto.InvalidCipherTextException;
@@ -127,8 +121,8 @@ import eu.hansolo.enzo.notification.Notification.Notifier;
  * @author Alon
  */
 public class WalletOperation extends BASE{
-	
-	public  WalletWrapper mWalletWrapper;
+
+	private  WalletWrapper mWalletWrapper;
 	private BAHierarchy authenticatorWalletHierarchy;
 	private walletDB configFile;
 	private settingsDB settingsFile;
@@ -178,10 +172,10 @@ public class WalletOperation extends BASE{
 	
 	private void init(BAApplicationParameters params) {
 		try {
-			String configFileName = params.getApplicationDataFolderAbsolutePath() + params.getAppName() + ".config";
+			String getConfigFileName = params.getApplicationDataFolderAbsolutePath() + params.getAppName() + ".config";
 			AppParams = params;
 			if(configFile == null){
-				configFile = new walletDB(configFileName);
+				configFile = new walletDB(getConfigFileName);
 				/**
 				 * Check to see if a config file exists, if not, initialize
 				 */
@@ -191,11 +185,11 @@ public class WalletOperation extends BASE{
 				}
 			}
 			if(settingsFile == null) {
-				settingsFile = new settingsDB(configFileName);
+				settingsFile = new settingsDB(getConfigFileName);
 			}
-			if(authenticatorWalletHierarchy == null)
+			if(getWalletHierarchy() == null)
 			{
-				//byte[] seed = configFile.getHierarchySeed();
+				//byte[] seed = getConfigFile.getHierarchySeed();
 				authenticatorWalletHierarchy = new BAHierarchy(HierarchyCoinTypes.CoinBitcoin);
 				/**
 				 * Load num of keys generated in every account to get 
@@ -211,14 +205,39 @@ public class WalletOperation extends BASE{
 					
 					accountTrackers.add(at);
 				}
-				
-				authenticatorWalletHierarchy.buildWalletHierarchyForStartup(accountTrackers);
+
+				getWalletHierarchy().buildWalletHierarchyForStartup(accountTrackers);
 			}
 			
 			setOperationalState(BAOperationState.SYNCING);
 		}catch(Exception e) {
 			throw new RuntimeException(e.toString());
 		}
+	}
+
+	//#######################################
+	//
+	//		Getters and setters
+	//
+	//#######################################
+	public walletDB getConfigFile() {
+		return configFile;
+	}
+
+	public BAHierarchy getWalletHierarchy() { return authenticatorWalletHierarchy; }
+
+	public Wallet getTrackedWallet(){
+		return getWalletWrapper().getTrackedWallet();
+	}
+
+	public WalletWrapper getWalletWrapper() { return  mWalletWrapper; }
+
+	public void setTrackedWallet(Wallet wallet){
+		if(mWalletWrapper == null)
+			mWalletWrapper = new WalletWrapper(wallet,null);
+		else
+			mWalletWrapper.setTrackedWallet(wallet);
+		mWalletWrapper.addEventListener(new WalletListener(WalletOperation.this));
 	}
 	
 	public BAApplicationParameters getApplicationParams(){
@@ -260,7 +279,7 @@ public class WalletOperation extends BASE{
 	public SendResult pushTxWithWallet(Transaction tx) throws CannotBroadcastTransactionException{
 		try {
 			this.LOG.info("Broadcasting to network...");
-			return mWalletWrapper.broadcastTransactionFromWallet(tx);
+			return getWalletWrapper().broadcastTransactionFromWallet(tx);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -415,7 +434,7 @@ public class WalletOperation extends BASE{
 		Address change = new Address(getNetworkParams(), changeAdd);
 		Coin rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
-			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), tx, rest, change);
+			TransactionOutput changeOut = new TransactionOutput(getWalletWrapper().getNetworkParameters(), tx, rest, change);
 			tx.addOutput(changeOut);
 			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
 							", Fees " + fee.toFriendlyString() + 
@@ -493,7 +512,7 @@ public class WalletOperation extends BASE{
 	//#####################################
 	
 	public void setHierarchyKeyLookAhead(int value){
-		authenticatorWalletHierarchy.setKeyLookAhead(value);
+		getWalletHierarchy().setKeyLookAhead(value);
 		LOG.info("Set hierarchy key look ahead value to {}", value);
 	}
 	
@@ -504,23 +523,27 @@ public class WalletOperation extends BASE{
 	//#####################################
 	
 	public ATAccountAddressHierarchy getAccountAddressHierarchy(int accoutnIdx, HierarchyAddressTypes type, @Nullable BAPassword walletPW) throws NoWalletPasswordException {
-		return authenticatorWalletHierarchy.generateAccountAddressHierarchy(
- 				this.getWalletSeedBytes(walletPW), 
- 				accoutnIdx, 
- 				HierarchyAddressTypes.External);
+		return getWalletHierarchy().generateAccountAddressHierarchy(
+ 				getWalletSeedBytes(walletPW),
+				accoutnIdx,
+				HierarchyAddressTypes.External);
 	}
-	
- 	/**
+
+	/**
  	 * Generate a new wallet account and writes it to the config file
  	 * @return
  	 * @throws IOException 
  	 * @throws NoWalletPasswordException 
  	 */
  	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type, @Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException{
- 		int accoutnIdx = authenticatorWalletHierarchy.generateNewAccount().getAccountIndex();
+ 		int accoutnIdx = getWalletHierarchy().generateNewAccount().getAccountIndex();
  		
- 		ATAccountAddressHierarchy ext = getAccountAddressHierarchy(accoutnIdx, HierarchyAddressTypes.External, walletPW);
- 		ATAccountAddressHierarchy intr = getAccountAddressHierarchy(accoutnIdx, HierarchyAddressTypes.Internal, walletPW);
+ 		ATAccountAddressHierarchy ext = getAccountAddressHierarchy(accoutnIdx,
+																	HierarchyAddressTypes.External,
+																	walletPW);
+ 		ATAccountAddressHierarchy intr = getAccountAddressHierarchy(accoutnIdx,
+																	HierarchyAddressTypes.Internal,
+																	walletPW);
  		
  		ATAccount b = completeAccountObject(nt, accoutnIdx, accountName, type, ext, intr);
 		//writeHierarchyNextAvailableAccountID(accoutnIdx + 1); // update 
@@ -534,11 +557,11 @@ public class WalletOperation extends BASE{
  	 * @return
  	 */
  	public int whatIsTheNextAvailableAccountIndex() {
- 		return authenticatorWalletHierarchy.whatIsTheNextAvailableAccountIndex();
+ 		return getWalletHierarchy().whatIsTheNextAvailableAccountIndex();
  	}
  	
  	/**
- 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ATAccount ATAccount} object
+ 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.BAAccount BAAccount} object
  	 * 
  	 * @param nt
  	 * @param accoutnIdx
@@ -570,9 +593,9 @@ public class WalletOperation extends BASE{
  	 * @throws IOException
  	 */
  	public void addNewAccountToConfigAndHierarchy(ATAccount b) throws IOException{
- 		configFile.addAccount(b);
+ 		getConfigFile().addAccount(b);
  		LOG.info("Generated new account at index, " + b.getIndex());
- 	    authenticatorWalletHierarchy.addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
+		getWalletHierarchy().addAccountToTracker(b.getIndex(), BAHierarchy.keyLookAhead);
  	    LOG.info("Added an account at index, " + b.getIndex() + " to hierarchy");
  	}
  	
@@ -623,7 +646,7 @@ public class WalletOperation extends BASE{
 	private DeterministicKey getNextExternalKey(int accountI, boolean shouldAddToWatchList) throws CannotGetHDKeyException {
 		try {
 			ATAccount acc = this.getAccount(accountI);
-			DeterministicKey ret = authenticatorWalletHierarchy.getNextPubKey(accountI, HierarchyAddressTypes.External, acc.getAccountExternalHierarchy());
+			DeterministicKey ret = getWalletHierarchy().getNextPubKey(accountI, HierarchyAddressTypes.External, acc.getAccountExternalHierarchy());
 			if(shouldAddToWatchList)
 				addAddressToWatch( ret.toAddress(getNetworkParams()).toString() );
 			return ret;
@@ -680,7 +703,7 @@ public class WalletOperation extends BASE{
 			boolean iKnowAddressFromKeyIsNotWatched) throws AddressNotWatchedByWalletException, CannotGetHDKeyException{
 		try {
 			byte[] seed = getWalletSeedBytes(WALLET_PW);
-			DeterministicKey ret = authenticatorWalletHierarchy.getPrivKeyFromAccount(seed, accountIndex, type, addressKey);
+			DeterministicKey ret = getWalletHierarchy().getPrivKeyFromAccount(seed, accountIndex, type, addressKey);
 			if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 				throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 			return ret;
@@ -708,7 +731,7 @@ public class WalletOperation extends BASE{
 		try {
 			ATAccount acc = this.getAccount(accountIndex);
 			ATAccountAddressHierarchy H = type == HierarchyAddressTypes.External? acc.getAccountExternalHierarchy():acc.getAccountInternalHierarchy();
-			DeterministicKey ret = authenticatorWalletHierarchy.getPubKeyFromAccount(accountIndex, type, addressKey, H);
+			DeterministicKey ret = getWalletHierarchy().getPubKeyFromAccount(accountIndex, type, addressKey, H);
 			if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 				throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 			return ret;
@@ -829,11 +852,11 @@ public class WalletOperation extends BASE{
 	}
 	
 	public List<ATAccount> getAllAccounts(){
-		return configFile.getAllAccounts();
+		return getConfigFile().getAllAccounts();
 	}
 	
 	public ATAccount getAccount(int index) throws AccountWasNotFoundException{
-		return configFile.getAccount(index);
+		return getConfigFile().getAccount(index);
 	} 
 
 	/**
@@ -847,7 +870,7 @@ public class WalletOperation extends BASE{
 		PairedAuthenticator po =  getPairingObjectForAccountIndex(index);
 		if(po != null)
 			removePairingObject(po.getPairingID());
-		configFile.removeAccount(index);
+		getConfigFile().removeAccount(index);
 		LOG.info("Removed account at index, " + index);
 		Authenticator.fireOnAccountsModified(AccountModificationType.AccountDeleted, index);
 	}
@@ -975,8 +998,8 @@ public class WalletOperation extends BASE{
 	public void markAddressAsUsed(int accountIdx, int addIndx, HierarchyAddressTypes type) throws CannotWriteToConfigurationFileException {
 		try {
 			if(!isUsedAddress(accountIdx, type, addIndx)){
-				configFile.markAddressAsUsed(accountIdx, addIndx,type);
-				authenticatorWalletHierarchy.markAddressAsUsed(accountIdx, addIndx, type);
+				getConfigFile().markAddressAsUsed(accountIdx, addIndx, type);
+				getWalletHierarchy().markAddressAsUsed(accountIdx, addIndx, type);
 				ATAddress add = getATAddreessFromAccount(accountIdx, type, addIndx);
 				Authenticator.fireOnAddressMarkedAsUsed(add);
 				this.LOG.info("Marked " + add.getAddressStr() + " as used.");
@@ -989,12 +1012,12 @@ public class WalletOperation extends BASE{
 	}
 	
 	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex) throws AccountWasNotFoundException{
-		return configFile.isUsedAddress(accountIndex, addressType, keyIndex);
+		return getConfigFile().isUsedAddress(accountIndex, addressType, keyIndex);
 	}
 	
 	private void updateAccount(ATAccount acc) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.updateAccount(acc);
+			getConfigFile().updateAccount(acc);
 			LOG.info("Updated accoutn: " + acc.toString());
 			Authenticator.fireOnAccountsModified(AccountModificationType.AccountBeenModified, acc.getIndex());
 		} catch (IOException e) {
@@ -1011,7 +1034,7 @@ public class WalletOperation extends BASE{
 	//#####################################
 	public void updatePairingGCMRegistrationID(String pairingID, String newGCMRegID) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.updatePairingGCMRegistrationID(pairingID, newGCMRegID);
+			getConfigFile().updatePairingGCMRegistrationID(pairingID, newGCMRegID);
 			LOG.info("Updated GCM for pairing: " + pairingID);
 		}
 		catch(Exception e) {
@@ -1019,70 +1042,87 @@ public class WalletOperation extends BASE{
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
 	}
-	
-	public PairedAuthenticator getPairingObjectForAccountIndex(int accIdx){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+
+	/**
+	 * Will return null for a non existing account
+	 *
+	 * @param accIdx
+	 * @return
+	 */
+	public PairedAuthenticator getPairingObjectForAccountIndex(int accIdx) {
 		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator po: all)
-		{
-			if(po.getWalletAccountIndex() == accIdx)
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator po: all)
 			{
-				return po;
+				if(po.getWalletAccountIndex() == accIdx)
+				{
+					return po;
+				}
 			}
-		}
+		} catch (IOException e) { e.printStackTrace(); }
+
 		return null;
 	}
-	
+
+	/**
+	 * will return -1 for a non existing account
+	 *
+	 * @param PairID
+	 * @return
+	 */
 	public int getAccountIndexForPairing(String PairID){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator po: all)
-		{
-			if(po.getPairingID().equals(PairID))
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator po: all)
 			{
-				return po.getWalletAccountIndex();
+				if(po.getPairingID().equals(PairID))
+				{
+					return po.getWalletAccountIndex();
+				}
 			}
-		}
+		} catch (IOException e) { e.printStackTrace(); }
+
 		return -1;
 	}
-	
+
 	/**
 	 * Returns all addresses from a pairing in a ArrayList of strings
-	 * 
-	 * @param accountIndex
+	 *
+	 * @param PairID
 	 * @param addressesType
-	 * @return ArrayList of strings
-	 * @throws CannotGetAddressException 
+	 * @param limit
+	 * @return
+	 * @throws CannotGetAddressException
 	 */
 	public ArrayList<String> getPairingAddressesArray(String PairID, HierarchyAddressTypes addressesType, int limit) throws CannotGetAddressException{
 		int accIndex = getAccountIndexForPairing(PairID);
 		return getAccountAddresses(accIndex,addressesType, limit);
 	}
 	
-	/**Returns the Master Public Key and Chaincode as an ArrayList object */
-	public ArrayList<String> getPublicKeyAndChain(String pairingID){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+	/**
+	 * Returns the Master Public [index 0] Key and Chaincode [index 1] as an ArrayList object
+	 *
+	 */
+	public ArrayList<String> getPublicKeyAndChain(String pairingID) {
 		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
-		
-		ArrayList<String> ret = new ArrayList<String>();
-		for(PairedAuthenticator o:all)
-		{
-			if(o.getPairingID().equals(pairingID))
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			ArrayList<String> ret = new ArrayList<String>();
+			for(PairedAuthenticator o:all)
 			{
-				ret.add(o.getMasterPublicKey());
-				ret.add(o.getChainCode());
+				if(o.getPairingID().equals(pairingID))
+				{
+					ret.add(o.getMasterPublicKey());
+					ret.add(o.getChainCode());
+				}
 			}
-		}
-		return ret;
+			return ret;
+		} catch (IOException e) { e.printStackTrace(); }
+		return null;
 	}
 	
 	public ECKey getPairedAuthenticatorKey(PairedAuthenticator po, int keyIndex){
+		if(keyIndex < 0)
+			return null;
 		ArrayList<String> keyandchain = getPublicKeyAndChain(po.getPairingID());
 		byte[] key = Hex.decode(keyandchain.get(0));
 		byte[] chain = Hex.decode(keyandchain.get(1));
@@ -1097,113 +1137,164 @@ public class WalletOperation extends BASE{
 	
 	/**Returns the number of key pairs in the wallet */
 	public long getKeyNum(String pairID){
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
-			all = getAllPairingObjectArray();
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator o:all)
+			{
+				if(o.getPairingID().equals(pairID))
+					return o.getKeysN();
+			}
 		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator o:all)
-		{
-			if(o.getPairingID().equals(pairID))
-				return o.getKeysN();
-		}
+
 		return 0;
 	}
-	
-	/**Pulls the AES key from file and returns it  */
-	public String getAESKey(String pairID) {
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
+
+	/**
+	 * Returns the decrypted (in case encrypted) AES key, null if no key found
+	 *
+	 * @param pairID
+	 * @param walletPW
+	 * @return
+	 */
+	public String getAESKey(String pairID, @Nullable BAPassword walletPW) throws NoWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
 		try {
-			all = getAllPairingObjectArray();
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator o:all)
+			{
+				if(o.getPairingID().equals(pairID)) {
+					if(!o.getIsEncrypted()) {
+						return o.getAesKey();
+					}
+					else {
+						LOG.info("Pairing " + pairID + " AES key is encrypted. Returning decrypted key");
+						int accountIdx = getAccountIndexForPairing(pairID);
+						String seed = Hex.toHexString(getWalletSeedBytes(walletPW));
+						return Hex.toHexString(CryptoUtils.authenticatorAESDecryption(o.getAesKey(),
+												Hex.toHexString(o.getKeySalt().toByteArray()),
+												new Integer(accountIdx).toString(),
+												seed)
+						                      );
+					}
+				}
+			}
 		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator o:all)
-		{
-			if(o.getPairingID().equals(pairID))
-				return o.getAesKey();
-		}
-		return "";
+
+		return null;
 	}
 		
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException
 	{
-		return configFile.getAllPairingObjectArray();
+		return getConfigFile().getAllPairingObjectArray();
 	}
 	
 	public PairedAuthenticator getPairingObject(String pairID)
 	{
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
 		try {
-			all = getAllPairingObjectArray();
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator po: all)
+				if(po.getPairingID().equals(pairID))
+					return po;
 		} catch (IOException e) { e.printStackTrace(); }
-		for(PairedAuthenticator po: all)
-			if(po.getPairingID().equals(pairID))
-				return po;
+
 		return null;
 	}
 	
 	public ArrayList<String> getPairingIDs()
 	{
-		List<PairedAuthenticator> all = new ArrayList<PairedAuthenticator>();
-		try {
-			all = getAllPairingObjectArray();
-		} catch (IOException e) { e.printStackTrace(); }
 		ArrayList<String> ret = new ArrayList<String>();
-		for(PairedAuthenticator o:all)
-			ret.add(o.getPairingID());
+		try {
+			List<PairedAuthenticator> all = getAllPairingObjectArray();
+			for(PairedAuthenticator o:all)
+				ret.add(o.getPairingID());
+		} catch (IOException e) { e.printStackTrace(); }
+
 		return ret;
 	}
-	
-	
+
 	/**
-	 * If accID is provided, will not create a new account but will use the account ID
-	 * 
+	 *
 	 * @param authMpubkey
 	 * @param authhaincode
-	 * @param sharedAES
+	 * @param sharedAESHex - <b>must be passed not encrypted !</b>
 	 * @param GCM
 	 * @param pairingID
 	 * @param pairName
-	 * @param accID
+	 * @param passedAccountID - <b>if null will generate a new account</b>
 	 * @param nt
+	 * @param shouldEncrypt - <b>if true, will encrypt the shared AES key with</b>
 	 * @param walletPW
 	 * @return
 	 * @throws IOException
-	 * @throws NoWalletPasswordException 
+	 * @throws NoWalletPasswordException
+	 * @throws CryptoUtils.CouldNotEncryptPayload
 	 */
 	public PairedAuthenticator generatePairing(String authMpubkey, 
 			String authhaincode, 
-			String sharedAES, 
+			String sharedAESHex,
 			String GCM, 
 			String pairingID, 
 			String pairName,
-			@Nullable Integer accID,
+			@Nullable Integer passedAccountID,
 			NetworkType nt,
-			@Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException{
-		int accountID ;
-		if( accID == null )
-			accountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount, walletPW).getIndex();
+			boolean shouldEncrypt,
+			@Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException, CryptoUtils.CouldNotEncryptPayload {
+		int finalAccountID ;
+		if( passedAccountID == null )
+			finalAccountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount, walletPW).getIndex();
 		else{
-			accountID = accID;
+			finalAccountID = passedAccountID;
 			
-			ATAccountAddressHierarchy ext = authenticatorWalletHierarchy.generateAccountAddressHierarchy(
-	 				this.getWalletSeedBytes(walletPW), 
-	 				accountID, 
-	 				HierarchyAddressTypes.External);
-	 		ATAccountAddressHierarchy intr = authenticatorWalletHierarchy.generateAccountAddressHierarchy(
-	 				this.getWalletSeedBytes(walletPW), 
-	 				accountID, 
-	 				HierarchyAddressTypes.Internal);
+			ATAccountAddressHierarchy ext = getAccountAddressHierarchy(finalAccountID,
+					HierarchyAddressTypes.External,
+					walletPW);
+	 		ATAccountAddressHierarchy intr = getAccountAddressHierarchy(finalAccountID,
+					HierarchyAddressTypes.Internal,
+					walletPW);
 			
-			ATAccount a = completeAccountObject(nt, accountID, pairName, WalletAccountType.AuthenticatorAccount, ext, intr);
+			ATAccount a = completeAccountObject(nt,
+					finalAccountID,
+					pairName,
+					WalletAccountType.AuthenticatorAccount,
+					ext,
+					intr);
 			addNewAccountToConfigAndHierarchy(a);
 		}
-		PairedAuthenticator ret = writePairingData(authMpubkey,authhaincode,sharedAES,GCM,pairingID,accountID);
-		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, accountID);
+
+		SecureRandom random = new SecureRandom();
+		byte[] saltBytes = new byte[20];
+		random.nextBytes(saltBytes);
+		String salt = Hex.toHexString(saltBytes);
+		String sharedEncryptedAES = sharedAESHex;
+		if(shouldEncrypt) {
+			byte[] seed = getWalletSeedBytes(walletPW);
+			sharedEncryptedAES = Hex.toHexString(CryptoUtils.authenticatorAESEncryption(sharedAESHex,
+					salt,
+					new Integer(finalAccountID).toString(),
+					Hex.toHexString(seed)));
+		}
+
+		PairedAuthenticator ret = writePairingData(authMpubkey,
+				authhaincode,
+				sharedEncryptedAES,
+				GCM,
+				pairingID,
+				finalAccountID,
+				shouldEncrypt,
+				saltBytes);
+		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, finalAccountID);
 		LOG.info("Created new pairing authenticator object: " + ret.toString());
 		return ret;
 	}
 	
-	private PairedAuthenticator writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
-		return configFile.writePairingData(mpubkey, chaincode, key, GCM, pairingID, accountIndex);
+	private PairedAuthenticator writePairingData(String mpubkey,
+												 String chaincode,
+												 String key,
+												 String GCM,
+												 String pairingID,
+												 int accountIndex,
+												 boolean isEncrypted,
+												 byte[] salt) throws IOException{
+		return getConfigFile().writePairingData(mpubkey, chaincode, key, GCM, pairingID, accountIndex, isEncrypted, salt);
 	}
 
 	/**
@@ -1213,13 +1304,9 @@ public class WalletOperation extends BASE{
 	 * @throws IOException
 	 */
 	private void removePairingObject(String pairingID) throws FileNotFoundException, IOException{
-		configFile.removePairingObject(pairingID);
+		getConfigFile().removePairingObject(pairingID);
 	}
-	
-	/*public void addGeneratedAddressForPairing(String pairID, String addr, int indexWallet, int indexAuth) throws FileNotFoundException, IOException, ParseException{
-		configFile.addGeneratedAddressForPairing(pairID,  addr, indexWallet, indexAuth);
-	}*/
-	
+
 	//#####################################
 	//
 	//		 Balances handling
@@ -1228,7 +1315,7 @@ public class WalletOperation extends BASE{
 	
 	public Coin getConfirmedBalance(int accountIdx) throws CannotReadFromConfigurationFileException{		
 		try {
-			long balance = configFile.getConfirmedBalace(accountIdx);
+			long balance = getConfigFile().getConfirmedBalace(accountIdx);
 			return Coin.valueOf(balance);
 		}
 		catch (Exception e) {
@@ -1290,7 +1377,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin setConfirmedBalance(int accountIdx, Coin newBalance) throws CannotWriteToConfigurationFileException{
 		try {
-			long balance = configFile.writeConfirmedBalace(accountIdx, newBalance.longValue());
+			long balance = getConfigFile().writeConfirmedBalace(accountIdx, newBalance.longValue());
 			Coin ret = Coin.valueOf(balance);
 			LOG.info("Set " + ret.toFriendlyString() + " in confirmed balance. Account: " + accountIdx);
 			return ret;
@@ -1303,7 +1390,7 @@ public class WalletOperation extends BASE{
 	
 	public Coin getUnConfirmedBalance(int accountIdx) throws CannotReadFromConfigurationFileException{
 		try {
-			long balance = configFile.getUnConfirmedBalace(accountIdx);
+			long balance = getConfigFile().getUnConfirmedBalace(accountIdx);
 			return Coin.valueOf(balance);
 		}
 		catch (Exception e) {
@@ -1365,7 +1452,7 @@ public class WalletOperation extends BASE{
 	 */
 	public Coin setUnConfirmedBalance(int accountIdx, Coin newBalance) throws CannotWriteToConfigurationFileException {
 		try {
-			long balance = configFile.writeUnConfirmedBalace(accountIdx, newBalance.longValue());
+			long balance = getConfigFile().writeUnConfirmedBalace(accountIdx, newBalance.longValue());
 			Coin ret = Coin.valueOf(balance);
 			LOG.info("Set " + ret.toFriendlyString() + " in unconfirmed balance. Account: " + accountIdx);
 			return ret;
@@ -1448,7 +1535,7 @@ public class WalletOperation extends BASE{
 	//#####################################
 		
 		public void addPendingRequest(PendingRequest req) throws FileNotFoundException, IOException{
-			configFile.writeNewPendingRequest(req);
+			getConfigFile().writeNewPendingRequest(req);
 			LOG.info("Added pending request: " + req.getRequestID());
 			Authenticator.fireOnPendingRequestUpdate(Arrays.asList(req), PendingRequestUpdateType.RequestAdded);
 		}
@@ -1464,8 +1551,8 @@ public class WalletOperation extends BASE{
 				String a = "";
 				for(PendingRequest pr:req)
 					a = a + pr.getRequestID() + "\n					";
-				
-				configFile.removePendingRequest(req);
+
+				getConfigFile().removePendingRequest(req);
 				LOG.info("Removed pending requests: " + a);
 				Authenticator.fireOnPendingRequestUpdate(req, PendingRequestUpdateType.RequestDeleted);
 			}
@@ -1484,7 +1571,7 @@ public class WalletOperation extends BASE{
 		
 		public List<PendingRequest> getPendingRequests() throws CannotGetPendingRequestsException {
 			try {
-				return configFile.getPendingRequests();
+				return getConfigFile().getPendingRequests();
 			}
 			catch(Exception e) {
 				throw new CannotGetPendingRequestsException(e.getMessage());
@@ -1549,7 +1636,7 @@ public class WalletOperation extends BASE{
 		
 		public ConfigOneNameProfile getOnename(){
 			try {
-				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
+				AuthenticatorConfiguration.ConfigOneNameProfile on = getConfigFile().getOnename();
 				if(on.getOnename().length() == 0)
 					return null;
 				return on;
@@ -1558,13 +1645,13 @@ public class WalletOperation extends BASE{
 		}
 				
 		public void writeOnename(ConfigOneNameProfile one) throws FileNotFoundException, IOException{
-			configFile.writeOnename(one);
+			getConfigFile().writeOnename(one);
 			LOG.info("Set new OneName profile: " + one.toString());
 		}
 		
 		public boolean isOnenameAvatarSet() {
 			try {
-				AuthenticatorConfiguration.ConfigOneNameProfile on = configFile.getOnename();
+				AuthenticatorConfiguration.ConfigOneNameProfile on = getConfigFile().getOnename();
 				if(on.getOnename().length() == 0)
 					return false;
 				return true;
@@ -1574,7 +1661,7 @@ public class WalletOperation extends BASE{
 		
 		public boolean deleteOneNameAvatar() throws IOException {
 			if(isOnenameAvatarSet()) {
-				configFile.deleteOneNameAvatar();
+				getConfigFile().deleteOneNameAvatar();
 				LOG.info("Deleted OneName profile");
 				return true;
 			}
@@ -1594,7 +1681,7 @@ public class WalletOperation extends BASE{
 		 */
 		public AuthenticatorConfiguration.ConfigActiveAccount getActiveAccount() {
 			try {
-				return configFile.getActiveAccount();
+				return getConfigFile().getActiveAccount();
 			} catch (IOException e) { e.printStackTrace(); }
 			return null;
 		}
@@ -1625,8 +1712,7 @@ public class WalletOperation extends BASE{
 		}
 
 		private void writeActiveAccount(AuthenticatorConfiguration.ConfigActiveAccount acc) throws FileNotFoundException, IOException{
-
-			configFile.writeActiveAccount(acc);
+			getConfigFile().writeActiveAccount(acc);
 		}
 		
 	//#####################################
@@ -1634,23 +1720,10 @@ public class WalletOperation extends BASE{
   	//	Regular Bitocoin Wallet Operations
   	//
   	//#####################################
-		
-	public Wallet getTrackedWallet(){
-		return mWalletWrapper.getTrackedWallet();
-	}
-	
-	public void setTrackedWallet(Wallet wallet){
-		if(mWalletWrapper == null)
-			mWalletWrapper = new WalletWrapper(wallet,null);
-		else
-			mWalletWrapper.setTrackedWallet(wallet);
-		mWalletWrapper.addEventListener(new WalletListener(WalletOperation.this));
-	}
-    
+
     public NetworkParameters getNetworkParams()
 	{
-    	assert(mWalletWrapper != null);
-		return mWalletWrapper.getNetworkParams();
+		return getWalletWrapper().getNetworkParams();
 	}
     
     public boolean isWatchingAddress(Address address){
@@ -1665,29 +1738,25 @@ public class WalletOperation extends BASE{
      */
     public boolean isWatchingAddress(String address)
 	{
-    	assert(mWalletWrapper != null);
-    	return mWalletWrapper.isAuthenticatorAddressWatched(address);
+    	return getWalletWrapper().isAuthenticatorAddressWatched(address);
 	}
     
     public boolean isTransactionOutputMine(TransactionOutput out)
 	{
-    	assert(mWalletWrapper != null);
-		return mWalletWrapper.isTransactionOutputMine(out);
+		return getWalletWrapper().isTransactionOutputMine(out);
 	}
     
     public void addAddressToWatch(String address) throws AddressFormatException
 	{
-    	assert(mWalletWrapper != null);
-    	if(!mWalletWrapper.isAuthenticatorAddressWatched(address)){
-    		mWalletWrapper.addAddressToWatch(address);
+    	if(!getWalletWrapper().isAuthenticatorAddressWatched(address)){
+			getWalletWrapper().addAddressToWatch(address);
         	this.LOG.info("Added address to watch: " + address);
     	}
 	}
     
     public void addAddressesToWatch(final List<String> addresses) throws AddressFormatException
 	{
-    	assert(mWalletWrapper != null);
-    	mWalletWrapper.addAddressesStringToWatch(addresses);
+		getWalletWrapper().addAddressesStringToWatch(addresses);
     	this.LOG.info("Added {} addresses to watch", addresses.size());
 	}
     
@@ -1700,8 +1769,7 @@ public class WalletOperation extends BASE{
      */
     public TransactionOutput findTransactionOutpointByHash(String parentTransactionOutpointHash, long index)
 	{
-		assert(mWalletWrapper != null);
-		List<TransactionOutput> unspentOutputs = mWalletWrapper.getWatchedOutputs();
+		List<TransactionOutput> unspentOutputs = getWalletWrapper().getWatchedOutputs();
 		for(TransactionOutput out:unspentOutputs) {
 			String hashOut = out.getParentTransaction().getHashAsString();
 			if(hashOut.equals(parentTransactionOutpointHash) && out.getIndex() == index){
@@ -1714,18 +1782,15 @@ public class WalletOperation extends BASE{
 	
 	public void addEventListener(WalletEventListener listener)
 	{
-		assert(mWalletWrapper != null);
-		mWalletWrapper.addEventListener(listener);
+		getWalletWrapper().addEventListener(listener);
 	}
 	
 	public ECKey findKeyFromPubHash(byte[] pubkeyHash){
-		assert(mWalletWrapper != null);
-		return mWalletWrapper.findKeyFromPubHash(pubkeyHash);
+		return getWalletWrapper().findKeyFromPubHash(pubkeyHash);
 	}
 	
 	public List<Transaction> getRecentTransactions(){
-		assert(mWalletWrapper != null);
-		return mWalletWrapper.getRecentTransactions();
+		return getWalletWrapper().getRecentTransactions();
 	}
 	
 	public ArrayList<TransactionOutput> selectOutputsFromAccount(int accountIndex, Coin value) throws ScriptException, CannotGetAddressException {
@@ -1747,7 +1812,7 @@ public class WalletOperation extends BASE{
 	
 	public ArrayList<TransactionOutput> getUnspentOutputsForAccount(int accountIndex) throws ScriptException, CannotGetAddressException{
 		ArrayList<TransactionOutput> ret = new ArrayList<TransactionOutput>();
-		List<TransactionOutput> all = mWalletWrapper.getWatchedOutputs();
+		List<TransactionOutput> all = getWalletWrapper().getWatchedOutputs();
 		for(TransactionOutput unspentOut:all){
 			ATAddress add = findAddressInAccounts(unspentOut.getScriptPubKey().getToAddress(getNetworkParams()).toString());
 			/*
@@ -1764,22 +1829,22 @@ public class WalletOperation extends BASE{
  
 	public ArrayList<TransactionOutput> getUnspentOutputsForAddresses(ArrayList<String> addressArr)
 	{
-		return mWalletWrapper.getUnspentOutputsForAddresses(addressArr);
+		return getWalletWrapper().getUnspentOutputsForAddresses(addressArr);
 	}
 	
 	public Coin getTxValueSentToMe(Transaction tx){
-		return mWalletWrapper.getTxValueSentToMe(tx);
+		return getWalletWrapper().getTxValueSentToMe(tx);
 	}
 	
 	public Coin getTxValueSentFromMe(Transaction tx){
-		return mWalletWrapper.getTxValueSentFromMe(tx);
+		return getWalletWrapper().getTxValueSentFromMe(tx);
 	}
 	
 	public void decryptWallet(BAPassword password) throws NoWalletPasswordException{
 		if(isWalletEncrypted())
 		if(password.hasPassword()){
 			try {
-				mWalletWrapper.decryptWallet(password.toString());
+				getWalletWrapper().decryptWallet(password.toString());
 			}
 			catch(KeyCrypterException returnException) { 
 				throw new NoWalletPasswordException("Illegal Password");
@@ -1793,7 +1858,7 @@ public class WalletOperation extends BASE{
 	public void encryptWallet(BAPassword password) throws NoWalletPasswordException{
 		if(!isWalletEncrypted())
 		if(password.hasPassword()){
-			mWalletWrapper.encryptWallet(password.toString());
+			getWalletWrapper().encryptWallet(password.toString());
 			LOG.info("Encrypted wallet with password: " + password.toString());
 		}
 		else
@@ -1813,11 +1878,11 @@ public class WalletOperation extends BASE{
 		DeterministicSeed ret;
 		if(isWalletEncrypted()){
 			decryptWallet(pw);
-			ret = mWalletWrapper.getWalletSeed();
+			ret = getWalletWrapper().getWalletSeed();
 			encryptWallet(pw);
 		}
 		else
-			ret = mWalletWrapper.getWalletSeed();
+			ret = getWalletWrapper().getWalletSeed();
 		return ret;
 	}
 		
@@ -1833,9 +1898,9 @@ public class WalletOperation extends BASE{
 	 }
 	
 	public boolean isWalletEncrypted(){
-		return mWalletWrapper.isWalletEncrypted();
+		return getWalletWrapper().isWalletEncrypted();
 	}
-	
+
 	//#####################################
 	//
 	//		Tx history
@@ -1844,7 +1909,7 @@ public class WalletOperation extends BASE{
 	
 	public void writeNextSavedTxData(String txid, String toFrom, String description) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.writeNextSavedTxData(txid, toFrom, description);
+			getConfigFile().writeNextSavedTxData(txid, toFrom, description);
 		} catch (IOException e) {
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
@@ -1852,22 +1917,22 @@ public class WalletOperation extends BASE{
 	
 	public void writeSavedTxData(int x, String txid, String toFrom, String description) throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.writeSavedTxData(x, txid, toFrom, description);
+			getConfigFile().writeSavedTxData(x, txid, toFrom, description);
 		} catch (IOException e) {
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
 	}
 	
 	public ArrayList<String> getSavedTxidList(){
-		return configFile.getSavedTxidList();
+		return getConfigFile().getSavedTxidList();
 	}
 	
 	public String getSavedDescription (int index) {
-		return configFile.getSavedDescription(index);
+		return getConfigFile().getSavedDescription(index);
 	}
 	
 	public String getSavedToFrom (int index) {
-		return configFile.getSavedToFrom(index);
+		return getConfigFile().getSavedToFrom(index);
 	}
 	
 	public ArrayList<Transaction> filterTransactionsByAccount (int accountIndex) throws CannotGetAccountFilteredTransactionsException {
@@ -1875,7 +1940,7 @@ public class WalletOperation extends BASE{
 		try {
 			ArrayList<String> usedExternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.External);
 			//ArrayList<String> usedInternalAddressList = getAccountUsedAddressesString(accountIndex, HierarchyAddressTypes.Internal);
-			Set<Transaction> fullTxSet = mWalletWrapper.trackedWallet.getTransactions(false);
+			Set<Transaction> fullTxSet = getTrackedWallet().getTransactions(false);
 	    	for (Transaction tx : fullTxSet){
 	    		for (int a=0; a<tx.getInputs().size(); a++){
 	    			if (tx.getInput(a).getConnectedOutput()!=null){
@@ -2135,7 +2200,7 @@ public class WalletOperation extends BASE{
 	
 	public void resotreSettingsToDefault() throws CannotWriteToConfigurationFileException {
 		try {
-			configFile.resotreSettingsToDefault();
+			getConfigFile().resotreSettingsToDefault();
 		} catch (IOException e) {
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}

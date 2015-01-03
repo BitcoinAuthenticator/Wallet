@@ -136,7 +136,7 @@ public class SignTransactionTest {
 		pairingID = "1";
 		wallet = Mockito.mock(WalletOperation.class);
 		Mockito.when(wallet.getNetworkParams()).thenReturn(MainNetParams.get());
-		Mockito.when(wallet.getAESKey(pairingID)).thenReturn(aes);
+		Mockito.when(wallet.getAESKey(pairingID, null)).thenReturn(aes);
 		
 		// inputs
 		ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();

@@ -3498,23 +3498,39 @@ public final class ProtoConfig {
     int getKeysN();
 
     /**
-     * <code>required int32 walletAccountIndex = 10;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     *required string 	pairingName 		= 9;
-     * </pre>
+     * <code>required int32 walletAccountIndex = 8;</code>
      */
     boolean hasWalletAccountIndex();
     /**
-     * <code>required int32 walletAccountIndex = 10;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     *required string 	pairingName 		= 9;
-     * </pre>
+     * <code>required int32 walletAccountIndex = 8;</code>
      */
     int getWalletAccountIndex();
+
+    /**
+     * <code>optional bytes key_salt = 9;</code>
+     *
+     * <pre>
+     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * </pre>
+     */
+    boolean hasKeySalt();
+    /**
+     * <code>optional bytes key_salt = 9;</code>
+     *
+     * <pre>
+     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * </pre>
+     */
+    com.google.protobuf.ByteString getKeySalt();
+
+    /**
+     * <code>required bool isEncrypted = 10 [default = false];</code>
+     */
+    boolean hasIsEncrypted();
+    /**
+     * <code>required bool isEncrypted = 10 [default = false];</code>
+     */
+    boolean getIsEncrypted();
   }
   /**
    * Protobuf type {@code org.authenticator.protobuf.PairedAuthenticator}
@@ -3612,9 +3628,19 @@ public final class ProtoConfig {
               keysN_ = input.readInt32();
               break;
             }
-            case 80: {
+            case 64: {
               bitField0_ |= 0x00000080;
               walletAccountIndex_ = input.readInt32();
+              break;
+            }
+            case 74: {
+              bitField0_ |= 0x00000100;
+              keySalt_ = input.readBytes();
+              break;
+            }
+            case 80: {
+              bitField0_ |= 0x00000200;
+              isEncrypted_ = input.readBool();
               break;
             }
           }
@@ -3909,29 +3935,57 @@ public final class ProtoConfig {
       return keysN_;
     }
 
-    public static final int WALLETACCOUNTINDEX_FIELD_NUMBER = 10;
+    public static final int WALLETACCOUNTINDEX_FIELD_NUMBER = 8;
     private int walletAccountIndex_;
     /**
-     * <code>required int32 walletAccountIndex = 10;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     *required string 	pairingName 		= 9;
-     * </pre>
+     * <code>required int32 walletAccountIndex = 8;</code>
      */
     public boolean hasWalletAccountIndex() {
       return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
-     * <code>required int32 walletAccountIndex = 10;</code>
-     *
-     * <pre>
-     *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-     *required string 	pairingName 		= 9;
-     * </pre>
+     * <code>required int32 walletAccountIndex = 8;</code>
      */
     public int getWalletAccountIndex() {
       return walletAccountIndex_;
+    }
+
+    public static final int KEY_SALT_FIELD_NUMBER = 9;
+    private com.google.protobuf.ByteString keySalt_;
+    /**
+     * <code>optional bytes key_salt = 9;</code>
+     *
+     * <pre>
+     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * </pre>
+     */
+    public boolean hasKeySalt() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional bytes key_salt = 9;</code>
+     *
+     * <pre>
+     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * </pre>
+     */
+    public com.google.protobuf.ByteString getKeySalt() {
+      return keySalt_;
+    }
+
+    public static final int ISENCRYPTED_FIELD_NUMBER = 10;
+    private boolean isEncrypted_;
+    /**
+     * <code>required bool isEncrypted = 10 [default = false];</code>
+     */
+    public boolean hasIsEncrypted() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    /**
+     * <code>required bool isEncrypted = 10 [default = false];</code>
+     */
+    public boolean getIsEncrypted() {
+      return isEncrypted_;
     }
 
     private void initFields() {
@@ -3943,6 +3997,8 @@ public final class ProtoConfig {
       testnet_ = false;
       keysN_ = 0;
       walletAccountIndex_ = 0;
+      keySalt_ = com.google.protobuf.ByteString.EMPTY;
+      isEncrypted_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3982,6 +4038,10 @@ public final class ProtoConfig {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasIsEncrypted()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -4011,7 +4071,13 @@ public final class ProtoConfig {
         output.writeInt32(7, keysN_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeInt32(10, walletAccountIndex_);
+        output.writeInt32(8, walletAccountIndex_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, keySalt_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeBool(10, isEncrypted_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4052,7 +4118,15 @@ public final class ProtoConfig {
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(10, walletAccountIndex_);
+          .computeInt32Size(8, walletAccountIndex_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, keySalt_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(10, isEncrypted_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4191,6 +4265,10 @@ public final class ProtoConfig {
         bitField0_ = (bitField0_ & ~0x00000040);
         walletAccountIndex_ = 0;
         bitField0_ = (bitField0_ & ~0x00000080);
+        keySalt_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000100);
+        isEncrypted_ = false;
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
 
@@ -4251,6 +4329,14 @@ public final class ProtoConfig {
           to_bitField0_ |= 0x00000080;
         }
         result.walletAccountIndex_ = walletAccountIndex_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.keySalt_ = keySalt_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.isEncrypted_ = isEncrypted_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4301,6 +4387,12 @@ public final class ProtoConfig {
         if (other.hasWalletAccountIndex()) {
           setWalletAccountIndex(other.getWalletAccountIndex());
         }
+        if (other.hasKeySalt()) {
+          setKeySalt(other.getKeySalt());
+        }
+        if (other.hasIsEncrypted()) {
+          setIsEncrypted(other.getIsEncrypted());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -4335,6 +4427,10 @@ public final class ProtoConfig {
           return false;
         }
         if (!hasWalletAccountIndex()) {
+          
+          return false;
+        }
+        if (!hasIsEncrypted()) {
           
           return false;
         }
@@ -4830,34 +4926,19 @@ public final class ProtoConfig {
 
       private int walletAccountIndex_ ;
       /**
-       * <code>required int32 walletAccountIndex = 10;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       *required string 	pairingName 		= 9;
-       * </pre>
+       * <code>required int32 walletAccountIndex = 8;</code>
        */
       public boolean hasWalletAccountIndex() {
         return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
-       * <code>required int32 walletAccountIndex = 10;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       *required string 	pairingName 		= 9;
-       * </pre>
+       * <code>required int32 walletAccountIndex = 8;</code>
        */
       public int getWalletAccountIndex() {
         return walletAccountIndex_;
       }
       /**
-       * <code>required int32 walletAccountIndex = 10;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       *required string 	pairingName 		= 9;
-       * </pre>
+       * <code>required int32 walletAccountIndex = 8;</code>
        */
       public Builder setWalletAccountIndex(int value) {
         bitField0_ |= 0x00000080;
@@ -4866,16 +4947,94 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>required int32 walletAccountIndex = 10;</code>
-       *
-       * <pre>
-       *repeated KeysObject generatedKeys 	= 8; // no need to cache them
-       *required string 	pairingName 		= 9;
-       * </pre>
+       * <code>required int32 walletAccountIndex = 8;</code>
        */
       public Builder clearWalletAccountIndex() {
         bitField0_ = (bitField0_ & ~0x00000080);
         walletAccountIndex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString keySalt_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes key_salt = 9;</code>
+       *
+       * <pre>
+       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * </pre>
+       */
+      public boolean hasKeySalt() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional bytes key_salt = 9;</code>
+       *
+       * <pre>
+       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * </pre>
+       */
+      public com.google.protobuf.ByteString getKeySalt() {
+        return keySalt_;
+      }
+      /**
+       * <code>optional bytes key_salt = 9;</code>
+       *
+       * <pre>
+       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * </pre>
+       */
+      public Builder setKeySalt(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        keySalt_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes key_salt = 9;</code>
+       *
+       * <pre>
+       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * </pre>
+       */
+      public Builder clearKeySalt() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        keySalt_ = getDefaultInstance().getKeySalt();
+        onChanged();
+        return this;
+      }
+
+      private boolean isEncrypted_ ;
+      /**
+       * <code>required bool isEncrypted = 10 [default = false];</code>
+       */
+      public boolean hasIsEncrypted() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>required bool isEncrypted = 10 [default = false];</code>
+       */
+      public boolean getIsEncrypted() {
+        return isEncrypted_;
+      }
+      /**
+       * <code>required bool isEncrypted = 10 [default = false];</code>
+       */
+      public Builder setIsEncrypted(boolean value) {
+        bitField0_ |= 0x00000200;
+        isEncrypted_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool isEncrypted = 10 [default = false];</code>
+       */
+      public Builder clearIsEncrypted() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        isEncrypted_ = false;
         onChanged();
         return this;
       }
@@ -7077,7 +7236,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     java.util.List<org.authenticator.protobuf.ProtoConfig.ATAccount> 
@@ -7086,7 +7245,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     org.authenticator.protobuf.ProtoConfig.ATAccount getConfigAccounts(int index);
@@ -7094,7 +7253,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     int getConfigAccountsCount();
@@ -7102,7 +7261,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     java.util.List<? extends org.authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> 
@@ -7111,7 +7270,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     org.authenticator.protobuf.ProtoConfig.ATAccountOrBuilder getConfigAccountsOrBuilder(
@@ -11257,7 +11416,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     public java.util.List<org.authenticator.protobuf.ProtoConfig.ATAccount> getConfigAccountsList() {
@@ -11267,7 +11426,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     public java.util.List<? extends org.authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> 
@@ -11278,7 +11437,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     public int getConfigAccountsCount() {
@@ -11288,7 +11447,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     public org.authenticator.protobuf.ProtoConfig.ATAccount getConfigAccounts(int index) {
@@ -11298,7 +11457,7 @@ public final class ProtoConfig {
      * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
      *
      * <pre>
-     *required Hierarchy 					ConfigHierarchy						= 6;
+     *required Hierarchy 				ConfigHierarchy						= 6;
      * </pre>
      */
     public org.authenticator.protobuf.ProtoConfig.ATAccountOrBuilder getConfigAccountsOrBuilder(
@@ -12246,7 +12405,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public java.util.List<org.authenticator.protobuf.ProtoConfig.ATAccount> getConfigAccountsList() {
@@ -12260,7 +12419,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public int getConfigAccountsCount() {
@@ -12274,7 +12433,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public org.authenticator.protobuf.ProtoConfig.ATAccount getConfigAccounts(int index) {
@@ -12288,7 +12447,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder setConfigAccounts(
@@ -12309,7 +12468,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder setConfigAccounts(
@@ -12327,7 +12486,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder addConfigAccounts(org.authenticator.protobuf.ProtoConfig.ATAccount value) {
@@ -12347,7 +12506,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder addConfigAccounts(
@@ -12368,7 +12527,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder addConfigAccounts(
@@ -12386,7 +12545,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder addConfigAccounts(
@@ -12404,7 +12563,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder addAllConfigAccounts(
@@ -12423,7 +12582,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder clearConfigAccounts() {
@@ -12440,7 +12599,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public Builder removeConfigAccounts(int index) {
@@ -12457,7 +12616,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public org.authenticator.protobuf.ProtoConfig.ATAccount.Builder getConfigAccountsBuilder(
@@ -12468,7 +12627,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public org.authenticator.protobuf.ProtoConfig.ATAccountOrBuilder getConfigAccountsOrBuilder(
@@ -12482,7 +12641,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public java.util.List<? extends org.authenticator.protobuf.ProtoConfig.ATAccountOrBuilder> 
@@ -12497,7 +12656,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public org.authenticator.protobuf.ProtoConfig.ATAccount.Builder addConfigAccountsBuilder() {
@@ -12508,7 +12667,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public org.authenticator.protobuf.ProtoConfig.ATAccount.Builder addConfigAccountsBuilder(
@@ -12520,7 +12679,7 @@ public final class ProtoConfig {
        * <code>repeated .org.authenticator.protobuf.ATAccount configAccounts = 6;</code>
        *
        * <pre>
-       *required Hierarchy 					ConfigHierarchy						= 6;
+       *required Hierarchy 				ConfigHierarchy						= 6;
        * </pre>
        */
       public java.util.List<org.authenticator.protobuf.ProtoConfig.ATAccount.Builder> 
@@ -12992,60 +13151,61 @@ public final class ProtoConfig {
       "tobuf.ATAccount.ATAccountAddressHierarch" +
       "y\032M\n\031ATAccountAddressHierarchy\022\024\n\014hierar" +
       "chyKey\030\001 \002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014" +
-      "\"\262\001\n\023PairedAuthenticator\022\017\n\007aes_key\030\001 \002(",
+      "\"\340\001\n\023PairedAuthenticator\022\017\n\007aes_key\030\001 \002(",
       "\t\022\031\n\021master_public_key\030\002 \002(\t\022\022\n\nchain_co" +
       "de\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t" +
       "\022\017\n\007testnet\030\006 \002(\010\022\016\n\006keys_n\030\007 \002(\005\022\032\n\022wal" +
-      "letAccountIndex\030\n \002(\005\"\344\003\n\016PendingRequest" +
-      "\022\021\n\tpairingID\030\001 \002(\t\022\021\n\trequestID\030\002 \002(\t\022B" +
-      "\n\roperationType\030\003 \002(\0162+.org.authenticato" +
-      "r.protobuf.ATOperationType\022\r\n\005rawTx\030\004 \001(" +
-      "\t\022\017\n\007txLabel\030\005 \001(\t\022 \n\030txDestinationDescr" +
-      "iption\030\006 \001(\t\022\027\n\017payloadIncoming\030\007 \001(\014\022\'\n" +
-      "\037payloadToSendInCaseOfConnection\030\010 \001(\014\022E",
-      "\n\010contract\030\t \002(\01323.org.authenticator.pro" +
-      "tobuf.PendingRequest.Contract\032\234\001\n\010Contra" +
-      "ct\022%\n\035ShouldSendPayloadOnConnection\030\001 \001(" +
-      "\010\022;\n3ShouldReceivePayloadAfterSendingPay" +
-      "loadOnConnection\030\002 \001(\010\022,\n$ShouldLetPendi" +
-      "ngRequestHandleRemoval\030\003 \001(\010\"\365\010\n\032Authent" +
-      "icatorConfiguration\022g\n\023configActiveAccou" +
-      "nt\030\001 \001(\0132J.org.authenticator.protobuf.Au" +
-      "thenticatorConfiguration.ConfigActiveAcc" +
-      "ount\022s\n\031configAuthenticatorWallet\030\002 \001(\0132",
-      "P.org.authenticator.protobuf.Authenticat" +
-      "orConfiguration.ConfigAuthenticatorWalle" +
-      "t\022i\n\024configOneNameProfile\030\005 \001(\0132K.org.au" +
-      "thenticator.protobuf.AuthenticatorConfig" +
-      "uration.ConfigOneNameProfile\022=\n\016configAc" +
-      "counts\030\006 \003(\0132%.org.authenticator.protobu" +
-      "f.ATAccount\022Y\n\021configSavedTXData\030\007 \003(\0132>" +
-      ".org.authenticator.protobuf.Authenticato" +
-      "rConfiguration.SavedTX\022B\n\016configSettings" +
-      "\030\010 \002(\0132*.org.authenticator.protobuf.Conf",
-      "igSettings\032\241\001\n\023ConfigActiveAccount\022L\n\023pa" +
-      "iredAuthenticator\030\001 \001(\0132/.org.authentica" +
-      "tor.protobuf.PairedAuthenticator\022<\n\racti" +
-      "veAccount\030\002 \002(\0132%.org.authenticator.prot" +
-      "obuf.ATAccount\032\270\001\n\031ConfigAuthenticatorWa" +
-      "llet\022\016\n\006paired\030\001 \001(\010\022F\n\rpairedWallets\030\002 " +
-      "\003(\0132/.org.authenticator.protobuf.PairedA" +
-      "uthenticator\022C\n\017pendingRequests\030\003 \003(\0132*." +
-      "org.authenticator.protobuf.PendingReques" +
-      "t\032\222\001\n\024ConfigOneNameProfile\022\017\n\007onename\030\001 ",
-      "\002(\t\022\030\n\020onenameFormatted\030\002 \001(\t\022\030\n\020onename" +
-      "AvatarURL\030\003 \001(\t\022\035\n\025onenameAvatarFilePath" +
-      "\030\004 \001(\t\022\026\n\016bitcoinAddress\030\005 \001(\t\032<\n\007SavedT" +
-      "X\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t\022\023\n\013descr" +
-      "iption\030\003 \001(\t*N\n\020ATGCMMessageType\022\n\n\006Sign" +
-      "TX\020\002\022\033\n\027UpdatePendingRequestIPs\020\004\022\021\n\rCoi" +
-      "nsReceived\020\006*\217\001\n\017ATOperationType\022\013\n\007Pair" +
-      "ing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadcastAut" +
-      "henticatorTx\020\002\022\025\n\021BroadcastNormalTx\020\003\022\'\n" +
-      "#updateIpAddressesForPreviousMessage\020\004*B",
-      "\n\021WalletAccountType\022\023\n\017StandardAccount\020\000" +
-      "\022\030\n\024AuthenticatorAccount\020\001B\rB\013ProtoConfi" +
-      "g"
+      "letAccountIndex\030\010 \002(\005\022\020\n\010key_salt\030\t \001(\014\022" +
+      "\032\n\013isEncrypted\030\n \002(\010:\005false\"\344\003\n\016PendingR" +
+      "equest\022\021\n\tpairingID\030\001 \002(\t\022\021\n\trequestID\030\002" +
+      " \002(\t\022B\n\roperationType\030\003 \002(\0162+.org.authen" +
+      "ticator.protobuf.ATOperationType\022\r\n\005rawT" +
+      "x\030\004 \001(\t\022\017\n\007txLabel\030\005 \001(\t\022 \n\030txDestinatio" +
+      "nDescription\030\006 \001(\t\022\027\n\017payloadIncoming\030\007 ",
+      "\001(\014\022\'\n\037payloadToSendInCaseOfConnection\030\010" +
+      " \001(\014\022E\n\010contract\030\t \002(\01323.org.authenticat" +
+      "or.protobuf.PendingRequest.Contract\032\234\001\n\010" +
+      "Contract\022%\n\035ShouldSendPayloadOnConnectio" +
+      "n\030\001 \001(\010\022;\n3ShouldReceivePayloadAfterSend" +
+      "ingPayloadOnConnection\030\002 \001(\010\022,\n$ShouldLe" +
+      "tPendingRequestHandleRemoval\030\003 \001(\010\"\365\010\n\032A" +
+      "uthenticatorConfiguration\022g\n\023configActiv" +
+      "eAccount\030\001 \001(\0132J.org.authenticator.proto" +
+      "buf.AuthenticatorConfiguration.ConfigAct",
+      "iveAccount\022s\n\031configAuthenticatorWallet\030" +
+      "\002 \001(\0132P.org.authenticator.protobuf.Authe" +
+      "nticatorConfiguration.ConfigAuthenticato" +
+      "rWallet\022i\n\024configOneNameProfile\030\005 \001(\0132K." +
+      "org.authenticator.protobuf.Authenticator" +
+      "Configuration.ConfigOneNameProfile\022=\n\016co" +
+      "nfigAccounts\030\006 \003(\0132%.org.authenticator.p" +
+      "rotobuf.ATAccount\022Y\n\021configSavedTXData\030\007" +
+      " \003(\0132>.org.authenticator.protobuf.Authen" +
+      "ticatorConfiguration.SavedTX\022B\n\016configSe",
+      "ttings\030\010 \002(\0132*.org.authenticator.protobu" +
+      "f.ConfigSettings\032\241\001\n\023ConfigActiveAccount" +
+      "\022L\n\023pairedAuthenticator\030\001 \001(\0132/.org.auth" +
+      "enticator.protobuf.PairedAuthenticator\022<" +
+      "\n\ractiveAccount\030\002 \002(\0132%.org.authenticato" +
+      "r.protobuf.ATAccount\032\270\001\n\031ConfigAuthentic" +
+      "atorWallet\022\016\n\006paired\030\001 \001(\010\022F\n\rpairedWall" +
+      "ets\030\002 \003(\0132/.org.authenticator.protobuf.P" +
+      "airedAuthenticator\022C\n\017pendingRequests\030\003 " +
+      "\003(\0132*.org.authenticator.protobuf.Pending",
+      "Request\032\222\001\n\024ConfigOneNameProfile\022\017\n\007onen" +
+      "ame\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(\t\022\030\n\020o" +
+      "nenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAvatarFi" +
+      "lePath\030\004 \001(\t\022\026\n\016bitcoinAddress\030\005 \001(\t\032<\n\007" +
+      "SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t\022\023\n" +
+      "\013description\030\003 \001(\t*N\n\020ATGCMMessageType\022\n" +
+      "\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs\020\004\022" +
+      "\021\n\rCoinsReceived\020\006*\217\001\n\017ATOperationType\022\013" +
+      "\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadc" +
+      "astAuthenticatorTx\020\002\022\025\n\021BroadcastNormalT",
+      "x\020\003\022\'\n#updateIpAddressesForPreviousMessa" +
+      "ge\020\004*B\n\021WalletAccountType\022\023\n\017StandardAcc" +
+      "ount\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013Prot" +
+      "oConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -13084,7 +13244,7 @@ public final class ProtoConfig {
     internal_static_org_authenticator_protobuf_PairedAuthenticator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_org_authenticator_protobuf_PairedAuthenticator_descriptor,
-        new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "WalletAccountIndex", });
+        new java.lang.String[] { "AesKey", "MasterPublicKey", "ChainCode", "GCM", "PairingID", "Testnet", "KeysN", "WalletAccountIndex", "KeySalt", "IsEncrypted", });
     internal_static_org_authenticator_protobuf_PendingRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_org_authenticator_protobuf_PendingRequest_fieldAccessorTable = new

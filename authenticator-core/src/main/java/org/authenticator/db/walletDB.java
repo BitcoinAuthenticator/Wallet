@@ -38,11 +38,17 @@ import com.google.protobuf.ByteString;
 
 public class walletDB extends dbBase{
 
+	public walletDB() { }
+
 	public walletDB(String filePath) throws IOException{
 		super(filePath);
 	}
 
-	private synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
+	/**
+	 *
+	 * @return
+	 */
+	public synchronized AuthenticatorConfiguration.Builder getConfigFileBuilder() {
 		AuthenticatorConfiguration.Builder auth = AuthenticatorConfiguration.newBuilder();
 		try{ auth.mergeDelimitedFrom(new FileInputStream(filePath)); }
 		catch(Exception e)
@@ -53,7 +59,12 @@ public class walletDB extends dbBase{
 		return auth;
 	}
 
-	private synchronized void writeConfigFile(AuthenticatorConfiguration.Builder auth) throws IOException{
+	/**
+	 *
+	 * @param auth
+	 * @throws IOException
+	 */
+	public synchronized void writeConfigFile(AuthenticatorConfiguration.Builder auth) throws IOException{
 		FileOutputStream output = new FileOutputStream(filePath);  
 		auth.build().writeDelimitedTo(output);          
 		output.close();
@@ -104,16 +115,7 @@ public class walletDB extends dbBase{
 			b.addUsedExternalKeys(addIndx);
 		else
 			;
-		//writeConfigFile(auth);
-		this.updateAccount(b.build());
-	}
-
-	public ArrayList<String> getAddressString(List<ATAddress> cache) throws FileNotFoundException, IOException{
-		ArrayList<String> keypool = new ArrayList<String>();
-		for (ATAddress add : cache){
-			keypool.add(add.getAddressStr());
-		}
-		return keypool;
+		updateAccount(b.build());
 	}
 
 	public boolean isUsedAddress(int accountIndex, HierarchyAddressTypes addressType, int keyIndex) throws AccountWasNotFoundException{
@@ -124,6 +126,12 @@ public class walletDB extends dbBase{
 		return acc.getUsedInternalKeysList().contains(keyIndex);
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public List<PairedAuthenticator> getAllPairingObjectArray() throws FileNotFoundException, IOException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		return auth.getConfigAuthenticatorWallet().getPairedWalletsList();
@@ -132,7 +140,14 @@ public class walletDB extends dbBase{
 	/**This method is used during pairing. It saves the data from the Autheticator to file
 	 * @throws IOException */
 	@SuppressWarnings("unchecked")
-	public PairedAuthenticator writePairingData(String mpubkey, String chaincode, String key, String GCM, String pairingID, int accountIndex) throws IOException{
+	public PairedAuthenticator writePairingData(String mpubkey,
+												String chaincode,
+												String key,
+												String GCM,
+												String pairingID,
+												int accountIndex,
+												boolean isEncrypted,
+												byte[] salt) throws IOException{
  		// Create new pairing item
  		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
  									newPair.setAesKey(key);
@@ -140,10 +155,11 @@ public class walletDB extends dbBase{
  									newPair.setChainCode(chaincode);
  									newPair.setGCM(GCM);
  									newPair.setPairingID(pairingID);
-									//newPair.setPairingName(pairName);
  									newPair.setTestnet(false);
  									newPair.setKeysN(0);
  									newPair.setWalletAccountIndex(accountIndex);
+									newPair.setIsEncrypted(isEncrypted);
+									newPair.setKeySalt(ByteString.copyFrom(salt));
  
  		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
  		auth.getConfigAuthenticatorWalletBuilder().addPairedWallets(newPair.build());
@@ -223,7 +239,6 @@ public class walletDB extends dbBase{
 	 * @throws IOException
 	 */
 	public void removeAccount(int index) throws IOException{
-		assert (getAllAccounts().size() > 1);
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<ATAccount> all = getAllAccounts();
 		auth.clearConfigAccounts();
@@ -232,24 +247,6 @@ public class walletDB extends dbBase{
 				auth.addConfigAccounts(acc);
 		writeConfigFile(auth);
 	}
-
-	/*public void bumpByOneAccountsLastIndex(int accountIndex, HierarchyAddressTypes addressType) throws IOException{
-		//AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		ATAccount acc = getAccount(accountIndex);
-		ATAccount.Builder b = ATAccount.newBuilder(acc);
-		if(addressType == HierarchyAddressTypes.External){
-			int last = acc.getLastExternalIndex();
-			//auth.getConfigAccountsBuilder(accountIndex).setLastExternalIndex(last+1);
-			b.setLastExternalIndex(last+1);
-		}
-		else{
-			int last = acc.getLastInternalIndex();
-			//auth.getConfigAccountsBuilder(accountIndex).setLastInternalIndex(last+1);
-			b.setLastInternalIndex(last+1);
-		}		
-		//writeConfigFile(auth);
-		this.updateAccount(b.build());
-	}*/
 
 	public long getConfirmedBalace(int accountIdx) throws AccountWasNotFoundException{
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
@@ -269,7 +266,7 @@ public class walletDB extends dbBase{
 		ATAccount acc = getAccount(accountIdx);
 		ATAccount.Builder b = ATAccount.newBuilder(acc);
 		b.setConfirmedBalance(newBalance);
-		this.updateAccount(b.build());
+		updateAccount(b.build());
 		return b.build().getConfirmedBalance();
 	}
 
@@ -305,7 +302,6 @@ public class walletDB extends dbBase{
 		writeConfigFile(auth);
 	}
 
-	@SuppressWarnings("static-access")
 	public void removePendingRequest(List<PendingRequest> req) throws FileNotFoundException, IOException {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		List<PendingRequest> all = getPendingRequests();
@@ -351,20 +347,6 @@ public class walletDB extends dbBase{
 		auth.clearConfigOneNameProfile();
 		writeConfigFile(auth);
 	}
-	
-//	public void writeAccountHierarchyPubKey(int accountIdx, DeterministicKey mpubkey) throws AccountWasNotFoundException, IOException{
-//		ATAccount acc = getAccount(accountIdx);
-//		ATAccount.Builder b = ATAccount.newBuilder(acc);
-//		
-//		byte[] pubkey = mpubkey.getPubKey();
-//		byte[] chaincode = mpubkey.getChainCode();
-//		ATAccountHierarchy.Builder hb = ATAccountHierarchy.newBuilder();
-//		hb.setHierarchyMasterPublicKey(ByteString.copyFrom(pubkey));
-//		hb.setHierarchyChaincode(ByteString.copyFrom(chaincode));
-//		
-//		b.setAccountHierarchy(hb.build());
-//		updateAccount(b.build());
-//	}
 	
 	public ATAccountAddressHierarchy geAccountHierarchy(int accountIdx, HierarchyAddressTypes type) throws AccountWasNotFoundException {
 		ATAccount acc = getAccount(accountIdx);
