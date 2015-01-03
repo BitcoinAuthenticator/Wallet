@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.wallet.PairWallet">
+  <children>
+    <Pane layoutX="0.0" layoutY="0.0" prefHeight="484.0" prefWidth="850.0" style="-fx-background-color: #49acbf;">
+      <children>
+        <ImageView fitHeight="404.0" fitWidth="538.6666666666666" layoutX="396.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@baPhone.jpg" />
+          </image>
+        </ImageView>
+        <Pane fx:id="dragPane" layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="59.0" prefWidth="850.0">
+          <children>
+            <ImageView fitHeight="95.25" fitWidth="45.0" layoutX="6.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@btnBitcoinAuthenticator.png" />
+              </image>
+            </ImageView>
+            <Button fx:id="cancelBtn" layoutX="769.0" layoutY="19.0" mnemonicParsing="false" onAction="#cancel" onMousePressed="#btnClosePressed" onMouseReleased="#btnCloseReleased" prefHeight="26.0" style="-fx-background-color: grey; -fx-text-fill: #e3e3e3;" styleClass="cancel-button" text="Close" />
+          </children>
+        </Pane>
+        <Pane fx:id="pairPane" layoutX="0.0" layoutY="59.0" prefHeight="425.0" prefWidth="538.666748046875" visible="true">
+          <children>
+            <Label layoutX="75.0" layoutY="14.0" prefHeight="139.0" prefWidth="433.0" style="-fx-background-color: #e3e3e3;  -fx-background-radius: 2; -fx-padding: 10;" text="You can use this app to pair your wallet with the Bitcoin Authenticator Android app to enable two-factor authentication. When complete, your wallet will generate multisignature addresses which require a signature from two keys to spend the bitcoins. One set of keys will be kept in this wallet and the other on your mobile device. When you make a transaction, your phone will prompt you for authorization." wrapText="true" />
+            <TextField fx:id="textfield" layoutX="75.0" layoutY="252.0" prefHeight="26.0" prefWidth="335.0" promptText="New account name" style="" />
+            <Button fx:id="runBtn" alignment="CENTER" contentDisplay="CENTER" layoutX="410.0" layoutY="252.0" mnemonicParsing="false" onAction="#run" onMousePressed="#btnPairPressed" onMouseReleased="#btnPairReleased" prefHeight="26.0" prefWidth="98.0" style="-fx-background-color: grey; -fx-text-fill: #e3e3e3;" styleClass="custom-button" text="OK" />
+            <ProgressIndicator fx:id="prgIndicator" layoutX="206.0" layoutY="380.0" progress="0.0" visible="false" />
+            <ImageView fitHeight="64.965" fitWidth="183.0" layoutX="194.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../startup/googleplay.png" />
+              </image>
+            </ImageView>
+            <CheckBox fx:id="chkGCM" indeterminate="false" layoutX="75.0" layoutY="290.0" mnemonicParsing="false" selected="true" text="Use Google Cloud Messaging" />
+            <Hyperlink fx:id="hlGCM" layoutX="301.0" layoutY="287.0" onAction="#showGCM" text="What is this?" />
+            <Label layoutX="75.0" layoutY="145.0" prefHeight="59.0" prefWidth="433.0" style="-fx-background-color: #e3e3e3;  -fx-background-radius: 2; -fx-padding: 10;" text="To begin, create a new multisig account by entering an account name clicking OK." wrapText="true" />
+            <PasswordField fx:id="txfWalletPwd" layoutX="75.0" layoutY="213.0" prefHeight="26.0" prefWidth="433.0" promptText="Enter your password" disable="true"/>
+          </children>
+        </Pane>
+        <Pane fx:id="qrPane" layoutX="0.0" layoutY="66.0" prefHeight="418.0" prefWidth="538.666748046875" visible="false">
+          <children>
+            <Label fx:id="lblStatus" layoutX="250.0" layoutY="394.0" prefWidth="78.0" />
+            <ImageView fx:id="imgViewQR" fitHeight="335.0" fitWidth="335.0" layoutX="-335.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="lblScan" layoutX="22.0" layoutY="14.0" text="Scan this QR code with your Bitcoin Authenticator mobile app" visible="false">
+              <font>
+                <Font size="16.0" />
+              </font>
+            </Label>
+          </children>
+        </Pane>
+        <Pane fx:id="gcmPane" layoutX="10.0" layoutY="76.0" prefHeight="418.0" prefWidth="538.666748046875" visible="false">
+          <children>
+            <Label layoutX="14.0" layoutY="148.0" prefHeight="123.1328125" prefWidth="514.666748046875" style="-fx-background-color: #e3e3e3;  -fx-background-radius: 2; -fx-padding: 10;" text="Keep in mind, no transaction data is sent through the cloud messaging servers, only your (encrypted) IP address. All transaction data is communicated peer to peer meaning there are no real privacy concerns when using Google Cloud Messaging. If you wish to disable cloud messaging, you may do so. However, if your IP address has changed you may be asked to scan a QR code to complete the transaction." wrapText="true" />
+            <Label layoutX="14.0" layoutY="14.0" prefHeight="148.0" prefWidth="514.666748046875" style="-fx-background-color: #e3e3e3;  -fx-background-radius: 2; -fx-padding: 10;" text="The Bitcoin Authenticator mobile app communicates with your wallet over an encrypted TCP channel. To do so, however, it needs to know your wallet's IP address. The IP address is initially communicated to the mobile app during pairing, however, IP addresses do sometimes change. If this happens, the mobile app will be unable to communicate with the wallet. As a convience feature your wallet can be enabled to push its IP address to the mobile app over Google's cloud messaging service. This allows for seamless communication between the two devices." wrapText="true" />
+            <Button fx:id="btnBack" layoutX="213.0" layoutY="290.0" mnemonicParsing="false" onAction="#showPairing" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefWidth="95.0" style="-fx-background-color: grey; -fx-text-fill: #e3e3e3;" text="Got it" />
+          </children>
+        </Pane>
+      </children>
+    </Pane>
+  </children>
+</AnchorPane>

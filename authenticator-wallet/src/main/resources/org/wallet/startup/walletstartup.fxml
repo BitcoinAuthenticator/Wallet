@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.oracle.javafx.authoring.persist.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.wallet.startup.StartupController">
+  <children>
+    <ImageView fitHeight="351.9998779296875" fitWidth="351.9998779296875" layoutX="289.0" layoutY="123.0" opacity="0.29" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@logo.png" />
+      </image>
+    </ImageView>
+    <!--
+    
+    	Main pane, shows the restore or create new wallet buttons
+    	
+    	
+    	-->
+    <Pane fx:id="MainPane" layoutX="0.0" layoutY="4.0" prefHeight="393.0" prefWidth="600.0" visible="true">
+      <children>
+        <Button fx:id="btnNewWallet" contentDisplay="TOP" layoutX="78.0" layoutY="93.0" mnemonicParsing="false" onAction="#newWallet" prefHeight="179.0" prefWidth="179.0" text="New wallet" textAlignment="CENTER">
+          <graphic>
+            <ImageView fitHeight="114.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnNewWallet.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnRestore" contentDisplay="TOP" layoutX="350.0" layoutY="93.0" mnemonicParsing="false" onAction="#restoreFromSeed" prefHeight="179.0" prefWidth="179.0" text="Restore from seed" textAlignment="CENTER">
+          <graphic>
+            <ImageView fitHeight="101.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnRestore.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <CheckBox fx:id="chkTestNet" allowIndeterminate="false" indeterminate="false" layoutX="14.0" layoutY="372.0" mnemonicParsing="false" selected="false" text="Use Testnet (Pass --testnet=true/false in program parameters to change)" />
+      </children>
+    </Pane>
+    <!--
+    
+    	Set Password Pane
+    	
+    	
+    	-->
+    <Pane fx:id="SetPasswordPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Hyperlink fx:id="hlpw" layoutX="59.0" layoutY="171.0" minHeight="23.1328125" onAction="#openWeb" prefHeight="23.1328125" prefWidth="302.0" text="Choosing Secure Passwords" />
+        <TextField fx:id="txAccount" layoutX="59.0" layoutY="64.0" prefHeight="27.1328125" prefWidth="481.0" promptText="Name your first account" />
+        <PasswordField fx:id="txPW1" layoutX="59.0" layoutY="117.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
+        <PasswordField fx:id="txPW2" layoutX="304.0" layoutY="117.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
+        <Button fx:id="btnBack1" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinue1" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toBackupNewWalletPane" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    
+    	Backup the new wallet options
+    	
+    	
+    	-->
+    <Pane fx:id="BackupNewWalletPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0000999999975" visible="false">
+      <children>
+        <Button fx:id="btnBack2" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toCreateAccountPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinue2" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toExplanationPane1" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+        <Label fx:id="lblSeed" layoutX="45.0" layoutY="91.0" prefHeight="70.1328125" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
+        <Button fx:id="btnSave" contentDisplay="TOP" disable="false" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#saveWalletFolderAsZip" prefHeight="143.1328125" prefWidth="146.0" text="Backup to file" textAlignment="CENTER">
+          <graphic>
+            <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnSave.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnPaperWallet" contentDisplay="TOP" layoutX="228.0" layoutY="167.0" mnemonicParsing="false" onAction="#printPaperWallet" prefHeight="143.1328125" prefWidth="146.0" text="Create Paper Wallet" textAlignment="CENTER">
+          <font>
+            <Font size="12.5" />
+          </font>
+          <graphic>
+            <ImageView fitHeight="93.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnPaperWallet.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnSSS" contentDisplay="TOP" layoutX="416.0" layoutY="167.0" mnemonicParsing="false" onAction="#openSSS" prefHeight="143.1328125" prefWidth="146.0" text="Shamir's Secret Sharing" textAlignment="CENTER" wrapText="true">
+          <font>
+            <Font size="11.0" />
+          </font>
+          <graphic>
+            <ImageView fx:id="imgSSS" fitHeight="103.5834248489804" fitWidth="113.0000991821289" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnSSS.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Label layoutX="45.0" layoutY="40.0" prefWidth="517.0" text="These 12 words are your wallet's seed. You will need them to recover your bitcoins if your computer crashes. Please keep them in a safe location and/or use the options below." wrapText="true" />
+        <CheckBox fx:id="ckSeed" layoutX="200.0" layoutY="343.0" mnemonicParsing="false" text="I confirm my seed is secure" />
+      </children>
+    </Pane>
+    <!--
+    
+    	Explanation pane 1
+    	
+    	
+    	-->
+    <Pane fx:id="ExplanationPane1" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label fx:id="lbl2fa" layoutX="14.0" layoutY="27.0" prefHeight="40.0" prefWidth="415.0" text="2-Factor Authentication">
+          <font>
+            <Font size="20.0" />
+          </font>
+        </Label>
+        <Label fx:id="lblScan" layoutX="14.0" layoutY="64.0" prefHeight="17.5" prefWidth="337.0" text="Scan the QR code with Bitcoin Authenticator" visible="false">
+          <font>
+            <Font size="15.0" />
+          </font>
+        </Label>
+        <Button fx:id="btnPlayStore" layoutX="232.0" layoutY="325.0" minWidth="100.0" mnemonicParsing="false" onAction="#openPlayStore" prefWidth="125.0" style="-fx-cursor: hand; -fx-background-color: transparent;" text="" visible="true">
+          <graphic>
+            <ImageView fitHeight="75.0" fitWidth="125.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" style="">
+              <image>
+                <Image url="@googleplay.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnBack5" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#backToBackupNewWalletPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Pane fx:id="BA1" layoutX="14.0" layoutY="67.0" prefHeight="242.0" prefWidth="560.0" visible="true">
+          <children>
+            <ImageView fitHeight="220.0" fitWidth="220.0" layoutX="14.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@2fa1.png" />
+              </image>
+            </ImageView>
+            <Label layoutX="262.0" layoutY="28.0" prefWidth="234.0" text="Passwords Aren't Enough">
+              <font>
+                <Font size="17.0" fx:id="x1" />
+              </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutX="262.0" layoutY="56.0" prefHeight="158.18817138671875" prefWidth="274.0" text="It isn't very difficult for a hacker to steal your bitcoins. A simple keylogger is usually enough to compromise your wallet." wrapText="true" />
+          </children>
+        </Pane>
+        <Button fx:id="btnContinue3" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#baNext" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+        <Pane fx:id="BA2" layoutX="14.0" layoutY="67.0" prefHeight="242.0" prefWidth="560.0" visible="false">
+          <children>
+            <ImageView fitHeight="220.0" fitWidth="216.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@2fa2.png" />
+              </image>
+            </ImageView>
+            <Label alignment="TOP_LEFT" layoutX="262.0" layoutY="56.0" prefHeight="158.18817138671875" prefWidth="274.0" text="Bitcoin Authenticator is a decentralized 2-factor authentication solution for Android mobile devices. When activated it makes it substantially harder for an attacker to steal your bitcoins." wrapText="true" />
+            <Label font="$x1" layoutX="262.0" layoutY="28.0" prefWidth="234.0" text="Decentralized 2FA" />
+          </children>
+        </Pane>
+        <Pane fx:id="BA3" layoutX="14.0" layoutY="67.0" prefHeight="242.0" prefWidth="560.0" visible="false">
+          <children>
+            <ImageView fitHeight="208.0" fitWidth="220.0" layoutX="14.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@2fa3.png" />
+              </image>
+            </ImageView>
+            <Label font="$x1" layoutX="262.0" layoutY="28.0" prefWidth="234.0" text="How It Works" />
+            <Label alignment="TOP_LEFT" layoutX="262.0" layoutY="56.0" prefHeight="197.0" prefWidth="274.0" text="When paired with Bitcoin Authenticator, your wallet will generate multi-signature addresses which require two keys to sign a transaction. One set of keys will be kept in this wallet. The other on your Android mobile device. When you make a transaction from this wallet, your mobile device will prompt you for authorization. If one of your devices is compromised, your bitcoins are still safe." wrapText="true" />
+          </children>
+        </Pane>
+        <Pane fx:id="BA4" layoutX="14.0" layoutY="67.0" prefHeight="246.0" prefWidth="560.0" visible="false" />
+        <!--
+        	final explanation pane, here user can pair an account for the first time
+        -->
+        <Label fx:id="lblLoadginQR" font="$x1" layoutX="140.0" layoutY="207.0" prefWidth="98.0" text="Loading..." visible="false" />
+        <ImageView fx:id="ivFirstAccountPairingQR" fitHeight="182.0" fitWidth="182.0" layoutX="89.0" layoutY="126.0" pickOnBounds="true" preserveRatio="true" visible="false" />
+        <Label fx:id="lbld1" layoutX="89.0" layoutY="60.0" prefHeight="74.0" prefWidth="182.0" text="Scan QR code to set up 2-factor authentication and use multisig addresses." visible="false" wrapText="true" />
+        <Label fx:id="lbld2" layoutX="391.0" layoutY="77.0" prefHeight="40.0" prefWidth="146.0" text="Or click below to use standard addresses." visible="false" wrapText="true" />
+        <Button fx:id="btnStandard" layoutX="373.0" layoutY="126.0" mnemonicParsing="false" onAction="#finished" prefHeight="182.0" prefWidth="182.0" text="" textAlignment="CENTER" visible="false" wrapText="true" >
+      	 <graphic>
+            <ImageView fitHeight="114.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnP2KH.png" />
+            </ImageView>
+         </graphic>
+         </Button>
+      </children>
+    </Pane>
+    <!--
+    
+    	-->
+    <Pane fx:id="Pane6" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <WebView fx:id="browser" layoutX="10.0" layoutY="40.0" prefHeight="300.0" prefWidth="580.0" styleClass="null" />
+        <Button fx:id="btnDone" layoutX="247.0" layoutY="356.0" mnemonicParsing="false" onAction="#webFinished" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: #95d946; -fx-background-insets: 0, 0, 1, 2; -fx-text-fill: white;" text="Done" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Shamir Secret Sharing (SSS) backup pane
+    	
+    	
+    	-->
+    <Pane fx:id="SSSBackupPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label layoutX="28.0" layoutY="40.0" text="Shamir's Secret Sharing">
+          <font>
+            <Font size="18.0" fx:id="x2" />
+          </font>
+        </Label>
+        <Label layoutX="28.0" layoutY="61.0" prefHeight="87.0" prefWidth="541.0" text="This dialog allows you split your wallet's seed into cryptographically-secure pieces for storing in separate locations. You can set a &quot;threshold&quot; for the number of pieces needed to reconstruct the seed. For example, with four pieces and and threshold of three, any three of the four pieces can be used to reconstruct the seed." wrapText="true" />
+        <Button fx:id="btnSplit" layoutX="485.0" layoutY="148.0" mnemonicParsing="false" onAction="#split" prefHeight="30.0" prefWidth="84.0" text="Split" />
+        <ListView fx:id="lvSSS" layoutX="29.0" layoutY="186.0" prefHeight="126.0" prefWidth="539.9998779296875" />
+        <Button fx:id="btnBack3" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returntoBackupNewWalletPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnPrintSSS" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#printSSS" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnTestSSS" layoutX="390.0" layoutY="330.0" mnemonicParsing="false" onAction="#testSSS" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="40.0" prefWidth="180.0" text="Test(Recommended)" visible="false" />
+        <Label layoutX="29.0" layoutY="148.0" prefHeight="30.0" prefWidth="84.0" text="# of Pieces" />
+        <Label layoutX="256.0" layoutY="155.0" text="Threshold" />
+        <TextField fx:id="txPieces" layoutX="113.0" layoutY="148.0" prefHeight="30.0" prefWidth="110.0" />
+        <TextField fx:id="txThreshold" layoutX="337.0" layoutY="148.0" prefHeight="30.0" prefWidth="110.0" />
+      </children>
+    </Pane>
+    <!--
+    
+    	Main restore pane
+    
+    -->
+    <Pane fx:id="MainRestorePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Button fx:id="btnBack4" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toMainPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnMnemonic" contentDisplay="TOP" layoutX="132.0" layoutY="40.0" mnemonicParsing="false" onAction="#btnRestoreMnemonic" prefHeight="143.0" prefWidth="146.0" styleClass="restore-button" text="Enter mnemonic" textAlignment="CENTER" wrapText="true" />
+        <Button fx:id="btnScanQR" contentDisplay="TOP" layoutX="319.0" layoutY="40.0" mnemonicParsing="false" onAction="#btnRestoreQR" prefHeight="142.0" prefWidth="146.0" styleClass="restore-button" text="Scan QR code" textAlignment="CENTER" wrapText="true" />
+        <Button fx:id="btnLoad" contentDisplay="TOP" layoutX="132.0" layoutY="216.0" mnemonicParsing="false" onAction="#btnRestoreFromFile" prefHeight="143.0" prefWidth="146.0" text="Load from file" textAlignment="CENTER" wrapText="true">
+          <graphic>
+            <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnSave.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnSSSRestore" contentDisplay="TOP" layoutX="319.0" layoutY="216.0" mnemonicParsing="false" onAction="#btnRestoreSSS" prefHeight="143.0" prefWidth="146.0" text="Reconstruct SSS" textAlignment="CENTER" wrapText="true">
+          <graphic>
+            <ImageView fitHeight="103.5834248489804" fitWidth="113.0000991821289" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnSSS.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore from mnemonic pane
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreFromMnemonicPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label font="$x2" layoutX="28.0" layoutY="40.0" text="Restore From Mnemonic Seed" />
+        <Label layoutX="45.0" layoutY="70.0" prefHeight="20.0" prefWidth="541.0" text="This dialog allows you to reconstruct your entire wallet from the mnemonic seed" wrapText="true" />
+        <Label layoutX="45.0" layoutY="110.0" prefHeight="20.0" prefWidth="541.0" text="Mnemonic:" wrapText="true">
+          <font>
+            <Font size="16.0" fx:id="x3" />
+          </font>
+        </Label>
+        <TextField fx:id="lblSeedRestorer" layoutX="45.0" layoutY="130.0" prefHeight="70.0" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" />
+        <Label font="$x3" layoutX="45.0" layoutY="220.0" prefHeight="20.0" prefWidth="541.0" text="Creation Time (As printed):" wrapText="true" />
+        <DatePicker fx:id="seedCreationDatePicker" layoutX="45.0" layoutY="250.0" prefHeight="35.0" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" />
+        <Button fx:id="btnBackFromSeedRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromSeedRestore" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnRestoreFromSeedContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSeed" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore from QR pane
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreFromQRPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label font="$x2" layoutX="28.0" layoutY="40.0" text="Restore From QR" />
+        <Button fx:id="btnStartWebCamQRScan" contentDisplay="TOP" layoutX="230.0" layoutY="80.0" mnemonicParsing="false" onAction="#startQRScan" prefHeight="143.0" prefWidth="146.0" textAlignment="CENTER" wrapText="true">
+          <graphic>
+            <ImageView fitHeight="104.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnSave.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Label font="$x3" layoutX="25.0" layoutY="240.0" prefHeight="20.0" prefWidth="531.0" text="Mnemonic Seed Found:" wrapText="true" />
+        <Label fx:id="lblSeedFromQR" layoutX="25.0" layoutY="260.0" prefHeight="40.0" prefWidth="557.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
+        <Button fx:id="btnBackFromSeedFromQRRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromQRRestore" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnRestoreFromSeedFromQRContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromQR" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore from SSS pane
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreFromSSSPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label font="$x2" layoutX="28.0" layoutY="40.0" text="Restore By Combining SSS Shares" />
+        <ScrollPane fx:id="scrlSSSRestoreShares" layoutX="29.0" layoutY="125.0" prefHeight="125.0" prefWidth="540.0" style="-fx-border-color: white;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+          <stylesheets>
+            <URL value="@application.css" />
+          </stylesheets>
+        </ScrollPane>
+        <Button fx:id="btnRestoreSSSConbineShares" layoutX="485.0" layoutY="87.0" mnemonicParsing="false" onAction="#combineSSSShares" prefHeight="30.0" prefWidth="84.0" text="Combine" />
+        <Label layoutX="29.0" layoutY="88.0" prefHeight="30.0" prefWidth="84.0" text="# of Pieces" />
+        <Label layoutX="256.0" layoutY="95.0" text="Threshold" />
+        <TextField fx:id="txPiecesSSSRestore" layoutX="113.0" layoutY="88.0" prefHeight="30.0" prefWidth="110.0" />
+        <TextField fx:id="txThresholdSSSRestore" layoutX="337.0" layoutY="88.0" prefHeight="30.0" prefWidth="110.0" />
+        <Label fx:id="lblSeedFromSSS" layoutX="29.0" layoutY="260.0" prefHeight="50.0" prefWidth="540.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
+        <Button fx:id="btnBackFromSeedFromSSSRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromSSSRestore" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnRestoreFromSeedFromSSSContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSSS" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <Pane fx:id="RestoreFromSSSDatePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label font="$x2" layoutX="28.0" layoutY="40.0" text="Restore By Combining SSS Shares" />
+        <Label font="$x3" layoutX="45.0" layoutY="180.0" prefHeight="20.0" prefWidth="541.0" text="Seed Creation Time:" wrapText="true" />
+        <DatePicker fx:id="seedSSSRestoreCreationDatePicker" layoutX="45.0" layoutY="210.0" prefHeight="35.0" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" />
+        <Button fx:id="btnBackFromSeedFromSSSRestoreDatePicker" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromSSSRestoreDatePicker" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnRestoreFromSeedFromSSSContinueDatePicker" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreFromSSSDatePicker" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore accounts
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreAccountsPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label font="$x2" layoutX="28.0" layoutY="40.0" text="Restore Wallet Accounts" />
+        <Label layoutX="28.0" layoutY="40.0" prefHeight="87.0" prefWidth="541.0" text="This dialog allows you to reconstruct your wallet's accounts." wrapText="true" />
+        <ScrollPane fx:id="restoreAccountsScrll" disable="false" layoutX="28.0" layoutY="100.0" prefHeight="200.0" prefWidth="550.0" style="-fx-border-color: white;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+          <stylesheets>
+            <URL value="@application.css" />
+          </stylesheets>
+        </ScrollPane>
+        <Button fx:id="btnAddAccount" contentDisplay="RIGHT" defaultButton="true" layoutX="140.0" layoutY="320.0" mnemonicParsing="false" onAction="#addAccount" prefHeight="20.0" prefWidth="100.0" styleClass="custom-button" text="Add Account" textAlignment="CENTER" textFill="WHITE" />
+        <ChoiceBox fx:id="accountTypeBox" layoutX="245.0" layoutY="320.0" prefHeight="20.0" prefWidth="200.0">
+          <items>
+            <FXCollections fx:factory="observableArrayList" />
+          </items>
+        </ChoiceBox>
+        <Button fx:id="btnBackFromAccountRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnToBeforeRestoreAccounts" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnAccountRestoreContinue" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#goRestoreAccounts" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Restore process pane
+    	
+    	
+    	-->
+    <Pane fx:id="RestoreProcessPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label font="$x2" layoutX="28.0" layoutY="40.0" text="Restore Process" />
+        <ScrollPane fx:id="restoreProcessScrll" disable="false" layoutX="28.0" layoutY="100.0" prefHeight="200.0" prefWidth="550.0" style="-fx-border-color: white;&#10;-fx-background-color: white;&#10; -fx-border-radius: 2;">
+          <stylesheets>
+            <URL value="@application.css" />
+          </stylesheets>
+        </ScrollPane>
+        <Button fx:id="btnCancelRestoreProcess" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnBackFromRestoreProcess" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnFinishRestoreProcess" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toSetPasswordAfterResotre" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+        <Label fx:id="lblRestoreProcessStatus" layoutX="150.0" layoutY="320.0" prefHeight="20.0" prefWidth="294.0" text="Status String ... " wrapText="true" />
+        <ProgressBar fx:id="syncProgress" layoutX="150.0" layoutY="340.0" prefHeight="25.0" prefWidth="294.0" progress="0.0" style="-fx-background-insets: 0, 0, 1, 2;" />
+      </children>
+    </Pane>
+    <!--
+    
+    	Set Password Pane
+    	
+    	
+    	-->
+    <Pane fx:id="SetPasswordAfterRestorePane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Hyperlink fx:id="hlpw" layoutX="59.0" layoutY="140.0" minHeight="23.1328125" onAction="#openWeb" prefHeight="23.1328125" prefWidth="302.0" text="Choosing Secure Passwords" />
+        <PasswordField fx:id="txRestorePW1" layoutX="59.0" layoutY="80.0" prefHeight="27.1328125" prefWidth="236.0" promptText="Password" />
+        <PasswordField fx:id="txRestorePW2" layoutX="304.0" layoutY="80.0" prefHeight="27.132912499997474" prefWidth="236.0" promptText="Repeat Password" />
+        <Button fx:id="btnBackFromSetPasswordAfterRestore" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toRestoreProcess" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnContinueAfterSetPasswordAfterRestore" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#finishRestoreProcess" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+    	
+    	Loading Pane
+    	
+    	
+    	-->
+    <Pane fx:id="LoadingPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0" visible="false">
+      <children>
+        <Label layoutX="150.0" layoutY="230.0" prefHeight="20.0" prefWidth="294.0" text="Loading ... " wrapText="true">
+          <font>
+            <Font size="28.0" />
+          </font>
+        </Label>
+        <Label fx:id="lblLoading" layoutX="400.0" layoutY="220.0" prefHeight="46.0" prefWidth="46.0" text="" wrapText="true" />
+      </children>
+    </Pane>
+    <!--
+    
+    	Minimize and close
+    
+    -->
+    <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="40.0" prefWidth="600.0" visible="true">
+      <HBox fx:id="PaneControlHBox" layoutX="550.0" layoutY="15.0" prefHeight="30.0" prefWidth="50.0">
+        <children>
+          <Label fx:id="lblMinimize" prefHeight="10.0" prefWidth="10.0">
+            <graphic>
+              <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@/org/wallet/minimize.png" />
+                </image>
+              </ImageView>
+            </graphic>
+          </Label>
+          <Label fx:id="lblClose" prefHeight="10.0" prefWidth="10.0">
+            <graphic>
+              <ImageView fitHeight="12.0" fitWidth="12.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@/org/wallet/close.png" />
+                </image>
+              </ImageView>
+            </graphic>
+          </Label>
+        </children>
+      </HBox>
+    </Pane>
+  </children>
+</AnchorPane>
