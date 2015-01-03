@@ -8,6 +8,7 @@ import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
 import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.Utils.CryptoUtils;
+import org.authenticator.hierarchy.SingleAccountManagerImpl;
 import org.authenticator.listeners.BAWalletExecutionDataBinder;
 import org.authenticator.operations.listeners.OperationListener;
 import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
@@ -198,10 +199,10 @@ public class WalletOperation extends BASE{
 				 * Load num of keys generated in every account to get 
 				 * the next fresh key
 				 */
-				List<BAHierarchy.AccountTracker> accountTrackers = new ArrayList<BAHierarchy.AccountTracker>();
+				List<SingleAccountManagerImpl> accountTrackers = new ArrayList<SingleAccountManagerImpl>();
 				List<ATAccount> allAccount = getAllAccounts();
 				for(ATAccount acc:allAccount){
-					BAHierarchy.AccountTracker at =   new BAHierarchy().new AccountTracker(acc.getIndex(), 
+					SingleAccountManagerImpl at =   new SingleAccountManagerImpl(acc.getIndex(),
 							BAHierarchy.keyLookAhead,
 							acc.getUsedExternalKeysList(), 
 							acc.getUsedInternalKeysList());
@@ -564,7 +565,7 @@ public class WalletOperation extends BASE{
  	}
  	
  	/**
- 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ATAccount ATAccount} object
+ 	 * Giving the necessary params, will return a complete {@link org.authenticator.protobuf.ProtoConfig.ATAccount ATAccount} object
  	 * 
  	 * @param nt
  	 * @param accoutnIdx
