@@ -1,6 +1,7 @@
 package org.authenticator.walletCore;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.google.protobuf.ByteString;
+import javassist.bytecode.ByteArray;
 import org.authenticator.Authenticator;
 import org.authenticator.BAApplicationParameters;
 import org.authenticator.GCM.dispacher.Device;
@@ -22,6 +24,7 @@ import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.db.exceptions.PairingObjectWasNotFoundException;
 import org.authenticator.db.walletDB;
+import org.authenticator.hierarchy.BAHierarchy;
 import org.authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import org.authenticator.protobuf.AuthWalletHierarchy;
 import org.authenticator.protobuf.ProtoConfig;
@@ -49,6 +52,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -59,7 +63,10 @@ import org.spongycastle.util.encoders.Hex;
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"javax.crypto.*" })
 @PrepareForTest({ProtoConfig.PairedAuthenticator.Builder.class,
-					ProtoConfig.PairedAuthenticator.class})
+					ProtoConfig.PairedAuthenticator.class,
+					ATAccount.ATAccountAddressHierarchy.class,
+					ATAccount.class,
+					Authenticator.class})
 public class PairingTest {
 
 	@Test
@@ -449,5 +456,259 @@ public class PairingTest {
 			assertTrue(Integer.parseInt(i) == count);
 			count++;
 		}
+	}
+
+	@Test
+	public void generatePairingTest() {
+		BAPassword walletPassword = new BAPassword("password");
+		BAPassword wrongPass = new BAPassword("wrong pass");
+		byte[] walletSeedbytes = "seed".getBytes();
+
+		PowerMockito.mockStatic(Authenticator.class);
+		Authenticator authMocked = Mockito.mock(Authenticator.class);
+		WalletOperation woMocked = PowerMockito.spy(new WalletOperation());
+		/*
+		 	mock for generateNewAccount (private method)
+		  */
+		BAHierarchy hierarchyMock = Mockito.mock(BAHierarchy.class);
+		BAHierarchy.AccountTracker accountTrackerMock = Mockito.mock(BAHierarchy.AccountTracker.class);
+
+		PowerMockito.mockStatic(ATAccount.ATAccountAddressHierarchy.class);
+		ATAccount.ATAccountAddressHierarchy extHierarchyMock = PowerMockito.mock(ATAccount.ATAccountAddressHierarchy.class);
+		ATAccount.ATAccountAddressHierarchy intHierarchyMock = PowerMockito.mock(ATAccount.ATAccountAddressHierarchy.class);
+
+		PowerMockito.mockStatic(ATAccount.class);
+		ATAccount mockedAccount = PowerMockito.mock(ATAccount.class);
+		try {
+			Mockito.when(accountTrackerMock.getAccountIndex()).thenReturn(1);
+			Mockito.when(hierarchyMock.generateNewAccount()).thenReturn(accountTrackerMock);
+			Mockito.doReturn(hierarchyMock).when(woMocked).getWalletHierarchy();
+
+			Mockito.doReturn(extHierarchyMock).when(woMocked).getAccountAddressHierarchy(1,
+					AuthWalletHierarchy.HierarchyAddressTypes.External,
+					walletPassword);
+			Mockito.doReturn(intHierarchyMock).when(woMocked).getAccountAddressHierarchy(1,
+					AuthWalletHierarchy.HierarchyAddressTypes.Internal,
+					walletPassword);
+
+			Mockito.doReturn(1).when(mockedAccount).getIndex();
+
+			Mockito.doReturn(mockedAccount).when(woMocked).completeAccountObject(BAApplicationParameters.NetworkType.MAIN_NET,
+					1,
+					"Pairing name",
+					WalletAccountType.AuthenticatorAccount,
+					extHierarchyMock,
+					intHierarchyMock);
+			Mockito.doNothing().when(woMocked).addNewAccountToConfigAndHierarchy(Mockito.any(ATAccount.class));
+			Mockito.doReturn(walletSeedbytes).when(woMocked).getWalletSeedBytes(walletPassword);
+			Mockito.doThrow(NoWalletPasswordException.class).when(woMocked).getWalletSeedBytes(wrongPass);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		/*
+			mock write pairing data, is private
+		 */
+		walletDB mockedWalletdb = Mockito.mock(walletDB.class);
+		Mockito.doReturn(mockedWalletdb).when(woMocked).getConfigFile();
+		// mock returned pairing object
+		PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.class);
+		ProtoConfig.PairedAuthenticator pair = PowerMockito.mock(ProtoConfig.PairedAuthenticator.class);
+		Mockito.when(pair.toString()).thenReturn("mocked pairing object");
+		try {
+			Mockito.when(mockedWalletdb.writePairingData(Mockito.eq("auth pub key"),
+					Mockito.eq("chain code"),
+					Mockito.anyString(),
+					Mockito.eq("GCM"),
+					Mockito.eq("pairing ID"),
+					Mockito.eq(1),
+					Mockito.anyBoolean(),
+					Mockito.anyObject())).thenReturn(pair);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		/*
+		 * testing
+		 */
+
+
+		// generate pairing when account ID is not null
+		try {
+			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
+                    "chain code",
+                    Hex.toHexString("shared AES".getBytes()),
+                    "GCM",
+                    "pairing ID",
+                    "Pairing name",
+                    1,
+                    BAApplicationParameters.NetworkType.MAIN_NET,
+                    true,
+					walletPassword);
+
+			Mockito.verify(hierarchyMock, Mockito.times(0)).generateNewAccount();
+
+			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
+			ArgumentCaptor<Boolean> argIsEncrypted = ArgumentCaptor.forClass(Boolean.class);
+			ArgumentCaptor<byte[]> argSalt = ArgumentCaptor.forClass(byte[].class);
+			Mockito.verify(mockedWalletdb, Mockito.atLeastOnce()).writePairingData(argPubKey.capture(),
+					argChainCode.capture(),
+					argAES.capture(),
+					argGCM.capture(),
+					argPairingID.capture(),
+					argAccountIdx.capture(),
+					argIsEncrypted.capture(),
+					argSalt.capture());
+
+			Integer retAccountIdx = argAccountIdx.getValue();
+			assertTrue(retAccountIdx == 1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		// generate pairing when account ID is null
+		try {
+			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
+					"chain code",
+					Hex.toHexString("shared AES".getBytes()),
+					"GCM",
+					"pairing ID",
+					"Pairing name",
+					null,
+					BAApplicationParameters.NetworkType.MAIN_NET,
+					true,
+					walletPassword);
+
+			Mockito.verify(hierarchyMock, Mockito.times(1)).generateNewAccount();
+
+			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
+			ArgumentCaptor<Boolean> argIsEncrypted = ArgumentCaptor.forClass(Boolean.class);
+			ArgumentCaptor<byte[]> argSalt = ArgumentCaptor.forClass(byte[].class);
+			Mockito.verify(mockedWalletdb, Mockito.atLeastOnce()).writePairingData(argPubKey.capture(),
+					argChainCode.capture(),
+					argAES.capture(),
+					argGCM.capture(),
+					argPairingID.capture(),
+					argAccountIdx.capture(),
+					argIsEncrypted.capture(),
+					argSalt.capture());
+
+			Integer retAccountIdx = argAccountIdx.getValue();
+			assertTrue(retAccountIdx == 1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		//  should encrypt
+		try {
+			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
+					"chain code",
+					Hex.toHexString("shared AES".getBytes()),
+					"GCM",
+					"pairing ID",
+					"Pairing name",
+					1,
+					BAApplicationParameters.NetworkType.MAIN_NET,
+					true,
+					walletPassword);
+
+			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
+			ArgumentCaptor<Boolean> argIsEncrypted = ArgumentCaptor.forClass(Boolean.class);
+			ArgumentCaptor<byte[]> argSalt = ArgumentCaptor.forClass(byte[].class);
+			Mockito.verify(mockedWalletdb, Mockito.atLeastOnce()).writePairingData(argPubKey.capture(),
+					argChainCode.capture(),
+					argAES.capture(),
+					argGCM.capture(),
+					argPairingID.capture(),
+					argAccountIdx.capture(),
+					argIsEncrypted.capture(),
+					argSalt.capture());
+
+			Boolean retIsEncrypted = argIsEncrypted.getValue();
+			String retAES = argAES.getValue();
+			assertTrue(retIsEncrypted);
+			assertFalse(retAES.equals(Hex.toHexString("shared AES".getBytes()))); // because it is encrypted
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		// when shouldn't encrypt
+		try {
+			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
+					"chain code",
+					Hex.toHexString("shared AES".getBytes()),
+					"GCM",
+					"pairing ID",
+					"Pairing name",
+					1,
+					BAApplicationParameters.NetworkType.MAIN_NET,
+					false,
+					walletPassword);
+
+			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
+			ArgumentCaptor<Boolean> argIsEncrypted = ArgumentCaptor.forClass(Boolean.class);
+			ArgumentCaptor<byte[]> argSalt = ArgumentCaptor.forClass(byte[].class);
+			Mockito.verify(mockedWalletdb, Mockito.atLeastOnce()).writePairingData(argPubKey.capture(),
+					argChainCode.capture(),
+					argAES.capture(),
+					argGCM.capture(),
+					argPairingID.capture(),
+					argAccountIdx.capture(),
+					argIsEncrypted.capture(),
+					argSalt.capture());
+
+			Boolean retIsEncrypted = argIsEncrypted.getValue();
+			String retAES = argAES.getValue();
+			assertFalse(retIsEncrypted);
+			assertTrue(retAES.equals(Hex.toHexString("shared AES".getBytes()))); // because it is not encrypted
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		// assert NoWalletPasswordException thrown
+		boolean didCrash = false;
+		try {
+			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
+					"chain code",
+					Hex.toHexString("shared AES".getBytes()),
+					"GCM",
+					"pairing ID",
+					"Pairing name",
+					1,
+					BAApplicationParameters.NetworkType.MAIN_NET,
+					false,
+					wrongPass);
+		} catch (Exception e) {
+			assertTrue(e instanceof NoWalletPasswordException);
+			didCrash = true;
+		}
+		if(!didCrash) assertTrue(false);
+
 	}
 }
