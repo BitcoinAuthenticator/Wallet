@@ -32,7 +32,6 @@ import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.BASE;
 import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
 import org.authenticator.hierarchy.BAHierarchy;
-import org.authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import org.authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import org.authenticator.network.TrustedPeerNodes;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;

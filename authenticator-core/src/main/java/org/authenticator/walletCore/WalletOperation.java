@@ -29,7 +29,6 @@ import org.authenticator.walletCore.utils.WalletListener;
 import org.authenticator.hierarchy.BAHierarchy;
 import org.authenticator.hierarchy.HierarchyUtils;
 import org.authenticator.hierarchy.exceptions.IncorrectPathException;
-import org.authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import org.authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
 import org.authenticator.hierarchy.exceptions.NoUnusedKeyException;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
@@ -194,7 +193,7 @@ public class WalletOperation extends BASE{
 			if(getWalletHierarchy() == null)
 			{
 				//byte[] seed = getConfigFile.getHierarchySeed();
-				authenticatorWalletHierarchy = new BAHierarchy(HierarchyCoinTypes.CoinBitcoin);
+				authenticatorWalletHierarchy = new BAHierarchy();
 				/**
 				 * Load num of keys generated in every account to get 
 				 * the next fresh key
@@ -527,10 +526,11 @@ public class WalletOperation extends BASE{
 	//#####################################
 	
 	public ATAccountAddressHierarchy getAccountAddressHierarchy(int accoutnIdx, HierarchyAddressTypes type, @Nullable BAPassword walletPW) throws NoWalletPasswordException {
-		return getWalletHierarchy().generateAccountAddressHierarchy(
+		return HierarchyUtils.generateAccountAddressHierarchy(
  				getWalletSeedBytes(walletPW),
 				accoutnIdx,
-				HierarchyAddressTypes.External);
+				HierarchyAddressTypes.External,
+				HierarchyCoinTypes.CoinBitcoin);
 	}
 
 	/**
@@ -704,15 +704,19 @@ public class WalletOperation extends BASE{
 			HierarchyAddressTypes type, 
 			int addressKey, 
 			@Nullable BAPassword WALLET_PW,
-			boolean iKnowAddressFromKeyIsNotWatched) throws AddressNotWatchedByWalletException, CannotGetHDKeyException{
+			boolean iKnowAddressFromKeyIsNotWatched) throws AddressNotWatchedByWalletException, CannotGetHDKeyException {
 		try {
 			byte[] seed = getWalletSeedBytes(WALLET_PW);
-			DeterministicKey ret = getWalletHierarchy().getPrivKeyFromAccount(seed, accountIndex, type, addressKey);
+			DeterministicKey ret = HierarchyUtils.getPrivKeyFromAccount(seed,
+					accountIndex,
+					type,
+					addressKey,
+					HierarchyCoinTypes.CoinBitcoin);
 			if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 				throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 			return ret;
 		}
-		catch(NoWalletPasswordException | KeyIndexOutOfRangeException e) {
+		catch(NoWalletPasswordException e) {
 			throw new CannotGetHDKeyException(e.toString());
 		}
 		
@@ -735,12 +739,12 @@ public class WalletOperation extends BASE{
 		try {
 			ATAccount acc = this.getAccount(accountIndex);
 			ATAccountAddressHierarchy H = type == HierarchyAddressTypes.External? acc.getAccountExternalHierarchy():acc.getAccountInternalHierarchy();
-			DeterministicKey ret = getWalletHierarchy().getPubKeyFromAccount(accountIndex, type, addressKey, H);
+			DeterministicKey ret = HierarchyUtils.getPubKeyFromAccount(accountIndex, type, addressKey, H);
 			if(!iKnowAddressFromKeyIsNotWatched && !isWatchingAddress(ret.toAddress(getNetworkParams())))
 				throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 			return ret;
 		}
-		catch(KeyIndexOutOfRangeException | AccountWasNotFoundException e) {
+		catch(AccountWasNotFoundException e) {
 			throw new CannotGetHDKeyException(e.toString());
 		}
 		

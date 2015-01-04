@@ -3,10 +3,12 @@ package org.authenticator.hierarchy;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.protobuf.ByteString;
 import org.authenticator.hierarchy.exceptions.IncorrectPathException;
 import org.authenticator.protobuf.AuthWalletHierarchy;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyPurpose;
 
+import org.authenticator.protobuf.ProtoConfig;
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import com.google.common.collect.ImmutableList;
@@ -43,6 +45,9 @@ public class HierarchyUtils {
 																	int accountIdx,
 																	AuthWalletHierarchy.HierarchyAddressTypes type,
 																	AuthWalletHierarchy.HierarchyCoinTypes coinType) {
+
+		if(accountIdx > Math.pow(2, 32) | accountIdx < 0) throw new IllegalArgumentException("Account index out of range");
+
 		HDKeyDerivation HDKey = null;
 
 		DeterministicKey masterkey = HDKey.createMasterPrivateKey(seed);
@@ -60,5 +65,81 @@ public class HierarchyUtils {
 		DeterministicKey addressType = HDKey.deriveChildKey(account, addressTypeIndex);
 
 		return addressType;
+	}
+
+	/**
+	 *
+	 * @param seed
+	 * @param accountIdx
+	 * @param type
+	 * @param coinType
+	 * @return
+	 */
+	public static ProtoConfig.ATAccount.ATAccountAddressHierarchy generateAccountAddressHierarchy(byte[] seed,
+																						   int accountIdx,
+																						   AuthWalletHierarchy.HierarchyAddressTypes type,
+																						   AuthWalletHierarchy.HierarchyCoinTypes coinType) {
+
+		if(accountIdx > Math.pow(2, 32) | accountIdx < 0) throw new IllegalArgumentException("Account index out of range");
+
+		DeterministicKey addressType = HierarchyUtils.generatePathUntilAccountsAddress(seed, accountIdx, type, coinType);
+
+		ProtoConfig.ATAccount.ATAccountAddressHierarchy.Builder ret = ProtoConfig.ATAccount.ATAccountAddressHierarchy.newBuilder();
+		byte[] pubkey = addressType.getPubKey();
+		byte[] chaincode = addressType.getChainCode();
+		ret.setHierarchyKey(ByteString.copyFrom(pubkey));
+		ret.setHierarchyChaincode(ByteString.copyFrom(chaincode));
+
+		return ret.build();
+	}
+
+	/**
+	 * Will return a {@link org.bitcoinj.crypto.DeterministicKey DeterministicKey} following BIP44
+	 *
+	 * @param seed
+	 * @param accountIdx
+	 * @param type
+	 * @param addressKey
+	 * @param coinType
+	 * @return
+	 * @throws java.lang.IllegalArgumentException
+	 */
+	public static DeterministicKey getPrivKeyFromAccount(byte[] seed,
+												  int accountIdx,
+												  AuthWalletHierarchy.HierarchyAddressTypes type,
+												  int addressKey,
+												  AuthWalletHierarchy.HierarchyCoinTypes coinType) throws IllegalArgumentException {
+		if(addressKey > Math.pow(2, 31) | addressKey < 0) throw new IllegalArgumentException("Key index out of range");
+		if(accountIdx > Math.pow(2, 32) | accountIdx < 0) throw new IllegalArgumentException("Account index out of range");
+
+		//path
+		DeterministicKey addressType = HierarchyUtils.generatePathUntilAccountsAddress(seed, accountIdx, type, coinType);
+		//address
+		ChildNumber addressIndex = new ChildNumber(addressKey, false); // is not harden
+		return HDKeyDerivation.deriveChildKey(addressType, addressIndex);
+	}
+
+	/**
+	 * Will return a {@link org.bitcoinj.crypto.DeterministicKey DeterministicKey} following BIP44
+	 *
+	 * @param accountIndex
+	 * @param type
+	 * @param addressKey
+	 * @param H
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static DeterministicKey getPubKeyFromAccount(int accountIndex,
+												 AuthWalletHierarchy.HierarchyAddressTypes type,
+												 int addressKey,
+												 ProtoConfig.ATAccount.ATAccountAddressHierarchy H) throws IllegalArgumentException{
+		if(addressKey > Math.pow(2, 31)) throw new IllegalArgumentException("Key index out of range");
+		if(accountIndex > Math.pow(2, 32) | accountIndex < 0) throw new IllegalArgumentException("Account index out of range");
+
+		DeterministicKey addressTypeHDKey = HDKeyDerivation.createMasterPubKeyFromBytes(H.getHierarchyKey().toByteArray(),
+				H.getHierarchyChaincode().toByteArray());
+		ChildNumber ind = new ChildNumber(addressKey,false);
+
+		return HDKeyDerivation.deriveChildKey(addressTypeHDKey, ind);
 	}
 }
