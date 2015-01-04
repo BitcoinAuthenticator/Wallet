@@ -891,20 +891,14 @@ public class WalletOperation extends BASE{
 		
 		return null;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param accountIndex
 	 * @param addressesType
 	 * @param limit
 	 * @return
-	 * @throws CannotGetAddressException 
-	 * @throws NoSuchAlgorithmException
-	 * @throws JSONException
-	 * @throws AddressFormatException
-	 * @throws KeyIndexOutOfRangeException 
-	 * @throws AddressNotWatchedByWalletException 
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotGetAddressException
 	 */
 	public ArrayList<String> getAccountNotUsedAddress(int accountIndex, HierarchyAddressTypes addressesType, int limit) throws CannotGetAddressException {
 		try {
@@ -925,20 +919,14 @@ public class WalletOperation extends BASE{
 			throw new CannotGetAddressException(e.toString());
 		}
 	}
-	
+
 	/**
 	 * Will return all used address of the account
-	 * 
+	 *
 	 * @param accountIndex
 	 * @param addressesType
 	 * @return
-	 * @throws CannotGetAccountUsedAddressesException 
-	 * @throws NoSuchAlgorithmException
-	 * @throws JSONException
-	 * @throws AddressFormatException
-	 * @throws KeyIndexOutOfRangeException
-	 * @throws AddressNotWatchedByWalletException
-	 * @throws AccountWasNotFoundException 
+	 * @throws CannotGetAccountUsedAddressesException
 	 */
 	public ArrayList<ATAddress> getAccountUsedAddresses(int accountIndex, HierarchyAddressTypes addressesType) throws CannotGetAccountUsedAddressesException{
 		ArrayList<ATAddress> ret = new ArrayList<ATAddress>();

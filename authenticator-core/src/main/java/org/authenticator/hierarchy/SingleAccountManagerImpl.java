@@ -5,6 +5,7 @@ import org.authenticator.protobuf.AuthWalletHierarchy;
 import org.bitcoinj.crypto.ChildNumber;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -111,5 +112,12 @@ public class SingleAccountManagerImpl implements BAAccountHierarchyManager {
         }
     }
 
-    public int getAccountIndex(){ return accountIndex; }
+    public Integer getAccountIndex(){ return accountIndex; }
+
+    public static class SingleAccountManagerSorter implements Comparator<SingleAccountManagerImpl> {
+        @Override
+        public int compare(SingleAccountManagerImpl o1, SingleAccountManagerImpl o2) {
+            return o1.getAccountIndex().compareTo(o2.getAccountIndex());
+        }
+    }
 }

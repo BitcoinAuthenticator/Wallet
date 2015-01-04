@@ -1,5 +1,6 @@
  package org.authenticator.hierarchy;
  
+ import java.util.ArrayList;
  import java.util.List;
 
 import org.authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
@@ -34,7 +35,10 @@ import org.bitcoinj.crypto.HDKeyDerivation;
  	int nextAvailableAccount;
 
  	@SuppressWarnings("static-access")
- 	public BAHierarchy() {  }
+ 	public BAHierarchy() {
+		accounts = new ArrayList<SingleAccountManagerImpl>();
+		nextAvailableAccount = 0;
+	}
 
  	public void buildWalletHierarchyForStartup(List<SingleAccountManagerImpl> trackers){
  		accounts = trackers;
@@ -46,7 +50,23 @@ import org.bitcoinj.crypto.HDKeyDerivation;
  	//		API
  	//
  	//###############################
-
+ 	
+ 	public int whatIsTheNextAvailableAccountIndex() {
+ 		return nextAvailableAccount;
+ 	}
+ 	
+ 	public SingleAccountManagerImpl generateNewAccount(){
+		int index = this.nextAvailableAccount;
+		SingleAccountManagerImpl at = addAccountToTracker(index,this.keyLookAhead);
+ 		return at;
+ 	}
+ 	
+ 	public SingleAccountManagerImpl addAccountToTracker(int index, int lookAhead){
+ 		SingleAccountManagerImpl at = new SingleAccountManagerImpl(index, lookAhead);
+		accounts.add(at);
+		calculateNextAvailableAccountIndex();
+		return at;
+ 	}
 
 	 /**
 	  * This method will return an unused key.<br>
@@ -60,35 +80,18 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 	  * @throws NoUnusedKeyException
 	  * @throws NoAccountCouldBeFoundException
 	  */
- 	public DeterministicKey getNextPubKey(int accountIndex, HierarchyAddressTypes type, ATAccountAddressHierarchy H) throws NoUnusedKeyException, NoAccountCouldBeFoundException {
-  	   SingleAccountManagerImpl tracker = getAccountTracker(accountIndex);
-  	   int indx = tracker.getUnusedKey(HierarchyAddressTypes.External).getI();
-  	   DeterministicKey ret = HierarchyUtils.getPubKeyFromAccount(accountIndex, type, indx, H);
- 	   return ret;
- 	}
- 	
- 	public void markAddressAsUsed(int accountIndex, int keyIndex, HierarchyAddressTypes type) throws NoAccountCouldBeFoundException{
- 		getAccountTracker(accountIndex).setKeyAsUsed(keyIndex, type);
- 	}
- 	
- 	public int whatIsTheNextAvailableAccountIndex() {
- 		return nextAvailableAccount;
- 	}
- 	
- 	public SingleAccountManagerImpl generateNewAccount(){
-		int index = this.nextAvailableAccount;
-		
-		SingleAccountManagerImpl at = addAccountToTracker(index,this.keyLookAhead);
-		this.nextAvailableAccount ++;
- 		return at;
- 	}
- 	
- 	public SingleAccountManagerImpl addAccountToTracker(int index, int lookAhead){
- 		SingleAccountManagerImpl at = new SingleAccountManagerImpl(index, lookAhead);
-		accounts.add(at);
-		calculateNextAvailableAccountIndex();
-		return at;
- 	}
+	 public DeterministicKey getNextPubKey(int accountIndex,
+										   HierarchyAddressTypes type,
+										   ATAccountAddressHierarchy H) throws NoUnusedKeyException, NoAccountCouldBeFoundException {
+		 SingleAccountManagerImpl tracker = getAccountTracker(accountIndex);
+		 int indx = tracker.getUnusedKey(HierarchyAddressTypes.External).getI();
+		 DeterministicKey ret = HierarchyUtils.getPubKeyFromAccount(accountIndex, type, indx, H);
+		 return ret;
+	 }
+
+	 public void markAddressAsUsed(int accountIndex, int keyIndex, HierarchyAddressTypes type) throws NoAccountCouldBeFoundException{
+		 getAccountTracker(accountIndex).setKeyAsUsed(keyIndex, type);
+	 }
  	
  	public void setKeyLookAhead(int value){
 		keyLookAhead = value;
@@ -103,15 +106,27 @@ import org.bitcoinj.crypto.HDKeyDerivation;
  	//		Private
  	//
  	//###############################
- 	
+
+	 /**
+	  * The aim of this function is to minimize the gaps between unused account indexes to 0.<br>
+	  * if gaps occur between used account indexes, will set {@link org.authenticator.hierarchy.BAHierarchy#nextAvailableAccount nextAvailableAccount}
+	  * to the last consecutive index + 1.
+	  */
  	private void calculateNextAvailableAccountIndex(){
- 		int highestAccountIdx = 0;
- 		for(SingleAccountManagerImpl acc: accounts){
- 			if(acc.getAccountIndex() > highestAccountIdx)
- 				highestAccountIdx = acc.getAccountIndex();
+		List<SingleAccountManagerImpl> ordered = new ArrayList<SingleAccountManagerImpl>(accounts);
+		ordered.sort(new SingleAccountManagerImpl.SingleAccountManagerSorter());
+
+ 		int previousAccountIdx = 0;
+ 		for(SingleAccountManagerImpl acc: ordered){
+			if(acc.getAccountIndex() <= previousAccountIdx) {
+				previousAccountIdx++;
+				continue;
+			}
+			else
+				break;
  		}
- 		
- 		nextAvailableAccount = highestAccountIdx + 1;
+
+		nextAvailableAccount = previousAccountIdx;
  	}
  	
 
