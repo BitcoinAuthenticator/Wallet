@@ -6,11 +6,7 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,27 +20,23 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import javafx.application.Platform;
-import javafx.scene.image.Image;
-
 import org.authenticator.listeners.BAWalletExecutionDataBinder;
-import org.json.JSONObject;
+import org.authenticator.network.messages.CannotProcessRequestPayload;
+import org.authenticator.network.messages.GetRequestIDPayload;
+import org.authenticator.network.messages.PongPayload;
 import org.xml.sax.SAXException;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 
 import com.google.protobuf.ByteString;
 import com.subgraph.orchid.encoders.Hex;
 
 import org.authenticator.Authenticator;
 import org.authenticator.BASE;
-import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.network.exceptions.TCPListenerCouldNotStartException;
 import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.BAOperation.BANetworkRequirement;
 import org.authenticator.operations.exceptions.BAOperationNetworkRequirementsNotAvailableException;
 import org.authenticator.operations.listeners.OperationListener;
-import org.authenticator.operations.listeners.OperationListenerAdapter;
 import org.authenticator.operations.OperationsFactory;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;

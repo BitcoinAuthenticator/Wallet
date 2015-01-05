@@ -19,9 +19,9 @@ import org.authenticator.BASE;
 public class UpNp extends BASE{
 
 	private int PORT;
-	static String externalIPAddress;
-	static String localIPAddress;
-	static GatewayDevice activeGW;
+	private String externalIPAddress;
+	private String localIPAddress;
+	private GatewayDevice activeGW;
 
 	public UpNp() { super(UpNp.class); }
 	/**
@@ -34,7 +34,7 @@ public class UpNp extends BASE{
 		PORT = Integer.parseInt(args[0]);
 		boolean LIST_ALL_MAPPINGS = false;
 		addLogLine("Starting weupnp");
-		GatewayDiscover gatewayDiscover = new GatewayDiscover();
+		GatewayDiscover gatewayDiscover = generateGWDiscoverer();
 		addLogLine("Looking for Gateway Devices...");
 		Map<InetAddress, GatewayDevice> gateways = gatewayDiscover.discover();
 		if (gateways.isEmpty()) {
@@ -42,7 +42,7 @@ public class UpNp extends BASE{
 			addLogLine("Stopping weupnp");
 			return;
 		}
-		addLogLine(gateways.size()+" gateway(s) found\n");
+		addLogLine(gateways.size() + " gateway(s) found\n");
 		int counter=0;
 		for (GatewayDevice gw: gateways.values()) {
 			counter++;
@@ -54,9 +54,9 @@ public class UpNp extends BASE{
 					"\n\tLocal interface address: " + gw.getLocalAddress().getHostAddress()+"\n");
 		}
 		// Choose the first active gateway for the tests
-		activeGW = gatewayDiscover.getValidGateway();
-		if (null != activeGW) {
-			addLogLine("Using gateway: " + activeGW.getFriendlyName());
+		setActiveGW(gatewayDiscover.getValidGateway());
+		if (getActiveGW() != null ) {
+			addLogLine("Using gateway: " + getActiveGW().getFriendlyName());
 		} else {
 			addLogLine("No active gateway device found");
 			addLogLine("Stopping weupnp");
@@ -64,21 +64,21 @@ public class UpNp extends BASE{
 		}
 		
 		/* get local and external IPs*/
-		InetAddress localAddress = activeGW.getLocalAddress();
-		localIPAddress = activeGW.getLocalAddress().toString();
+		InetAddress localAddress = getActiveGW().getLocalAddress();
+		localIPAddress = localAddress.toString();
 		addLogLine("Using local address: "+ localAddress.getHostAddress());
-		externalIPAddress = activeGW.getExternalIPAddress();
+		externalIPAddress = getActiveGW().getExternalIPAddress();
 		addLogLine("External address: "+ externalIPAddress);
 		
 		/* Check if port is mapped */
 		addLogLine("Attempting to map port " + PORT);
 		PortMappingEntry portMapping = new PortMappingEntry();
-		if (activeGW.getSpecificPortMappingEntry(PORT,"TCP",portMapping)) {
+		if (getActiveGW().getSpecificPortMappingEntry(PORT, "TCP", portMapping)) {
 			addLogLine("Port " + PORT + " is already mapped. Aborting test.");
 			return;
 		} else {
 			addLogLine("Mapping free. Sending port mapping request for port " + PORT);
-			if (activeGW.addPortMapping(PORT, PORT,localAddress.getHostAddress(), "TCP", "BTCAuthenticator_Mapping")) {
+			if (getActiveGW().addPortMapping(PORT, PORT, localAddress.getHostAddress(), "TCP", "BTCAuthenticator_Mapping")) {
 				addLogLine("Mapping SUCCESSFUL"); 
 			}
 			else
@@ -88,18 +88,18 @@ public class UpNp extends BASE{
 	
 	public boolean isPortMapped(int port) throws IOException, SAXException
 	{
-		if (activeGW != null)
+		if (getActiveGW() != null)
 		{
 			PortMappingEntry portMapping = new PortMappingEntry();
-			return activeGW.getSpecificPortMappingEntry(port,"TCP",portMapping);
+			return getActiveGW().getSpecificPortMappingEntry(port, "TCP", portMapping);
 		}
 		return false;
 	}
 	
 	/**This method removes the mapping*/
 	public void removeMapping() throws IOException, SAXException{
-		if(activeGW != null)
-			if (activeGW.deletePortMapping(PORT,"TCP")) {
+		if(getActiveGW() != null)
+			if (getActiveGW().deletePortMapping(PORT, "TCP")) {
 				addLogLine("Removed port mapping to port: " + PORT);
 	        } else {
 				addLogLine("Port mapping removal FAILED");
@@ -122,11 +122,21 @@ public class UpNp extends BASE{
 		return localIPAddress;
 	}
 
-	/**For logging purposes*/
-	private static void addLogLine(String line) {
+	public GatewayDevice getActiveGW() {
+		return activeGW;
+	}
+
+	public void setActiveGW(GatewayDevice GW) {
+		activeGW = GW;
+	}
+
+	public GatewayDiscover generateGWDiscoverer() {
+		return new GatewayDiscover();
+	}
+
+	public void addLogLine(String line) {
 		String timeStamp = DateFormat.getTimeInstance().format(new Date());
 		String logline = timeStamp+": "+line+"\n";
 		System.out.print(logline);
 	}
-
 }

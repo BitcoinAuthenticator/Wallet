@@ -1,13 +1,9 @@
-package org.authenticator.network;
+package org.authenticator.network.messages;
 
 import static org.junit.Assert.*;
 
-import org.authenticator.GCM.dispacher.MessageBuilder;
 import org.authenticator.Utils.CryptoUtils.CouldNotEncryptPayload;
-import org.authenticator.network.GetRequestIDPayload;
-import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.authenticator.network.messages.PongPayload;
 import org.junit.Test;
 
 public class PongPayloadTest {

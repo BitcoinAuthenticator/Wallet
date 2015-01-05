@@ -1,4 +1,4 @@
-package org.authenticator.network;
+package org.authenticator.network.messages;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

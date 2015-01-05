@@ -12,18 +12,14 @@ import javax.annotation.Nullable;
 import javax.crypto.*;
 
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.Utils.CryptoUtils;
-import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.db.walletDB;
 import org.authenticator.network.BANetworkInfo;
-import org.authenticator.network.PongPayload;
-import org.authenticator.network.UpNp;
+import org.authenticator.network.messages.PongPayload;
 import org.authenticator.operations.listeners.OperationListener;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.walletCore.WalletOperation;

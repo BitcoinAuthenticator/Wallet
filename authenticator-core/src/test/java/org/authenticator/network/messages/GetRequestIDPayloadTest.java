@@ -1,10 +1,8 @@
-package org.authenticator.network;
+package org.authenticator.network.messages;
 
 import static org.junit.Assert.*;
 
-import org.authenticator.GCM.dispacher.MessageBuilder;
-import org.authenticator.network.GetRequestIDPayload;
-import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
+import org.authenticator.network.messages.GetRequestIDPayload;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;

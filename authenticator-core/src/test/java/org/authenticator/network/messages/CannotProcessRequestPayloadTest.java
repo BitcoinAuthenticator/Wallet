@@ -1,7 +1,7 @@
-package org.authenticator.network;
+package org.authenticator.network.messages;
 
 import org.authenticator.Utils.CryptoUtils;
-import org.json.JSONException;
+import org.authenticator.network.messages.CannotProcessRequestPayload;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.spongycastle.util.encoders.Hex;
