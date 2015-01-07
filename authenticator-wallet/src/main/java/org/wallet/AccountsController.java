@@ -32,7 +32,7 @@ import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -178,7 +178,7 @@ public class AccountsController  extends BaseUI{
 			ATAccount newAcc = Authenticator.getWalletOperation().generateNewStandardAccount(NetworkType.MAIN_NET, txfNewAccountName.getText(), pass);
 			setupContent();
 		
-		} catch (IOException | NoWalletPasswordException e) {
+		} catch (IOException | WrongWalletPasswordException e) {
 			e.printStackTrace();
 			GuiUtils.informationalAlert("Error !", "Error occured while creating the account.\n"
 					+ "The password may be wrong");
@@ -273,7 +273,7 @@ public class AccountsController  extends BaseUI{
 
 				try {
 					decryptedAES = Authenticator.getWalletOperation().getAESKey(op.getPairingID(), Main.UI_ONLY_WALLET_PW);
-				} catch (NoWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
+				} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
 					e.printStackTrace();
 					informationalAlert("Could not complete operation",
 							"Please try again");

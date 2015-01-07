@@ -58,7 +58,7 @@ import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
@@ -682,7 +682,7 @@ public class StartupController  extends BaseUI{
 				try {
 					auth.Net().INTERRUPT_CURRENT_OUTBOUND_OPERATION();
 					createNewStandardAccount(firstAccountName);
-				} catch (IOException | AccountWasNotFoundException | NoWalletPasswordException e1) { e1.printStackTrace(); }
+				} catch (IOException | AccountWasNotFoundException | WrongWalletPasswordException e1) { e1.printStackTrace(); }
 			 else
 			 {
 				 // do nothing
@@ -1338,7 +1338,7 @@ public class StartupController  extends BaseUI{
 					if(restoreAccountsScrllContent.getCount() == 1)
 						auth.getWalletOperation().setActiveAccount(acc.accountAccountID);
 					
-				} catch (IOException | AccountWasNotFoundException | NoWalletPasswordException e) {
+				} catch (IOException | AccountWasNotFoundException | WrongWalletPasswordException e) {
 					e.printStackTrace();
 				}
 			}
@@ -1554,7 +1554,7 @@ public class StartupController  extends BaseUI{
     	}
 	}
 	 
-	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException, NoWalletPasswordException{
+	 private void createNewStandardAccount(String accountName) throws IOException, AccountWasNotFoundException, WrongWalletPasswordException{
 		 ATAccount acc = auth.getWalletOperation().generateNewStandardAccount(appParams.getBitcoinNetworkType(), accountName, null);
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }

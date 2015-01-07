@@ -47,7 +47,7 @@ import org.authenticator.walletCore.exceptions.CannotGetAccountFilteredTransacti
 import org.authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
 import org.authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -473,7 +473,7 @@ public class SettingsController  extends BaseUI{
 	
 	public static Stage backupPane;
 	@SuppressWarnings("restriction")
-	public void launchBackup(ActionEvent event) throws NoWalletPasswordException {
+	public void launchBackup(ActionEvent event) throws WrongWalletPasswordException {
 		if(Authenticator.getWalletOperation().isWalletEncrypted())
 		if(Main.UI_ONLY_WALLET_PW == null || Main.UI_ONLY_WALLET_PW.length() == 0)
 		{
@@ -573,7 +573,7 @@ public class SettingsController  extends BaseUI{
 				changePassword(changePWOriginal.getText(), 
 						changePWNewFirst.getText(), 
 						changePWNewSecond.getText());
-			} catch (NoWalletPasswordException e) {
+			} catch (WrongWalletPasswordException e) {
 				informationalAlert("Unfortunately, you messed up.",
 	 					 "You need to enter the correct original password.");
 			}
@@ -622,7 +622,7 @@ public class SettingsController  extends BaseUI{
 				BAPassword originalPW = new BAPassword(original);
 				try {
 					Authenticator.getWalletOperation().decryptWallet(originalPW);
-				} catch (NoWalletPasswordException e1) { e1.printStackTrace(); }
+				} catch (WrongWalletPasswordException e1) { e1.printStackTrace(); }
 			}
 		}
 		

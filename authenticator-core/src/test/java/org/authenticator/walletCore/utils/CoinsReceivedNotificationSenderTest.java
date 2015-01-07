@@ -381,16 +381,17 @@ public class CoinsReceivedNotificationSenderTest {
 		}
 
 		// test empty password
+		boolean didThrow = false;
 		try {
 			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletEmptyPass);
 		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
+			assertTrue(e instanceof WrongWalletPasswordException);
+			didThrow = true;
 		}
-
+		assertTrue(didThrow);
 
 		// test empty password
-		boolean didThrow = false;
+		didThrow = false;
 		try {
 			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletWrongPass);
 		} catch (Exception e) {

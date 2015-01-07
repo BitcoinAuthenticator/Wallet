@@ -60,8 +60,6 @@ public class CoinsReceivedNotificationSender {
 			WrongWalletPasswordException,
 																	CryptoUtils.CannotDecryptMessageException {
 		if(howBalanceChanged == HowBalanceChanged.ReceivedCoins)
-			if(!walletPass.hasPassword())
-				return;
 			for (TransactionOutput out : tx.getOutputs()){
 				Script scr = out.getScriptPubKey();
 				String addrStr = scr.getToAddress(wo.getNetworkParams()).toString();

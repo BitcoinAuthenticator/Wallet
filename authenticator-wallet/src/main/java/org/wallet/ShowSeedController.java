@@ -14,7 +14,7 @@ import com.google.common.base.Joiner;
 
 import org.authenticator.Authenticator;
 import org.authenticator.Utils.OneName.OneName;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,7 +46,7 @@ public class ShowSeedController  extends BaseUI{
 			List<String> mnemonic = seed.getMnemonicCode();
 			String seedStr = Joiner.on(" ").join(mnemonic);
 			lblSeed.setText(seedStr);
-		} catch (NoWalletPasswordException e) {
+		} catch (WrongWalletPasswordException e) {
 			informationalAlert("Unfortunately, you messed up.",
  					 "You need to enter the correct password.");
 			return;

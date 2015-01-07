@@ -9,7 +9,7 @@ import org.authenticator.Utils.OneName.OneName;
 import org.authenticator.Utils.OneName.OneNameAdapter;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotGetAddressException;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.authenticator.walletCore.utils.BalanceUpdater;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
@@ -877,7 +877,7 @@ public class Controller  extends BaseUI{
 				   Main.UI_ONLY_WALLET_PW.cleanPassword();
 				   Main.UI_ONLY_IS_WALLET_LOCKED = true;
 			   } 
-			   catch (NoWalletPasswordException e) { e.printStackTrace(); }
+			   catch (WrongWalletPasswordException e) { e.printStackTrace(); }
 		   }
 		   updateLockIcon();
 	   }
@@ -939,7 +939,7 @@ public class Controller  extends BaseUI{
 						   Main.UI_ONLY_IS_WALLET_LOCKED = false;
 						   updateLockIcon();
 					   }
-					   catch(KeyCrypterException | NoWalletPasswordException  e){
+					   catch(KeyCrypterException | WrongWalletPasswordException  e){
 						   informationalAlert("Unfortunately, you messed up.",
 								   "Wrong wallet password");
 						   return;
@@ -961,7 +961,7 @@ public class Controller  extends BaseUI{
 						Main.UI_ONLY_WALLET_PW.setPassword(temp.toString());
 					    overlay.done();
 					    updateLockIcon();
-					} catch (NoWalletPasswordException e) {
+					} catch (WrongWalletPasswordException e) {
 						e.printStackTrace();
 					}
 				   
@@ -1944,7 +1944,7 @@ public class Controller  extends BaseUI{
     			Authenticator.getWalletOperation().decryptWallet(password);
     			Authenticator.getWalletOperation().encryptWallet(password);
     		}
-    		catch(KeyCrypterException | NoWalletPasswordException  e){
+    		catch(KeyCrypterException | WrongWalletPasswordException  e){
     			return false;
     		} 	
     	}

@@ -1596,7 +1596,10 @@ public class WalletOperation extends BASE{
 									howBalanceChanged, Authenticator.getLongLivingDataBinder().getWalletPassword());
 						} catch (Exception e) {
 							e.printStackTrace();
-							Authenticator.getLongLivingOperationsListener().onError(null, e, null);
+							if(e instanceof WrongWalletPasswordException)
+								Authenticator.getLongLivingOperationsListener().onError(null, new Exception("We tried notifying your Authenticator app that you received some coins but we failed because your wallet is locked"), null);
+							else
+								Authenticator.getLongLivingOperationsListener().onError(null, e, null);
 						}
 					}
 				}
