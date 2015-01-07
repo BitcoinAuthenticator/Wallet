@@ -1,25 +1,13 @@
 package org.authenticator.operations.OperationsUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
-import org.json.JSONException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.spongycastle.util.encoders.Hex;
-import org.authenticator.Authenticator;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
 import org.authenticator.GCM.exceptions.GCMSendFailedException;
@@ -39,8 +27,6 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutPoint;
 import org.bitcoinj.core.TransactionOutput;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
@@ -173,7 +159,7 @@ public class SignProtocol {
 			@Nullable String txMessage,
 			String extIP,
 			String intIP,
-			@Nullable BAPassword WALLET_PW) throws GCMSendFailedException, NoWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
+			@Nullable BAPassword WALLET_PW) throws GCMSendFailedException, WrongWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
 		Dispacher disp;
 		disp = new Dispacher(null,null);
 		//Send the encrypted payload over to the Authenticator and wait for the response.

@@ -11,8 +11,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.google.protobuf.ByteString;
-import org.authenticator.Authenticator;
-import org.authenticator.BAApplicationParameters;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
 import org.authenticator.GCM.exceptions.GCMSendFailedException;
@@ -26,21 +24,17 @@ import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.walletCore.WalletOperation;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutput;
-import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.script.Script;
-import org.json.JSONException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.spongycastle.util.encoders.Hex;
@@ -106,19 +100,19 @@ public class CoinsReceivedNotificationSenderTest {
 
 			try {
 				Mockito.when(mocked.getAESKey("i am the the pairing id", walletPass)).thenReturn("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0");
-			} catch (NoWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
+			} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
 				e.printStackTrace();
 				assertTrue(false);
 			}
 
-			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator());
+			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator(false));
 		}
 		
 		Dispacher ds = Mockito.mock(Dispacher.class);
 		try {
 			Mockito.when(
 					ds.dispachMessage(ATGCMMessageType.CoinsReceived, 
-							deviceSentTo(getMockedPairedAuthenticator()), 
+							deviceSentTo(getMockedPairedAuthenticator(false)),
 							new String[]{ "Coins Received: " + Coin.valueOf(10000).toFriendlyString() })).thenReturn("");
 		} catch (GCMSendFailedException e) {
 			e.printStackTrace();
@@ -147,12 +141,12 @@ public class CoinsReceivedNotificationSenderTest {
 
 			assertTrue(argMsgType.getValue() == ATGCMMessageType.CoinsReceived);
 
-			assertTrue(Arrays.equals(argDevice.getValue().chaincode, deviceSentTo(getMockedPairedAuthenticator()).chaincode));
-			assertTrue(Arrays.equals(argDevice.getValue().mPubKey, deviceSentTo(getMockedPairedAuthenticator()).mPubKey));
-			assertTrue(Arrays.equals(argDevice.getValue().gcmRegId, deviceSentTo(getMockedPairedAuthenticator()).gcmRegId));
-			assertTrue(Arrays.equals(argDevice.getValue().pairingID, deviceSentTo(getMockedPairedAuthenticator()).pairingID));
+			assertTrue(Arrays.equals(argDevice.getValue().chaincode, deviceSentTo(getMockedPairedAuthenticator(false)).chaincode));
+			assertTrue(Arrays.equals(argDevice.getValue().mPubKey, deviceSentTo(getMockedPairedAuthenticator(false)).mPubKey));
+			assertTrue(Arrays.equals(argDevice.getValue().gcmRegId, deviceSentTo(getMockedPairedAuthenticator(false)).gcmRegId));
+			assertTrue(Arrays.equals(argDevice.getValue().pairingID, deviceSentTo(getMockedPairedAuthenticator(false)).pairingID));
 			assertTrue(Arrays.equals(argDevice.getValue().sharedsecret.getEncoded(),
-					deviceSentTo(getMockedPairedAuthenticator()).sharedsecret.getEncoded()));
+					deviceSentTo(getMockedPairedAuthenticator(false)).sharedsecret.getEncoded()));
 
 //			String[] e = argStr.getValue();
 //			assertTrue(e.equals("Coins Received: " + Coin.valueOf(10000).toFriendlyString()));
@@ -186,14 +180,14 @@ public class CoinsReceivedNotificationSenderTest {
 				assertTrue(false);
 			}
 
-			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator());
+			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator(false));
 		}
 
 		Dispacher ds = Mockito.mock(Dispacher.class);
 		try {
 			Mockito.when(
 					ds.dispachMessage(ATGCMMessageType.CoinsReceived,
-							deviceSentTo(getMockedPairedAuthenticator()),
+							deviceSentTo(getMockedPairedAuthenticator(false)),
 							new String[]{ "Coins Received: " + Coin.valueOf(10000).toFriendlyString() })).thenReturn("");
 		} catch (GCMSendFailedException e) {
 			e.printStackTrace();
@@ -244,14 +238,14 @@ public class CoinsReceivedNotificationSenderTest {
 				assertTrue(false);
 			}
 
-			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator());
+			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator(false));
 		}
 
 		Dispacher ds = Mockito.mock(Dispacher.class);
 		try {
 			Mockito.when(
 					ds.dispachMessage(ATGCMMessageType.CoinsReceived,
-							deviceSentTo(getMockedPairedAuthenticator()),
+							deviceSentTo(getMockedPairedAuthenticator(false)),
 							new String[]{ "Coins Received: " + Coin.valueOf(10000).toFriendlyString() })).thenReturn("");
 		} catch (GCMSendFailedException e) {
 			e.printStackTrace();
@@ -302,14 +296,14 @@ public class CoinsReceivedNotificationSenderTest {
 				assertTrue(false);
 			}
 
-			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator());
+			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator(false));
 		}
 
 		Dispacher ds = Mockito.mock(Dispacher.class);
 		try {
 			Mockito.when(
 					ds.dispachMessage(ATGCMMessageType.CoinsReceived,
-							deviceSentTo(getMockedPairedAuthenticator()),
+							deviceSentTo(getMockedPairedAuthenticator(false)),
 							new String[]{ "Coins Received: " + Coin.valueOf(10000).toFriendlyString() })).thenReturn("");
 		} catch (GCMSendFailedException e) {
 			e.printStackTrace();
@@ -337,7 +331,75 @@ public class CoinsReceivedNotificationSenderTest {
 			assertTrue(false);
 		}
 	}
-	
+
+	@Test
+	public void failedToSendBecausePasswordIsWrongOrEmptyTest() throws IOException {
+		BAPassword walletPass = new BAPassword("password");
+		BAPassword walletEmptyPass = new BAPassword("");
+		BAPassword walletWrongPass = new BAPassword("wrong");
+
+		WalletOperation mocked = Mockito.mock(WalletOperation.class);
+		{
+			Mockito.when(mocked.getNetworkParams()).thenReturn(NetworkParameters.testNet());
+
+			Mockito.when(mocked.isWatchingAddress("address0")).thenReturn(false);
+			Mockito.when(mocked.isWatchingAddress("address1")).thenReturn(false);
+			Mockito.when(mocked.isWatchingAddress("address2")).thenReturn(true);
+			Mockito.when(mocked.isWatchingAddress("address3")).thenReturn(false);
+			Mockito.when(mocked.isWatchingAddress("address4")).thenReturn(false);
+
+			Mockito.when(mocked.findAddressInAccounts("address2")).thenReturn(mockedATAddress());
+
+			try {
+				Mockito.when(mocked.getAccount(1)).thenReturn(getMockedAccount());
+			} catch (AccountWasNotFoundException e) {
+				e.printStackTrace();
+				assertTrue(false);
+			}
+
+			try {
+				Mockito.when(mocked.getAESKey("i am the the pairing id", walletPass)).thenReturn("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0");
+				Mockito.when(mocked.getAESKey("i am the the pairing id", walletEmptyPass)).thenThrow(WrongWalletPasswordException.class);
+				Mockito.when(mocked.getAESKey("i am the the pairing id", walletWrongPass)).thenThrow(WrongWalletPasswordException.class);
+			} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
+				e.printStackTrace();
+				assertTrue(false);
+			}
+
+			Mockito.when(mocked.getPairingObjectForAccountIndex(1)).thenReturn(getMockedPairedAuthenticator(true));
+		}
+
+		Dispacher ds = Mockito.mock(Dispacher.class);
+		try {
+			Mockito.when(
+					ds.dispachMessage(ATGCMMessageType.CoinsReceived,
+							deviceSentTo(getMockedPairedAuthenticator(true)),
+							new String[]{ "Coins Received: " + Coin.valueOf(10000).toFriendlyString() })).thenReturn("");
+		} catch (GCMSendFailedException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+		// test empty password
+		try {
+			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletEmptyPass);
+		} catch (Exception e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+
+		// test empty password
+		boolean didThrow = false;
+		try {
+			CoinsReceivedNotificationSender.send(mocked, ds, mockedTx(mocked), HowBalanceChanged.ReceivedCoins, walletWrongPass);
+		} catch (Exception e) {
+			assertTrue(e instanceof WrongWalletPasswordException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+	}
+
 	private Transaction mockedTx(WalletOperation wo) {
 		Transaction tx = Mockito.mock(Transaction.class);	
 		List<TransactionOutput> lTxOutput = new ArrayList<TransactionOutput>();
@@ -404,7 +466,7 @@ public class CoinsReceivedNotificationSenderTest {
 		return b.build();
 	}
 	
-	private PairedAuthenticator getMockedPairedAuthenticator() {
+	private PairedAuthenticator getMockedPairedAuthenticator(boolean isEncrypted) {
 		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
 			String hexSk = "A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0";
 			newPair.setAesKey(hexSk);
@@ -419,7 +481,7 @@ public class CoinsReceivedNotificationSenderTest {
 			newPair.setTestnet(false);
 			newPair.setKeysN(0);
 			newPair.setWalletAccountIndex(1);
-			newPair.setIsEncrypted(false);
+			newPair.setIsEncrypted(isEncrypted);
 			newPair.setKeySalt(ByteString.copyFrom(new byte[] {}));
 		return newPair.build();
 	}

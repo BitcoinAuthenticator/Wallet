@@ -18,7 +18,7 @@ import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -344,7 +344,7 @@ public class PairingTest {
 
 			decryptedAES = woMocked.getAESKey("0", password);
 			assertTrue(decryptedAES.equals(Hex.toHexString((baseDecryptedAESKey + 0).getBytes())));
-		} catch (NoWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
+		} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
 			e.printStackTrace();
 			assertTrue(false);
 		}
@@ -362,7 +362,7 @@ public class PairingTest {
 
 			decryptedAES = woMocked.getAESKey("1233", password);
 			assertTrue(decryptedAES == null);
-		} catch (NoWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
+		} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
 			e.printStackTrace();
 			assertTrue(false);
 		}
@@ -471,7 +471,7 @@ public class PairingTest {
 					intHierarchyMock);
 			Mockito.doNothing().when(woMocked).addNewAccountToConfigAndHierarchy(Mockito.any(ATAccount.class));
 			Mockito.doReturn(walletSeedbytes).when(woMocked).getWalletSeedBytes(walletPassword);
-			Mockito.doThrow(NoWalletPasswordException.class).when(woMocked).getWalletSeedBytes(wrongPass);
+			Mockito.doThrow(WrongWalletPasswordException.class).when(woMocked).getWalletSeedBytes(wrongPass);
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -675,7 +675,7 @@ public class PairingTest {
 					false,
 					wrongPass);
 		} catch (Exception e) {
-			assertTrue(e instanceof NoWalletPasswordException);
+			assertTrue(e instanceof WrongWalletPasswordException);
 			didCrash = true;
 		}
 		if(!didCrash) assertTrue(false);

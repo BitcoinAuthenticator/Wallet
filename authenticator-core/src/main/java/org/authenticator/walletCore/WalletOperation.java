@@ -4,15 +4,9 @@ import org.authenticator.Authenticator;
 import org.authenticator.BAApplicationParameters;
 import org.authenticator.BASE;
 import org.authenticator.BAApplicationParameters.NetworkType;
-import org.authenticator.GCM.dispacher.Device;
-import org.authenticator.GCM.dispacher.Dispacher;
-import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.hierarchy.SingleAccountManagerImpl;
-import org.authenticator.listeners.BAWalletExecutionDataBinder;
-import org.authenticator.operations.listeners.OperationListener;
 import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
-import org.authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
 import org.authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import org.authenticator.walletCore.exceptions.CannotGetAccountUsedAddressesException;
@@ -22,18 +16,15 @@ import org.authenticator.walletCore.exceptions.CannotGetPendingRequestsException
 import org.authenticator.walletCore.exceptions.CannotReadFromConfigurationFileException;
 import org.authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.authenticator.walletCore.utils.CoinsReceivedNotificationSender;
 import org.authenticator.walletCore.utils.WalletListener;
 import org.authenticator.hierarchy.BAHierarchy;
 import org.authenticator.hierarchy.HierarchyUtils;
 import org.authenticator.hierarchy.exceptions.IncorrectPathException;
-import org.authenticator.hierarchy.exceptions.NoAccountCouldBeFoundException;
-import org.authenticator.hierarchy.exceptions.NoUnusedKeyException;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
 import org.authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
-import org.authenticator.listeners.BAGeneralEventsListener.HowBalanceChanged;
 import org.authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
 
 import java.io.FileNotFoundException;
@@ -42,20 +33,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
 
-import javafx.application.Platform;
-import javafx.scene.image.Image;
-
 import javax.annotation.Nullable;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
-import org.bouncycastle.crypto.prng.RandomGenerator;
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.util.encoders.Hex;
-import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.Utils.OneName.exceptions.CannotSetOneNameProfileException;
 import org.authenticator.db.settingsDB;
 import org.authenticator.db.walletDB;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
@@ -66,14 +47,11 @@ import org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarch
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
-import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
-import org.authenticator.protobuf.ProtoSettings.ConfigSettings;
 import org.authenticator.protobuf.ProtoSettings.Languages;
-import org.bitcoinj.core.AbstractWalletEventListener;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
@@ -99,15 +77,11 @@ import org.bitcoinj.crypto.KeyCrypterException;
 import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
-import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.CoinSelection;
 import org.bitcoinj.wallet.DefaultCoinSelector;
 import org.bitcoinj.wallet.DeterministicSeed;
 
 import com.google.common.collect.ImmutableList;
-
-import eu.hansolo.enzo.notification.Notification;
-import eu.hansolo.enzo.notification.Notification.Notifier;
 
 
 /**
@@ -525,7 +499,7 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 	
-	public ATAccountAddressHierarchy getAccountAddressHierarchy(int accoutnIdx, HierarchyAddressTypes type, @Nullable BAPassword walletPW) throws NoWalletPasswordException {
+	public ATAccountAddressHierarchy getAccountAddressHierarchy(int accoutnIdx, HierarchyAddressTypes type, @Nullable BAPassword walletPW) throws WrongWalletPasswordException {
 		return HierarchyUtils.generateAccountAddressHierarchy(
  				getWalletSeedBytes(walletPW),
 				accoutnIdx,
@@ -537,9 +511,9 @@ public class WalletOperation extends BASE{
  	 * Generate a new wallet account and writes it to the config file
  	 * @return
  	 * @throws IOException 
- 	 * @throws NoWalletPasswordException 
+ 	 * @throws org.authenticator.walletCore.exceptions.WrongWalletPasswordException
  	 */
- 	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type, @Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException{
+ 	private ATAccount generateNewAccount(NetworkType nt, String accountName, WalletAccountType type, @Nullable BAPassword walletPW) throws IOException, WrongWalletPasswordException {
  		int accoutnIdx = getWalletHierarchy().generateNewAccount().getAccountIndex();
  		
  		ATAccountAddressHierarchy ext = getAccountAddressHierarchy(accoutnIdx,
@@ -603,7 +577,7 @@ public class WalletOperation extends BASE{
  	    LOG.info("Added an account at index, " + b.getIndex() + " to hierarchy");
  	}
  	
- 	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName, @Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException{
+ 	public ATAccount generateNewStandardAccount(NetworkType nt, String accountName, @Nullable BAPassword walletPW) throws IOException, WrongWalletPasswordException {
 		ATAccount ret = generateNewAccount(nt, accountName, WalletAccountType.StandardAccount, walletPW);
 		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, ret.getIndex());
 		return ret;
@@ -716,7 +690,7 @@ public class WalletOperation extends BASE{
 				throw new AddressNotWatchedByWalletException("You are trying to get an unwatched address");
 			return ret;
 		}
-		catch(NoWalletPasswordException e) {
+		catch(WrongWalletPasswordException e) {
 			throw new CannotGetHDKeyException(e.toString());
 		}
 		
@@ -1152,7 +1126,7 @@ public class WalletOperation extends BASE{
 	 * @param walletPW
 	 * @return
 	 */
-	public String getAESKey(String pairID, @Nullable BAPassword walletPW) throws NoWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
+	public String getAESKey(String pairID, @Nullable BAPassword walletPW) throws WrongWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
 		try {
 			List<PairedAuthenticator> all = getAllPairingObjectArray();
 			for(PairedAuthenticator o:all)
@@ -1221,7 +1195,7 @@ public class WalletOperation extends BASE{
 	 * @param walletPW
 	 * @return
 	 * @throws IOException
-	 * @throws NoWalletPasswordException
+	 * @throws org.authenticator.walletCore.exceptions.WrongWalletPasswordException
 	 * @throws CryptoUtils.CouldNotEncryptPayload
 	 */
 	public PairedAuthenticator generatePairing(String authMpubkey, 
@@ -1233,7 +1207,7 @@ public class WalletOperation extends BASE{
 			@Nullable Integer passedAccountID,
 			NetworkType nt,
 			boolean shouldEncrypt,
-			@Nullable BAPassword walletPW) throws IOException, NoWalletPasswordException, CryptoUtils.CouldNotEncryptPayload {
+			@Nullable BAPassword walletPW) throws IOException, WrongWalletPasswordException, CryptoUtils.CouldNotEncryptPayload {
 		int finalAccountID ;
 		if( passedAccountID == null )
 			finalAccountID = generateNewAccount(nt, pairName, WalletAccountType.AuthenticatorAccount, walletPW).getIndex();
@@ -1843,29 +1817,29 @@ public class WalletOperation extends BASE{
 		return getWalletWrapper().getTxValueSentFromMe(tx);
 	}
 	
-	public void decryptWallet(BAPassword password) throws NoWalletPasswordException{
+	public void decryptWallet(BAPassword password) throws WrongWalletPasswordException {
 		if(isWalletEncrypted())
 		if(password.hasPassword()){
 			try {
 				getWalletWrapper().decryptWallet(password.toString());
 			}
 			catch(KeyCrypterException returnException) { 
-				throw new NoWalletPasswordException("Illegal Password");
+				throw new WrongWalletPasswordException("Illegal Password");
 			}
 			LOG.info("Decrypted wallet with password: " + password.toString());
 		}
 		else
-			throw new NoWalletPasswordException("Illegal Password");
+			throw new WrongWalletPasswordException("Illegal Password");
 	}
 	
-	public void encryptWallet(BAPassword password) throws NoWalletPasswordException{
+	public void encryptWallet(BAPassword password) throws WrongWalletPasswordException {
 		if(!isWalletEncrypted())
 		if(password.hasPassword()){
 			getWalletWrapper().encryptWallet(password.toString());
 			LOG.info("Encrypted wallet with password: " + password.toString());
 		}
 		else
-			throw new NoWalletPasswordException("Illegal Password");
+			throw new WrongWalletPasswordException("Illegal Password");
 	}
 	
 	/**
@@ -1873,11 +1847,11 @@ public class WalletOperation extends BASE{
 	 * 
 	 * @param pw
 	 * @return
-	 * @throws NoWalletPasswordException 
+	 * @throws org.authenticator.walletCore.exceptions.WrongWalletPasswordException
 	 */
-	public DeterministicSeed getWalletSeed(@Nullable BAPassword pw) throws NoWalletPasswordException{
+	public DeterministicSeed getWalletSeed(@Nullable BAPassword pw) throws WrongWalletPasswordException {
 		if(isWalletEncrypted() && !pw.hasPassword())
-				throw new NoWalletPasswordException("Wallet is encrypted, cannot get seed");
+				throw new WrongWalletPasswordException("Wallet is encrypted, cannot get seed");
 		DeterministicSeed ret;
 		if(isWalletEncrypted()){
 			decryptWallet(pw);
@@ -1894,9 +1868,9 @@ public class WalletOperation extends BASE{
 	 * 
 	 * @param pw
 	 * @return
-	 * @throws NoWalletPasswordException 
+	 * @throws org.authenticator.walletCore.exceptions.WrongWalletPasswordException
 	 */
-	 public byte[] getWalletSeedBytes(@Nullable BAPassword pw) throws NoWalletPasswordException{
+	 public byte[] getWalletSeedBytes(@Nullable BAPassword pw) throws WrongWalletPasswordException {
 	 		return getWalletSeed(pw).getSecretBytes();
 	 }
 	

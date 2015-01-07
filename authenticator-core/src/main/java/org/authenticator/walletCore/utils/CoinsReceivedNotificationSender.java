@@ -1,19 +1,14 @@
 package org.authenticator.walletCore.utils;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.authenticator.Utils.CryptoUtils;
-import org.authenticator.walletCore.exceptions.NoWalletPasswordException;
+import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.script.Script;
-import org.json.JSONException;
-import org.spongycastle.util.encoders.Hex;
 import org.authenticator.GCM.dispacher.Device;
 import org.authenticator.GCM.dispacher.Dispacher;
 import org.authenticator.GCM.exceptions.GCMSendFailedException;
@@ -50,7 +45,7 @@ public class CoinsReceivedNotificationSender {
 							Transaction tx,
 							HowBalanceChanged howBalanceChanged,
 							@Nullable BAPassword walletPass) throws AccountWasNotFoundException,
-																	NoWalletPasswordException,
+			WrongWalletPasswordException,
 																	GCMSendFailedException,
 																	CryptoUtils.CannotDecryptMessageException {
 		send(wo, new Dispacher(null,null), tx, howBalanceChanged, walletPass);
@@ -62,9 +57,11 @@ public class CoinsReceivedNotificationSender {
 							HowBalanceChanged howBalanceChanged,
 							@Nullable BAPassword walletPass) throws AccountWasNotFoundException,
 																	GCMSendFailedException,
-																	NoWalletPasswordException,
+			WrongWalletPasswordException,
 																	CryptoUtils.CannotDecryptMessageException {
 		if(howBalanceChanged == HowBalanceChanged.ReceivedCoins)
+			if(!walletPass.hasPassword())
+				return;
 			for (TransactionOutput out : tx.getOutputs()){
 				Script scr = out.getScriptPubKey();
 				String addrStr = scr.getToAddress(wo.getNetworkParams()).toString();
