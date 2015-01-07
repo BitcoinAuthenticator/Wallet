@@ -46,7 +46,6 @@ import org.authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotGetAddressException;
 import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import org.authenticator.walletCore.utils.BAPassword;
-import org.authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.OperationsFactory;
 import org.authenticator.operations.listeners.OperationListener;

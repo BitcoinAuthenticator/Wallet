@@ -25,7 +25,6 @@ import org.authenticator.Utils.CurrencyConverter.Currency;
 import org.authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import org.authenticator.db.walletDB;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
-import org.authenticator.hierarchy.exceptions.KeyIndexOutOfRangeException;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
