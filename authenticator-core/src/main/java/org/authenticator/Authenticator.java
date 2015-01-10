@@ -1,32 +1,19 @@
 package org.authenticator;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nullable;
-
 import javafx.scene.image.Image;
-
 import org.authenticator.listeners.BAWalletExecutionDataBinder;
-import org.bitcoinj.core.AddressFormatException;
-import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.crypto.DeterministicKey;
-
-import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
-import com.google.common.util.concurrent.Service.State;
-
-import org.authenticator.Utils.SafeList;
-import org.authenticator.db.walletDB;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.listeners.BAGeneralEventsListener;
 import org.authenticator.listeners.BAGeneralEventsListener.AccountModificationType;
@@ -38,15 +25,11 @@ import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.OperationsFactory;
 import org.authenticator.operations.OperationsUtils.SignProtocol;
 import org.authenticator.operations.listeners.OperationListener;
-import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
-import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
-import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 import org.authenticator.walletCore.WalletOperation;
 import org.authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
-import org.authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 
 /**
  * <p>The main building block of the BitocinAuthenticator wallet.<br>
