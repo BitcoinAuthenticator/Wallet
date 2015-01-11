@@ -20,11 +20,22 @@ import org.bitcoinj.crypto.HDKeyDerivation;
   * The hierarchy is built uppon BIP44, https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki<br>
   * <b>The Hierarchy:</b><br
   * m / purpose' / coin_type' / account' / change / address_index<br>
+  *
+  * Bitcoin Authenticator specific purposes:
+  * <ol>
+  *     <li>100' - general encryption<br>
+  *      Key index:
+  *      <ol start="0">
+  *	    	<li>Config file encryption</li>
+  *	    	<li>Clud backup encryption</li>
+  *      </ol>
+  *     </li>
+  * </ol>
   * 
   * @author alon
   *
   */
- public class BAHierarchy{
+ public class BAHierarchy {
 	 /**
 	  * Fresh unused keys will be given up to the set keyLookAhead, if the user will ask 
 	  * more it will get the same keyLookAhead keys to maintain a strict handling over keys for later hierarchy restoring.
