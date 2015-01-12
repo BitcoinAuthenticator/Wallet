@@ -21,6 +21,14 @@ public final class AuthWalletHierarchy {
      * </pre>
      */
     Bip43(0, 44),
+    /**
+     * <code>BAGeneral = 100;</code>
+     *
+     * <pre>
+     * 0x8000006E
+     * </pre>
+     */
+    BAGeneral(1, 100),
     ;
 
     /**
@@ -31,6 +39,14 @@ public final class AuthWalletHierarchy {
      * </pre>
      */
     public static final int Bip43_VALUE = 44;
+    /**
+     * <code>BAGeneral = 100;</code>
+     *
+     * <pre>
+     * 0x8000006E
+     * </pre>
+     */
+    public static final int BAGeneral_VALUE = 100;
 
 
     public final int getNumber() { return value; }
@@ -38,6 +54,7 @@ public final class AuthWalletHierarchy {
     public static HierarchyPurpose valueOf(int value) {
       switch (value) {
         case 44: return Bip43;
+        case 100: return BAGeneral;
         default: return null;
       }
     }
@@ -269,49 +286,49 @@ public final class AuthWalletHierarchy {
   }
 
   /**
-   * Protobuf enum {@code org.authenticator.protobuf.HierarchyPrefixedAccountIndex}
+   * Protobuf enum {@code org.authenticator.protobuf.BAGeneralHierarchyKeys}
    */
-  public enum HierarchyPrefixedAccountIndex
+  public enum BAGeneralHierarchyKeys
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>PrefixSpending = 0;</code>
+     * <code>ConfigFileEncryption = 0;</code>
      */
-    PrefixSpending(0, 0),
+    ConfigFileEncryption(0, 0),
     /**
-     * <code>PrefixSavings = 1;</code>
+     * <code>CloudBackupEncryption = 1;</code>
      */
-    PrefixSavings(1, 1),
+    CloudBackupEncryption(1, 1),
     ;
 
     /**
-     * <code>PrefixSpending = 0;</code>
+     * <code>ConfigFileEncryption = 0;</code>
      */
-    public static final int PrefixSpending_VALUE = 0;
+    public static final int ConfigFileEncryption_VALUE = 0;
     /**
-     * <code>PrefixSavings = 1;</code>
+     * <code>CloudBackupEncryption = 1;</code>
      */
-    public static final int PrefixSavings_VALUE = 1;
+    public static final int CloudBackupEncryption_VALUE = 1;
 
 
     public final int getNumber() { return value; }
 
-    public static HierarchyPrefixedAccountIndex valueOf(int value) {
+    public static BAGeneralHierarchyKeys valueOf(int value) {
       switch (value) {
-        case 0: return PrefixSpending;
-        case 1: return PrefixSavings;
+        case 0: return ConfigFileEncryption;
+        case 1: return CloudBackupEncryption;
         default: return null;
       }
     }
 
-    public static com.google.protobuf.Internal.EnumLiteMap<HierarchyPrefixedAccountIndex>
+    public static com.google.protobuf.Internal.EnumLiteMap<BAGeneralHierarchyKeys>
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<HierarchyPrefixedAccountIndex>
+    private static com.google.protobuf.Internal.EnumLiteMap<BAGeneralHierarchyKeys>
         internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<HierarchyPrefixedAccountIndex>() {
-            public HierarchyPrefixedAccountIndex findValueByNumber(int number) {
-              return HierarchyPrefixedAccountIndex.valueOf(number);
+          new com.google.protobuf.Internal.EnumLiteMap<BAGeneralHierarchyKeys>() {
+            public BAGeneralHierarchyKeys findValueByNumber(int number) {
+              return BAGeneralHierarchyKeys.valueOf(number);
             }
           };
 
@@ -328,9 +345,9 @@ public final class AuthWalletHierarchy {
       return org.authenticator.protobuf.AuthWalletHierarchy.getDescriptor().getEnumTypes().get(3);
     }
 
-    private static final HierarchyPrefixedAccountIndex[] VALUES = values();
+    private static final BAGeneralHierarchyKeys[] VALUES = values();
 
-    public static HierarchyPrefixedAccountIndex valueOf(
+    public static BAGeneralHierarchyKeys valueOf(
         com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
         throw new java.lang.IllegalArgumentException(
@@ -342,12 +359,12 @@ public final class AuthWalletHierarchy {
     private final int index;
     private final int value;
 
-    private HierarchyPrefixedAccountIndex(int index, int value) {
+    private BAGeneralHierarchyKeys(int index, int value) {
       this.index = index;
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:org.authenticator.protobuf.HierarchyPrefixedAccountIndex)
+    // @@protoc_insertion_point(enum_scope:org.authenticator.protobuf.BAGeneralHierarchyKeys)
   }
 
 
@@ -360,12 +377,13 @@ public final class AuthWalletHierarchy {
   static {
     java.lang.String[] descriptorData = {
       "\n\021BAHierarchy.proto\022\032org.authenticator.p" +
-      "rotobuf*\035\n\020HierarchyPurpose\022\t\n\005Bip43\020,*%" +
-      "\n\022HierarchyCoinTypes\022\017\n\013CoinBitcoin\020\000*3\n" +
-      "\025HierarchyAddressTypes\022\014\n\010External\020\000\022\014\n\010" +
-      "Internal\020\001*F\n\035HierarchyPrefixedAccountIn" +
-      "dex\022\022\n\016PrefixSpending\020\000\022\021\n\rPrefixSavings" +
-      "\020\001B\025B\023AuthWalletHierarchy"
+      "rotobuf*,\n\020HierarchyPurpose\022\t\n\005Bip43\020,\022\r" +
+      "\n\tBAGeneral\020d*%\n\022HierarchyCoinTypes\022\017\n\013C" +
+      "oinBitcoin\020\000*3\n\025HierarchyAddressTypes\022\014\n" +
+      "\010External\020\000\022\014\n\010Internal\020\001*M\n\026BAGeneralHi" +
+      "erarchyKeys\022\030\n\024ConfigFileEncryption\020\000\022\031\n" +
+      "\025CloudBackupEncryption\020\001B\025B\023AuthWalletHi" +
+      "erarchy"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

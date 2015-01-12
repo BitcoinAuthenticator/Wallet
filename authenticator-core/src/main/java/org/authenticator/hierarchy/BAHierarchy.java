@@ -23,11 +23,11 @@ import org.bitcoinj.crypto.HDKeyDerivation;
   *
   * Bitcoin Authenticator specific purposes:
   * <ol>
-  *     <li>100' - general encryption<br>
+  *     <li>100' - general<br>
   *      Key index:
   *      <ol start="0">
   *	    	<li>Config file encryption</li>
-  *	    	<li>Clud backup encryption</li>
+  *	    	<li>Cloud backup encryption</li>
   *      </ol>
   *     </li>
   * </ol>
