@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wallet.apps.MyBitcoinsAppController">
+   <children>
+      <Pane prefHeight="59.0" prefWidth="850.0" style="-fx-background-color: white;">
+         <children>
+            <Button layoutX="771.0" layoutY="16.0" mnemonicParsing="false" onMousePressed="#close" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Close" />
+            <ImageView fitHeight="54.0" fitWidth="54.0" layoutX="13.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../Icons/btnMyBitcoins.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <TabPane layoutY="59.0" prefHeight="425.0" prefWidth="850.0" style="-fx-background:white;" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Untitled Tab 1">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="447.0" prefWidth="848.0" />
+            </content>
+          </Tab>
+          <Tab text="Untitled Tab 2">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

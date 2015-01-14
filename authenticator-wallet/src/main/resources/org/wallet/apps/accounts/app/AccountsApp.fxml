@@ -40,7 +40,7 @@
       <children>
         <ImageView fitHeight="54.0" fitWidth="54.0" layoutX="13.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
           <image>
-            <Image url="/org/wallet/apps/btnAccounts.png" />
+            <Image url="/org/wallet/apps/Icons/btnAccounts.png" />
           </image>
         </ImageView>
         <Button layoutX="771.0" layoutY="16.0" mnemonicParsing="false" onAction="#close" prefHeight="29.1328125" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Close" />

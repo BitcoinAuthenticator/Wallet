@@ -1905,6 +1905,10 @@ public class Controller  extends BaseUI{
     @FXML protected void btnAccounts(MouseEvent event) {
     	Main.instance.overlayUI("apps/accounts/app/AccountsApp.fxml");
     }
+
+	@FXML protected void btnMyBitcoins(MouseEvent event) {
+		Main.instance.overlayUI("apps/MyBitcoins/app/MyBitcoinsApp.fxml");
+	}
     
     //#####################################
    	//

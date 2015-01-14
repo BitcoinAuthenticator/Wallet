@@ -306,7 +306,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnOneName.png" />
+                                <Image url="@apps/Icons/btnOneName.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -318,16 +318,19 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnAccounts.png" />
+                                <Image url="@apps/Icons/btnAccounts.png" />
                               </image>
                             </ImageView>
                           </graphic>
                         </Button>
+                        <!--
+
+			                -->
                         <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnAppAuthenticator" prefWidth="113.0" style="-fx-background-color:transparent;" text="Bitcoin Authenticator" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnBitcoinAuthenticator.png" />
+                                <Image url="@apps/Icons/btnBitcoinAuthenticator.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -342,7 +345,19 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnSettings.png" />
+                                <Image url="@apps/Icons/btnSettings.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnMyBitcoins" prefWidth="113.0" style="-fx-background-color:transparent;" text="My Bitcoins" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/Icons/btnMyBitcoins.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -374,7 +389,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnAddressBook.png" />
+                                <Image url="@apps/Icons/btnAddressBook.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -386,7 +401,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnBnB.png" />
+                                <Image url="@apps/Icons/btnBnB.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -398,7 +413,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnDonate.png" />
+                                <Image url="@apps/Icons/btnDonate.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -410,7 +425,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnLocalBitcoins.png" />
+                                <Image url="@apps/Icons/btnLocalBitcoins.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -419,7 +434,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnCoinJoin.png" />
+                                <Image url="@apps/Icons/btnCoinJoin.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -431,7 +446,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnCoinControl.png" />
+                                <Image url="@apps/Icons/btnCoinControl.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -443,7 +458,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnCoinbase.png" />
+                                <Image url="@apps/Icons/btnCoinbase.png" />
                               </image>
                             </ImageView>
                           </graphic>
@@ -455,19 +470,7 @@
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@apps/btnLocks.png" />
-                              </image>
-                            </ImageView>
-                          </graphic>
-                        </Button>
-                        <!--
-
-			                -->
-                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minHeight="135.0" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnNotImplementedYet" prefWidth="113.0" style="-fx-background-color:transparent;" text="My Bitcoins" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                          <graphic>
-                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                <Image url="@apps/btnMyBitcoins.png" />
+                                <Image url="@apps/Icons/btnLocks.png" />
                               </image>
                             </ImageView>
                           </graphic>
