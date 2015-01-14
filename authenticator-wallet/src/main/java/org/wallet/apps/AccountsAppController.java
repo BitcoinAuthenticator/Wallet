@@ -1,4 +1,4 @@
-package org.wallet;
+package org.wallet.apps;
 
 import static org.wallet.utils.GuiUtils.informationalAlert;
 
@@ -7,13 +7,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
 
 import org.authenticator.Utils.CryptoUtils;
-import org.json.JSONException;
-import org.wallet.PairWallet.PairingWalletControllerListener;
+import org.wallet.Main;
+import org.wallet.apps.AuthenticatorAppController.PairingWalletControllerListener;
 import org.wallet.controls.DisplayAccountCell;
 import org.wallet.controls.ScrollPaneContentManager;
 import org.wallet.controls.DisplayAccountCell.AccountCellEvents;
@@ -26,40 +23,29 @@ import org.wallet.utils.dialogs.BADialog.BADialogResponseListner;
 
 import org.authenticator.Authenticator;
 import org.authenticator.BAApplicationParameters.NetworkType;
-import org.authenticator.Utils.OneName.OneName;
-import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Transaction;
 
-public class AccountsController  extends BaseUI{
+public class AccountsAppController extends BaseUI{
 	@FXML public ScrollPane scrlPane;
 	@FXML public TextField txfNewAccountName;
 	@FXML public TextField txfPassword;
@@ -75,7 +61,7 @@ public class AccountsController  extends BaseUI{
 	private ScrollPaneContentManager scrlPaneContentManager;
 	
 	public void initialize() {
-		super.initialize(AccountsController.class);
+		super.initialize(AccountsAppController.class);
 		scrlPaneContentManager = new ScrollPaneContentManager()
 									.setSpacingBetweenItems(0)
 									.setScrollStyle(scrlPane.getStyle());
@@ -298,7 +284,7 @@ public class AccountsController  extends BaseUI{
 	@SuppressWarnings("unused")
 	private Stage loadPairingFXML(Stage s, ArrayList<Object> param) {    	
 		s = new Stage();
-		URL url = Main.class.getResource("/org/wallet/pairing/BAApp.fxml");
+		URL url = Main.class.getResource("/org/wallet/pairing/AuthenticatorApp.fxml");
 		int width = 850;
 		int height = 484;
 		try {
@@ -309,7 +295,7 @@ public class AccountsController  extends BaseUI{
 			if(param != null){
 				BaseUI controller = loader.<BaseUI>getController();
 				try{
-					PairWallet w = loader.<PairWallet>getController();
+					AuthenticatorAppController w = loader.<AuthenticatorAppController>getController();
 					w.setListener(pairingListener);
 				}
 				catch (Exception e){ }

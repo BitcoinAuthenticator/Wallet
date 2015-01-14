@@ -1,49 +1,38 @@
-package org.wallet;
+package org.wallet.apps;
 
 import static org.wallet.utils.GuiUtils.informationalAlert;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionInput;
-import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.wallet.ControllerHelpers.AsyncTask;
+import org.wallet.Main;
 import org.wallet.startup.StartupController;
 import org.wallet.utils.BaseUI;
-import org.wallet.utils.GuiUtils;
 import org.wallet.utils.TextFieldValidator;
 import org.wallet.utils.TextUtils;
 import org.wallet.utils.dialogs.BADialog;
 import org.wallet.utils.dialogs.BADialog.BADialogResponse;
 import org.wallet.utils.dialogs.BADialog.BADialogResponseListner;
 
-import com.google.common.base.Joiner;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
 import org.authenticator.Authenticator;
 import org.authenticator.Utils.FileUtils;
 import org.authenticator.Utils.CurrencyConverter.Currency;
-import org.authenticator.db.settingsDB;
-import org.authenticator.db.walletDB;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
-import org.authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
 import org.authenticator.protobuf.ProtoSettings;
 import org.authenticator.protobuf.ProtoConfig.ATOperationType;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import org.authenticator.protobuf.ProtoSettings.Languages;
-import org.authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
 import org.authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
 import org.authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
 import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
@@ -58,47 +47,29 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 
-public class SettingsController  extends BaseUI{
+public class SettingsAppController extends BaseUI{
 	@FXML private Pane settingspane;
 	@FXML private Pane pendingRequestsPane;
 	
@@ -155,7 +126,7 @@ public class SettingsController  extends BaseUI{
 	// Called by FXMLLoader
     @SuppressWarnings("restriction")
 	public void initialize() {     
-    	super.initialize(SettingsController.class);
+    	super.initialize(SettingsAppController.class);
     	 initUI();
     }
     

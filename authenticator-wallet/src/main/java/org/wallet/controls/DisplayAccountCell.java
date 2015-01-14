@@ -132,7 +132,7 @@ public class DisplayAccountCell extends Region{
     }
 	
 	private String getViewPath() {
-        return "accounts/account_cell.fxml";
+        return "apps/accounts/app/account_cell.fxml";
     }
 
     private URL getViewURL() {

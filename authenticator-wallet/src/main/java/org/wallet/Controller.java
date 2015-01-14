@@ -1878,32 +1878,32 @@ public class Controller  extends BaseUI{
     }
     
     @FXML protected void btnAppAuthenticator(MouseEvent event) {
-    	Main.instance.overlayUI("pairing/BAApp.fxml");
+    	Main.instance.overlayUI("apps/authenticator/app/AuthenticatorApp.fxml");
     }
     
     @FXML protected void btnSettings(MouseEvent event) {
-    	Main.instance.overlayUI("Settings.fxml");
+    	Main.instance.overlayUI("apps/SettingsApp.fxml");
     }
     
     @FXML protected void btncoinjoin(MouseEvent event) {
-    	Main.instance.overlayUI("coinjoin.fxml");
+    	Main.instance.overlayUI("apps/CoinjoinApp.fxml");
     }
     
     @FXML protected void btnOneName(MouseEvent event) {
     	if(Authenticator.getWalletOperation().getOnename() != null){
     		ArrayList<Object> l = new ArrayList<Object>();
 			   l.add(Authenticator.getWalletOperation().getOnename().getOnename());
-			   Main.instance.overlayUI("DisplayOneName.fxml", l);
+			   Main.instance.overlayUI("apps/OneNameApp.fxml", l);
     	}
     	else {
     		ArrayList<Object> l = new ArrayList<Object>();
     		l.add("");
-    		Main.instance.overlayUI("DisplayOneName.fxml", l);
+    		Main.instance.overlayUI("apps/OneNameApp.fxml", l);
     	}
     }
     
     @FXML protected void btnAccounts(MouseEvent event) {
-    	Main.instance.overlayUI("accounts/accounts.fxml");
+    	Main.instance.overlayUI("apps/accounts/app/AccountsApp.fxml");
     }
     
     //#####################################

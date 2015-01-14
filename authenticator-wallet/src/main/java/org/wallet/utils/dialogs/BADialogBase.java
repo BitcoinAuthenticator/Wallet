@@ -2,7 +2,6 @@ package org.wallet.utils.dialogs;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,11 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 
-import javax.annotation.Nullable;
-
-import org.wallet.Main;
-import org.wallet.PairWallet;
-import org.wallet.utils.BaseUI;
 import org.wallet.utils.TextFieldValidator;
 import org.wallet.utils.dialogs.BADialog.BADialogResponse;
 import org.wallet.utils.dialogs.BADialog.BADialogResponseListner;

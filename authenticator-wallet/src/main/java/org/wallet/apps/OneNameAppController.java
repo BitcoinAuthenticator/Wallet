@@ -1,27 +1,20 @@
-package org.wallet;
+package org.wallet.apps;
 
-import java.io.IOException;
-
-import org.json.JSONException;
-import org.wallet.controls.BitcoinAddressValidator;
+import org.wallet.Main;
 import org.wallet.utils.BaseUI;
 
 import org.authenticator.Authenticator;
-import org.authenticator.Utils.OneName.OneName;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
 
-public class OneNameControllerDisplay  extends BaseUI{
+public class OneNameAppController extends BaseUI{
 	@FXML private WebView webView;
 	static WebEngine engine;
 	@FXML private Button done;
@@ -33,7 +26,7 @@ public class OneNameControllerDisplay  extends BaseUI{
 
 	// Called by FXMLLoader
     public void initialize() {
-    	super.initialize(OneNameControllerDisplay.class);
+    	super.initialize(OneNameAppController.class);
     	engine = webView.getEngine();    	
     }
     

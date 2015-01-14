@@ -8,13 +8,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="SettingsApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wallet.SettingsController">
+<AnchorPane fx:id="SettingsApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wallet.apps.SettingsAppController">
   <children>
     <Pane layoutX="0.0" layoutY="0.0" onMouseDragged="#drag2" onMousePressed="#drag1" prefHeight="55.0" prefWidth="850.0" style="-fx-background-color: #d2cece;">
       <children>
         <ImageView fitHeight="46.0" fitWidth="58.0" layoutX="-1.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
           <image>
-            <Image url="@apps/btnSettings.png" />
+            <Image url="@btnSettings.png" />
           </image>
         </ImageView>
         <Button fx:id="btnBackup" layoutX="431.0" layoutY="10.0" mnemonicParsing="false" onAction="#launchBackup" style="-fx-background-color: #b3b1b1;" text="Backup" />

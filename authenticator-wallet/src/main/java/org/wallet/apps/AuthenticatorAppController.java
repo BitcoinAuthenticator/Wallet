@@ -1,12 +1,12 @@
-package org.wallet;
+package org.wallet.apps;
 
 import static org.wallet.utils.GuiUtils.informationalAlert;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
+import org.wallet.Main;
 import org.wallet.utils.BaseUI;
 import org.wallet.utils.GuiUtils;
 import org.wallet.utils.ImageUtils;
@@ -18,11 +18,8 @@ import javafx.util.Duration;
 import org.authenticator.Authenticator;
 import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.OperationsFactory;
-import org.authenticator.operations.OperationsUtils.PairingProtocol;
 import org.authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
 import org.authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
-import org.authenticator.operations.OperationsUtils.PairingQRCode;
-import org.authenticator.operations.listeners.OperationListener;
 import org.authenticator.operations.listeners.OperationListenerAdapter;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 
@@ -32,20 +29,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 
 /**
  * Pairing controller, receives the following parameters:
@@ -59,7 +51,7 @@ import javafx.scene.text.Text;
  * @author alonmuroch
  *
  */
-public class PairWallet extends BaseUI{
+public class AuthenticatorAppController extends BaseUI{
 	
 	@FXML private Button cancelBtn;
 	@FXML private Button runBtn;
@@ -87,7 +79,7 @@ public class PairWallet extends BaseUI{
     PairingWalletControllerListener listener;    
     
     public void initialize() {
-        super.initialize(PairWallet.class);
+        super.initialize(AuthenticatorAppController.class);
         
         if(!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted()) {
         	txfWalletPwd.setDisable(false); 

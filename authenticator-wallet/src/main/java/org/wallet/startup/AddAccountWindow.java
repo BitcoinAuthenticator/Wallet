@@ -1,7 +1,5 @@
 package org.wallet.startup;
 
-import java.awt.Button;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,39 +7,24 @@ import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
-import org.json.JSONException;
-import org.wallet.Controller;
 import org.wallet.Main;
-import org.wallet.PairWallet;
-import org.wallet.Main.OverlayUI;
-import org.wallet.PairWallet.PairingWalletControllerListener;
+import org.wallet.apps.AuthenticatorAppController;
+import org.wallet.apps.AuthenticatorAppController.PairingWalletControllerListener;
 import org.wallet.startup.StartupController.AddAccountListener;
 import org.wallet.startup.StartupController.AddedAccountObject;
 import org.wallet.utils.BaseUI;
 import org.wallet.utils.GuiUtils;
 import org.wallet.utils.TextFieldValidator;
-import org.bitcoinj.core.Coin;
 
-import org.authenticator.Utils.OneName.OneName;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.util.Duration;
-import javafx.scene.image.Image;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class AddAccountWindow extends BaseUI{	
 	@FXML private TextArea txfAccountID;
@@ -75,7 +58,7 @@ public class AddAccountWindow extends BaseUI{
 			if(param != null){
 				BaseUI controller = loader.<BaseUI>getController();
 				try{
-					PairWallet w = loader.<PairWallet>getController();
+					AuthenticatorAppController w = loader.<AuthenticatorAppController>getController();
 					w.setListener(l);
 				}
 				catch (Exception e){ }
@@ -140,7 +123,7 @@ public class AddAccountWindow extends BaseUI{
     Stage pairWindow = null;
     @FXML protected void pair(ActionEvent event){
     	pairWindow = loadFXML(pairWindow, 
-    			getViewURL("/org/wallet/pairing/BAApp.fxml"),
+    			getViewURL("/org/wallet/apps/authenticator/app/AuthenticatorApp.fxml"),
     			850, 484, 
     			new ArrayList(Arrays.asList((Object)txfAccountName.getText(), (Object)txfAccountID.getText())),
     			new PairingWalletControllerListener(){

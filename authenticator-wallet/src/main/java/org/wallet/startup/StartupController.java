@@ -1,33 +1,21 @@
 package org.wallet.startup;
 
-import static org.bitcoinj.core.Utils.HEX;
 import static org.wallet.utils.GuiUtils.informationalAlert;
 
-import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.channels.FileChannel;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import org.authenticator.Authenticator;
@@ -35,11 +23,7 @@ import org.authenticator.BAApplicationParameters;
 import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.BipSSS.BipSSS;
 import org.authenticator.BipSSS.BipSSS.EncodingFormat;
-import org.authenticator.BipSSS.BipSSS.IncompatibleSharesException;
-import org.authenticator.BipSSS.BipSSS.InvalidContentTypeException;
-import org.authenticator.BipSSS.BipSSS.NotEnoughSharesException;
 import org.authenticator.BipSSS.BipSSS.Share;
-import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.Utils.FileUtils;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
@@ -48,7 +32,6 @@ import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.BAWalletRestorer;
 import org.authenticator.operations.OperationsFactory;
 import org.authenticator.operations.BAWalletRestorer.WalletRestoreListener;
-import org.authenticator.operations.OperationsUtils.PairingQRCode;
 import org.authenticator.operations.OperationsUtils.PaperWalletQR;
 import org.authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
 import org.authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
@@ -64,32 +47,19 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 
-import net.glxn.qrgen.QRCode;
-import net.glxn.qrgen.image.ImageType;
-
-import org.bitcoinj.core.AddressFormatException;
-import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.DownloadListener;
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Peer;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.core.Wallet;
-import org.bitcoinj.core.WalletExtension;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.store.BlockStoreException;
-import org.bitcoinj.store.WalletProtobufSerializer;
 import org.bitcoinj.wallet.DeterministicSeed;
-import org.bitcoinj.wallet.Protos;
-import org.wallet.Controller;
 import org.wallet.Main;
-import org.wallet.SettingsController;
-import org.wallet.PairWallet.PairingWalletControllerListener;
+import org.wallet.apps.SettingsAppController;
 import org.wallet.controls.ScrollPaneContentManager;
 import org.wallet.startup.RestoreAccountCell.AccountCellListener;
 import org.wallet.startup.backup.PaperSSSController;
@@ -101,7 +71,6 @@ import org.wallet.utils.dialogs.BADialog;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Service;
@@ -111,7 +80,6 @@ import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
-import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
@@ -121,7 +89,6 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
-import javafx.beans.binding.NumberBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -138,7 +105,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -147,7 +113,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebView;
@@ -159,7 +124,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.effect.DropShadow;
 import javafx.util.Duration;
 
 public class StartupController  extends BaseUI{
@@ -541,9 +505,9 @@ public class StartupController  extends BaseUI{
 			 Main.startup.setY(event.getScreenY() - yOffset);	
 		 }
 
-		 if(SettingsController.backupPane != null) {
-			 SettingsController.backupPane.setX(event.getScreenX() - xOffset);
-			 SettingsController.backupPane.setY(event.getScreenY() - yOffset);
+		 if(SettingsAppController.backupPane != null) {
+			 SettingsAppController.backupPane.setX(event.getScreenX() - xOffset);
+			 SettingsAppController.backupPane.setY(event.getScreenY() - yOffset);
 		 }
 		 
 	 }
@@ -1587,7 +1551,7 @@ public class StartupController  extends BaseUI{
 			 Platform.exit();
 		 }
 		 else
-			 SettingsController.backupPane.close();
+			 SettingsAppController.backupPane.close();
 	 }
 	 
 }

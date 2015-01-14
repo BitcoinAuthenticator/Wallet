@@ -1,6 +1,5 @@
 package org.wallet.controls;
 
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -14,8 +13,6 @@ import javax.swing.JFrame;
 
 import org.json.JSONException;
 import org.wallet.Main;
-import org.wallet.OneNameControllerDisplay;
-import org.wallet.Main.OverlayUI;
 import org.wallet.utils.GuiUtils;
 import org.wallet.utils.TextUtils;
 import org.bitcoinj.core.Address;
@@ -27,7 +24,6 @@ import org.bitcoinj.params.MainNetParams;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
-import com.google.common.base.Joiner;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
@@ -43,30 +39,23 @@ import org.authenticator.Utils.CurrencyConverter.Currency;
 import org.authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import org.authenticator.Utils.OneName.OneName;
 import org.authenticator.Utils.OneName.OneNameAdapter;
-import org.authenticator.operations.OperationsUtils.PaperWalletQR;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
-import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.Region;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -178,7 +167,7 @@ public class SendToCell extends Region{
 		        	                					   public void handle(MouseEvent event) {
 		        	                						   ArrayList<Object> l = new ArrayList<Object>();
 		        	                						   l.add(onenameID);
-		        	                						   Main.instance.overlayUI("DisplayOneName.fxml", l);
+		        	                						   Main.instance.overlayUI("OneNameApp.fxml", l);
 		        	                					   }
 		        	                				   });
 		        	        						lblAvatarName.setText(one.getOnenameFormatted());

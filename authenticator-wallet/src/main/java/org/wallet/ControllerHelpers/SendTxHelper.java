@@ -1,48 +1,16 @@
 package org.wallet.ControllerHelpers;
 
-import static org.wallet.utils.GuiUtils.informationalAlert;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.wallet.Controller;
-import org.wallet.Main;
-import org.wallet.OneNameControllerDisplay;
 import org.wallet.controls.ScrollPaneContentManager;
 import org.wallet.controls.SendToCell;
 
 import org.authenticator.Authenticator;
-import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.Utils.OneName.OneName;
-import org.authenticator.db.walletDB;
-import org.authenticator.db.exceptions.AccountWasNotFoundException;
-import org.authenticator.walletCore.exceptions.AddressWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotGetAddressException;
 import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import org.authenticator.walletCore.utils.BAPassword;
@@ -57,12 +25,6 @@ import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
-import org.bitcoinj.params.MainNetParams;
-
-import com.google.common.base.Throwables;
-
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
 
 public class SendTxHelper {
 	@SuppressWarnings("restriction")
