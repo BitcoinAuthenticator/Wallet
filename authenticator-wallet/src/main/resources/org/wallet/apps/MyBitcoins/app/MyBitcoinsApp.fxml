@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wallet.apps.MyBitcoinsAppController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wallet.apps.MyBitcoinsAppController">
    <children>
       <Pane prefHeight="59.0" prefWidth="850.0" style="-fx-background-color: white;">
          <children>
@@ -17,16 +18,57 @@
             </ImageView>
          </children>
       </Pane>
-      <TabPane layoutY="59.0" prefHeight="425.0" prefWidth="850.0" style="-fx-background:white;" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="59.0" prefHeight="425.0" prefWidth="850.0" stylesheets="@style.css" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Untitled Tab 1">
+          <Tab text="My Values">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="447.0" prefWidth="848.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="447.0" prefWidth="848.0" styleClass="MyBitcoinsTabPane" stylesheets="@style.css">
+                     <children>
+                        <StackPane prefHeight="392.0" prefWidth="850.0">
+                           <children>
+                              <Pane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox prefHeight="392.0" prefWidth="850.0">
+                                       <children>
+                                          <Label prefHeight="97.0" prefWidth="850.0" style="-fx-background-color: #199bd;" text="Here you can compare the accumulated value, in USD, of your bitcoins when they were trasfered into your wallet and their accumulated value now. This instrument is usefull to keep track of the gains and losses of your wallet because of price volatilitybel" wrapText="true">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <HBox prefHeight="392.0" prefWidth="850.0" style="-fx-background-color: white;" stylesheets="@style.css">
+                                             <children>
+                                                <TableView fx:id="myValuesTbl" prefHeight="308.0" prefWidth="572.0">
+                                                  <columns>
+                                                    <TableColumn fx:id="myValuesDateCol" prefWidth="75.0" text="Date" />
+                                                    <TableColumn fx:id="myValuesTxIDCol" prefWidth="403.0" text="From Tx ID" />
+                                                      <TableColumn fx:id="myValuesDiffCol" minWidth="0.0" prefWidth="93.0" text="Difference" />
+                                                  </columns>
+                                                </TableView>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="myValuesLoadingPane" prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox alignment="CENTER" prefHeight="392.0" prefWidth="850.0" style="-fx-background-color: white;">
+                                       <children>
+                                          <Label fx:id="myValuesLoadingLbl" prefHeight="28.0" prefWidth="166.0" style="-fx-alignment: LEFT; -fx-text-fill: #199bd6; -fx-font-size: 22;" text="Loading data ..." wrapText="true" />
+                                       </children></VBox>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </StackPane>
+                     </children></AnchorPane>
             </content>
           </Tab>
           <Tab text="Untitled Tab 2">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" stylesheets="@style.css">
+                     <children>
+                        <Pane prefHeight="395.0" prefWidth="850.0" stylesheets="@style.css" />
+                     </children></AnchorPane>
             </content>
           </Tab>
         </tabs>
