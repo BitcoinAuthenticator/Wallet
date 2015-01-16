@@ -232,9 +232,7 @@ public class Controller  extends BaseUI{
 	 @FXML private TextField txReqLabel;
 	 @FXML private TextField txReqAmount;
 	 @FXML private TextArea txReqMemo;
-	 @FXML private ChoiceBox reqCurrencyBox;
 	 @FXML public ScrollPane scrlViewTxHistory;
-	 @FXML private ImageView ivLogo;
 	 @FXML private HBox overviewHBox;
 	 @FXML private TableView txTable;
 	 @FXML private TableColumn colConfirmations;

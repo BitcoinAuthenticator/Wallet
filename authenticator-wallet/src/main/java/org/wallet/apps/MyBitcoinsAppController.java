@@ -5,16 +5,19 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 import com.sun.tools.javac.util.Name;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import org.authenticator.Authenticator;
+import org.authenticator.db.exceptions.AccountWasNotFoundException;
+import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.walletCore.exceptions.CannotGetAddressException;
 import org.bitcoinj.core.*;
 import org.json.JSONArray;
@@ -37,6 +40,7 @@ public class MyBitcoinsAppController extends BaseUI {
     public Main.OverlayUI overlayUi;
 
     @FXML private Pane myValuesLoadingPane;
+    @FXML private ChoiceBox myValuesCmbAccounts;
     @FXML private Label myValuesLoadingLbl;
     @FXML private Label lblTotNumberOfBitcoins;
     @FXML private Label lblBitcoinPrice;
@@ -48,6 +52,7 @@ public class MyBitcoinsAppController extends BaseUI {
     @FXML private TableColumn myValuesNumberOfBitcoinsCol;
     @FXML private TableColumn myValuesDiffCol;
 
+    private ProtoConfig.ATAccount selectedAccount;
     private PriceData priceData;
     /**
      * contains all the trasactions that spent coins to a watched wallet address with no inputs from the wallet, thus, sent from outside
@@ -57,54 +62,46 @@ public class MyBitcoinsAppController extends BaseUI {
     public void initialize() {
         super.initialize(MyBitcoinsAppController.class);
 
+        myValuesCmbAccounts.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String t, String t1) {
+                if(t1 != null && t1.length() > 0){
+                    myValuesCmbAccounts.setPrefWidth(org.wallet.utils.TextUtils.computeTextWidth(new Font("Arial", 14),t1, 0.0D)+45);
+                    selectedAccount = Authenticator.getWalletOperation().getAccountByName(t1);
+                    try {
+                        calculateEndPointPrices(selectedAccount.getIndex());
+                    } catch (CannotGetAddressException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
         animateLoadingLable(myValuesLoadingLbl, "Loading Data");
         downloadPriceDataFromBlockchainInfo(new AsyncCompletionHandler<Response>(){
             @Override
             public Response onCompleted(Response response) throws Exception{
                 priceData = new PriceData(response.getResponseBody());
 
-                new CalculateEndPointPrices(Authenticator.getWalletOperation().getTrackedWallet()) {
-                    @Override
-                    protected void onPostExecute() {
-                        stopLoadingAnimation();
-                        myValuesLoadingPane.setVisible(false);
-
-                        MyBitcoinsAppController.this.endPoints = this.result;
-                        myValuesTbl.setItems(MyBitcoinsAppController.this.endPoints);
-
-                        Platform.runLater(() -> {
-                            Coin totBitcoins = Coin.ZERO;
-                            float totValue = 0;
-                            float totGainOrLost = 0;
-                            float breakEven = 0;
-                            for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
-                                totBitcoins = totBitcoins.add(ep.tot);
-                                totValue += ep.getCurrentTotalPrice();
-                                totGainOrLost += ep.getNumericDiff();
-                            }
-                            if (totGainOrLost < 0) {
-                                breakEven = (totValue + totGainOrLost * -1)/ (totBitcoins.getValue() / Coin.COIN.getValue());
-                            }
-
-                            long currentUnixTime = System.currentTimeMillis() / 1000L;
-                            PricePoint currentPricePoint = priceData.getClosestPriceToUnixTime(currentUnixTime);
-
-                            lblTotNumberOfBitcoins.setText(totBitcoins.toFriendlyString());
-                            lblBitcoinPrice.setText("$" + currentPricePoint.price);
-                            lblUSDValue.setText("$" + totValue);
-                            lblGainOrLostValue.setText("$" + totGainOrLost);
-                            lblBreakEven.setText(totGainOrLost < 0? ("$" + breakEven):"---");
-                        });
-
-                        // for debugging
-//                        for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
-//                            System.out.println(ep.toString());
-//                        }
+                /*
+                 *  Set account
+                 */
+                {
+                    selectedAccount = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount();
+                    List<ProtoConfig.ATAccount> all = Authenticator.getWalletOperation().getAllAccounts();
+                    myValuesCmbAccounts.getItems().clear();
+                    for(ProtoConfig.ATAccount acc:all){
+                        myValuesCmbAccounts.getItems().add(acc.getAccountName());
                     }
+
+                    Platform.runLater(() -> {
+                        myValuesCmbAccounts.setTooltip(new Tooltip("Select account"));
+                        myValuesCmbAccounts.setValue(selectedAccount.getAccountName());
+                        myValuesCmbAccounts.setPrefWidth(org.wallet.utils.TextUtils.computeTextWidth(new Font("Arial", 14), myValuesCmbAccounts.getValue().toString(), 0.0D) + 60);
+                    });
+
                 }
-                .setOutputsData(Authenticator.getWalletOperation().getUnspentOutputsForAccount(2))
-                .setPriceData(priceData)
-                .execute();
+
                 return response;
             }
 
@@ -130,7 +127,6 @@ public class MyBitcoinsAppController extends BaseUI {
     }
 
     private void calculateEndPointPrices(int accountIdx) throws CannotGetAddressException {
-        accountIdx = 2;
         List<TransactionOutput> data = Authenticator.getWalletOperation().getUnspentOutputsForAccount(accountIdx);
 
         new CalculateEndPointPrices(Authenticator.getWalletOperation().getTrackedWallet()) {
@@ -143,10 +139,40 @@ public class MyBitcoinsAppController extends BaseUI {
             @Override
             protected void onPostExecute() {
                 stopLoadingAnimation();
-                myValuesLoadingLbl.setVisible(false);
+                myValuesLoadingPane.setVisible(false);
 
                 MyBitcoinsAppController.this.endPoints = this.result;
-                System.out.println(endPoints.size());
+                myValuesTbl.setItems(MyBitcoinsAppController.this.endPoints);
+
+                Platform.runLater(() -> {
+                    Coin totBitcoins = Coin.ZERO;
+                    float totValue = 0;
+                    float totGainOrLost = 0;
+                    float breakEven = 0;
+                    for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
+                        totBitcoins = totBitcoins.add(ep.tot);
+                        totValue += ep.getCurrentTotalPrice();
+                        totGainOrLost += ep.getNumericDiff();
+                    }
+                    if (totGainOrLost < 0)
+                        breakEven = ((float)totValue + (float)totGainOrLost * -1)/ ((float)totBitcoins.getValue() / (float)Coin.COIN.getValue());
+                    else
+                        breakEven = ((float)totValue - (float)totGainOrLost) / ((float)totBitcoins.getValue() / (float)Coin.COIN.getValue());
+
+                    long currentUnixTime = System.currentTimeMillis() / 1000L;
+                    PricePoint currentPricePoint = priceData.getClosestPriceToUnixTime(currentUnixTime);
+
+                    lblTotNumberOfBitcoins.setText(totBitcoins.toFriendlyString());
+                    lblBitcoinPrice.setText("$" + currentPricePoint.price);
+                    lblUSDValue.setText("$" + totValue);
+                    lblGainOrLostValue.setText("$" + totGainOrLost);
+                    lblBreakEven.setText(" $" + breakEven);
+                });
+
+                // for debugging
+//                        for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
+//                            System.out.println(ep.toString());
+//                        }
             }
         }
         .setOutputsData(data)

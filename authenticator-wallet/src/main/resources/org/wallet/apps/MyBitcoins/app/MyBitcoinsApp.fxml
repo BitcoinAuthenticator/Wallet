@@ -30,12 +30,21 @@
                                  <children>
                                     <VBox prefHeight="392.0" prefWidth="850.0">
                                        <children>
-                                          <Label prefHeight="97.0" prefWidth="850.0" style="-fx-background-color: #199bd;" text="Here you can compare the accumulated value, in USD, of your bitcoins when they were trasfered into your wallet and their accumulated value now. This instrument is usefull to keep track of the gains and losses of your wallet because of price volatility" wrapText="true">
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
-                                             </VBox.margin>
-                                          </Label>
-                                          <HBox prefHeight="392.0" prefWidth="850.0" style="-fx-background-color: white;" stylesheets="@style.css">
+                                          <HBox prefHeight="62.0" prefWidth="850.0">
+                                             <children>
+                                                <Label prefHeight="57.0" prefWidth="682.0" style="-fx-background-color: #199bd;" text="Here you can compare the accumulated value, in USD, of your bitcoins when they were trasfered into your wallet and their accumulated value now. This instrument is usefull to keep track of the gains and losses of your wallet because of price volatility" wrapText="true">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <ChoiceBox fx:id="myValuesCmbAccounts" prefWidth="150.0" stylesheets="@../../../utils/GUI.css">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" top="10.0" />
+                                                   </HBox.margin>
+                                                </ChoiceBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="341.0" prefWidth="850.0" style="-fx-background-color: white;" stylesheets="@style.css">
                                              <children>
                                                 <TableView fx:id="myValuesTbl" prefHeight="308.0" prefWidth="572.0" stylesheets="@../../../utils/GUI.css">
                                                   <columns>
