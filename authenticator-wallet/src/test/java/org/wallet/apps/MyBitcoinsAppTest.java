@@ -2,23 +2,16 @@ package org.wallet.apps;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import javafx.application.Application;
-import javafx.stage.Stage;
 import org.bitcoinj.core.*;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
+import static org.junit.Assert.*;
 import org.mockito.Mockito;
-import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 /**
  * Created by alonmuroch on 1/15/15.
@@ -27,19 +20,43 @@ public class MyBitcoinsAppTest {
 
     @Test
     public void CalculateEndPointPricesTest() throws IOException {
-        Wallet wallet = Mockito.mock(Wallet.class);
-        MyBitcoinsAppController a = new MyBitcoinsAppController();
+//        Wallet wallet = Mockito.mock(Wallet.class);
+//        MyBitcoinsAppController a = new MyBitcoinsAppController();
+//
+//        List<MyBitcoinsAppController.EndPoint> res = a.calculateEndPointPrices(outputData(wallet), getPriceData(), wallet);
+//
+//        for(MyBitcoinsAppController.EndPoint ep:res) {
+//            List<MyBitcoinsAppController.Price> r = ep.getPrices();
+//            System.out.println("EndPoint " + ep.tot.toFriendlyString() + ":");
+//            for (MyBitcoinsAppController.Price p: r) {
+//                System.out.println("   - " + Coin.valueOf(p.sathosies).toFriendlyString() + " Coins, at $" + p.price );
+//            }
+//            System.out.println();
+//        }
+    }
 
-        List<MyBitcoinsAppController.EndPoint> res = a.calculateEndPointPrices(outputData(wallet), getPriceData(), wallet);
+    @Test
+    public void pricePointsTest() throws IOException {
+        MyBitcoinsAppController.PriceData pd = getPriceData();
 
-        for(MyBitcoinsAppController.EndPoint ep:res) {
-            List<MyBitcoinsAppController.Price> r = ep.getPrices();
-            System.out.println("EndPoint " + ep.tot.toFriendlyString() + ":");
-            for (MyBitcoinsAppController.Price p: r) {
-                System.out.println("   - " + Coin.valueOf(p.sathosies).toFriendlyString() + " Coins, at $" + p.price );
-            }
-            System.out.println();
-        }
+        // check existing values
+        assertTrue(pd.getClosestPriceToUnixTime((long)1303409705).getPrice() == 1.1508128571428569);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1314555305).getPrice() == 10.60664857142857);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1318356905).getPrice() == 4.598197142857144);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1342721705).getPrice() == 8.527354285714285);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1384020905).getPrice() == 273.49285714285713);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1394388905).getPrice() == 647.7528571428571);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1415988905).getPrice() == 382.32571428571424);
+
+        // check too early data
+        assertTrue(pd.getClosestPriceToUnixTime((long)1231006504).getPrice() == 0);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1230006505).getPrice() == 0);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1131006505).getPrice() == 0);
+
+        // check too late data
+        assertTrue(pd.getClosestPriceToUnixTime((long)1421237622).getPrice() == 258.55285714285714);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1421337621).getPrice() == 258.55285714285714);
+        assertTrue(pd.getClosestPriceToUnixTime((long)1421237721).getPrice() == 258.55285714285714);
     }
 
     /**

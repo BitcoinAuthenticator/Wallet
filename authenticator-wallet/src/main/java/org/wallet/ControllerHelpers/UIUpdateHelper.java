@@ -241,7 +241,7 @@ public class UIUpdateHelper extends BaseUI{
 			ArrayList<Transaction> history = Authenticator.getWalletOperation().filterTransactionsByAccount(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 	    	savedTXIDs = Authenticator.getWalletOperation().getSavedTxidList();
 	    	txdata = FXCollections.observableArrayList();
-	    	for (Transaction tx : history){
+	    	for (Transaction tx : history) {
 	    		try {
 	    			Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
 		    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);

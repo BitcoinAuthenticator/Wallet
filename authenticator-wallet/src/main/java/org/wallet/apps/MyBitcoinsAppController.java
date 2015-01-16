@@ -5,10 +5,13 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 import com.sun.tools.javac.util.Name;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.authenticator.Authenticator;
@@ -35,38 +38,66 @@ public class MyBitcoinsAppController extends BaseUI {
 
     @FXML private Pane myValuesLoadingPane;
     @FXML private Label myValuesLoadingLbl;
+    @FXML private Label lblTotNumberOfBitcoins;
+    @FXML private Label lblUSDValue;
+    @FXML private Label lblGainOrLostValue;
     @FXML private TableView myValuesTbl;
-    @FXML private TableColumn myValuesDateCol;
-    @FXML private TableColumn myValuesTxIDCol;
+    @FXML private TableColumn myValuesAddressCol;
+    @FXML private TableColumn myValuesNumberOfBitcoinsCol;
     @FXML private TableColumn myValuesDiffCol;
 
     private PriceData priceData;
     /**
      * contains all the trasactions that spent coins to a watched wallet address with no inputs from the wallet, thus, sent from outside
      */
-    private List<EndPoint> endPoints;
+    private ObservableList<EndPoint> endPoints;
 
     public void initialize() {
         super.initialize(MyBitcoinsAppController.class);
 
         animateLoadingLable(myValuesLoadingLbl, "Loading Data");
         downloadPriceDataFromBlockchainInfo(new AsyncCompletionHandler<Response>(){
-
             @Override
             public Response onCompleted(Response response) throws Exception{
                 priceData = new PriceData(response.getResponseBody());
 
-                endPoints = new ArrayList<EndPoint>();
                 new CalculateEndPointPrices(Authenticator.getWalletOperation().getTrackedWallet()) {
                     @Override
                     protected void onPostExecute() {
                         stopLoadingAnimation();
-                        myValuesLoadingLbl.setVisible(false);
+                        myValuesLoadingPane.setVisible(false);
 
                         MyBitcoinsAppController.this.endPoints = this.result;
-                        System.out.println(endPoints.size());
+                        myValuesTbl.setItems(MyBitcoinsAppController.this.endPoints);
+
+                        Platform.runLater(() -> {
+                            Coin totBitcoins = Coin.ZERO;
+                            float totValue = 0;
+                            float totGainOrLost = 0;
+                            for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
+                                totBitcoins = totBitcoins.add(ep.tot);
+                                totValue += ep.getCurrentTotalPrice();
+                                totGainOrLost += ep.getNumericDiff();
+                            }
+                            lblTotNumberOfBitcoins.setText(totBitcoins.toFriendlyString());
+                            lblUSDValue.setText("$" + totValue);
+                            lblGainOrLostValue.setText("$" + totGainOrLost);
+                        });
+
+                        // for debugging
+//                        for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
+//                            List<MyBitcoinsAppController.Price> r = ep.getPrices();
+//                            System.out.println("EndPoint " + ep.tot.toFriendlyString() + ":");
+//                            for (MyBitcoinsAppController.Price p : r) {
+//                                System.out.println("   - " + Coin.valueOf(p.sathosies).toFriendlyString() + " Coins, at $" + p.price);
+//                            }
+//                            System.out.println();
+//                        }
                     }
-                }.execute();
+                }
+                .setOutputsData(Authenticator.getWalletOperation().getUnspentOutputsForAccount(2))
+                .setPriceData(priceData)
+                .execute();
                 return response;
             }
 
@@ -79,6 +110,11 @@ public class MyBitcoinsAppController extends BaseUI {
                 });
             }
         });
+
+        // table view
+        myValuesAddressCol.setCellValueFactory(new PropertyValueFactory<EndPoint,String>("address"));
+        myValuesNumberOfBitcoinsCol.setCellValueFactory(new PropertyValueFactory<EndPoint,String>("numberOfBitcoins"));
+        myValuesDiffCol.setCellValueFactory(new PropertyValueFactory<EndPoint,String>("diff"));
     }
 
     @FXML
@@ -206,14 +242,14 @@ public class MyBitcoinsAppController extends BaseUI {
             // 1)
             PricePoint firstPoint = data.get(0);
             Long diff = unix - firstPoint.getUnixTime() + dataGap;
-            if(diff < 0)
-                return null;
-            if(diff == 0)
+            if(diff <= 0 || diff < dataGap)
                 return firstPoint;
 
             //2)
             diff /= dataGap;
-            int startIdx = Math.min(diff.intValue(), data.size() - 1);
+            if(diff >= data.size() -1)
+                return data.get(data.size() - 1);
+            int startIdx = Math.min(diff.intValue(), data.size());
             PricePoint closest = data.get(startIdx);
             for(int i = startIdx - 1; i > 0; i--) {
                 PricePoint p = data.get(i);
@@ -265,13 +301,16 @@ public class MyBitcoinsAppController extends BaseUI {
         }
     }
 
-    private class PricePoint implements Comparable {
+    public class PricePoint implements Comparable {
         private Long unixTime;
-        private Float price;
+        private double price;
 
         public PricePoint(JSONObject data) throws JSONException {
             unixTime = data.getLong("x");
-            price = (float) data.getLong("y");
+            price = data.getDouble("y");
+
+            if(unixTime == 1303409705)
+                System.out.print("");
         }
 
         //####################
@@ -283,7 +322,7 @@ public class MyBitcoinsAppController extends BaseUI {
             return unixTime;
         }
 
-        public Float getPrice() {
+        public double getPrice() {
             return price;
         }
 
@@ -300,7 +339,7 @@ public class MyBitcoinsAppController extends BaseUI {
         }
     }
 
-    public static class EndPoint {
+    public class EndPoint {
         private TransactionOutput outPoint;
         public Coin tot;
         private List<Price> prices;
@@ -326,7 +365,7 @@ public class MyBitcoinsAppController extends BaseUI {
         }
 
         /**
-         * Will calculate the amount of coins entered from each source
+         * Will calculate the amount of coins entered from each source respectively
          * @return
          */
         public List<Price> getPrices() {
@@ -345,23 +384,57 @@ public class MyBitcoinsAppController extends BaseUI {
             return prices;
         }
 
+        //####################################
+        //
+        //  methods for the table view
+        //
+        //####################################
+
+        public String getAddress() {
+            return outPoint.getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
+        }
+
+        public String getNumberOfBitcoins() {
+            return tot.toFriendlyString();
+        }
+
+        public double getCurrentTotalPrice() {
+            long currentUnixTime = System.currentTimeMillis() / 1000L;
+            PricePoint currentPricePoint = priceData.getClosestPriceToUnixTime(currentUnixTime);
+            return ((float)tot.longValue() / (float)Coin.COIN.longValue()) * currentPricePoint.price;
+        }
+
+        public double getNumericDiff() {
+            List<Price> finalPrices = getPrices();
+            double originalAccumulatedPrices = 0;
+            for(Price p:finalPrices) {
+                originalAccumulatedPrices += ((double)p.sathosies / (double)Coin.COIN.longValue()) * p.price;
+            }
+
+            double currentPrice = getCurrentTotalPrice();
+            return currentPrice - originalAccumulatedPrices;
+        }
+
+        public String getDiff() {
+            return "$" + getNumericDiff();
+        }
 
     }
 
     public class Price {
         public Long sathosies;
         public long time;
-        public float price;
+        public double price;
     }
 
     public class  CalculateEndPointPrices extends AsyncTask {
-        public List<EndPoint> result;
+        public ObservableList<EndPoint> result;
         private List<TransactionOutput> outputsData;
         private PriceData priceData;
         private Wallet wallet;
 
         public CalculateEndPointPrices(Wallet wallet) {
-            result = new ArrayList<EndPoint>();
+
             this.wallet = wallet;
         }
 
@@ -371,18 +444,17 @@ public class MyBitcoinsAppController extends BaseUI {
         }
 
         public CalculateEndPointPrices setPriceData(PriceData priceData) {
-            priceData = priceData;
+            this.priceData = priceData;
             return this;
         }
 
         @Override
-        protected void onPreExecute() {
-            calculateEndPointPrices(outputsData, priceData, wallet);
-        }
+        protected void onPreExecute() { }
 
         @Override
         protected void doInBackground() {
-
+            List<EndPoint> ret = calculateEndPointPrices(outputsData, priceData, wallet);
+            result = FXCollections.observableArrayList(ret);
         }
 
         @Override
@@ -393,7 +465,7 @@ public class MyBitcoinsAppController extends BaseUI {
     }
 
     public List<EndPoint> calculateEndPointPrices(List<TransactionOutput> data, PriceData priceData, Wallet wallet) {
-        if(data == null) return null;
+        if(data == null || priceData == null) return null;
 
         List<EndPoint> ret = new ArrayList<EndPoint>();
         for (TransactionOutput out: data) {
@@ -404,7 +476,7 @@ public class MyBitcoinsAppController extends BaseUI {
             if(masterParentTx.getValueSentFromMe(wallet).signum() == 0) {
                 Price p = new Price();
                 p.sathosies = out.getValue().longValue();
-                p.time = masterParentTx.getUpdateTime().getTime();
+                p.time = masterParentTx.getUpdateTime().getTime() / 1000L;
                 p.price = priceData.getClosestPriceToUnixTime(p.time).price;
                 endPoint.addPrice(p);
             }
@@ -442,7 +514,7 @@ public class MyBitcoinsAppController extends BaseUI {
         if(masterParentTx.getValueSentFromMe(wallet).signum() == 0) {
             Price p = new Price();
             p.sathosies = value.longValue();
-            p.time = masterParentTx.getUpdateTime().getTime();
+            p.time = masterParentTx.getUpdateTime().getTime() / 1000L;
             p.price = priceData.getClosestPriceToUnixTime(p.time).price;
             lst.add(p);
             return lst;
@@ -462,7 +534,7 @@ public class MyBitcoinsAppController extends BaseUI {
         else {
             Price p = new Price();
             p.sathosies = value.longValue();
-            p.time = masterConnectedParentTx.getUpdateTime().getTime();
+            p.time = masterConnectedParentTx.getUpdateTime().getTime() / 1000L;
             p.price = priceData.getClosestPriceToUnixTime(p.time).price;
             lst.add(p);
         }
