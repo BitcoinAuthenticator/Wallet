@@ -89,12 +89,11 @@ public class MyBitcoinsAppController extends BaseUI {
                 {
                     selectedAccount = Authenticator.getWalletOperation().getActiveAccount().getActiveAccount();
                     List<ProtoConfig.ATAccount> all = Authenticator.getWalletOperation().getAllAccounts();
-                    myValuesCmbAccounts.getItems().clear();
-                    for(ProtoConfig.ATAccount acc:all){
-                        myValuesCmbAccounts.getItems().add(acc.getAccountName());
-                    }
-
                     Platform.runLater(() -> {
+                    myValuesCmbAccounts.getItems().clear();
+                        for(ProtoConfig.ATAccount acc:all){
+                            myValuesCmbAccounts.getItems().add(acc.getAccountName());
+                        }
                         myValuesCmbAccounts.setTooltip(new Tooltip("Select account"));
                         myValuesCmbAccounts.setValue(selectedAccount.getAccountName());
                         myValuesCmbAccounts.setPrefWidth(org.wallet.utils.TextUtils.computeTextWidth(new Font("Arial", 14), myValuesCmbAccounts.getValue().toString(), 0.0D) + 60);
