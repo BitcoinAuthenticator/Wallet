@@ -28,6 +28,7 @@ import org.wallet.Main;
 import org.wallet.utils.BaseUI;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -163,8 +164,9 @@ public class MyBitcoinsAppController extends BaseUI {
 
                     lblTotNumberOfBitcoins.setText(totBitcoins.toFriendlyString());
                     lblBitcoinPrice.setText("$" + currentPricePoint.price);
-                    lblUSDValue.setText("$" + totValue);
-                    lblGainOrLostValue.setText("$" + totGainOrLost);
+                    lblUSDValue.setText("$" + new DecimalFormat("#.###").format(totValue));
+                    lblGainOrLostValue.setText("$" + new DecimalFormat("#.###").format(totGainOrLost) + " (" +
+                            new DecimalFormat("#.###").format(totGainOrLost/ totValue) + "%)");
                     lblBreakEven.setText(" $" + breakEven);
                 });
 
@@ -459,7 +461,7 @@ public class MyBitcoinsAppController extends BaseUI {
         }
 
         public String getDiff() {
-            return "$" + getNumericDiff();
+            return "$" + new DecimalFormat("#.###").format(getNumericDiff());
         }
 
     }
