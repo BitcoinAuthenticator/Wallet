@@ -30,19 +30,23 @@
                                  <children>
                                     <VBox prefHeight="392.0" prefWidth="850.0">
                                        <children>
-                                          <Label prefHeight="97.0" prefWidth="850.0" style="-fx-background-color: #199bd;" text="Here you can compare the accumulated value, in USD, of your bitcoins when they were trasfered into your wallet and their accumulated value now. This instrument is usefull to keep track of the gains and losses of your wallet because of price volatilitybel" wrapText="true">
+                                          <Label prefHeight="97.0" prefWidth="850.0" style="-fx-background-color: #199bd;" text="Here you can compare the accumulated value, in USD, of your bitcoins when they were trasfered into your wallet and their accumulated value now. This instrument is usefull to keep track of the gains and losses of your wallet because of price volatility" wrapText="true">
                                              <VBox.margin>
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                              </VBox.margin>
                                           </Label>
                                           <HBox prefHeight="392.0" prefWidth="850.0" style="-fx-background-color: white;" stylesheets="@style.css">
                                              <children>
-                                                <TableView fx:id="myValuesTbl" prefHeight="308.0" prefWidth="572.0">
+                                                <TableView fx:id="myValuesTbl" prefHeight="308.0" prefWidth="572.0" stylesheets="@../../../utils/GUI.css">
                                                   <columns>
                                                     <TableColumn fx:id="myValuesAddressCol" prefWidth="370.0" text="Address" />
                                                       <TableColumn fx:id="myValuesNumberOfBitcoinsCol" prefWidth="100.0" text="# bitcoins" />
                                                       <TableColumn fx:id="myValuesDiffCol" minWidth="0.0" prefWidth="100.0" text="Difference" />
                                                   </columns>
+                                                   <styleClass>
+                                                      <String fx:value="custom-scroll" />
+                                                      <String fx:value="table-view" />
+                                                   </styleClass>
                                                 </TableView>
                                                 <VBox prefHeight="339.0" prefWidth="278.0">
                                                    <children>
@@ -106,7 +110,7 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-          <Tab text="Untitled Tab 2">
+          <Tab text="Market">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" stylesheets="@style.css">
                      <children>
