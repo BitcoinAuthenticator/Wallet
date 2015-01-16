@@ -57,28 +57,46 @@
                                                       </HBox>
                                                       <VBox prefHeight="302.0" prefWidth="278.0">
                                                          <children>
-                                                            <HBox prefHeight="51.0" prefWidth="278.0">
+                                                            <HBox prefHeight="30.0" prefWidth="278.0">
                                                                <children>
-                                                                  <Label text="Total number of bitcoins: " />
-                                                                  <Label fx:id="lblTotNumberOfBitcoins" text="xxx" />
+                                                                  <Label style="-fx-text-fill: #08485d;" text="Total number of bitcoins: " />
+                                                                  <Label fx:id="lblTotNumberOfBitcoins" style="-fx-text-fill: #08485d;" text="xxx" />
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets left="10.0" />
                                                                </VBox.margin>
                                                             </HBox>
-                                                            <HBox prefHeight="51.0" prefWidth="278.0">
+                                                            <HBox prefHeight="30.0" prefWidth="278.0">
                                                                <children>
-                                                                  <Label text="USD value: " />
-                                                                  <Label fx:id="lblUSDValue" text="xxx" />
+                                                                  <Label style="-fx-text-fill: #08485d;" text="Current bitcoin price: " />
+                                                                  <Label fx:id="lblBitcoinPrice" style="-fx-text-fill: #08485d;" text="xxx" />
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets left="10.0" />
                                                                </VBox.margin>
                                                             </HBox>
-                                                            <HBox prefHeight="51.0" prefWidth="278.0">
+                                                            <HBox prefHeight="30.0" prefWidth="278.0">
                                                                <children>
-                                                                  <Label text="Gain/ Lost: " />
-                                                                  <Label fx:id="lblGainOrLostValue" text="xxx" />
+                                                                  <Label style="-fx-text-fill: #0c92be;" text="My bitcoins USD value: " />
+                                                                  <Label fx:id="lblUSDValue" style="-fx-text-fill: #0c92be;" text="xxx" />
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </VBox.margin>
+                                                            </HBox>
+                                                            <HBox prefHeight="30.0" prefWidth="278.0">
+                                                               <children>
+                                                                  <Label style="-fx-text-fill: #0c92be;" text="My Gain/ Lost: " />
+                                                                  <Label fx:id="lblGainOrLostValue" style="-fx-text-fill: #0c92be;" text="xxx" />
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </VBox.margin>
+                                                            </HBox>
+                                                            <HBox prefHeight="30.0" prefWidth="278.0">
+                                                               <children>
+                                                                  <Label style="-fx-text-fill: #0c92be;" text="My Break even price :" />
+                                                                  <Label fx:id="lblBreakEven" style="-fx-text-fill: #0c92be;" text="xxx" />
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets left="10.0" />

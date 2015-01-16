@@ -39,8 +39,10 @@ public class MyBitcoinsAppController extends BaseUI {
     @FXML private Pane myValuesLoadingPane;
     @FXML private Label myValuesLoadingLbl;
     @FXML private Label lblTotNumberOfBitcoins;
+    @FXML private Label lblBitcoinPrice;
     @FXML private Label lblUSDValue;
     @FXML private Label lblGainOrLostValue;
+    @FXML private Label lblBreakEven;
     @FXML private TableView myValuesTbl;
     @FXML private TableColumn myValuesAddressCol;
     @FXML private TableColumn myValuesNumberOfBitcoinsCol;
@@ -74,14 +76,24 @@ public class MyBitcoinsAppController extends BaseUI {
                             Coin totBitcoins = Coin.ZERO;
                             float totValue = 0;
                             float totGainOrLost = 0;
+                            float breakEven = 0;
                             for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
                                 totBitcoins = totBitcoins.add(ep.tot);
                                 totValue += ep.getCurrentTotalPrice();
                                 totGainOrLost += ep.getNumericDiff();
                             }
+                            if (totGainOrLost < 0) {
+                                breakEven = (totValue + totGainOrLost * -1)/ (totBitcoins.getValue() / Coin.COIN.getValue());
+                            }
+
+                            long currentUnixTime = System.currentTimeMillis() / 1000L;
+                            PricePoint currentPricePoint = priceData.getClosestPriceToUnixTime(currentUnixTime);
+
                             lblTotNumberOfBitcoins.setText(totBitcoins.toFriendlyString());
+                            lblBitcoinPrice.setText("$" + currentPricePoint.price);
                             lblUSDValue.setText("$" + totValue);
                             lblGainOrLostValue.setText("$" + totGainOrLost);
+                            lblBreakEven.setText(totGainOrLost < 0? ("$" + breakEven):"---");
                         });
 
                         // for debugging
