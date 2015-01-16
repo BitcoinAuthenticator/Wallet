@@ -3,6 +3,7 @@ package org.wallet.apps;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.bitcoinj.core.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mockito.Mockito;
@@ -20,19 +21,26 @@ public class MyBitcoinsAppTest {
 
     @Test
     public void CalculateEndPointPricesTest() throws IOException {
-//        Wallet wallet = Mockito.mock(Wallet.class);
-//        MyBitcoinsAppController a = new MyBitcoinsAppController();
-//
-//        List<MyBitcoinsAppController.EndPoint> res = a.calculateEndPointPrices(outputData(wallet), getPriceData(), wallet);
-//
-//        for(MyBitcoinsAppController.EndPoint ep:res) {
-//            List<MyBitcoinsAppController.Price> r = ep.getPrices();
-//            System.out.println("EndPoint " + ep.tot.toFriendlyString() + ":");
-//            for (MyBitcoinsAppController.Price p: r) {
-//                System.out.println("   - " + Coin.valueOf(p.sathosies).toFriendlyString() + " Coins, at $" + p.price );
-//            }
-//            System.out.println();
-//        }
+        Wallet wallet = Mockito.mock(Wallet.class);
+        MyBitcoinsAppController a = new MyBitcoinsAppController();
+
+        List<MyBitcoinsAppController.EndPoint> res = a.calculateEndPointPrices(outputData(wallet), getPriceData(), wallet);
+
+        // first end point
+        assertTrue(res.get(0).tot.equals(Coin.COIN.multiply(5)));
+        assertTrue(res.get(0).getPrices().size() == 1);
+        assertTrue(res.get(0).getPrices().get(0).sathosies == 5 * Coin.COIN.longValue());
+        assertTrue(res.get(0).getPrices().get(0).price == 331.6271428571429);
+
+        // second end point
+        assertTrue(res.get(1).tot.equals(Coin.COIN.multiply(2)));
+        assertTrue(res.get(1).getPrices().size() == 3);
+        assertTrue(res.get(1).getPrices().get(0).sathosies == 0.44444444 * Coin.COIN.longValue());
+        assertTrue(res.get(1).getPrices().get(0).price == 331.6271428571429);
+        assertTrue(res.get(1).getPrices().get(1).sathosies == 0.88888888 * Coin.COIN.longValue());
+        assertTrue(res.get(1).getPrices().get(1).price == 582.0571428571429);
+        assertTrue(res.get(1).getPrices().get(2).sathosies == 0.66666666 * Coin.COIN.longValue());
+        assertTrue(res.get(1).getPrices().get(2).price == 446.5457142857144);
     }
 
     @Test
@@ -94,29 +102,29 @@ public class MyBitcoinsAppTest {
         TransactionInput in2 = null;
 
         // transaction 1A - update time 3/3/14:12:12:12, unix 1393848732
-        Transaction tx1A = generateMokcedTx(wallet, 2, Coin.ZERO, new Date(1393848732));
+        Transaction tx1A = generateMokcedTx(wallet, 2, Coin.ZERO, new Date(1393848732 * 1000L));
         // transaction 3A - update time 24/3/14:12:12:12, unix 1395663132
         List<TransactionInput> ins = new ArrayList<TransactionInput>();
-        Transaction tx3A = generateMokcedTx(wallet, 1, Coin.COIN.multiply(4), new Date(1395663132));
+        Transaction tx3A = generateMokcedTx(wallet, 1, Coin.COIN.multiply(4), new Date(1395663132 * 1000L));
         in1 = generateMockedTransactionInput(tx3A, tx1A, Coin.COIN.multiply(4));
         ins.add(in1); Mockito.when(tx3A.getInputs()).thenReturn(ins);
 
         // transaction 1E, update time 3/5/2014:12:12:12
-        Transaction tx1E = generateMokcedTx(wallet, 16, Coin.ZERO, new Date(1399119132));
+        Transaction tx1E = generateMokcedTx(wallet, 16, Coin.ZERO, new Date(1399119132 * 1000L));
 
         // transaction 3E, update time 4/6/2014:12:12:12
-        Transaction tx3E = generateMokcedTx(wallet, 1, Coin.COIN.multiply(3), new Date(1401883932));
+        Transaction tx3E = generateMokcedTx(wallet, 1, Coin.COIN.multiply(3), new Date(1401883932 * 1000L));
         ins = new ArrayList<TransactionInput>();
         in1 = generateMockedTransactionInput(tx3E, tx1E, Coin.COIN.multiply(3));
         ins.add(in1); Mockito.when(tx3E.getInputs()).thenReturn(ins);
         // transaction 4D, update time 1/10/2014:12:12:12
-        Transaction tx4D = generateMokcedTx(wallet, 1, Coin.COIN.multiply(2), new Date(1412165532));
+        Transaction tx4D = generateMokcedTx(wallet, 1, Coin.COIN.multiply(2), new Date(1412165532 * 1000L));
         ins = new ArrayList<TransactionInput>();
         in1 = generateMockedTransactionInput(tx4D, tx3E, Coin.COIN.multiply(2));
         ins.add(in1); Mockito.when(tx4D.getInputs()).thenReturn(ins);
 
         // transaction 5B, update time 18/10/2014:12:12:12
-        Transaction tx5B = generateMokcedTx(wallet, 2, Coin.COIN.multiply(4), new Date(1413634332));
+        Transaction tx5B = generateMokcedTx(wallet, 2, Coin.COIN.multiply(4), new Date(1413634332 * 1000L));
         ins = new ArrayList<TransactionInput>();
         in1 = generateMockedTransactionInput(tx5B, tx3A, Coin.COIN.multiply(3));
         in2 = generateMockedTransactionInput(tx5B, tx4D, Coin.COIN.multiply(1));
@@ -124,10 +132,10 @@ public class MyBitcoinsAppTest {
         Mockito.when(tx5B.getInputs()).thenReturn(ins);
 
         // transaction 6C, update time 20/12/2014:12:12:12
-        Transaction tx6C = generateMokcedTx(wallet, 5, Coin.ZERO, new Date(1419077532));
+        Transaction tx6C = generateMokcedTx(wallet, 5, Coin.ZERO, new Date(1419077532 * 1000L));
 
         // transaction 7B, update time 24/12/2014:12:12:12
-        Transaction tx7B = generateMokcedTx(wallet, 2, Coin.COIN.multiply(4), new Date(1419423132));
+        Transaction tx7B = generateMokcedTx(wallet, 2, Coin.COIN.multiply(4), new Date(1419423132 * 1000L));
         ins = new ArrayList<TransactionInput>();
         in1 = generateMockedTransactionInput(tx7B, tx6C, Coin.COIN.multiply(2));
         in2 = generateMockedTransactionInput(tx7B, tx5B, Coin.COIN.multiply(2));

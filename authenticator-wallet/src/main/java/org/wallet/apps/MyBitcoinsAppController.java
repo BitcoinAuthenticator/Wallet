@@ -98,12 +98,7 @@ public class MyBitcoinsAppController extends BaseUI {
 
                         // for debugging
 //                        for (MyBitcoinsAppController.EndPoint ep : MyBitcoinsAppController.this.endPoints) {
-//                            List<MyBitcoinsAppController.Price> r = ep.getPrices();
-//                            System.out.println("EndPoint " + ep.tot.toFriendlyString() + ":");
-//                            for (MyBitcoinsAppController.Price p : r) {
-//                                System.out.println("   - " + Coin.valueOf(p.sathosies).toFriendlyString() + " Coins, at $" + p.price);
-//                            }
-//                            System.out.println();
+//                            System.out.println(ep.toString());
 //                        }
                     }
                 }
@@ -394,6 +389,17 @@ public class MyBitcoinsAppController extends BaseUI {
             }
 
             return prices;
+        }
+
+        @Override
+        public String toString() {
+            String ret = "";
+            List<MyBitcoinsAppController.Price> r = getPrices();
+            ret += "EndPoint " + tot.toFriendlyString() + ":";
+            for (MyBitcoinsAppController.Price p: r) {
+                ret += "   - " + Coin.valueOf(p.sathosies).toFriendlyString() + " Coins, at $" + p.price ;
+            }
+            return ret;
         }
 
         //####################################
