@@ -65,10 +65,13 @@ public class RemoteUpdateWindow {
 		this.lblDetails.setVisible(false);
 		this.okBox.setVisible(false);
 	}
-	
-	public void show() {
-		loadFXML();
+
+	public void setVisible(){
 		dialogStage.show();
+	}
+	
+	public void init() {
+		loadFXML();
 		initialize();
 	}
 	
