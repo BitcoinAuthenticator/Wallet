@@ -9,6 +9,9 @@ import static org.junit.Assert.*;
 import org.mockito.Mockito;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,11 +23,19 @@ import java.util.List;
 public class MyBitcoinsAppTest {
 
     @Test
-    public void CalculateEndPointPricesTest() throws IOException {
+    public void CalculateEndPointPrices1Test() throws IOException {
         Wallet wallet = Mockito.mock(Wallet.class);
         MyBitcoinsAppController a = new MyBitcoinsAppController();
 
-        List<MyBitcoinsAppController.EndPoint> res = a.calculateEndPointPrices(outputData(wallet), getPriceData(), wallet);
+        List<MyBitcoinsAppController.EndPoint> res = a.calculateEndPointPrices(outputData1(wallet), getPriceData(), wallet);
+
+        for(MyBitcoinsAppController.EndPoint ep:res)
+            System.out.println(ep.toString());
+
+        assertTrue(res.size() == 2);
+
+        BigDecimal coin = new BigDecimal(Coin.COIN.longValue());
+        MathContext mc = new MathContext(8, RoundingMode.HALF_UP);
 
         // first end point
         assertTrue(res.get(0).tot.equals(Coin.COIN.multiply(5)));
@@ -35,12 +46,61 @@ public class MyBitcoinsAppTest {
         // second end point
         assertTrue(res.get(1).tot.equals(Coin.COIN.multiply(2)));
         assertTrue(res.get(1).getPrices().size() == 3);
-        assertTrue(res.get(1).getPrices().get(0).sathosies == 0.44444444 * Coin.COIN.longValue());
+        assertTrue(res.get(1).getPrices().get(0).sathosies == new BigDecimal(0.44444460).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(0).price == 331.6271428571429);
-        assertTrue(res.get(1).getPrices().get(1).sathosies == 0.88888888 * Coin.COIN.longValue());
+        assertTrue(res.get(1).getPrices().get(1).sathosies == new BigDecimal(0.88888900).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(1).price == 582.0571428571429);
-        assertTrue(res.get(1).getPrices().get(2).sathosies == 0.66666666 * Coin.COIN.longValue());
+        assertTrue(res.get(1).getPrices().get(2).sathosies == new BigDecimal(0.66666680).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(2).price == 446.5457142857144);
+    }
+
+    @Test
+    public void CalculateEndPointPrices2Test() throws IOException {
+        Wallet wallet = Mockito.mock(Wallet.class);
+        MyBitcoinsAppController a = new MyBitcoinsAppController();
+
+        List<MyBitcoinsAppController.EndPoint> res = a.calculateEndPointPrices(outputData2(wallet), getPriceData(), wallet);
+
+        for(MyBitcoinsAppController.EndPoint ep:res)
+            System.out.println(ep.toString());
+
+        assertTrue(res.size() == 2);
+
+        BigDecimal coin = new BigDecimal(Coin.COIN.longValue());
+        MathContext mc = new MathContext(8, RoundingMode.HALF_UP);
+
+        // first end point
+        assertTrue(res.get(0).tot.equals(Coin.COIN.multiply(9)));
+        assertTrue(res.get(0).getPrices().size() == 6);
+
+        assertTrue(res.get(0).getPrices().get(0).sathosies == new BigDecimal(0.64285704).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(0).price == 206.63285714285715);
+        assertTrue(res.get(0).getPrices().get(1).sathosies == new BigDecimal(3.21428610).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(1).price == 170.49714285714282);
+        assertTrue(res.get(0).getPrices().get(2).sathosies == new BigDecimal(0.32142861).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(2).price == 126.76142857142857);
+        assertTrue(res.get(0).getPrices().get(3).sathosies == new BigDecimal(3.21428610).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(3).price == 104.02096999999999);
+        assertTrue(res.get(0).getPrices().get(4).sathosies == new BigDecimal(1.28571480).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(4).price == 74.95919571428571);
+        assertTrue(res.get(0).getPrices().get(5).sathosies == new BigDecimal(0.32142861).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(5).price == 114.31817);
+
+        // second end point
+        assertTrue(res.get(1).tot.equals(Coin.COIN.multiply(1)));
+        assertTrue(res.get(1).getPrices().size() == 6);
+        assertTrue(res.get(1).getPrices().get(0).sathosies == new BigDecimal(0.07142856).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(0).price == 206.63285714285715);
+        assertTrue(res.get(1).getPrices().get(1).sathosies == new BigDecimal(0.35714290).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(1).price == 170.49714285714282);
+        assertTrue(res.get(1).getPrices().get(2).sathosies == new BigDecimal(0.03571429).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(2).price == 126.76142857142857);
+        assertTrue(res.get(1).getPrices().get(3).sathosies == new BigDecimal(0.35714290).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(3).price == 104.02096999999999);
+        assertTrue(res.get(1).getPrices().get(4).sathosies == new BigDecimal(0.14285720).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(4).price == 74.95919571428571);
+        assertTrue(res.get(1).getPrices().get(5).sathosies == new BigDecimal(0.03571429).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(5).price == 114.31817);
     }
 
     @Test
@@ -97,7 +157,7 @@ public class MyBitcoinsAppTest {
      *
      * @return
      */
-    private List<TransactionOutput> outputData(Wallet wallet) {
+    private List<TransactionOutput> outputData1(Wallet wallet) {
         TransactionInput in1 = null;
         TransactionInput in2 = null;
 
@@ -151,6 +211,84 @@ public class MyBitcoinsAppTest {
         TransactionOutput output7C = Mockito.mock(TransactionOutput.class);
         Mockito.when(output7C.getValue()).thenReturn(Coin.COIN.multiply(5));
         Mockito.when(output7C.getParentTransaction()).thenReturn(tx6C);
+        ret.add(output7C);
+        ret.add(output8B);
+
+        return ret;
+    }
+
+    /**
+     *  ext - external input or address
+     *  *   - a transaction
+     *  0   - wallet address
+     *
+     *
+     *            A       B       C    D  E       F       G
+     *
+     *          3 ext   4 ext   5 ext   6 ext   7 ext   8 ext
+     * 1)         *       *       *       *       *       *
+     *       1btc |  5btc | .5btc |  5btc |  2btc | .5btc |
+     *            |       |       |       |       |       |
+     *            |       |       |       |       |       |
+     *            |       |       |       |       |       |
+     *            --------------------0--------------------
+     *                                |
+     * 2)                    1btc 0---*-- ext 4 btc
+     *                                |
+     *                                0 9btc
+     *
+     *
+     *
+     *
+     */
+    private List<TransactionOutput> outputData2(Wallet wallet) {
+        List<TransactionInput> ins;
+        TransactionInput in1 = null;
+        TransactionInput in2 = null;
+        TransactionInput in3 = null;
+        TransactionInput in4 = null;
+        TransactionInput in5 = null;
+        TransactionInput in6 = null;
+
+        // transaction 1A - update time 4/11/13:12:12:12, unix 1393848732
+        Transaction tx1A = generateMokcedTx(wallet, 3, Coin.ZERO, new Date(1383567132 * 1000L));
+
+        // transaction 1AB - update time 10/24/13:12:12:12, unix 1393848732
+        Transaction tx1B = generateMokcedTx(wallet, 4, Coin.ZERO, new Date(1382530332 * 1000L));
+
+        // transaction 1C - update time 9/18/13:12:12:12, unix 1393848732
+        Transaction tx1C = generateMokcedTx(wallet, 5, Coin.ZERO, new Date(1379506332 * 1000L));
+
+        // transaction 1E - update time 8/12/13:12:12:12, unix 1393848732
+        Transaction tx1E = generateMokcedTx(wallet, 6, Coin.ZERO, new Date(1376309532 * 1000L));
+
+        // transaction 1F - update time 7/9/13:12:12:12, unix 1393848732
+        Transaction tx1F = generateMokcedTx(wallet, 7, Coin.ZERO, new Date(1373371932 * 1000L));
+
+        // transaction 1G - update time 6/9/13:12:12:12, unix 1393848732
+        Transaction tx1G = generateMokcedTx(wallet, 8, Coin.ZERO, new Date(1370779932 * 1000L));
+
+        // transaction 2D - update time 12/25/13:12:12:12, unix 1393848732
+        Transaction tx2D = generateMokcedTx(wallet, 5, Coin.COIN.multiply(14), new Date(1387973532 * 1000L));
+        ins = new ArrayList<TransactionInput>();
+        in1 = generateMockedTransactionInput(tx2D, tx1A, Coin.COIN.multiply(1));
+        in2 = generateMockedTransactionInput(tx2D, tx1B, Coin.COIN.multiply(5));
+        in3 = generateMockedTransactionInput(tx2D, tx1C, Coin.COIN.divide(2));
+        in4 = generateMockedTransactionInput(tx2D, tx1E, Coin.COIN.multiply(5));
+        in5 = generateMockedTransactionInput(tx2D, tx1F, Coin.COIN.multiply(2));
+        in6 = generateMockedTransactionInput(tx2D, tx1G, Coin.COIN.divide(2));
+        ins.add(in1); ins.add(in2);ins.add(in3); ins.add(in4);ins.add(in5);ins.add(in6);
+        Mockito.when(tx2D.getInputs()).thenReturn(ins);
+
+
+        List<TransactionOutput> ret = new ArrayList<TransactionOutput>();
+        TransactionOutput output8B = Mockito.mock(TransactionOutput.class);
+        Mockito.when(output8B.getValue()).thenReturn(Coin.COIN.multiply(1));
+        Mockito.when(output8B.getParentTransaction()).thenReturn(tx2D);
+
+        TransactionOutput output7C = Mockito.mock(TransactionOutput.class);
+        Mockito.when(output7C.getValue()).thenReturn(Coin.COIN.multiply(9));
+        Mockito.when(output7C.getParentTransaction()).thenReturn(tx2D);
         ret.add(output7C);
         ret.add(output8B);
 

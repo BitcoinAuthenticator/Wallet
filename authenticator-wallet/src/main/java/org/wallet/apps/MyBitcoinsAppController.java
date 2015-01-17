@@ -28,6 +28,9 @@ import org.wallet.Main;
 import org.wallet.utils.BaseUI;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -404,15 +407,14 @@ public class MyBitcoinsAppController extends BaseUI {
          */
         public List<Price> getPrices() {
             List<Price> ret = new ArrayList<Price>(prices);
-            long tot = 0;
+            BigDecimal tot = new BigDecimal(0);
             for(Price p: prices)
-                tot += p.sathosies;
+                tot = tot.add(new BigDecimal(p.sathosies));
 
             for(Price p: ret) {
-                double d = (((double)p.sathosies) / ((double)tot));
-                long dd = outPoint.getValue().longValue();
-
-                p.sathosies = (long)(dd * d);
+                BigDecimal fraction = new BigDecimal(p.sathosies).divide(tot, new MathContext(7, RoundingMode.CEILING));
+                p.sathosies = fraction.multiply(new BigDecimal(outPoint.getValue().longValue()),
+                        new MathContext(8, RoundingMode.UNNECESSARY)).longValue();
             }
 
             return prices;
@@ -422,9 +424,9 @@ public class MyBitcoinsAppController extends BaseUI {
         public String toString() {
             String ret = "";
             List<MyBitcoinsAppController.Price> r = getPrices();
-            ret += "EndPoint " + tot.toFriendlyString() + ":";
+            ret += "EndPoint " + tot.toFriendlyString() + ":\n";
             for (MyBitcoinsAppController.Price p: r) {
-                ret += "   - " + Coin.valueOf(p.sathosies).toFriendlyString() + " Coins, at $" + p.price ;
+                ret += "   - " + Coin.valueOf(p.sathosies).toFriendlyString() + ", at $" + p.price + "\n" ;
             }
             return ret;
         }

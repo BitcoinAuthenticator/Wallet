@@ -284,7 +284,7 @@ public class AccountsAppController extends BaseUI{
 	@SuppressWarnings("unused")
 	private Stage loadPairingFXML(Stage s, ArrayList<Object> param) {    	
 		s = new Stage();
-		URL url = Main.class.getResource("/org/wallet/pairing/AuthenticatorApp.fxml");
+		URL url = Main.class.getResource("apps/authenticator/app/AuthenticatorApp.fxml");
 		int width = 850;
 		int height = 484;
 		try {
