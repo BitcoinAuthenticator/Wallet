@@ -402,17 +402,20 @@ public class WalletOperation extends BASE{
 		//Check in covers the out
 		if(inAmount.compareTo(totalOut.add(fee)) < 0)
 			throw new IllegalArgumentException("Insufficient funds! You cheap bastard !");
-		
-		//Add the outputs
-		for (TransactionOutput output : to)
-            tx.addOutput(output);
+
+		ArrayList<TransactionOutput> outputs = new ArrayList<>();
+
+		//Add the outputs to the output list
+		for (TransactionOutput output : to){
+			outputs.add(output);
+		}
 		
 		//Add the change
 		Address change = new Address(getNetworkParams(), changeAdd);
 		Coin rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 			TransactionOutput changeOut = new TransactionOutput(getWalletWrapper().getNetworkParameters(), tx, rest, change);
-			tx.addOutput(changeOut);
+			outputs.add(changeOut);
 			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
 							", Fees " + fee.toFriendlyString() + 
 							", Rest " + rest.toFriendlyString() + 
@@ -426,7 +429,13 @@ public class WalletOperation extends BASE{
 					". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
 					", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}
-        
+
+		//Shuffle the outputs to improve privacy then add to the tx.
+		Collections.shuffle(outputs);
+		for (TransactionOutput out: outputs){
+			tx.addOutput(out);
+		}
+
 		// Check size.
         int size = tx.bitcoinSerialize().length;
         if (size > Transaction.MAX_STANDARD_TX_SIZE)
