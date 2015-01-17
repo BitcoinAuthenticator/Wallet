@@ -129,6 +129,10 @@ public class Main extends BAApplication {
 
     @SuppressWarnings("restriction")
 	private void init(Stage mainWindow) {
+
+        /*There is a bug in linux related to reading from /etc/hosts that causes the JVM to crash when using Tor.
+        * As a temporary hack we just move /etc/hosts file for startup and then put it back.
+        * We're currently investigating Orchid to try to get to the root cause.*/
     	String os = System.getProperty("os.name").toLowerCase();
     	if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
     		File source = new File("/etc/hosts");
@@ -154,7 +158,8 @@ public class Main extends BAApplication {
             scene.getStylesheets().add(file);  // Add CSS that we need.
             mainWindow.setScene(scene);
             stage = mainWindow;
-            
+
+            //If no wallet file exists load wallet setup
             String filePath1 = ApplicationParams.getApplicationDataFolderAbsolutePath() + ApplicationParams.getAppName() + ".wallet";
             File f1 = new File(filePath1);
             if(!f1.exists()) { 
@@ -176,7 +181,11 @@ public class Main extends BAApplication {
     		throw new CouldNotIinitializeWalletException("Could Not initialize wallet"); 
     	}
     }
-    
+
+    /**
+     * User can create a configuration file called wallet.cfg and put it the same directory with the jar
+     * and the wallet will load those parameters at startup.
+     */
     public static String[] loadConfigFile() {
         //Load configuration file
         String filename = "wallet.cfg";
@@ -552,20 +561,23 @@ public class Main extends BAApplication {
         Updater updater = new Updater(updateFxAppParams.getRemoteUpdateBaseURL(), updateFxAppParams.getRemoteUpdateUserAgent(), updateFxAppParams.APP_CODE_VERSION,
                 AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
                 updateFxAppParams.getRemoteUpdateKeys(), 1) {
+
             @Override
             protected void updateProgress(long workDone, long max) {
                 super.updateProgress(workDone, max);
-                // Give UI a chance to show.
+                // Show the splash screen if an update is available.
+                donwloadUpdatesWindow.setVisible();
                 Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
             }
         };
+
 
         indicator.progressProperty().bind(updater.progressProperty());
 
         updater.setOnSucceeded(event -> {
             try {
                 UpdateSummary summary = updater.get();
-                if (summary.newVersion > updateFxAppParams.APP_CODE_VERSION) {
+                if (summary.highestVersion > updateFxAppParams.APP_CODE_VERSION) {
                 	System.out.println("Restarting the app to load the new version");
                     if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
                         UpdateFX.restartApp();

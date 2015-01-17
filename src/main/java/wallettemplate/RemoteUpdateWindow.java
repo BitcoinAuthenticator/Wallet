@@ -67,8 +67,12 @@ public class RemoteUpdateWindow {
 	
 	public void show() {
 		loadFXML();
-		dialogStage.show();
+		//dialogStage.show();
 		initialize();
+	}
+
+	public void setVisible(){
+		dialogStage.show();
 	}
 	
 	public void close() {
