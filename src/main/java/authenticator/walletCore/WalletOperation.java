@@ -35,16 +35,8 @@ import authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateType;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.security.SecureRandom;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -410,17 +402,19 @@ public class WalletOperation extends BASE{
 		//Check in covers the out
 		if(inAmount.compareTo(totalOut.add(fee)) < 0)
 			throw new IllegalArgumentException("Insufficient funds! You cheap bastard !");
-		
-		//Add the outputs
-		for (TransactionOutput output : to)
-            tx.addOutput(output);
+
+		ArrayList<TransactionOutput> txouts = new ArrayList<>();
+		//Add the outputs to output list
+		for (TransactionOutput output : to) {
+			txouts.add(output);
+		}
 		
 		//Add the change
 		Address change = new Address(getNetworkParams(), changeAdd);
 		Coin rest = inAmount.subtract(totalOut.add(fee));
 		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
 			TransactionOutput changeOut = new TransactionOutput(this.mWalletWrapper.getNetworkParameters(), tx, rest, change);
-			tx.addOutput(changeOut);
+			txouts.add(changeOut); //add change output to output list
 			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
 							", Fees " + fee.toFriendlyString() + 
 							", Rest " + rest.toFriendlyString() + 
@@ -434,7 +428,13 @@ public class WalletOperation extends BASE{
 					". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
 					", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
 		}
-        
+
+		//Randomize the order of the outputs and add to the transaction
+		Collections.shuffle(txouts);
+		for (TransactionOutput out: txouts){
+			tx.addOutput(out);
+		}
+
 		// Check size.
         int size = tx.bitcoinSerialize().length;
         if (size > Transaction.MAX_STANDARD_TX_SIZE)
