@@ -412,9 +412,9 @@ public class MyBitcoinsAppController extends BaseUI {
                 tot = tot.add(new BigDecimal(p.sathosies));
 
             for(Price p: ret) {
-                BigDecimal fraction = new BigDecimal(p.sathosies).divide(tot, new MathContext(7, RoundingMode.CEILING));
+                BigDecimal fraction = new BigDecimal(p.sathosies).divide(tot, new MathContext(7, RoundingMode.HALF_UP));
                 p.sathosies = fraction.multiply(new BigDecimal(outPoint.getValue().longValue()),
-                        new MathContext(8, RoundingMode.UNNECESSARY)).longValue();
+                        new MathContext(7, RoundingMode.HALF_UP)).longValue();
             }
 
             return prices;

@@ -35,7 +35,7 @@ public class MyBitcoinsAppTest {
         assertTrue(res.size() == 2);
 
         BigDecimal coin = new BigDecimal(Coin.COIN.longValue());
-        MathContext mc = new MathContext(8, RoundingMode.HALF_UP);
+        MathContext mc = new MathContext(7, RoundingMode.HALF_UP);
 
         // first end point
         assertTrue(res.get(0).tot.equals(Coin.COIN.multiply(5)));
@@ -46,11 +46,11 @@ public class MyBitcoinsAppTest {
         // second end point
         assertTrue(res.get(1).tot.equals(Coin.COIN.multiply(2)));
         assertTrue(res.get(1).getPrices().size() == 3);
-        assertTrue(res.get(1).getPrices().get(0).sathosies == new BigDecimal(0.44444460).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(0).sathosies == new BigDecimal(0.44444440).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(0).price == 331.6271428571429);
-        assertTrue(res.get(1).getPrices().get(1).sathosies == new BigDecimal(0.88888900).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(1).sathosies == new BigDecimal(0.88888880).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(1).price == 582.0571428571429);
-        assertTrue(res.get(1).getPrices().get(2).sathosies == new BigDecimal(0.66666680).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(2).sathosies == new BigDecimal(0.66666660).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(2).price == 446.5457142857144);
     }
 
@@ -67,29 +67,28 @@ public class MyBitcoinsAppTest {
         assertTrue(res.size() == 2);
 
         BigDecimal coin = new BigDecimal(Coin.COIN.longValue());
-        MathContext mc = new MathContext(8, RoundingMode.HALF_UP);
+        MathContext mc = new MathContext(7, RoundingMode.HALF_UP);
 
         // first end point
         assertTrue(res.get(0).tot.equals(Coin.COIN.multiply(9)));
         assertTrue(res.get(0).getPrices().size() == 6);
-
-        assertTrue(res.get(0).getPrices().get(0).sathosies == new BigDecimal(0.64285704).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(0).sathosies == new BigDecimal(0.64285700).multiply(coin, mc).longValue());
         assertTrue(res.get(0).getPrices().get(0).price == 206.63285714285715);
-        assertTrue(res.get(0).getPrices().get(1).sathosies == new BigDecimal(3.21428610).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(1).sathosies == new BigDecimal(3.21428600).multiply(coin, mc).longValue());
         assertTrue(res.get(0).getPrices().get(1).price == 170.49714285714282);
-        assertTrue(res.get(0).getPrices().get(2).sathosies == new BigDecimal(0.32142861).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(2).sathosies == new BigDecimal(0.32142860).multiply(coin, mc).longValue());
         assertTrue(res.get(0).getPrices().get(2).price == 126.76142857142857);
-        assertTrue(res.get(0).getPrices().get(3).sathosies == new BigDecimal(3.21428610).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(3).sathosies == new BigDecimal(3.21428600).multiply(coin, mc).longValue());
         assertTrue(res.get(0).getPrices().get(3).price == 104.02096999999999);
-        assertTrue(res.get(0).getPrices().get(4).sathosies == new BigDecimal(1.28571480).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(4).sathosies == new BigDecimal(1.28571400).multiply(coin, mc).longValue());
         assertTrue(res.get(0).getPrices().get(4).price == 74.95919571428571);
-        assertTrue(res.get(0).getPrices().get(5).sathosies == new BigDecimal(0.32142861).multiply(coin, mc).longValue());
+        assertTrue(res.get(0).getPrices().get(5).sathosies == new BigDecimal(0.32142860).multiply(coin, mc).longValue());
         assertTrue(res.get(0).getPrices().get(5).price == 114.31817);
 
         // second end point
         assertTrue(res.get(1).tot.equals(Coin.COIN.multiply(1)));
         assertTrue(res.get(1).getPrices().size() == 6);
-        assertTrue(res.get(1).getPrices().get(0).sathosies == new BigDecimal(0.07142856).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(0).sathosies == new BigDecimal(0.07142857).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(0).price == 206.63285714285715);
         assertTrue(res.get(1).getPrices().get(1).sathosies == new BigDecimal(0.35714290).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(1).price == 170.49714285714282);
@@ -97,7 +96,7 @@ public class MyBitcoinsAppTest {
         assertTrue(res.get(1).getPrices().get(2).price == 126.76142857142857);
         assertTrue(res.get(1).getPrices().get(3).sathosies == new BigDecimal(0.35714290).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(3).price == 104.02096999999999);
-        assertTrue(res.get(1).getPrices().get(4).sathosies == new BigDecimal(0.14285720).multiply(coin, mc).longValue());
+        assertTrue(res.get(1).getPrices().get(4).sathosies == new BigDecimal(0.14285710).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(4).price == 74.95919571428571);
         assertTrue(res.get(1).getPrices().get(5).sathosies == new BigDecimal(0.03571429).multiply(coin, mc).longValue());
         assertTrue(res.get(1).getPrices().get(5).price == 114.31817);
