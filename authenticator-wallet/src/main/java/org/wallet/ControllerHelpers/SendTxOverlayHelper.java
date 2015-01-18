@@ -3,8 +3,10 @@ package org.wallet.ControllerHelpers;
 import static org.wallet.utils.GuiUtils.informationalAlert;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import com.google.protobuf.ByteString;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutput;
@@ -64,14 +66,14 @@ public class SendTxOverlayHelper {
 	
 	public SendTxOverlayHelper(Transaction tx, 
     		ArrayList<String> OutputAddresses, 
-    		List<TransactionOutput> to, 
+    		HashMap<String,Coin> to,
     		String changeaddr,
     		Coin outAmount,
     		Coin fee,
     		Coin leavingWallet) {
 		
-		init(tx, 
-    		OutputAddresses, 
+		init(tx,
+    		OutputAddresses,
     		to, 
     		changeaddr,
     		outAmount,
@@ -80,9 +82,9 @@ public class SendTxOverlayHelper {
 	}
 	
 	@SuppressWarnings({ "static-access", "restriction", "rawtypes" })
-	private void init(Transaction tx, 
-    		ArrayList<String> OutputAddresses, 
-    		List<TransactionOutput> to, 
+	private void init(Transaction tx,
+    		ArrayList<String> OutputAddresses,
+    		HashMap<String,Coin> to,
     		String changeaddr,
     		Coin outAmount,
     		Coin fee,
@@ -142,11 +144,12 @@ public class SendTxOverlayHelper {
 			outputtext3.setFill(Paint.valueOf("#f06e6e"));
 			outputtext2.setText(OutputAddresses.get(a) + " ");
 			outtext.add(outputtext2);
-			outputtext3.setText(TextUtils.coinAmountTextDisplay(to.get(a).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
-			if (a<OutputAddresses.size()-1){
+			outputtext3.setText(TextUtils.coinAmountTextDisplay(to.get(OutputAddresses.get(a)), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+			if (a < OutputAddresses.size()) {
 				outputtext3.setText(outputtext3.getText() + "\n                                     ");
 			}
 			outtext.add(outputtext3);
+
 		}
 		for (Text t : outtext){outputflow.getChildren().addAll(t);}
 		textformatted.add(outputflow);
@@ -158,7 +161,7 @@ public class SendTxOverlayHelper {
 
 		changetext3.setFill(Paint.valueOf("#98d947"));
 		TextFlow changeflow = new TextFlow();
-		changeflow.getChildren().addAll(changetext, changetext2,changetext3);
+		changeflow.getChildren().addAll(changetext, changetext2, changetext3);
 		textformatted.add(changeflow);
 		textformatted.add(spaceflow);
 		Text feetext = new Text("Fee:                         ");

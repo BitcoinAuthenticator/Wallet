@@ -9,12 +9,12 @@
 
 .tab-pane .tab:selected
 {
-    -fx-background-color: white;
+    -fx-background-color: #199bd6;
 }
 
 .tab-pane .tab
 {
-    -fx-background-color: #49c7f0;
+    -fx-background-color: white;
 
 }
 
@@ -31,14 +31,14 @@
 
 .tab .tab-label {
     -fx-alignment: CENTER;
-    -fx-text-fill:  white;
+    -fx-text-fill:  #199bd6;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
 
 .tab:selected .tab-label {
     -fx-alignment: CENTER;
-    -fx-text-fill:  #199bd6;
+    -fx-text-fill:  white;
 }
 
 .hbox{
