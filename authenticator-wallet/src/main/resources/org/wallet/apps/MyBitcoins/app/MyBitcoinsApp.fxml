@@ -95,7 +95,7 @@
                                                             </HBox>
                                                             <HBox prefHeight="30.0" prefWidth="278.0">
                                                                <children>
-                                                                  <Label style="-fx-text-fill: #0c92be;" text="My Gain/ Lost: " />
+                                                                  <Label style="-fx-text-fill: #0c92be;" text="My Gain/ Loss: " />
                                                                   <Label fx:id="lblGainOrLostValue" style="-fx-text-fill: #0c92be;" text="xxx" />
                                                                </children>
                                                                <VBox.margin>
@@ -104,7 +104,7 @@
                                                             </HBox>
                                                             <HBox prefHeight="30.0" prefWidth="278.0">
                                                                <children>
-                                                                  <Label style="-fx-text-fill: #0c92be;" text="My Break even price :" />
+                                                                  <Label style="-fx-text-fill: #0c92be;" text="My break even price :" />
                                                                   <Label fx:id="lblBreakEven" style="-fx-text-fill: #0c92be;" text="xxx" />
                                                                </children>
                                                                <VBox.margin>
