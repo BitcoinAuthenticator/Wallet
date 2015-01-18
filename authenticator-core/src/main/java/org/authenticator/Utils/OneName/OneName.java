@@ -2,28 +2,16 @@ package org.authenticator.Utils.OneName;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.net.URLConnection;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import javax.imageio.ImageIO;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.ning.http.client.AsyncCompletionHandler;
@@ -31,9 +19,7 @@ import com.ning.http.client.Response;
 
 import org.authenticator.Authenticator;
 import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import org.authenticator.Utils.OneName.exceptions.CannotSetOneNameProfileException;
-import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import org.authenticator.walletCore.WalletOperation;
 

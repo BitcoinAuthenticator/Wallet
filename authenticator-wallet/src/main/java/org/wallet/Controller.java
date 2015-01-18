@@ -2,9 +2,8 @@ package org.wallet;
 
 import org.authenticator.Authenticator;
 import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.Utils.CurrencyConverter.Currency;
-import org.authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
-import org.authenticator.Utils.CurrencyConverter.exceptions.CurrencyConverterSingeltonNoDataException;
+import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
+import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
 import org.authenticator.Utils.OneName.OneName;
 import org.authenticator.Utils.OneName.OneNameAdapter;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
@@ -1170,7 +1169,7 @@ public class Controller  extends BaseUI{
 		}
     }
     
-    @FXML protected void SendTx(ActionEvent event) throws CurrencyConverterSingeltonNoDataException{
+    @FXML protected void SendTx(ActionEvent event) throws ExchangeProviderNoDataException {
     	if(!ValidateTx()){
     		informationalAlert("Something Is not Right ...",
     				"Make Sure:\n" +
@@ -1412,7 +1411,7 @@ public class Controller  extends BaseUI{
 	    			.getWalletOperation()
 	    			.getAccountUnitFromSettings());
 			l.add(a);
-			for(String s: Currency.AVAILBLE_CURRENCY_CODES)
+			for(String s: ExchangeProvider.AVAILBLE_CURRENCY_CODES)
 				l.add(s);
 			na.initGUI(l, a);
 			
@@ -1435,7 +1434,7 @@ public class Controller  extends BaseUI{
 	    			.getWalletOperation()
 	    			.getAccountUnitFromSettings());
 			l.add(a);
-			for(String s: Currency.AVAILBLE_CURRENCY_CODES)
+			for(String s: ExchangeProvider.AVAILBLE_CURRENCY_CODES)
 				l.add(s);
     		
     		na.updateCurrencyChoiceBox(l, a);

@@ -13,6 +13,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.vinumeris:updatefx:1.2" level="project" />
+    <orderEntry type="library" name="Maven: com.vinumeris:updatefx:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.authenticator:BitcoinAuthenticator-core:0.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: eu.hansolo.enzo:Enzo:0.1" level="project" />

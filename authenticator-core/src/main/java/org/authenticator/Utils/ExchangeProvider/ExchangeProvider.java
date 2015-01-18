@@ -1,21 +1,32 @@
-package org.authenticator.Utils.CurrencyConverter;
+package org.authenticator.Utils.ExchangeProvider;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
+import org.bitcoinj.core.Coin;
+
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+/**
+ * Interface for providing exchange data
+ *
+ * Created by alonmuroch on 1/18/15.
+ */
+public interface ExchangeProvider {
+    public String getCurrencyCode();
+    public Date getLastUpdated();
+    public float getLatestExchangeRate();
+    /**
+     *
+     * @param unixTime
+     * @return
+     * @throws ExchangeProviderNoDataException - the provider doesn't have to contain history exchange data
+     */
+    public float getExchangeRate(long unixTime) throws ExchangeProviderNoDataException;
+    public Currency convertToCurrency(Coin sathosies);
+    public Coin convertToBitcoin(Currency currency);
 
-public class Currency {
-	final int SATHOSIES_IN_ONE_BTC = 100000000;
-	public String UPPERCASE_CURRENCY_CODE;
-	public static String[] AVAILBLE_CURRENCY_CODES = new String[]{
-		"USD",
-		// TODO
+    public static String[] AVAILBLE_CURRENCY_CODES = new String[]{
+            "USD",
+            // TODO
 //		"AED",
 //        "AFN",
 //        "ALL",
@@ -181,51 +192,5 @@ public class Currency {
 //        "ZMK",
 //        "ZMW",
 //        "ZWL"
-	};
-		
-	public Currency(String currencyCode, JSONObject object) {
-		UPPERCASE_CURRENCY_CODE = currencyCode;
-		fromBitcoinaverage(object);
-	}
-	
-	/**
-	 * bitcoinaverage.com parser
-	 * @throws JSONException 
-	 * @throws ParseException 
-	 */
-	public void fromBitcoinaverage(JSONObject object) {
-		try {
-			ONE_BTC_TO_CURRENCY = object.getDouble("last");
-			ONE_CURRENCY_TO_BTC = 1 / ONE_BTC_TO_CURRENCY;
-			lastUpdated = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss -0000", Locale.ENGLISH).parse(object.getString("timestamp")); // example Sat, 26 Jul 2014 14:22:27 -0000
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public double ONE_CURRENCY_TO_BTC;
-	/**
-	 * A readable btc amount, e.g, 12.5 BTC
-	 * @param howMuchCurrency
-	 * @return
-	 */
-	public double convertToBTCFriendly(double howMuchCurrency){
-		return howMuchCurrency * ONE_CURRENCY_TO_BTC;
-	}
-	/**
-	 * Number of satoshies, usually will be used for Tx  creation
-	 * @param howMuchCurrency
-	 * @return
-	 */
-	public double convertToSatoshi(double howMuchCurrency){
-		return howMuchCurrency * ONE_CURRENCY_TO_BTC * SATHOSIES_IN_ONE_BTC;
-	}
-	
-	double ONE_BTC_TO_CURRENCY;
-	public double convertToCurrency(double howMuchBTC){
-		return howMuchBTC * ONE_BTC_TO_CURRENCY;
-	}
-	
-	public Date lastUpdated;
+    };
 }

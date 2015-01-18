@@ -1,4 +1,4 @@
-package org.authenticator;
+package org.authenticator.utilsTest;
 
 import static org.junit.Assert.*;
 

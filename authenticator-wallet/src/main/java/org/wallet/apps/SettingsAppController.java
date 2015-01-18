@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.wallet.ControllerHelpers.AsyncTask;
@@ -26,7 +27,6 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
 import org.authenticator.Authenticator;
 import org.authenticator.Utils.FileUtils;
-import org.authenticator.Utils.CurrencyConverter.Currency;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
 import org.authenticator.protobuf.ProtoSettings;
 import org.authenticator.protobuf.ProtoConfig.ATOperationType;
@@ -154,7 +154,7 @@ public class SettingsAppController extends BaseUI{
     	cbBitcoinUnit.setValue(unitStr);
     	
     	cbCurrency.getItems().clear();
-    	for(String s: Currency.AVAILBLE_CURRENCY_CODES)
+    	for(String s: ExchangeProvider.AVAILBLE_CURRENCY_CODES)
     		cbCurrency.getItems().add(s);
     	cbCurrency.setValue(strCurrency);
     	cbCurrency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {

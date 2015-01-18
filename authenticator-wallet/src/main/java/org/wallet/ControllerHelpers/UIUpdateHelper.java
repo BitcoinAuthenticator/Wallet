@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.authenticator.Utils.ExchangeProvider.Currency;
+import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
+import org.authenticator.Utils.ExchangeProvider.Exchanges;
 import org.json.JSONException;
 import org.wallet.Controller;
 import org.wallet.Main;
@@ -21,8 +24,6 @@ import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 
 import org.authenticator.Authenticator;
-import org.authenticator.Utils.CurrencyConverter.Currency;
-import org.authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import org.authenticator.db.walletDB;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
@@ -766,26 +767,26 @@ public class UIUpdateHelper extends BaseUI{
 			lblConfirmedBalance.setText(TextUtils.coinAmountTextDisplay(confirmed, u));
 	        lblUnconfirmedBalance.setText(TextUtils.coinAmountTextDisplay(unconfirmed, u));
 	        
-	        if(!CurrencyConverterSingelton.isReady)
-		        new CurrencyConverterSingelton(Currency.AVAILBLE_CURRENCY_CODES ,new CurrencyConverterSingelton.CurrencyConverterListener(){
+	        if(!Exchanges.getInstance().isReady)
+				Exchanges.init(ExchangeProvider.AVAILBLE_CURRENCY_CODES , new Exchanges.ExchangeProviderImplListener(){
 					@Override
-					public void onFinishedGettingCurrencyData(CurrencyConverterSingelton currencies) {
+					public void onFinishedGettingCurrencyData(Exchanges currencies) {
 						Platform.runLater(new Runnable() {
-						      @Override public void run() {
-									try {
-										attachBalanceToolTip();
-									} catch (CannotReadFromConfigurationFileException e) {
-										e.printStackTrace();
-									}
-						      }
-						    });
+							@Override public void run() {
+								try {
+									attachBalanceToolTip();
+								} catch (CannotReadFromConfigurationFileException e) {
+									e.printStackTrace();
+								}
+							}
+						});
 					}
-	
+
 					@Override
 					public void onErrorGettingCurrencyData(Exception e) {
 						Platform.runLater(() -> GuiUtils.informationalAlert("Cannot Download Currency Data","Some functionalities may be compromised"));
 					}
-		        });
+				});
 	        else
 	        	try {
 					attachBalanceToolTip();
@@ -797,18 +798,16 @@ public class UIUpdateHelper extends BaseUI{
 		private void attachBalanceToolTip() throws CannotReadFromConfigurationFileException{
 	    	  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 		      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-			  
+
 		      String currency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
-		      
+
 			  // Confirmed
-			  //double conf = Double.parseDouble(confirmed.toPlainString())*last;
-			  double conf = CurrencyConverterSingelton.currencies.get(currency).convertToCurrency(Double.parseDouble(confirmed.toPlainString()));
-			  Tooltip.install(lblConfirmedBalance, new Tooltip(String.valueOf(conf) + " " + currency));
+			  Currency conf = Exchanges.getInstance().currencies.get(currency).convertToCurrency(confirmed);
+			  Tooltip.install(lblConfirmedBalance, new Tooltip(conf.toFriendlyString()));
 			  
 			  // Unconfirmed
-			  //double unconf = Double.parseDouble(unconfirmed.toPlainString())*last;
-			  double unconf = CurrencyConverterSingelton.currencies.get(currency).convertToCurrency(Double.parseDouble(unconfirmed.toPlainString()));
-			  Tooltip.install(lblUnconfirmedBalance, new Tooltip(String.valueOf(unconf) + " " + currency));
+			  Currency unconf = Exchanges.getInstance().currencies.get(currency).convertToCurrency(unconfirmed);
+			  Tooltip.install(lblUnconfirmedBalance, new Tooltip(unconf.toFriendlyString()));
 	    }
 
 		@Override

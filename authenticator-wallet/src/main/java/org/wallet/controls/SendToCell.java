@@ -11,6 +11,9 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.authenticator.Utils.ExchangeProvider.Currency;
+import org.authenticator.Utils.ExchangeProvider.Exchange;
+import org.authenticator.Utils.ExchangeProvider.Exchanges;
 import org.json.JSONException;
 import org.wallet.Main;
 import org.wallet.utils.GuiUtils;
@@ -35,8 +38,6 @@ import com.google.zxing.common.HybridBinarizer;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import org.authenticator.Authenticator;
-import org.authenticator.Utils.CurrencyConverter.Currency;
-import org.authenticator.Utils.CurrencyConverter.CurrencyConverterSingelton;
 import org.authenticator.Utils.OneName.OneName;
 import org.authenticator.Utils.OneName.OneNameAdapter;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
@@ -449,10 +450,11 @@ public class SendToCell extends Region{
 			return TextUtils.bitcoinUnitToSatoshies(Double.parseDouble(txfAmount.getText()), BitcoinUnit.Microbits);//return (double) Double.parseDouble(txfAmount.getText())*100;
 		}
 		else {
-			Currency c = CurrencyConverterSingelton.currencies.get(getSelectedCurrency());
-			if(c != null)
+			Exchange e = Exchanges.getInstance().currencies.get(getSelectedCurrency());
+			if(e != null)
 			{
-				return c.convertToSatoshi(Double.parseDouble(txfAmount.getText()));
+				Long amount = Long.parseLong(txfAmount.getText());
+				return e.convertToBitcoin(Currency.valueOf(amount).multiply(Currency.ONE.getValue())).getValue();
 			}
 			else {
 				return -1;// notify user
