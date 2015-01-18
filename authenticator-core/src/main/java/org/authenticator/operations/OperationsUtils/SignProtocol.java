@@ -13,7 +13,7 @@ import org.authenticator.GCM.dispacher.Dispacher;
 import org.authenticator.GCM.exceptions.GCMSendFailedException;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.walletCore.exceptions.UnableToCompleteTxSigningException;
+import org.authenticator.walletCore.exceptions.UnableToCompleteTransactionException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
@@ -89,14 +89,14 @@ public class SignProtocol {
 	 * @param tx
 	 * @param AuthSigs
 	 * @param po
-	 * @throws UnableToCompleteTxSigningException
+	 * @throws org.authenticator.walletCore.exceptions.UnableToCompleteTransactionException
 	 */
 	@SuppressWarnings({ "static-access", "deprecation", "unused" })
 	static public void complete(WalletOperation wallet, 
 			@Nullable BAPassword WALLET_PW,
 			Transaction tx, 
 			ArrayList<byte[]> AuthSigs, 
-			PairedAuthenticator po) throws UnableToCompleteTxSigningException
+			PairedAuthenticator po) throws UnableToCompleteTransactionException
 	 {
 		try{
 			//Prep the keys needed for signing
@@ -110,7 +110,7 @@ public class SignProtocol {
 				TransactionOutPoint txOp = in.getOutpoint();
 				TransactionOutput out = wallet.findTransactionOutpointByHash(txOp.getHash().toString(), txOp.getIndex()); 
 				if(out == null)
-					throw new UnableToCompleteTxSigningException("Cannot find corresponding transaction outout for input:\n " + in.toString());
+					throw new UnableToCompleteTransactionException("Cannot find corresponding transaction outout for input:\n " + in.toString());
 				
 				String inAddress = out.getScriptPubKey().getToAddress(wallet.getNetworkParams()).toString();
 				ATAddress atAdd = wallet.findAddressInAccounts(inAddress);
@@ -142,7 +142,7 @@ public class SignProtocol {
 		catch (Exception e){
 			//wallet.disconnectInputs(tx.getInputs());
 			e.printStackTrace();
-			throw new UnableToCompleteTxSigningException("Unable to finish transaction signing");
+			throw new UnableToCompleteTransactionException("Unable to finish transaction signing");
 		}
 	 }
 

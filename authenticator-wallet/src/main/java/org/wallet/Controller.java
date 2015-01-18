@@ -1188,11 +1188,11 @@ public class Controller  extends BaseUI{
         	{
         		SendToCell na = (SendToCell)n;
    
-				long satoshis = (long) na.getAmountValue();
-				if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
-					outAmount = outAmount.add(Coin.valueOf(satoshis));
+				Coin v = Coin.valueOf((long) na.getAmountValue());
+				if (v.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+					outAmount = outAmount.add(v);
 					OutputAddresses.add(na.getAddress());
-					to.put(na.getAddress(), Coin.valueOf(satoshis));
+					to.put(na.getAddress(), v);
 				}
 				else 
 					;//TODO        		

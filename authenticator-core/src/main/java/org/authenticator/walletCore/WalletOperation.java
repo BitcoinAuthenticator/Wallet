@@ -6,17 +6,7 @@ import org.authenticator.BASE;
 import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.hierarchy.SingleAccountManagerImpl;
-import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
-import org.authenticator.walletCore.exceptions.CannotBroadcastTransactionException;
-import org.authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
-import org.authenticator.walletCore.exceptions.CannotGetAccountUsedAddressesException;
-import org.authenticator.walletCore.exceptions.CannotGetAddressException;
-import org.authenticator.walletCore.exceptions.CannotGetHDKeyException;
-import org.authenticator.walletCore.exceptions.CannotGetPendingRequestsException;
-import org.authenticator.walletCore.exceptions.CannotReadFromConfigurationFileException;
-import org.authenticator.walletCore.exceptions.CannotRemovePendingRequestException;
-import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
-import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
+import org.authenticator.walletCore.exceptions.*;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.authenticator.walletCore.utils.CoinsReceivedNotificationSender;
 import org.authenticator.walletCore.utils.WalletListener;
@@ -338,101 +328,118 @@ public class WalletOperation extends BASE{
 						  b.setType(addressType);
 		return b.build();
 	}
-	
-	@SuppressWarnings("static-access")
+
 	/**
-	 * 
+	 *	Will generate a transaction with selected inputs, outputs, fee and change.
+	 *
+	 * @param outSelected
+	 * @param to
+	 * @param fee
+	 * @param changeAdd
+	 * @return
+	 * @throws UnableToCompleteTransactionException
+	 */
+	public Transaction mkUnsignedTxWithSelectedInputs(
+			ArrayList<TransactionOutput> outSelected, 
+			HashMap<String, Coin> to, 
+			Coin fee, 
+			String changeAdd) throws UnableToCompleteTransactionException {
+
+		try {
+			Transaction tx = new Transaction(getNetworkParams());
+			ArrayList<TransactionOutput> Outputs = new ArrayList<TransactionOutput>();
+			for(String addStr: to.keySet()){
+				Address add = new Address(getNetworkParams(), addStr);
+				Coin value = to.get(addStr);
+				if (value.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+					TransactionOutput out = new TransactionOutput(getNetworkParams(),
+							tx,
+							value,
+							add);
+					Outputs.add(out);
+				}
+			}
+
+			return this.mkUnsignedTxWithSelectedInputs(tx, outSelected, Outputs, fee, changeAdd);
+		}
+		catch (Exception e) {
+			throw new UnableToCompleteTransactionException(e.toString());
+		}
+	}
+
+	/**
+	 *	Will complete the passed transaction with selected inputs, outputs, fee and change.
+	 *
 	 * @param tx
 	 * @param outSelected
 	 * @param to
 	 * @param fee
 	 * @param changeAdd
 	 * @return
-	 * @throws AddressFormatException
-	 * @throws JSONException
-	 * @throws IOException
-	 * @throws NoSuchAlgorithmException
-	 * @throws IllegalArgumentException
+	 * @throws UnableToCompleteTransactionException
 	 */
-	public Transaction mkUnsignedTxWithSelectedInputs(
-			ArrayList<TransactionOutput> outSelected, 
-			HashMap<String, Coin> to, 
-			Coin fee, 
-			String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException, IllegalArgumentException {
-		
-		Transaction tx = new Transaction(getNetworkParams());
-		ArrayList<TransactionOutput> Outputs = new ArrayList<TransactionOutput>();
-		for(String addStr: to.keySet()){
-			Address add = new Address(getNetworkParams(), addStr);			
-			long satoshis = (long) (Double.parseDouble(to.get(addStr).toPlainString()) * 100000000);
-			if (Coin.valueOf(satoshis).compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
-				TransactionOutput out = new TransactionOutput(getNetworkParams(),
-															tx, 
-									        				Coin.valueOf(satoshis), 
-									        				add);
-				Outputs.add(out);
-			}
-		}
-		
-		return this.mkUnsignedTxWithSelectedInputs(tx, outSelected, Outputs, fee, changeAdd);
-	}
 	private Transaction mkUnsignedTxWithSelectedInputs(Transaction tx,
 			ArrayList<TransactionOutput> outSelected, 
 			ArrayList<TransactionOutput>to, 
 			Coin fee, 
-			String changeAdd) throws AddressFormatException, JSONException, IOException, NoSuchAlgorithmException, IllegalArgumentException {
-		
-		tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
-		
-		Coin totalOut = Coin.ZERO;
-		for (TransactionOutput out:to){
-			totalOut = totalOut.add(out.getValue());
+			String changeAdd) throws UnableToCompleteTransactionException {
+		try {
+			tx.getConfidence().setSource(TransactionConfidence.Source.SELF);
+
+			Coin totalOut = Coin.ZERO;
+			for (TransactionOutput out:to){
+				totalOut = totalOut.add(out.getValue());
+			}
+			//Check minimum output
+			if(totalOut.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
+				throw new IllegalArgumentException("Tried to send dust with ensureMinRequiredFee set - no way to complete this");
+
+			// add inputs
+			Coin inAmount = Coin.ZERO;
+			for (TransactionOutput input : outSelected){
+				tx.addInput(input);
+				inAmount = inAmount.add(input.getValue());
+			}
+
+			//Check in covers the out
+			if(inAmount.compareTo(totalOut.add(fee)) < 0)
+				throw new IllegalArgumentException("Insufficient funds! You cheap bastard !");
+
+			ArrayList<TransactionOutput> outputs = new ArrayList<>();
+
+			//Add the outputs to the output list
+			for (TransactionOutput output : to){
+				outputs.add(output);
+			}
+
+			//Add the change
+			Address change = new Address(getNetworkParams(), changeAdd);
+			Coin rest = inAmount.subtract(totalOut.add(fee));
+			if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
+				TransactionOutput changeOut = new TransactionOutput(getNetworkParams(), tx, rest, change);
+				outputs.add(changeOut);
+			}
+			else
+				fee = fee.add(rest);
+
+			//Shuffle the outputs to improve privacy then add to the tx.
+			Collections.shuffle(outputs);
+			for (TransactionOutput out: outputs){
+				tx.addOutput(out);
+			}
+
+			// Check size.
+			int size = tx.bitcoinSerialize().length;
+			if (size > Transaction.MAX_STANDARD_TX_SIZE)
+				throw new ExceededMaxTransactionSize();
+
+			LOG.info("New Transaction: " + tx.toString());
+
+			return tx;
 		}
-		//Check minimum output
-		if(totalOut.compareTo(Transaction.MIN_NONDUST_OUTPUT) < 0)
-			throw new IllegalArgumentException("Tried to send dust with ensureMinRequiredFee set - no way to complete this");
-		
-		// add inputs
-		Coin inAmount = Coin.ZERO;
-		for (TransactionOutput input : outSelected){
-            tx.addInput(input);
-            inAmount = inAmount.add(input.getValue());
+		catch (Exception e) {
+			throw new UnableToCompleteTransactionException(e.toString());
 		}
-		
-		//Check in covers the out
-		if(inAmount.compareTo(totalOut.add(fee)) < 0)
-			throw new IllegalArgumentException("Insufficient funds! You cheap bastard !");
-		
-		//Add the outputs
-		for (TransactionOutput output : to)
-            tx.addOutput(output);
-		
-		//Add the change
-		Address change = new Address(getNetworkParams(), changeAdd);
-		Coin rest = inAmount.subtract(totalOut.add(fee));
-		if(rest.compareTo(Transaction.MIN_NONDUST_OUTPUT) > 0){
-			TransactionOutput changeOut = new TransactionOutput(getWalletWrapper().getNetworkParameters(), tx, rest, change);
-			tx.addOutput(changeOut);
-			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
-							", Fees " + fee.toFriendlyString() + 
-							", Rest " + rest.toFriendlyString() + 
-							". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
-							", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
-		}	
-		else{
-			fee = fee.add(rest);
-			this.LOG.info("New Out Tx Sends " + totalOut.toFriendlyString() + 
-					", Fees " + fee.toFriendlyString() + 
-					". From " + Integer.toString(tx.getInputs().size()) + " Inputs" +
-					", To " + Integer.toString(tx.getOutputs().size()) + " Outputs.");
-		}
-        
-		// Check size.
-        int size = tx.bitcoinSerialize().length;
-        if (size > Transaction.MAX_STANDARD_TX_SIZE)
-            throw new ExceededMaxTransactionSize();
-		
-		return tx;
 	}
 	
 	/**
