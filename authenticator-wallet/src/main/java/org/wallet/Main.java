@@ -555,7 +555,8 @@ public class Main extends BAApplication {
             @Override
             protected void updateProgress(long workDone, long max) {
                 super.updateProgress(workDone, max);
-                // Give UI a chance to show.
+                // Show the splash screen if an update is found.
+                downloadUpdatesWindow.setVisible();
                 Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
             }
         };
@@ -565,13 +566,13 @@ public class Main extends BAApplication {
         updater.setOnSucceeded(event -> {
             try {
                 UpdateSummary summary = updater.get();
-                if (summary.newVersion > updateFxAppParams.APP_CODE_VERSION) {
+                if (summary.highestVersion > updateFxAppParams.APP_CODE_VERSION) {
                 	System.out.println("Restarting the app to load the new version");
                     if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
                         UpdateFX.restartApp();
                 }else {
                 	System.out.println("Loaded best version, starting wallet ...");
-                	donwloadUpdatesWindow.close();
+                	downloadUpdatesWindow.close();
                 	realStart(mainWindow);
                 }                
             } catch (Throwable e) {
@@ -585,8 +586,8 @@ public class Main extends BAApplication {
             
             // load the wallet without applying updates
             Platform.runLater(() -> { 
-            	donwloadUpdatesWindow.setToFailedConnectionMode("Failed To Connect/ download from server");
-            	donwloadUpdatesWindow.setListener(new RemoteUpdateWindowListener() {
+            	downloadUpdatesWindow.setToFailedConnectionMode("Failed To Connect/ download from server");
+            	downloadUpdatesWindow.setListener(new RemoteUpdateWindowListener() {
 					@Override
 					public void UserPressedOk(RemoteUpdateWindow window) {
 						realStart(mainWindow);
@@ -625,10 +626,10 @@ public class Main extends BAApplication {
     }
     
     @SuppressWarnings("restriction")
-    RemoteUpdateWindow donwloadUpdatesWindow;
+    RemoteUpdateWindow downloadUpdatesWindow;
 	private ProgressBar showUpdateDownloadProgressBar() {
-		donwloadUpdatesWindow = new RemoteUpdateWindow(Main.class);
-		donwloadUpdatesWindow.show();
-        return donwloadUpdatesWindow.getProgressBar();
+		downloadUpdatesWindow = new RemoteUpdateWindow(Main.class);
+		downloadUpdatesWindow.init();
+        return downloadUpdatesWindow.getProgressBar();
     }
 }

@@ -1223,8 +1223,8 @@ public class Controller  extends BaseUI{
     						
     			//
     			displayTxOverview(tx,
-    					OutputAddresses, 
-    					tx.getOutputs(),
+						OutputAddresses,
+    					to,
     					changeaddr, 
     					outAmount, 
     					cFee, 
@@ -1244,16 +1244,16 @@ public class Controller  extends BaseUI{
     }
     
     SendTxOverlayHelper mSendTxOverlayHelper;
-    private void displayTxOverview(Transaction tx, 
-    		ArrayList<String> OutputAddresses, 
-    		List<TransactionOutput> to, 
+    private void displayTxOverview(Transaction tx,
+								   ArrayList<String> OutputAddresses,
+    		HashMap<String, Coin> to,
     		String changeaddr,
     		Coin outAmount,
     		Coin fee,
     		Coin leavingWallet){
     	
-    	mSendTxOverlayHelper = new SendTxOverlayHelper(tx, 
-										    			OutputAddresses, 
+    	mSendTxOverlayHelper = new SendTxOverlayHelper(tx,
+														OutputAddresses,
 										        		to, 
 										        		changeaddr,
 										        		outAmount,
