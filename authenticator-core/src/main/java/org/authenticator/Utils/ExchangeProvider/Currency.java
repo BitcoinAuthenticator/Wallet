@@ -1,6 +1,7 @@
 package org.authenticator.Utils.ExchangeProvider;
 
 import com.google.common.math.LongMath;
+import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Monetary;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.utils.MonetaryFormat;
@@ -85,6 +86,10 @@ public class Currency implements Monetary, Comparable<Currency> {
     @Override
     public long getValue() {
         return value;
+    }
+
+    public float floatFriendlyValue() {
+        return (float)getValue() / (float)ONE.getValue();
     }
 
     @Override

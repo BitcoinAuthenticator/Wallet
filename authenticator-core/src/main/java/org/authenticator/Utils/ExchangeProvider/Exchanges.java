@@ -20,13 +20,12 @@ public class Exchanges {
 	public boolean isReady = false;
 
 	public static void init(String[] lstCurrencies, ExchangeProviderImplListener listener) {
-		instance = new Exchanges(lstCurrencies, listener);
+		if(instance == null)
+			instance = new Exchanges(lstCurrencies, listener);
 	}
 
 	private static Exchanges instance;
 	public static Exchanges getInstance() {
-		if(instance == null)
-			instance = new Exchanges();
 		return instance;
 	}
 
@@ -48,11 +47,11 @@ public class Exchanges {
 			} catch (IOException | JSONException e) {
 				e.printStackTrace();
 				if(listener != null)
-					listener.onErrorGettingCurrencyData(e);
+					listener.onErrorGettingExchangeData(e);
 			}
 		}
 		else if(listener != null){
-			listener.onFinishedGettingCurrencyData(this);
+			listener.onFinishedGettingExchangeData(this);
 		}
 	}
 	
@@ -70,7 +69,11 @@ public class Exchanges {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
+	private boolean didTryDownloadingCurrencies = false; // so we wont try and download multiple times
 	private void getCurrencies(List<String> lstCurrencies, final ExchangeProviderImplListener listener, Exchanges self) throws IOException, JSONException{
+		if(didTryDownloadingCurrencies) return;
+		didTryDownloadingCurrencies = true;
+
 		// TODO - download more than one currency
 		String s = "https://api.bitcoinaverage.com/ticker/global/" + lstCurrencies.get(0) +  "/";
 		EncodingUtils.readFromUrl(s, new AsyncCompletionHandler<Response>(){
@@ -80,20 +83,20 @@ public class Exchanges {
 				JSONObject json = new JSONObject(res);
 				//double last = json.getDouble("last");
 				currencies.add(new Exchange(lstCurrencies.get(0), json));
-				
-				if(listener != null)
-					listener.onFinishedGettingCurrencyData(self);
-				
+
 				isReady = true;
-				
+
+				if(listener != null)
+					listener.onFinishedGettingExchangeData(self);
+
 				return null;
 			}
 		});
 	}
 
 	public interface ExchangeProviderImplListener {
-		public void onFinishedGettingCurrencyData(Exchanges currencies);
-		public void onErrorGettingCurrencyData(Exception e);
+		public void onFinishedGettingExchangeData(Exchanges currencies);
+		public void onErrorGettingExchangeData(Exception e);
 	}
 	
 	public class CurrencyList {

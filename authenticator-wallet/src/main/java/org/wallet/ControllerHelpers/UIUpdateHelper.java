@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.authenticator.Utils.ExchangeProvider.Currency;
+import org.authenticator.Utils.ExchangeProvider.Exchange;
 import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
 import org.authenticator.Utils.ExchangeProvider.Exchanges;
 import org.json.JSONException;
@@ -767,23 +768,21 @@ public class UIUpdateHelper extends BaseUI{
 			lblConfirmedBalance.setText(TextUtils.coinAmountTextDisplay(confirmed, u));
 	        lblUnconfirmedBalance.setText(TextUtils.coinAmountTextDisplay(unconfirmed, u));
 	        
-	        if(!Exchanges.getInstance().isReady)
+	        if(Exchanges.getInstance() == null || !Exchanges.getInstance().isReady)
 				Exchanges.init(ExchangeProvider.AVAILBLE_CURRENCY_CODES , new Exchanges.ExchangeProviderImplListener(){
 					@Override
-					public void onFinishedGettingCurrencyData(Exchanges currencies) {
-						Platform.runLater(new Runnable() {
-							@Override public void run() {
-								try {
-									attachBalanceToolTip();
-								} catch (CannotReadFromConfigurationFileException e) {
-									e.printStackTrace();
-								}
+					public void onFinishedGettingExchangeData(Exchanges exchanges) {
+						Platform.runLater(() -> {
+							try {
+								attachBalanceToolTip();
+							} catch (CannotReadFromConfigurationFileException e) {
+								e.printStackTrace();
 							}
 						});
 					}
 
 					@Override
-					public void onErrorGettingCurrencyData(Exception e) {
+					public void onErrorGettingExchangeData(Exception e) {
 						Platform.runLater(() -> GuiUtils.informationalAlert("Cannot Download Currency Data","Some functionalities may be compromised"));
 					}
 				});
@@ -796,18 +795,19 @@ public class UIUpdateHelper extends BaseUI{
 		}
 		
 		private void attachBalanceToolTip() throws CannotReadFromConfigurationFileException{
-	    	  Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
-		      Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+			Coin unconfirmed = Authenticator.getWalletOperation().getUnConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
+			Coin confirmed = Authenticator.getWalletOperation().getConfirmedBalance(Authenticator.getWalletOperation().getActiveAccount().getActiveAccount().getIndex());
 
-		      String currency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
+			String currency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
+			Exchange ex = Exchanges.getInstance().currencies.get(currency);
 
-			  // Confirmed
-			  Currency conf = Exchanges.getInstance().currencies.get(currency).convertToCurrency(confirmed);
-			  Tooltip.install(lblConfirmedBalance, new Tooltip(conf.toFriendlyString()));
+			 // Confirmed
+			Currency conf = ex.convertToCurrency(confirmed);
+			Tooltip.install(lblConfirmedBalance, new Tooltip(conf.toFriendlyString()));
 			  
 			  // Unconfirmed
-			  Currency unconf = Exchanges.getInstance().currencies.get(currency).convertToCurrency(unconfirmed);
-			  Tooltip.install(lblUnconfirmedBalance, new Tooltip(unconf.toFriendlyString()));
+			Currency unconf = ex.convertToCurrency(unconfirmed);
+			Tooltip.install(lblUnconfirmedBalance, new Tooltip(unconf.toFriendlyString()));
 	    }
 
 		@Override
