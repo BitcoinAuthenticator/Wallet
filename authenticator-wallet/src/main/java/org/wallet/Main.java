@@ -234,7 +234,8 @@ public class Main extends BAApplication {
         bitcoin.setAutoStop(true);
         bitcoin.setBlockingStartup(false)
                .setUserAgent(AppParams.getAppName(), "1.0");
-        bitcoin.startAsync();      
+        bitcoin.startAsync();
+        bitcoin.peerGroup().getTorClient().enableSocksListener();
         
     	
     	/*
