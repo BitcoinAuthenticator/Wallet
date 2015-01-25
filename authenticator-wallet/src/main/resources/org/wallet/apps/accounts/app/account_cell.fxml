@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -46,6 +47,7 @@
         </VBox>
       </children>
     </HBox>
+            <ImageView fx:id="ivAccountType" fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true" />
 </children></Pane>
   </children>
 </AnchorPane>

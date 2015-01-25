@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.authenticator.protobuf.ProtoConfig;
 import org.json.JSONException;
 import org.wallet.Main;
 import org.wallet.Main.OverlayUI;
@@ -40,6 +41,7 @@ public class DisplayAccountCell extends Region{
 	@FXML private Label lblName;
 	@FXML private Label lblAccountID;
 	@FXML private Pane bgPane;
+	@FXML private ImageView ivAccountType;
 	
 	@SuppressWarnings("restriction")
 	public DisplayAccountCell(ATAccount account) {
@@ -58,6 +60,15 @@ public class DisplayAccountCell extends Region{
 		setTotal(Long.toString(this.account.getConfirmedBalance()), Long.toString(this.account.getUnConfirmedBalance()));
 		setAccountName(this.account.getAccountName());
 		setAccountID(Integer.toString(this.account.getIndex()));
+
+		if(this.account.getAccountType() == ProtoConfig.WalletAccountType.AuthenticatorAccount) {
+			Image img = new Image("/org/wallet/authenticator_logo_plain_small.png");
+			ivAccountType.setImage(img);
+		}
+		if(this.account.getAccountType() == ProtoConfig.WalletAccountType.StandardAccount) {
+			Image img = new Image("/org/wallet/bitcoin_logo_small.png");
+			ivAccountType.setImage(img);
+		}
 	}
 	
 	private void setAccountID(String id){

@@ -26,12 +26,12 @@ public class Currency implements Monetary, Comparable<Currency> {
     public static final Currency ZERO = Currency.valueOf(0);
 
     /**
-     * One.
+     * One cent.
      */
     public static final Currency CENT = Currency.valueOf(1);
 
     /**
-     * One Bitcoin.
+     * 100 cents.
      */
     public static final Currency ONE = Currency.valueOf(CENT.getValue()).multiply(100);
 
@@ -88,6 +88,11 @@ public class Currency implements Monetary, Comparable<Currency> {
         return value;
     }
 
+    /**
+     * Will divide the value in cents by {@link #ONE} to get a friendly float number.
+     *
+     * @return
+     */
     public float floatFriendlyValue() {
         return (float)getValue() / (float)ONE.getValue();
     }

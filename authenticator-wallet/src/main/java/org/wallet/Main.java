@@ -189,6 +189,7 @@ public class Main extends BAApplication {
                 bitcoin.wallet().setKeychainLookaheadSize(0);
                 bitcoin.wallet().allowSpendingUnconfirmedTransactions();
                 bitcoin.peerGroup().setBloomFilterFalsePositiveRate(AppParams.getBloomFilterFalsePositiveRate());
+                bitcoin.peerGroup().getTorClient().enableSocksListener();
                 System.out.println(bitcoin.wallet());
                 Platform.runLater(controller::onBitcoinSetup);
                 
@@ -235,7 +236,6 @@ public class Main extends BAApplication {
         bitcoin.setBlockingStartup(false)
                .setUserAgent(AppParams.getAppName(), "1.0");
         bitcoin.startAsync();
-        bitcoin.peerGroup().getTorClient().enableSocksListener();
         
     	
     	/*

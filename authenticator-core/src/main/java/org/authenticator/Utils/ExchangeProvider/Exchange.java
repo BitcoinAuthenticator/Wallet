@@ -146,6 +146,11 @@ public class Exchange implements ExchangeProvider {
 	}
 
 	@Override
+	public boolean hasHistoricData() {
+		return pricePoints != null;
+	}
+
+	@Override
 	public Currency convertToCurrency(Coin sathosies) {
 		return toCurrency(sathosies);
 	}

@@ -25,18 +25,18 @@ package org.authenticator.network;
 // $HeadURL: $
 // $Id: $
 
-        import org.json.JSONException;
-        import org.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-        import javax.net.ssl.SSLSession;
-        import javax.net.ssl.SSLSocket;
-        import javax.net.ssl.SSLSocketFactory;
-        import java.io.*;
-        import java.math.BigInteger;
-        import java.net.InetAddress;
-        import java.net.Socket;
-        import java.security.cert.Certificate;
-        import java.security.cert.X509Certificate;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.*;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 
 /**
  * The Onion Router Java Library routines<br />

@@ -2,15 +2,26 @@ package org.wallet.ControllerHelpers;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ning.http.client.AsyncCompletionHandler;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Response;
+import javafx.scene.paint.Color;
 import org.authenticator.Utils.ExchangeProvider.Currency;
 import org.authenticator.Utils.ExchangeProvider.Exchange;
 import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
 import org.authenticator.Utils.ExchangeProvider.Exchanges;
+import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
+import org.authenticator.protobuf.ProtoConfig;
+import org.authenticator.walletCore.ExtendedTransactionOutput;
+import org.authenticator.walletCore.WalletOperation;
+import org.authenticator.walletCore.exceptions.*;
+import org.bitcoinj.core.*;
 import org.json.JSONException;
 import org.wallet.Controller;
 import org.wallet.Main;
@@ -18,21 +29,12 @@ import org.wallet.controls.ScrollPaneContentManager;
 import org.wallet.utils.BaseUI;
 import org.wallet.utils.GuiUtils;
 import org.wallet.utils.TextUtils;
-import org.bitcoinj.core.AddressFormatException;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionInput;
-import org.bitcoinj.core.TransactionOutput;
 
 import org.authenticator.Authenticator;
 import org.authenticator.db.walletDB;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
-import org.authenticator.walletCore.exceptions.AddressNotWatchedByWalletException;
-import org.authenticator.walletCore.exceptions.CannotGetAccountFilteredTransactionsException;
-import org.authenticator.walletCore.exceptions.CannotReadFromConfigurationFileException;
-import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -736,7 +738,7 @@ public class UIUpdateHelper extends BaseUI{
 		
 	}
 
-	public static class BalanceUpdater extends AsyncTask{
+	public static class BalanceUpdater extends AsyncTask {
 		Coin unconfirmed;
 		Coin confirmed;
 		
@@ -767,31 +769,14 @@ public class UIUpdateHelper extends BaseUI{
 			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
 			lblConfirmedBalance.setText(TextUtils.coinAmountTextDisplay(confirmed, u));
 	        lblUnconfirmedBalance.setText(TextUtils.coinAmountTextDisplay(unconfirmed, u));
-	        
-	        if(Exchanges.getInstance() == null || !Exchanges.getInstance().isReady)
-				Exchanges.init(ExchangeProvider.AVAILBLE_CURRENCY_CODES , new Exchanges.ExchangeProviderImplListener(){
-					@Override
-					public void onFinishedGettingExchangeData(Exchanges exchanges) {
-						Platform.runLater(() -> {
-							try {
-								attachBalanceToolTip();
-							} catch (CannotReadFromConfigurationFileException e) {
-								e.printStackTrace();
-							}
-						});
-					}
 
-					@Override
-					public void onErrorGettingExchangeData(Exception e) {
-						Platform.runLater(() -> GuiUtils.informationalAlert("Cannot Download Currency Data","Some functionalities may be compromised"));
-					}
-				});
-	        else
-	        	try {
-					attachBalanceToolTip();
-				} catch (CannotReadFromConfigurationFileException e) {
-					e.printStackTrace();
-				}
+			if(Exchanges.getInstance() == null || !Exchanges.getInstance().isReady)
+				return;
+			try {
+				attachBalanceToolTip();
+			} catch (CannotReadFromConfigurationFileException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		private void attachBalanceToolTip() throws CannotReadFromConfigurationFileException{
@@ -813,5 +798,114 @@ public class UIUpdateHelper extends BaseUI{
 		@Override
 		protected void progressCallback(Object... params) { }
 		
+	}
+
+
+
+	public static class GainLossUpdater extends AsyncTask {
+		private Label lbl;
+		private ExchangeProvider exchangeProvider;
+		private ProtoConfig.ATAccount activeAccount;
+		private WalletOperation walletOperation;
+
+		public  GainLossUpdater(Label lbl,
+								WalletOperation walletOperation,
+								ExchangeProvider exchangeProvider,
+								ProtoConfig.ATAccount activeAccount) {
+			this.lbl = lbl;
+			this.walletOperation = walletOperation;
+			this.exchangeProvider = exchangeProvider;
+			this.activeAccount = activeAccount;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			lbl.setText("Calculating ...");
+			lbl.setTextFill(Color.valueOf("#98d947"));
+		}
+
+		@Override
+		protected void doInBackground() {
+			if(Exchanges.getInstance() == null || !Exchanges.getInstance().isReady)
+				return;
+
+			if(!exchangeProvider.hasHistoricData()) {
+				downloadPriceDataFromBlockchainInfo(new AsyncCompletionHandler<Response>(){
+					@Override
+					public Response onCompleted(Response response) throws Exception{
+						Exchanges.getInstance().currencies.get("USD").parseAndSetPriceDataFromBlockchainInfo(response.getResponseBody());
+						calculateAndDisplay();
+						return response;
+					}
+
+					@Override
+					public void onThrowable(Throwable t) {
+						t.printStackTrace();
+					}
+				});
+			}
+			else {
+				try {
+					calculateAndDisplay();
+				} catch (CannotGetAddressException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		@Override
+		protected void onPostExecute() { }
+
+		@Override
+		protected void progressCallback(Object... params) { }
+
+		private void calculateAndDisplay() throws CannotGetAddressException {
+			List<ExtendedTransactionOutput> results = new ArrayList<>();
+			for(TransactionOutput o: walletOperation.getUnspentOutputsForAccount(activeAccount.getIndex())) {
+				results.add(ExtendedTransactionOutput.fromTransactionOutput(o));
+			}
+
+			for (ExtendedTransactionOutput o: results) {
+				ExtendedTransactionOutput.ValuesExtension extension = new ExtendedTransactionOutput.ValuesExtension();
+				extension.activate(o, exchangeProvider, walletOperation.getTrackedWallet());
+				o.registerExtension(extension);
+			}
+
+			Platform.runLater(() -> {
+				Coin totBitcoins = Coin.ZERO;
+				Currency totValue = Currency.ZERO;
+				float totGainOrLost = 0;
+				for (ExtendedTransactionOutput e : results) {
+					ExtendedTransactionOutput.ValuesExtension extension = (ExtendedTransactionOutput.ValuesExtension) e.getExtensionByName("Values Extension");
+					totBitcoins = totBitcoins.add(e.getValue());
+					totValue = totValue.add(extension.getCurrentTotalValue().getValue());
+					totGainOrLost += extension.getGainOrLoss();
+				}
+				float percentage = totGainOrLost / totValue.floatFriendlyValue();
+				lbl.setText("$" + new DecimalFormat("#.###").format(totGainOrLost) +
+						(totGainOrLost != 0? " (" +new DecimalFormat("#.###").format(percentage) + "%)":""));
+				if(totGainOrLost < 0) {
+					lbl.setTextFill(Color.valueOf("#f06e6e"));
+				}
+				else {
+					lbl.setTextFill(Color.valueOf("#98d947"));
+				}
+
+				String currency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
+				Tooltip.install(lbl, new Tooltip("Represents the gain or loss the account sostained due to price volatility between bitcoin and " + currency + "\n" +
+												"For more information visit the 'My Bitcoins' app"));
+			});
+		}
+
+		private void downloadPriceDataFromBlockchainInfo(AsyncCompletionHandler<Response> listener) {
+			String url = "https://blockchain.info/charts/market-price?showDataPoints=false&timespan=all&show_header=true&daysAverageString=1&scale=0&format=json&address=";
+			AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+			try {
+				asyncHttpClient.prepareGet(url).execute(listener);
+			} catch (IOException e) {
+				e.printStackTrace();
+				listener.onThrowable(e);
+			}
+		}
 	}
 }

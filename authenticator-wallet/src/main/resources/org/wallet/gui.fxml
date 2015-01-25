@@ -274,12 +274,13 @@
             </Label>
           </children>
         </HBox>
-        <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="162.0" prefHeight="18.1328125" prefWidth="150.0" style="-fx-text-fill: #98d947;" text="0.000000 BTC">
+        <Label fx:id="lblConfirmedBalance" layoutX="68.0" layoutY="132.0" prefHeight="18.1328125" prefWidth="150.0" style="-fx-text-fill: #98d947;" text="Calculating ...">
           <font>
             <Font size="14.0" fx:id="x2" />
           </font>
         </Label>
-        <Label fx:id="lblUnconfirmedBalance" font="$x2" layoutX="68.0" layoutY="227.0" prefWidth="150.0" style="-fx-text-fill: #f06e6e;" text="0.000000 BTC" />
+        <Label fx:id="lblUnconfirmedBalance" font="$x2" layoutX="68.0" layoutY="192.0" prefWidth="150.0" style="-fx-text-fill: #f06e6e;" text="Calculating ..." />
+        <Label fx:id="lblGainLoss" font="$x2" layoutX="68.0" layoutY="247.0" prefWidth="150.0" style="-fx-text-fill: #98d947;" text="Calculating ..." />
       </children>
     </Pane>
     <!-- 

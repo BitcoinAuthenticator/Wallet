@@ -3,11 +3,13 @@ package org.wallet;
 import org.authenticator.Authenticator;
 import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
+import org.authenticator.Utils.ExchangeProvider.Exchanges;
 import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
 import org.authenticator.Utils.OneName.OneName;
 import org.authenticator.Utils.OneName.OneNameAdapter;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.walletCore.exceptions.CannotGetAddressException;
+import org.authenticator.walletCore.exceptions.CannotReadFromConfigurationFileException;
 import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.authenticator.walletCore.utils.BalanceUpdater;
@@ -209,6 +211,7 @@ public class Controller  extends BaseUI{
 	 @FXML private HBox ReceiveHBox;
 	 @FXML private Label lblConfirmedBalance;
 	 @FXML private Label lblUnconfirmedBalance;
+	 @FXML private Label lblGainLoss;
 	 @FXML ImageView ivAvatar;
 	 @FXML Label lblName;
 	 @FXML public ChoiceBox AddressBox;
@@ -332,18 +335,37 @@ public class Controller  extends BaseUI{
 			@Override
 			public void run() {
 				LOG.info("Updating UI");
-				 
-				 setReceiveAddresses();
-			 	 try {setTxPaneHistory();} 
-			 	 catch (Exception e1) {e1.printStackTrace();}
-			 	 
-		    	 try {setTxHistoryContent();} 
-		    	 catch (Exception e1) {e1.printStackTrace();}
+				setReceiveAddresses();
+				setTxPaneHistory();
+				setTxHistoryContent();
 
-		    	 try {refreshBalanceLabel();} 
-		     	 catch (Exception e) {e.printStackTrace();}
-		    	 
-		    	 Platform.runLater(() -> setFeeTipText());
+				if(Exchanges.getInstance() == null || !Exchanges.getInstance().isReady) {
+					Platform.runLater(() -> {
+						lblConfirmedBalance.setText("Calculating ...");
+
+						lblUnconfirmedBalance.setText("Calculating ...");
+
+						lblGainLoss.setText("Calculating ...");
+						lblGainLoss.setTextFill(javafx.scene.paint.Color.valueOf("#98d947"));
+					});
+					Exchanges.init(ExchangeProvider.AVAILBLE_CURRENCY_CODES, new Exchanges.ExchangeProviderImplListener() {
+						@Override
+						public void onFinishedGettingExchangeData(Exchanges exchanges) {
+							refreshBalanceLabel();
+							refreshGainLossLabel();
+						}
+
+						@Override
+						public void onErrorGettingExchangeData(Exception e) {
+							Platform.runLater(() -> GuiUtils.informationalAlert("Cannot Download Currency Data", "Some functionalities may be compromised"));
+						}
+					});
+				}
+				else {
+					refreshBalanceLabel();
+					refreshGainLossLabel();
+				}
+				Platform.runLater(() -> setFeeTipText());
 			}
     	});
     	throttledUIUpdater.start();
@@ -1058,15 +1080,22 @@ public class Controller  extends BaseUI{
     }
     
     @SuppressWarnings("static-access")
-	private void refreshBalanceLabel() throws JSONException, IOException, AccountWasNotFoundException {
+	private void refreshBalanceLabel() {
     	LOG.info("Refreshing balance");
     	new UIUpdateHelper.BalanceUpdater(lblConfirmedBalance, lblUnconfirmedBalance).execute();
     }
-    
-    
+
+	private void refreshGainLossLabel() {
+		LOG.info("Refreshing balance");
+		String currency = Authenticator.getWalletOperation().getLocalCurrencySymbolFromSettings();
+		new UIUpdateHelper.GainLossUpdater(lblGainLoss,
+				Authenticator.getWalletOperation(),
+				Exchanges.getInstance().currencies.get(currency),
+				Authenticator.getWalletOperation().getActiveAccount().getActiveAccount()).execute();
+	}
     
     @SuppressWarnings("unused")
-    private void setTxHistoryContent() throws Exception{
+    private void setTxHistoryContent() {
     	LOG.info("Setting Tx History in Overview Pane");
     	new UIUpdateHelper.TxHistoryContentUpdater(scrlViewTxHistoryContentManager).execute();
     }

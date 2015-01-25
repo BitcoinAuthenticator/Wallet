@@ -21,6 +21,7 @@ public interface ExchangeProvider {
      * @throws ExchangeProviderNoDataException - the provider doesn't have to contain history exchange data
      */
     public float getExchangeRate(long unixTime) throws ExchangeProviderNoDataException;
+    public boolean hasHistoricData();
     public Currency convertToCurrency(Coin sathosies);
     public Coin convertToBitcoin(Currency currency);
 

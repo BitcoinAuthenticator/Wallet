@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.scene.image.ImageView;
 import org.authenticator.Utils.CryptoUtils;
 import org.wallet.Main;
 import org.wallet.apps.AuthenticatorAppController.PairingWalletControllerListener;
@@ -96,7 +97,7 @@ public class AccountsAppController extends BaseUI{
 	}
 		
 	
-	private class AccountUI{
+	private class AccountUI {
 		private ATAccount account;
 		public AccountUI(ATAccount account){
 			this.account = account;
