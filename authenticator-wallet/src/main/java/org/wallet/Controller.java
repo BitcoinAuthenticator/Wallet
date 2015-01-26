@@ -334,7 +334,7 @@ public class Controller  extends BaseUI{
 		throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
 			@Override
 			public void run() {
-				LOG.info("Updating UI");
+				LOG.info("\n\n\n\nUpdating UI\n\n\n");
 				setReceiveAddresses();
 				setTxPaneHistory();
 				setTxHistoryContent();
@@ -449,9 +449,11 @@ public class Controller  extends BaseUI{
 	        	 */
 	        	addTransactionOutputToPane();
 			}
-	    });    
-    	updateUI();
-    	if (Authenticator.getApplicationParams().disableSpinners){stopSyncRotation();}
+	    });
+
+    	//updateUI(); // will update when an active account will be set
+
+		if (Authenticator.getApplicationParams().disableSpinners){stopSyncRotation();}
     	Authenticator.getWalletOperation().sendNotificationToAuthenticatorWhenCoinsReceived();
     }
    

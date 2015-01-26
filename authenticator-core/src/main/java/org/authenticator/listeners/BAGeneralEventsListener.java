@@ -18,7 +18,7 @@ import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 
 public interface BAGeneralEventsListener {
 	/**
-	 * Will be called if something changed in the wallet's accounts.<br>
+	 * Will be called if something changed in the wallet's accounts or a new active account is been set.<br>
 	 * accountIndex could be -1 if cannot pass account index
 	 * 
 	 * @param type
@@ -38,8 +38,8 @@ public interface BAGeneralEventsListener {
 	 * @param profileImage
 	 */
 	public void onOneNameIdentityChanged(@Nullable ConfigOneNameProfile profile, @Nullable Image profileImage);
-	
-	
+
+
 	/**
 	 * Will update when:<br>
 	 * <ol>
@@ -48,9 +48,8 @@ public interface BAGeneralEventsListener {
 	 * <li>Account's confirmed/ unconfirmed balance is changed</li>
 	 * </ol>
 	 * <b> May be called multiple times if tx contains several changes</b><br>
-	 * 
-	 * @param walletID
-	 * @param @Nullable tx - could be null to just update the UI
+	 *
+	 * @param tx
 	 * @param howBalanceChanged
 	 * @param confidence
 	 */
@@ -61,7 +60,7 @@ public interface BAGeneralEventsListener {
 	};
 	
 	/**
-	 * Will be fired when the {@link authenticator.operations.OperationsFactory#SIGN_AND_BROADCAST_AUTHENTICATOR_TX_OPERATION Authenticator Tx Sign Operation} completes
+	 * Will be fired when the authenticator returns a signing answer (could be ok, nothing or did not accept) completes
 	 * @param tx
 	 * @param pairingID
 	 * @param pendingReq
