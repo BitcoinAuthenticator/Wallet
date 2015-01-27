@@ -43,7 +43,7 @@ public class Dispacher {
 		 */
 		case SignTX:
 			if(device.gcmRegId != null)
-			{				
+			{
 				MessageBuilder msgGCM = null;
 				try {
 					

@@ -1836,7 +1836,7 @@ public class WalletOperation extends BASE{
 			catch(KeyCrypterException returnException) { 
 				throw new WrongWalletPasswordException("Illegal Password");
 			}
-			LOG.info("Decrypted wallet with password: " + password.toString());
+			LOG.info("Decrypted wallet");
 		}
 		else
 			throw new WrongWalletPasswordException("Illegal Password");
@@ -1846,7 +1846,7 @@ public class WalletOperation extends BASE{
 		if(!isWalletEncrypted())
 		if(password.hasPassword()){
 			getWalletWrapper().encryptWallet(password.toString());
-			LOG.info("Encrypted wallet with password: " + password.toString());
+			LOG.info("Encrypted wallet");
 		}
 		else
 			throw new WrongWalletPasswordException("Illegal Password");

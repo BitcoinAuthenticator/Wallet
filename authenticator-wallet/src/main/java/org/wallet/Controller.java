@@ -334,7 +334,6 @@ public class Controller  extends BaseUI{
 		throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
 			@Override
 			public void run() {
-				LOG.info("\n\n\n\nUpdating UI\n\n\n");
 				setReceiveAddresses();
 				setTxPaneHistory();
 				setTxHistoryContent();
@@ -457,7 +456,8 @@ public class Controller  extends BaseUI{
     	Authenticator.getWalletOperation().sendNotificationToAuthenticatorWhenCoinsReceived();
     }
    
-    private void updateUI(){
+    private void updateUI(String reason){
+		LOG.info("\n\n\n\nUpdating UI - " + reason +"\n\n\n");
     	throttledUIUpdater.execute();
     }
     
@@ -469,7 +469,7 @@ public class Controller  extends BaseUI{
     			if(type != AccountModificationType.ActiveAccountChanged )
     				setAccountChoiceBox();
     			
-    			updateUI();
+    			updateUI("Account/s Modified");
     		});
     	}
 		
@@ -534,7 +534,7 @@ public class Controller  extends BaseUI{
 					});
 			}
 			
-			updateUI();
+			updateUI("Balance Changed");
 		}
 
 		@Override
@@ -581,7 +581,7 @@ public class Controller  extends BaseUI{
 			Platform.runLater(new Runnable() { 
 				  @Override
 				  public void run() {
-					  updateUI();
+					  updateUI("address marked used");
 				  }
 				});
 		}
@@ -619,7 +619,7 @@ public class Controller  extends BaseUI{
 		@Override
 		public void onWalletSettingsChange() {
 			Platform.runLater(() -> {
-				updateUI();
+				updateUI("Wallet settings changed");
 				updateAllTransactionOutpointCellsWithNewCurrencies();
 			});
 		}
@@ -1078,7 +1078,7 @@ public class Controller  extends BaseUI{
     @FXML protected void openOneNameDialog(ActionEvent event){
     	Main.instance.overlayUI("OneName.fxml");
     	
-    	updateUI();
+    	updateUI("Onename dialog opened");
     }
     
     @SuppressWarnings("static-access")
@@ -1947,20 +1947,13 @@ public class Controller  extends BaseUI{
     public void changeAccount(String toValue) throws AccountWasNotFoundException{
     	LOG.info("Changing Authenticator account to " + toValue);
     	ATAccount acc = Authenticator.getWalletOperation().getAccountByName(toValue);
-    	if(acc != null){
-    		if(Authenticator.getWalletOperation().setActiveAccount(acc.getIndex()) != null)
-    			updateUIForNewActiveAccount();
-    	}
+    	if(acc != null)
+			Authenticator.getWalletOperation().setActiveAccount(acc.getIndex());
     	else{
     		// mmm .... can it be ?
     	}
     }
-    
-    public void updateUIForNewActiveAccount(){
-    	LOG.info("Updating UI because of Authenticator account change");
-    	updateUI();
-    }
-    
+
     /**
      * Will check if the given password can decrypt the wallet.<br>
      * If wallet is encrypted, at the end of the check will keep the wallet encrypted.<br>
@@ -1968,9 +1961,8 @@ public class Controller  extends BaseUI{
      * 
      * @param password
      * @return
-     * @throws NoWalletPasswordException 
      */
-	private boolean checkIfPasswordDecryptsWallet(BAPassword password){
+	private boolean checkIfPasswordDecryptsWallet(BAPassword password) {
 		if(Authenticator.getWalletOperation().isWalletEncrypted()){
     		try{
     			Authenticator.getWalletOperation().decryptWallet(password);
