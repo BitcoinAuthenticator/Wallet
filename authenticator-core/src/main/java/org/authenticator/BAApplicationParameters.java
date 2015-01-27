@@ -304,7 +304,7 @@ public class BAApplicationParameters{
 	public void setApplicationDataFolderPath(String value){
 		APPLICATION_DATA_FOLDER = value;
 	}
-	private void setAllNecessaryApplicationDataSubFolders() {
+	public void setAllNecessaryApplicationDataSubFolders() {
 		// check the app folder exists 
 		File f1 = new File(getApplicationDataFolderAbsolutePath());
 		if (!(f1.exists() && f1.isDirectory())) {

@@ -156,7 +156,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static boolean deleteDirectory(File directory) {
-	    if(directory.exists()){
+	    if(directory.exists()) {
 	        File[] files = directory.listFiles();
 	        if(null!=files){
 	            for(int i=0; i<files.length; i++) {

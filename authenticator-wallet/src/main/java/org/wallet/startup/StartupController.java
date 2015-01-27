@@ -239,7 +239,10 @@ public class StartupController  extends BaseUI{
 	private String 			  firstAccountName;
 	private WalletAccountType firstAccountType = WalletAccountType.StandardAccount;
 	private boolean 		  shouldCreateNewAccountOnFinish = false;
-	
+	/**
+	 * Backup mode is launching this view from a runnnig wallet just for the backup menu.
+	 */
+	private boolean backupMode;
 	
 	/**
 	 * Will be set before the Stage is launched so we could define the wallet files.
@@ -249,13 +252,12 @@ public class StartupController  extends BaseUI{
 
 	 public void initialize() {
 		 super.initialize(StartupController.class);
-		 if(appParams != null){
-			// set testnet checkbox
-			 if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
+		 if(appParams != null) {
+			 // set testnet checkbox
+			 if (appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET) {
 				 chkTestNet.setSelected(false);
 				 params = MainNetParams.get();
-			 }
-			 else{
+			 } else {
 				 chkTestNet.setSelected(true);
 				 params = TestNet3Params.get();
 			 }
@@ -793,9 +795,8 @@ public class StartupController  extends BaseUI{
 	 //
 	 //		Backup
 	 //
-	 //##############################
-	 
-	 private boolean backupMode;
+	 //#############################
+
 	 public void setBackupMode(Wallet wallet, DeterministicSeed seed){
 		 backupMode = true;
 		 
@@ -1454,11 +1455,11 @@ public class StartupController  extends BaseUI{
 	 //##############################
 	 
 	 private void createWallet(@Nullable DeterministicSeed seed) throws IOException{
+		 makeSureAppDataFolderIsReset();
+
 		 String filePath = appParams.getApplicationDataFolderAbsolutePath() + appParams.getAppName() + ".wallet";
 		 File f = new File(filePath);
-		 if(f.exists()) {
-			 f.delete();
-		 }
+
 		 if(seed == null){
 			//Generate a new Seed
 			 SecureRandom secureRandom = null;
@@ -1523,13 +1524,15 @@ public class StartupController  extends BaseUI{
 		 auth.getWalletOperation().setActiveAccount(acc.getIndex());
 	 }
 	 
-	 /*private DeterministicSeed reconstructSeedFromStringMnemonics(List<String> mnemonic, long creationTimeSeconds){
-		 if(validateSeedInputs(mnemonic, creationTimeSeconds) == false)
-			 return null;
-		 byte[] seed = MnemonicCode.toSeed(mnemonic, "");
-		 DeterministicSeed deterministicSeed = new DeterministicSeed(seed, "", creationTimeSeconds);
-		 return deterministicSeed;
-	 }*/
+	 private void makeSureAppDataFolderIsReset() {
+		 if(!backupMode) {
+			 String path = appParams.getApplicationDataFolderAbsolutePath();
+			 File f = new File(path);
+			 FileUtils.deleteDirectory(f);
+
+			 appParams.setAllNecessaryApplicationDataSubFolders();
+		 }
+	 }
 	 
 	 private boolean validateSeedInputs(List<String> mnemonic, long creationTimeSeconds){
 		 if (mnemonic.size() <= 10)
