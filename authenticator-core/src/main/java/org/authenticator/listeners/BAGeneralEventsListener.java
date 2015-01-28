@@ -10,9 +10,8 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 
 import org.authenticator.network.BANetworkInfo;
-import org.authenticator.operations.OperationsUtils.SignProtocol;
+import org.authenticator.operations.operationsUtils.SignProtocol;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
-import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 

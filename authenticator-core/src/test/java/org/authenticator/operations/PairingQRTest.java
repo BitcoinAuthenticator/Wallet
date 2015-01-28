@@ -4,44 +4,15 @@ import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Mockito.*;
-import org.mockito.stubbing.Answer;
 import org.spongycastle.util.encoders.Hex;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.imageio.ImageIO;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.authenticator.Utils.CryptoUtils;
-import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.hierarchy.BAHierarchy;
-import org.authenticator.operations.OperationsUtils.PairingProtocol;
-import org.authenticator.operations.OperationsUtils.PairingQRCode;
-import org.authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
-import org.bitcoinj.core.Utils;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.crypto.HDKeyDerivation;
-import org.bitcoinj.wallet.DeterministicSeed;
+import org.authenticator.operations.operationsUtils.PairingQRCode;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;

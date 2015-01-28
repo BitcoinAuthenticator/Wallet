@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import org.wallet.Main;
 import org.wallet.utils.BaseUI;
 import org.authenticator.BipSSS.BipSSS.Share;
-import org.authenticator.operations.OperationsUtils.PaperSSSQR;
+import org.authenticator.operations.operationsUtils.PaperSSSQR;
 
 public class PaperSSSController  extends BaseUI{
 	
@@ -19,7 +19,7 @@ public class PaperSSSController  extends BaseUI{
 
 	public static void createAndSavePaperSSS(Share share, long creationTime, File destinationFolder) throws IOException{
 		PaperSSSQR maker = new PaperSSSQR();
-		BufferedImage bi = maker.generatePaperWallet(Main.class, share, creationTime);
+		BufferedImage bi = maker.generatePaperWalletFromTemplate(share, creationTime);
 			
         // save
 		String fileName = "paper share number " + share.shareNumber + ".png";

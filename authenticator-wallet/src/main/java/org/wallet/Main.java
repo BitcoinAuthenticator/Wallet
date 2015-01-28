@@ -510,7 +510,7 @@ public class Main extends BAApplication {
 
         ProgressBar indicator = showUpdateDownloadProgressBar();
 
-        Updater updater = new Updater(updateFxAppParams.getRemoteUpdateBaseURL(), updateFxAppParams.getRemoteUpdateUserAgent(), updateFxAppParams.APP_CODE_VERSION,
+        Updater updater = new Updater(updateFxAppParams.getRemoteUpdateBaseURL(), updateFxAppParams.getRemoteUpdateUserAgent(), updateFxAppParams.APP_VERSION,
                 AppDirectory.dir(), UpdateFX.findCodePath(Main.class),
                 updateFxAppParams.getRemoteUpdateKeys(), 1) {
             @Override
@@ -527,7 +527,7 @@ public class Main extends BAApplication {
         updater.setOnSucceeded(event -> {
             try {
                 UpdateSummary summary = updater.get();
-                if (summary.highestVersion > updateFxAppParams.APP_CODE_VERSION) {
+                if (summary.highestVersion > updateFxAppParams.APP_VERSION) {
                 	System.out.println("Restarting the app to load the new version");
                     if (UpdateFX.getVersionPin(AppDirectory.dir()) == 0)
                         UpdateFX.restartApp();

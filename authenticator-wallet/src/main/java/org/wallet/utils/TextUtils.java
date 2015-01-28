@@ -67,7 +67,7 @@ public class TextUtils {
 	 * @param unit
 	 * @return
 	 */
-	public static double bitcoinUnitToSatoshies(double in, BitcoinUnit unit) {
+	public static long bitcoinUnitToSatoshies(float in, BitcoinUnit unit) {
 		switch(unit) {
 			case BTC:
 				in *= 100000000;
@@ -80,7 +80,7 @@ public class TextUtils {
 				break;
 		}
 		
-		return in;
+		return (long)in;
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class TextUtils {
 	 * @param unit
 	 * @return
 	 */
-	public static double satoshiesToBitcoinUnit(double in, BitcoinUnit unit) {
+	public static float satoshiesToBitcoinUnit(long in, BitcoinUnit unit) {
 		switch(unit) {
 			case BTC:
 				in /= 100000000;

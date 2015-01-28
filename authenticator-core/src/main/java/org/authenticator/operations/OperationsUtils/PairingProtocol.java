@@ -1,4 +1,4 @@
-package org.authenticator.operations.OperationsUtils;
+package org.authenticator.operations.operationsUtils;
 
 import java.io.*;
 import java.math.BigInteger;

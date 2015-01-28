@@ -16,7 +16,7 @@ import org.authenticator.walletCore.utils.BalanceUpdater;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
 import org.authenticator.network.BANetworkInfo;
 import org.authenticator.operations.BAOperation;
-import org.authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
+import org.authenticator.operations.operationsUtils.SignProtocol.AuthenticatorAnswerType;
 import org.authenticator.operations.listeners.OperationListenerAdapter;
 import org.authenticator.protobuf.ProtoSettings;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
@@ -457,7 +457,7 @@ public class Controller  extends BaseUI{
     }
    
     private void updateUI(String reason){
-		LOG.info("\n\n\n\nUpdating UI - " + reason +"\n\n\n");
+		LOG.info("Updating UI - " + reason);
     	throttledUIUpdater.execute();
     }
     
@@ -1137,20 +1137,8 @@ public class Controller  extends BaseUI{
     
     private void setFeeTipText() {    	 
     	LOG.info("Updating fee text box");
-    	double fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
-    	BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-    	int decimals = Authenticator.getWalletOperation().getDecimalPointFromSettings();
-    	double printableFee = TextUtils.satoshiesToBitcoinUnit(fee, u);
-    	String strFee = String.format( "%." + decimals + "f", printableFee );
-    	txFee.setPromptText("Fee: " + strFee + " " + TextUtils.getAbbreviatedUnit(u));
-    	
-    	// set unit name
-    	BitcoinUnit unit = Authenticator
-    			.getWalletOperation()
-    			.getAccountUnitFromSettings();
-		String unitStr = unit.getValueDescriptor()
-    			.getOptions()
-    			.getExtension(ProtoSettings.bitcoinUnitName);
+    	Coin fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
+    	txFee.setPromptText("Fee: " + fee.toFriendlyString());
     }
     
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {
@@ -1188,7 +1176,7 @@ public class Controller  extends BaseUI{
     	Coin cFee = Coin.ZERO;
 		if (txFee.getText().length() == 0){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
         else {
-        	double fee = Double.parseDouble(txFee.getText());
+        	float fee = Float.parseFloat(txFee.getText());
         	fee = TextUtils.bitcoinUnitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
         	cFee = Coin.valueOf((long)fee);
         }
@@ -1231,9 +1219,11 @@ public class Controller  extends BaseUI{
         	try{
 //        		get fee
             	Coin cFee = Coin.ZERO;
-        		if (txFee.getText().length() == 0){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
+        		if (txFee.getText().length() == 0) {
+					cFee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
+				}
                 else {
-                	double fee = Double.parseDouble(txFee.getText());
+                	float fee = Float.parseFloat(txFee.getText());
                 	fee = TextUtils.bitcoinUnitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
                 	cFee = Coin.valueOf((long)fee);
                 }
@@ -1532,8 +1522,7 @@ public class Controller  extends BaseUI{
         btnCopy.setFont(new Font("Arial", 18));
         Tooltip.install(btnCopy, new Tooltip("Copy address to clipboard"));
         btnCopy.getStyleClass().add("custom-button");
-        btnCopy.setPrefSize(10, 10);
-        AwesomeDude.setIcon(btnCopy, AwesomeIcon.COPY);
+		btnCopy.setGraphic(AwesomeDude.createIconLabel(AwesomeIcon.COPY, "13"));
         btnCopy.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
@@ -1614,10 +1603,9 @@ public class Controller  extends BaseUI{
         Button btnKey = new Button();
         btnKey.setFont(new Font("Arial", 18));
         Tooltip.install(btnKey, new Tooltip("Copy public key to clipboard"));
-        ReceiveHBox.setMargin(btnKey, new Insets(14,0,0,3));
+        ReceiveHBox.setMargin(btnKey, new Insets(14, 0, 0, 3));
         btnKey.getStyleClass().add("custom-button");
-        btnKey.setPrefSize(10, 10);
-        AwesomeDude.setIcon(btnKey, AwesomeIcon.KEY);
+		btnKey.setGraphic(AwesomeDude.createIconLabel(AwesomeIcon.KEY, "13"));
         btnKey.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {

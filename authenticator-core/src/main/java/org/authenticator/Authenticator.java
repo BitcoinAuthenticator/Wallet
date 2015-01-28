@@ -23,7 +23,7 @@ import org.authenticator.network.BANetworkInfo;
 import org.authenticator.network.TCPListener;
 import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.OperationsFactory;
-import org.authenticator.operations.OperationsUtils.SignProtocol;
+import org.authenticator.operations.operationsUtils.SignProtocol;
 import org.authenticator.operations.listeners.OperationListener;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;

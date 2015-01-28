@@ -1,6 +1,5 @@
-package org.authenticator.operations.OperationsUtils;
+package org.authenticator.operations.operationsUtils;
 
-import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
@@ -10,39 +9,38 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-
 import javax.imageio.ImageIO;
-
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
-
 import org.authenticator.BASE;
-import org.authenticator.Utils.EncodingUtils;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
-import org.bitcoinj.crypto.MnemonicException.MnemonicChecksumException;
-import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
-import org.bitcoinj.crypto.MnemonicException.MnemonicWordException;
 import org.bitcoinj.wallet.DeterministicSeed;
-
 import com.google.common.base.Joiner;
 
 import static org.bitcoinj.core.Utils.HEX;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PaperWalletQR extends BASE{
 	public PaperWalletQR(){
 		super(PaperWalletQR.class);
 	}
-	
-	public BufferedImage generatePaperWallet(Class<? extends Application> c, String mnemonic, DeterministicSeed seed, long creationTime) throws IOException{
+
+	public BufferedImage generatePaperWalletFromTemplate(DeterministicSeed seed) throws IOException {
+		URL url = getClass().getResource("/org/authenticator/backup/PaperWallet.png");
+		return generatePaperWallet(url, seed);
+	}
+
+	public BufferedImage generatePaperWallet(URL paperWalletTemplateURL,DeterministicSeed seed) throws IOException{
+		String mnemonic = Joiner.on(" ").join(seed.getMnemonicCode());
+		long creationTime = seed.getCreationTimeSeconds();
 		Image qrSeed = createQRSeedImage(seed, creationTime);
 		Image qrMPubKey = createMnemonicStringImage(mnemonic, seed);
-		return completePaperWallet(c, mnemonic, qrSeed, qrMPubKey);
+		return completePaperWallet(paperWalletTemplateURL, mnemonic, qrSeed, qrMPubKey);
 	}
 	
 	@SuppressWarnings("restriction")
@@ -131,9 +129,9 @@ public class PaperWalletQR extends BASE{
         return qrMPubKey;
 	}
 	
-	private BufferedImage completePaperWallet(Class<? extends Application> cls, String mnemonic, Image qrSeed, Image qrMPubKey) throws IOException{
-        URL location = cls.getResource("/wallettemplate/startup/PaperWallet.png");
-        BufferedImage a = ImageIO.read(location);
+	private BufferedImage completePaperWallet(URL paperWalletTemplateURL, String mnemonic, Image qrSeed, Image qrMPubKey) throws IOException{
+		checkNotNull(paperWalletTemplateURL);
+		BufferedImage a = ImageIO.read(paperWalletTemplateURL);
         BufferedImage b = SwingFXUtils.fromFXImage(qrSeed, null);
         BufferedImage c = SwingFXUtils.fromFXImage(qrMPubKey, null);
         BufferedImage d = new BufferedImage(a.getWidth(), a.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -142,7 +140,7 @@ public class PaperWalletQR extends BASE{
         int x = (int) (qrSeed.getWidth()*.055), y = (int) (qrSeed.getHeight()*.055), w = (int) (qrSeed.getWidth()*.90), h = (int) (qrSeed.getHeight()*.90);
         BufferedImage b2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         b2.getGraphics().drawImage(b, 0, 0, w, h, x, y, x + w, y + h, null);
-        x = x = (int) (qrMPubKey.getWidth()*.05); y = (int) (qrMPubKey.getHeight()*.05); w = (int) (qrMPubKey.getWidth()*.9); h = (int) (qrMPubKey.getHeight()*.9);
+        y = (int) (qrMPubKey.getHeight()*.05); w = (int) (qrMPubKey.getWidth()*.9); h = (int) (qrMPubKey.getHeight()*.9);
         BufferedImage c2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         c2.getGraphics().drawImage(c, 0, 0, w, h, x, y, x + w, y + h, null);
         

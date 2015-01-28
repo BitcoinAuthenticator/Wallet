@@ -1,4 +1,4 @@
-package org.authenticator.operations.OperationsUtils;
+package org.authenticator.operations.operationsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.walletCore.exceptions.UnableToCompleteTransactionException;
 import org.authenticator.walletCore.utils.BAPassword;
-import org.authenticator.operations.OperationsUtils.CommunicationObjects.SignMessage;
+import org.authenticator.operations.operationsUtils.CommunicationObjects.SignMessage;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import org.authenticator.protobuf.ProtoConfig.ATOperationType;

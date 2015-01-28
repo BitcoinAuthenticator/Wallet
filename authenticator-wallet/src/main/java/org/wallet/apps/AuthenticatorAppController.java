@@ -18,8 +18,8 @@ import javafx.util.Duration;
 import org.authenticator.Authenticator;
 import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.OperationsFactory;
-import org.authenticator.operations.OperationsUtils.PairingProtocol.PairingStage;
-import org.authenticator.operations.OperationsUtils.PairingProtocol.PairingStageUpdater;
+import org.authenticator.operations.operationsUtils.PairingProtocol.PairingStage;
+import org.authenticator.operations.operationsUtils.PairingProtocol.PairingStageUpdater;
 import org.authenticator.operations.listeners.OperationListenerAdapter;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 

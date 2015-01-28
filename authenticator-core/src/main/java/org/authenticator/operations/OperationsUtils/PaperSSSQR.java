@@ -1,4 +1,4 @@
-package org.authenticator.operations.OperationsUtils;
+package org.authenticator.operations.operationsUtils;
 
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
@@ -10,42 +10,34 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 
-import org.authenticator.Authenticator;
 import org.authenticator.BASE;
 import org.authenticator.BipSSS.BipSSS.Share;
-import org.authenticator.Utils.EncodingUtils;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.crypto.HDKeyDerivation;
-import org.bitcoinj.crypto.MnemonicCode;
-import org.bitcoinj.crypto.MnemonicException.MnemonicChecksumException;
-import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
-import org.bitcoinj.crypto.MnemonicException.MnemonicWordException;
-import org.bitcoinj.wallet.DeterministicSeed;
 
-import com.google.common.base.Joiner;
-
-import static org.bitcoinj.core.Utils.HEX;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PaperSSSQR extends BASE{
 	public PaperSSSQR(){
 		super(PaperSSSQR.class);
 	}
-	
-	public BufferedImage generatePaperWallet(Class<? extends Application> c, Share share, long creationTime) throws IOException{
+
+	public BufferedImage generatePaperWalletFromTemplate(Share share, long creationTime) throws IOException {
+		URL url = getClass().getResource("/org/authenticator/backup/PaperWalletSSS.png");
+		return generatePaperWallet(url, share, creationTime);
+	}
+
+	public BufferedImage generatePaperWallet(URL paperWalletTemplateURL, Share share, long creationTime) throws IOException {
 		Image qrSSS = createQRSSSImage(share, creationTime);
-		return completePaperWallet(c, share.toString(), qrSSS);
+		return completePaperWallet(paperWalletTemplateURL, share.toString(), qrSSS);
 	}
 	
 	@SuppressWarnings("restriction")
@@ -80,9 +72,9 @@ public class PaperSSSQR extends BASE{
 	
 	
 	
-	private BufferedImage completePaperWallet(Class<? extends Application> c, String pieceHex, Image qrSSS) throws IOException{
-        URL location = c.getResource("/wallettemplate/startup/PaperWalletSSS.png");
-        BufferedImage a = ImageIO.read(location);
+	private BufferedImage completePaperWallet(URL paperWalletTemplateURL, String pieceHex, Image qrSSS) throws IOException{
+		checkNotNull(paperWalletTemplateURL);
+		BufferedImage a = ImageIO.read(paperWalletTemplateURL);
         BufferedImage b = SwingFXUtils.fromFXImage(qrSSS, null);
         BufferedImage d = new BufferedImage(a.getWidth(), a.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		 

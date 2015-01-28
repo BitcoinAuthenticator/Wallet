@@ -1,4 +1,4 @@
-package org.authenticator.operations.OperationsUtils.CommunicationObjects;
+package org.authenticator.operations.operationsUtils.CommunicationObjects;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -11,8 +11,6 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
-
-import org.authenticator.Utils.EncodingUtils;
 
 public class SignMessage  extends JSONObject{
 	private static final long serialVersionUID = 1L;

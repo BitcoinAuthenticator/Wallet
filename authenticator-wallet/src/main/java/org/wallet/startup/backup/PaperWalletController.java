@@ -19,8 +19,8 @@ import javax.imageio.ImageIO;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
-import org.authenticator.operations.OperationsUtils.PaperWalletQR;
 
+import org.authenticator.operations.operationsUtils.PaperWalletQR;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -37,11 +37,9 @@ public class PaperWalletController  extends BaseUI{
 	@SuppressWarnings("restriction")
 	public static void createPaperWallet(String mnemonic, DeterministicSeed seed, long creationTime) throws IOException{
 		PaperWalletQR maker = new PaperWalletQR();
-		BufferedImage bi = maker.generatePaperWallet(Main.class, mnemonic, seed, creationTime);
+		BufferedImage bi = maker.generatePaperWalletFromTemplate(seed);
 			
         // save
-        String filepath = new java.io.File( "." ).getCanonicalPath() + "/" + "paperwallet" + ".png";
-		File wallet = new File(filepath);
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Save Paper Wallet");
 		fileChooser.setInitialFileName("paperwallet.png");

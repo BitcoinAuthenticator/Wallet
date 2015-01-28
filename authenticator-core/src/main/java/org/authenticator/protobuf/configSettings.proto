@@ -24,7 +24,7 @@ message ConfigSettings{
 	optional int32 			 decimalPoints 						= 2 [default = 4];
 	optional string 		 localCurrencySymbol				= 3 [default = "USD"];
 	optional Languages 		 language							= 4 [default = English];
-	optional int32 			 defaultFee							= 5 [default = 10000]; // in satoshies
+	optional int64 			 defaultFee							= 5 [default = 10000]; // long, in satoshies
 	
 	// flags
 	optional bool			 TOR								= 6 [default = true];

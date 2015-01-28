@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import javafx.scene.image.Image;
 import org.authenticator.network.BANetworkInfo;
-import org.authenticator.operations.OperationsUtils.SignProtocol.AuthenticatorAnswerType;
+import org.authenticator.operations.operationsUtils.SignProtocol.AuthenticatorAnswerType;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;

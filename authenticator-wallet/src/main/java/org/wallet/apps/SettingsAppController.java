@@ -121,7 +121,7 @@ public class SettingsAppController extends BaseUI{
 	private boolean TrustedPeer;
 	private String strFee;
 	private double falsePositiveRate;
-	private double fee;
+	private Coin fee;
 
 	// Called by FXMLLoader
     @SuppressWarnings("restriction")
@@ -168,23 +168,20 @@ public class SettingsAppController extends BaseUI{
   	    });
     	
     	fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
-    	Coin c = Coin.valueOf((long)fee);				    	
-    	String strFee = TextUtils.coinAmountTextDisplay(c, unit);
-    	txFee.setPromptText(strFee);
+    	txFee.setPromptText(fee.toFriendlyString());
        	txFee.focusedProperty().addListener(new ChangeListener<Boolean>()
     			{
 					@Override
 					public void changed(ObservableValue<? extends Boolean> arg0,Boolean arg1, Boolean arg2) {
 						try {
-							fee = Double.parseDouble(txFee.getText());
-							fee = TextUtils.bitcoinUnitToSatoshies(fee, unit);
+							float inFraction = Float.parseFloat(txFee.getText());
+							fee = Coin.valueOf(TextUtils.bitcoinUnitToSatoshies(inFraction, unit));
 						}
 						catch(Exception e) {
 							fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
 						}
 						
-						Coin c = Coin.valueOf((long)fee);				    	
-				    	String strFee = TextUtils.coinAmountTextDisplay(c, unit);
+				    	String strFee = TextUtils.coinAmountTextDisplay(fee, unit);
 				    	txFee.clear();
 				    	txFee.setPromptText(strFee);
 				    	
@@ -197,7 +194,6 @@ public class SettingsAppController extends BaseUI{
     	cbBitcoinUnit.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
     	      @Override
     	      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-    	    		Coin c = Coin.valueOf((long)fee);
     	    	  	if ((Integer) number2 == 0)
     	    	  		unit = BitcoinUnit.BTC;
     	    		else if ((Integer) number2 == 1)
@@ -205,7 +201,7 @@ public class SettingsAppController extends BaseUI{
     	    		else
     	    			unit = BitcoinUnit.Microbits;
     	    	  	
-    	    	  	txFee.setPromptText("Fee: " + TextUtils.coinAmountTextDisplay(c, unit) + " " + TextUtils.getAbbreviatedUnit(unit));
+    	    	  	txFee.setPromptText("Fee: " + TextUtils.coinAmountTextDisplay(fee, unit) + " " + TextUtils.getAbbreviatedUnit(unit));
     	    	  	
     	    	  	setSaveButtonDisabled(false);
     	      }
@@ -408,37 +404,37 @@ public class SettingsAppController extends BaseUI{
     
 	public void save(ActionEvent event) throws CannotWriteToConfigurationFileException {
 		setSaveButtonDisabled(true);
-		
+
 		//String strV = (String)cbBitcoinUnit.getSelectionModel().getSelectedItem();
 		EnumValueDescriptor desc = BitcoinUnit
 				.getDescriptor()
 				.findValueByNumber(cbBitcoinUnit.getSelectionModel().getSelectedIndex());
 		BitcoinUnit carmodel =   BitcoinUnit.valueOf(desc);
 		Authenticator.getWalletOperation().setAccountUnitInSettings(carmodel);
-		
-		Authenticator.getWalletOperation().setDefaultFeeInSettings((int)fee);
-		
+
+		Authenticator.getWalletOperation().setDefaultFeeInSettings(fee.getValue());
+
 		Authenticator.getWalletOperation().setDecimalPointInSettings(intDecimal);
-		
+
 		Authenticator.getWalletOperation().setLocalCurrencySymbolInSettings(strCurrency);
-		
+
 		Authenticator.getWalletOperation().setLanguageInSettings(Languages.English);
-		
+
 		Authenticator.getWalletOperation().setIsUsingTORInSettings(useTor);
-		
+
 		Authenticator.getWalletOperation().setIsConnectingToLocalHostInSettings(localHost);
-		
+
 		if(Authenticator.getWalletOperation().getIsPortForwarding() != portForwarding)
-			 Platform.runLater(() -> { 
+			 Platform.runLater(() -> {
 				 informationalAlert("Important !",
 							"Please restart your wallet so the settings will take effect");
 			 } );
 		Authenticator.getWalletOperation().setIsPortForwarding(portForwarding);
-		
+
 		Authenticator.getWalletOperation().setIsConnectingToTrustedPeerInSettings(TrustedPeer, txPeerIP.getText());
 
 		Authenticator.getWalletOperation().setBloomFilterFalsePositiveRateInSettings(falsePositiveRate);
-		
+
 		Authenticator.fireOnWalletSettingsChange();
     }
 	

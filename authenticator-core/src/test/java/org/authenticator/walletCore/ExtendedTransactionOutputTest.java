@@ -316,7 +316,7 @@ public class ExtendedTransactionOutputTest {
             e.printStackTrace();
             assertTrue(false);
         }
-        URL url = Resources.getResource("org/wallet/apps/blockchain-info-usd-price-chart-data.json");
+        URL url = Resources.getResource("org/authenticator/walletCore/blockchain-info-usd-price-chart-data.json");
         String rawData = Resources.toString(url, Charsets.UTF_8);
         Exchange ex = new Exchange("USD", j, rawData);
 

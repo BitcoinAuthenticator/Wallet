@@ -108,13 +108,13 @@ public class settingsDB extends dbBase{
 		return s.getLanguage();
 	}
 	
-	public void setDefaultFee(int value) throws IOException{
+	public void setDefaultFee(long value) throws IOException{
 		ConfigSettings.Builder s = getSettingsBuilder();
 		s.setDefaultFee(value);
 		writeSettingsFile(s);
 	}
 	
-	public int getDefaultFee() throws IOException{
+	public long getDefaultFee() throws IOException{
 		ConfigSettings.Builder s = getSettingsBuilder();
 		return s.getDefaultFee();
 	}

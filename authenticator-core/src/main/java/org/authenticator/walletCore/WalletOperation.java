@@ -2152,16 +2152,27 @@ public class WalletOperation extends BASE{
 			throw new CannotWriteToConfigurationFileException(e.getMessage());
 		}
 	}
-	
-	public double getDefaultFeeFromSettings() {
+
+	/**
+	 * Will return {@link org.bitcoinj.core.Coin Coin} of the default Tx fee for this wallet.<br>
+	 * If extracting the default fee is except, will return {@link org.bitcoinj.core.Transaction#REFERENCE_DEFAULT_MIN_TX_FEE REFERENCE_DEFAULT_MIN_TX_FEE}
+	 * @return
+	 */
+	public Coin getDefaultFeeFromSettings() {
 		try {
-			return settingsFile.getDefaultFee();
+			return Coin.valueOf(settingsFile.getDefaultFee());
 		} catch (Exception e) {
-			return 0.0;
+			e.printStackTrace();
+			return Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
 		}
 	}
-	
-	public void setDefaultFeeInSettings(int value) throws CannotWriteToConfigurationFileException {
+
+	/**
+	 * pass the default fee in {@link org.bitcoinj.core.Coin#SATOSHI satoshies} satoshies
+	 * @param value
+	 * @throws CannotWriteToConfigurationFileException
+	 */
+	public void setDefaultFeeInSettings(long value) throws CannotWriteToConfigurationFileException {
 		try {
 			settingsFile.setDefaultFee(value);
 		} catch (IOException e) {

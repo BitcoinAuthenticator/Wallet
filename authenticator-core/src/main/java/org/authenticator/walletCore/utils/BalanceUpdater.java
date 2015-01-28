@@ -21,7 +21,6 @@ import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileExc
 
 public class BalanceUpdater {
 	static public void updateBalaceNonBlocking(WalletOperation walletOpeartion, Wallet wallet, Runnable completionBlock) {
-		int s = 2;
 		new Thread(){
 			@Override
 			public void run() {

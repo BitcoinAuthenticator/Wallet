@@ -219,21 +219,21 @@ public final class ProtoSettings {
     org.authenticator.protobuf.ProtoSettings.Languages getLanguage();
 
     /**
-     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int64 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
-     * in satoshies
+     * long, in satoshies
      * </pre>
      */
     boolean hasDefaultFee();
     /**
-     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int64 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
-     * in satoshies
+     * long, in satoshies
      * </pre>
      */
-    int getDefaultFee();
+    long getDefaultFee();
 
     /**
      * <code>optional bool TOR = 6 [default = true];</code>
@@ -389,7 +389,7 @@ public final class ProtoSettings {
             }
             case 40: {
               bitField0_ |= 0x00000010;
-              defaultFee_ = input.readInt32();
+              defaultFee_ = input.readInt64();
               break;
             }
             case 48: {
@@ -551,25 +551,25 @@ public final class ProtoSettings {
     }
 
     public static final int DEFAULTFEE_FIELD_NUMBER = 5;
-    private int defaultFee_;
+    private long defaultFee_;
     /**
-     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int64 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
-     * in satoshies
+     * long, in satoshies
      * </pre>
      */
     public boolean hasDefaultFee() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+     * <code>optional int64 defaultFee = 5 [default = 10000];</code>
      *
      * <pre>
-     * in satoshies
+     * long, in satoshies
      * </pre>
      */
-    public int getDefaultFee() {
+    public long getDefaultFee() {
       return defaultFee_;
     }
 
@@ -703,7 +703,7 @@ public final class ProtoSettings {
       decimalPoints_ = 4;
       localCurrencySymbol_ = "USD";
       language_ = org.authenticator.protobuf.ProtoSettings.Languages.English;
-      defaultFee_ = 10000;
+      defaultFee_ = 10000L;
       tOR_ = true;
       connectOnLocalHost_ = false;
       connectToTrustedPeer_ = false;
@@ -737,7 +737,7 @@ public final class ProtoSettings {
         output.writeEnum(4, language_.getNumber());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt32(5, defaultFee_);
+        output.writeInt64(5, defaultFee_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBool(6, tOR_);
@@ -784,7 +784,7 @@ public final class ProtoSettings {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, defaultFee_);
+          .computeInt64Size(5, defaultFee_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
@@ -935,7 +935,7 @@ public final class ProtoSettings {
         bitField0_ = (bitField0_ & ~0x00000004);
         language_ = org.authenticator.protobuf.ProtoSettings.Languages.English;
         bitField0_ = (bitField0_ & ~0x00000008);
-        defaultFee_ = 10000;
+        defaultFee_ = 10000L;
         bitField0_ = (bitField0_ & ~0x00000010);
         tOR_ = true;
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -1279,50 +1279,50 @@ public final class ProtoSettings {
         return this;
       }
 
-      private int defaultFee_ = 10000;
+      private long defaultFee_ = 10000L;
       /**
-       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int64 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
-       * in satoshies
+       * long, in satoshies
        * </pre>
        */
       public boolean hasDefaultFee() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int64 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
-       * in satoshies
+       * long, in satoshies
        * </pre>
        */
-      public int getDefaultFee() {
+      public long getDefaultFee() {
         return defaultFee_;
       }
       /**
-       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int64 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
-       * in satoshies
+       * long, in satoshies
        * </pre>
        */
-      public Builder setDefaultFee(int value) {
+      public Builder setDefaultFee(long value) {
         bitField0_ |= 0x00000010;
         defaultFee_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 defaultFee = 5 [default = 10000];</code>
+       * <code>optional int64 defaultFee = 5 [default = 10000];</code>
        *
        * <pre>
-       * in satoshies
+       * long, in satoshies
        * </pre>
        */
       public Builder clearDefaultFee() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        defaultFee_ = 10000;
+        defaultFee_ = 10000L;
         onChanged();
         return this;
       }
@@ -1626,7 +1626,7 @@ public final class ProtoSettings {
       "nUnit:\003BTC\022\030\n\rdecimalPoints\030\002 \001(\005:\0014\022 \n\023" +
       "localCurrencySymbol\030\003 \001(\t:\003USD\022@\n\010langua" +
       "ge\030\004 \001(\0162%.org.authenticator.protobuf.La" +
-      "nguages:\007English\022\031\n\ndefaultFee\030\005 \001(\005:\00510" +
+      "nguages:\007English\022\031\n\ndefaultFee\030\005 \001(\003:\00510" +
       "000\022\021\n\003TOR\030\006 \001(\010:\004true\022!\n\022connectOnLocal" +
       "Host\030\007 \001(\010:\005false\022#\n\024connectToTrustedPee",
       "r\030\010 \001(\010:\005false\022\035\n\016portForwarding\030\t \001(\010:\005" +
