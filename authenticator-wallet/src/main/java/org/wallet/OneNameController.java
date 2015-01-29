@@ -161,7 +161,7 @@ public class OneNameController  extends BaseUI{
 		
 		ArrayList<Object> l = new ArrayList<Object>();
 		l.add("register");
-		Main.instance.overlayUI("OneNameApp.fxml", l);
+		Main.instance.overlayUI("apps/OneNameApp.fxml", l);
 	}
 	
 	@FXML protected void OKpressed(){

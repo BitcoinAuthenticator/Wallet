@@ -160,7 +160,7 @@ public class Main extends BAApplication {
     	/**
     	 * If we get returned params from startup, use that
     	 */
-    	BAApplicationParameters AppParams = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
+    	BAApplicationParameters appParams = returnedParamsFromSetup == null? BAApplication.ApplicationParams: returnedParamsFromSetup;
     	
     	// Make log output concise.
         BriefLogFormatter.init();
@@ -168,19 +168,19 @@ public class Main extends BAApplication {
 
         NetworkParameters np = null;
         InputStream inCheckpint = null;
-        if(AppParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
+        if(appParams.getBitcoinNetworkType() == NetworkType.MAIN_NET){
         	np = MainNetParams.get();        	
 
         	inCheckpint = Main.class.getResourceAsStream("checkpoints");
         }
-        else if(AppParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
+        else if(appParams.getBitcoinNetworkType() == NetworkType.TEST_NET){
         	np = TestNet3Params.get();
         	
         	inCheckpint = Main.class.getResourceAsStream("checkpoints.testnet");
         }
 
         
-        bitcoin = new WalletAppKit(np, new File(AppParams.getApplicationDataFolderAbsolutePath()), AppParams.getAppName()){
+        bitcoin = new WalletAppKit(np, new File(appParams.getApplicationDataFolderAbsolutePath()), appParams.getAppName()){
             @Override
             protected void onSetupCompleted() {
                 // Don't make the user wait for confirmations for now, as the intention is they're sending it
@@ -188,15 +188,16 @@ public class Main extends BAApplication {
             	bitcoin.peerGroup().setMaxConnections(11);
                 bitcoin.wallet().setKeychainLookaheadSize(0);
                 bitcoin.wallet().allowSpendingUnconfirmedTransactions();
-                bitcoin.peerGroup().setBloomFilterFalsePositiveRate(AppParams.getBloomFilterFalsePositiveRate());
-                bitcoin.peerGroup().getTorClient().enableSocksListener();
+                bitcoin.peerGroup().setBloomFilterFalsePositiveRate(appParams.getBloomFilterFalsePositiveRate());
+                if(appParams.getShouldConnectWithTOR())
+                    bitcoin.peerGroup().getTorClient().enableSocksListener();
                 System.out.println(bitcoin.wallet());
                 Platform.runLater(controller::onBitcoinSetup);
                 
                 /**
                  * Authenticator Setup
                  */
-                startAuthenticator(AppParams);
+                startAuthenticator(appParams);
             }
         };
         
@@ -216,15 +217,15 @@ public class Main extends BAApplication {
     		throw new CouldNotIinitializeWalletException("Could Not load Checkpoints");
         bitcoin.setCheckpoints(inCheckpint);
         
-        if(AppParams.getShouldConnectWithTOR())
+        if(appParams.getShouldConnectWithTOR())
         	bitcoin.useTor();
         
-        if(AppParams.getShouldConnectToLocalHost())
+        if(appParams.getShouldConnectToLocalHost())
         	bitcoin.connectToLocalHost();
         
-        if(AppParams.getShouldConnectToTrustedPeer()) {
+        if(appParams.getShouldConnectToTrustedPeer()) {
         	try {
-				bitcoin.setPeerNodes(new PeerAddress[] { new PeerAddress(InetAddress.getByName(AppParams.getTrustedPeer())) });
+				bitcoin.setPeerNodes(new PeerAddress[] { new PeerAddress(InetAddress.getByName(appParams.getTrustedPeer())) });
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
@@ -234,7 +235,7 @@ public class Main extends BAApplication {
         bitcoin.setAutoSave(true);
         bitcoin.setAutoStop(true);
         bitcoin.setBlockingStartup(false)
-               .setUserAgent(AppParams.getAppName(), "1.0");
+               .setUserAgent(appParams.getAppName(), "1.0");
         bitcoin.startAsync();
         
     	

@@ -28,7 +28,7 @@ public class OneName {
 	public static void getOneNameData(String onename, WalletOperation wallet, OneNameListener listener) {
 		try {
 			System.out.println("Downloading OneName profile data: " + onename);
-			EncodingUtils.readFromUrl("https://onename.io/" + onename + ".json", new AsyncCompletionHandler<Response>(){
+			EncodingUtils.readFromUrl("https://onename.com/" + onename + ".json", new AsyncCompletionHandler<Response>(){
 				@Override
 				public Response onCompleted(Response arg0) throws Exception {
 					try {
