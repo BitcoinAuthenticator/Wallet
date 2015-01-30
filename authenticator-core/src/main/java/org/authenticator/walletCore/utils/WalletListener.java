@@ -76,13 +76,13 @@ public class WalletListener extends AbstractWalletEventListener {
 	private void notifyBalanceUpdate(Wallet wallet, Transaction tx){
 		if(tx != null){
 			if(tx.getValueSentToMe(wallet).signum() > 0){
-	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins, tx.getConfidence().getConfidenceType());
+	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.ReceivedCoins);
 	    	}
 			else if(tx.getValueSentFromMe(wallet).signum() > 0){
-	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins, tx.getConfidence().getConfidenceType());
+	    		Authenticator.fireOnBalanceChanged(tx, HowBalanceChanged.SentCoins);
 	    	}
 		}
 		else
-			Authenticator.fireOnBalanceChanged(null, null, null);
+			Authenticator.fireOnBalanceChanged(null, HowBalanceChanged.WalletChange);
     }
 }

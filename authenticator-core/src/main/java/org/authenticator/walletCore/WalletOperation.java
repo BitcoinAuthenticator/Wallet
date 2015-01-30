@@ -1594,7 +1594,7 @@ public class WalletOperation extends BASE{
 		if(eventsAdapterForCoinsReceivedNotificaiton == null) {
 			eventsAdapterForCoinsReceivedNotificaiton = new BAGeneralEventsAdapter() {
 				@Override
-				public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+				public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged) {
 					if(CoinsReceivedNotificationSender.checkIfNotificationShouldBeSentToPairedDeviceOnReceivedCoins(WalletOperation.this, tx))
 					{ // send
 						try {

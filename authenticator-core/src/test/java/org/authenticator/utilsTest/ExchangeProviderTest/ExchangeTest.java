@@ -8,6 +8,7 @@ import org.authenticator.Utils.ExchangeProvider.Currency;
 import org.authenticator.Utils.ExchangeProvider.Exchange;
 import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.NetworkParameters;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by alonmuroch on 1/18/15.
@@ -32,10 +34,11 @@ public class ExchangeTest {
         }
 
         Exchange ex = new Exchange("USD", j);
-        assertTrue(ex.getCurrencyCode().equals("USD"));
-        assertTrue(ex.getLatestExchangeRate() == Float.valueOf("354.2"));
-        assertTrue(ex.convertToCurrency(Coin.COIN).compareTo(Currency.valueOf(354, 20)) == 0);
-        assertTrue(ex.convertToBitcoin(Currency.valueOf(354, 20)).compareTo(Coin.valueOf(99999690)) == 0); // because of type casting
+        assertEquals(ex.getCurrencyCode(), "USD");
+        assertTrue(ex.getLatestExchangeRate() == Float.valueOf("354.2").floatValue());
+
+        assertEquals(ex.convertToCurrency(Coin.COIN).getValue(), Currency.valueOf(354, 20).getValue());
+        assertEquals(ex.convertToBitcoin(Currency.valueOf(354, 20)).getValue(), Coin.valueOf(100056192).getValue()); // because of type casting
     }
 
     @Test
@@ -71,5 +74,71 @@ public class ExchangeTest {
         assertTrue(ex.getExchangeRate((long) 1421237622)    == (float)258.55286);
         assertTrue(ex.getExchangeRate((long) 1421337621)    == (float)258.55286);
         assertTrue(ex.getExchangeRate((long) 1421237721)    == (float)258.55286);
+    }
+
+    @Test
+    public void convertToCurrencyTest() {
+        try {
+            JSONObject j = new JSONObject();
+            try {
+                j.put("last", 100.0);
+                j.put("timestamp", "Sun, 18 Jan 2015 13:53:39 -0000");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                assertTrue(false);
+            }
+            Exchange ex = new Exchange("USD", j, null);
+
+            // less than 1 BTC
+            assertEquals(ex.convertToCurrency(Coin.valueOf(100000)).getValue(), Currency.valueOf(10).getValue());
+            assertEquals(ex.convertToCurrency(Coin.valueOf(200000)).getValue(), Currency.valueOf(20).getValue());
+            assertEquals(ex.convertToCurrency(Coin.valueOf(300000)).getValue(), Currency.valueOf(30).getValue());
+
+            // one BTC
+            assertEquals(ex.convertToCurrency(Coin.COIN).getValue(), Currency.valueOf(10000).getValue());
+
+            // more than 1 BTC
+            assertEquals(ex.convertToCurrency(Coin.valueOf(Coin.COIN.getValue() + 100000)).getValue(),  Currency.valueOf(10010).getValue());
+            assertEquals(ex.convertToCurrency(Coin.valueOf(Coin.COIN.getValue() + 200000)).getValue(), Currency.valueOf(10020).getValue());
+            assertEquals(ex.convertToCurrency(Coin.valueOf(Coin.COIN.getValue() + 300000)).getValue(), Currency.valueOf(10030).getValue());
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+    }
+
+    @Test
+    public void convertToBitcoinTest() {
+        try {
+            JSONObject j = new JSONObject();
+            try {
+                j.put("last", 100.0);
+                j.put("timestamp", "Sun, 18 Jan 2015 13:53:39 -0000");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                assertTrue(false);
+            }
+            Exchange ex = new Exchange("USD", j, null);
+
+            // less than 1 BTC
+            assertEquals(ex.convertToBitcoin(Currency.valueOf(10)).getValue(),Coin.valueOf(100000).getValue());
+            assertEquals(ex.convertToBitcoin(Currency.valueOf(20)).getValue(), Coin.valueOf(200000).getValue());
+            assertEquals(ex.convertToBitcoin(Currency.valueOf(30)).getValue(), Coin.valueOf(300000).getValue());
+
+            // one BTC
+            assertEquals(ex.convertToBitcoin(Currency.valueOf(10000)).getValue(), Coin.COIN.getValue());
+
+            // more than 1 BTC
+            assertEquals(ex.convertToBitcoin(Currency.valueOf(10010)).getValue(), Coin.valueOf(Coin.COIN.getValue() + 100000).getValue());
+            assertEquals(ex.convertToBitcoin(Currency.valueOf(10020)).getValue(), Coin.valueOf(Coin.COIN.getValue() + 200000).getValue());
+            assertEquals(ex.convertToBitcoin(Currency.valueOf(10030)).getValue(), Coin.valueOf(Coin.COIN.getValue() + 300000).getValue());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
     }
 }

@@ -22,7 +22,18 @@ public interface ExchangeProvider {
      */
     public float getExchangeRate(long unixTime) throws ExchangeProviderNoDataException;
     public boolean hasHistoricData();
+
+    /**
+     * Will convert {@link org.bitcoinj.core.Coin Coin} satoshi value into {@link org.authenticator.Utils.ExchangeProvider.Currency Currency}
+     * @param sathosies
+     * @return
+     */
     public Currency convertToCurrency(Coin sathosies);
+    /**
+     * Will convert {@link org.authenticator.Utils.ExchangeProvider.Currency Currency} cents value into {@link org.bitcoinj.core.Coin Coin}
+     * @param currency
+     * @return
+     */
     public Coin convertToBitcoin(Currency currency);
 
     public static String[] AVAILBLE_CURRENCY_CODES = new String[]{

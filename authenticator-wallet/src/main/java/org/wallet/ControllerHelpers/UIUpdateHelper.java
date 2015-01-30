@@ -1,7 +1,6 @@
 package org.wallet.ControllerHelpers;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,23 +15,18 @@ import org.authenticator.Utils.ExchangeProvider.Currency;
 import org.authenticator.Utils.ExchangeProvider.Exchange;
 import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
 import org.authenticator.Utils.ExchangeProvider.Exchanges;
-import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
 import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.walletCore.ExtendedTransactionOutput;
 import org.authenticator.walletCore.WalletOperation;
 import org.authenticator.walletCore.exceptions.*;
 import org.bitcoinj.core.*;
-import org.json.JSONException;
 import org.wallet.Controller;
 import org.wallet.Main;
 import org.wallet.controls.ScrollPaneContentManager;
 import org.wallet.utils.BaseUI;
-import org.wallet.utils.GuiUtils;
 import org.wallet.utils.TextUtils;
 
 import org.authenticator.Authenticator;
-import org.authenticator.db.walletDB;
-import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import javafx.application.Platform;
@@ -48,7 +42,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -68,7 +61,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.util.Callback;
 
 public class UIUpdateHelper extends BaseUI{
 	
@@ -258,7 +250,7 @@ public class UIUpdateHelper extends BaseUI{
 		    			arrow = new ImageView(out);
 		    			amount.setFill(Paint.valueOf("#f06e6e"));
 		    			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-		    			amount.setText(TextUtils.coinAmountTextDisplay(exit.subtract(enter),u));
+		    			amount.setText(TextUtils.coinToUnitString(exit.subtract(enter), u));
 		    			if (tx.getOutputs().size()==1){
 		    				toFrom = tx.getOutput(0).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString();
 		    			}
@@ -279,7 +271,7 @@ public class UIUpdateHelper extends BaseUI{
 		    		else { // i only received coins
 		    			arrow = new ImageView(in);
 		    			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-		    			amount.setText(TextUtils.coinAmountTextDisplay(enter,u));
+		    			amount.setText(TextUtils.coinToUnitString(enter, u));
 		    			amount.setFill(Paint.valueOf("#98d947"));
 		    			if (tx.getInputs().size()==1){
 		    				toFrom = tx.getInput(0).getFromAddress().toString();
@@ -451,7 +443,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			    		 inputtext2.setText(to + " ");
 	    			    		 intext.add(inputtext2);
 	    			    		 try { 
-	    			    			 inputtext3.setText(TextUtils.coinAmountTextDisplay(tx.getInput(b).getValue(),u));
+	    			    			 inputtext3.setText(TextUtils.coinToUnitString(tx.getInput(b).getValue(), u));
 	    			    			 inAmount = inAmount.add(tx.getInput(b).getValue());
 	    			    		 } catch (NullPointerException e) {inputtext3.setText("unavailable");}
 	    			    		 if (b<tx.getInputs().size()-1){
@@ -465,7 +457,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			    	 //Total Inputs
 	    			    	 Text intotaltext = new Text("Total Inputs:           ");
 	    			    	 Text intotaltext2 = new Text("");
-	    			    	 if(tx.getInput(0).getConnectedOutput()!=null){intotaltext2.setText(TextUtils.coinAmountTextDisplay(inAmount, u));}
+	    			    	 if(tx.getInput(0).getConnectedOutput()!=null){intotaltext2.setText(TextUtils.coinToUnitString(inAmount, u));}
 	    			    	 else {intotaltext2.setText("unavailable");}
 	    			    	 intotaltext2.setFill(Paint.valueOf("#98d947"));
 	    			    	 intotaltext.setStyle("-fx-font-weight:bold;");
@@ -488,7 +480,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			    		 outputtext2.setText(tx.getOutput(a).getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()) + " ");
 	    			    		 outtext.add(outputtext2);
 	    			    		 outAmount = outAmount.add(tx.getOutput(a).getValue());
-	    			    		 outputtext3.setText(TextUtils.coinAmountTextDisplay(tx.getOutput(a).getValue(),u));
+	    			    		 outputtext3.setText(TextUtils.coinToUnitString(tx.getOutput(a).getValue(), u));
 	    			    		 if (a<tx.getOutputs().size()-1){
 	    			    			 outputtext3.setText(outputtext3.getText() + "\n                                   ");
 	    			    		 }
@@ -501,7 +493,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			    	 Text outtotaltext = new Text("Total Outputs:        ");
 	    			    	 Text outtotaltext2 = new Text("");
 	    			    	 outtotaltext2.setFill(Paint.valueOf("#f06e6e"));
-	    			    	 outtotaltext2.setText(TextUtils.coinAmountTextDisplay(outAmount, u));
+	    			    	 outtotaltext2.setText(TextUtils.coinToUnitString(outAmount, u));
 	    			    	 outtotaltext.setStyle("-fx-font-weight:bold;");
 	    			    	 TextFlow outtotalflow = new TextFlow();
 	    			    	 outtotalflow.getChildren().addAll(outtotaltext);
@@ -511,7 +503,7 @@ public class UIUpdateHelper extends BaseUI{
 	    			    	 //Transaction Fee
 	    			    	 Text feetext = new Text("Fee:                        ");
 	    			    	 Text feetext2 = new Text("");
-	    			    	 try {feetext2.setText(TextUtils.coinAmountTextDisplay(tx.getFee(),u));}
+	    			    	 try {feetext2.setText(TextUtils.coinToUnitString(tx.getFee(), u));}
 	    			    	 catch (NullPointerException e) {feetext2.setText("unavailable");}
 	    			    	 feetext2.setFill(Paint.valueOf("#f06e6e"));
 	    			    	 TextFlow feeflow = new TextFlow();
@@ -683,14 +675,14 @@ public class UIUpdateHelper extends BaseUI{
 	    		if (exit.compareTo(Coin.ZERO) > 0){ // means i sent coins
 	    			l3.setTextFill(Paint.valueOf("#ea4f4a"));
 	    			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-	    			l3.setText("-" + TextUtils.coinAmountTextDisplay(exit.subtract(enter),u)); // get total out minus enter to subtract change amount
+	    			l3.setText("-" + TextUtils.coinToUnitString(exit.subtract(enter), u)); // get total out minus enter to subtract change amount
 	    			tip += "Amount: -" + exit.subtract(enter).toFriendlyString() + "\n";	
 	    			arrow = new ImageView(out);
 	    		}
 	    		else { // i only received coins
 	    			l3.setTextFill(Paint.valueOf("#98d947"));
 	    			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-	    			l3.setText(TextUtils.coinAmountTextDisplay(enter, u));
+	    			l3.setText(TextUtils.coinToUnitString(enter, u));
 	    			tip+= "Amount: " + enter.toFriendlyString() + "\n";
 	    			arrow = new ImageView(in);
 	    		}
@@ -767,8 +759,8 @@ public class UIUpdateHelper extends BaseUI{
 		@Override
 		protected void onPostExecute() {
 			BitcoinUnit u = Authenticator.getWalletOperation().getAccountUnitFromSettings();
-			lblConfirmedBalance.setText(TextUtils.coinAmountTextDisplay(confirmed, u));
-	        lblUnconfirmedBalance.setText(TextUtils.coinAmountTextDisplay(unconfirmed, u));
+			lblConfirmedBalance.setText(TextUtils.coinToUnitString(confirmed, u));
+	        lblUnconfirmedBalance.setText(TextUtils.coinToUnitString(unconfirmed, u));
 
 			if(Exchanges.getInstance() == null || !Exchanges.getInstance().isReady)
 				return;

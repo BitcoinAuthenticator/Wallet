@@ -34,8 +34,8 @@ public class WalletListenerTest {
 		new Authenticator(new BAApplicationParameters());
 		Authenticator.addGeneralEventsListener(new BAGeneralEventsAdapter() {
 			@Override
-			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
-				if(tx == null && howBalanceChanged == null && confidence == null)
+			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged) {
+				if(tx == null && howBalanceChanged == howBalanceChanged.WalletChange)
 					wasAuthenticatorOnBalanceChangedCalledAndOK = true;
 			}
 		});
@@ -103,7 +103,7 @@ public class WalletListenerTest {
 		new Authenticator(new BAApplicationParameters());
 		Authenticator.addGeneralEventsListener(new BAGeneralEventsAdapter() {
 			@Override
-			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged) {
 				if(wasAuthenticatorOnBalanceChangedCalledAndOK == false) // check called once
 					wasAuthenticatorOnBalanceChangedCalledAndOK = true;
 				else {
@@ -210,7 +210,7 @@ public class WalletListenerTest {
 		new Authenticator(new BAApplicationParameters());
 		Authenticator.addGeneralEventsListener(new BAGeneralEventsAdapter() {
 			@Override
-			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+			public void onBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged) {
 				if(wasAuthenticatorOnBalanceChangedCalledAndOK == false) // check called once
 					wasAuthenticatorOnBalanceChangedCalledAndOK = true;
 				else {

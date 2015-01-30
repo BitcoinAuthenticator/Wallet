@@ -50,12 +50,12 @@ public interface BAGeneralEventsListener {
 	 *
 	 * @param tx
 	 * @param howBalanceChanged
-	 * @param confidence
 	 */
-	public void onBalanceChanged(@Nullable Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence);
+	public void onBalanceChanged(@Nullable Transaction tx, HowBalanceChanged howBalanceChanged);
 	public enum HowBalanceChanged{
 		ReceivedCoins,
-		SentCoins;
+		SentCoins,
+		WalletChange;
 	};
 	
 	/**

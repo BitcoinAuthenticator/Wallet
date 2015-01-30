@@ -346,9 +346,9 @@ public class Authenticator extends BASE{
 			l.onOneNameIdentityChanged(profile, profileImage);
 	}
 	
-	public static void fireOnBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence){
+	public static void fireOnBalanceChanged(Transaction tx, HowBalanceChanged howBalanceChanged){
 		for(BAGeneralEventsListener l:generalEventsListeners)
-			l.onBalanceChanged(tx, howBalanceChanged, confidence);
+			l.onBalanceChanged(tx, howBalanceChanged);
 	}
 	
 	public static void fireOnAuthenticatorSigningResponse(Transaction tx, 

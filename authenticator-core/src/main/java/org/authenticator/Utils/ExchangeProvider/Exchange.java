@@ -66,11 +66,17 @@ public class Exchange implements ExchangeProvider {
 	}
 
 	private Coin toBitcoin(Currency currency){
-		return Coin.valueOf(currency.divide(Currency.ONE) * oneCurrencyToSatoshies);
+		float f1 = (float)currency.getValue() / (float)Currency.ONE.getValue();
+		float f2 = oneCurrencyToSatoshies;
+
+		return Coin.valueOf((long)(f1 * f2));
 	}
 
 	private Currency toCurrency(Coin bitcoins){
-		return currencyValueOf(bitcoins.divide(Coin.COIN) * oneBTCToCurrency);
+		float f1 = (float)bitcoins.longValue() / (float)Coin.COIN.longValue();
+		float f2 = oneBTCToCurrency;
+
+		return currencyValueOf((long)(f1 * f2));
 	}
 
 	private Currency currencyValueOf(long value) {

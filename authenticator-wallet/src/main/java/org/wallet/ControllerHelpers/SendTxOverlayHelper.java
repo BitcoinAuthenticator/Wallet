@@ -1,25 +1,16 @@
 package org.wallet.ControllerHelpers;
 
-import static org.wallet.utils.GuiUtils.informationalAlert;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import com.google.protobuf.ByteString;
+import org.authenticator.protobuf.ProtoSettings;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionOutput;
 import org.wallet.Controller;
 import org.wallet.Main;
-import org.wallet.utils.GuiUtils;
 import org.wallet.utils.TextUtils;
 
 import org.authenticator.Authenticator;
-import org.authenticator.protobuf.ProtoConfig.ATAddress;
-import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
-import org.authenticator.walletCore.utils.BAPassword;
-import javafx.animation.Animation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -89,6 +80,8 @@ public class SendTxOverlayHelper {
     		Coin outAmount,
     		Coin fee,
     		Coin leavingWallet) {
+		ProtoSettings.BitcoinUnit btcUnit = Authenticator.getWalletOperation().getAccountUnitFromSettings();
+
 		//Display Transaction Overview
 		txOverlayPane = new Pane();
     	txOverlay = Main.instance.overlayUI(txOverlayPane, Main.controller);
@@ -121,7 +114,7 @@ public class SendTxOverlayHelper {
 			inputtext2.setText(tx.getInput(b).getConnectedOutput().getScriptPubKey().getToAddress(Authenticator.getWalletOperation().getNetworkParams()).toString() + " ");
 			intext.add(inputtext2);
 			inAmount = inAmount.add(tx.getInputs().get(b).getValue());
-			inputtext3.setText(TextUtils.coinAmountTextDisplay(tx.getInput(b).getValue(), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+			inputtext3.setText(TextUtils.coinToUnitString(tx.getInput(b).getValue(), btcUnit));
 			if (b<tx.getInputs().size()-1){
 				inputtext3.setText(inputtext3.getText() + "\n                                    ");
 			}
@@ -144,7 +137,7 @@ public class SendTxOverlayHelper {
 			outputtext3.setFill(Paint.valueOf("#f06e6e"));
 			outputtext2.setText(OutputAddresses.get(a) + " ");
 			outtext.add(outputtext2);
-			outputtext3.setText(TextUtils.coinAmountTextDisplay(to.get(OutputAddresses.get(a)), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+			outputtext3.setText(TextUtils.coinToUnitString(to.get(OutputAddresses.get(a)), btcUnit));
 			if (a < OutputAddresses.size()) {
 				outputtext3.setText(outputtext3.getText() + "\n                                     ");
 			}
@@ -157,7 +150,7 @@ public class SendTxOverlayHelper {
 		Text changetext = new Text("Change:                   ");
 		changetext.setStyle("-fx-font-weight:bold;");
 		Text changetext2 = new Text(changeaddr + " ");
-		Text changetext3 = new Text(TextUtils.coinAmountTextDisplay((inAmount.subtract(outAmount)).subtract(fee), Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+		Text changetext3 = new Text(TextUtils.coinToUnitString((inAmount.subtract(outAmount)).subtract(fee), btcUnit));
 
 		changetext3.setFill(Paint.valueOf("#98d947"));
 		TextFlow changeflow = new TextFlow();
@@ -166,7 +159,7 @@ public class SendTxOverlayHelper {
 		textformatted.add(spaceflow);
 		Text feetext = new Text("Fee:                         ");
 		feetext.setStyle("-fx-font-weight:bold;");
-		Text feetext2 = new Text(TextUtils.coinAmountTextDisplay(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+		Text feetext2 = new Text(TextUtils.coinToUnitString(fee, btcUnit));
 		feetext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow feeflow = new TextFlow();
 		feeflow.getChildren().addAll(feetext, feetext2);
@@ -174,7 +167,7 @@ public class SendTxOverlayHelper {
 		textformatted.add(spaceflow);
 		Text leavingtext = new Text("Leaving Wallet:       ");
 		leavingtext.setStyle("-fx-font-weight:bold;");
-		Text leavingtext2 = new Text("-" + TextUtils.coinAmountTextDisplay(leavingWallet, Authenticator.getWalletOperation().getAccountUnitFromSettings()));
+		Text leavingtext2 = new Text("-" + TextUtils.coinToUnitString(leavingWallet, btcUnit));
 		leavingtext2.setFill(Paint.valueOf("#f06e6e"));
 		TextFlow leavingflow = new TextFlow();
 		leavingflow.getChildren().addAll(leavingtext, leavingtext2);

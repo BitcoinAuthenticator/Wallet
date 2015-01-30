@@ -1,7 +1,5 @@
 package org.wallet.utils;
 
-import java.math.BigInteger;
-
 import org.authenticator.Authenticator;
 import org.authenticator.protobuf.ProtoSettings;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
@@ -47,14 +45,14 @@ public class TextUtils {
 	}
 	
 	/**
-	 * Coin is the amount in sathosies
+	 * convert satoshies (extracted from {@link org.bitcoinj.core.Coin Coin}) to unit and stringify it
 	 * 
 	 * @param coin
 	 * @param unit
 	 * @return
 	 */
-	public static String coinAmountTextDisplay(Coin coin, BitcoinUnit unit) {
-		double i = satoshiesToBitcoinUnit(coin.value, unit);
+	public static String coinToUnitString(Coin coin, BitcoinUnit unit) {
+		double i = satoshiesToUnit(coin.value, unit);
 		String dp = Integer.toString(Authenticator.getWalletOperation().getDecimalPointFromSettings());
 		
 		return String.format( "%." + dp +"f", i ) + " " + unit.getValueDescriptor().getOptions().getExtension(ProtoSettings.bitcoinUnitName);
@@ -67,7 +65,7 @@ public class TextUtils {
 	 * @param unit
 	 * @return
 	 */
-	public static long bitcoinUnitToSatoshies(float in, BitcoinUnit unit) {
+	public static long unitToSatoshies(float in, BitcoinUnit unit) {
 		switch(unit) {
 			case BTC:
 				in *= 100000000;
@@ -90,20 +88,21 @@ public class TextUtils {
 	 * @param unit
 	 * @return
 	 */
-	public static float satoshiesToBitcoinUnit(long in, BitcoinUnit unit) {
+	public static float satoshiesToUnit(long in, BitcoinUnit unit) {
+		float ret = 0;
 		switch(unit) {
 			case BTC:
-				in /= 100000000;
+				ret = (float)in / (float)100000000;
 				break;
 			case Millibits:
-				in /= 100000;
+				ret = (float)in / (float)100000;
 				break;
 			case Microbits:
-				in /= 100;
+				ret = (float)in / (float)100;
 				break;
 		}
 		
-		return in;
+		return ret;
 	}
 	
 	public static String getAbbreviatedUnit (BitcoinUnit unit){

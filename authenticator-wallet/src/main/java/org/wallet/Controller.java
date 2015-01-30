@@ -1,15 +1,14 @@
 package org.wallet;
 
 import org.authenticator.Authenticator;
-import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
 import org.authenticator.Utils.ExchangeProvider.Exchanges;
 import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
 import org.authenticator.Utils.OneName.OneName;
 import org.authenticator.Utils.OneName.OneNameAdapter;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
+import org.authenticator.protobuf.ProtoSettings;
 import org.authenticator.walletCore.exceptions.CannotGetAddressException;
-import org.authenticator.walletCore.exceptions.CannotReadFromConfigurationFileException;
 import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.authenticator.walletCore.utils.BalanceUpdater;
@@ -18,47 +17,29 @@ import org.authenticator.network.BANetworkInfo;
 import org.authenticator.operations.BAOperation;
 import org.authenticator.operations.operationsUtils.SignProtocol.AuthenticatorAnswerType;
 import org.authenticator.operations.listeners.OperationListenerAdapter;
-import org.authenticator.protobuf.ProtoSettings;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.ATAddress;
-import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigOneNameProfile;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
-import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
 
-import org.bitcoinj.core.AbstractBlockChain;
 import org.bitcoinj.core.AbstractPeerEventListener;
 import org.bitcoinj.core.AbstractWalletEventListener;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.DownloadListener;
 import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Peer;
-import org.bitcoinj.core.ScriptException;
-import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionConfidence;
-import org.bitcoinj.core.TransactionInput;
-import org.bitcoinj.core.TransactionOutPoint;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
-import org.bitcoinj.core.WalletEventListener;
-import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.KeyCrypterException;
-import org.bitcoinj.script.Script;
 import org.bitcoinj.uri.BitcoinURI;
 
 import com.google.common.base.Throwables;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.ning.http.client.AsyncCompletionHandler;
-import com.ning.http.client.Response;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
 
@@ -67,34 +48,23 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 import eu.hansolo.enzo.notification.Notification;
 import eu.hansolo.enzo.notification.Notification.Notifier;
 import javafx.animation.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -107,55 +77,32 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextBuilder;
-import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 import org.wallet.ControllerHelpers.SendTxHelper;
 import org.wallet.ControllerHelpers.SendTxOverlayHelper;
@@ -164,17 +111,13 @@ import org.wallet.ControllerHelpers.ThrottledRunnableExecutor;
 import org.wallet.ControllerHelpers.UIUpdateHelper;
 import org.wallet.controls.ScrollPaneContentManager;
 import org.wallet.controls.SendToCell;
-import org.wallet.utils.AlertWindowController;
 import org.wallet.utils.BaseUI;
 import org.wallet.utils.GuiUtils;
-import org.wallet.utils.TextFieldValidator;
 import org.wallet.utils.TextUtils;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 import static org.wallet.Main.bitcoin;
-import static org.wallet.utils.GuiUtils.checkGuiThread;
-import static org.wallet.utils.GuiUtils.crashAlert;
 import static org.wallet.utils.GuiUtils.informationalAlert;
 /**
  * Gets created auto-magically by FXMLLoader via reflection. The widget fields are set to the GUI controls they're named
@@ -334,9 +277,9 @@ public class Controller  extends BaseUI{
 		throttledUIUpdater = new ThrottledRunnableExecutor(500, new Runnable(){
 			@Override
 			public void run() {
-				setReceiveAddresses();
-				setTxPaneHistory();
-				setTxHistoryContent();
+				refreshReceiveAddresses();
+				refreshTxPaneHistory();
+				refreshOverviewTxHistory();
 
 				if(Exchanges.getInstance() == null || !Exchanges.getInstance().isReady) {
 					Platform.runLater(() -> {
@@ -485,55 +428,61 @@ public class Controller  extends BaseUI{
 		}
 		
 		@Override
-		public void onBalanceChanged(@Nullable Transaction tx, HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+		public void onBalanceChanged(@Nullable Transaction tx, HowBalanceChanged howBalanceChanged) {
+			if(howBalanceChanged == HowBalanceChanged.WalletChange) {
+				refreshTxPaneHistory();
+				return;
+			}
+
+
+			ConfidenceType confidence = tx.getConfidence().getConfidenceType();
 			/**
 			 * Will pop a notification when received coins are pending and built
 			 */
 			if(tx != null)
 			if(howBalanceChanged == HowBalanceChanged.ReceivedCoins){
-				Platform.runLater(new Runnable() { 
+				Platform.runLater(new Runnable() {
 					  @Override
 					  public void run() {
-						  	Coin enter = Authenticator.getWalletOperation().getTxValueSentToMe(tx);
 				    		Coin exit = Authenticator.getWalletOperation().getTxValueSentFromMe(tx);
 				    		if (exit.compareTo(Coin.ZERO) > 0){} //only show notification on coins received excluding change
 				    		else {
 				    			Image logo = new Image(Main.class.getResourceAsStream("authenticator_logo_plain_small.png"));
-				    			
+
 				    			// Create a custom Notification without icon
-				    			Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received: " + 
-				    					Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
-				    					"\n" + 
+				    			Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Received: " +
+				    					Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() +
+				    					"\n" +
 				    					"Status: " + (confidence == ConfidenceType.PENDING? "Unconfirmed":"Confirmed"), logo);
-						
+
 				    			// Show the custom notification
 				    			Notifier.INSTANCE.notify(info);
 				    		}
 					  }
 					});
 			}
-			
+
 			/**
 			 * Will pop a notification when sent coins are confirmed
 			 */
 			if(tx != null)
 			if(howBalanceChanged == HowBalanceChanged.SentCoins && confidence == ConfidenceType.BUILDING){
-				Platform.runLater(new Runnable() { 
+				Platform.runLater(new Runnable() {
 					  @Override
 					  public void run() {
 							Image logo = new Image(Main.class.getResourceAsStream("authenticator_logo_plain_small.png"));
 							// Create a custom Notification without icon
-							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Sent :" + 
-									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() + 
-									"\n" + 
+							Notification info = new Notification("Bitcoin Authenticator Wallet", "Coins Sent :" +
+									Authenticator.getWalletOperation().getTxValueSentToMe(tx).toFriendlyString() +
+									"\n" +
 									"Status: " + "Confirmed", logo);
-							
+
 							// Show the custom notification
 							Notifier.INSTANCE.notify(info);
 					  }
 					});
 			}
-			
+
 			updateUI("Balance Changed");
 		}
 
@@ -670,7 +619,8 @@ public class Controller  extends BaseUI{
 
 		@Override
 		public void onWalletChanged(Wallet wallet) {
-			try {setTxPaneHistory();} 
+			try {
+				refreshTxPaneHistory();}
 			catch (Exception e) {e.printStackTrace();}	
 		}
     }
@@ -1097,7 +1047,7 @@ public class Controller  extends BaseUI{
 	}
     
     @SuppressWarnings("unused")
-    private void setTxHistoryContent() {
+    private void refreshOverviewTxHistory() {
     	LOG.info("Setting Tx History in Overview Pane");
     	new UIUpdateHelper.TxHistoryContentUpdater(scrlViewTxHistoryContentManager).execute();
     }
@@ -1138,7 +1088,9 @@ public class Controller  extends BaseUI{
     private void setFeeTipText() {    	 
     	LOG.info("Updating fee text box");
     	Coin fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
-    	txFee.setPromptText("Fee: " + fee.toFriendlyString());
+		ProtoSettings.BitcoinUnit unit = Authenticator.getWalletOperation().getAccountUnitFromSettings();
+		String s = TextUtils.coinToUnitString(fee, unit);
+    	txFee.setPromptText("Fee: " + s);
     }
     
     @FXML protected void btnAddTxOutputPressed(MouseEvent event) {
@@ -1177,7 +1129,7 @@ public class Controller  extends BaseUI{
 		if (txFee.getText().length() == 0){cFee = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;}
         else {
         	float fee = Float.parseFloat(txFee.getText());
-        	fee = TextUtils.bitcoinUnitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
+        	fee = TextUtils.unitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
         	cFee = Coin.valueOf((long)fee);
         }
     	try {
@@ -1217,14 +1169,14 @@ public class Controller  extends BaseUI{
         	}
         	
         	try{
-//        		get fee
+				// fee
             	Coin cFee = Coin.ZERO;
         		if (txFee.getText().length() == 0) {
 					cFee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
 				}
                 else {
                 	float fee = Float.parseFloat(txFee.getText());
-                	fee = TextUtils.bitcoinUnitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
+                	fee = TextUtils.unitToSatoshies(fee, Authenticator.getWalletOperation().getAccountUnitFromSettings());
                 	cFee = Coin.valueOf((long)fee);
                 }
         	
@@ -1867,7 +1819,7 @@ public class Controller  extends BaseUI{
     }
     	
     @SuppressWarnings("unchecked")
-	private void setReceiveAddresses(){
+	private void refreshReceiveAddresses(){
     	LOG.info("Updating received addresses");
     	new UIUpdateHelper.ReceiveAddressesUpdater(AddressBox).execute();
     }       
@@ -1878,7 +1830,7 @@ public class Controller  extends BaseUI{
    	//
    	//#####################################
     
-    public void setTxPaneHistory() {
+    public void refreshTxPaneHistory() {
     	LOG.info("Updating Tx pane");
     	new UIUpdateHelper.TxPaneHistoryUpdater(txTable, colToFrom, colDescription, colConfirmations).execute();
     }

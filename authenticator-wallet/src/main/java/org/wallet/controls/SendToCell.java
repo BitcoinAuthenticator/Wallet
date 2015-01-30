@@ -360,7 +360,7 @@ public class SendToCell extends Region{
 				 
 				 float amount = Float.parseFloat(amountStr); // the URI passes the amount in BTC
 				 amount *= 100000000; // convert amount to satoshies
-				 amount = TextUtils.satoshiesToBitcoinUnit((long)amount,
+				 amount = TextUtils.satoshiesToUnit((long) amount,
 						 Authenticator.getWalletOperation().getAccountUnitFromSettings());
 				 
 				 txfAmount.setText(Long.toString((long)amount));
@@ -438,16 +438,16 @@ public class SendToCell extends Region{
 	public double getAmountValue(){
 		String a = TextUtils.getAbbreviatedUnit(BitcoinUnit.BTC);
 		if(getSelectedCurrency().equals(a)) {
-			return TextUtils.bitcoinUnitToSatoshies(Float.parseFloat(txfAmount.getText()), BitcoinUnit.BTC);//(double) Double.parseDouble(txfAmount.getText())*100000000;
+			return TextUtils.unitToSatoshies(Float.parseFloat(txfAmount.getText()), BitcoinUnit.BTC);//(double) Double.parseDouble(txfAmount.getText())*100000000;
 		}
 		
 		a = TextUtils.getAbbreviatedUnit(BitcoinUnit.Millibits);
 		if(getSelectedCurrency().equals(a)) {
-			return TextUtils.bitcoinUnitToSatoshies(Float.parseFloat(txfAmount.getText()), BitcoinUnit.Millibits);//return (double) Double.parseDouble(txfAmount.getText())*100000;
+			return TextUtils.unitToSatoshies(Float.parseFloat(txfAmount.getText()), BitcoinUnit.Millibits);//return (double) Double.parseDouble(txfAmount.getText())*100000;
 		}	
 		a = TextUtils.getAbbreviatedUnit(BitcoinUnit.Microbits);
 		if(getSelectedCurrency().equals(a)) {
-			return TextUtils.bitcoinUnitToSatoshies(Float.parseFloat(txfAmount.getText()), BitcoinUnit.Microbits);//return (double) Double.parseDouble(txfAmount.getText())*100;
+			return TextUtils.unitToSatoshies(Float.parseFloat(txfAmount.getText()), BitcoinUnit.Microbits);//return (double) Double.parseDouble(txfAmount.getText())*100;
 		}
 		else {
 			Exchange e = Exchanges.getInstance().currencies.get(getSelectedCurrency());

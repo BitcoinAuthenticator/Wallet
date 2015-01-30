@@ -18,7 +18,7 @@ public class BAGeneralEventsAdapter implements BAGeneralEventsListener{
 
 	@Override
 	public void onBalanceChanged(Transaction tx,
-			HowBalanceChanged howBalanceChanged, ConfidenceType confidence) {
+			HowBalanceChanged howBalanceChanged) {
 		// TODO Auto-generated method stub
 		
 	}

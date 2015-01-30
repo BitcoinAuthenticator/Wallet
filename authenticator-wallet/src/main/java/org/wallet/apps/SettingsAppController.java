@@ -175,13 +175,13 @@ public class SettingsAppController extends BaseUI{
 					public void changed(ObservableValue<? extends Boolean> arg0,Boolean arg1, Boolean arg2) {
 						try {
 							float inFraction = Float.parseFloat(txFee.getText());
-							fee = Coin.valueOf(TextUtils.bitcoinUnitToSatoshies(inFraction, unit));
+							fee = Coin.valueOf(TextUtils.unitToSatoshies(inFraction, unit));
 						}
 						catch(Exception e) {
 							fee = Authenticator.getWalletOperation().getDefaultFeeFromSettings();
 						}
 						
-				    	String strFee = TextUtils.coinAmountTextDisplay(fee, unit);
+				    	String strFee = TextUtils.coinToUnitString(fee, unit);
 				    	txFee.clear();
 				    	txFee.setPromptText(strFee);
 				    	
@@ -201,7 +201,7 @@ public class SettingsAppController extends BaseUI{
     	    		else
     	    			unit = BitcoinUnit.Microbits;
     	    	  	
-    	    	  	txFee.setPromptText("Fee: " + TextUtils.coinAmountTextDisplay(fee, unit) + " " + TextUtils.getAbbreviatedUnit(unit));
+    	    	  	txFee.setPromptText("Fee: " + TextUtils.coinToUnitString(fee, unit) + " " + TextUtils.getAbbreviatedUnit(unit));
     	    	  	
     	    	  	setSaveButtonDisabled(false);
     	      }

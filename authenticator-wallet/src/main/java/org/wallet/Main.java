@@ -547,7 +547,8 @@ public class Main extends BAApplication {
             updater.getException().printStackTrace();
             
             // load the wallet without applying updates
-            Platform.runLater(() -> { 
+            Platform.runLater(() -> {
+                downloadUpdatesWindow.setVisible();
             	downloadUpdatesWindow.setToFailedConnectionMode("Failed To Connect/ download from server");
             	downloadUpdatesWindow.setListener(new RemoteUpdateWindowListener() {
 					@Override
