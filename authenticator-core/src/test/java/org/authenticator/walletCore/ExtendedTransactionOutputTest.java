@@ -37,8 +37,8 @@ public class ExtendedTransactionOutputTest {
         assertTrue(prices.get(0).get(0).longValue() == 5 * Coin.COIN.longValue());
         assertTrue(prices.get(0).get(1).floatValue() == (float)331.62714);
         assertTrue(prices.get(0).get(2).longValue() == 1419077532);
-        assertTrue(valuesExtension.getCurrentTotalValue().getValue() == 129200);
-        assertTrue(valuesExtension.getGainOrLoss() == (float) -366.13);
+        assertEquals(valuesExtension.getCurrentTotalValue().getValue(), 129276);
+        assertTrue(valuesExtension.getGainOrLoss() == (float) -365.37);
 
 
         valuesExtension = getValueExtension(wallet, outputs.get(1));
@@ -54,8 +54,8 @@ public class ExtendedTransactionOutputTest {
         assertTrue(prices.get(2).get(0).longValue() == 66666660);
         assertTrue(prices.get(2).get(1).floatValue() == (float)446.54572);
         assertTrue(prices.get(2).get(2).longValue() == 1399119132);
-        assertTrue(valuesExtension.getCurrentTotalValue().getValue() == 51700);
-        assertTrue(valuesExtension.getGainOrLoss() == (float)-445.45);
+        assertEquals(valuesExtension.getCurrentTotalValue().getValue(), 51710);
+        assertTrue(valuesExtension.getGainOrLoss() == (float)-445.35);
     }
 
     @Test
@@ -65,7 +65,9 @@ public class ExtendedTransactionOutputTest {
 
         ExtendedTransactionOutput.ValuesExtension valuesExtension = getValueExtension(wallet, outputs.get(0));
         List<List<Number>> prices = valuesExtension.getOriginPricePoints();
-        // first end point
+        /*
+         first end point
+         */
         assertTrue(prices.size() == 6);
         assertTrue(prices.get(0).get(0).longValue()     == 64285710);
         assertTrue(prices.get(0).get(1).floatValue()    == (float)206.63286);
@@ -84,15 +86,15 @@ public class ExtendedTransactionOutputTest {
         assertTrue(prices.get(4).get(2).longValue()     == 1373371932);
         assertTrue(prices.get(5).get(0).longValue()     == 32142860);
         assertTrue(prices.get(5).get(1).floatValue()    == (float)114.31817);
-        assertTrue(prices.get(5).get(2).longValue()     == 1370779932);
-        assertTrue(valuesExtension.getCurrentTotalValue().getValue() == 232600);
-        assertTrue(valuesExtension.getGainOrLoss() == (float) 1136.95);
-
-
+        assertTrue(prices.get(5).get(2).longValue() == 1370779932);
+        assertEquals(valuesExtension.getCurrentTotalValue().getValue(), 232697);
+        assertTrue(valuesExtension.getGainOrLoss() == (float) 1137.92);
 
         valuesExtension = getValueExtension(wallet, outputs.get(1));
         prices = valuesExtension.getOriginPricePoints();
-        // second end point
+        /*
+         second end point
+         */
         assertTrue(prices.size() == 6);
         assertTrue(prices.get(0).get(0).longValue()     == 7142857);
         assertTrue(prices.get(0).get(1).floatValue()    == (float)206.63286);
@@ -112,8 +114,8 @@ public class ExtendedTransactionOutputTest {
         assertTrue(prices.get(5).get(0).longValue()     == 3571429);
         assertTrue(prices.get(5).get(1).floatValue()    == (float)114.31817);
         assertTrue(prices.get(5).get(2).longValue()     == 1370779932);
-        assertTrue(valuesExtension.getCurrentTotalValue().getValue() == 25800);
-        assertTrue(valuesExtension.getGainOrLoss() == (float) 125.91);
+        assertEquals(valuesExtension.getCurrentTotalValue().getValue(), 25855);
+        assertTrue(valuesExtension.getGainOrLoss() == (float) 126.46);
     }
 
     /**

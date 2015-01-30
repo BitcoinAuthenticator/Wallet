@@ -134,7 +134,10 @@ public class ExtendedTransactionOutput extends TransactionOutput {
             try {
                 long currentUnixTime = System.currentTimeMillis() / 1000L;
                 float currentPrice = exchangeProvider.getExchangeRate(currentUnixTime);
-                return Currency.valueOf((long)(((float) output.getValue().longValue() / (float) Coin.COIN.longValue()) * currentPrice) * Currency.ONE.getValue());
+
+                float f1 = (float) output.getValue().longValue() / (float) Coin.COIN.longValue();
+                long l1 = (long)(f1 * currentPrice * Currency.ONE.getValue());
+                return Currency.valueOf(l1);
             }
             catch (ExchangeProviderNoDataException e) {
                 e.printStackTrace();

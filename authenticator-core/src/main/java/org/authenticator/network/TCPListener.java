@@ -310,6 +310,7 @@ public class TCPListener extends BASE{
 								
 								// Should we receive something ?
 								if(pendingReq.getContract().getShouldReceivePayloadAfterSendingPayloadOnConnection()){
+									LOG.info("Waiting Authenticator's response ...");
 									keysize = inStream.readInt();
 									byte[] in = new byte[keysize];
 									inStream.read(in);
