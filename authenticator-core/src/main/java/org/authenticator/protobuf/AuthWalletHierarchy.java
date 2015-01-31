@@ -21,14 +21,6 @@ public final class AuthWalletHierarchy {
      * </pre>
      */
     Bip43(0, 44),
-    /**
-     * <code>BAGeneral = 100;</code>
-     *
-     * <pre>
-     * 0x8000006E
-     * </pre>
-     */
-    BAGeneral(1, 100),
     ;
 
     /**
@@ -39,14 +31,6 @@ public final class AuthWalletHierarchy {
      * </pre>
      */
     public static final int Bip43_VALUE = 44;
-    /**
-     * <code>BAGeneral = 100;</code>
-     *
-     * <pre>
-     * 0x8000006E
-     * </pre>
-     */
-    public static final int BAGeneral_VALUE = 100;
 
 
     public final int getNumber() { return value; }
@@ -54,7 +38,6 @@ public final class AuthWalletHierarchy {
     public static HierarchyPurpose valueOf(int value) {
       switch (value) {
         case 44: return Bip43;
-        case 100: return BAGeneral;
         default: return null;
       }
     }
@@ -285,88 +268,6 @@ public final class AuthWalletHierarchy {
     // @@protoc_insertion_point(enum_scope:org.authenticator.protobuf.HierarchyAddressTypes)
   }
 
-  /**
-   * Protobuf enum {@code org.authenticator.protobuf.BAGeneralHierarchyKeys}
-   */
-  public enum BAGeneralHierarchyKeys
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <code>ConfigFileEncryption = 0;</code>
-     */
-    ConfigFileEncryption(0, 0),
-    /**
-     * <code>CloudBackupEncryption = 1;</code>
-     */
-    CloudBackupEncryption(1, 1),
-    ;
-
-    /**
-     * <code>ConfigFileEncryption = 0;</code>
-     */
-    public static final int ConfigFileEncryption_VALUE = 0;
-    /**
-     * <code>CloudBackupEncryption = 1;</code>
-     */
-    public static final int CloudBackupEncryption_VALUE = 1;
-
-
-    public final int getNumber() { return value; }
-
-    public static BAGeneralHierarchyKeys valueOf(int value) {
-      switch (value) {
-        case 0: return ConfigFileEncryption;
-        case 1: return CloudBackupEncryption;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<BAGeneralHierarchyKeys>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static com.google.protobuf.Internal.EnumLiteMap<BAGeneralHierarchyKeys>
-        internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<BAGeneralHierarchyKeys>() {
-            public BAGeneralHierarchyKeys findValueByNumber(int number) {
-              return BAGeneralHierarchyKeys.valueOf(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      return getDescriptor().getValues().get(index);
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return org.authenticator.protobuf.AuthWalletHierarchy.getDescriptor().getEnumTypes().get(3);
-    }
-
-    private static final BAGeneralHierarchyKeys[] VALUES = values();
-
-    public static BAGeneralHierarchyKeys valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int index;
-    private final int value;
-
-    private BAGeneralHierarchyKeys(int index, int value) {
-      this.index = index;
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:org.authenticator.protobuf.BAGeneralHierarchyKeys)
-  }
-
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -377,13 +278,10 @@ public final class AuthWalletHierarchy {
   static {
     java.lang.String[] descriptorData = {
       "\n\021BAHierarchy.proto\022\032org.authenticator.p" +
-      "rotobuf*,\n\020HierarchyPurpose\022\t\n\005Bip43\020,\022\r" +
-      "\n\tBAGeneral\020d*%\n\022HierarchyCoinTypes\022\017\n\013C" +
-      "oinBitcoin\020\000*3\n\025HierarchyAddressTypes\022\014\n" +
-      "\010External\020\000\022\014\n\010Internal\020\001*M\n\026BAGeneralHi" +
-      "erarchyKeys\022\030\n\024ConfigFileEncryption\020\000\022\031\n" +
-      "\025CloudBackupEncryption\020\001B\025B\023AuthWalletHi" +
-      "erarchy"
+      "rotobuf*\035\n\020HierarchyPurpose\022\t\n\005Bip43\020,*%" +
+      "\n\022HierarchyCoinTypes\022\017\n\013CoinBitcoin\020\000*3\n" +
+      "\025HierarchyAddressTypes\022\014\n\010External\020\000\022\014\n\010" +
+      "Internal\020\001B\025B\023AuthWalletHierarchy"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

@@ -4,7 +4,6 @@ option java_outer_classname="AuthWalletHierarchy";
 
 enum HierarchyPurpose{
 	Bip43 		= 44; 		// 0x8000002C as in Bip43
-	BAGeneral   = 100; 		// 0x8000006E
 }
 
 enum HierarchyCoinTypes{
@@ -14,9 +13,4 @@ enum HierarchyCoinTypes{
 enum HierarchyAddressTypes{
 	External	 			= 0; // external
 	Internal				= 1; // internal / change
-}
-
-enum BAGeneralHierarchyKeys {
-	ConfigFileEncryption 			= 0;
-	CloudBackupEncryption			= 1;
 }
