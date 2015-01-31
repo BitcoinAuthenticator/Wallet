@@ -132,7 +132,7 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * This method encrypts a payload with an AES key derived from the seed.<br>
+	 * This method encrypts a payload with an AES key derived from the seed, salt and additional argumets.<br>
 	 * It is a general purpose encryption util if you want to tie the key with this specific wallet.
 	 *
 	 * @param payload - in hex
@@ -158,7 +158,7 @@ public class CryptoUtils {
 	}
 
 	/**
-	 *This method decrypts a payload with an AES key derived from the seed.<br>
+	 *This method decrypts a payload with an AES key derived from the seed, salt and additional argumets.<br>
 	 *
 	 * @param payload - in hex
 	 * @param salt
