@@ -1,24 +1,32 @@
 package org.authenticator.db;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import org.bitcoinj.core.PeerGroup;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.crypto.DeterministicKey;
-import com.google.protobuf.ByteString;
 
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import org.authenticator.protobuf.ProtoSettings.ConfigSettings;
 import org.authenticator.protobuf.ProtoSettings.Languages;
 
-public class settingsDB extends dbBase{
+public class SettingsDb extends DbBase {
 
-	public settingsDB(String filePath) throws IOException {
+	public SettingsDb(String filePath) throws IOException {
 		super(filePath);
+	}
+
+	@Override
+	public byte[] dumpToByteArray() {
+		return getSettingsBuilder().build().toByteArray();
+	}
+
+	@Override
+	public String dumpKey() { return "SettingsDb"; }
+
+	@Override
+	public void restoreFromBytes(byte[] data) throws IOException {
+		ConfigSettings settings = ConfigSettings.parseFrom(data);
+		writeSettingsFile(settings.toBuilder());
 	}
 	
 	//#####################################

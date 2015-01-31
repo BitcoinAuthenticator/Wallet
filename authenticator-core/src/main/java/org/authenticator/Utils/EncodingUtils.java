@@ -8,7 +8,11 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Formatter;
+import java.util.Iterator;
+import java.util.List;
 
+import com.ning.http.client.AsyncHttpClientConfig;
+import com.ning.http.client.cookie.Cookie;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
@@ -18,6 +22,9 @@ import org.bitcoinj.crypto.DeterministicKey;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
+
+import javax.annotation.Nullable;
+import javax.swing.text.html.HTMLDocument;
 
 public class EncodingUtils {
 	
@@ -47,7 +54,33 @@ public class EncodingUtils {
 		
 	}
 
-	static public String getAbsolutePathForFile(String fileName) throws IOException
+	public static void postToURL(String url, @Nullable List<Cookie> cookies, JSONObject data, AsyncCompletionHandler<Response> listener) throws JSONException, IOException {
+		AsyncHttpClientConfig cfg = new AsyncHttpClientConfig.Builder()
+				.setAcceptAnyCertificate(true)
+				.build();
+
+		AsyncHttpClient asyncHttpClient = new AsyncHttpClient(cfg);
+		AsyncHttpClient.BoundRequestBuilder builder = asyncHttpClient.preparePost(url);
+		if(cookies != null)
+			for(Cookie c:cookies)
+				builder.addCookie(c);
+		if(data != null) {
+			builder.setHeader("Content-Type", "application/json");
+			builder.setHeader("Content-Length", "" + data.toString().length());
+			builder.setBody(data.toString());
+		}
+		builder.execute(new AsyncCompletionHandler<Response>(){
+			@Override
+			public Response onCompleted(Response response) throws Exception {
+				listener.onCompleted(response);
+				asyncHttpClient.closeAsynchronously();
+				return null;
+			}
+
+		});
+	}
+
+	static public String getAbslutePathForFile(String fileName) throws IOException
 	{
 		return new java.io.File( "." ).getCanonicalPath() + "/" + fileName;
 	}

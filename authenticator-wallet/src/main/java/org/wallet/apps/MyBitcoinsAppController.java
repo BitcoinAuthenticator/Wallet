@@ -242,12 +242,7 @@ public class MyBitcoinsAppController extends BaseUI {
     private void downloadPriceDataFromBlockchainInfo(AsyncCompletionHandler<Response> listener) {
         String url = "https://blockchain.info/charts/market-price?showDataPoints=false&timespan=all&show_header=true&daysAverageString=1&scale=0&format=json&address=";
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-        try {
-            asyncHttpClient.prepareGet(url).execute(listener);
-        } catch (IOException e) {
-            e.printStackTrace();
-            listener.onThrowable(e);
-        }
+        asyncHttpClient.prepareGet(url).execute(listener);
     }
 
     public class TableDataClass {

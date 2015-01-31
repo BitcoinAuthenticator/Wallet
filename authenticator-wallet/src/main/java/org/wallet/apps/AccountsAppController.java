@@ -247,7 +247,7 @@ public class AccountsAppController extends BaseUI{
 		if(currentSelectedCell != null) { // repair a selected account
 			PairedAuthenticator op = Authenticator.getWalletOperation().getPairingObjectForAccountIndex(currentSelectedCell.getAccount().getIndex());
 
-			String decryptedAES = op.getAesKey();
+			byte[] decryptedAES = op.getAesKey().toByteArray();
 			if(op.getIsEncrypted()) {
 				{
 					if((!Main.UI_ONLY_WALLET_PW.hasPassword() && Authenticator.getWalletOperation().isWalletEncrypted())

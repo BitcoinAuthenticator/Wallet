@@ -7,41 +7,41 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
-import javafx.application.Platform;
-
-import org.json.simple.parser.ParseException;
-import org.authenticator.Authenticator;
-import org.authenticator.Utils.KeyUtils;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
-import org.authenticator.db.exceptions.CouldNotOpenConfigFileException;
 import org.authenticator.db.exceptions.PairingObjectWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
-import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
-import org.authenticator.protobuf.ProtoConfig.ATAddress;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.SavedTX;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.PendingRequest;
-import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet;
 import org.authenticator.protobuf.ProtoSettings.ConfigSettings;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.crypto.HDKeyDerivation;
-import org.bitcoinj.wallet.KeyChain;
 
 import com.google.protobuf.ByteString;
 
-public class walletDB extends dbBase{
+public class WalletDb extends DbBase {
 
-	public walletDB() { }
+	public WalletDb() { }
 
-	public walletDB(String filePath) throws IOException{
+	public WalletDb(String filePath) throws IOException{
 		super(filePath);
+	}
+
+	@Override
+	public byte[] dumpToByteArray() {
+		return getConfigFileBuilder().build().toByteArray();
+	}
+
+	@Override
+	public String dumpKey() { return "WalletDb"; }
+
+	@Override
+	public void restoreFromBytes(byte[] data) throws IOException {
+		AuthenticatorConfiguration auth = AuthenticatorConfiguration.parseFrom(data);
+		writeConfigFile(auth.toBuilder());
 	}
 
 	/**

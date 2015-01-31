@@ -25,13 +25,14 @@ message ConfigSettings{
 	optional string 		 localCurrencySymbol				= 3 [default = "USD"];
 	optional Languages 		 language							= 4 [default = English];
 	optional int64 			 defaultFee							= 5 [default = 10000]; // long, in satoshies
-	
+
 	// flags
 	optional bool			 TOR								= 6 [default = true];
 	optional bool			 connectOnLocalHost					= 7 [default = false];
 	optional bool 			 connectToTrustedPeer				= 8 [default = false];
 	optional bool			 portForwarding						= 9 [default = false];
-	optional string			 trustedPeerIP						= 10;
-		
-	optional float			 bloomFilterFalsePositiveRate		= 11 [default = 0.00001];
+	optional  bool			 backupToCloud						= 10 [default = true]; // If true will backup automatically to cloud
+	optional string			 trustedPeerIP						= 11;
+
+	optional float			 bloomFilterFalsePositiveRate		= 12 [default = 0.00001];
 }

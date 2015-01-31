@@ -49,7 +49,7 @@
     <orderEntry type="library" name="Maven: org.json:json:20080701" level="project" />
     <orderEntry type="library" name="Maven: com.aquafx-project:aquafx:0.1" level="project" />
     <orderEntry type="library" name="Maven: de.jensd:fontawesomefx:8.0.8" level="project" />
-    <orderEntry type="library" name="Maven: com.ning:async-http-client:1.8.12" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty:3.9.2.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.ning:async-http-client:1.9.6" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty:3.10.0.Final" level="project" />
   </component>
 </module>

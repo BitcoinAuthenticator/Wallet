@@ -12,8 +12,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.vinumeris:updatefx:1.2" level="project" />
-    <orderEntry type="library" name="Maven: com.vinumeris:updatefx:1.2" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: eu.hansolo.enzo:Enzo:0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />
@@ -45,8 +43,8 @@
     <orderEntry type="library" name="Maven: de.jensd:fontawesomefx:8.0.8" level="project" />
     <orderEntry type="library" name="Maven: com.google.android.gcm:gcm-server:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1" level="project" />
-    <orderEntry type="library" name="Maven: com.ning:async-http-client:1.8.12" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty:3.9.2.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.ning:async-http-client:1.9.6" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty:3.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: com.google.zxing:javase:2.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.zxing:core:2.1" level="project" />
     <orderEntry type="library" name="Maven: net.glxn:qrgen:1.3" level="project" />

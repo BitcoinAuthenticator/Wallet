@@ -280,25 +280,42 @@ public final class ProtoSettings {
     boolean getPortForwarding();
 
     /**
-     * <code>optional string trustedPeerIP = 10;</code>
+     * <code>optional bool backupToCloud = 10 [default = true];</code>
+     *
+     * <pre>
+     * If true will backup automatically to cloud
+     * </pre>
+     */
+    boolean hasBackupToCloud();
+    /**
+     * <code>optional bool backupToCloud = 10 [default = true];</code>
+     *
+     * <pre>
+     * If true will backup automatically to cloud
+     * </pre>
+     */
+    boolean getBackupToCloud();
+
+    /**
+     * <code>optional string trustedPeerIP = 11;</code>
      */
     boolean hasTrustedPeerIP();
     /**
-     * <code>optional string trustedPeerIP = 10;</code>
+     * <code>optional string trustedPeerIP = 11;</code>
      */
     java.lang.String getTrustedPeerIP();
     /**
-     * <code>optional string trustedPeerIP = 10;</code>
+     * <code>optional string trustedPeerIP = 11;</code>
      */
     com.google.protobuf.ByteString
         getTrustedPeerIPBytes();
 
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
      */
     boolean hasBloomFilterFalsePositiveRate();
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
      */
     float getBloomFilterFalsePositiveRate();
   }
@@ -412,14 +429,19 @@ public final class ProtoSettings {
               portForwarding_ = input.readBool();
               break;
             }
-            case 82: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 80: {
               bitField0_ |= 0x00000200;
+              backupToCloud_ = input.readBool();
+              break;
+            }
+            case 90: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000400;
               trustedPeerIP_ = bs;
               break;
             }
-            case 93: {
-              bitField0_ |= 0x00000400;
+            case 101: {
+              bitField0_ |= 0x00000800;
               bloomFilterFalsePositiveRate_ = input.readFloat();
               break;
             }
@@ -641,16 +663,39 @@ public final class ProtoSettings {
       return portForwarding_;
     }
 
-    public static final int TRUSTEDPEERIP_FIELD_NUMBER = 10;
-    private java.lang.Object trustedPeerIP_;
+    public static final int BACKUPTOCLOUD_FIELD_NUMBER = 10;
+    private boolean backupToCloud_;
     /**
-     * <code>optional string trustedPeerIP = 10;</code>
+     * <code>optional bool backupToCloud = 10 [default = true];</code>
+     *
+     * <pre>
+     * If true will backup automatically to cloud
+     * </pre>
      */
-    public boolean hasTrustedPeerIP() {
+    public boolean hasBackupToCloud() {
       return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
-     * <code>optional string trustedPeerIP = 10;</code>
+     * <code>optional bool backupToCloud = 10 [default = true];</code>
+     *
+     * <pre>
+     * If true will backup automatically to cloud
+     * </pre>
+     */
+    public boolean getBackupToCloud() {
+      return backupToCloud_;
+    }
+
+    public static final int TRUSTEDPEERIP_FIELD_NUMBER = 11;
+    private java.lang.Object trustedPeerIP_;
+    /**
+     * <code>optional string trustedPeerIP = 11;</code>
+     */
+    public boolean hasTrustedPeerIP() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    /**
+     * <code>optional string trustedPeerIP = 11;</code>
      */
     public java.lang.String getTrustedPeerIP() {
       java.lang.Object ref = trustedPeerIP_;
@@ -667,7 +712,7 @@ public final class ProtoSettings {
       }
     }
     /**
-     * <code>optional string trustedPeerIP = 10;</code>
+     * <code>optional string trustedPeerIP = 11;</code>
      */
     public com.google.protobuf.ByteString
         getTrustedPeerIPBytes() {
@@ -683,16 +728,16 @@ public final class ProtoSettings {
       }
     }
 
-    public static final int BLOOMFILTERFALSEPOSITIVERATE_FIELD_NUMBER = 11;
+    public static final int BLOOMFILTERFALSEPOSITIVERATE_FIELD_NUMBER = 12;
     private float bloomFilterFalsePositiveRate_;
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
      */
     public boolean hasBloomFilterFalsePositiveRate() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
-     * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+     * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
      */
     public float getBloomFilterFalsePositiveRate() {
       return bloomFilterFalsePositiveRate_;
@@ -708,6 +753,7 @@ public final class ProtoSettings {
       connectOnLocalHost_ = false;
       connectToTrustedPeer_ = false;
       portForwarding_ = false;
+      backupToCloud_ = true;
       trustedPeerIP_ = "";
       bloomFilterFalsePositiveRate_ = 1e-05F;
     }
@@ -752,10 +798,13 @@ public final class ProtoSettings {
         output.writeBool(9, portForwarding_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeBytes(10, getTrustedPeerIPBytes());
+        output.writeBool(10, backupToCloud_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        output.writeFloat(11, bloomFilterFalsePositiveRate_);
+        output.writeBytes(11, getTrustedPeerIPBytes());
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        output.writeFloat(12, bloomFilterFalsePositiveRate_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -804,11 +853,15 @@ public final class ProtoSettings {
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(10, getTrustedPeerIPBytes());
+          .computeBoolSize(10, backupToCloud_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(11, bloomFilterFalsePositiveRate_);
+          .computeBytesSize(11, getTrustedPeerIPBytes());
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(12, bloomFilterFalsePositiveRate_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -945,10 +998,12 @@ public final class ProtoSettings {
         bitField0_ = (bitField0_ & ~0x00000080);
         portForwarding_ = false;
         bitField0_ = (bitField0_ & ~0x00000100);
-        trustedPeerIP_ = "";
+        backupToCloud_ = true;
         bitField0_ = (bitField0_ & ~0x00000200);
-        bloomFilterFalsePositiveRate_ = 1e-05F;
+        trustedPeerIP_ = "";
         bitField0_ = (bitField0_ & ~0x00000400);
+        bloomFilterFalsePositiveRate_ = 1e-05F;
+        bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
 
@@ -1016,9 +1071,13 @@ public final class ProtoSettings {
         if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
           to_bitField0_ |= 0x00000200;
         }
-        result.trustedPeerIP_ = trustedPeerIP_;
+        result.backupToCloud_ = backupToCloud_;
         if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
           to_bitField0_ |= 0x00000400;
+        }
+        result.trustedPeerIP_ = trustedPeerIP_;
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000800;
         }
         result.bloomFilterFalsePositiveRate_ = bloomFilterFalsePositiveRate_;
         result.bitField0_ = to_bitField0_;
@@ -1066,8 +1125,11 @@ public final class ProtoSettings {
         if (other.hasPortForwarding()) {
           setPortForwarding(other.getPortForwarding());
         }
+        if (other.hasBackupToCloud()) {
+          setBackupToCloud(other.getBackupToCloud());
+        }
         if (other.hasTrustedPeerIP()) {
-          bitField0_ |= 0x00000200;
+          bitField0_ |= 0x00000400;
           trustedPeerIP_ = other.trustedPeerIP_;
           onChanged();
         }
@@ -1471,15 +1533,63 @@ public final class ProtoSettings {
         return this;
       }
 
-      private java.lang.Object trustedPeerIP_ = "";
+      private boolean backupToCloud_ = true;
       /**
-       * <code>optional string trustedPeerIP = 10;</code>
+       * <code>optional bool backupToCloud = 10 [default = true];</code>
+       *
+       * <pre>
+       * If true will backup automatically to cloud
+       * </pre>
        */
-      public boolean hasTrustedPeerIP() {
+      public boolean hasBackupToCloud() {
         return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       /**
-       * <code>optional string trustedPeerIP = 10;</code>
+       * <code>optional bool backupToCloud = 10 [default = true];</code>
+       *
+       * <pre>
+       * If true will backup automatically to cloud
+       * </pre>
+       */
+      public boolean getBackupToCloud() {
+        return backupToCloud_;
+      }
+      /**
+       * <code>optional bool backupToCloud = 10 [default = true];</code>
+       *
+       * <pre>
+       * If true will backup automatically to cloud
+       * </pre>
+       */
+      public Builder setBackupToCloud(boolean value) {
+        bitField0_ |= 0x00000200;
+        backupToCloud_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool backupToCloud = 10 [default = true];</code>
+       *
+       * <pre>
+       * If true will backup automatically to cloud
+       * </pre>
+       */
+      public Builder clearBackupToCloud() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        backupToCloud_ = true;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object trustedPeerIP_ = "";
+      /**
+       * <code>optional string trustedPeerIP = 11;</code>
+       */
+      public boolean hasTrustedPeerIP() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      /**
+       * <code>optional string trustedPeerIP = 11;</code>
        */
       public java.lang.String getTrustedPeerIP() {
         java.lang.Object ref = trustedPeerIP_;
@@ -1496,7 +1606,7 @@ public final class ProtoSettings {
         }
       }
       /**
-       * <code>optional string trustedPeerIP = 10;</code>
+       * <code>optional string trustedPeerIP = 11;</code>
        */
       public com.google.protobuf.ByteString
           getTrustedPeerIPBytes() {
@@ -1512,36 +1622,36 @@ public final class ProtoSettings {
         }
       }
       /**
-       * <code>optional string trustedPeerIP = 10;</code>
+       * <code>optional string trustedPeerIP = 11;</code>
        */
       public Builder setTrustedPeerIP(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000200;
+  bitField0_ |= 0x00000400;
         trustedPeerIP_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string trustedPeerIP = 10;</code>
+       * <code>optional string trustedPeerIP = 11;</code>
        */
       public Builder clearTrustedPeerIP() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000400);
         trustedPeerIP_ = getDefaultInstance().getTrustedPeerIP();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string trustedPeerIP = 10;</code>
+       * <code>optional string trustedPeerIP = 11;</code>
        */
       public Builder setTrustedPeerIPBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000200;
+  bitField0_ |= 0x00000400;
         trustedPeerIP_ = value;
         onChanged();
         return this;
@@ -1549,31 +1659,31 @@ public final class ProtoSettings {
 
       private float bloomFilterFalsePositiveRate_ = 1e-05F;
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
        */
       public boolean hasBloomFilterFalsePositiveRate() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
+        return ((bitField0_ & 0x00000800) == 0x00000800);
       }
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
        */
       public float getBloomFilterFalsePositiveRate() {
         return bloomFilterFalsePositiveRate_;
       }
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
        */
       public Builder setBloomFilterFalsePositiveRate(float value) {
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         bloomFilterFalsePositiveRate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional float bloomFilterFalsePositiveRate = 11 [default = 1e-05];</code>
+       * <code>optional float bloomFilterFalsePositiveRate = 12 [default = 1e-05];</code>
        */
       public Builder clearBloomFilterFalsePositiveRate() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000800);
         bloomFilterFalsePositiveRate_ = 1e-05F;
         onChanged();
         return this;
@@ -1621,7 +1731,7 @@ public final class ProtoSettings {
     java.lang.String[] descriptorData = {
       "\n\024configSettings.proto\022\032org.authenticato" +
       "r.protobuf\032 google/protobuf/descriptor.p" +
-      "roto\"\252\003\n\016ConfigSettings\022A\n\013accountUnit\030\001" +
+      "roto\"\307\003\n\016ConfigSettings\022A\n\013accountUnit\030\001" +
       " \001(\0162\'.org.authenticator.protobuf.Bitcoi" +
       "nUnit:\003BTC\022\030\n\rdecimalPoints\030\002 \001(\005:\0014\022 \n\023" +
       "localCurrencySymbol\030\003 \001(\t:\003USD\022@\n\010langua" +
@@ -1630,13 +1740,14 @@ public final class ProtoSettings {
       "000\022\021\n\003TOR\030\006 \001(\010:\004true\022!\n\022connectOnLocal" +
       "Host\030\007 \001(\010:\005false\022#\n\024connectToTrustedPee",
       "r\030\010 \001(\010:\005false\022\035\n\016portForwarding\030\t \001(\010:\005" +
-      "false\022\025\n\rtrustedPeerIP\030\n \001(\t\022+\n\034bloomFil" +
-      "terFalsePositiveRate\030\013 \001(\002:\0051e-05*R\n\013Bit" +
-      "coinUnit\022\020\n\003BTC\020\000\032\007\202\265\030\003BTC\022\027\n\tMillibits\020" +
-      "\001\032\010\202\265\030\004mBTC\022\030\n\tMicrobits\020\002\032\t\202\265\030\005\302\265BTC*\030\n" +
-      "\tLanguages\022\013\n\007English\020\000:>\n\021bitcoin_unit_" +
-      "name\022!.google.protobuf.EnumValueOptions\030" +
-      "\320\206\003 \001(\tB\017B\rProtoSettings"
+      "false\022\033\n\rbackupToCloud\030\n \001(\010:\004true\022\025\n\rtr" +
+      "ustedPeerIP\030\013 \001(\t\022+\n\034bloomFilterFalsePos" +
+      "itiveRate\030\014 \001(\002:\0051e-05*R\n\013BitcoinUnit\022\020\n" +
+      "\003BTC\020\000\032\007\202\265\030\003BTC\022\027\n\tMillibits\020\001\032\010\202\265\030\004mBTC" +
+      "\022\030\n\tMicrobits\020\002\032\t\202\265\030\005\302\265BTC*\030\n\tLanguages\022" +
+      "\013\n\007English\020\000:>\n\021bitcoin_unit_name\022!.goog" +
+      "le.protobuf.EnumValueOptions\030\320\206\003 \001(\tB\017B\r" +
+      "ProtoSettings"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1656,7 +1767,7 @@ public final class ProtoSettings {
     internal_static_org_authenticator_protobuf_ConfigSettings_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_org_authenticator_protobuf_ConfigSettings_descriptor,
-        new java.lang.String[] { "AccountUnit", "DecimalPoints", "LocalCurrencySymbol", "Language", "DefaultFee", "TOR", "ConnectOnLocalHost", "ConnectToTrustedPeer", "PortForwarding", "TrustedPeerIP", "BloomFilterFalsePositiveRate", });
+        new java.lang.String[] { "AccountUnit", "DecimalPoints", "LocalCurrencySymbol", "Language", "DefaultFee", "TOR", "ConnectOnLocalHost", "ConnectToTrustedPeer", "PortForwarding", "BackupToCloud", "TrustedPeerIP", "BloomFilterFalsePositiveRate", });
     bitcoinUnitName.internalInit(descriptor.getExtensions().get(0));
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();

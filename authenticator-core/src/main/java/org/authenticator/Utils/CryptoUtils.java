@@ -132,6 +132,27 @@ public class CryptoUtils {
 	}
 
 	/**
+	 * Will generate a AES key derived from the seed, salt and additional argumets.
+	 * @param salt
+	 * @param seed
+	 * @param additionalArgs
+	 * @return
+	 */
+	static public SecretKey getBaAESKey(byte[] salt, byte[] seed, String ... additionalArgs) {
+		String keyHex = null;
+		{
+			String concatenated = Hex.toHexString(seed) +
+					Hex.toHexString(salt);
+			for(String arg: additionalArgs)
+				concatenated += arg;
+			keyHex = Hex.toHexString(digestSHA256(concatenated));
+		}
+
+		SecretKey key = secretKeyFromHexString(keyHex);
+		return key;
+	}
+
+	/**
 	 * This method encrypts a payload with an AES key derived from the seed, salt and additional argumets.<br>
 	 * It is a general purpose encryption util if you want to tie the key with this specific wallet.
 	 *
@@ -143,17 +164,7 @@ public class CryptoUtils {
 	 * @throws CouldNotEncryptPayload
 	 */
 	static public byte[] encryptHexPayloadWithBaAESKey(byte[] payload, byte[] salt, byte[] seed, String ... additionalArgs) throws CouldNotEncryptPayload {
-		String keyHex = null;
-		{
-			String concatenated = Hex.toHexString(seed) +
-					Hex.toHexString(salt);
-			for(String arg: additionalArgs)
-				concatenated += arg;
-			keyHex = Hex.toHexString(digestSHA256(concatenated));
- 		}
-
-		SecretKey key = secretKeyFromHexString(keyHex);
-
+		SecretKey key = getBaAESKey(salt, seed, additionalArgs);
 		return encrypt(key, Hex.decode(payload));
 	}
 
@@ -168,17 +179,7 @@ public class CryptoUtils {
 	 * @throws CannotDecryptMessageException
 	 */
 	static public byte[] decryptHexPayloadWithBaAESKey(byte[] payload, byte[] salt, byte[] seed, String ... additionalArgs) throws CannotDecryptMessageException {
-		String keyHex = null;
-		{
-			String concatenated = Hex.toHexString(seed) +
-					Hex.toHexString(salt);
-			for(String arg: additionalArgs)
-				concatenated += arg;
-			keyHex = Hex.toHexString(digestSHA256(concatenated));
-		}
-
-		SecretKey key = secretKeyFromHexString(keyHex);
-
+		SecretKey key = getBaAESKey(salt, seed, additionalArgs);
 		return decryptPayload(Hex.decode(payload), key);
 	}
 	

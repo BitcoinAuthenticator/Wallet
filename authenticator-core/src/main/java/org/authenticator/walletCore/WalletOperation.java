@@ -25,8 +25,8 @@ import java.util.*;
 import javax.annotation.Nullable;
 
 import org.spongycastle.util.encoders.Hex;
-import org.authenticator.db.settingsDB;
-import org.authenticator.db.walletDB;
+import org.authenticator.db.SettingsDb;
+import org.authenticator.db.WalletDb;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
@@ -88,8 +88,8 @@ public class WalletOperation extends BASE{
 
 	private WalletWrapper mWalletWrapper;
 	private BAHierarchy authenticatorWalletHierarchy;
-	private walletDB configFile;
-	private settingsDB settingsFile;
+	private WalletDb configFile;
+	private SettingsDb settingsFile;
 	private static BAApplicationParameters AppParams;
 	private static WalletDownloadListener blockChainDownloadListener;
 	
@@ -139,7 +139,7 @@ public class WalletOperation extends BASE{
 			String getConfigFileName = params.getApplicationDataFolderAbsolutePath() + params.getAppName() + ".config";
 			AppParams = params;
 			if(configFile == null){
-				configFile = new walletDB(getConfigFileName);
+				configFile = new WalletDb(getConfigFileName);
 				/**
 				 * Check to see if a config file exists, if not, initialize
 				 */
@@ -149,7 +149,7 @@ public class WalletOperation extends BASE{
 				}
 			}
 			if(settingsFile == null) {
-				settingsFile = new settingsDB(getConfigFileName);
+				settingsFile = new SettingsDb(getConfigFileName);
 			}
 			if(getWalletHierarchy() == null)
 			{
@@ -184,7 +184,7 @@ public class WalletOperation extends BASE{
 	//		Getters and setters
 	//
 	//#######################################
-	public walletDB getConfigFile() {
+	public WalletDb getConfigFile() {
 		return configFile;
 	}
 

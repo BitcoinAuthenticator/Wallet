@@ -9,7 +9,7 @@ import com.google.protobuf.ByteString;
 import org.authenticator.Authenticator;
 import org.authenticator.BAApplicationParameters;
 import org.authenticator.Utils.CryptoUtils;
-import org.authenticator.db.walletDB;
+import org.authenticator.db.WalletDb;
 import org.authenticator.hierarchy.BAHierarchy;
 import org.authenticator.hierarchy.SingleAccountManagerImpl;
 import org.authenticator.protobuf.AuthWalletHierarchy;
@@ -21,9 +21,7 @@ import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -43,7 +41,7 @@ public class PairingTest {
 	@Test
 	public void updatePairingGCMRegistrationIDTest() {
 		WalletOperation woMocked = Mockito.spy(new WalletOperation());
-		walletDB mockedWalletdb = Mockito.mock(walletDB.class);
+		WalletDb mockedWalletdb = Mockito.mock(WalletDb.class);
 		Mockito.doReturn(mockedWalletdb).when(woMocked).getConfigFile();
 
 		try {
@@ -59,7 +57,7 @@ public class PairingTest {
 	@Test
 	public void getPairingObjectForAccountIndexTest() {
 		WalletOperation woMocked = Mockito.spy(new WalletOperation());
-		walletDB mockedWalletdb = Mockito.mock(walletDB.class);
+		WalletDb mockedWalletdb = Mockito.mock(WalletDb.class);
 		Mockito.doReturn(mockedWalletdb).when(woMocked).getConfigFile();
 
 		// mock pairing objects
@@ -115,7 +113,7 @@ public class PairingTest {
 	@Test
 	public void getAccountIndexForPairingTest() {
 		WalletOperation woMocked = Mockito.spy(new WalletOperation());
-		walletDB mockedWalletdb = Mockito.mock(walletDB.class);
+		WalletDb mockedWalletdb = Mockito.mock(WalletDb.class);
 		Mockito.doReturn(mockedWalletdb).when(woMocked).getConfigFile();
 
 		// mock pairing objects
@@ -177,7 +175,7 @@ public class PairingTest {
 	@Test
 	public void getPublicKeyAndChainTest() {
 		WalletOperation woMocked = Mockito.spy(new WalletOperation());
-		walletDB mockedWalletdb = Mockito.mock(walletDB.class);
+		WalletDb mockedWalletdb = Mockito.mock(WalletDb.class);
 		Mockito.doReturn(mockedWalletdb).when(woMocked).getConfigFile();
 
 		// mock pairing objects
@@ -482,7 +480,7 @@ public class PairingTest {
 		/*
 			mock write pairing data, is private
 		 */
-		walletDB mockedWalletdb = Mockito.mock(walletDB.class);
+		WalletDb mockedWalletdb = Mockito.mock(WalletDb.class);
 		Mockito.doReturn(mockedWalletdb).when(woMocked).getConfigFile();
 		// mock returned pairing object
 		PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.class);

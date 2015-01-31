@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javafx.scene.image.Image;
+import org.authenticator.Utils.AuthenticatorBackupCloud.BABackupCloud;
 import org.authenticator.listeners.BAWalletExecutionDataBinder;
 import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.core.Transaction;
@@ -280,6 +281,8 @@ public class Authenticator extends BASE{
 					finishStartup();
 		         }
 			}, MoreExecutors.sameThreadExecutor());
+
+			BABackupCloud.getInstance().loginToCloud("testuser3".getBytes(), "testuser3".getBytes(),null);
 		} 
 		catch (Exception e) { e.printStackTrace(); }
 	}
@@ -290,19 +293,25 @@ public class Authenticator extends BASE{
 	
 	@Override
 	protected void doStop() {
-		if(mTCPListener.isRunning()){ // in case the tcp crashed 
-			mTCPListener.stopAsync();
-			mTCPListener.addListener(new Service.Listener() {
-				@Override public void terminated(State from) {
-					LOG.info("Authenticator Stopped");
-					notifyStopped();
-		         }
-			}, MoreExecutors.sameThreadExecutor());	
+		try {
+			if(mTCPListener.isRunning()){ // in case the tcp crashed
+				mTCPListener.stopAsync();
+				mTCPListener.addListener(new Service.Listener() {
+					@Override public void terminated(State from) {
+						LOG.info("Authenticator Stopped");
+						notifyStopped();
+					}
+				}, MoreExecutors.sameThreadExecutor());
+
+				BABackupCloud.getInstance().logoutFromCloud(null);
+			}
+			else{
+				LOG.info("Authenticator Stopped");
+				notifyStopped();
+			}
 		}
-		else{
-			LOG.info("Authenticator Stopped");
-			notifyStopped();
-		}
+		catch (Exception e) { e.printStackTrace(); }
+
 			
 	}
 

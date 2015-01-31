@@ -1,13 +1,21 @@
 package org.authenticator.db;
 
-import java.io.IOException;
+import com.google.protobuf.InvalidProtocolBufferException;
 
-public class dbBase {
+import java.io.IOException;
+import java.io.Serializable;
+
+public class DbBase {
 	public String filePath;
 
-	public dbBase() { }
+	public DbBase() { }
 	
-	public dbBase(String filePath) throws IOException{
+	public DbBase(String filePath) throws IOException{
 		this.filePath = filePath;//new java.io.File( "." ).getCanonicalPath() + "/" + fileName + ".config";
 	}
+
+	public byte[] dumpToByteArray() { return null; }
+	public String dumpKey() { return ""; }
+
+	public void restoreFromBytes(byte[] data) throws IOException { }
 }

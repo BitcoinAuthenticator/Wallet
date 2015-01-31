@@ -3,20 +3,14 @@ package org.authenticator.db;
 import static org.junit.Assert.*;
 
 import com.google.protobuf.ByteString;
-import org.authenticator.GCM.dispacher.MessageBuilder;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.db.exceptions.PairingObjectWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy;
 import org.authenticator.protobuf.ProtoConfig;
-import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -43,7 +37,7 @@ public class WalletDBTest {
 
 	@Test
 	public void setPairedTest() {
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -71,7 +65,7 @@ public class WalletDBTest {
 
 	@Test
 	public void getPairedTest() {
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -102,7 +96,7 @@ public class WalletDBTest {
 
 	@Test
 	public void markAddressAsUsedTest() {
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 
 		// getConfigFileBuilder method stub
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -155,7 +149,7 @@ public class WalletDBTest {
 
 	@Test
 	public void isUsedAddressTest() {
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 
 		// getConfigFileBuilder method stub
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -243,7 +237,7 @@ public class WalletDBTest {
 		byte[] salt 				= "i am the salt".getBytes();
 
 		// getConfigFileBuilder method stub
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -325,7 +319,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -402,7 +396,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -458,7 +452,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 		try {
 			Mockito.doReturn(all).when(mockedWalletdb).getAllAccounts();
 		} catch (Exception e) {
@@ -493,7 +487,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -545,7 +539,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		walletDB mockedWalletdb = Mockito.spy(new walletDB());
+		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		// ConfigAuthenticatorWallet.Builder
