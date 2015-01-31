@@ -3398,18 +3398,21 @@ public final class ProtoConfig {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string aes_key = 1;</code>
+     * <code>required bytes aes_key = 1;</code>
+     *
+     * <pre>
+     * byte array;
+     * </pre>
      */
     boolean hasAesKey();
     /**
-     * <code>required string aes_key = 1;</code>
+     * <code>required bytes aes_key = 1;</code>
+     *
+     * <pre>
+     * byte array;
+     * </pre>
      */
-    java.lang.String getAesKey();
-    /**
-     * <code>required string aes_key = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getAesKeyBytes();
+    com.google.protobuf.ByteString getAesKey();
 
     /**
      * <code>required string master_public_key = 2;</code>
@@ -3510,7 +3513,7 @@ public final class ProtoConfig {
      * <code>optional bytes key_salt = 9;</code>
      *
      * <pre>
-     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * Salt for the AES, used to encrypt the pairing data
      * </pre>
      */
     boolean hasKeySalt();
@@ -3518,7 +3521,7 @@ public final class ProtoConfig {
      * <code>optional bytes key_salt = 9;</code>
      *
      * <pre>
-     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * Salt for the AES, used to encrypt the pairing data
      * </pre>
      */
     com.google.protobuf.ByteString getKeySalt();
@@ -3589,9 +3592,8 @@ public final class ProtoConfig {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              aesKey_ = bs;
+              aesKey_ = input.readBytes();
               break;
             }
             case 18: {
@@ -3684,45 +3686,26 @@ public final class ProtoConfig {
 
     private int bitField0_;
     public static final int AES_KEY_FIELD_NUMBER = 1;
-    private java.lang.Object aesKey_;
+    private com.google.protobuf.ByteString aesKey_;
     /**
-     * <code>required string aes_key = 1;</code>
+     * <code>required bytes aes_key = 1;</code>
+     *
+     * <pre>
+     * byte array;
+     * </pre>
      */
     public boolean hasAesKey() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required string aes_key = 1;</code>
+     * <code>required bytes aes_key = 1;</code>
+     *
+     * <pre>
+     * byte array;
+     * </pre>
      */
-    public java.lang.String getAesKey() {
-      java.lang.Object ref = aesKey_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          aesKey_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string aes_key = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getAesKeyBytes() {
-      java.lang.Object ref = aesKey_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        aesKey_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.google.protobuf.ByteString getAesKey() {
+      return aesKey_;
     }
 
     public static final int MASTER_PUBLIC_KEY_FIELD_NUMBER = 2;
@@ -3956,7 +3939,7 @@ public final class ProtoConfig {
      * <code>optional bytes key_salt = 9;</code>
      *
      * <pre>
-     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * Salt for the AES, used to encrypt the pairing data
      * </pre>
      */
     public boolean hasKeySalt() {
@@ -3966,7 +3949,7 @@ public final class ProtoConfig {
      * <code>optional bytes key_salt = 9;</code>
      *
      * <pre>
-     * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+     * Salt for the AES, used to encrypt the pairing data
      * </pre>
      */
     public com.google.protobuf.ByteString getKeySalt() {
@@ -3989,7 +3972,7 @@ public final class ProtoConfig {
     }
 
     private void initFields() {
-      aesKey_ = "";
+      aesKey_ = com.google.protobuf.ByteString.EMPTY;
       masterPublicKey_ = "";
       chainCode_ = "";
       gCM_ = "";
@@ -4050,7 +4033,7 @@ public final class ProtoConfig {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getAesKeyBytes());
+        output.writeBytes(1, aesKey_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getMasterPublicKeyBytes());
@@ -4090,7 +4073,7 @@ public final class ProtoConfig {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getAesKeyBytes());
+          .computeBytesSize(1, aesKey_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -4249,7 +4232,7 @@ public final class ProtoConfig {
 
       public Builder clear() {
         super.clear();
-        aesKey_ = "";
+        aesKey_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
         masterPublicKey_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -4354,9 +4337,7 @@ public final class ProtoConfig {
       public Builder mergeFrom(org.authenticator.protobuf.ProtoConfig.PairedAuthenticator other) {
         if (other == org.authenticator.protobuf.ProtoConfig.PairedAuthenticator.getDefaultInstance()) return this;
         if (other.hasAesKey()) {
-          bitField0_ |= 0x00000001;
-          aesKey_ = other.aesKey_;
-          onChanged();
+          setAesKey(other.getAesKey());
         }
         if (other.hasMasterPublicKey()) {
           bitField0_ |= 0x00000002;
@@ -4456,51 +4437,35 @@ public final class ProtoConfig {
       }
       private int bitField0_;
 
-      private java.lang.Object aesKey_ = "";
+      private com.google.protobuf.ByteString aesKey_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>required string aes_key = 1;</code>
+       * <code>required bytes aes_key = 1;</code>
+       *
+       * <pre>
+       * byte array;
+       * </pre>
        */
       public boolean hasAesKey() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required string aes_key = 1;</code>
+       * <code>required bytes aes_key = 1;</code>
+       *
+       * <pre>
+       * byte array;
+       * </pre>
        */
-      public java.lang.String getAesKey() {
-        java.lang.Object ref = aesKey_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            aesKey_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public com.google.protobuf.ByteString getAesKey() {
+        return aesKey_;
       }
       /**
-       * <code>required string aes_key = 1;</code>
+       * <code>required bytes aes_key = 1;</code>
+       *
+       * <pre>
+       * byte array;
+       * </pre>
        */
-      public com.google.protobuf.ByteString
-          getAesKeyBytes() {
-        java.lang.Object ref = aesKey_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          aesKey_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string aes_key = 1;</code>
-       */
-      public Builder setAesKey(
-          java.lang.String value) {
+      public Builder setAesKey(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -4510,24 +4475,15 @@ public final class ProtoConfig {
         return this;
       }
       /**
-       * <code>required string aes_key = 1;</code>
+       * <code>required bytes aes_key = 1;</code>
+       *
+       * <pre>
+       * byte array;
+       * </pre>
        */
       public Builder clearAesKey() {
         bitField0_ = (bitField0_ & ~0x00000001);
         aesKey_ = getDefaultInstance().getAesKey();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string aes_key = 1;</code>
-       */
-      public Builder setAesKeyBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        aesKey_ = value;
         onChanged();
         return this;
       }
@@ -4961,7 +4917,7 @@ public final class ProtoConfig {
        * <code>optional bytes key_salt = 9;</code>
        *
        * <pre>
-       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * Salt for the AES, used to encrypt the pairing data
        * </pre>
        */
       public boolean hasKeySalt() {
@@ -4971,7 +4927,7 @@ public final class ProtoConfig {
        * <code>optional bytes key_salt = 9;</code>
        *
        * <pre>
-       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * Salt for the AES, used to encrypt the pairing data
        * </pre>
        */
       public com.google.protobuf.ByteString getKeySalt() {
@@ -4981,7 +4937,7 @@ public final class ProtoConfig {
        * <code>optional bytes key_salt = 9;</code>
        *
        * <pre>
-       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * Salt for the AES, used to encrypt the pairing data
        * </pre>
        */
       public Builder setKeySalt(com.google.protobuf.ByteString value) {
@@ -4997,7 +4953,7 @@ public final class ProtoConfig {
        * <code>optional bytes key_salt = 9;</code>
        *
        * <pre>
-       * the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+       * Salt for the AES, used to encrypt the pairing data
        * </pre>
        */
       public Builder clearKeySalt() {
@@ -13152,7 +13108,7 @@ public final class ProtoConfig {
       "y\032M\n\031ATAccountAddressHierarchy\022\024\n\014hierar" +
       "chyKey\030\001 \002(\014\022\032\n\022hierarchyChaincode\030\002 \002(\014" +
       "\"\340\001\n\023PairedAuthenticator\022\017\n\007aes_key\030\001 \002(",
-      "\t\022\031\n\021master_public_key\030\002 \002(\t\022\022\n\nchain_co" +
+      "\014\022\031\n\021master_public_key\030\002 \002(\t\022\022\n\nchain_co" +
       "de\030\003 \002(\t\022\013\n\003GCM\030\004 \002(\t\022\021\n\tpairingID\030\005 \002(\t" +
       "\022\017\n\007testnet\030\006 \002(\010\022\016\n\006keys_n\030\007 \002(\005\022\032\n\022wal" +
       "letAccountIndex\030\010 \002(\005\022\020\n\010key_salt\030\t \001(\014\022" +

@@ -8,12 +8,9 @@ import javax.crypto.spec.SecretKeySpec;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.Utils.CryptoUtils.CannotDecryptMessageException;
 import org.authenticator.Utils.CryptoUtils.CouldNotEncryptPayload;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.spongycastle.util.Arrays;
 import org.spongycastle.util.encoders.Hex;
-
-import java.util.Random;
 
 public class CryptoUtilsTest {
 
@@ -208,15 +205,19 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void authenticatorAESEncryptionTest() {
-		String seedHex 	  = "55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d";
-		String walletIdex = "1";
-		String salt 	  = "d9d2d4fa6780f5b36c3b740a52d0547c6d195dea";
-		String AESHex 	  = "d8d2b7a00a615ead144bcb02abe325fb955415484003eee969339d7d32f8ca3a";
-		String expected = "a108b45bf3429d139980480739026a34f680856897abcc36603c03bf806c352e190ee11cf1b7a10e3848bd4ab45608f0";
-		String result 	= "";
+	public void encryptHexPayloadWithBaAESKeyTest() {
+		byte[] seed 	  	= Hex.decode("55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d");
+		String walletIdex	 = "1";
+		byte[] salt 	  	= Hex.decode("d9d2d4fa6780f5b36c3b740a52d0547c6d195dea");
+		byte[] aes 	 	  	= "d8d2b7a00a615ead144bcb02abe325fb955415484003eee969339d7d32f8ca3a".getBytes();
+		String expected 	= "a108b45bf3429d139980480739026a34f680856897abcc36603c03bf806c352e190ee11cf1b7a10e3848bd4ab45608f0";
+		String result 		= "";
 		try {
-			result = Hex.toHexString(CryptoUtils.authenticatorAESEncryption(AESHex, salt, walletIdex, seedHex));
+			String[] additionalArgs = new String[]{ walletIdex };
+			result = Hex.toHexString(CryptoUtils.encryptHexPayloadWithBaAESKey(aes,
+					salt,
+					seed,
+					additionalArgs));
 			assertTrue(expected.equals(result));
 		} catch (CouldNotEncryptPayload couldNotEncryptPayload) {
 			couldNotEncryptPayload.printStackTrace();
@@ -224,14 +225,30 @@ public class CryptoUtilsTest {
 		}
 
 
-		seedHex 	  	= "55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d";
+		seed 	  		= Hex.decode("55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d");
 		walletIdex 		= "120";
-		salt 	  		= "2b94f795c44a74825dbb3b6c7c564f00cdd87fa4";
-		AESHex 	  		= "7d2db9d447f41cd16b936ac177f7eacbbad378f53b92dc6445924dd8c700e231";
+		salt 	  		= Hex.decode("2b94f795c44a74825dbb3b6c7c564f00cdd87fa4");
+		aes 	  		= "7d2db9d447f41cd16b936ac177f7eacbbad378f53b92dc6445924dd8c700e231".getBytes();
 		expected 		= "1de8139f7b2dd5ee6435a03416b54856e717220ab83a8a233e7b0ba871dd7e713391fee399afdcc2db52215de31b7662";
 		result 			= "";
 		try {
-			result = Hex.toHexString(CryptoUtils.authenticatorAESEncryption(AESHex, salt, walletIdex, seedHex));
+			String[] additionalArgs = new String[]{ walletIdex };
+			result = Hex.toHexString(CryptoUtils.encryptHexPayloadWithBaAESKey(aes, salt, seed, additionalArgs));
+			assertTrue(expected.equals(result));
+		} catch (CouldNotEncryptPayload couldNotEncryptPayload) {
+			couldNotEncryptPayload.printStackTrace();
+			assertTrue(false);
+		}
+
+
+		// without additional args
+		seed 	  		= Hex.decode("55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d");
+		salt 	  		= Hex.decode("2b94f795c44a74825dbb3b6c7c564f00cdd87fa4");
+		aes 	  		= "7d2db9d447f41cd16b936ac177f7eacbbad378f53b92dc6445924dd8c700e231".getBytes();
+		expected 		= "7797e801abc12436c76bb89990a2584f1fe6b08a976ad058aa8ff59112306c6cd27ed1e89c960df3edff68890384e7c5";
+		result 			= "";
+		try {
+			result = Hex.toHexString(CryptoUtils.encryptHexPayloadWithBaAESKey(aes, salt, seed));
 			assertTrue(expected.equals(result));
 		} catch (CouldNotEncryptPayload couldNotEncryptPayload) {
 			couldNotEncryptPayload.printStackTrace();
@@ -240,15 +257,19 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void authenticatorAESDecryptionTest() {
-		String seedHex 	  			= "55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d";
+	public void decryptHexPayloadWithBaAESKeyTest() {
+		byte[] seed 	  			= Hex.decode("55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d");
 		String walletIdex 			= "1";
-		String salt 	  			= "d9d2d4fa6780f5b36c3b740a52d0547c6d195dea";
-		String AESEncryptedHex 	  	= "a108b45bf3429d139980480739026a34f680856897abcc36603c03bf806c352e190ee11cf1b7a10e3848bd4ab45608f0";
+		byte[] salt 	  			= Hex.decode("d9d2d4fa6780f5b36c3b740a52d0547c6d195dea");
+		byte[] aes 	  				= "a108b45bf3429d139980480739026a34f680856897abcc36603c03bf806c352e190ee11cf1b7a10e3848bd4ab45608f0".getBytes();
 		String expected 			= "d8d2b7a00a615ead144bcb02abe325fb955415484003eee969339d7d32f8ca3a";
 		String result 				= "";
 		try {
-			result = Hex.toHexString(CryptoUtils.authenticatorAESDecryption(AESEncryptedHex, salt, walletIdex, seedHex));
+			String[] additionalArgs = new String[]{ walletIdex };
+			result = Hex.toHexString(CryptoUtils.decryptHexPayloadWithBaAESKey(aes,
+					salt,
+					seed,
+					additionalArgs));
 			assertTrue(expected.equals(result));
 		} catch (CannotDecryptMessageException e) {
 			e.printStackTrace();
@@ -256,14 +277,35 @@ public class CryptoUtilsTest {
 		}
 
 
-		seedHex 	  			= "55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d";
+		seed 	  				= Hex.decode("55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d");
 		walletIdex 				= "120";
-		salt 	  				= "2b94f795c44a74825dbb3b6c7c564f00cdd87fa4";
-		AESEncryptedHex 	  	= "1de8139f7b2dd5ee6435a03416b54856e717220ab83a8a233e7b0ba871dd7e713391fee399afdcc2db52215de31b7662";
+		salt 	  				= Hex.decode("2b94f795c44a74825dbb3b6c7c564f00cdd87fa4");
+		aes				 	  	= "1de8139f7b2dd5ee6435a03416b54856e717220ab83a8a233e7b0ba871dd7e713391fee399afdcc2db52215de31b7662".getBytes();
 		expected 				= "7d2db9d447f41cd16b936ac177f7eacbbad378f53b92dc6445924dd8c700e231";
 		result 					= "";
 		try {
-			result = Hex.toHexString(CryptoUtils.authenticatorAESDecryption(AESEncryptedHex, salt, walletIdex, seedHex));
+			String[] additionalArgs = new String[]{ walletIdex };
+			result = Hex.toHexString(CryptoUtils.decryptHexPayloadWithBaAESKey(aes,
+					salt,
+					seed,
+					additionalArgs));
+			assertTrue(expected.equals(result));
+		} catch (CannotDecryptMessageException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+
+		// without additional args
+		seed 	  				= Hex.decode("55967fdf0e7fd5f0c78e849f37ed5b9fafcc94b5660486ee9ad97006b6590a4d");
+		salt 	  				= Hex.decode("2b94f795c44a74825dbb3b6c7c564f00cdd87fa4");
+		aes				 	  	= "7797e801abc12436c76bb89990a2584f1fe6b08a976ad058aa8ff59112306c6cd27ed1e89c960df3edff68890384e7c5".getBytes();
+		expected 				= "7d2db9d447f41cd16b936ac177f7eacbbad378f53b92dc6445924dd8c700e231";
+		result 					= "";
+		try {
+			result = Hex.toHexString(CryptoUtils.decryptHexPayloadWithBaAESKey(aes,
+					salt,
+					seed));
 			assertTrue(expected.equals(result));
 		} catch (CannotDecryptMessageException e) {
 			e.printStackTrace();

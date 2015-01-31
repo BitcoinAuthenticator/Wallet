@@ -99,7 +99,7 @@ public class CoinsReceivedNotificationSenderTest {
 			}
 
 			try {
-				Mockito.when(mocked.getAESKey("i am the the pairing id", walletPass)).thenReturn("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0");
+				Mockito.when(mocked.getAESKey("i am the the pairing id", walletPass)).thenReturn(Hex.decode("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0"));
 			} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
 				e.printStackTrace();
 				assertTrue(false);
@@ -358,7 +358,7 @@ public class CoinsReceivedNotificationSenderTest {
 			}
 
 			try {
-				Mockito.when(mocked.getAESKey("i am the the pairing id", walletPass)).thenReturn("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0");
+				Mockito.when(mocked.getAESKey("i am the the pairing id", walletPass)).thenReturn(Hex.decode("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0"));
 				Mockito.when(mocked.getAESKey("i am the the pairing id", walletEmptyPass)).thenThrow(WrongWalletPasswordException.class);
 				Mockito.when(mocked.getAESKey("i am the the pairing id", walletWrongPass)).thenThrow(WrongWalletPasswordException.class);
 			} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
@@ -469,8 +469,8 @@ public class CoinsReceivedNotificationSenderTest {
 	
 	private PairedAuthenticator getMockedPairedAuthenticator(boolean isEncrypted) {
 		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
-			String hexSk = "A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0";
-			newPair.setAesKey(hexSk);
+			byte[] aes = Hex.decode("A2F72940109899C1708511B4867727E507299E276B2E44B5D48BBFE8689C17F0");
+			newPair.setAesKey(ByteString.copyFrom(aes));
 			String masterPubKey = "i am the the master public key";
 			newPair.setMasterPublicKey(masterPubKey);
 			String chainCode = "i am the the chain code";
@@ -488,7 +488,7 @@ public class CoinsReceivedNotificationSenderTest {
 	}
 	
 	private Device deviceSentTo(PairedAuthenticator pairing) {
-		SecretKey secretkey = new SecretKeySpec(Hex.decode(pairing.getAesKey()), "AES");						
+		SecretKey secretkey = new SecretKeySpec(pairing.getAesKey().toByteArray(), "AES");
 		byte[] gcmID = pairing.getGCM().getBytes();
 		Device d = new Device(pairing.getChainCode().getBytes(),
 				pairing.getMasterPublicKey().getBytes(),

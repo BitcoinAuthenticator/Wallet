@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.protobuf.ByteString;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -106,7 +107,7 @@ public class SignTransactionTest {
 		
 		// general 
 		po = PairedAuthenticator.newBuilder();
-		po.setAesKey(aes);
+		po.setAesKey(ByteString.copyFrom(Hex.decode(aes)));
 		po.setGCM("some gcm");
 		po.setPairingID(pairingID);
 		po.setTestnet(false);
@@ -114,7 +115,7 @@ public class SignTransactionTest {
 		pairingID = "1";
 		wallet = Mockito.mock(WalletOperation.class);
 		Mockito.when(wallet.getNetworkParams()).thenReturn(MainNetParams.get());
-		Mockito.when(wallet.getAESKey(pairingID, null)).thenReturn(aes);
+		Mockito.when(wallet.getAESKey(pairingID, null)).thenReturn(Hex.decode(aes));
 		
 		// inputs
 		ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();

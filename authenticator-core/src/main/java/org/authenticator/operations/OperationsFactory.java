@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.crypto.SecretKey;
 
+import org.bouncycastle.util.encoders.Hex;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.bitcoinj.core.ScriptException;
@@ -200,7 +201,8 @@ public class OperationsFactory extends BASE{
 						}
 						else{
 							//Decrypt the response
-							SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wallet.getAESKey(pairingID, WALLET_PW));
+							byte[] key = wallet.getAESKey(pairingID, WALLET_PW);
+							SecretKey secretkey = CryptoUtils.secretKeyFromHexString(Hex.toHexString(key));
 							byte[] testsig = CryptoUtils.decryptPayloadWithChecksum(authenticatorByteResponse, secretkey);
 							
 							//Break apart the signature array sent over from the authenticator
@@ -299,7 +301,7 @@ public class OperationsFactory extends BASE{
 		
 		return op;
 	}
-	
+
 	/**
 	 * If a pending request to the Authenticator app was made, change in the wallet IP will break any attempt to finalize the operation.<br>
 	 * To resolve the problem, every time the wallet is launched, it will send a GCM notification to the Authenticator to:<br>
@@ -307,9 +309,8 @@ public class OperationsFactory extends BASE{
 	 * <li> If there are any pending requests, remind the user</li>
 	 * <li> Update the current wallet IPs</li>
 	 * <ol>
-	 * 
-	 * 
-	 * @param requestID
+	 *
+	 * @param wallet
 	 * @param pairingID
 	 * @return
 	 */

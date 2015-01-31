@@ -19,13 +19,11 @@ import org.authenticator.listeners.BAGeneralEventsListener.PendingRequestUpdateT
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
 
 import javax.annotation.Nullable;
 
-import org.json.JSONException;
 import org.spongycastle.util.encoders.Hex;
 import org.authenticator.db.settingsDB;
 import org.authenticator.db.walletDB;
@@ -53,7 +51,6 @@ import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.core.ScriptException;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence;
-import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.core.Utils;
@@ -1127,30 +1124,33 @@ public class WalletOperation extends BASE{
 	}
 
 	/**
-	 * Returns the decrypted (in case encrypted) AES key, null if no key found
+	 * Returns the decrypted (in case encrypted) AES key bytes (in plain, not hex), null if no key found.
 	 *
 	 * @param pairID
 	 * @param walletPW
 	 * @return
 	 */
-	public String getAESKey(String pairID, @Nullable BAPassword walletPW) throws WrongWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
+	public byte[] getAESKey(String pairID, @Nullable BAPassword walletPW) throws WrongWalletPasswordException, CryptoUtils.CannotDecryptMessageException {
 		try {
 			List<PairedAuthenticator> all = getAllPairingObjectArray();
 			for(PairedAuthenticator o:all)
 			{
 				if(o.getPairingID().equals(pairID)) {
 					if(!o.getIsEncrypted()) {
-						return o.getAesKey();
+						return o.getAesKey().toByteArray();
 					}
 					else {
 						LOG.info("Pairing " + pairID + " AES key is encrypted. Returning decrypted key");
 						int accountIdx = getAccountIndexForPairing(pairID);
-						String seed = Hex.toHexString(getWalletSeedBytes(walletPW));
-						return Hex.toHexString(CryptoUtils.authenticatorAESDecryption(o.getAesKey(),
-												Hex.toHexString(o.getKeySalt().toByteArray()),
-												new Integer(accountIdx).toString(),
-												seed)
-						                      );
+						byte[] seed = getWalletSeedBytes(walletPW);
+						byte[] key = Hex.toHexString(o.getAesKey().toByteArray()).getBytes();
+
+						// return in plain byte array, not hex
+						String[] additionalArgs = new String[]{ new Integer(accountIdx).toString() };
+						return CryptoUtils.decryptHexPayloadWithBaAESKey(key,
+								o.getKeySalt().toByteArray(),
+								seed,
+								additionalArgs);
 					}
 				}
 			}
@@ -1192,7 +1192,7 @@ public class WalletOperation extends BASE{
 	 *
 	 * @param authMpubkey
 	 * @param authhaincode
-	 * @param sharedAESHex - <b>must be passed not encrypted !</b>
+	 * @param key - <b>must be passed not encrypted !</b>
 	 * @param GCM
 	 * @param pairingID
 	 * @param pairName
@@ -1207,7 +1207,7 @@ public class WalletOperation extends BASE{
 	 */
 	public PairedAuthenticator generatePairing(String authMpubkey, 
 			String authhaincode, 
-			String sharedAESHex,
+			byte[] key,
 			String GCM, 
 			String pairingID, 
 			String pairName,
@@ -1240,24 +1240,25 @@ public class WalletOperation extends BASE{
 		SecureRandom random = new SecureRandom();
 		byte[] saltBytes = new byte[20];
 		random.nextBytes(saltBytes);
-		String salt = Hex.toHexString(saltBytes);
-		String sharedEncryptedAES = sharedAESHex;
+		byte[] salt = saltBytes;
+		byte[] sharedEncryptedAES = key;
 		if(shouldEncrypt) {
 			byte[] seed = getWalletSeedBytes(walletPW);
-			sharedEncryptedAES = Hex.toHexString(CryptoUtils.authenticatorAESEncryption(sharedAESHex,
+			String[] additionalArgs = new String[]{ new Integer(finalAccountID).toString() };
+			sharedEncryptedAES = CryptoUtils.encryptHexPayloadWithBaAESKey(Hex.toHexString(key).getBytes(),
 					salt,
-					new Integer(finalAccountID).toString(),
-					Hex.toHexString(seed)));
+					seed,
+					additionalArgs);
 		}
 
 		PairedAuthenticator ret = writePairingData(authMpubkey,
 				authhaincode,
-				sharedEncryptedAES,
+				sharedEncryptedAES, // plain byte array, not hex
 				GCM,
 				pairingID,
 				finalAccountID,
 				shouldEncrypt,
-				saltBytes);
+				salt);
 		Authenticator.fireOnAccountsModified(AccountModificationType.NewAccount, finalAccountID);
 		LOG.info("Created new pairing authenticator object: " + ret.toString());
 		return ret;
@@ -1265,7 +1266,7 @@ public class WalletOperation extends BASE{
 	
 	private PairedAuthenticator writePairingData(String mpubkey,
 												 String chaincode,
-												 String key,
+												 byte[] key,
 												 String GCM,
 												 String pairingID,
 												 int accountIndex,

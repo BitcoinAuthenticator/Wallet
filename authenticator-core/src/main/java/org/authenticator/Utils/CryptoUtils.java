@@ -132,46 +132,54 @@ public class CryptoUtils {
 	}
 
 	/**
+	 * This method encrypts a payload with an AES key derived from the seed.<br>
+	 * It is a general purpose encryption util if you want to tie the key with this specific wallet.
 	 *
-	 * @param AESHexKey
+	 * @param payload - in hex
 	 * @param salt
-	 * @param accountIndex
+	 * @param additionalArgs - additional String arguments to add to the digest
 	 * @param seed
 	 * @return
 	 * @throws CouldNotEncryptPayload
 	 */
-	static public byte[] authenticatorAESEncryption(String AESHexKey, String salt, String accountIndex, String seed) throws CouldNotEncryptPayload {
+	static public byte[] encryptHexPayloadWithBaAESKey(byte[] payload, byte[] salt, byte[] seed, String ... additionalArgs) throws CouldNotEncryptPayload {
 		String keyHex = null;
 		{
-			String concatenated = seed + salt + accountIndex;
-			byte[] dd = digestSHA256(concatenated);
+			String concatenated = Hex.toHexString(seed) +
+					Hex.toHexString(salt);
+			for(String arg: additionalArgs)
+				concatenated += arg;
 			keyHex = Hex.toHexString(digestSHA256(concatenated));
  		}
 
 		SecretKey key = secretKeyFromHexString(keyHex);
 
-		return encrypt(key, Hex.decode(AESHexKey));
+		return encrypt(key, Hex.decode(payload));
 	}
 
 	/**
+	 *This method decrypts a payload with an AES key derived from the seed.<br>
 	 *
-	 * @param encryptedAESHexKey
+	 * @param payload - in hex
 	 * @param salt
-	 * @param accountIndex
+	 * @param additionalArgs - additional String arguments to add to the digest
 	 * @param seed
 	 * @return
 	 * @throws CannotDecryptMessageException
 	 */
-	static public byte[] authenticatorAESDecryption(String encryptedAESHexKey, String salt, String accountIndex, String seed) throws CannotDecryptMessageException {
+	static public byte[] decryptHexPayloadWithBaAESKey(byte[] payload, byte[] salt, byte[] seed, String ... additionalArgs) throws CannotDecryptMessageException {
 		String keyHex = null;
 		{
-			String concatenated = seed + salt + accountIndex;
+			String concatenated = Hex.toHexString(seed) +
+					Hex.toHexString(salt);
+			for(String arg: additionalArgs)
+				concatenated += arg;
 			keyHex = Hex.toHexString(digestSHA256(concatenated));
 		}
 
 		SecretKey key = secretKeyFromHexString(keyHex);
 
-		return decryptPayload(Hex.decode(encryptedAESHexKey), key);
+		return decryptPayload(Hex.decode(payload), key);
 	}
 	
 	static public class ChecksumIncorrectException extends Exception {

@@ -62,7 +62,7 @@ message ATAccount {
 //	Pairing Data
 //
 message PairedAuthenticator{
-	required string 	aes_key 			= 1;
+	required bytes 		aes_key 			= 1; // byte array;
 	required string 	master_public_key 	= 2;
 	required string 	chain_code 			= 3;
 	required string 	GCM 				= 4;
@@ -71,7 +71,7 @@ message PairedAuthenticator{
 	required int32 		keys_n 				= 7;
 	required int32		walletAccountIndex	= 8;
 
-	optional bytes		key_salt			= 9; // the AES key is encrypted with H(Seed | walletAccountIndex | key_random) to differentiate it from the walletAccountIndex digest
+	optional bytes		key_salt			= 9; // Salt for the AES, used to encrypt the pairing data
 	required bool 		isEncrypted			= 10 [default = false];
 }
 

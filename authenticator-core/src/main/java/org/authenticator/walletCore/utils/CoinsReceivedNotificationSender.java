@@ -20,6 +20,7 @@ import org.authenticator.protobuf.ProtoConfig.ATGCMMessageType;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.walletCore.WalletOperation;
+import org.bouncycastle.util.encoders.Hex;
 
 public class CoinsReceivedNotificationSender {
 	/**
@@ -75,7 +76,8 @@ public class CoinsReceivedNotificationSender {
 					if(account.getAccountType() != WalletAccountType.AuthenticatorAccount)
 						continue;
 					PairedAuthenticator pairing = wo.getPairingObjectForAccountIndex(account.getIndex());
-					SecretKey secretkey = CryptoUtils.secretKeyFromHexString(wo.getAESKey(pairing.getPairingID(), walletPass));
+					byte[] key = wo.getAESKey(pairing.getPairingID(), walletPass);
+					SecretKey secretkey = CryptoUtils.secretKeyFromHexString(Hex.toHexString(key));
 					byte[] gcmID = pairing.getGCM().getBytes();
 					assert(gcmID != null);
 					Device d = new Device(pairing.getChainCode().getBytes(),

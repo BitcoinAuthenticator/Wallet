@@ -21,7 +21,9 @@ import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -308,13 +310,14 @@ public class PairingTest {
 
 				String salt = saltBase + i;
 				// generate key
-				byte[] encryptedAESBytes = CryptoUtils.authenticatorAESEncryption(Hex.toHexString((baseDecryptedAESKey + i).getBytes()),
-																				Hex.toHexString(salt.getBytes()),
-																				accIdx.toString(),
-																				Hex.toHexString(seed));
-				String encryptedAESHex = Hex.toHexString(encryptedAESBytes);
-				Mockito.doReturn(encryptedAESHex).when(newPair).getAesKey();
-				// salt
+				byte[] key = Hex.toHexString((baseDecryptedAESKey + i).getBytes()).getBytes();
+				String[] additionalArgs = new String[]{ accIdx.toString() };
+				byte[] encryptedAESBytes = CryptoUtils.encryptHexPayloadWithBaAESKey(key,
+						salt.getBytes(),
+						seed,
+						additionalArgs);
+
+				Mockito.doReturn(ByteString.copyFrom(encryptedAESBytes)).when(newPair).getAesKey();
 				Mockito.doReturn(ByteString.copyFrom(salt.getBytes())).when(newPair).getKeySalt();
 
 				all.add(newPair);
@@ -329,20 +332,20 @@ public class PairingTest {
 
 		//test
 		try {
-			String decryptedAES = woMocked.getAESKey("12", password);
-			assertTrue(decryptedAES.equals(Hex.toHexString((baseDecryptedAESKey + 12).getBytes())));
+			byte[] decryptedAES = woMocked.getAESKey("12", password);
+			assertArrayEquals((baseDecryptedAESKey + 12).getBytes(), decryptedAES );
 
 			decryptedAES = woMocked.getAESKey("11", password);
-			assertTrue(decryptedAES.equals(Hex.toHexString((baseDecryptedAESKey + 11).getBytes())));
+			assertArrayEquals((baseDecryptedAESKey + 11).getBytes(), decryptedAES);
 
 			decryptedAES = woMocked.getAESKey("33", password);
-			assertTrue(decryptedAES.equals(Hex.toHexString((baseDecryptedAESKey + 33).getBytes())));
+			assertArrayEquals((baseDecryptedAESKey + 33).getBytes(), decryptedAES);
 
 			decryptedAES = woMocked.getAESKey("89", password);
-			assertTrue(decryptedAES.equals(Hex.toHexString((baseDecryptedAESKey + 89).getBytes())));
+			assertArrayEquals((baseDecryptedAESKey + 89).getBytes(), decryptedAES);
 
 			decryptedAES = woMocked.getAESKey("0", password);
-			assertTrue(decryptedAES.equals(Hex.toHexString((baseDecryptedAESKey + 0).getBytes())));
+			assertArrayEquals((baseDecryptedAESKey + 0).getBytes(), decryptedAES);
 		} catch (WrongWalletPasswordException | CryptoUtils.CannotDecryptMessageException e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -350,7 +353,7 @@ public class PairingTest {
 
 		// return null of account not found
 		try {
-			String decryptedAES = woMocked.getAESKey("1200", password);
+			byte[] decryptedAES = woMocked.getAESKey("1200", password);
 			assertTrue(decryptedAES == null);
 
 			decryptedAES = woMocked.getAESKey("2345", password);
@@ -488,7 +491,7 @@ public class PairingTest {
 		try {
 			Mockito.when(mockedWalletdb.writePairingData(Mockito.eq("auth pub key"),
 					Mockito.eq("chain code"),
-					Mockito.anyString(),
+					Mockito.anyObject(),
 					Mockito.eq("GCM"),
 					Mockito.eq("pairing ID"),
 					Mockito.eq(1),
@@ -508,7 +511,7 @@ public class PairingTest {
 		try {
 			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
                     "chain code",
-                    Hex.toHexString("shared AES".getBytes()),
+                    "shared AES".getBytes(),
                     "GCM",
                     "pairing ID",
                     "Pairing name",
@@ -521,7 +524,7 @@ public class PairingTest {
 
 			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
-			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<byte[]> argAES = ArgumentCaptor.forClass(byte[].class);
 			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
@@ -547,7 +550,7 @@ public class PairingTest {
 		try {
 			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
 					"chain code",
-					Hex.toHexString("shared AES".getBytes()),
+					"shared AES".getBytes(),
 					"GCM",
 					"pairing ID",
 					"Pairing name",
@@ -560,7 +563,7 @@ public class PairingTest {
 
 			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
-			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<byte[]> argAES = ArgumentCaptor.forClass(byte[].class);
 			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
@@ -586,7 +589,7 @@ public class PairingTest {
 		try {
 			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
 					"chain code",
-					Hex.toHexString("shared AES".getBytes()),
+					"shared AES".getBytes(),
 					"GCM",
 					"pairing ID",
 					"Pairing name",
@@ -597,7 +600,7 @@ public class PairingTest {
 
 			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
-			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<byte[]> argAES = ArgumentCaptor.forClass(byte[].class);
 			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
@@ -613,9 +616,9 @@ public class PairingTest {
 					argSalt.capture());
 
 			Boolean retIsEncrypted = argIsEncrypted.getValue();
-			String retAES = argAES.getValue();
+			byte[] retAES = argAES.getValue();
 			assertTrue(retIsEncrypted);
-			assertFalse(retAES.equals(Hex.toHexString("shared AES".getBytes()))); // because it is encrypted
+			assertNotEquals(retAES, "shared AES".getBytes()); // because it is encrypted
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -625,7 +628,7 @@ public class PairingTest {
 		try {
 			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
 					"chain code",
-					Hex.toHexString("shared AES".getBytes()),
+					"shared AES".getBytes(),
 					"GCM",
 					"pairing ID",
 					"Pairing name",
@@ -636,7 +639,7 @@ public class PairingTest {
 
 			ArgumentCaptor<String> argPubKey = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argChainCode = ArgumentCaptor.forClass(String.class);
-			ArgumentCaptor<String> argAES = ArgumentCaptor.forClass(String.class);
+			ArgumentCaptor<byte[]> argAES = ArgumentCaptor.forClass(byte[].class);
 			ArgumentCaptor<String> argGCM = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<String> argPairingID = ArgumentCaptor.forClass(String.class);
 			ArgumentCaptor<Integer> argAccountIdx = ArgumentCaptor.forClass(Integer.class);
@@ -652,9 +655,9 @@ public class PairingTest {
 					argSalt.capture());
 
 			Boolean retIsEncrypted = argIsEncrypted.getValue();
-			String retAES = argAES.getValue();
+			byte[] retAES = argAES.getValue();
 			assertFalse(retIsEncrypted);
-			assertTrue(retAES.equals(Hex.toHexString("shared AES".getBytes()))); // because it is not encrypted
+			assertArrayEquals(retAES, "shared AES".getBytes()); // because it is not encrypted
 		} catch (Exception e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -665,7 +668,7 @@ public class PairingTest {
 		try {
 			PairedAuthenticator ret = woMocked.generatePairing("auth pub key",
 					"chain code",
-					Hex.toHexString("shared AES".getBytes()),
+					"shared AES".getBytes(),
 					"GCM",
 					"pairing ID",
 					"Pairing name",

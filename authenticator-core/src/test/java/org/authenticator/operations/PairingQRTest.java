@@ -37,13 +37,13 @@ public class PairingQRTest {
 				
 		PairingQRCode pQR = new PairingQRCode();
 		
-		String expected = pQR.generateQRDataString(ip, localip, pairingName, walletType, aes, 1, authWalletIndex);
+		String expected = pQR.generateQRDataString(ip, localip, pairingName, walletType, Hex.decode(aes), 1, authWalletIndex);
 		
 		BufferedImage bi = null;
 		byte[] imgBytes = null;
 		String result;
 		try {
-			imgBytes = pQR.generateQRImageBytes(ip, localip, pairingName, walletType, aes, 1, authWalletIndex);			
+			imgBytes = pQR.generateQRImageBytes(ip, localip, pairingName, walletType, Hex.decode(aes), 1, authWalletIndex);
 		} catch (NotFoundException | WriterException | IOException e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -89,7 +89,7 @@ public class PairingQRTest {
 				
 		PairingQRCode pQR = new PairingQRCode();
 		
-		String result = pQR.generateQRDataString(ip, localip, pairingName, walletType, aes, 1, authWalletIndex);
+		String result = pQR.generateQRDataString(ip, localip, pairingName, walletType, Hex.decode(aes), 1, authWalletIndex);
 		String expected =  "AESKey=d8d2b7a00a615ead144bcb02abe325fb955415484003eee969339d7d32f8ca3a&PublicIP=5.28.176.129:8222&LocalIP=192.168.1.100:8222&pairingName=my pairing&WalletType=authenticator&NetworkType=1&index=35363265";
 		
 		assertTrue(expected.equals(result));

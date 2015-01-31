@@ -142,7 +142,7 @@ public class walletDB extends dbBase{
 	@SuppressWarnings("unchecked")
 	public PairedAuthenticator writePairingData(String mpubkey,
 												String chaincode,
-												String key,
+												byte[] key,
 												String GCM,
 												String pairingID,
 												int accountIndex,
@@ -150,7 +150,7 @@ public class walletDB extends dbBase{
 												byte[] salt) throws IOException{
  		// Create new pairing item
  		PairedAuthenticator.Builder newPair = PairedAuthenticator.newBuilder();
- 									newPair.setAesKey(key);
+ 									newPair.setAesKey(ByteString.copyFrom(key));
  									newPair.setMasterPublicKey(mpubkey);
  									newPair.setChainCode(chaincode);
  									newPair.setGCM(GCM);

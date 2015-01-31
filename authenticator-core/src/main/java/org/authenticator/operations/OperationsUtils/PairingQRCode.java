@@ -17,25 +17,27 @@ import com.google.zxing.WriterException;
  * It crops the QR code and saves it to file. 
  */
 public class PairingQRCode {
-		
+
+
+  public PairingQRCode(){}
+
 /**
- * 
- * 
- * 
- * @param ip
- * @param localip
+ *
+ * @param ni
+ * @param pairingName
  * @param wallettype
  * @param key
- * @param networkType - 1 for main net, 0 for testnet
+ * @param networkType- 1 for main net, 0 for testnet
+ * @param authWalletIndex
+ * @return
+ * @throws NotFoundException
  * @throws WriterException
  * @throws IOException
- * @throws NotFoundException
  */
-  public PairingQRCode(){}
-  public byte[] generateQRImageBytes (BANetworkInfo ni, String pairingName, String wallettype, String key, int networkType, byte[] authWalletIndex) throws NotFoundException, WriterException, IOException{
+  public byte[] generateQRImageBytes (BANetworkInfo ni, String pairingName, String wallettype, byte[] key, int networkType, byte[] authWalletIndex) throws NotFoundException, WriterException, IOException{
 	  return generateQRImageBytes(ni.EXTERNAL_IP, ni.INTERNAL_IP, pairingName, wallettype, key, networkType, authWalletIndex);
   }
-  public byte[] generateQRImageBytes (String ip, String localip, String pairingName, String wallettype, String key, int networkType, byte[] authWalletIndex) throws WriterException, IOException,
+  public byte[] generateQRImageBytes (String ip, String localip, String pairingName, String wallettype, byte[] key, int networkType, byte[] authWalletIndex) throws WriterException, IOException,
       NotFoundException {
 	  // Build the string to display in the QR.
 	  String qrCodeData = generateQRDataString(ip,
@@ -52,8 +54,8 @@ public class PairingQRCode {
 	  return ret;
   }
   
-  public String generateQRDataString(String ip, String localip, String pairingName, String wallettype, String key, int networkType, byte[] authWalletIndex){
-	  String qrCodeData = "AESKey=" + key + 
+  public String generateQRDataString(String ip, String localip, String pairingName, String wallettype, byte[] key, int networkType, byte[] authWalletIndex){
+	  String qrCodeData = "AESKey=" + Hex.toHexString(key) +
 			  "&PublicIP=" + ip + 
 			  "&LocalIP=" + localip + 
 			  "&pairingName=" + pairingName +

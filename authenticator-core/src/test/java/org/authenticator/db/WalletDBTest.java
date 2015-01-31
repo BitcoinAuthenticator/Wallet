@@ -235,7 +235,7 @@ public class WalletDBTest {
 	public void writePairingDataTest() {
 		String mpubkey 				= "i am the master pub key";
 		String chaincode 			= "i am the chaincode";
-		String key 					= "i am the AES key";
+		byte[] key 					= "i am the AES key".getBytes();
 		String GCM 					= "i am the GCM";
 		String pairingID 			= "1";
 		int accountIndex 			= 1;
@@ -270,7 +270,7 @@ public class WalletDBTest {
                                                                                         salt);
 			assertTrue(returned.getMasterPublicKey().equals(mpubkey));
 			assertTrue(returned.getChainCode().equals(chaincode));
-			assertTrue(returned.getAesKey().equals(key));
+			assertArrayEquals(returned.getAesKey().toByteArray(), key);
 			assertTrue(returned.getGCM().equals(GCM));
 			assertTrue(returned.getPairingID().equals(pairingID));
 			assertTrue(returned.getWalletAccountIndex() == accountIndex);
@@ -304,7 +304,7 @@ public class WalletDBTest {
 		for(int i = 1; i< 10; i ++) {
 			PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.class);
 			ProtoConfig.PairedAuthenticator newPair = PowerMockito.mock(ProtoConfig.PairedAuthenticator.class);
-						Mockito.doReturn(key + i).when(newPair).getAesKey();
+						Mockito.doReturn(ByteString.copyFrom((key + i).getBytes())).when(newPair).getAesKey();
 						Mockito.doReturn(mpubkey).when(newPair).getMasterPublicKey();
 						Mockito.doReturn(chaincode).when(newPair).getChainCode();
 						Mockito.doReturn(GCM).when(newPair).getGCM();
@@ -385,7 +385,7 @@ public class WalletDBTest {
 		for(int i = 0; i < 10; i ++) {
 			PowerMockito.mockStatic(ProtoConfig.PairedAuthenticator.class);
 			ProtoConfig.PairedAuthenticator newPair = PowerMockito.mock(ProtoConfig.PairedAuthenticator.class);
-			Mockito.doReturn(key + i).when(newPair).getAesKey();
+			Mockito.doReturn(ByteString.copyFrom((key + i).getBytes())).when(newPair).getAesKey();
 			Mockito.doReturn(mpubkey).when(newPair).getMasterPublicKey();
 			Mockito.doReturn(chaincode).when(newPair).getChainCode();
 			Mockito.doReturn(GCM).when(newPair).getGCM();

@@ -96,16 +96,15 @@ public class PairingProtocol {
 	  String ip = netInfo.EXTERNAL_IP;
 	  String localip = netInfo.INTERNAL_IP;
 	  
-	  String key = null;
+	  byte[] key = null;
 	  SecretKey sharedsecret = null;
 	  if(argKeyHex == null) {
 		  sharedsecret = CryptoUtils.generateNewSecretAESKey();
-	      byte[] raw = sharedsecret.getEncoded();
-	      key = Hex.toHexString(raw);
+		  key = sharedsecret.getEncoded();
 	  }
 	  else {
 		  sharedsecret = CryptoUtils.secretKeyFromHexString(argKeyHex);
-		  key = argKeyHex;
+		  key = sharedsecret.getEncoded();
 	  }
       
       // generate Authenticator's account number
