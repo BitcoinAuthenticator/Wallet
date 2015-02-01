@@ -324,6 +324,31 @@
       </children>
     </Pane>
     <!--
+
+    	Restore wallet meta-data menu
+
+
+    	-->
+    <Pane fx:id="restoreWalletMetaDataMenu" layoutX="0.0" layoutY="4.0" prefHeight="393.0" prefWidth="600.0" visible="false">
+      <children>
+        <Button fx:id="btnRestoreMetaDataMenually" contentDisplay="TOP" layoutX="78.0" layoutY="93.0" mnemonicParsing="false" onAction="#launchRestoreWalletMetaDataManually" prefHeight="179.0" prefWidth="179.0" text="Restore manually" textAlignment="CENTER">
+          <graphic>
+            <ImageView fitHeight="114.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnManualRestore.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnRestoreMetaDataFromCloud" contentDisplay="TOP" layoutX="350.0" layoutY="93.0" mnemonicParsing="false" onAction="#restoreFromSeed" prefHeight="179.0" prefWidth="179.0" text="Restore from cloud" textAlignment="CENTER">
+          <graphic>
+            <ImageView fitHeight="101.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+              <Image url="@btnCloudRestore.png" />
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnBackFromRestoreWalletMetaDataMenu" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromRestoreWalletMetaDataMenu" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+      </children>
+    </Pane>
+    <!--
     	
     	Restore accounts
     	

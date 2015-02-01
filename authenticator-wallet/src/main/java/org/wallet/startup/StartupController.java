@@ -144,6 +144,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane RestoreAccountsPane;
 	@FXML private Pane SetPasswordAfterRestorePane;
 	@FXML private Pane LoadingPane;
+	@FXML private Pane restoreWalletMetaDataMenu;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
 	@FXML private Button btnNewWallet;
@@ -169,6 +170,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnAccountRestoreContinue;
 	@FXML private Button btnBackFromSetPasswordAfterRestore;
 	@FXML private Button btnContinueAfterSetPasswordAfterRestore;
+	@FXML private Button btnBackFromRestoreWalletMetaDataMenu;
 	@FXML private Button btnPlayStore;
 	@FXML private Button btnStandard;
 	@FXML private Label lblMinimize;
@@ -361,6 +363,10 @@ public class StartupController  extends BaseUI{
 		 Label labeContinueAfterSetPasswordAfterRestore = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labeContinueAfterSetPasswordAfterRestore.setPadding(new Insets(0,6,0,0));
 		 btnContinueAfterSetPasswordAfterRestore.setGraphic(labeContinueAfterSetPasswordAfterRestore);
+		 //
+		 Label labeBackFromRestoreWalletMetaDataMenu = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labeBackFromRestoreWalletMetaDataMenu.setPadding(new Insets(0,6,0,0));
+		 btnBackFromRestoreWalletMetaDataMenu.setGraphic(labeBackFromRestoreWalletMetaDataMenu);
 		 
 		 //
 		 Label labePrintSSS = AwesomeDude.createIconLabel(AwesomeIcon.PRINT, "30");
@@ -709,9 +715,7 @@ public class StartupController  extends BaseUI{
 			 GuiUtils.fadeIn(btnStandard);
 			 btnStandard.setVisible(true);
 			 lbl2fa.setText("Choose Account Type");
-			 //hlFinished.setVisible(true);
 			 btnContinue3.setVisible(false);
-			 //lblScan.setVisible(true);
 			 lbld1.setVisible(true);
 			 lbld2.setVisible(true);
 			 btnPlayStore.setVisible(false);
@@ -979,7 +983,7 @@ public class StartupController  extends BaseUI{
 			 try {
 				createWallet(seed);
 				RestoreFromMnemonicPane.setVisible(false);
-				launchRestoreAccoutns(RestoreFromMnemonicPane);
+				 launchRestoreWalletMetaDataMenu(RestoreFromMnemonicPane);
 			} catch (IOException e) {
 				e.printStackTrace();
 				GuiUtils.informationalAlert("Cannot Restore from Mnemonic Seed", "Please try again");
@@ -1117,7 +1121,7 @@ public class StartupController  extends BaseUI{
 			 try {
 				createWallet(walletSeed);
 				RestoreFromQRPane.setVisible(false);
-				launchRestoreAccoutns(RestoreFromMnemonicPane);
+				 launchRestoreWalletMetaDataMenu(RestoreFromMnemonicPane);
 			} catch (IOException e) {
 				e.printStackTrace();
 				GuiUtils.informationalAlert("Cannot Restore from Mnemonic Seed", "Please try again");
@@ -1168,7 +1172,7 @@ public class StartupController  extends BaseUI{
 				 walletSeed = reconstructSeed(lblSeedFromSSS.getText(), date);
 				 createWallet(walletSeed);
 				 RestoreFromSSSDatePane.setVisible(false);		 
-				 launchRestoreAccoutns(RestoreFromSSSDatePane);
+				 launchRestoreWalletMetaDataMenu(RestoreFromSSSDatePane);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -1234,20 +1238,37 @@ public class StartupController  extends BaseUI{
 		 else
 			 Platform.runLater(() -> GuiUtils.informationalAlert("Error !", "Could not restore from file"));
 	 }
-	 
+
+	//#################################################
+	//
+	//		Restore wallet meta-data menu
+	//
+	//#################################################
+	private Node previousNode;
+	private void launchRestoreWalletMetaDataMenu(Node node){
+		node.setVisible(false);
+		previousNode = node;
+		restoreWalletMetaDataMenu.setVisible(true);
+	}
+
+	@FXML protected void returnFromRestoreWalletMetaDataMenu(ActionEvent event){
+		previousNode.setVisible(true);
+		restoreWalletMetaDataMenu.setVisible(false);
+	}
+
 	 //##############################
 	 //
 	 //		Restore accounts 
 	 //
 	 //##############################
-	 
+
 	 @FXML protected void goRestoreAccounts(ActionEvent event){
 		 launchRestoreProcess();
 	 }
 	 
 	 
 	 @FXML protected void returnToBeforeRestoreAccounts(ActionEvent event){
-		 previousNode.setVisible(true);
+		 restoreWalletMetaDataMenu.setVisible(true);
 		 RestoreAccountsPane.setVisible(false);
 	 }
 	 
@@ -1311,13 +1332,13 @@ public class StartupController  extends BaseUI{
 		 w.show();
 	 }
 	 
-	 private Node previousNode;
-	 private void launchRestoreAccoutns(Node node){
+	 @FXML
+	 protected void launchRestoreWalletMetaDataManually(ActionEvent event){
+		 restoreWalletMetaDataMenu.setVisible(false);
+
 		 createAuthenticatorObject();
 		 auth.getWalletOperation().setTrackedWallet(wallet);
-		 
-		 node.setVisible(false);
-		 previousNode = node;
+
 		 LoadingPane.setVisible(true);
 		 auth.addListener(new Service.Listener() {
 				@Override public void running() {
