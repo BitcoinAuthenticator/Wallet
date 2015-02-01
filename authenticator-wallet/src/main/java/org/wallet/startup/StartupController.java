@@ -145,6 +145,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane SetPasswordAfterRestorePane;
 	@FXML private Pane LoadingPane;
 	@FXML private Pane restoreWalletMetaDataMenu;
+	@FXML private Pane cloudBackupMenu;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
 	@FXML private Button btnNewWallet;
@@ -171,6 +172,8 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnBackFromSetPasswordAfterRestore;
 	@FXML private Button btnContinueAfterSetPasswordAfterRestore;
 	@FXML private Button btnBackFromRestoreWalletMetaDataMenu;
+	@FXML private Button btnBackFromCloudBackupMenu;
+	@FXML private Button btnSkipCloudBackup;
 	@FXML private Button btnPlayStore;
 	@FXML private Button btnStandard;
 	@FXML private Label lblMinimize;
@@ -367,6 +370,14 @@ public class StartupController  extends BaseUI{
 		 Label labeBackFromRestoreWalletMetaDataMenu = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
 		 labeBackFromRestoreWalletMetaDataMenu.setPadding(new Insets(0,6,0,0));
 		 btnBackFromRestoreWalletMetaDataMenu.setGraphic(labeBackFromRestoreWalletMetaDataMenu);
+		 //
+		 Label labeBackFromCloudBackup = AwesomeDude.createIconLabel(AwesomeIcon.CARET_LEFT, "45");
+		 labeBackFromCloudBackup.setPadding(new Insets(0,6,0,0));
+		 btnBackFromCloudBackupMenu.setGraphic(labeBackFromCloudBackup);
+		 //
+		 Label labeSkipCloudBackup = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeSkipCloudBackup.setPadding(new Insets(0,6,0,0));
+		 btnSkipCloudBackup.setGraphic(labeSkipCloudBackup);
 		 
 		 //
 		 Label labePrintSSS = AwesomeDude.createIconLabel(AwesomeIcon.PRINT, "30");
@@ -570,9 +581,10 @@ public class StartupController  extends BaseUI{
 		 SetPasswordPane.setVisible(true);
 	 }
 	 
-	 @FXML protected void toExplanationPane1(ActionEvent event) {
+	 @FXML protected void toCloudBackup(ActionEvent event) {
 		 if (ckSeed.isSelected()){
-			 displayExplanationPane();
+			 BackupNewWalletPane.setVisible(false);
+			 cloudBackupMenu.setVisible(true);
 		 }
 	 }
 	 
@@ -960,6 +972,22 @@ public class StartupController  extends BaseUI{
 		 SSSBackupPane.setVisible(false);
 		 BackupNewWalletPane.setVisible(true);
 	 }
+
+	//##############################
+	//
+	//		Cloud backup
+	//
+	//##############################
+
+	@FXML protected void returnFromCloudBackup(ActionEvent event) {
+		BackupNewWalletPane.setVisible(true);
+		cloudBackupMenu.setVisible(false);
+	}
+
+	@FXML protected void skipCloudBackup(ActionEvent event) {
+		cloudBackupMenu.setVisible(false);
+		displayExplanationPane();
+	}
 	 
 	 //##############################
 	 //

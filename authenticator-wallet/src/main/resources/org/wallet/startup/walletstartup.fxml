@@ -70,7 +70,7 @@
     <Pane fx:id="BackupNewWalletPane" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0000999999975" visible="false">
       <children>
         <Button fx:id="btnBack2" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#toCreateAccountPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
-        <Button fx:id="btnContinue2" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toExplanationPane1" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+        <Button fx:id="btnContinue2" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#toCloudBackup" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
         <Label fx:id="lblSeed" layoutX="45.0" layoutY="91.0" prefHeight="70.1328125" prefWidth="517.0" style="-fx-background-color: #B8B8B8 ; -fx-text-fill: white; -fx-background-radius: 2;" wrapText="true" />
         <Button fx:id="btnSave" contentDisplay="TOP" disable="false" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#saveWalletFolderAsZip" prefHeight="143.1328125" prefWidth="146.0" text="Backup to file" textAlignment="CENTER">
           <graphic>
@@ -101,6 +101,29 @@
         </Button>
         <Label layoutX="45.0" layoutY="40.0" prefWidth="517.0" text="These 12 words are your wallet's seed. You will need them to recover your bitcoins if your computer crashes. Please keep them in a safe location and/or use the options below." wrapText="true" />
         <CheckBox fx:id="ckSeed" layoutX="200.0" layoutY="343.0" mnemonicParsing="false" text="I confirm my seed is secure" />
+      </children>
+    </Pane>
+    <!--
+
+    	Cloud backup menu
+
+
+    	-->
+    <Pane fx:id="cloudBackupMenu" layoutX="0.0" layoutY="4.0" prefHeight="393.0" prefWidth="600.0" visible="false">
+      <children>
+        <ImageView layoutX="240.0" layoutY="20.0" fitHeight="103.5834248489804" fitWidth="113.0000991821289" pickOnBounds="true" preserveRatio="true">
+          <Image url="@../apps/Icons/btnCloudBackup.png" />
+        </ImageView>
+
+        <Label layoutX="45.0" layoutY="140.0" prefWidth="517.0" text="Cloud backup is the best way to save all your wallet's data in ease. The wallet will sync automatically with the cloud any time you make changes in an anonymous and encrypted way, only you have access to the backups. This will come very handy when restoring the wallet, instead of recreating all your preferences manually it will be done with a click of a button." wrapText="true" />
+
+        <PasswordField layoutX="85.0" layoutY="250.0" prefWidth="200.0" promptText="Password"/>
+        <TextField layoutX="295.0" layoutY="250.0" prefWidth="200.0" promptText="User Name"/>
+        <Button layoutX="165.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#returnFromCloudBackup" text="Sign in"/>
+        <Button layoutX="295.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#returnFromCloudBackup" text="Register"/>
+
+        <Button fx:id="btnBackFromCloudBackupMenu" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromCloudBackup" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnSkipCloudBackup" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#skipCloudBackup" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       </children>
     </Pane>
     <!--
