@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.oracle.javafx.authoring.persist.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
@@ -303,18 +302,6 @@
                         <!--
 			                
 			                -->
-                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnOneName" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="OneName" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
-                          <graphic>
-                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                <Image url="@apps/Icons/btnOneName.png" />
-                              </image>
-                            </ImageView>
-                          </graphic>
-                        </Button>
-                        <!--
-			                
-			                -->
                         <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnAccounts" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Accounts" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
                           <graphic>
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
@@ -340,6 +327,18 @@
                           </GridPane.margin>
                         </Button>
                         <!--
+
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnCloudBackup" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Cloud Backup" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/Icons/btnCloudBackup.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
 			                
 			                -->
                         <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnSettings" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="Settings" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
@@ -359,6 +358,18 @@
                             <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                               <image>
                                 <Image url="@apps/Icons/btnMyBitcoins.png" />
+                              </image>
+                            </ImageView>
+                          </graphic>
+                        </Button>
+                        <!--
+
+			                -->
+                        <Button cancelButton="false" contentDisplay="TOP" defaultButton="false" minWidth="96.0" mnemonicParsing="false" onMousePressed="#btnOneName" prefHeight="99.0" prefWidth="113.0" style="-fx-background-color:transparent;" text="OneName" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                          <graphic>
+                            <ImageView fitHeight="94.0" fitWidth="94.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                <Image url="@apps/Icons/btnOneName.png" />
                               </image>
                             </ImageView>
                           </graphic>

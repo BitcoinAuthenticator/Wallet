@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="850.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wallet.apps.CloudBackup.app.CloudBackupAppController">
+   <children>
+      <Pane prefHeight="59.0" prefWidth="850.0" style="-fx-background-color: white;">
+         <children>
+            <Button layoutX="771.0" layoutY="16.0" mnemonicParsing="false" onMousePressed="#close" style="-fx-background-color: #199bd6; -fx-text-fill: white;" text="Close" />
+            <ImageView fitHeight="54.0" fitWidth="54.0" layoutX="13.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../Icons/btnCloudBackup.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Pane layoutY="75.0" prefHeight="409.0" prefWidth="850.0">
+         <children>
+            <HBox layoutY="-18.0" prefHeight="427.0" prefWidth="850.0" style="-fx-background-color: white;">
+               <children>
+                  <VBox alignment="TOP_CENTER" prefHeight="409.0" prefWidth="261.0" style="-fx-background-color: #dbddde;">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@circle.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="ivAvatar" fitHeight="135.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@DefaultAvatar.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </StackPane>
+                        <Label fx:id="lblUserName" alignment="CENTER" prefHeight="16.0" prefWidth="208.0" text="alon muroch">
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <VBox alignment="BOTTOM_CENTER" prefHeight="242.0" prefWidth="261.0">
+                           <children>
+                              <Button fx:id="btnSignInOrOut" mnemonicParsing="false" prefHeight="26.0" prefWidth="95.0" text="Sign Out">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children></VBox>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="409.0" prefWidth="589.0" style="-fx-background-color: #6a6b6c;">
+                     <children>
+                        <VBox prefHeight="387.0" prefWidth="589.0" />
+                        <VBox alignment="CENTER_LEFT" prefHeight="53.0" prefWidth="589.0">
+                           <children>
+                              <Label fx:id="lblStorageUsedDetail" style="-fx-text-fill: #dbddde;" text="You have used 60% of you Cloud Storage.">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ProgressBar fx:id="pbStorageUsed" prefHeight="20.0" prefWidth="578.0" progress="0.56">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" />
+                                 </VBox.margin></ProgressBar>
+                           </children>
+                        </VBox>
+                     </children></VBox>
+               </children>
+            </HBox>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

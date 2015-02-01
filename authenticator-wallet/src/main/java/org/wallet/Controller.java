@@ -1,7 +1,6 @@
 package org.wallet;
 
 import org.authenticator.Authenticator;
-import org.authenticator.Utils.AuthenticatorBackupCloud.BABackupCloud;
 import org.authenticator.Utils.ExchangeProvider.ExchangeProvider;
 import org.authenticator.Utils.ExchangeProvider.Exchanges;
 import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
@@ -104,14 +103,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
-import org.json.JSONException;
 import org.spongycastle.util.encoders.Hex;
 import org.wallet.ControllerHelpers.SendTxHelper;
 import org.wallet.ControllerHelpers.SendTxOverlayHelper;
 import org.wallet.ControllerHelpers.TableTx;
 import org.wallet.ControllerHelpers.ThrottledRunnableExecutor;
 import org.wallet.ControllerHelpers.UIUpdateHelper;
-import org.wallet.apps.CloudBackupApp.CloudBackup;
 import org.wallet.controls.ScrollPaneContentManager;
 import org.wallet.controls.SendToCell;
 import org.wallet.utils.BaseUI;
@@ -1883,6 +1880,10 @@ public class Controller  extends BaseUI{
 
 	@FXML protected void btnMyBitcoins(MouseEvent event) {
 		Main.instance.overlayUI("apps/MyBitcoins/app/MyBitcoinsApp.fxml");
+	}
+
+	@FXML protected void btnCloudBackup(MouseEvent event) {
+		Main.instance.overlayUI("apps/CloudBackup/app/CloudBackupApp.fxml");
 	}
     
     //#####################################
