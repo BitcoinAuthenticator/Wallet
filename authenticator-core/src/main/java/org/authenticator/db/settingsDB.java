@@ -194,4 +194,15 @@ public class SettingsDb extends DbBase {
 		ConfigSettings.Builder s = getSettingsBuilder();
 		return s.getPortForwarding();
 	}
+
+	public boolean getShouldBackupToCloud() {
+		ConfigSettings.Builder s = getSettingsBuilder();
+		return s.getBackupToCloud();
+	}
+
+	public void setShouldBackupToCloud(boolean value) throws IOException {
+		ConfigSettings.Builder s = getSettingsBuilder();
+		s.setBackupToCloud(value);
+		writeSettingsFile(s);
+	}
 }

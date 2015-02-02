@@ -96,6 +96,7 @@ public class SettingsAppController extends BaseUI{
 	@FXML private CheckBox ckLocalHost;
 	@FXML private CheckBox ckPortForwarding;
 	@FXML private CheckBox ckTrustedPeer;
+	@FXML private CheckBox ckUseCloudBackup;
 	@FXML private TextField txFee;
 	@FXML private TextField txPeerIP;
 	@FXML private PasswordField txfShowSeedPassword;
@@ -119,6 +120,7 @@ public class SettingsAppController extends BaseUI{
 	private boolean localHost;
 	private boolean portForwarding;
 	private boolean TrustedPeer;
+	private boolean useCloudBackup;
 	private String strFee;
 	private double falsePositiveRate;
 	private Coin fee;
@@ -140,7 +142,8 @@ public class SettingsAppController extends BaseUI{
     	this.localHost 			= Authenticator.getWalletOperation().getIsConnectingToLocalHostFromSettings();
     	this.portForwarding 	= Authenticator.getWalletOperation().getIsPortForwarding();
     	this.TrustedPeer 		= Authenticator.getWalletOperation().getIsConnectingToTrustedPeerFromSettings();
-    	this.falsePositiveRate 	= Authenticator.getWalletOperation().getBloomFilterFalsePositiveRateFromSettings();
+    	this.useCloudBackup		= Authenticator.getWalletOperation().getShouldBackupToCloud();
+		this.falsePositiveRate 	= Authenticator.getWalletOperation().getBloomFilterFalsePositiveRateFromSettings();
     	
     	Tooltip.install(slBloom, new Tooltip(String.valueOf(slBloom.getValue())));
     	this.lblBloomFilterRate.setText(String.format( "%.5f", falsePositiveRate ));
@@ -312,14 +315,23 @@ public class SettingsAppController extends BaseUI{
 				 setSaveButtonDisabled(false);
 			 }
 		 });
+
+		ckUseCloudBackup.setSelected(useCloudBackup);
+		ckUseCloudBackup.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			public void changed(ObservableValue<? extends Boolean> ov,
+								Boolean old_val, Boolean new_val) {
+				useCloudBackup = ckUseCloudBackup.isSelected();
+				setSaveButtonDisabled(false);
+			}
+		});
+
     	btnSave.setOnMousePressed(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent t) {
             	btnSave.setStyle("-fx-background-color: #d7d4d4;");
             }
         });
-    	
-    	
+
     	
     	btnSave.setOnMouseReleased(new EventHandler<MouseEvent>(){
             @Override
@@ -434,6 +446,8 @@ public class SettingsAppController extends BaseUI{
 		Authenticator.getWalletOperation().setIsConnectingToTrustedPeerInSettings(TrustedPeer, txPeerIP.getText());
 
 		Authenticator.getWalletOperation().setBloomFilterFalsePositiveRateInSettings(falsePositiveRate);
+
+		Authenticator.getWalletOperation().setShouldBackupToCloud(useCloudBackup);
 
 		Authenticator.fireOnWalletSettingsChange();
     }

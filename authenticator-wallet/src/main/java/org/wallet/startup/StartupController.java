@@ -24,6 +24,7 @@ import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.BipSSS.BipSSS;
 import org.authenticator.BipSSS.BipSSS.EncodingFormat;
 import org.authenticator.BipSSS.BipSSS.Share;
+import org.authenticator.Utils.AuthenticatorBackupCloud.BABackupCloud;
 import org.authenticator.Utils.FileUtils;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.listeners.BAGeneralEventsAdapter;
@@ -41,6 +42,7 @@ import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.PairedAuthenticator;
 import org.authenticator.protobuf.ProtoConfig.WalletAccountType;
 import org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
+import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
 import org.authenticator.walletCore.exceptions.WrongWalletPasswordException;
 
 import com.github.sarxos.webcam.Webcam;
@@ -58,6 +60,7 @@ import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.wallet.DeterministicSeed;
+import org.json.JSONException;
 import org.wallet.Main;
 import org.wallet.apps.SettingsAppController;
 import org.wallet.controls.ScrollPaneContentManager;
@@ -214,6 +217,9 @@ public class StartupController  extends BaseUI{
 	
 	@FXML private Label lblSeedFromQR;
 	@FXML private Button btnStartWebCamQRScan;
+
+	@FXML private PasswordField tfCloudBackupPasswordField;
+	@FXML private TextField tfCloudBackupUserName;
 	
 	@FXML private TextField txPiecesSSSRestore;
 	@FXML private TextField txThresholdSSSRestore;
@@ -245,9 +251,15 @@ public class StartupController  extends BaseUI{
 	private WalletAccountType firstAccountType = WalletAccountType.StandardAccount;
 	private boolean 		  shouldCreateNewAccountOnFinish = false;
 	/**
-	 * Backup mode is launching this view from a runnnig wallet just for the backup menu.
+	 * Backup mode is launching this view from a runnig wallet just for the backup menu.
 	 */
 	private boolean backupMode;
+
+	/**
+	 * Will set {@link org.authenticator.protobuf.ProtoSettings.ConfigSettings#backupToCloud_ backupToCloud}
+	 * flag in settings to its value. If true, will automatically backup wallet to cloud.
+	 */
+	private boolean useCloudBackup = false;
 	
 	/**
 	 * Will be set before the Stage is launched so we could define the wallet files.
@@ -666,14 +678,21 @@ public class StartupController  extends BaseUI{
 				try {
 					auth.Net().INTERRUPT_CURRENT_OUTBOUND_OPERATION();
 					createNewStandardAccount(firstAccountName);
-				} catch (IOException | AccountWasNotFoundException | WrongWalletPasswordException e1) { e1.printStackTrace(); }
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			 else
 			 {
 				 // do nothing
 			 }
 			 
 		}
-		 
+
+		// set should use cloud backup
+		try {
+			auth.getWalletOperation().setShouldBackupToCloud(useCloudBackup);
+		} catch (CannotWriteToConfigurationFileException e) { e.printStackTrace(); }
+
 		if(auth != null) {
 			auth.addListener(new Service.Listener() {
 				@Override public void terminated(State from) {
@@ -987,6 +1006,79 @@ public class StartupController  extends BaseUI{
 	@FXML protected void skipCloudBackup(ActionEvent event) {
 		cloudBackupMenu.setVisible(false);
 		displayExplanationPane();
+	}
+
+	@FXML protected void signInToCloudBackup(ActionEvent event) {
+		String un = tfCloudBackupUserName.getText();
+		String pw = tfCloudBackupPasswordField.getText();
+		String result = verifyCloudBackupMenuFields(un, pw);
+		if(result != null)
+			GuiUtils.informationalAlert("Problem:", result);
+
+		try {
+			BABackupCloud.getInstance().loginToCloud(un.getBytes(), pw.getBytes(), new BABackupCloud.BABackupCloudListener() {
+                @Override
+                public void onSuccess() {
+					useCloudBackup = true;
+					Platform.runLater(() ->  skipCloudBackup(null));
+                }
+
+                @Override
+                public void onFailed(String reason) {
+					Platform.runLater(() ->
+							GuiUtils.informationalAlert("Problem", "Could not sign in, make sure your credentials are correct."));
+                }
+            });
+		} catch (Exception e) {
+			e.printStackTrace();
+			GuiUtils.informationalAlert("Problem", "Could not sign in:\n" + e.getMessage());
+		}
+	}
+
+	@FXML protected void registerToCloudBackup(ActionEvent event) {
+		String un = tfCloudBackupUserName.getText();
+		String pw = tfCloudBackupPasswordField.getText();
+		String result = verifyCloudBackupMenuFields(un, pw);
+		if(result != null)
+			GuiUtils.informationalAlert("Problem:", result);
+
+		try {
+			BABackupCloud.getInstance().registerToCloud(un.getBytes(), pw.getBytes(), new BABackupCloud.BABackupCloudListener() {
+				@Override
+				public void onSuccess() {
+					useCloudBackup = true;
+					Platform.runLater(() -> skipCloudBackup(null));
+				}
+
+				@Override
+				public void onFailed(String reason) {
+					Platform.runLater(() ->
+							GuiUtils.informationalAlert("Problem", "Could not register to cloud server."));
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			GuiUtils.informationalAlert("Problem", "Could not sign in:\n" + e.getMessage());
+		}
+	}
+
+	/**
+	 * Will return null if is verified, else will return an error string
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	private String verifyCloudBackupMenuFields(String username, String password) {
+		String ret = "";
+		if(username.length() < 3)
+			ret += "User name too short, should be at lease 3 characters\n";
+
+		if(password.length() < 6)
+			ret += "Password too short, should be at lease 6 characters";
+
+		if(ret.length() == 0)
+			return null;
+		return ret;
 	}
 	 
 	 //##############################

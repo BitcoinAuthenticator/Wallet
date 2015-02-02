@@ -2196,7 +2196,19 @@ public class WalletOperation extends BASE{
 			return false;
 		}
 	}
-	
+
+	public boolean getShouldBackupToCloud() {
+		return settingsFile.getShouldBackupToCloud();
+	}
+
+	public void setShouldBackupToCloud(boolean value) throws CannotWriteToConfigurationFileException {
+		try {
+			settingsFile.setShouldBackupToCloud(value);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+
 	public void resotreSettingsToDefault() throws CannotWriteToConfigurationFileException {
 		try {
 			getConfigFile().resotreSettingsToDefault();

@@ -117,10 +117,10 @@
 
         <Label layoutX="45.0" layoutY="140.0" prefWidth="517.0" text="Cloud backup is the best way to save all your wallet's data in ease. The wallet will sync automatically with the cloud any time you make changes in an anonymous and encrypted way, only you have access to the backups. This will come very handy when restoring the wallet, instead of recreating all your preferences manually it will be done with a click of a button." wrapText="true" />
 
-        <PasswordField layoutX="85.0" layoutY="250.0" prefWidth="200.0" promptText="Password"/>
-        <TextField layoutX="295.0" layoutY="250.0" prefWidth="200.0" promptText="User Name"/>
-        <Button layoutX="165.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#returnFromCloudBackup" text="Sign in"/>
-        <Button layoutX="295.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#returnFromCloudBackup" text="Register"/>
+        <PasswordField fx:id="tfCloudBackupPasswordField" layoutX="85.0" layoutY="250.0" prefWidth="200.0" promptText="Password"/>
+        <TextField fx:id="tfCloudBackupUserName" layoutX="295.0" layoutY="250.0" prefWidth="200.0" promptText="User Name"/>
+        <Button layoutX="165.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#signInToCloudBackup" text="Sign in"/>
+        <Button layoutX="295.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#registerToCloudBackup" text="Register"/>
 
         <Button fx:id="btnBackFromCloudBackupMenu" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromCloudBackup" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnSkipCloudBackup" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#skipCloudBackup" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />

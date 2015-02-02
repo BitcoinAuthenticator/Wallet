@@ -53,7 +53,8 @@ public class BABackupCloud {
 
     final private String CLOUD_URL_API  = "http://127.0.0.1:8000/api/";
     final private String LOGIN          = "Users/login/";
-    final private String LOGOUT          = "Users/logout/";
+    final private String LOGOUT         = "Users/logout/";
+    final private String REGISTER       = "Users/";
 
     private List<Cookie> cookies;
     private boolean isLoggedIn = false;
@@ -159,6 +160,32 @@ public class BABackupCloud {
                 }
 
                 LOG.info("Failed to log out from cloud backup server");
+                if(listener != null)
+                    listener.onFailed("Could not log in to cloud, " + response.getStatusCode());
+                return null;
+            }
+        });
+    }
+
+    public void registerToCloud(byte[] userName, byte[] password, BABackupCloudListener listener) throws JSONException, IOException {
+        LOG.info("Registering new user to cloud backup server ...");
+        JSONObject object = new JSONObject();
+        object.put("username", new String(userName));
+        object.put("password", new String(password));
+        EncodingUtils.postToURL(CLOUD_URL_API + REGISTER, null, object, new AsyncCompletionHandler<Response>() {
+            @Override
+            public Response onCompleted(Response response) throws Exception {
+                if(response.getStatusCode() == 201) {
+                    cookies = response.getCookies();
+                    isLoggedIn = true;
+                    LOG.info("registering new user to cloud backup server");
+
+                    if(listener != null)
+                        listener.onSuccess();
+                    return null;
+                }
+
+                LOG.info("Failed to registering new user to cloud backup server");
                 if(listener != null)
                     listener.onFailed("Could not log in to cloud, " + response.getStatusCode());
                 return null;

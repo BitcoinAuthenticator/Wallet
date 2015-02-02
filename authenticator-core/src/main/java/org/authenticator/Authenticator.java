@@ -282,7 +282,7 @@ public class Authenticator extends BASE{
 		         }
 			}, MoreExecutors.sameThreadExecutor());
 
-			BABackupCloud.getInstance().loginToCloud("testuser3".getBytes(), "testuser3".getBytes(),null);
+//			BABackupCloud.getInstance().loginToCloud("testuser3".getBytes(), "testuser3".getBytes(),null);
 		} 
 		catch (Exception e) { e.printStackTrace(); }
 	}
@@ -303,7 +303,7 @@ public class Authenticator extends BASE{
 					}
 				}, MoreExecutors.sameThreadExecutor());
 
-				BABackupCloud.getInstance().logoutFromCloud(null);
+//				BABackupCloud.getInstance().logoutFromCloud(null);
 			}
 			else{
 				LOG.info("Authenticator Stopped");
