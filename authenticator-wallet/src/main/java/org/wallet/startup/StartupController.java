@@ -149,6 +149,7 @@ public class StartupController  extends BaseUI{
 	@FXML private Pane LoadingPane;
 	@FXML private Pane restoreWalletMetaDataMenu;
 	@FXML private Pane cloudBackupMenu;
+	@FXML private Pane cloudBackupAfterLogin;
 	@FXML private Hyperlink hlpw;
 	@FXML private WebView browser;
 	@FXML private Button btnNewWallet;
@@ -177,6 +178,9 @@ public class StartupController  extends BaseUI{
 	@FXML private Button btnBackFromRestoreWalletMetaDataMenu;
 	@FXML private Button btnBackFromCloudBackupMenu;
 	@FXML private Button btnSkipCloudBackup;
+	@FXML private Button btnContinueAfterCloudBackupLogin;
+	@FXML private Button btnSignInToCloudBackup;
+	@FXML private Button btnRegisterToCloudBackup;
 	@FXML private Button btnPlayStore;
 	@FXML private Button btnStandard;
 	@FXML private Label lblMinimize;
@@ -390,7 +394,10 @@ public class StartupController  extends BaseUI{
 		 Label labeSkipCloudBackup = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
 		 labeSkipCloudBackup.setPadding(new Insets(0,6,0,0));
 		 btnSkipCloudBackup.setGraphic(labeSkipCloudBackup);
-		 
+		 //
+		 Label labeContinueAfterCloudBackupLogin = AwesomeDude.createIconLabel(AwesomeIcon.CARET_RIGHT, "45");
+		 labeContinueAfterCloudBackupLogin.setPadding(new Insets(0,6,0,0));
+		 btnContinueAfterCloudBackupLogin.setGraphic(labeContinueAfterCloudBackupLogin);
 		 //
 		 Label labePrintSSS = AwesomeDude.createIconLabel(AwesomeIcon.PRINT, "30");
 		 btnPrintSSS.setGraphic(labePrintSSS);
@@ -607,7 +614,10 @@ public class StartupController  extends BaseUI{
 		 ExplanationPane1.setVisible(true);
 		 
 		 btnStandard.setDisable(true);
-		 		 
+
+		 if(auth.state() == State.STARTING || auth.state() == State.RUNNING)
+			 return;
+
 		 auth.getWalletOperation().setTrackedWallet(wallet);
 		 auth.startAsync();
 		 auth.addListener(new Service.Listener() {
@@ -755,11 +765,11 @@ public class StartupController  extends BaseUI{
 		 } 
 	 }
 	 
-	 @FXML protected void backToBackupNewWalletPane(ActionEvent event){
+	 @FXML protected void backToCloudBackupMenu(ActionEvent event){
 		 Animation ani = GuiUtils.fadeOut(ExplanationPane1);
 		 GuiUtils.fadeIn(BackupNewWalletPane);
 		 ExplanationPane1.setVisible(false);
-		 BackupNewWalletPane.setVisible(true);
+		 cloudBackupMenu.setVisible(true);
 	 }
 	 	 
 	 private boolean handlePasswordPane(String pw1, String pw2) {
@@ -1020,7 +1030,14 @@ public class StartupController  extends BaseUI{
                 @Override
                 public void onSuccess() {
 					useCloudBackup = true;
-					Platform.runLater(() ->  skipCloudBackup(null));
+					Platform.runLater(() -> {
+						cloudBackupMenu.setVisible(false);
+						cloudBackupAfterLogin.setVisible(true);
+						tfCloudBackupUserName.setDisable(true);
+						tfCloudBackupPasswordField.setDisable(true);
+						btnSignInToCloudBackup.setDisable(true);
+						btnRegisterToCloudBackup.setDisable(true);
+					});
                 }
 
                 @Override
@@ -1039,15 +1056,24 @@ public class StartupController  extends BaseUI{
 		String un = tfCloudBackupUserName.getText();
 		String pw = tfCloudBackupPasswordField.getText();
 		String result = verifyCloudBackupMenuFields(un, pw);
-		if(result != null)
+		if(result != null) {
 			GuiUtils.informationalAlert("Problem:", result);
+			return;
+		}
 
 		try {
 			BABackupCloud.getInstance().registerToCloud(un.getBytes(), pw.getBytes(), new BABackupCloud.BABackupCloudListener() {
 				@Override
 				public void onSuccess() {
 					useCloudBackup = true;
-					Platform.runLater(() -> skipCloudBackup(null));
+					Platform.runLater(() -> {
+						cloudBackupMenu.setVisible(false);
+						cloudBackupAfterLogin.setVisible(true);
+						tfCloudBackupUserName.setDisable(true);
+						tfCloudBackupPasswordField.setDisable(true);
+						btnSignInToCloudBackup.setDisable(true);
+						btnRegisterToCloudBackup.setDisable(true);
+					});
 				}
 
 				@Override
@@ -1079,6 +1105,13 @@ public class StartupController  extends BaseUI{
 		if(ret.length() == 0)
 			return null;
 		return ret;
+	}
+
+	@FXML protected void continueAfterCloudBackupLogin(ActionEvent event) {
+		Platform.runLater(() -> {
+			cloudBackupAfterLogin.setVisible(false);
+			skipCloudBackup(null);
+		});
 	}
 	 
 	 //##############################

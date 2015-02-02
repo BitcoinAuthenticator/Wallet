@@ -119,11 +119,28 @@
 
         <PasswordField fx:id="tfCloudBackupPasswordField" layoutX="85.0" layoutY="250.0" prefWidth="200.0" promptText="Password"/>
         <TextField fx:id="tfCloudBackupUserName" layoutX="295.0" layoutY="250.0" prefWidth="200.0" promptText="User Name"/>
-        <Button layoutX="165.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#signInToCloudBackup" text="Sign in"/>
-        <Button layoutX="295.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#registerToCloudBackup" text="Register"/>
+        <Button fx:id="btnSignInToCloudBackup" layoutX="165.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#signInToCloudBackup" text="Sign in"/>
+        <Button fx:id="btnRegisterToCloudBackup" layoutX="295.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0" styleClass="custom-button" mnemonicParsing="false" onAction="#registerToCloudBackup" text="Register"/>
 
         <Button fx:id="btnBackFromCloudBackupMenu" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#returnFromCloudBackup" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Button fx:id="btnSkipCloudBackup" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#skipCloudBackup" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
+      </children>
+    </Pane>
+    <!--
+
+    	Cloud backup after login pane
+
+
+    	-->
+    <Pane fx:id="cloudBackupAfterLogin" layoutX="0.0" layoutY="4.0" prefHeight="393.0" prefWidth="600.0" visible="false">
+      <children>
+        <ImageView layoutX="200.0" layoutY="60.0" fitHeight="180" fitWidth="180" pickOnBounds="true" preserveRatio="true">
+          <Image url="@../apps/Icons/btnCloudBackup.png" />
+        </ImageView>
+
+        <Label layoutX="45.0" layoutY="250.0" prefWidth="517.0" text="You've just logged in to cloud backup. Your wallet will be backed up automatically whenever you make a change." wrapText="true" />
+
+        <Button fx:id="btnContinueAfterCloudBackupLogin" layoutX="510.0" layoutY="320.0" mnemonicParsing="false" onAction="#continueAfterCloudBackupLogin" onMousePressed="#btnContinuePressed" onMouseReleased="#btnContinueReleased" prefHeight="60.0" prefWidth="60.0" styleClass="forward-button" />
       </children>
     </Pane>
     <!--
@@ -153,7 +170,7 @@
             </ImageView>
           </graphic>
         </Button>
-        <Button fx:id="btnBack5" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#backToBackupNewWalletPane" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
+        <Button fx:id="btnBack5" layoutX="29.0" layoutY="320.0" mnemonicParsing="false" onAction="#backToCloudBackupMenu" onMousePressed="#btnBackPressed" onMouseReleased="#btnBackReleased" prefHeight="60.0" prefWidth="60.0" styleClass="back-button" />
         <Pane fx:id="BA1" layoutX="14.0" layoutY="67.0" prefHeight="242.0" prefWidth="560.0" visible="true">
           <children>
             <ImageView fitHeight="220.0" fitWidth="220.0" layoutX="14.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
