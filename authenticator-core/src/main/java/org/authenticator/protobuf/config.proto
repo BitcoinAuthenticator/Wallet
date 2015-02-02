@@ -98,6 +98,11 @@ message PendingRequest{
 	required Contract contract 									= 9;
 }
 
+message Extenstion {
+	required string extentionID		= 1;
+	optional string description		= 2;
+	required bytes  data			= 3;
+}
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -113,7 +118,7 @@ message PendingRequest{
 //
 ////////////////////////////////////////////////////////////////////////
 
-message AuthenticatorConfiguration{
+message AuthenticatorConfiguration {
 	message ConfigActiveAccount{
 		optional PairedAuthenticator pairedAuthenticator = 1;
 		required ATAccount activeAccount			 	 = 2;
@@ -150,4 +155,5 @@ message AuthenticatorConfiguration{
 	repeated ATAccount 					configAccounts						= 6;
 	repeated SavedTX 					configSavedTXData                   = 7;	
 	required ConfigSettings 			configSettings						= 8;
+	repeated Extenstion					configExtensions					= 9;
 }

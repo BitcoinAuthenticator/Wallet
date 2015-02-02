@@ -12,6 +12,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.db.exceptions.PairingObjectWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
+import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.protobuf.ProtoConfig.ATAccount;
 import org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration;
 import org.authenticator.protobuf.ProtoConfig.ATAccount.ATAccountAddressHierarchy;
@@ -21,6 +22,8 @@ import org.authenticator.protobuf.ProtoConfig.PendingRequest;
 import org.authenticator.protobuf.ProtoSettings.ConfigSettings;
 
 import com.google.protobuf.ByteString;
+
+import javax.annotation.Nullable;
 
 public class WalletDb extends DbBase {
 
@@ -402,5 +405,31 @@ public class WalletDb extends DbBase {
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		auth = this.setDefaultSettings(auth);
 		writeConfigFile(auth);
+	}
+
+	public void addExtension(String id, @Nullable String description, byte[] data) throws IOException {
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		ProtoConfig.Extenstion.Builder ext = ProtoConfig.Extenstion.newBuilder();
+		ext.setExtentionID(id);
+		if(description != null)
+			ext.setDescription(description);
+		ext.setData(ByteString.copyFrom(data));
+		auth.addConfigExtensions(ext);
+		writeConfigFile(auth);
+	}
+
+	/**
+	 * Will return null if extension not found
+	 * @param id
+	 * @return
+	 */
+	public ProtoConfig.Extenstion getExtesntion(String id) {
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<ProtoConfig.Extenstion> lst = auth.getConfigExtensionsList();
+		for (ProtoConfig.Extenstion ext: lst) {
+			if(ext.getExtentionID().equals(id))
+				return ext;
+		}
+		return null;
 	}
 }

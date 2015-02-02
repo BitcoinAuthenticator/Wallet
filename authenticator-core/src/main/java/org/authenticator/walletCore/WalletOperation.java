@@ -6,6 +6,8 @@ import org.authenticator.BASE;
 import org.authenticator.BAApplicationParameters.NetworkType;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.hierarchy.SingleAccountManagerImpl;
+import org.authenticator.protobuf.ConfigExtension;
+import org.authenticator.protobuf.ProtoConfig;
 import org.authenticator.walletCore.exceptions.*;
 import org.authenticator.walletCore.utils.BAPassword;
 import org.authenticator.walletCore.utils.CoinsReceivedNotificationSender;
@@ -1964,7 +1966,26 @@ public class WalletOperation extends BASE{
 		
 		return filteredHistory;
 	}
-	
+
+	//#####################################
+	//
+	//		Config extensions
+	//
+	//#####################################
+
+	public void addExtension(ConfigExtension extension) throws IOException {
+		configFile.addExtension(extension.getID(), extension.getDescription(), extension.serialize());
+	}
+
+	/**
+	 * Will return null if extension not found
+	 * @param id
+	 * @return
+	 */
+	public ProtoConfig.Extenstion getExtesntion(String id) {
+		return configFile.getExtesntion(id);
+	}
+
 	//#####################################
 	//
 	//		Operational State

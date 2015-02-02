@@ -7133,6 +7133,736 @@ public final class ProtoConfig {
     // @@protoc_insertion_point(class_scope:org.authenticator.protobuf.PendingRequest)
   }
 
+  public interface ExtenstionOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.authenticator.protobuf.Extenstion)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string extentionID = 1;</code>
+     */
+    boolean hasExtentionID();
+    /**
+     * <code>required string extentionID = 1;</code>
+     */
+    java.lang.String getExtentionID();
+    /**
+     * <code>required string extentionID = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getExtentionIDBytes();
+
+    /**
+     * <code>optional string description = 2;</code>
+     */
+    boolean hasDescription();
+    /**
+     * <code>optional string description = 2;</code>
+     */
+    java.lang.String getDescription();
+    /**
+     * <code>optional string description = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getDescriptionBytes();
+
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    boolean hasData();
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    com.google.protobuf.ByteString getData();
+  }
+  /**
+   * Protobuf type {@code org.authenticator.protobuf.Extenstion}
+   */
+  public static final class Extenstion extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.authenticator.protobuf.Extenstion)
+      ExtenstionOrBuilder {
+    // Use Extenstion.newBuilder() to construct.
+    private Extenstion(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private Extenstion(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final Extenstion defaultInstance;
+    public static Extenstion getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public Extenstion getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Extenstion(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              extentionID_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              description_ = bs;
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              data_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_Extenstion_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_Extenstion_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.authenticator.protobuf.ProtoConfig.Extenstion.class, org.authenticator.protobuf.ProtoConfig.Extenstion.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<Extenstion> PARSER =
+        new com.google.protobuf.AbstractParser<Extenstion>() {
+      public Extenstion parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Extenstion(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Extenstion> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int EXTENTIONID_FIELD_NUMBER = 1;
+    private java.lang.Object extentionID_;
+    /**
+     * <code>required string extentionID = 1;</code>
+     */
+    public boolean hasExtentionID() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string extentionID = 1;</code>
+     */
+    public java.lang.String getExtentionID() {
+      java.lang.Object ref = extentionID_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          extentionID_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string extentionID = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getExtentionIDBytes() {
+      java.lang.Object ref = extentionID_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        extentionID_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DESCRIPTION_FIELD_NUMBER = 2;
+    private java.lang.Object description_;
+    /**
+     * <code>optional string description = 2;</code>
+     */
+    public boolean hasDescription() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string description = 2;</code>
+     */
+    public java.lang.String getDescription() {
+      java.lang.Object ref = description_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          description_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string description = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDescriptionBytes() {
+      java.lang.Object ref = description_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        description_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DATA_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString data_;
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    public boolean hasData() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required bytes data = 3;</code>
+     */
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    private void initFields() {
+      extentionID_ = "";
+      description_ = "";
+      data_ = com.google.protobuf.ByteString.EMPTY;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasExtentionID()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasData()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getExtentionIDBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getDescriptionBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, data_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getExtentionIDBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getDescriptionBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, data_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static org.authenticator.protobuf.ProtoConfig.Extenstion parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(org.authenticator.protobuf.ProtoConfig.Extenstion prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.authenticator.protobuf.Extenstion}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.authenticator.protobuf.Extenstion)
+        org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_Extenstion_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_Extenstion_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.authenticator.protobuf.ProtoConfig.Extenstion.class, org.authenticator.protobuf.ProtoConfig.Extenstion.Builder.class);
+      }
+
+      // Construct using org.authenticator.protobuf.ProtoConfig.Extenstion.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        extentionID_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        description_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.authenticator.protobuf.ProtoConfig.internal_static_org_authenticator_protobuf_Extenstion_descriptor;
+      }
+
+      public org.authenticator.protobuf.ProtoConfig.Extenstion getDefaultInstanceForType() {
+        return org.authenticator.protobuf.ProtoConfig.Extenstion.getDefaultInstance();
+      }
+
+      public org.authenticator.protobuf.ProtoConfig.Extenstion build() {
+        org.authenticator.protobuf.ProtoConfig.Extenstion result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public org.authenticator.protobuf.ProtoConfig.Extenstion buildPartial() {
+        org.authenticator.protobuf.ProtoConfig.Extenstion result = new org.authenticator.protobuf.ProtoConfig.Extenstion(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.extentionID_ = extentionID_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.description_ = description_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.data_ = data_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.authenticator.protobuf.ProtoConfig.Extenstion) {
+          return mergeFrom((org.authenticator.protobuf.ProtoConfig.Extenstion)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.authenticator.protobuf.ProtoConfig.Extenstion other) {
+        if (other == org.authenticator.protobuf.ProtoConfig.Extenstion.getDefaultInstance()) return this;
+        if (other.hasExtentionID()) {
+          bitField0_ |= 0x00000001;
+          extentionID_ = other.extentionID_;
+          onChanged();
+        }
+        if (other.hasDescription()) {
+          bitField0_ |= 0x00000002;
+          description_ = other.description_;
+          onChanged();
+        }
+        if (other.hasData()) {
+          setData(other.getData());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasExtentionID()) {
+          
+          return false;
+        }
+        if (!hasData()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.authenticator.protobuf.ProtoConfig.Extenstion parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.authenticator.protobuf.ProtoConfig.Extenstion) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object extentionID_ = "";
+      /**
+       * <code>required string extentionID = 1;</code>
+       */
+      public boolean hasExtentionID() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string extentionID = 1;</code>
+       */
+      public java.lang.String getExtentionID() {
+        java.lang.Object ref = extentionID_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            extentionID_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string extentionID = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getExtentionIDBytes() {
+        java.lang.Object ref = extentionID_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          extentionID_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string extentionID = 1;</code>
+       */
+      public Builder setExtentionID(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        extentionID_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string extentionID = 1;</code>
+       */
+      public Builder clearExtentionID() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        extentionID_ = getDefaultInstance().getExtentionID();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string extentionID = 1;</code>
+       */
+      public Builder setExtentionIDBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        extentionID_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object description_ = "";
+      /**
+       * <code>optional string description = 2;</code>
+       */
+      public boolean hasDescription() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string description = 2;</code>
+       */
+      public java.lang.String getDescription() {
+        java.lang.Object ref = description_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            description_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string description = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDescriptionBytes() {
+        java.lang.Object ref = description_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          description_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string description = 2;</code>
+       */
+      public Builder setDescription(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        description_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string description = 2;</code>
+       */
+      public Builder clearDescription() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        description_ = getDefaultInstance().getDescription();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string description = 2;</code>
+       */
+      public Builder setDescriptionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        description_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public boolean hasData() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes data = 3;</code>
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:org.authenticator.protobuf.Extenstion)
+    }
+
+    static {
+      defaultInstance = new Extenstion(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:org.authenticator.protobuf.Extenstion)
+  }
+
   public interface AuthenticatorConfigurationOrBuilder extends
       // @@protoc_insertion_point(interface_extends:org.authenticator.protobuf.AuthenticatorConfiguration)
       com.google.protobuf.MessageOrBuilder {
@@ -7268,6 +7998,30 @@ public final class ProtoConfig {
      * <code>required .org.authenticator.protobuf.ConfigSettings configSettings = 8;</code>
      */
     org.authenticator.protobuf.ProtoSettings.ConfigSettingsOrBuilder getConfigSettingsOrBuilder();
+
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    java.util.List<org.authenticator.protobuf.ProtoConfig.Extenstion> 
+        getConfigExtensionsList();
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    org.authenticator.protobuf.ProtoConfig.Extenstion getConfigExtensions(int index);
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    int getConfigExtensionsCount();
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    java.util.List<? extends org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder> 
+        getConfigExtensionsOrBuilderList();
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder getConfigExtensionsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code org.authenticator.protobuf.AuthenticatorConfiguration}
@@ -7389,6 +8143,14 @@ public final class ProtoConfig {
               bitField0_ |= 0x00000008;
               break;
             }
+            case 74: {
+              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+                configExtensions_ = new java.util.ArrayList<org.authenticator.protobuf.ProtoConfig.Extenstion>();
+                mutable_bitField0_ |= 0x00000040;
+              }
+              configExtensions_.add(input.readMessage(org.authenticator.protobuf.ProtoConfig.Extenstion.PARSER, extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -7402,6 +8164,9 @@ public final class ProtoConfig {
         }
         if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
           configSavedTXData_ = java.util.Collections.unmodifiableList(configSavedTXData_);
+        }
+        if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+          configExtensions_ = java.util.Collections.unmodifiableList(configExtensions_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -11477,6 +12242,41 @@ public final class ProtoConfig {
       return configSettings_;
     }
 
+    public static final int CONFIGEXTENSIONS_FIELD_NUMBER = 9;
+    private java.util.List<org.authenticator.protobuf.ProtoConfig.Extenstion> configExtensions_;
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    public java.util.List<org.authenticator.protobuf.ProtoConfig.Extenstion> getConfigExtensionsList() {
+      return configExtensions_;
+    }
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    public java.util.List<? extends org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder> 
+        getConfigExtensionsOrBuilderList() {
+      return configExtensions_;
+    }
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    public int getConfigExtensionsCount() {
+      return configExtensions_.size();
+    }
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    public org.authenticator.protobuf.ProtoConfig.Extenstion getConfigExtensions(int index) {
+      return configExtensions_.get(index);
+    }
+    /**
+     * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+     */
+    public org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder getConfigExtensionsOrBuilder(
+        int index) {
+      return configExtensions_.get(index);
+    }
+
     private void initFields() {
       configActiveAccount_ = org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigActiveAccount.getDefaultInstance();
       configAuthenticatorWallet_ = org.authenticator.protobuf.ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.getDefaultInstance();
@@ -11484,6 +12284,7 @@ public final class ProtoConfig {
       configAccounts_ = java.util.Collections.emptyList();
       configSavedTXData_ = java.util.Collections.emptyList();
       configSettings_ = org.authenticator.protobuf.ProtoSettings.ConfigSettings.getDefaultInstance();
+      configExtensions_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -11525,6 +12326,12 @@ public final class ProtoConfig {
           return false;
         }
       }
+      for (int i = 0; i < getConfigExtensionsCount(); i++) {
+        if (!getConfigExtensions(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -11549,6 +12356,9 @@ public final class ProtoConfig {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeMessage(8, configSettings_);
+      }
+      for (int i = 0; i < configExtensions_.size(); i++) {
+        output.writeMessage(9, configExtensions_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -11582,6 +12392,10 @@ public final class ProtoConfig {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, configSettings_);
+      }
+      for (int i = 0; i < configExtensions_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, configExtensions_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -11698,6 +12512,7 @@ public final class ProtoConfig {
           getConfigAccountsFieldBuilder();
           getConfigSavedTXDataFieldBuilder();
           getConfigSettingsFieldBuilder();
+          getConfigExtensionsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -11742,6 +12557,12 @@ public final class ProtoConfig {
           configSettingsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000020);
+        if (configExtensionsBuilder_ == null) {
+          configExtensions_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+        } else {
+          configExtensionsBuilder_.clear();
+        }
         return this;
       }
 
@@ -11819,6 +12640,15 @@ public final class ProtoConfig {
           result.configSettings_ = configSettings_;
         } else {
           result.configSettings_ = configSettingsBuilder_.build();
+        }
+        if (configExtensionsBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) == 0x00000040)) {
+            configExtensions_ = java.util.Collections.unmodifiableList(configExtensions_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.configExtensions_ = configExtensions_;
+        } else {
+          result.configExtensions_ = configExtensionsBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -11900,6 +12730,32 @@ public final class ProtoConfig {
         if (other.hasConfigSettings()) {
           mergeConfigSettings(other.getConfigSettings());
         }
+        if (configExtensionsBuilder_ == null) {
+          if (!other.configExtensions_.isEmpty()) {
+            if (configExtensions_.isEmpty()) {
+              configExtensions_ = other.configExtensions_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+            } else {
+              ensureConfigExtensionsIsMutable();
+              configExtensions_.addAll(other.configExtensions_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.configExtensions_.isEmpty()) {
+            if (configExtensionsBuilder_.isEmpty()) {
+              configExtensionsBuilder_.dispose();
+              configExtensionsBuilder_ = null;
+              configExtensions_ = other.configExtensions_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              configExtensionsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getConfigExtensionsFieldBuilder() : null;
+            } else {
+              configExtensionsBuilder_.addAllMessages(other.configExtensions_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -11935,6 +12791,12 @@ public final class ProtoConfig {
         }
         for (int i = 0; i < getConfigSavedTXDataCount(); i++) {
           if (!getConfigSavedTXData(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getConfigExtensionsCount(); i++) {
+          if (!getConfigExtensions(i).isInitialized()) {
             
             return false;
           }
@@ -13013,6 +13875,246 @@ public final class ProtoConfig {
         return configSettingsBuilder_;
       }
 
+      private java.util.List<org.authenticator.protobuf.ProtoConfig.Extenstion> configExtensions_ =
+        java.util.Collections.emptyList();
+      private void ensureConfigExtensionsIsMutable() {
+        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
+          configExtensions_ = new java.util.ArrayList<org.authenticator.protobuf.ProtoConfig.Extenstion>(configExtensions_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          org.authenticator.protobuf.ProtoConfig.Extenstion, org.authenticator.protobuf.ProtoConfig.Extenstion.Builder, org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder> configExtensionsBuilder_;
+
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public java.util.List<org.authenticator.protobuf.ProtoConfig.Extenstion> getConfigExtensionsList() {
+        if (configExtensionsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(configExtensions_);
+        } else {
+          return configExtensionsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public int getConfigExtensionsCount() {
+        if (configExtensionsBuilder_ == null) {
+          return configExtensions_.size();
+        } else {
+          return configExtensionsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public org.authenticator.protobuf.ProtoConfig.Extenstion getConfigExtensions(int index) {
+        if (configExtensionsBuilder_ == null) {
+          return configExtensions_.get(index);
+        } else {
+          return configExtensionsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder setConfigExtensions(
+          int index, org.authenticator.protobuf.ProtoConfig.Extenstion value) {
+        if (configExtensionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureConfigExtensionsIsMutable();
+          configExtensions_.set(index, value);
+          onChanged();
+        } else {
+          configExtensionsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder setConfigExtensions(
+          int index, org.authenticator.protobuf.ProtoConfig.Extenstion.Builder builderForValue) {
+        if (configExtensionsBuilder_ == null) {
+          ensureConfigExtensionsIsMutable();
+          configExtensions_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          configExtensionsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder addConfigExtensions(org.authenticator.protobuf.ProtoConfig.Extenstion value) {
+        if (configExtensionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureConfigExtensionsIsMutable();
+          configExtensions_.add(value);
+          onChanged();
+        } else {
+          configExtensionsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder addConfigExtensions(
+          int index, org.authenticator.protobuf.ProtoConfig.Extenstion value) {
+        if (configExtensionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureConfigExtensionsIsMutable();
+          configExtensions_.add(index, value);
+          onChanged();
+        } else {
+          configExtensionsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder addConfigExtensions(
+          org.authenticator.protobuf.ProtoConfig.Extenstion.Builder builderForValue) {
+        if (configExtensionsBuilder_ == null) {
+          ensureConfigExtensionsIsMutable();
+          configExtensions_.add(builderForValue.build());
+          onChanged();
+        } else {
+          configExtensionsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder addConfigExtensions(
+          int index, org.authenticator.protobuf.ProtoConfig.Extenstion.Builder builderForValue) {
+        if (configExtensionsBuilder_ == null) {
+          ensureConfigExtensionsIsMutable();
+          configExtensions_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          configExtensionsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder addAllConfigExtensions(
+          java.lang.Iterable<? extends org.authenticator.protobuf.ProtoConfig.Extenstion> values) {
+        if (configExtensionsBuilder_ == null) {
+          ensureConfigExtensionsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, configExtensions_);
+          onChanged();
+        } else {
+          configExtensionsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder clearConfigExtensions() {
+        if (configExtensionsBuilder_ == null) {
+          configExtensions_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          configExtensionsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public Builder removeConfigExtensions(int index) {
+        if (configExtensionsBuilder_ == null) {
+          ensureConfigExtensionsIsMutable();
+          configExtensions_.remove(index);
+          onChanged();
+        } else {
+          configExtensionsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public org.authenticator.protobuf.ProtoConfig.Extenstion.Builder getConfigExtensionsBuilder(
+          int index) {
+        return getConfigExtensionsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder getConfigExtensionsOrBuilder(
+          int index) {
+        if (configExtensionsBuilder_ == null) {
+          return configExtensions_.get(index);  } else {
+          return configExtensionsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public java.util.List<? extends org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder> 
+           getConfigExtensionsOrBuilderList() {
+        if (configExtensionsBuilder_ != null) {
+          return configExtensionsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(configExtensions_);
+        }
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public org.authenticator.protobuf.ProtoConfig.Extenstion.Builder addConfigExtensionsBuilder() {
+        return getConfigExtensionsFieldBuilder().addBuilder(
+            org.authenticator.protobuf.ProtoConfig.Extenstion.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public org.authenticator.protobuf.ProtoConfig.Extenstion.Builder addConfigExtensionsBuilder(
+          int index) {
+        return getConfigExtensionsFieldBuilder().addBuilder(
+            index, org.authenticator.protobuf.ProtoConfig.Extenstion.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .org.authenticator.protobuf.Extenstion configExtensions = 9;</code>
+       */
+      public java.util.List<org.authenticator.protobuf.ProtoConfig.Extenstion.Builder> 
+           getConfigExtensionsBuilderList() {
+        return getConfigExtensionsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          org.authenticator.protobuf.ProtoConfig.Extenstion, org.authenticator.protobuf.ProtoConfig.Extenstion.Builder, org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder> 
+          getConfigExtensionsFieldBuilder() {
+        if (configExtensionsBuilder_ == null) {
+          configExtensionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              org.authenticator.protobuf.ProtoConfig.Extenstion, org.authenticator.protobuf.ProtoConfig.Extenstion.Builder, org.authenticator.protobuf.ProtoConfig.ExtenstionOrBuilder>(
+                  configExtensions_,
+                  ((bitField0_ & 0x00000040) == 0x00000040),
+                  getParentForChildren(),
+                  isClean());
+          configExtensions_ = null;
+        }
+        return configExtensionsBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:org.authenticator.protobuf.AuthenticatorConfiguration)
     }
 
@@ -13054,6 +14156,11 @@ public final class ProtoConfig {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_authenticator_protobuf_PendingRequest_Contract_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_authenticator_protobuf_Extenstion_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_org_authenticator_protobuf_Extenstion_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor;
   private static
@@ -13124,44 +14231,47 @@ public final class ProtoConfig {
       "Contract\022%\n\035ShouldSendPayloadOnConnectio" +
       "n\030\001 \001(\010\022;\n3ShouldReceivePayloadAfterSend" +
       "ingPayloadOnConnection\030\002 \001(\010\022,\n$ShouldLe" +
-      "tPendingRequestHandleRemoval\030\003 \001(\010\"\365\010\n\032A" +
-      "uthenticatorConfiguration\022g\n\023configActiv" +
-      "eAccount\030\001 \001(\0132J.org.authenticator.proto" +
-      "buf.AuthenticatorConfiguration.ConfigAct",
-      "iveAccount\022s\n\031configAuthenticatorWallet\030" +
-      "\002 \001(\0132P.org.authenticator.protobuf.Authe" +
-      "nticatorConfiguration.ConfigAuthenticato" +
-      "rWallet\022i\n\024configOneNameProfile\030\005 \001(\0132K." +
-      "org.authenticator.protobuf.Authenticator" +
-      "Configuration.ConfigOneNameProfile\022=\n\016co" +
-      "nfigAccounts\030\006 \003(\0132%.org.authenticator.p" +
-      "rotobuf.ATAccount\022Y\n\021configSavedTXData\030\007" +
-      " \003(\0132>.org.authenticator.protobuf.Authen" +
-      "ticatorConfiguration.SavedTX\022B\n\016configSe",
-      "ttings\030\010 \002(\0132*.org.authenticator.protobu" +
-      "f.ConfigSettings\032\241\001\n\023ConfigActiveAccount" +
-      "\022L\n\023pairedAuthenticator\030\001 \001(\0132/.org.auth" +
-      "enticator.protobuf.PairedAuthenticator\022<" +
-      "\n\ractiveAccount\030\002 \002(\0132%.org.authenticato" +
-      "r.protobuf.ATAccount\032\270\001\n\031ConfigAuthentic" +
-      "atorWallet\022\016\n\006paired\030\001 \001(\010\022F\n\rpairedWall" +
-      "ets\030\002 \003(\0132/.org.authenticator.protobuf.P" +
-      "airedAuthenticator\022C\n\017pendingRequests\030\003 " +
-      "\003(\0132*.org.authenticator.protobuf.Pending",
-      "Request\032\222\001\n\024ConfigOneNameProfile\022\017\n\007onen" +
-      "ame\030\001 \002(\t\022\030\n\020onenameFormatted\030\002 \001(\t\022\030\n\020o" +
-      "nenameAvatarURL\030\003 \001(\t\022\035\n\025onenameAvatarFi" +
-      "lePath\030\004 \001(\t\022\026\n\016bitcoinAddress\030\005 \001(\t\032<\n\007" +
-      "SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n\006toFrom\030\002 \001(\t\022\023\n" +
-      "\013description\030\003 \001(\t*N\n\020ATGCMMessageType\022\n" +
-      "\n\006SignTX\020\002\022\033\n\027UpdatePendingRequestIPs\020\004\022" +
-      "\021\n\rCoinsReceived\020\006*\217\001\n\017ATOperationType\022\013" +
-      "\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022#\n\037SignAndBroadc" +
-      "astAuthenticatorTx\020\002\022\025\n\021BroadcastNormalT",
-      "x\020\003\022\'\n#updateIpAddressesForPreviousMessa" +
-      "ge\020\004*B\n\021WalletAccountType\022\023\n\017StandardAcc" +
-      "ount\020\000\022\030\n\024AuthenticatorAccount\020\001B\rB\013Prot" +
-      "oConfig"
+      "tPendingRequestHandleRemoval\030\003 \001(\010\"D\n\nEx" +
+      "tenstion\022\023\n\013extentionID\030\001 \002(\t\022\023\n\013descrip" +
+      "tion\030\002 \001(\t\022\014\n\004data\030\003 \002(\014\"\267\t\n\032Authenticat" +
+      "orConfiguration\022g\n\023configActiveAccount\030\001",
+      " \001(\0132J.org.authenticator.protobuf.Authen" +
+      "ticatorConfiguration.ConfigActiveAccount" +
+      "\022s\n\031configAuthenticatorWallet\030\002 \001(\0132P.or" +
+      "g.authenticator.protobuf.AuthenticatorCo" +
+      "nfiguration.ConfigAuthenticatorWallet\022i\n" +
+      "\024configOneNameProfile\030\005 \001(\0132K.org.authen" +
+      "ticator.protobuf.AuthenticatorConfigurat" +
+      "ion.ConfigOneNameProfile\022=\n\016configAccoun" +
+      "ts\030\006 \003(\0132%.org.authenticator.protobuf.AT" +
+      "Account\022Y\n\021configSavedTXData\030\007 \003(\0132>.org",
+      ".authenticator.protobuf.AuthenticatorCon" +
+      "figuration.SavedTX\022B\n\016configSettings\030\010 \002" +
+      "(\0132*.org.authenticator.protobuf.ConfigSe" +
+      "ttings\022@\n\020configExtensions\030\t \003(\0132&.org.a" +
+      "uthenticator.protobuf.Extenstion\032\241\001\n\023Con" +
+      "figActiveAccount\022L\n\023pairedAuthenticator\030" +
+      "\001 \001(\0132/.org.authenticator.protobuf.Paire" +
+      "dAuthenticator\022<\n\ractiveAccount\030\002 \002(\0132%." +
+      "org.authenticator.protobuf.ATAccount\032\270\001\n" +
+      "\031ConfigAuthenticatorWallet\022\016\n\006paired\030\001 \001",
+      "(\010\022F\n\rpairedWallets\030\002 \003(\0132/.org.authenti" +
+      "cator.protobuf.PairedAuthenticator\022C\n\017pe" +
+      "ndingRequests\030\003 \003(\0132*.org.authenticator." +
+      "protobuf.PendingRequest\032\222\001\n\024ConfigOneNam" +
+      "eProfile\022\017\n\007onename\030\001 \002(\t\022\030\n\020onenameForm" +
+      "atted\030\002 \001(\t\022\030\n\020onenameAvatarURL\030\003 \001(\t\022\035\n" +
+      "\025onenameAvatarFilePath\030\004 \001(\t\022\026\n\016bitcoinA" +
+      "ddress\030\005 \001(\t\032<\n\007SavedTX\022\014\n\004txid\030\001 \002(\t\022\016\n" +
+      "\006toFrom\030\002 \001(\t\022\023\n\013description\030\003 \001(\t*N\n\020AT" +
+      "GCMMessageType\022\n\n\006SignTX\020\002\022\033\n\027UpdatePend",
+      "ingRequestIPs\020\004\022\021\n\rCoinsReceived\020\006*\217\001\n\017A" +
+      "TOperationType\022\013\n\007Pairing\020\000\022\n\n\006Unpair\020\001\022" +
+      "#\n\037SignAndBroadcastAuthenticatorTx\020\002\022\025\n\021" +
+      "BroadcastNormalTx\020\003\022\'\n#updateIpAddresses" +
+      "ForPreviousMessage\020\004*B\n\021WalletAccountTyp" +
+      "e\022\023\n\017StandardAccount\020\000\022\030\n\024AuthenticatorA" +
+      "ccount\020\001B\rB\013ProtoConfig"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -13213,12 +14323,18 @@ public final class ProtoConfig {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_org_authenticator_protobuf_PendingRequest_Contract_descriptor,
         new java.lang.String[] { "ShouldSendPayloadOnConnection", "ShouldReceivePayloadAfterSendingPayloadOnConnection", "ShouldLetPendingRequestHandleRemoval", });
-    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
+    internal_static_org_authenticator_protobuf_Extenstion_descriptor =
       getDescriptor().getMessageTypes().get(4);
+    internal_static_org_authenticator_protobuf_Extenstion_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_authenticator_protobuf_Extenstion_descriptor,
+        new java.lang.String[] { "ExtentionID", "Description", "Data", });
+    internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor,
-        new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", });
+        new java.lang.String[] { "ConfigActiveAccount", "ConfigAuthenticatorWallet", "ConfigOneNameProfile", "ConfigAccounts", "ConfigSavedTXData", "ConfigSettings", "ConfigExtensions", });
     internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_descriptor =
       internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_descriptor.getNestedTypes().get(0);
     internal_static_org_authenticator_protobuf_AuthenticatorConfiguration_ConfigActiveAccount_fieldAccessorTable = new

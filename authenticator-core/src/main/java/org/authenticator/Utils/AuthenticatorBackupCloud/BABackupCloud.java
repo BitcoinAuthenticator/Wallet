@@ -7,6 +7,7 @@ import org.authenticator.Utils.AuthenticatorBackupCloud.exceptions.CannotRestore
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.Utils.EncodingUtils;
 import org.authenticator.db.DbBase;
+import org.authenticator.walletCore.WalletOperation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -191,6 +192,10 @@ public class BABackupCloud {
                 return null;
             }
         });
+    }
+
+    private void saveCookies(WalletOperation wo, List<Cookie> cookies) {
+        
     }
 
     public interface BABackupCloudListener {
