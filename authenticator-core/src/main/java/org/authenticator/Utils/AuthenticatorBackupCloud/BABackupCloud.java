@@ -3,19 +3,24 @@ package org.authenticator.Utils.AuthenticatorBackupCloud;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import com.ning.http.client.cookie.Cookie;
+import org.authenticator.Authenticator;
 import org.authenticator.Utils.AuthenticatorBackupCloud.exceptions.CannotRestoreFromBackupException;
 import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.Utils.EncodingUtils;
-import org.authenticator.db.DbBase;
-import org.authenticator.walletCore.WalletOperation;
+import org.authenticator.db.DBBase;
+import org.authenticator.network.NingCookieSerializer;
+import org.authenticator.protobuf.ConfigExtension;
+import org.authenticator.protobuf.ProtoConfig;
+import org.authenticator.walletCore.exceptions.CannotWriteToConfigurationFileException;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
-
 import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +54,7 @@ import java.util.List;
  *
  * Created by alonmuroch on 1/8/15.
  */
-public class BABackupCloud {
+public class BABackupCloud implements ConfigExtension {
     Logger LOG = LoggerFactory.getLogger(BABackupCloud.class);
 
     final private String CLOUD_URL_API  = "http://127.0.0.1:8000/api/";
@@ -60,9 +65,12 @@ public class BABackupCloud {
     private List<Cookie> cookies;
     private boolean isLoggedIn = false;
 
+    private String extensionID;
+
     public BABackupCloud() {
         cookies = new ArrayList<>();
         isLoggedIn = false;
+        extensionID = Hex.toHexString(new Integer(this.hashCode()).toString().getBytes());
     }
 
     private static BABackupCloud instance;
@@ -72,40 +80,44 @@ public class BABackupCloud {
         return instance;
     }
 
-    private byte[] getDataDump(DbBase db) {
-        return db.dumpToByteArray();
-    }
-
-    private String getKey(DbBase db) { return  db.dumpKey(); }
-
-    byte[] getEncryptedDump(SecretKey secretKey, DbBase ... dbs) throws JSONException, CryptoUtils.CouldNotEncryptPayload {
+    /**
+     * Get wallet dbs byte dump, encrypt it for sending to server.
+     *
+     * @param secretKey
+     * @param dbs
+     * @return
+     * @throws JSONException
+     * @throws CryptoUtils.CouldNotEncryptPayload
+     */
+    byte[] getEncryptedDump(SecretKey secretKey, DBBase... dbs) throws JSONException, CryptoUtils.CouldNotEncryptPayload {
         JSONObject obj = new JSONObject();
-        for(DbBase db: dbs)
-            obj.put(getKey(db), Hex.toHexString(getDataDump(db)));
+        for(DBBase db: dbs)
+            obj.put(db.dumpKey(), Hex.toHexString(db.dumpToByteArray()));
 
         byte[] payloadHex = Hex.toHexString(obj.toString().getBytes()).getBytes();
         byte[] encryptedPayload = CryptoUtils.encryptPayloadWithChecksum(payloadHex, secretKey);
         return encryptedPayload;
     }
 
-    void restoreFromDump(SecretKey secretKey, byte[] encryptedPayload, DbBase ... dbs) throws CannotRestoreFromBackupException {
+    /**
+     * Giving a {@link org.authenticator.db.DBBase DbBase} dumps from server, restore wallet dbs.
+     *
+     * @param secretKey
+     * @param encryptedPayload
+     * @param dbs
+     * @throws CannotRestoreFromBackupException
+     */
+    void restoreFromEncryptedDump(SecretKey secretKey, byte[] encryptedPayload, DBBase... dbs) throws CannotRestoreFromBackupException {
         try {
-            byte[] data = CryptoUtils.decryptPayloadWithChecksum(encryptedPayload, secretKey);
-            restoreFromDump(data, dbs);
-        }
-        catch (Exception e) {
-            throw new CannotRestoreFromBackupException(e.getMessage());
-        }
-    }
-
-    void restoreFromDump(byte[] dataHex, DbBase ... dbs) throws CannotRestoreFromBackupException {
-        try {
+            byte[] dataHex = CryptoUtils.decryptPayloadWithChecksum(encryptedPayload, secretKey);
             byte[] data = Hex.decode(dataHex);
             JSONObject obj = new JSONObject(new String(data));
-            for(DbBase db: dbs) {
+            for(DBBase db: dbs) {
                 String k = db.dumpKey();
-                byte[] dump = Hex.decode((byte[]) obj.get(k));
-                db.restoreFromBytes(dump);
+                if(obj.has(k)) {
+                    byte[] dump = Hex.decode(obj.getString(k));
+                    db.restoreFromBytes(dump);
+                }
             }
         }
         catch (Exception e) {
@@ -119,6 +131,16 @@ public class BABackupCloud {
     //
     //############################
 
+    public List<Cookie> getCookies() {
+        return cookies;
+    }
+
+    public void addCookie(Cookie cookie) {
+        if(cookies == null)
+            cookies = new ArrayList<>();
+        cookies.add(cookie);
+    }
+
     public void loginToCloud(byte[] userName, byte[] password, BABackupCloudListener listener) throws JSONException, IOException {
         LOG.info("Logging to cloud backup server ...");
         JSONObject object = new JSONObject();
@@ -130,6 +152,8 @@ public class BABackupCloud {
                 if(response.getStatusCode() == 200) {
                     cookies = response.getCookies();
                     isLoggedIn = true;
+
+                    persist();
                     LOG.info("Logged to cloud backup server");
 
                     if(listener != null)
@@ -153,6 +177,8 @@ public class BABackupCloud {
                 if(response.getStatusCode() == 200) {
                     cookies = null;
                     isLoggedIn = false;
+
+                    persist();
                     LOG.info("Logged out from cloud backup server");
 
                     if(listener != null)
@@ -179,6 +205,8 @@ public class BABackupCloud {
                 if(response.getStatusCode() == 201) {
                     cookies = response.getCookies();
                     isLoggedIn = true;
+
+                    persist();
                     LOG.info("registering new user to cloud backup server");
 
                     if(listener != null)
@@ -194,8 +222,71 @@ public class BABackupCloud {
         });
     }
 
-    private void saveCookies(WalletOperation wo, List<Cookie> cookies) {
-        
+
+    //#############################
+    //
+    //  Config extension methods
+    //
+    //#############################
+
+    @Override
+    public String getID() {
+        return extensionID;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Cloud backup";
+    }
+
+    @Override
+    public byte[] serialize() throws InvalidObjectException {
+        try {
+            JSONObject j = new JSONObject();
+
+            // cookies
+            JSONArray cookies = new JSONArray();
+            if(BABackupCloud.this.cookies != null) {
+                for(Cookie c: BABackupCloud.this.cookies) {
+                    byte[] s = NingCookieSerializer.serialize(c);
+                    cookies.put(Hex.toHexString(s));
+                }
+                j.put("cookies", cookies);
+            }
+
+            return j.toString().getBytes();
+        }
+        catch (Exception e) {
+            throw new InvalidObjectException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deserialize(ProtoConfig.Extenstion extenstion) throws InvalidObjectException {
+        try {
+            extensionID = extenstion.getExtentionID();
+
+            JSONObject j = new JSONObject(new String(extenstion.getData().toByteArray()));
+
+            // cookies
+            BABackupCloud.this.cookies = new ArrayList<>();
+            if(j.has("cookies")) {
+                JSONArray cookies = j.getJSONArray("cookies");
+                for(int i=0; i< cookies.length(); i++) {
+                    byte[] cookieBytes = Hex.decode(cookies.getString(i));
+                    Cookie c = NingCookieSerializer.fromBytes(cookieBytes);
+                    if(c != null)
+                        BABackupCloud.this.addCookie(c);
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new InvalidObjectException(e.getMessage());
+        }
+    }
+
+    private void persist() throws CannotWriteToConfigurationFileException {
+        Authenticator.getWalletOperation().updateExtension(this);
     }
 
     public interface BABackupCloudListener {

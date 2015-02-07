@@ -1,11 +1,10 @@
-package org.authenticator.utilsTest;
+package org.authenticator.Utils;
 
 import static org.junit.Assert.*;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.authenticator.Utils.CryptoUtils;
 import org.authenticator.Utils.CryptoUtils.CannotDecryptMessageException;
 import org.authenticator.Utils.CryptoUtils.CouldNotEncryptPayload;
 import org.junit.Test;

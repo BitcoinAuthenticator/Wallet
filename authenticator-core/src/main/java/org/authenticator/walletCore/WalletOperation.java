@@ -27,8 +27,8 @@ import java.util.*;
 import javax.annotation.Nullable;
 
 import org.spongycastle.util.encoders.Hex;
-import org.authenticator.db.SettingsDb;
-import org.authenticator.db.WalletDb;
+import org.authenticator.db.SettingsDB;
+import org.authenticator.db.WalletDB;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyCoinTypes;
@@ -90,8 +90,8 @@ public class WalletOperation extends BASE{
 
 	private WalletWrapper mWalletWrapper;
 	private BAHierarchy authenticatorWalletHierarchy;
-	private WalletDb configFile;
-	private SettingsDb settingsFile;
+	private WalletDB configFile;
+	private SettingsDB settingsFile;
 	private static BAApplicationParameters AppParams;
 	private static WalletDownloadListener blockChainDownloadListener;
 	
@@ -141,7 +141,7 @@ public class WalletOperation extends BASE{
 			String getConfigFileName = params.getApplicationDataFolderAbsolutePath() + params.getAppName() + ".config";
 			AppParams = params;
 			if(configFile == null){
-				configFile = new WalletDb(getConfigFileName);
+				configFile = new WalletDB(getConfigFileName);
 				/**
 				 * Check to see if a config file exists, if not, initialize
 				 */
@@ -151,7 +151,7 @@ public class WalletOperation extends BASE{
 				}
 			}
 			if(settingsFile == null) {
-				settingsFile = new SettingsDb(getConfigFileName);
+				settingsFile = new SettingsDB(getConfigFileName);
 			}
 			if(getWalletHierarchy() == null)
 			{
@@ -186,7 +186,7 @@ public class WalletOperation extends BASE{
 	//		Getters and setters
 	//
 	//#######################################
-	public WalletDb getConfigFile() {
+	public WalletDB getConfigFile() {
 		return configFile;
 	}
 
@@ -1973,8 +1973,28 @@ public class WalletOperation extends BASE{
 	//
 	//#####################################
 
-	public void addExtension(ConfigExtension extension) throws IOException {
-		configFile.addExtension(extension.getID(), extension.getDescription(), extension.serialize());
+	public void addExtension(ConfigExtension extension) throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.addExtension(extension.getID(), extension.getDescription(), extension.serialize());
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+
+	public void updateExtension(ConfigExtension extension) throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.updateExtension(extension.getID(), extension.getDescription(), extension.serialize());
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
+	}
+
+	public void removeExtesntion(String id) throws CannotWriteToConfigurationFileException {
+		try {
+			configFile.removeExtension(id);
+		} catch (IOException e) {
+			throw new CannotWriteToConfigurationFileException(e.getMessage());
+		}
 	}
 
 	/**
@@ -1983,7 +2003,11 @@ public class WalletOperation extends BASE{
 	 * @return
 	 */
 	public ProtoConfig.Extenstion getExtesntion(String id) {
-		return configFile.getExtesntion(id);
+		return configFile.getExtension(id);
+	}
+
+	public List<ProtoConfig.Extenstion> getExtesntion() {
+		return configFile.getExtensions();
 	}
 
 	//#####################################

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.common.base.Preconditions;
 import org.authenticator.db.exceptions.AccountWasNotFoundException;
 import org.authenticator.db.exceptions.PairingObjectWasNotFoundException;
 import org.authenticator.protobuf.AuthWalletHierarchy.HierarchyAddressTypes;
@@ -25,11 +25,11 @@ import com.google.protobuf.ByteString;
 
 import javax.annotation.Nullable;
 
-public class WalletDb extends DbBase {
+public class WalletDB extends DBBase {
 
-	public WalletDb() { }
+	public WalletDB() { }
 
-	public WalletDb(String filePath) throws IOException{
+	public WalletDB(String filePath) throws IOException{
 		super(filePath);
 	}
 
@@ -39,7 +39,7 @@ public class WalletDb extends DbBase {
 	}
 
 	@Override
-	public String dumpKey() { return "WalletDb"; }
+	public String dumpKey() { return "WalletDb.db.authenticator.org"; }
 
 	@Override
 	public void restoreFromBytes(byte[] data) throws IOException {
@@ -408,6 +408,9 @@ public class WalletDb extends DbBase {
 	}
 
 	public void addExtension(String id, @Nullable String description, byte[] data) throws IOException {
+		Preconditions.checkState((id != null && id.length() > 0), "Extension ID must not be Null or empty");
+		Preconditions.checkState((data != null && data.length > 0), "Extension data must not be Null or empty");
+
 		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
 		ProtoConfig.Extenstion.Builder ext = ProtoConfig.Extenstion.newBuilder();
 		ext.setExtentionID(id);
@@ -418,18 +421,69 @@ public class WalletDb extends DbBase {
 		writeConfigFile(auth);
 	}
 
+	public void removeExtension(String id) throws IOException {
+		Preconditions.checkState((id != null && id.length() > 0), "Extension ID must not be Null or empty");
+
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<ProtoConfig.Extenstion> lst = getExtensions();
+		auth.clearConfigExtensions();
+		for (ProtoConfig.Extenstion ext: lst) {
+			if(!ext.getExtentionID().equals(id))
+				auth.addConfigExtensions(ext);
+		}
+		writeConfigFile(auth);
+	}
+
+	/**
+	 * Will try and update an existing extension, if not found will create a new one.
+	 * @param id
+	 * @param description
+	 * @param data
+	 * @throws IOException
+	 */
+	public void updateExtension(String id, @Nullable String description, byte[] data) throws IOException {
+		Preconditions.checkState((id != null && id.length() > 0), "Extension ID must not be Null or empty");
+		Preconditions.checkState((data != null && data.length > 0), "Extension data must not be Null or empty");
+
+		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
+		List<ProtoConfig.Extenstion> lst = getExtensions();
+		for (Integer i=0; i< lst.size(); i++) {
+			ProtoConfig.Extenstion ext = lst.get(i);
+			if(ext.getExtentionID().equals(id)) {
+				ProtoConfig.Extenstion.Builder b = ext.toBuilder();
+				if(description != null)
+					b.setDescription(description);
+				else
+					b.clearDescription();
+				b.setData(ByteString.copyFrom(data));
+
+				auth.setConfigExtensions(i, b);
+				writeConfigFile(auth);
+				return;
+			}
+		}
+
+		// not found, than add a new one
+		addExtension(id, description, data);
+	}
+
 	/**
 	 * Will return null if extension not found
 	 * @param id
 	 * @return
 	 */
-	public ProtoConfig.Extenstion getExtesntion(String id) {
-		AuthenticatorConfiguration.Builder auth = getConfigFileBuilder();
-		List<ProtoConfig.Extenstion> lst = auth.getConfigExtensionsList();
+	public ProtoConfig.Extenstion getExtension(String id) {
+		Preconditions.checkState((id != null && id.length() > 0), "Extension ID must not be Null or empty");
+
+		List<ProtoConfig.Extenstion> lst = getExtensions();
 		for (ProtoConfig.Extenstion ext: lst) {
 			if(ext.getExtentionID().equals(id))
 				return ext;
 		}
 		return null;
+	}
+
+	public List<ProtoConfig.Extenstion> getExtensions() {
+		return getConfigFileBuilder().getConfigExtensionsList();
 	}
 }

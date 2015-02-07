@@ -1,4 +1,4 @@
-package org.authenticator.utilsTest.ExchangeProviderTest;
+package org.authenticator.Utils.ExchangeProviderTest;
 
 import org.authenticator.Utils.ExchangeProvider.Currency;
 import org.junit.Test;

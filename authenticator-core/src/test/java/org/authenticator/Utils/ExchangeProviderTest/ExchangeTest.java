@@ -1,4 +1,4 @@
-package org.authenticator.utilsTest.ExchangeProviderTest;
+package org.authenticator.Utils.ExchangeProviderTest;
 
 import static org.junit.Assert.*;
 
@@ -8,15 +8,12 @@ import org.authenticator.Utils.ExchangeProvider.Currency;
 import org.authenticator.Utils.ExchangeProvider.Exchange;
 import org.authenticator.Utils.ExchangeProvider.exceptions.ExchangeProviderNoDataException;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.NetworkParameters;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.Random;
 
 /**
  * Created by alonmuroch on 1/18/15.

@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class WalletDBTest {
 
 	@Test
 	public void setPairedTest() {
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -65,7 +66,7 @@ public class WalletDBTest {
 
 	@Test
 	public void getPairedTest() {
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -96,7 +97,7 @@ public class WalletDBTest {
 
 	@Test
 	public void markAddressAsUsedTest() {
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 
 		// getConfigFileBuilder method stub
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -149,7 +150,7 @@ public class WalletDBTest {
 
 	@Test
 	public void isUsedAddressTest() {
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 
 		// getConfigFileBuilder method stub
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
@@ -237,7 +238,7 @@ public class WalletDBTest {
 		byte[] salt 				= "i am the salt".getBytes();
 
 		// getConfigFileBuilder method stub
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -319,7 +320,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -396,7 +397,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -452,7 +453,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 		try {
 			Mockito.doReturn(all).when(mockedWalletdb).getAllAccounts();
 		} catch (Exception e) {
@@ -487,7 +488,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		try {
@@ -539,7 +540,7 @@ public class WalletDBTest {
 		}
 
 		// walletDB methods stub
-		WalletDb mockedWalletdb = Mockito.spy(new WalletDb());
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
 		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
 		// ConfigAuthenticatorWallet.Builder
@@ -568,6 +569,360 @@ public class WalletDBTest {
 			for(ProtoConfig.PendingRequest prReturned: ret)
 				for(ProtoConfig.PendingRequest prForDeletion: forDeletetion)
 					assertFalse(prReturned.getRequestID().equals(prForDeletion.getRequestID()));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void getExtensionTest() {
+		// walletDB methods stub
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		// ConfigAuthenticatorWallet.Builder
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder mockedAuthWalletBuilder =  PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		PowerMockito.when(mockedAuthConfBuilder.getConfigAuthenticatorWalletBuilder()).thenReturn(mockedAuthWalletBuilder);
+
+		List<ProtoConfig.Extenstion> extensions = new ArrayList<>();
+		for(Integer i=0; i < 100; i++ ) {
+			ProtoConfig.Extenstion.Builder b = ProtoConfig.Extenstion.newBuilder();
+			b.setExtentionID(i.toString());
+			b.setDescription("ext " + i.toString());
+			b.setData(ByteString.copyFrom(("data for extension " + i.toString()).getBytes()));
+			extensions.add(b.build());
+		}
+		Mockito.doReturn(extensions).when(mockedWalletdb).getExtensions();
+
+
+		// test return extension 4
+		ProtoConfig.Extenstion ret = mockedWalletdb.getExtension("4");
+		assertEquals(ret.getExtentionID(), "4");
+		assertEquals(ret.getDescription(), "ext 4");
+		assertEquals(Hex.toHexString(ret.getData().toByteArray()), Hex.toHexString("data for extension 4".getBytes()));
+
+		// test return extension 17
+		ret = mockedWalletdb.getExtension("17");
+		assertEquals(ret.getExtentionID(), "17");
+		assertEquals(ret.getDescription(), "ext 17");
+		assertEquals(Hex.toHexString(ret.getData().toByteArray()), Hex.toHexString("data for extension 17".getBytes()));
+
+		// test return extension 54
+		ret = mockedWalletdb.getExtension("54");
+		assertEquals(ret.getExtentionID(), "54");
+		assertEquals(ret.getDescription(), "ext 54");
+		assertEquals(Hex.toHexString(ret.getData().toByteArray()), Hex.toHexString("data for extension 54".getBytes()));
+
+		boolean didThrow = false;
+		try {
+			mockedWalletdb.getExtension(null);
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.getExtension("");
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+	}
+
+	@Test
+	public void removeExtensionTest() {
+		// walletDB methods stub
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+		// ConfigAuthenticatorWallet.Builder
+		PowerMockito.mockStatic(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder mockedAuthWalletBuilder =  PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.ConfigAuthenticatorWallet.Builder.class);
+		PowerMockito.when(mockedAuthConfBuilder.getConfigAuthenticatorWalletBuilder()).thenReturn(mockedAuthWalletBuilder);
+
+		List<ProtoConfig.Extenstion> extensions = new ArrayList<>();
+		for(Integer i=0; i < 100; i++ ) {
+			ProtoConfig.Extenstion.Builder b = ProtoConfig.Extenstion.newBuilder();
+			b.setExtentionID(i.toString());
+			b.setDescription("ext " + i.toString());
+			b.setData(ByteString.copyFrom(("data for extension " + i.toString()).getBytes()));
+			extensions.add(b.build());
+		}
+		Mockito.doReturn(extensions).when(mockedWalletdb).getExtensions();
+
+		try {
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.any(ProtoConfig.AuthenticatorConfiguration.Builder.class));
+			Mockito.doReturn(null).when(mockedAuthConfBuilder).clearConfigExtensions();
+
+			// remove extension 37
+			mockedWalletdb.removeExtension("37");
+			ArgumentCaptor<ProtoConfig.Extenstion> arg = ArgumentCaptor.forClass(ProtoConfig.Extenstion.class);
+			Mockito.verify(mockedAuthConfBuilder, Mockito.times(99)).addConfigExtensions(arg.capture());
+			List<ProtoConfig.Extenstion> lst = arg.getAllValues();
+			for(ProtoConfig.Extenstion ext: lst)
+				assertFalse(ext.getExtentionID().equals("37"));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		boolean didThrow = false;
+		try {
+			mockedWalletdb.removeExtension(null);
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.removeExtension("");
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+	}
+
+	@Test
+	public void addExtensionTest() {
+		// walletDB methods stub
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+
+		try {
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.any(ProtoConfig.AuthenticatorConfiguration.Builder.class));
+
+			mockedWalletdb.addExtension("3", "description", "some data".getBytes());
+			ArgumentCaptor<ProtoConfig.Extenstion.Builder> arg = ArgumentCaptor.forClass(ProtoConfig.Extenstion.Builder.class);
+			Mockito.verify(mockedAuthConfBuilder, Mockito.atLeastOnce()).addConfigExtensions(arg.capture());
+			ProtoConfig.Extenstion.Builder ext = arg.getValue();
+
+			assertEquals(ext.getExtentionID(), "3");
+			assertEquals(ext.getDescription(), "description");
+			assertEquals(new String(ext.getData().toByteArray()), "some data");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+		boolean didThrow = false;
+		try {
+			mockedWalletdb.addExtension(null, "description", "some data".getBytes());
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.addExtension("", "description", "some data".getBytes());
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.addExtension("3", "description", null);
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.addExtension("3", "description", "".getBytes());
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.addExtension("3", "", "some data".getBytes());
+		} catch (Exception e) {
+			didThrow = true;
+		}
+		assertFalse(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.addExtension("3", null, "some data".getBytes());
+		} catch (Exception e) {
+			didThrow = true;
+		}
+		assertFalse(didThrow);
+	}
+
+	@Test
+	public void updateExtensionTest() {
+		// walletDB methods stub
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+
+		List<ProtoConfig.Extenstion> extensions = new ArrayList<>();
+		for(Integer i=0; i < 100; i++ ) {
+			ProtoConfig.Extenstion.Builder b = ProtoConfig.Extenstion.newBuilder();
+			b.setExtentionID(i.toString());
+			b.setDescription("ext " + i.toString());
+			b.setData(ByteString.copyFrom(("data for extension " + i.toString()).getBytes()));
+			extensions.add(b.build());
+		}
+		Mockito.doReturn(extensions).when(mockedWalletdb).getExtensions();
+
+		try {
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.any(ProtoConfig.AuthenticatorConfiguration.Builder.class));
+			Mockito.doReturn(null).when(mockedAuthConfBuilder).setConfigExtensions(Mockito.anyInt(), Mockito.any(ProtoConfig.Extenstion.Builder.class));
+
+			// update extension 37
+			mockedWalletdb.updateExtension("37", "new description", "new data".getBytes());
+			ArgumentCaptor<ProtoConfig.Extenstion.Builder> argBuilder = ArgumentCaptor.forClass(ProtoConfig.Extenstion.Builder.class);
+			ArgumentCaptor<Integer> argIdx = ArgumentCaptor.forClass(Integer.class);
+			Mockito.verify(mockedAuthConfBuilder, Mockito.atLeastOnce()).setConfigExtensions(argIdx.capture(), argBuilder.capture());
+			ProtoConfig.Extenstion.Builder v = argBuilder.getValue();
+
+			assertEquals(v.getExtentionID(), "37");
+			assertEquals(v.getDescription(), "new description");
+			assertEquals(new String(v.getData().toByteArray()), "new data");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+		boolean didThrow = false;
+		try {
+			mockedWalletdb.updateExtension(null, "description", "some data".getBytes());
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.updateExtension("", "description", "some data".getBytes());
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.updateExtension("3", "description", null);
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.updateExtension("3", "description", "".getBytes());
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+			didThrow = true;
+		}
+		assertTrue(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.updateExtension("3", "", "some data".getBytes());
+		} catch (Exception e) {
+			didThrow = true;
+		}
+		assertFalse(didThrow);
+
+		didThrow = false;
+		try {
+			mockedWalletdb.updateExtension("3", null, "some data".getBytes());
+		} catch (Exception e) {
+			didThrow = true;
+		}
+		assertFalse(didThrow);
+	}
+
+	@Test
+	public void updateExtensionWithNullDescriptionTest() {
+		// walletDB methods stub
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+
+		List<ProtoConfig.Extenstion> extensions = new ArrayList<>();
+		for (Integer i = 0; i < 100; i++) {
+			ProtoConfig.Extenstion.Builder b = ProtoConfig.Extenstion.newBuilder();
+			b.setExtentionID(i.toString());
+			b.setDescription("ext " + i.toString());
+			b.setData(ByteString.copyFrom(("data for extension " + i.toString()).getBytes()));
+			extensions.add(b.build());
+		}
+		Mockito.doReturn(extensions).when(mockedWalletdb).getExtensions();
+
+		try {
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.any(ProtoConfig.AuthenticatorConfiguration.Builder.class));
+			Mockito.doReturn(null).when(mockedAuthConfBuilder).setConfigExtensions(Mockito.anyInt(), Mockito.any(ProtoConfig.Extenstion.Builder.class));
+
+			// update extension 37
+			mockedWalletdb.updateExtension("37", null, "new data".getBytes());
+			ArgumentCaptor<ProtoConfig.Extenstion.Builder> argBuilder = ArgumentCaptor.forClass(ProtoConfig.Extenstion.Builder.class);
+			ArgumentCaptor<Integer> argIdx = ArgumentCaptor.forClass(Integer.class);
+			Mockito.verify(mockedAuthConfBuilder, Mockito.atLeastOnce()).setConfigExtensions(argIdx.capture(), argBuilder.capture());
+			ProtoConfig.Extenstion.Builder v = argBuilder.getValue();
+
+			assertEquals(v.getExtentionID(), "37");
+			assertEquals(v.getDescription(), "");
+			assertEquals(new String(v.getData().toByteArray()), "new data");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void updateNotFoundExtensionTest() {
+		// should create a new extension
+
+		// walletDB methods stub
+		WalletDB mockedWalletdb = Mockito.spy(new WalletDB());
+		ProtoConfig.AuthenticatorConfiguration.Builder mockedAuthConfBuilder = PowerMockito.mock(ProtoConfig.AuthenticatorConfiguration.Builder.class);
+		Mockito.doReturn(mockedAuthConfBuilder).when(mockedWalletdb).getConfigFileBuilder();
+
+		List<ProtoConfig.Extenstion> extensions = new ArrayList<>();
+		for(Integer i=0; i < 100; i++ ) {
+			ProtoConfig.Extenstion.Builder b = ProtoConfig.Extenstion.newBuilder();
+			b.setExtentionID(i.toString());
+			b.setDescription("ext " + i.toString());
+			b.setData(ByteString.copyFrom(("data for extension " + i.toString()).getBytes()));
+			extensions.add(b.build());
+		}
+		Mockito.doReturn(extensions).when(mockedWalletdb).getExtensions();
+
+		try {
+			Mockito.doNothing().when(mockedWalletdb).writeConfigFile(Mockito.any(ProtoConfig.AuthenticatorConfiguration.Builder.class));
+
+			mockedWalletdb.updateExtension("101", "description", "some data".getBytes());
+			ArgumentCaptor<ProtoConfig.Extenstion.Builder> arg = ArgumentCaptor.forClass(ProtoConfig.Extenstion.Builder.class);
+			Mockito.verify(mockedAuthConfBuilder, Mockito.atLeastOnce()).addConfigExtensions(arg.capture());
+			ProtoConfig.Extenstion.Builder ext = arg.getValue();
+
+			assertEquals(ext.getExtentionID(), "101");
+			assertEquals(ext.getDescription(), "description");
+			assertEquals(new String(ext.getData().toByteArray()), "some data");
 
 		} catch (IOException e) {
 			e.printStackTrace();

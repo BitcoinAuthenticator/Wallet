@@ -9,9 +9,9 @@ import org.authenticator.protobuf.ProtoSettings.BitcoinUnit;
 import org.authenticator.protobuf.ProtoSettings.ConfigSettings;
 import org.authenticator.protobuf.ProtoSettings.Languages;
 
-public class SettingsDb extends DbBase {
+public class SettingsDB extends DBBase {
 
-	public SettingsDb(String filePath) throws IOException {
+	public SettingsDB(String filePath) throws IOException {
 		super(filePath);
 	}
 
@@ -21,7 +21,7 @@ public class SettingsDb extends DbBase {
 	}
 
 	@Override
-	public String dumpKey() { return "SettingsDb"; }
+	public String dumpKey() { return "SettingsDb.db.authenticator.org"; }
 
 	@Override
 	public void restoreFromBytes(byte[] data) throws IOException {

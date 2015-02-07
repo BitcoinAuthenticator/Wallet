@@ -1,24 +1,11 @@
 package org.authenticator.network;
 
-import org.authenticator.Utils.CryptoUtils;
-import org.authenticator.network.messages.CannotProcessRequestPayload;
 import org.bitlet.weupnp.GatewayDevice;
 import org.bitlet.weupnp.GatewayDiscover;
 import org.bitlet.weupnp.PortMappingEntry;
-import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.spongycastle.util.encoders.Hex;
-import org.xml.sax.SAXException;
-
-import javax.crypto.SecretKey;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
